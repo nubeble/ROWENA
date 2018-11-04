@@ -26,6 +26,9 @@ const SFProTextBold = require("./fonts/SF-Pro-Text-Bold.otf");
 const SFProTextSemibold = require("./fonts/SF-Pro-Text-Semibold.otf");
 const SFProTextRegular = require("./fonts/SF-Pro-Text-Regular.otf");
 const EchinosParkScript = require("./fonts/EchinosParkScript.ttf");
+const FriendlySchoolmatesItalic = require("./fonts/Friendly-Schoolmates-Italic.otf");
+const FriendlySchoolmatesRegular = require("./fonts/Friendly-Schoolmates-Regular.otf");
+
 
 // const onNavigationStateChange = () => undefined;
 
@@ -74,7 +77,9 @@ export default class App extends React.Component<AppProps, AppState> {
 			"SFProText-Bold": SFProTextBold,
 			"SFProText-Semibold": SFProTextSemibold,
 			"SFProText-Regular": SFProTextRegular,
-			"EchinosParkScript": EchinosParkScript
+			"EchinosParkScript": EchinosParkScript,
+			"FriendlySchoolmatesItalic": FriendlySchoolmatesItalic,
+			"FriendlySchoolmatesRegular": FriendlySchoolmatesRegular
 		});
 
 		const images = Images.downloadAsync(); // logo

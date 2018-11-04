@@ -129,9 +129,9 @@ export default class Authentication extends React.Component {
                             // marginTop: 100,
                             // backgroundColor: 'rgba(0,0,0,0)',
                             padding: 50,
-                            fontFamily: "EchinosParkScript",
+                            fontFamily: "FriendlySchoolmatesRegular",
                             color: 'white',
-                            fontSize: 42,
+                            fontSize: 46,
                             textAlign: 'center'
                         }}>ROWENA</Text>
 
@@ -139,12 +139,12 @@ export default class Authentication extends React.Component {
 
                     <View style={styles.empty}>
 
-
+                        {/*
                         <Button block style={styles.signUpWithEmailButton}
                             onPress={() => this.setModalVisible(true)} >
                             <Text style={{ color: 'white' }}>Show Modal</Text>
                         </Button>
-
+                        */}
 
                     </View>
 
@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white'
+        // backgroundColor: 'white'
     },
     contents: {
         width: '100%',
