@@ -1,7 +1,7 @@
 import React from 'react';
 import { createSwitchNavigator } from "react-navigation";
 
-import Authentication from './Authentication';
+import Auth from './Auth';
 import Main from './Main';
 
 
@@ -9,13 +9,13 @@ export default createSwitchNavigator(
     {
         // guide
 
-        authentication: Authentication,
+        auth: Auth, // stack navigator
 
         // welcome
 
         main: Main // tab navigator
     },
     {
-        initialRouteName: 'authentication'
+        initialRouteName: 'auth'
     }
 );

@@ -200,7 +200,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
 
 const cloneArray = (arr) => {
     // Deep copy arrays. Going one level deep seems to be enough.
-    var clone = [];
+    let clone = [];
     for (i=0; i<arr.length; i++) {
       clone.push( arr[i].slice(0) )
     }

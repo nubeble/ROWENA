@@ -1,127 +1,69 @@
-// stack navigator
-/*
 import React from 'react';
-import { createStackNavigator } from 'react-navigation';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, Modal, StatusBar } from 'react-native';
+import { Container, Header, Content, Form, Item, Input, Label, Thumbnail, Button, Body, Left, Right, Icon } from 'native-base';
 
-import Page from './Page';
-import Detail from './Detail';
-
-
-export default createStackNavigator(
-    {
-        page: {
-            screen: Page,
-            // path:
-        },
-        detail: {
-            screen: Detail,
-        }
-    }
-);
-*/
-
-/*** ToDo: include modal! ***/
-
-import React from 'react';
-import {
-    StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, Image, Modal, TouchableHighlight, Alert
-} from 'react-native';
-import { Container, Header, Content, Form, Item, Input, Label, Thumbnail, Button } from 'native-base';
-import { } from 'react-native';
-
-import AntIcon from "react-native-vector-icons/AntDesign";
+import EvilIcons from "react-native-vector-icons/EvilIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import * as firebase from 'firebase';
 
 
-export default class Authentication extends React.Component {
+export default class AuthMain extends React.Component {
     state = {
         email: '',
         password: '',
-
-
-        modalVisible: false
     };
 
-    setModalVisible(visible) {
-        this.setState({ modalVisible: visible });
+    async continueWithFacebook() {
+        const {
+            type,
+            token,
+            expires,
+            permissions,
+            declinedPermissions,
+        } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542', { permissions: ['public_profile'] });
+
+        if (type === 'success') {
+            const credential = firebase.auth.FacebookAuthProvider.credential(token);
+
+            // firebase.auth().signInWithCredential(credential).catch((error) => {
+            firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
+                console.log('signInWithCredential', error);
+            });
+
+
+            // Get the user's name using Facebook's Graph API
+			/*
+			const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+			alert('Logged in!', `Hi ${(await response.json()).name}!`);
+			*/
+        }
     }
 
     signUpWithEmail() {
-
+        this.props.navigation.navigate('email');
     }
 
     signUpWithMobile() {
-
-    }
-
-    signUpWithFacebook() {
-
+        this.props.navigation.navigate('mobile');
     }
 
     render() {
-        // var { height, width } = Dimensions.get('window');
+        // let { height, width } = Dimensions.get('window');
 
         return (
-            < ImageBackground
-                style={{ flex: 1 }
-                }
-                source={require('../assets/splash.png')} // ToDo: cache
+            <ImageBackground
+                style={{ flex: 1, width: null, height: null }}
+                source={require('../assets/splash.png')}
                 imageStyle={{ resizeMode: 'cover' }}
-                blurRadius={5}
+                blurRadius={3}
             >
                 {/*
-            <Image style={styles.bgimage} blurRadius={5} source={require('../assets/splash.png')} />
+                <Image style={styles.bgimage} blurRadius={3} source={require('../assets/splash.png')} />
             */}
 
                 <View
                     style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
-
-
-
-                    <Modal
-                        animationType="slide"
-                        transparent={false}
-                        visible={this.state.modalVisible}
-                        onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
-                        }}>
-
-                        <Header
-                            leftComponent={{ icon: 'menu', color: 'rgb(234, 150, 24)' }}
-                            centerComponent={{ text: 'MY TITLE', style: { color: 'rgb(234, 150, 24)' } }}
-                            rightComponent={{ icon: 'home', color: 'rgb(234, 150, 24)' }}
-                        />
-
-                        <View style={{
-                            flex: 1,
-                            backgroundColor: '#00ffff',
-                            // alignItems: 'center',
-                            justifyContent: 'center'
-                        }} >
-
-
-
-
-
-
-                            <View>
-
-                                <TouchableHighlight
-                                    onPress={() => {
-                                        this.setModalVisible(!this.state.modalVisible);
-                                    }}>
-                                    <Text>Hide Modal</Text>
-                                </TouchableHighlight>
-
-                            </View>
-
-
-
-
-                        </View>
-
-                    </Modal>
-
-
 
                     <View style={styles.logo}>
 
@@ -130,50 +72,52 @@ export default class Authentication extends React.Component {
                             // backgroundColor: 'rgba(0,0,0,0)',
                             padding: 50,
                             fontFamily: "FriendlySchoolmatesRegular",
-                            color: 'white',
-                            fontSize: 46,
+                            // fontFamily: "SansSerif",
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 40,
+                            fontWeight: 'bold',
                             textAlign: 'center'
                         }}>ROWENA</Text>
 
                     </View>
 
                     <View style={styles.empty}>
-
-                        {/*
-                        <Button block style={styles.signUpWithEmailButton}
-                            onPress={() => this.setModalVisible(true)} >
-                            <Text style={{ color: 'white' }}>Show Modal</Text>
-                        </Button>
-                        */}
-
                     </View>
 
                     <View style={styles.contents}>
 
-                        <Button block style={styles.signUpWithEmailButton}
-                            onPress={() => this.signUpWithEmail()} >
-                            <AntIcon style={{ position: 'absolute', left: 20, top: 10 }} name='mail' color="white" size={22} />
-                            <Text style={{ color: 'white' }}>Sign up with Email</Text>
-                        </Button>
-
-                        <Button block style={styles.signUpWithMobileButton}
-                            onPress={() => this.signUpWithMobile()}>
-                            <AntIcon style={{ position: 'absolute', left: 20, top: 10 }} name='phone' color="white" size={22} />
-                            <Text style={{ color: 'white' }}>Sign up with Mobile</Text>
-                        </Button>
-
-                        <Button block style={styles.signUpWithFacebookButton}
-                            onPress={() => this.signUpWithFacebook()}>
-                            <AntIcon style={{ position: 'absolute', left: 20, top: 10 }} name='facebook-square' color="white" size={22} />
-                            <Text style={{ color: 'white' }}>Continue with Facebook</Text>
-                        </Button>
-
-                        <TouchableOpacity onPress={() => navigate('Daftar')}>
-                            <Text style={styles.logInText}>
-                                Already a member? Log in
-                                </Text>
+                        <TouchableOpacity
+                            onPress={() => this.continueWithFacebook()}
+                            style={styles.signUpWithFacebookButton}
+                        >
+                            <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
+                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
                         </TouchableOpacity>
 
+                        <TouchableOpacity
+                            onPress={() => this.signUpWithEmail()}
+                            style={styles.signUpWithEmailButton}
+                        >
+                            <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
+                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={() => this.signUpWithMobile()}
+                            style={styles.signUpWithMobileButton}
+                        >
+                            <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                        // onPress={() => navigate('Daftar')}
+                        >
+                            <Text style={{ marginBottom: 150, marginTop: 30, color: 'rgba(255, 255, 255, 0.8)' }} >
+                                <Text>Already a member? </Text>
+                                <Text style={{ fontWeight: '500' }}>Log in</Text>
+                            </Text>
+                        </TouchableOpacity>
 
                         <Text style={styles.caution}>
                             Don't worry! We don't post anything to Facebook.
@@ -257,9 +201,7 @@ export default class Authentication extends React.Component {
         );
     }
 
-    onChangeText(message: string) {
 
-    }
 
     moveToMain() {
         this.props.navigation.navigate('main');
@@ -290,7 +232,6 @@ const styles = StyleSheet.create({
         height: '100%'
     },
     */
-
     logo: {
         width: '100%',
         height: '35%',
@@ -311,50 +252,51 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         // backgroundColor: '#1ad657'
     },
-
-    signUpWithEmailButton: {
-        marginTop: 10,
-        paddingTop: 10,
-        marginLeft: 30,
-        marginRight: 30,
-
-        backgroundColor: "#D44638",
-        height: 42
-    },
-
-    signUpWithMobileButton: {
-        marginTop: 10,
-        paddingTop: 10,
-        marginLeft: 30,
-        marginRight: 30,
-
-        backgroundColor: "rgba(46, 160, 73, 1)",
-        height: 42
-    },
-
     signUpWithFacebookButton: {
-        marginTop: 10,
-        paddingTop: 10,
-        marginLeft: 30,
-        marginRight: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
 
-        backgroundColor: "rgba(59, 89, 151, 1)",
-        height: 42
+        backgroundColor: "rgba(255, 255, 255, 0.6)",
+        borderRadius: 5,
+        borderColor: "transparent",
+        borderWidth: 0,
+        width: '85%',
+        height: 45
     },
+    signUpWithEmailButton: {
+        marginTop: 20,
 
-    logInText: {
-        marginBottom: 150,
-        marginTop: 30,
-        color: 'white',
-        fontWeight: '500'
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: "transparent",
+        borderRadius: 5,
+        borderColor: "rgba(255, 255, 255, 0.8)",
+        borderWidth: 2,
+        width: '85%',
+        height: 45
     },
+    signUpWithMobileButton: {
+        marginTop: 20,
 
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: "transparent",
+        borderRadius: 5,
+        borderColor: "rgba(255, 255, 255, 0.8)",
+        borderWidth: 2,
+        width: '85%',
+        height: 45
+    },
     caution: {
         position: 'absolute',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
         bottom: 50,
-        color: 'white',
+
+        // justifyContent: 'flex-end',
+        // alignItems: 'center',
+
+        color: 'rgba(255, 255, 255, 0.8)',
         fontWeight: '100'
     },
 

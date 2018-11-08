@@ -3,7 +3,6 @@ import { StyleSheet, View, Text, Platform, StatusBar } from 'react-native';
 import { Font, AppLoading } from 'expo';
 // import ModalHost from "expo/src/modal/ModalHost";
 import { Images, loadIcons, ThemeProvider } from "./src/components";
-
 import * as firebase from 'firebase';
 
 const firebaseConfig = {
@@ -17,18 +16,15 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-import { Container, Content, Header, Form, Input, Item, Button, Label } from 'native-base';
-
 import Switches from './src/Switches';
 
 // $FlowFixMe
 const SFProTextBold = require("./fonts/SF-Pro-Text-Bold.otf");
 const SFProTextSemibold = require("./fonts/SF-Pro-Text-Semibold.otf");
 const SFProTextRegular = require("./fonts/SF-Pro-Text-Regular.otf");
-const EchinosParkScript = require("./fonts/EchinosParkScript.ttf");
 const FriendlySchoolmatesItalic = require("./fonts/Friendly-Schoolmates-Italic.otf");
 const FriendlySchoolmatesRegular = require("./fonts/Friendly-Schoolmates-Regular.otf");
-
+const SansSerif = require("./fonts/Sans-Serif.ttf");
 
 // const onNavigationStateChange = () => undefined;
 
@@ -36,8 +32,6 @@ type AppProps = {};
 type AppState = {
 	isReady: boolean,
 };
-
-
 
 
 // export default class App extends React.Component {
@@ -59,12 +53,10 @@ export default class App extends React.Component<AppProps, AppState> {
 		this.setState({ isReady: true });
 	}
 
-
 	constructor(props) {
 		super(props);
 	}
 
-	// componentDidMount() {
 	async componentDidMount(): Promise<void> {
 		console.log('componentDidMount');
 
@@ -77,9 +69,9 @@ export default class App extends React.Component<AppProps, AppState> {
 			"SFProText-Bold": SFProTextBold,
 			"SFProText-Semibold": SFProTextSemibold,
 			"SFProText-Regular": SFProTextRegular,
-			"EchinosParkScript": EchinosParkScript,
 			"FriendlySchoolmatesItalic": FriendlySchoolmatesItalic,
-			"FriendlySchoolmatesRegular": FriendlySchoolmatesRegular
+			"FriendlySchoolmatesRegular": FriendlySchoolmatesRegular,
+			"SansSerif": SansSerif
 		});
 
 		const images = Images.downloadAsync(); // logo
@@ -88,30 +80,57 @@ export default class App extends React.Component<AppProps, AppState> {
 
 		await Promise.all([fonts, ...images, icons]);
 
+
+
 		firebase.auth().onAuthStateChanged((user) => {
-			if (user !== null) {
-				console.log('onAuthStateChanged', user); // 'displayName'
+			/*
+			if (user !== null) {console.log('onAuthStateChanged', user);
 			}
+			*/
+
+			const isUserAuthenticated = !!user;
+
+			if (isUserAuthenticated) {
+				/*
+				const { uid } = Firebase.auth.currentUser;
+				const feedQuery = Firebase.firestore
+					.collection("feed")
+					.orderBy("timestamp", "desc");
+				const userFeedQuery = Firebase.firestore
+					.collection("feed")
+					.where("uid", "==", uid)
+					.orderBy("timestamp", "desc");
+					
+				profileStore.init();
+				feedStore.init(feedQuery);
+				userFeedStore.init(userFeedQuery);
+				*/
+
+
+				// navigation.navigate("Home");
+			} else {
+
+				// Sign up
+				navigation.navigate("Welcome");
+			}
+
+
+
+
+
+
+
+
+
+
+
+
+
 		});
 
+
+
 		this.ready();
-	}
-
-	signUp(email, password) {
-
-		if (this.state.password.length < 6) {
-			alert('Please enter at least 6 characters.');
-			return;
-		}
-
-		try {
-
-			firebase.auth().createUserWithEmailAndPassword(email, password);
-
-		} catch (error) {
-			console.log(error.toString());
-		}
-
 	}
 
 	logIn(email, password) {
@@ -124,33 +143,6 @@ export default class App extends React.Component<AppProps, AppState> {
 
 		} catch (error) {
 			console.log('signInWithEmailAndPassword', error.toString());
-		}
-
-	}
-
-	async logInWithFacebook() {
-		const {
-			type,
-			token,
-			expires,
-			permissions,
-			declinedPermissions,
-		} = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542', { permissions: ['public_profile'] });
-
-		if (type === 'success') {
-			const credential = firebase.auth.FacebookAuthProvider.credential(token);
-
-			// firebase.auth().signInWithCredential(credential).catch((error) => {
-			firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
-				console.log('signInWithCredential', error);
-			});
-
-
-			// Get the user's name using Facebook's Graph API
-			/*
-			const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-			alert('Logged in!', `Hi ${(await response.json()).name}!`);
-			*/
 		}
 
 	}
@@ -225,15 +217,6 @@ export default class App extends React.Component<AppProps, AppState> {
 					onPress={() => this.signUp(this.state.email, this.state.password)}
 				>
 					<Text style={{ color: 'white' }}>Sign up</Text>
-				</Button>
-
-				<Button style={{ marginTop: 10 }}
-					full
-					rounded
-					primary
-					onPress={() => this.logInWithFacebook()}
-				>
-					<Text style={{ color: 'white' }}>Log in with Facebook</Text>
 				</Button>
 
 			</Container>

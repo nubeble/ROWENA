@@ -47,7 +47,7 @@ export const Colors: { [name: ThemeName]: ThemeColors } = {
 
     Main: {
         primary: "#000000",
-        secondary: "#D3D3D3"
+        secondary: "#000000"
     }
 };
 
