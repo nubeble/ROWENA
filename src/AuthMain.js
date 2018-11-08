@@ -14,6 +14,38 @@ export default class AuthMain extends React.Component {
         password: '',
     };
 
+    componentDidMount() {
+        const { navigation } = this.props;
+
+        firebase.auth().onAuthStateChanged((user) => {
+            if (user) { // User is signed in.
+                console.log('onAuthStateChanged, user: ', user);
+
+                /*
+				const { uid } = Firebase.auth.currentUser;
+				const feedQuery = Firebase.firestore
+					.collection("feed")
+					.orderBy("timestamp", "desc");
+				const userFeedQuery = Firebase.firestore
+					.collection("feed")
+					.where("uid", "==", uid)
+					.orderBy("timestamp", "desc");
+					
+				profileStore.init();
+				feedStore.init(feedQuery);
+				userFeedStore.init(userFeedQuery);
+				*/
+
+                navigation.navigate('main');
+
+
+            } else { // No user is signed in.
+                // test
+                navigation.navigate('welcome');
+            }
+        });
+    }
+
     async continueWithFacebook() {
         const {
             type,
@@ -203,15 +235,15 @@ export default class AuthMain extends React.Component {
 
 
 
-    moveToMain() {
-        this.props.navigation.navigate('main');
-    }
 
+
+    /*
     async getUserToken() {
         const userToken = await AsyncStorage.getItem('USER_TOKEN');
 
         return userToken;
     }
+    */
 }
 
 const styles = StyleSheet.create({

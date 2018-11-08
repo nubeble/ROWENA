@@ -9,7 +9,7 @@ import Welcome from './Welcome';
 
 export default createStackNavigator(
     {
-        main: {
+        authMain: {
             screen: AuthMain
         },
 

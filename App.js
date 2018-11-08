@@ -80,59 +80,10 @@ export default class App extends React.Component<AppProps, AppState> {
 
 		await Promise.all([fonts, ...images, icons]);
 
-
-
-		firebase.auth().onAuthStateChanged((user) => {
-			/*
-			if (user !== null) {console.log('onAuthStateChanged', user);
-			}
-			*/
-
-			const isUserAuthenticated = !!user;
-
-			if (isUserAuthenticated) {
-				/*
-				const { uid } = Firebase.auth.currentUser;
-				const feedQuery = Firebase.firestore
-					.collection("feed")
-					.orderBy("timestamp", "desc");
-				const userFeedQuery = Firebase.firestore
-					.collection("feed")
-					.where("uid", "==", uid)
-					.orderBy("timestamp", "desc");
-					
-				profileStore.init();
-				feedStore.init(feedQuery);
-				userFeedStore.init(userFeedQuery);
-				*/
-
-
-				// navigation.navigate("Home");
-			} else {
-
-				// Sign up
-				navigation.navigate("Welcome");
-			}
-
-
-
-
-
-
-
-
-
-
-
-
-
-		});
-
-
-
 		this.ready();
 	}
 
+	/*
 	logIn(email, password) {
 
 		try {
@@ -146,6 +97,7 @@ export default class App extends React.Component<AppProps, AppState> {
 		}
 
 	}
+	*/
 
 
 

@@ -222,10 +222,8 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({secureText: 'Show', securePwInput: true});
         }
 
-        // ToDo: fix this!
-        console.log('!! FIX !!');
-        console.log('length', this.state.password.length);
-        this.refs['pwInput']._root.setNativeProps({ selection:{ start:this.state.password.length - 1, end:this.state.password.length - 1 } });
+        // ToDo: don't need this in ios, not working in android
+        this.refs['pwInput']._root.setNativeProps({ selection:{ start:this.state.password.length, end:this.state.password.length } });
     }
 
     signUp() {
@@ -274,6 +272,8 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ showIndicator: false });
 
             console.log('error', error.toString());
+
+            // ToDo: do something
         }
     }
 
