@@ -331,7 +331,7 @@ export default class SignUpWithEmail extends React.Component {
                         */}
 
                         <TouchableOpacity
-                            style={{ marginTop: 42, marginLeft: 20, alignSelf: 'baseline' }}
+                            style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 20, alignSelf: 'baseline' }}
                             onPress={() => this.props.navigation.goBack()}
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />

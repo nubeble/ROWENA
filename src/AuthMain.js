@@ -36,12 +36,9 @@ export default class AuthMain extends React.Component {
 				userFeedStore.init(userFeedQuery);
 				*/
 
-                navigation.navigate('main');
-
-
-            } else { // No user is signed in.
                 // test
-                navigation.navigate('welcome');
+                //navigation.navigate('main');
+            } else { // No user is signed in.
             }
         });
     }
