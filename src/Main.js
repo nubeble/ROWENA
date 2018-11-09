@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
-import { Ionicons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
 import Home from './Home';
 import Chats from './Chats';
@@ -42,7 +42,8 @@ export default createBottomTabNavigator(
                 if (navigation.state.routeName === 'home') {
 
                     return <Ionicons
-                        name={focused ? 'ios-navigate' : 'ios-navigate-outline'}
+                        // name={focused ? 'compass' : 'compass-outline'}
+                        name={'md-compass'}
                         size={30}
                         style={{ color: tintColor }}
                     />;
@@ -50,24 +51,26 @@ export default createBottomTabNavigator(
                 } else if (navigation.state.routeName === 'chats') {
 
                     return <Ionicons
-                        name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-                        size={28}
+                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+                        name={'ios-chatbubbles'}
+                        size={30}
                         style={{ color: tintColor }}
                     />;
 
                 } else if (navigation.state.routeName === 'likes') {
 
                     return <Ionicons
-                        name={focused ? 'ios-heart' : 'ios-heart-outline'}
-                        size={28}
+                        // name={focused ? 'ios-heart' : 'ios-heart-empty'}
+                        name={'ios-heart'}
+                        size={30}
                         style={{ color: tintColor }}
                     />;
 
                 } else if (navigation.state.routeName === 'me') {
 
-                    return <Ionicons
-                        name={focused ? 'ios-contact' : 'ios-contact-outline'}
-                        size={30}
+                    return <FontAwesome
+                        name={'user-circle'}
+                        size={26}
                         style={{ color: tintColor }}
                     />;
                 }
@@ -77,7 +80,7 @@ export default createBottomTabNavigator(
 
         tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
             style: {
-                backgroundColor: '#242424'
+                backgroundColor: 'rgb(23, 23, 23)'
             },
             animationEnabled: true,
             showLabel: true,

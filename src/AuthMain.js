@@ -37,7 +37,7 @@ export default class AuthMain extends React.Component {
 				*/
 
                 // test
-                //navigation.navigate('main');
+                navigation.navigate('main');
             } else { // No user is signed in.
             }
         });

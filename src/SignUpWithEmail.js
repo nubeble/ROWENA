@@ -3,10 +3,8 @@ import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndi
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import * as firebase from 'firebase';
-import LoadingIndicator from './components';
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -102,26 +100,6 @@ export default class SignUpWithEmail extends React.Component {
         setTimeout(function () {
             that.refs['emailInput']._root.focus();
         }, 750); // 0.75 sec
-
-        /*
-        firebase.auth().onAuthStateChanged((user) => {
-
-
-            // close indicator
-            if (this.state.showIndicator) {
-                this.setState({ showIndicator: false });
-            }
-
-
-            if (user !== null) {
-                console.log('onAuthStateChanged', user);
-
-                // ToDo: SignUp success! move to new page
-
-
-            }
-        });
-        */
     }
 
     validateEmail(text) {
