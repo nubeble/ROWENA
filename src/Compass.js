@@ -1,7 +1,5 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Dimensions } from 'react-native';
-
-
 import { Card, Feed } from "./components";
 import TravelAPI, { type Guide } from "./travel/api";
 import type { NavigationProps } from "./components";
@@ -13,12 +11,26 @@ type Chunk = {
     guides: Guide[]
 };
 
+const users = require("./users");
+const reviews = require("./reviews");
+
+type User = {
+    uid: string,
+    name: string,
+    country: string,
+    city: string,
+    picture: Picture,
+    location: Location,
+    about: string,
+    receivedReviews: string[],
+    postedReviews: string[]
+    // visits: Visit[]
+};
+
 
 export default class Compass extends React.Component<NavigationProps<>> {
 
     componentDidMount() {
-        console.log('Compass');
-
         const themeProvider = ThemeProvider.getInstance();
         themeProvider.switchColors(Colors['Main']);
     }
@@ -66,7 +78,7 @@ export default class Compass extends React.Component<NavigationProps<>> {
                             subtitle={guide.country}
                             description={`${guide.duration} days`}
                             // onPress={() => navigation.navigate("Guide", { guide })}
-                            onPress={() => navigation.navigate("Detail", { guide })} // ToDo
+                            onPress={() => navigation.navigate("detail", { guide })}
                             picture={guide.picture}
                             // height={chunk.guides.length === 1 ? 300 : 175}
                             height={chunk.guides.length === 1 ? height1 : height2}
@@ -80,17 +92,28 @@ export default class Compass extends React.Component<NavigationProps<>> {
     onPress = () => {
         const { navigation } = this.props;
         // navigation.navigate("Welcome");
-        console.log('onPress');
     }
 
     render(): React.Node {
         const { renderItem, onPress } = this;
         const { navigation } = this.props;
 
+        /*
         const data = windowing(TravelAPI.guides).map(guides => (
-            { id: guides.map(guide => guide.id).join(""), guides } // join two IDs
+            { id: guides.map(guide => guide.id).join(""), guides } // (id, guides[]) - join two IDs
         ));
         console.log('windowing data: ', data);
+        */
+        const data = _windowing(users).map(users => (
+            { uid: users.map(user => user.uid).join(""), users }
+        ));
+        console.log('windowing data: ', data);
+
+
+
+
+
+
 
         // const title = "Guides";
         // const title = "Recently viewed";
@@ -144,7 +167,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
     */
     
     let order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
-    console.log('order: ', order);
+    // console.log('order: ', order);
 
     let randomFlag = false;
 
@@ -168,7 +191,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
 
         if (randomFlag) {
             order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
-            console.log('order: ', order);
+            // console.log('order: ', order);
             randomFlag = false;
         }
 
@@ -206,6 +229,70 @@ const cloneArray = (arr) => {
     }
     return clone;
 }
+
+
+
+
+const _windowing = (users: User[]): User[][] => {
+    console.log('users: ', users);
+
+    const windows = [[]];
+
+    let order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
+    // console.log('order: ', order);
+
+    let randomFlag = false;
+
+    users.forEach(user => {
+
+        // ToDo: check
+
+        if (order === 1) {
+            windows[windows.length - 1].push(user);
+            windows.push([]);
+
+            randomFlag = true;
+        } else if (order === 2) {
+            windows[windows.length - 1].push(user);
+
+            if (windows[windows.length - 1].length === 2) {
+                windows.push([]);
+                randomFlag = true;
+            }
+        }
+
+        if (randomFlag) {
+            order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
+            // console.log('order: ', order);
+            randomFlag = false;
+        }
+
+    });
+
+    if (windows[windows.length - 1].length === 0) windows.pop();
+
+
+    console.log('windows: ', windows);
+
+    return windows;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 '현재 위치를 가져온 후, 검색 & 게시판 화면 표시'

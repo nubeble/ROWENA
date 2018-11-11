@@ -50,12 +50,12 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 
     startEditing() {
         // ToDo: add animation
-        alert('startEditing()');
+        // alert('startEditing()');
     }
 
     leaveEditing() {
         // ToDo: add animation
-        alert('leaveEditing()');
+        // alert('leaveEditing()');
     }
 
     render(): React.Node {
@@ -111,18 +111,19 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 
                 <View style={styles.searchBarStyle}>
                     <View style={{ width: '70%', height: 32, backgroundColor: 'rgb(36, 36, 36)', borderColor: 'rgb(36, 36, 36)', borderRadius: 25, borderWidth: 1 }} >
-                        {/*
-                        <FontAwesome style={{ position: 'absolute', left: 10, top: 7 }} name='search' color="grey" size={16} />
-                        */}
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
-                            onPress={() => this.startEditing()}
+                            onPress={() => {
+                                this.refs['searchInput'].focus();
+                                this.startEditing();
+                            }}
                         >
                             <FontAwesome name='search' color="grey" size={16} />
                         </TouchableOpacity>
 
                         <TextInput
-                            style={{ position: 'absolute', left: 40, right: 40, top: 1, color: "white" }} underlineColorAndroid="transparent"
+                            ref='searchInput'
+                            style={{ position: 'absolute', left: 40, right: 40, width: '100%', height: '100%', fontSize: 16, color: "white" }} underlineColorAndroid="transparent"
                             placeholder='Try "Bangkok"' placeholderTextColor='grey'
                             onTouchStart={()=> this.startEditing() }
                             onEndEditing={()=> this.leaveEditing() }
@@ -204,13 +205,15 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 const styles = StyleSheet.create({
     flex: {
-        flex: 1
+        flex: 1,
+        backgroundColor: 'rgb(26, 26, 26)'
     },
     container: {
         flexGrow: 1,
-    paddingBottom: StyleGuide.spacing.small,
-    backgroundColor: StyleGuide.palette.black
-    // backgroundColor: '#303030'
+        paddingBottom: StyleGuide.spacing.small,
+        // backgroundColor: StyleGuide.palette.black
+        // backgroundColor: '#303030'
+        backgroundColor: 'rgb(26, 26, 26)'
     },
         header: {
             // padding: StyleGuide.spacing.small
@@ -229,11 +232,11 @@ const styles = StyleSheet.create({
         marginTop: StyleGuide.spacing.small
     },
     searchBarStyle: { // View
-        height: 80,
+        height: 88,
         // backgroundColor: StyleGuide.palette.black,
         backgroundColor: 'rgb(26, 26, 26)',
         // </T>paddingTop: Constants.statusBarHeight,
-        paddingBottom: 16,
+        paddingBottom: 10,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },

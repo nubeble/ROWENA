@@ -1,31 +1,41 @@
 {
-  "expo": {
-    "name": "Rowena",
-    "description": "This project is really great.",
-    "slug": "Rowena",
-    "privacy": "public",
-    "sdkVersion": "31.0.0",
-    "platforms": ["ios", "android"],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/logo.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
-    },
-    "androidStatusBar" : {
-      "barStyle": "light-content",
-      "backgroundColor": "#000000"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true
-    }
-  }
+	"expo": {
+		"name": "Rowena",
+		"description": "This project is really great.",
+		"slug": "Rowena",
+		"privacy": "public",
+		"sdkVersion": "31.0.0",
+		"platforms": [
+			"ios",
+			"android"
+		],
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"icon": "./assets/logo.png",
+		"splash": {
+			"image": "./assets/splash.png",
+			"resizeMode": "cover",
+			"backgroundColor": "#ffffff"
+		},
+		"androidStatusBar": {
+			"barStyle": "light-content",
+			"backgroundColor": "#000000"
+		},
+		"updates": {
+			"fallbackToCacheTimeout": 0
+		},
+		"assetBundlePatterns": [
+			"**/*"
+		],
+		"ios": {
+			"supportsTablet": true,
+			"infoPlist": {
+				"NSAppTransportSecurity": "",
+				"NSCameraUsageDescription": "Privacy - Camera Usage Description",
+				"NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
+				"NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
+				"NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
+			}
+		}
+	}
 }

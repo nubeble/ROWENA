@@ -35,7 +35,7 @@ export default createBottomTabNavigator(
 
             tabBarIcon: ({ tintColor, focused }) => {
 
-                console.log(navigation);
+                // console.log('navigation: ', navigation);
 
                 // let iconName;
 
@@ -69,8 +69,8 @@ export default createBottomTabNavigator(
                 } else if (navigation.state.routeName === 'me') {
 
                     return <FontAwesome
-                        name={'user-circle'}
-                        size={26}
+                        name={'user'}
+                        size={30}
                         style={{ color: tintColor }}
                     />;
                 }
@@ -80,7 +80,7 @@ export default createBottomTabNavigator(
 
         tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
             style: {
-                backgroundColor: 'rgb(23, 23, 23)'
+                backgroundColor: 'rgb(26, 26, 26)'
             },
             animationEnabled: true,
             showLabel: true,

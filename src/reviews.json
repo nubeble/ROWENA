@@ -1,0 +1,30 @@
+// 리뷰에 대한 댓글은 대상자만 달 수 있다. (업체 대표)
+// 작성한 리뷰를 수정/삭제해도 상관없다.
+
+
+// Reviews
+[
+    // Review
+    {
+        "uid": "1111222233334444", // review UID
+        "owner": "5555666677778888", // user UID (작성자)
+        "recipient": "9734620375936182", // user UID (대상자)
+        "time": "YYYY-MM-DD-HH-MM",
+        "message": "So nice!",
+        "rating": 3.0,
+        // "hasRely": false,
+        "replyUID": "4798398729384798"
+    },
+    {
+
+    },
+    {
+
+    },
+    {
+
+    },
+    {
+
+    }
+]

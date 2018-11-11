@@ -57,7 +57,7 @@ export default class AuthMain extends React.Component {
 
             // firebase.auth().signInWithCredential(credential).catch((error) => {
             firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
-                console.log('signInWithCredential', error);
+                console.log('signInWithCredential, error: ', error);
             });
 
 
