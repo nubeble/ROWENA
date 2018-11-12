@@ -35,7 +35,8 @@ type FeedState = {
 };
 
 const { height } = Dimensions.get("window");
-const keyExtractor = <T: FeedItem>(item: T): string => item.id;
+// const keyExtractor = <T: FeedItem>(item: T): string => item.id;
+const keyExtractor = <T: FeedItem>(item: T): string => item.uid;
 
 
 class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
@@ -43,7 +44,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
         scrollAnimation: new Animated.Value(0)
     };
 
-    renderItem = (item: {item: T }): React.Node => {
+    renderItem = (item: {item: T}): React.Node => {
         const {renderItem} = this.props;
         return renderItem(item.item);
     }

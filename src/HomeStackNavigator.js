@@ -1,14 +1,14 @@
 import { createStackNavigator } from 'react-navigation';
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 
-import Compass from './Compass';
+import Home from './Home';
 import Detail from './Detail';
 
 
 export default createStackNavigator(
     {
-        page: {
-            screen: Compass
+        home: {
+            screen: Home
         },
 
         detail: {

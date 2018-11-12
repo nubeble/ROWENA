@@ -5,7 +5,6 @@ import { StyleSheet, Text, View, TextInput } from 'react-native';
 
 import JayButton from './JayButton';
 
-// import RNFetchBlob from 'react-native-fetch-blob';
 // import ImagePicker from 'react-native-image-picker';
 import { ImagePicker } from 'expo';
 //import { RNS3 } from 'react-native-aws3';

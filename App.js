@@ -16,7 +16,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-import Switches from './src/Switches';
+import MainSwitchNavigator from './src/MainSwitchNavigator';
 
 // $FlowFixMe
 const SFProTextBold = require("./fonts/SF-Pro-Text-Bold.otf");
@@ -189,7 +189,7 @@ export default class App extends React.Component<AppProps, AppState> {
 				*/}
 
 				<ThemeProvider>
-					<Switches />
+					<MainSwitchNavigator />
 				</ThemeProvider>
 
 			</React.Fragment>

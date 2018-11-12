@@ -22,7 +22,7 @@ export default createStackNavigator(
         },
 
         welcome: {
-            screen: Welcome
+            screen: Welcome // ToDo
         }
     },
     {

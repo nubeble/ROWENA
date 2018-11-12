@@ -4,13 +4,12 @@ import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
 import { AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
-import Home from './Home';
 import Chats from './Chats';
 import Likes from './Likes';
 import Me from './Me';
 
 
-import Stacks from './Stacks';
+import HomeStackNavigator from './HomeStackNavigator';
 import Test from './Test';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
@@ -18,8 +17,7 @@ import SignUp from './SignUp';
 
 export default createBottomTabNavigator(
     {
-        // home: Home, // Test
-        home: Stacks,
+        home: HomeStackNavigator,
         // chats: Chats,
         chats: Test,
         // likes: Likes,

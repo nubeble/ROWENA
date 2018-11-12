@@ -5,7 +5,8 @@
 [
     // User
     {
-        "uid": "1111222233334444", // user UID
+        // "uid": "1111222233334444", // user UID
+        "uid": "1111", // user UID
 
         "name": "Rowena",
         "country": "Japan",
@@ -31,7 +32,8 @@
         ]
     },
     {
-        "uid": "1111222233334445", // user UID
+        // "uid": "1111222233334445", // user UID
+        "uid": "2222",
 
         "name": "JINA",
         "country": "Canada",
@@ -57,7 +59,8 @@
         ]
     },
     {
-        "uid": "1111222233334446", // user UID
+        // "uid": "1111222233334446", // user UID
+        "uid": "3333",
 
         "name": "Monica",
         "country": "Portugal",
@@ -83,7 +86,8 @@
         ]
     },
     {
-        "uid": "1111222233334447",
+        // "uid": "1111222233334447",
+        "uid": "4444",
 
         "name": "Rachel",
         "country": "South Africa",
@@ -109,7 +113,8 @@
         ]
     },
     {
-        "uid": "1111222233334448",
+        // "uid": "1111222233334448",
+        "uid": "5555",
 
         "name": "Lisa",
         "country": "Italy",

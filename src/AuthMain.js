@@ -21,6 +21,8 @@ export default class AuthMain extends React.Component {
             if (user) { // User is signed in.
                 console.log('onAuthStateChanged, user: ', user);
 
+                // ToDo: Split "Create New Account User" and "Auto Log In User"
+
                 /*
 				const { uid } = Firebase.auth.currentUser;
 				const feedQuery = Firebase.firestore
@@ -36,8 +38,7 @@ export default class AuthMain extends React.Component {
 				userFeedStore.init(userFeedQuery);
 				*/
 
-                // test
-                navigation.navigate('main');
+                navigation.navigate('mainBottomTabNavigator');
             } else { // No user is signed in.
             }
         });
