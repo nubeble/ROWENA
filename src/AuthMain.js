@@ -1,7 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, Modal, StatusBar } from 'react-native';
-import { Container, Header, Content, Form, Item, Input, Label, Thumbnail, Button, Body, Left, Right, Icon } from 'native-base';
-
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity } from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -19,7 +17,7 @@ export default class AuthMain extends React.Component {
 
         firebase.auth().onAuthStateChanged((user) => {
             if (user) { // User is signed in.
-                console.log('onAuthStateChanged, user: ', user);
+                console.log('onAuthStateChanged, user:', user);
 
                 // ToDo: Split "Create New Account User" and "Auto Log In User"
 
@@ -36,12 +34,32 @@ export default class AuthMain extends React.Component {
 				profileStore.init();
 				feedStore.init(feedQuery);
 				userFeedStore.init(userFeedQuery);
-				*/
+                */
+                
+
+
+
+                // update database
+                // const ref = firebase.database().ref().child('users');
+
+                // new user
+                // set: overwrite
+                /*
+                firebase.database().ref('users/' + userId).set({
+                    username: name,
+                    email: email,
+                    profile_picture : imageUrl
+                });
+                */
+
+
+
 
                 navigation.navigate('mainBottomTabNavigator');
             } else { // No user is signed in.
             }
         });
+
     }
 
     async continueWithFacebook() {
@@ -58,7 +76,7 @@ export default class AuthMain extends React.Component {
 
             // firebase.auth().signInWithCredential(credential).catch((error) => {
             firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
-                console.log('signInWithCredential, error: ', error);
+                console.log('signInWithCredential, error:', error);
             });
 
 

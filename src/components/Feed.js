@@ -11,6 +11,8 @@ import { withTheme, StyleGuide, type StyleProps, type ThemeProps } from "./theme
 import type { NavigationProps } from "./Navigation";
 import type { Action } from "./Model";
 
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
 type FeedItem = {
     id: string
 };
@@ -18,16 +20,15 @@ type FeedItem = {
 type FeedProps<T> = ThemeProps & StyleProps & NavigationProps<*> & {
     data: T[],
     renderItem: T => React.Node,
-        title: string,
-            header ?: React.Node,
-            back ?: string,
-            rightAction ?: Action,
-            numColumns ?: number,
-            inverted ?: boolean,
-
-            title1: string,
-                title2: string,
-                    title3: string
+    title: string,
+    header ?: React.Node,
+    back ?: string,
+    rightAction ?: Action,
+    numColumns ?: number,
+    inverted ?: boolean,
+    title1: string,
+    title2: string,
+    title3: string
 };
 
 type FeedState = {
@@ -135,64 +136,47 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 
                 <AnimatedFlatList
                     contentContainerStyle={[styles.container, style]}
-                    showsVerticalScrollIndicator={false}
+                    showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
-                        !back && (
-                            <Animated.View style={{ backgroundColor: theme.palette.primary }}>
+                        <Animated.View style={{ backgroundColor: theme.palette.primary }}>
+                            {/* key, uri, preview, style */}
+                            <Image
+                                style={styles.ad}
+                                // source={{ uri: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg' }}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
 
-                                {/* key, uri, preview, style */}
-                                <Image
-                                    style={styles.ad}
-                                    // source={{ uri: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg' }}
-                                    uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
-                                />
-
-                                {
-                                    title1 && (
-                                        <View style={styles.header}>
-                                            <Text type="title3" style={styles.headerText}>{title1}</Text>
-                                        </View>
-                                    )
-                                }
+                            <View style={styles.header}>
+                                <Text style={styles.headerText}>{'NEARBY GIRLS'}</Text>
+                            </View>
 
 
 
-
-                                {/*
-                                    {
-                                        title2 && (
-                                            <View style={styles.header}>
-                                                <Text type="title3" style={styles.headerText}>{title2}</Text>
-                                            </View>
-                                        )
-                                    }
-
-                                    {
-                                        title3 && (
-                                            <View style={styles.header}>
-                                                <Text type="title3" style={styles.headerText}>{title3}</Text>
-                                            </View>
-                                        )
-                                    }
-                                    */}
+                            {/*
+                                <View style={styles.header}>
+                                    <Text type="title1" style={styles.headerText}>{title}</Text>
+                                </View>
+                            */}
 
 
+                            {/*
+                                <View style={styles.extraHeader}>{header}</View>
+                            */}
+                        </Animated.View>
+                    )}
+                    ListFooterComponent={(
+                        <Animated.View style={{ backgroundColor: theme.palette.primary }}>
+                            <View style={styles.header}>
+                                <Text style={styles.headerText}>{'FORUMS'}</Text>
+                            </View>
 
+                            <Image
+                                  style={styles.ad}
+                                // source={{ uri: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg' }}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
 
-
-                                {/*
-                                    <View style={styles.header}>
-                                        <Text type="title1" style={styles.headerText}>{title}</Text>
-                                    </View>
-                                    */}
-
-
-                                {/*
-                                    <View style={styles.extraHeader}>{header}</View>
-                                    */}
-
-                            </Animated.View>
-                        )
+                        </Animated.View>
                     )}
                     scrollEventThrottle={1}
                     columnWrapperStyle={(numColumns && numColumns > 0) ? styles.columnWrapperStyle : undefined}
@@ -203,7 +187,6 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
     }
 }
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
@@ -217,12 +200,14 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(26, 26, 26)'
     },
         header: {
-            // padding: StyleGuide.spacing.small
-            padding: StyleGuide.spacing.tiny
+            padding: StyleGuide.spacing.small
+            // </T>padding: StyleGuide.spacing.tiny
     },
         headerText: {
-            color: StyleGuide.palette.white
-        // color: StyleGuide.palette.black
+            color: 'rgba(255, 255, 255, 0.6)',
+            fontSize: 18,
+            lineHeight: 20,
+            fontFamily: "SFProText-Semibold"
     },
         extraHeader: {
             backgroundColor: StyleGuide.palette.white,
@@ -233,18 +218,15 @@ const styles = StyleSheet.create({
         marginTop: StyleGuide.spacing.small
     },
     searchBarStyle: { // View
-        height: 88,
-        // backgroundColor: StyleGuide.palette.black,
-        backgroundColor: 'rgb(26, 26, 26)',
-        // </T>paddingTop: Constants.statusBarHeight,
-        paddingBottom: 10,
+        height: 80,
+        paddingBottom: 14,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
     ad: {
         width: Dimensions.get('window').width - 2,
-    height: (Dimensions.get('window').width - 2) / 21 * 9,
-    marginBottom: StyleGuide.spacing.small
+        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        marginBottom: StyleGuide.spacing.small
     }
 
 

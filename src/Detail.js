@@ -1,9 +1,13 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions, FlatList } from 'react-native';
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as firebase from 'firebase';
+import { StyleGuide } from "./components/theme";
+import Image from "./components/Image";
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 
 export default class Detail extends React.Component {
@@ -61,7 +65,7 @@ export default class Detail extends React.Component {
                 quality: 1.0
             });
 
-            console.log('result of launchImageLibraryAsync: ', result);
+            console.log('result of launchImageLibraryAsync:', result);
 
             if (!result.cancelled) {
                 this.setState({ uploadingImage: true });
@@ -105,7 +109,7 @@ export default class Detail extends React.Component {
 
             const snapshot = ref.put(blob)
                 .then(() => { console.log('uploadImage success.'); alert('Your photo has successfully uploaded.'); })
-                .catch((error) => { console.log('error: ', error); alert('Please try again.'); });
+                .catch((error) => { console.log('error:', error); alert('Please try again.'); });
 
             const uploadedImage = snapshot.downloadURL;
             this.setState({ uploadingImageUri: uploadedImage });
@@ -125,7 +129,7 @@ export default class Detail extends React.Component {
         }
 
         var type = this.getImageType(ext);
-        // console.log('file type: ', type);
+        // console.log('file type:', type);
 
         const formData = new FormData();
         formData.append("image", {
@@ -150,15 +154,38 @@ export default class Detail extends React.Component {
 
     render() {
         const { navigation } = this.props;
+        const { user } = navigation.state.params; // ToDo
 
-        const { params } = navigation.state.params; // ToDo
-        const { goBack } = this.props.navigation;
+        /*
+        uid: string,
+        name: string,
+        country: string,
+        city: string,
+        picture: Picture,
+        location: Location,
+        about: string,
+        receivedReviews: string[],
+        postedReviews: string[]
+        */
+
+        const onScroll = Animated.event(
+            [{
+                nativeEvent: {
+                    contentOffset: {
+                        y: new Animated.Value(0)
+                    }
+                }
+            }],
+            {useNativeDriver: true }
+        );
+
+        // const { goBack } = this.props.navigation;
 
         const showIndicator = this.state.showIndicator;
         const uploadingImageUri = this.state.uploadingImageUri; // ToDo: render
 
         return (
-            <View style={styles.container}>
+            <View style={styles.flex}>
 
                 <ActivityIndicator
                     style={styles.activityIndicator}
@@ -167,16 +194,81 @@ export default class Detail extends React.Component {
                     color='white'
                 />
 
-                <TouchableOpacity
-                    style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 20, alignSelf: 'baseline' }}
-                    onPress={() => this.props.navigation.goBack()}
-                >
-                    <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                </TouchableOpacity>
+                <View style={styles.searchBarStyle}>
 
-                <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
-                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Pick me</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 22, alignSelf: 'baseline' }}
+                        onPress={() => this.props.navigation.goBack()}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+
+                </View>
+
+                <AnimatedFlatList
+                    contentContainerStyle={styles.container}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={(
+                        <Animated.View style={{ backgroundColor: '#000000' }}>
+
+                            {/* key, uri, preview, style */}
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <Image
+                                style={styles.ad}
+                                uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                            />
+
+                            <View style={styles.header}>
+                                <Text type="title3" style={styles.headerText}>{'title1'}</Text>
+                            </View>
+
+                            <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Pick me</Text>
+                            </TouchableOpacity>
+
+
+                        </Animated.View>
+                    )}
+                    scrollEventThrottle={1}
+                    columnWrapperStyle={undefined}
+                    // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
+                    {...{ onScroll }}
+                />
+
             </View>
 
         );
@@ -184,13 +276,38 @@ export default class Detail extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    flex: {
         flex: 1,
         backgroundColor: 'rgb(26, 26, 26)'
     },
+    searchBarStyle: {
+        height: 80,
+        backgroundColor: 'rgb(0, 0, 255)', // test
+        paddingBottom: 16,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    container: {
+        flexGrow: 1,
+        paddingBottom: StyleGuide.spacing.small,
+        backgroundColor: 'rgb(26, 26, 26)'
+    },
+    ad: {
+        width: Dimensions.get('window').width - 2,
+        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        marginBottom: StyleGuide.spacing.small
+    },
+    header: {
+        padding: StyleGuide.spacing.tiny
+    },
+    headerText: {
+        color: StyleGuide.palette.white
+    },
+
+
     signUpButton: {
-        position: 'absolute',
-        bottom: 30,
+        //position: 'absolute',
+        //bottom: 30,
 
         width: '85%',
         height: 45,

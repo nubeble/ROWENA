@@ -17,7 +17,7 @@ type Chunk = {
     users: User[]
 };
 
-const users = require("./users");
+const users = require("./users"); // ToDo: from server DB
 const reviews = require("./reviews");
 
 type User = {
@@ -30,7 +30,6 @@ type User = {
     about: string,
     receivedReviews: string[],
     postedReviews: string[]
-    // visits: Visit[]
 };
 
 
@@ -121,13 +120,13 @@ export default class Home extends React.Component<NavigationProps<>> {
         const data = windowing(TravelAPI.guides).map(guides => (
             { id: guides.map(guide => guide.id).join(""), guides } // (id, guides[]) - join two IDs
         ));
-        console.log('windowing data: ', data);
+        console.log('windowing data:', data);
         */
         const data = _windowing(users).map(users => (
             { uid: users.map(user => user.uid).join(""), users }
             // { uid: users.map(user => user.uid).join(""), users, key: parseInt(Math.random() * 1000) }
         ));
-        console.log('windowing data: ', data);
+        // console.log('windowing data:', data);
 
 
 
@@ -140,7 +139,8 @@ export default class Home extends React.Component<NavigationProps<>> {
 
         let title1 = null, title2 = null, title3 = null;
 
-        title1 = "Recently Viewed Girls";
+        // title1 = "Recently Viewed Girls";
+        title1 = "Nearby Girls";
         // title2 = "Popular Girls";
         // title3 = "Nearby Girls";
 
@@ -148,7 +148,7 @@ export default class Home extends React.Component<NavigationProps<>> {
             /*
             <Feed {...{ data, renderItem, title, navigation, rightAction }} />
             */
-           <Feed {...{ data, renderItem, navigation, rightAction, title1, title2, title3 }} />
+           <Feed {...{ data, renderItem, title1, title2, title3 }} />
         );
     }
 }
@@ -183,7 +183,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
     */
     
     let order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
-    // console.log('order: ', order);
+    // console.log('order:', order);
 
     let randomFlag = false;
 
@@ -207,7 +207,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
 
         if (randomFlag) {
             order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
-            // console.log('order: ', order);
+            // console.log('order:', order);
             randomFlag = false;
         }
 
@@ -250,12 +250,12 @@ const cloneArray = (arr) => {
 
 
 const _windowing = (users: User[]): User[][] => {
-    console.log('users: ', users);
+    // console.log('users:', users);
 
     const windows = [[]];
 
     let order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
-    // console.log('order: ', order);
+    // console.log('order:', order);
 
     let randomFlag = false;
 
@@ -281,7 +281,7 @@ const _windowing = (users: User[]): User[][] => {
 
         if (randomFlag) {
             order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
-            // console.log('order: ', order);
+            // console.log('order:', order);
             randomFlag = false;
         }
 
@@ -289,30 +289,5 @@ const _windowing = (users: User[]): User[][] => {
 
     if (windows[windows.length - 1].length === 0) windows.pop();
 
-
-    console.log('windows: ', windows);
-
     return windows;
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-'현재 위치를 가져온 후, 검색 & 게시판 화면 표시'
-
-// Image.js, CacheManager.js

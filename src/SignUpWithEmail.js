@@ -308,12 +308,16 @@ export default class SignUpWithEmail extends React.Component {
                         <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }} />
                         */}
 
-                        <TouchableOpacity
-                            style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 20, alignSelf: 'baseline' }}
-                            onPress={() => this.props.navigation.goBack()}
-                        >
-                            <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                        </TouchableOpacity>
+                        <View style={styles.searchBarStyle}>
+
+                            <TouchableOpacity
+                                style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 22, alignSelf: 'baseline' }}
+                                onPress={() => this.props.navigation.goBack()}
+                            >
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+
+                        </View>
 
                         <Text style={{
                             marginTop: 12,
@@ -371,6 +375,12 @@ export default class SignUpWithEmail extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1
+    },
+    searchBarStyle: {
+        height: 80,
+        paddingBottom: 16,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     signUpButton: {
         // marginTop: 40,

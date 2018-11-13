@@ -115,7 +115,7 @@ export default createBottomTabNavigator(
 
 			tabBarIcon: ({ tintColor, focused }) => {
 
-				// console.log('navigation: ', navigation);
+				// console.log('navigation:', navigation);
 
 				// let iconName;
 

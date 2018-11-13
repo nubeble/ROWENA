@@ -29,8 +29,8 @@ export default class SignUp extends React.Component {
 			},
 			validationData: []  //optional
 		})
-			.then(data => console.log('result signing up: ', data))
-			.catch(err => console.log('error signing up: ', err));
+			.then(data => console.log('result signing up:', data))
+			.catch(err => console.log('error signing up:', err));
 	}
 
 	confirmSignUp() {
@@ -39,8 +39,8 @@ export default class SignUp extends React.Component {
 			// Optional. Force user confirmation irrespective of existing alias. By default set to True.
 			forceAliasCreation: true
 		})
-			.then(data => console.log('result confirming signing up: ', data))
-			.catch(err => console.log('error confirming signing up: ', err));
+			.then(data => console.log('result confirming signing up:', data))
+			.catch(err => console.log('error confirming signing up:', err));
 	}
 
 

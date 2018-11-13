@@ -17,7 +17,7 @@ export default class Test extends React.Component {
 	};
 
 	handleChangeForumId = (event) => {
-		console.log('handleChangeForumId: ' + event);
+		console.log('handleChangeForumId:' + event);
 		this.setState({ forumId: event });
 	}
 
@@ -36,7 +36,7 @@ export default class Test extends React.Component {
 		// Use the API module to save the forum to the database
 		try {
 			const apiResponse = await API.put("ForumsCRUD", path, newForum); // put
-			console.log("response from saving forum: " + apiResponse);
+			console.log("response from saving forum:" + apiResponse);
 			this.setState({ apiResponse });
 		} catch (e) {
 			console.log(e);
@@ -48,7 +48,7 @@ export default class Test extends React.Component {
 		const path = "/Forums/object/" + this.state.forumId;
 		try {
 			const apiResponse = await API.get("ForumsCRUD", path); // get
-			console.log("response from getting forum: " + apiResponse);
+			console.log("response from getting forum:" + apiResponse);
 			this.setState({ apiResponse });
 		} catch (e) {
 			console.log(e);
@@ -60,7 +60,7 @@ export default class Test extends React.Component {
 		const path = "/Forums/object/" + this.state.forumId;
 		try {
 			const apiResponse = await API.del("ForumsCRUD", path); // del
-			console.log("response from deleting forum: " + apiResponse);
+			console.log("response from deleting forum:" + apiResponse);
 			this.setState({ apiResponse });
 		} catch (e) {
 			console.log(e);

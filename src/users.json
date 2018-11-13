@@ -22,7 +22,6 @@
         "about": "from thailand",
 
 
-        // 총 리뷰 갯수, 평균 평점
         "receivedReviews": [ // review UID List (나한테 달린 리뷰)
             "","","",""
         ],
@@ -30,6 +29,13 @@
         "postedReviews": [ // review UID List (내가 작성한 리뷰)
             "","","",""
         ]
+
+        // 총 리뷰 갯수 - receivedReviews.length
+        // "totalReviewsCount"
+
+        // 평균 평점
+        // "averageRating"
+
     },
     {
         // "uid": "1111222233334445", // user UID

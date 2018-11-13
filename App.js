@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, Platform, StatusBar } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
 import { Font, AppLoading } from 'expo';
 // import ModalHost from "expo/src/modal/ModalHost";
 import { Images, loadIcons, ThemeProvider } from "./src/components";
@@ -58,7 +58,7 @@ export default class App extends React.Component<AppProps, AppState> {
 	}
 
 	async componentDidMount(): Promise<void> {
-		console.log('componentDidMount');
+		console.log('App::componentDidMount');
 
 		StatusBar.setBarStyle('light-content');
 		if (Platform.OS === "android") {
@@ -79,6 +79,27 @@ export default class App extends React.Component<AppProps, AppState> {
 		const icons = loadIcons();
 
 		await Promise.all([fonts, ...images, icons]);
+
+
+
+
+		// database watch
+		const ref = firebase.database().ref().child('users');
+		ref.on('value', function(snapshot) {
+			console.log('database watch', snapshot.val());
+		});
+
+		/*
+		var userRatingRef = firebase.database().ref('users/' + userId + '/totalReviewsCount');
+		userRatingRef.on('value', function(snapshot) {
+			// updateReviewsCount(postElement, snapshot.val());
+		});
+		*/
+
+
+
+
+
 
 		this.ready();
 	}
@@ -104,7 +125,7 @@ export default class App extends React.Component<AppProps, AppState> {
 	render() {
 		const { isReady } = this.state;
 
-		console.log('render(), isReady: ', isReady);
+		console.log('render(), isReady:', isReady);
 
 		const statusBar = (
 			<StatusBar

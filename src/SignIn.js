@@ -31,21 +31,21 @@ export default class SignIn extends React.Component {
 
 		Auth.signIn(userName, password)
 			.then(user => {
-				console.log('result sign in: ', user);
+				console.log('result sign in:', user);
 				this.setState({ user }); // user
 			})
-			.catch(err => console.log('error signing in: ', err));
+			.catch(err => console.log('error signing in:', err));
 	}
 
 	confirmSignIn() {
 		Auth.confirmSignIn(this.state.user, this.state.confirmationCode)
 			.then(data => {
-				console.log('result confirming signing in: ', data);
+				console.log('result confirming signing in:', data);
 
 				// ToDo: this.props.screenprops //
 				this.props.screenProps.authenticate(true);
 			})
-			.catch(err => console.log('error confirming signing in: ', err));
+			.catch(err => console.log('error confirming signing in:', err));
 	}
 
 
