@@ -4,6 +4,7 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as firebase from 'firebase';
+import Storage from './Storage';
 
 
 export default class AuthMain extends React.Component {
@@ -42,15 +43,32 @@ export default class AuthMain extends React.Component {
                 // update database
                 // const ref = firebase.database().ref().child('users');
 
+                
+
                 // new user
-                // set: overwrite
+                // ToDo: 항상 DB에 저장하지 말고, 로컬에 저장된 값이랑 비교해서 다를 때만 저장해라!
+
+                // load
+                let credentials = LoadStorage('credentials'); // null? ''?
+                console.log('Storage, credentials', credentials);
+
+                // save
                 /*
-                firebase.database().ref('users/' + userId).set({
-                    username: name,
-                    email: email,
-                    profile_picture : imageUrl
-                });
+                let obj = {
+                    something: 'hey there'
+                };
+
+                SaveStorage('credentials', obj);
                 */
+
+
+                // set: overwrite
+                firebase.database().ref('users/' + user.uid).set({
+                    username: user.displayName,
+                    email: user.email,
+                    // profile_picture : imageUrl
+                });
+
 
 
 
