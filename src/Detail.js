@@ -7,13 +7,48 @@ import * as firebase from 'firebase';
 
 
 export default class Detail extends React.Component {
-
     state = {
         showIndicator: false,
 
         uploadingImage: false,
         uploadingImageUri: null
     };
+
+    getImageType(ext) {
+        switch (ext.toLowerCase()) {
+            case 'gif':
+                return 'image/gif';
+
+            case 'png':
+                return 'image/png';
+
+            case 'jpg':
+                return 'image/jpg';
+
+            case 'jpeg':
+                return 'image/jpeg';
+
+            case 'bmp':
+                return 'image/bmp';
+
+            default:
+                return '';
+        }
+    }
+
+    isImage(ext) {
+        switch (ext.toLowerCase()) {
+            case 'jpg':
+            case 'jpeg':
+            case 'gif':
+            case 'bmp':
+            case 'png':
+                //etc
+                return true;
+        }
+
+        return false;
+    }
 
     async pickImage() {
         const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
@@ -37,40 +72,22 @@ export default class Detail extends React.Component {
                 // ToDo: show progress bar
 
 
-                try {
+                // upload image
+                this.uploadImage(result.uri);
 
-                    // ImagePicker saves the taken photo to disk and returns a local URI to it
-                    let localUri = result.uri;
-                    let filename = localUri.split('/').pop();
+                /*
+                const fileName = result.uri.split('/').pop();
+                const url = await firebase.storage().ref(fileName).getDownloadURL();
+                console.log('download URL:', url);
+                */
 
-                    // Infer the type of the image
-                    let match = /\.(\w+)$/.exec(filename);
-                    let type = match ? `image/${match[1]}` : `image`;
 
-                    // Upload the image using the fetch and FormData APIs
-                    let formData = new FormData();
-                    // Assume "photo" is the name of the form field the server expects
-                    formData.append('photo', { uri: localUri, name: filename, type });
 
-                    let response = await fetch(YOUR_SERVER_URL, {
-                        method: 'POST',
-                        body: formData,
-                        header: {
-                            'content-type': 'multipart/form-data',
-                        },
-                    });
+                // close indicator
+                this.setState({ showIndicator: false });
 
-                    console.log('response.json(): ', response.json());
-                } catch (e) {
-                    alert('Upload Image failed, sorry :(');
-                    console.log(e);
-                } finally {
-                    // close indicator
-                    this.setState({ showIndicator: false });
+                this.setState({ uploadingImage: false });
 
-                    this.setState({ uploadingImage: false });
-                }
-                
             } // press OK
         } else {
             Linking.openURL('app-settings:');
@@ -98,43 +115,38 @@ export default class Detail extends React.Component {
         }
     }
     */
-    uploadImage(uri, imageName, mime = 'application/octet-stream') {
-        return new Promise((resolve, reject) => {
-            const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri; // ToDo: check!
-            let uploadBlob = null;
+    async uploadImage(uri) {
+        const fileName = uri.split('/').pop();
+        var ext = fileName.split('.').pop();
 
-            // const imageRef = FirebaseClient.storage().ref('images').child('image_001');
-            let imageRef = firebase.storage().ref().child('images/' + imageName);
+        if (!this.isImage(ext)) {
+            alert('invalid image file!');
+            return;
+        }
 
-            fs.readFile(uploadUri, 'base64')
-                .then((data) => {
-                    return Blob.build(data, { type: `${mime};BASE64` });
-                })
-                .then((blob) => {
-                    uploadBlob = blob;
-                    return imageRef.put(blob, { contentType: mime });
-                })
-                .then(() => {
-                    uploadBlob.close();
-                    return imageRef.getDownloadURL();
-                })
-                .then((url) => {
-                    resolve(url);
-                })
-                .catch((error) => {
-                    reject(error);
-                })
-        })
+        var type = this.getImageType(ext);
+        // console.log('file type: ', type);
+
+        const formData = new FormData();
+        formData.append("image", {
+            // uri: uri,
+            uri,
+            name: fileName,
+            type: type
+        });
+
+        const res = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/api/images", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "multipart/form-data"
+            },
+            body: formData
+        });
+
+        console.log('response', res);
+        // console.log('response.json', res.json()); // resJson.location
     }
-
-
-
-
-
-
-
-
-
 
     render() {
         const { navigation } = this.props;
@@ -152,8 +164,7 @@ export default class Detail extends React.Component {
                     style={styles.activityIndicator}
                     animating={showIndicator}
                     size="large"
-                    // color='rgba(255, 184, 24, 0.8)'
-                    color='rgba(255, 255, 255, 0.8)'
+                    color='white'
                 />
 
                 <TouchableOpacity

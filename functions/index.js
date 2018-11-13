@@ -12,6 +12,14 @@ const os = require('os');
 const fs = require('fs');
 const spawn = require('child-process-promise').spawn;
 
+
+const cors = require("cors");
+const express = require("express");
+const fileUploader = require("./fileUploader");
+const api = express().use(cors({ origin: true }));
+fileUploader("/picture", api); // images
+
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
@@ -97,33 +105,85 @@ exports.onFileCreate = functions.storage.object().onFinalize((event) => {
     }
 
     const tmpFilePath = path.join(os.tmpdir(), fileName);
-    // console.log('Temp Path: ', tmpFilePath); // /tmp/9968D23359B3622120.jpeg
+    // console.log('Temp Path:', tmpFilePath); // /tmp/9968D23359B3622120.jpeg
     const destBucket = gcs.bucket(bucket);
     const metadata = { contentType: contentType };
 
     return destBucket.file(filePath).download({
-            destination: tmpFilePath
-        }).then(() => {
-            // console.log('Image downloaded locally to ', tmpFilePath);
+        destination: tmpFilePath
+    }).then(() => {
+        // console.log('Image downloaded locally to', tmpFilePath);
 
-            return spawn('convert', [tmpFilePath, '-resize', '1080x1080', tmpFilePath]);
-        }).then(() => {
-            // console.log('Resized image created at', tmpFilePath);
+        return spawn('convert', [tmpFilePath, '-resize', '1080x1080', tmpFilePath]);
+    }).then(() => {
+        // console.log('Resized image created at', tmpFilePath);
 
-            // We add a 'resized_' prefix to new file name.
-            const resizedFileName = `resized_${fileName}`;
-            const resizedFilePath = path.join(path.dirname(filePath), resizedFileName);
+        // We add a 'resized_' prefix to new file name.
+        const resizedFileName = `resized_${fileName}`;
+        const resizedFilePath = path.join(path.dirname(filePath), resizedFileName);
 
-            return destBucket.upload(tmpFilePath, {
-                destination: resizedFilePath,
-                metadata: metadata
-            });
+        return destBucket.upload(tmpFilePath, {
+            destination: resizedFilePath,
+            metadata: metadata
+        });
         // Once the thumbnail has been uploaded delete the local file to free up disk space.
-        }).then(() => fs.unlinkSync(tmpFilePath));
+    }).then(() => {
+        return fs.unlinkSync(tmpFilePath);
+    });
 });
 
 exports.onFileDelete = functions.storage.object().onDelete((event) => {
     console.log(event);
 
-    // return;
+    return;
 });
+
+
+/*
+exports.upload = functions.https.onRequest((req, res) => {
+}
+*/
+
+api.post("/images", function (req, response, next) {
+    console.log('Upload Image');
+
+    uploadImageToStorage(req.files.file[0])
+        .then(metadata => {
+            response.status(200).json(metadata[0]);
+            next();
+        }).catch(error => {
+            console.error(error);
+            response.status(500).json({ error });
+            next();
+        });
+});
+
+exports.api = functions.https.onRequest(api);
+
+const uploadImageToStorage = file => {
+    const storage = admin.storage();
+    // const destBucket = gcs.bucket('rowena-88cfd.appspot.com');
+
+    let prom = new Promise((resolve, reject) => {
+
+        const fileUpload = storage.bucket().file('images/' + file.originalname);
+        // const fileUpload = destBucket.file(file.originalname);
+
+        const blobStream = fileUpload.createWriteStream({
+            metadata: {
+                contentType: file.mimetype
+            }
+        });
+
+        blobStream.on("error", error => reject(error));
+
+        blobStream.on("finish", () => {
+            fileUpload.getMetadata().then(metadata => resolve(metadata))
+                .catch(error => reject(error));
+        });
+
+        blobStream.end(file.buffer);
+    });
+
+    return prom;
+}
