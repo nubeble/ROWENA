@@ -4,7 +4,7 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as firebase from 'firebase';
-import Storage from './Storage';
+import { SaveStorage, LoadStorage } from './Storage';
 
 
 export default class AuthMain extends React.Component {
@@ -50,28 +50,34 @@ export default class AuthMain extends React.Component {
 
                 // load
                 let credentials = LoadStorage('credentials'); // null? ''?
-                console.log('Storage, credentials', credentials);
 
-                // save
-                /*
-                let obj = {
-                    something: 'hey there'
-                };
-
-                SaveStorage('credentials', obj);
-                */
+                if (!credentials) {
+                    console.log('Storage, credentials', 'is null');
 
 
-                // set: overwrite
-                firebase.database().ref('users/' + user.uid).set({
-                    username: user.displayName,
-                    email: user.email,
-                    // profile_picture : imageUrl
-                });
+                    // save to database
+                    // set: overwrite
+                    firebase.database().ref('users/' + user.uid).set({
+                        username: user.displayName,
+                        email: user.email,
+                        // profile_picture : imageUrl
+                    });
 
+                    // save to storage
+                    /*
+                    let obj = {
+                        something: 'hey there'
+                    };
 
+                    SaveStorage('credentials', obj);
+                    */
 
+                } else {
+                    console.log('Storage, credentials', credentials);
 
+                    // ToDo: compare
+
+                }
 
                 navigation.navigate('mainBottomTabNavigator');
             } else { // No user is signed in.
