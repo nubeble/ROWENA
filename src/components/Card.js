@@ -124,8 +124,9 @@ const styles = StyleSheet.create({
         justifyContent: "space-between"
     },
     gradient: {
-        padding: StyleGuide.spacing.small,
-        ...StyleGuide.styles.borderRadius
+        // padding: StyleGuide.spacing.small,
+        padding: StyleGuide.spacing.tiny,
+        // ...StyleGuide.styles.borderRadius
     },
     subtitle: {
         color: subtitle,

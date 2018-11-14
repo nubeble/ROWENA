@@ -21,6 +21,7 @@ type Chunk = {
 const users = require("./users");
 const reviews = require("./reviews");
 
+/* USER INFO */
 type User = {
     uid: string,
     name: string,
@@ -41,24 +42,6 @@ export default class Home extends React.Component<NavigationProps<>> {
         const themeProvider = ThemeProvider.getInstance();
         themeProvider.switchColors(Colors['Main']);
     }
-    /*
-    render() {
-        const { navigate } = this.props.navigation;
-
-        return (
-            <View style={styles.container}>
-                <Text>Main Page</Text>
-                <Button
-                    title='Go to Detail'
-                    onPress={() => {
-                        navigate('detail', { data: 'params' }); // ToDo
-                    }}
-                />
-            </View>
-        );
-    }
-    */
-
 
     renderItem = (chunk: Chunk): React.Node => { // ToDo
         const { navigation } = this.props;

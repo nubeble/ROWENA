@@ -1,21 +1,22 @@
 import React from 'react';
 import { createSwitchNavigator } from "react-navigation";
 
+import Loading from './Loading';
 import AuthStackNavigator from './AuthStackNavigator';
 import MainBottomTabNavigator from './MainBottomTabNavigator';
 
 
 export default createSwitchNavigator(
     {
-        // guide
+        loading: { screen: Loading },
 
-        authStackNavigator: AuthStackNavigator, // stack navigator
+        authStackNavigator: { screen: AuthStackNavigator }, // stack navigator
 
-        // welcome
+        // welcome & guile
 
-        mainBottomTabNavigator: MainBottomTabNavigator // tab navigator
+        mainBottomTabNavigator: { screen: MainBottomTabNavigator } // tab navigator
     },
     {
-        initialRouteName: 'authStackNavigator'
+        initialRouteName: 'loading'
     }
 );

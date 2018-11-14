@@ -3,121 +3,17 @@ import { StyleSheet, View, Text, ImageBackground, TouchableOpacity } from 'react
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import * as firebase from 'firebase';
-import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
-
+// import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
+import Firebase from './Firebase';
+import * as firebase from "firebase";
 
 export default class AuthMain extends React.Component {
     state = {
+        /*
         email: '',
         password: '',
+        */
     };
-
-    componentDidMount() {
-        const { navigation } = this.props;
-
-        firebase.auth().onAuthStateChanged((user) => {
-            if (user) { // User is signed in.
-                console.log('onAuthStateChanged, user:', user);
-
-                // ToDo: Split "Create New Account User" and "Auto Log In User"
-
-                /*
-				const { uid } = Firebase.auth.currentUser;
-				const feedQuery = Firebase.firestore
-					.collection("feed")
-					.orderBy("timestamp", "desc");
-				const userFeedQuery = Firebase.firestore
-					.collection("feed")
-					.where("uid", "==", uid)
-					.orderBy("timestamp", "desc");
-					
-				profileStore.init();
-				feedStore.init(feedQuery);
-				userFeedStore.init(userFeedQuery);
-                */
-
-
-
-
-                // new user
-                LoadStorage('credentials', this.UpdateUserInfo, this.SaveUserInfo, user);
-
-                
-                navigation.navigate('mainBottomTabNavigator');
-            } else { // No user is signed in.
-            }
-        });
-
-    }
-
-    SaveUserInfo(user) {
-        // 1. save to server database
-        // set: overwrite
-        firebase.database().ref('users/' + user.uid).set({
-            userName: user.displayName,
-            email: user.email,
-            phoneNumber: user.phoneNumber,
-            photoURL: user.photoURL
-        });
-
-        // 2. save to local storage
-        let obj = {
-            // ToDo
-            /*
-            userName: user.displayName,
-            email: user.email,
-            phoneNumber: user.phonRemoveStorageeNumber,
-            photoURL: user.photoURL
-            */
-            userName: 'user.displayName',
-            email: user.email,
-            phoneNumber: 'user.phoneNumber',
-            photoURL: 'user.photoURL'
-        };
-
-        SaveStorage('credentials', obj, null);
-    }
-
-    UpdateUserInfo(value, user) {
-        console.log('LoadStorage exist', value, user);
-
-        // 1. local storage
-        // value
-
-        // 2. server database
-        // user
-
-        // 3. compare - displayName, email, phoneNumber, photoURL
-        if ((user.displayName !== value.userName) ||
-            (user.email !== value.email) ||
-            (user.phoneNumber !== value.phoneNumber) ||
-            (user.photoURL !== value.photoURL)
-        ) {
-            // 1. delete
-            RemoveStorage('credentials', this.UpdateUserInfoStorage);
-        }
-    }
-
-    UpdateUserInfoStorage() {
-        console.log('UpdateUserInfoStorage');
-
-        // 2. save to local storage
-        let obj = {
-            /*
-            userName: user.displayName,
-            email: user.email,
-            phoneNumber: user.phoneNumber,
-            photoURL: user.photoURL
-            */
-            userName: 'user.displayName',
-            email: user.email,
-            phoneNumber: 'user.phoneNumber',
-            photoURL: 'user.photoURL'
-        };
-
-        SaveStorage('credentials', obj, null);
-    }
 
     async continueWithFacebook() {
         const {
@@ -132,7 +28,7 @@ export default class AuthMain extends React.Component {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
 
             // firebase.auth().signInWithCredential(credential).catch((error) => {
-            firebase.auth().signInAndRetrieveDataWithCredential(credential).catch((error) => {
+            Firebase.auth.signInAndRetrieveDataWithCredential(credential).catch((error) => {
                 console.log('signInWithCredential, error:', error);
             });
 
