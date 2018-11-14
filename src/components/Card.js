@@ -10,9 +10,15 @@ import { StyleGuide, type StyleProps } from "./theme";
 import type { Picture } from "./Model";
 
 type CardProps = StyleProps & {
+    /*
     title: string,
     subtitle?: string,
     description?: string | React.Node,
+    */
+    name: string,
+    rating: number,
+    reviews: number,
+
     picture?: Picture,
     height?: number,
     onPress: () => mixed,
@@ -27,7 +33,7 @@ export default class Card extends React.PureComponent<CardProps> {
     };
 
     render(): React.Node {
-        const { picture, height, title, subtitle, description, onPress, children, style } = this.props;
+        const { name, rating, reviews, picture, height, onPress, children, style } = this.props;
         //const { picture, title, subtitle, description, onPress, children, style } = this.props;
 
         //const width = Dimensions.get('window').width / 2 - 2;
@@ -72,8 +78,22 @@ export default class Card extends React.PureComponent<CardProps> {
                                 </LinearGradient>
                             )
                         }
-
                         */}
+
+
+
+                        <LinearGradient colors={topGradient} style={styles.gradient}>
+                            <Text type="headline" style={styles.subtitle}>{name.toUpperCase()}</Text>
+                        </LinearGradient>
+
+                        {/*
+                            rating icon
+                        */}
+
+
+                        <LinearGradient colors={bottomGradient} style={styles.gradient}>
+                            <Text color="white">{reviews}</Text>
+                        </LinearGradient>
                     </View>
 
                 </View>

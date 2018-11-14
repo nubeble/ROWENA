@@ -6,7 +6,7 @@
     // User
     {
         // "uid": "1111222233334444", // user UID
-        "uid": "1111", // user UID
+        "uid": "1111",
 
         "name": "Rowena",
         "country": "Japan",
@@ -26,19 +26,16 @@
             "","","",""
         ],
 
+        // 총 리뷰 갯수 - receivedReviews.length
+
+        // 평균 평점 - 리뷰가 추가될 때마다 다시 계산해서 업데이트
+        "averageRating": 3.2,
+
         "postedReviews": [ // review UID List (내가 작성한 리뷰)
             "","","",""
         ]
-
-        // 총 리뷰 갯수 - receivedReviews.length
-        // "totalReviewsCount"
-
-        // 평균 평점
-        // "averageRating"
-
     },
     {
-        // "uid": "1111222233334445", // user UID
         "uid": "2222",
 
         "name": "JINA",
@@ -54,18 +51,17 @@
         },
         "about": "Hi, I'm Jina!",
 
-
-        // 총 리뷰 갯수, 평균 평점
-        "receivedReviews": [ // review UID List (나한테 달린 리뷰)
+        "receivedReviews": [
             "","","",""
         ],
 
-        "postedReviews": [ // review UID List (내가 작성한 리뷰)
+        "averageRating": 1.7,
+
+        "postedReviews": [
             "","","",""
         ]
     },
     {
-        // "uid": "1111222233334446", // user UID
         "uid": "3333",
 
         "name": "Monica",
@@ -81,18 +77,17 @@
         },
         "about": "I'm Monica.",
 
-
-        // 총 리뷰 갯수, 평균 평점
-        "receivedReviews": [ // review UID List (나한테 달린 리뷰)
+        "receivedReviews": [
             "","","",""
         ],
 
-        "postedReviews": [ // review UID List (내가 작성한 리뷰)
+        "averageRating": 3.5,
+
+        "postedReviews": [
             "","","",""
         ]
     },
     {
-        // "uid": "1111222233334447",
         "uid": "4444",
 
         "name": "Rachel",
@@ -108,18 +103,17 @@
         },
         "about": "I'm Rachel.",
 
-
-        // 총 리뷰 갯수, 평균 평점
-        "receivedReviews": [ // review UID List (나한테 달린 리뷰)
+        "receivedReviews": [
             "","","",""
         ],
 
-        "postedReviews": [ // review UID List (내가 작성한 리뷰)
+        "averageRating": 2.7,
+
+        "postedReviews": [
             "","","",""
         ]
     },
     {
-        // "uid": "1111222233334448",
         "uid": "5555",
 
         "name": "Lisa",
@@ -135,13 +129,13 @@
         },
         "about": "I'm Lisa.",
 
-
-        // 총 리뷰 갯수, 평균 평점
-        "receivedReviews": [ // review UID List (나한테 달린 리뷰)
+        "receivedReviews": [
             "","","",""
         ],
 
-        "postedReviews": [ // review UID List (내가 작성한 리뷰)
+        "averageRating": 4.0,
+
+        "postedReviews": [
             "","","",""
         ]
     }

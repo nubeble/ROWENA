@@ -4,7 +4,7 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import * as firebase from 'firebase';
-import { SaveStorage, LoadStorage } from './Storage';
+import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
 
 
 export default class AuthMain extends React.Component {
@@ -36,54 +36,87 @@ export default class AuthMain extends React.Component {
 				feedStore.init(feedQuery);
 				userFeedStore.init(userFeedQuery);
                 */
-                
 
 
 
-                // update database
-                // const ref = firebase.database().ref().child('users');
-
-                
 
                 // new user
-                // ToDo: 항상 DB에 저장하지 말고, 로컬에 저장된 값이랑 비교해서 다를 때만 저장해라!
+                LoadStorage('credentials', this.UpdateUserInfo, this.SaveUserInfo, user);
 
-                // load
-                let credentials = LoadStorage('credentials'); // null? ''?
-
-                if (!credentials) {
-                    console.log('Storage, credentials', 'is null');
-
-
-                    // save to database
-                    // set: overwrite
-                    firebase.database().ref('users/' + user.uid).set({
-                        username: user.displayName,
-                        email: user.email,
-                        // profile_picture : imageUrl
-                    });
-
-                    // save to storage
-                    /*
-                    let obj = {
-                        something: 'hey there'
-                    };
-
-                    SaveStorage('credentials', obj);
-                    */
-
-                } else {
-                    console.log('Storage, credentials', credentials);
-
-                    // ToDo: compare
-
-                }
-
+                
                 navigation.navigate('mainBottomTabNavigator');
             } else { // No user is signed in.
             }
         });
 
+    }
+
+    SaveUserInfo(user) {
+        // 1. save to server database
+        // set: overwrite
+        firebase.database().ref('users/' + user.uid).set({
+            userName: user.displayName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            photoURL: user.photoURL
+        });
+
+        // 2. save to local storage
+        let obj = {
+            // ToDo
+            /*
+            userName: user.displayName,
+            email: user.email,
+            phoneNumber: user.phonRemoveStorageeNumber,
+            photoURL: user.photoURL
+            */
+            userName: 'user.displayName',
+            email: user.email,
+            phoneNumber: 'user.phoneNumber',
+            photoURL: 'user.photoURL'
+        };
+
+        SaveStorage('credentials', obj, null);
+    }
+
+    UpdateUserInfo(value, user) {
+        console.log('LoadStorage exist', value, user);
+
+        // 1. local storage
+        // value
+
+        // 2. server database
+        // user
+
+        // 3. compare - displayName, email, phoneNumber, photoURL
+        if ((user.displayName !== value.userName) ||
+            (user.email !== value.email) ||
+            (user.phoneNumber !== value.phoneNumber) ||
+            (user.photoURL !== value.photoURL)
+        ) {
+            // 1. delete
+            RemoveStorage('credentials', this.UpdateUserInfoStorage);
+        }
+    }
+
+    UpdateUserInfoStorage() {
+        console.log('UpdateUserInfoStorage');
+
+        // 2. save to local storage
+        let obj = {
+            /*
+            userName: user.displayName,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            photoURL: user.photoURL
+            */
+            userName: 'user.displayName',
+            email: user.email,
+            phoneNumber: 'user.phoneNumber',
+            photoURL: 'user.photoURL'
+        };
+
+        SaveStorage('credentials', obj, null);
     }
 
     async continueWithFacebook() {

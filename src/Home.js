@@ -17,7 +17,8 @@ type Chunk = {
     users: User[]
 };
 
-const users = require("./users"); // ToDo: from server DB
+// ToDo: from server DB
+const users = require("./users");
 const reviews = require("./reviews");
 
 type User = {
@@ -29,6 +30,7 @@ type User = {
     location: Location,
     about: string,
     receivedReviews: string[],
+    averageRating: number,
     postedReviews: string[]
 };
 
@@ -50,20 +52,12 @@ export default class Home extends React.Component<NavigationProps<>> {
                     title='Go to Detail'
                     onPress={() => {
                         navigate('detail', { data: 'params' }); // ToDo
-                        // this.showDetail();
                     }}
                 />
             </View>
         );
     }
     */
-
-    showDetail() {
-        this.props.navigation.navigate('main');
-    }
-
-
-
 
 
     renderItem = (chunk: Chunk): React.Node => { // ToDo
@@ -97,6 +91,9 @@ export default class Home extends React.Component<NavigationProps<>> {
                             // title={user.city}
                             // subtitle={user.country}
                             // description={`${user.duration} days`}
+                            name={user.name}
+                            rating={user.averageRating}
+                            reviews={`${user.receivedReviews.length} reviews`}
                             onPress={() => navigation.navigate("detail", { user })}
                             picture={user.picture}
                             height={chunk.users.length === 1 ? height1 : height2}
@@ -106,6 +103,8 @@ export default class Home extends React.Component<NavigationProps<>> {
             </View>
         );
     }
+
+
 
     onPress = () => {
         const { navigation } = this.props;
