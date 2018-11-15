@@ -1,10 +1,15 @@
 import React from 'react';
 import { StyleSheet, Platform, StatusBar } from 'react-native';
-// import { Font, AppLoading } from 'expo';
-// import ModalHost from "expo/src/modal/ModalHost";
-import { ThemeProvider } from "./src/components";
+// import ModalHost from 'expo/src/modal/ModalHost';
+import { ThemeProvider } from './src/rne/src/components';
 import MainSwitchNavigator from './src/MainSwitchNavigator';
-// import Firebase from './src/Firebase';
+import { FeedStore } from './src/rnff/src/components';
+import { Font, AppLoading } from 'expo';
+import { configure } from 'mobx';
+import { Provider } from "mobx-react/native";
+import { Profile, Explore, Share, SharePicture, HomeTab, Comments, Settings, ProfileStore } from "./src/rnff/src/home";
+
+configure({ enforceActions: 'observed' })
 
 // const onNavigationStateChange = () => undefined;
 
@@ -19,6 +24,10 @@ type AppState = {
 
 // export default class App extends React.Component<AppProps, AppState> {
 export default class App extends React.Component {
+
+	feedStore = new FeedStore();
+	profileStore = new ProfileStore();
+	userFeedStore = new FeedStore();
 
 	state = {
 		/*
@@ -79,9 +88,8 @@ export default class App extends React.Component {
 
 
 	render() {
-		// const { isReady } = this.state;
+		const { feedStore, profileStore, userFeedStore } = this;
 
-		// console.log('render(), isReady:', isReady);
 
 		const statusBar = (
 			<StatusBar
@@ -154,7 +162,6 @@ export default class App extends React.Component {
 			*/
 
 			<React.Fragment>
-
 				{statusBar}
 
 				{/*
@@ -168,9 +175,10 @@ export default class App extends React.Component {
 				*/}
 
 				<ThemeProvider>
-					<MainSwitchNavigator />
+					<Provider {...{ feedStore, profileStore, userFeedStore }}>
+						<MainSwitchNavigator />
+					</Provider>
 				</ThemeProvider>
-
 			</React.Fragment>
 
 

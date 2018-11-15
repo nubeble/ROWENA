@@ -4,7 +4,8 @@ import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import * as firebase from 'firebase';
+// import * as firebase from 'firebase';
+import Firebase from './Firebase'
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -243,7 +244,8 @@ export default class SignUpWithEmail extends React.Component {
         this.setState({ showIndicator: true });
 
         try {
-            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            // firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
+            Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
         } catch (error) {
 
             // close indicator

@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, StatusBar } from 'react-native';
 import { Font, AppLoading } from 'expo';
-import { Images, loadIcons } from "./components";
+import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
+import { inject } from "mobx-react/native";
+import type { ScreenProps } from "./src/rnff/components/Types";
 
 // $FlowFixMe
 const SFProTextBold = require("../fonts/SF-Pro-Text-Bold.otf");
@@ -13,12 +15,14 @@ const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regula
 const SansSerif = require("../fonts/Sans-Serif.ttf");
 
 
-export default class Loading extends React.Component {
+@inject("feedStore", "profileStore", "userFeedStore")
+export default class Loading extends React.Component<ScreenProps<>> {
 
     async componentDidMount(): Promise<void> {
         console.log('Loading::componentDidMount');
 
-        const { navigation } = this.props;
+        // const { navigation } = this.props;
+        const { navigation, feedStore, profileStore, userFeedStore } = this.props;
 
         const fonts = Font.loadAsync({
             "SFProText-Bold": SFProTextBold,
@@ -38,7 +42,6 @@ export default class Loading extends React.Component {
 
         Firebase.init();
 
-        // ToDo: Split "Create New Account User" and "Auto Log In User"
         Firebase.auth.onAuthStateChanged((user) => {
             console.log('onAuthStateChanged', user);
 
@@ -47,14 +50,15 @@ export default class Loading extends React.Component {
             if (isUserAuthenticated) {
                 const { uid } = Firebase.auth.currentUser;
 
+                /*
                 const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc");
-
                 const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc");
-				/*
-                profileStore.init();
+
                 feedStore.init(feedQuery);
-				userFeedStore.init(userFeedQuery);
-				*/
+                profileStore.init();
+                userFeedStore.init(userFeedQuery);
+                */
+
 
                 navigation.navigate('mainBottomTabNavigator');
             } else {

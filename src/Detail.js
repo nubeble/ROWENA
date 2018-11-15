@@ -4,8 +4,8 @@ import { Constants, Permissions, ImagePicker, Linking } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
 import * as firebase from 'firebase';
-import { StyleGuide } from "./components/theme";
-import Image from "./components/Image";
+import { StyleGuide } from "./rne/src/components/theme";
+import Image from "./rne/src/components/Image";
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 

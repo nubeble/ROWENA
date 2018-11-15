@@ -112,7 +112,7 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                        // onPress={() => navigate('Daftar')}
+                            // onPress={() => navigate('Daftar')}
                         >
                             <Text style={{ marginBottom: 150, marginTop: 30, color: 'rgba(255, 255, 255, 0.8)' }} >
                                 <Text>Already a member? </Text>

@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Dimensions } from 'react-native';
-import { Card, Feed } from "./components";
-import TravelAPI, { type Guide } from "./travel/api";
-import type { NavigationProps } from "./components";
-import type { Action } from "./components/Model";
-import { ThemeProvider, Colors } from "./components";
+import { Card, Feed } from "./rne/src/components";
+import TravelAPI, { type Guide } from "./rne/src/travel/api";
+import type { NavigationProps } from "./rne/src/components";
+import type { Action } from "./rne/src/components/Model";
+import { ThemeProvider, Colors } from "./rne/src/components";
 
 /*
 type Chunk = {

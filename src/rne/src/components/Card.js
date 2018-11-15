@@ -51,7 +51,6 @@ export default class Card extends React.PureComponent<CardProps> {
                     {children}
 
                     <View style={styles.content}>
-
                         {/*
                         <LinearGradient colors={topGradient} style={styles.gradient}>
                             {
@@ -81,19 +80,21 @@ export default class Card extends React.PureComponent<CardProps> {
                         */}
 
 
-
+{/*
                         <LinearGradient colors={topGradient} style={styles.gradient}>
                             <Text type="headline" style={styles.subtitle}>{name.toUpperCase()}</Text>
                         </LinearGradient>
+*/}
 
                         {/*
                             rating icon
                         */}
 
-
+{/*
                         <LinearGradient colors={bottomGradient} style={styles.gradient}>
                             <Text color="white">{reviews}</Text>
                         </LinearGradient>
+*/}
                     </View>
 
                 </View>

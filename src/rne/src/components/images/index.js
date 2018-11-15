@@ -1,7 +1,7 @@
 // @flow
 import {Asset} from "expo";
 
-const logo = require("../../../assets/logo.png");
+const logo = require("../../../../../assets/logo.png");
 
 export default class Images {
 
