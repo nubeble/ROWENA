@@ -3,7 +3,8 @@ import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, 
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
-import * as firebase from 'firebase';
+// import * as firebase from 'firebase';
+import Firebase from "./Firebase"
 import { StyleGuide } from "./rne/src/components/theme";
 import Image from "./rne/src/components/Image";
 
@@ -152,6 +153,113 @@ export default class Detail extends React.Component {
         // console.log('response.json', res.json()); // resJson.location
     }
 
+
+
+
+    addUser() {
+        Firebase.firestore.collection("users").add({
+            uid: "2935293529352935",
+            name: "Jay",
+            country: "Korea",
+            city: "Seoul",
+            picture: {
+                preview: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABgElEQVQYGQ2Qu0tbcQCFv1+87xCrSb0mJMaQpPGi1QwtilmEqlPHQuna/6B/gnOhQ6aOxaWUIuLiA4eIhSrSDg4mJAqNpNhq6qPk0cTcJLd3ONP5OB8cwcalg3BY0mDckLm7vcbs3lMzI3xs2NDHrQUe1RBMeAUM6vR6bR7nPhHe+UDYrvHar5PWBQE30rwqCBka5n2D8P46oaNV5P4V7bEI9vIrfA98lP51kKZ8Ov5WjWBujdBu1lUkcUSKwb33XKoG4WcvMFxGGmveEMitE9l8i9b283XUS0dTWa4oDGxnsVUNdeE5Ay8T8ZXE5zcoVzr5QIxoapikqXBhS0TyZYxfh9RH4u5i8Tv9E8hnJhl99JCJSgVNl5CsGGfiCcmtbaLzx4gNw3RKs2msoIZ1cc75aZ1ezSa1EOSnNUX5xy2xowLi3eKiY7n3mKU8N6XfNL0ysugx1OgTylhUp6cpVFtI8W4dvnyj8Nfh2qPQNboMyx4aHYXWQZFg9Q8zT+f4D7nQgfd+SkaGAAAAAElFTkSuQmCC",
+                uri: "https://firebasestorage.googleapis.com/v0/b/react-native-e.appspot.com/o/a2a3dd0004c35ac29dea5921158b5122d3f4a275.png?alt=media&token=2849b892-fbcd-4c5f-ba45-575694f9094a"
+            },
+            location: {
+                longitude: 35.0092433,
+                latitude: 135.7587373
+            },
+            about: "from Korea",
+            receivedReviews: [ // review UID List (나한테 달린 리뷰)
+                "1234123412341234", "5678567856785678"
+            ],
+            // 총 리뷰 갯수 - receivedReviews.length
+
+            // 평균 평점 - 리뷰가 추가될 때마다 다시 계산해서 업데이트
+            averageRating: 2.7,
+            postedReviews: [ // review UID List (내가 작성한 리뷰)
+                "4321432143214321", "8765876587658765"
+            ]
+        }).then(function (docRef) {
+            console.log("Document written with ID: ", docRef.id);
+        }).catch(function (error) {
+            console.error("Error adding document: ", error);
+        });
+    }
+
+    watchUsers() {
+        Firebase.firestore.collection("users").onSnapshot((snapshot) => {
+            // const list = [];
+            // snapshot.docChanges().forEach((change) => {
+            snapshot.forEach((doc) => {
+                /*
+                list.push({
+                });
+
+                this.setState({
+                    users: list;
+                });
+                */
+
+                console.log('watchUsers', doc);
+            });
+        });
+    }
+
+    getUser(userUid) {
+        var result = Firebase.firestore.collection('users').doc(userUid).get();
+        console.log('getUser', result);
+    }
+
+    getUsers() { // ToDo: async?? how to render?? - state var
+        var query = Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50);
+        // this.getDocumentsInQuery(query, render);
+        query.onSnapshot((snapshot) => {
+            if (snapshot.size) {
+
+                // snapshot.forEach((doc) => {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        this.setState({
+                            // users: change.doc
+                        });
+
+                        console.log('getUsers(added)', change.doc);
+                    }
+                });
+            }
+        });
+    }
+
+    /*
+    addReview(userUid, review) {
+        var userDoc = Firebase.firestore.collection('users').doc(userUid);
+        var newReviewDoc = userDoc.collection('receivedReviews').doc();
+
+        return Firebase.firestore.runTransaction((transaction) => {
+            return transaction.get(userDoc).then((doc) => {
+                var data = doc.data();
+
+                var newAverage = (data.numRatings * data.avgRating + rating.rating) / (data.numRatings + 1);
+
+                transaction.update(userDoc, {
+                    numRatings: data.numRatings + 1,
+                    avgRating: newAverage
+                });
+
+                return transaction.set(newReviewDoc, rating);
+            });
+        });
+    }
+    */
+
+
+
+
+
+
+
     render() {
         const { navigation } = this.props;
         const { user } = navigation.state.params; // ToDo
@@ -176,7 +284,7 @@ export default class Detail extends React.Component {
                     }
                 }
             }],
-            {useNativeDriver: true }
+            { useNativeDriver: true }
         );
 
         // const { goBack } = this.props.navigation;
