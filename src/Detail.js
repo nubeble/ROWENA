@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, 
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
-// import * as firebase from 'firebase';
+import * as firebase from 'firebase';
 import Firebase from "./Firebase"
 import { StyleGuide } from "./rne/src/components/theme";
 import Image from "./rne/src/components/Image";
@@ -18,6 +18,11 @@ export default class Detail extends React.Component {
         uploadingImage: false,
         uploadingImageUri: null
     };
+
+    componentDidMount() {
+        // test
+        // this.watchUsers();
+    }
 
     getImageType(ext) {
         switch (ext.toLowerCase()) {
@@ -153,12 +158,116 @@ export default class Detail extends React.Component {
         // console.log('response.json', res.json()); // resJson.location
     }
 
+    /*** Database ***/
 
+    // read - done
+    getUser(userUid, watching) {
+        /*
+        // get the entire collection
+        Firebase.firestore.collection("users").get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log('getUser', `${doc.id} => ${doc.data()}`);
+            });
+        });
+        */
 
+        /*
+        Firebase.firestore.collection('users').doc('x3qSq5PuBio0RodFVgTU'). ().then((doc) => {
+            if (doc.exists) {
+                console.log('getUser', doc.data());
+            } else {
+                console.log("No such document!");
+            }
+        }).catch((error) => {
+            console.log("Error getting document:", error);
+        });
+        */
 
-    addUser() {
-        Firebase.firestore.collection("users").add({
-            uid: "2935293529352935",
+        var query = Firebase.firestore.collection('users');
+        query = query.where('uid', '==', userUid);
+        // query = query.orderBy('averageRating', 'desc');
+
+        if (watching) {
+            query.onSnapshot((snapshot) => {
+                if (!snapshot.size) {
+                    console.log("No such a user!");
+                } else {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            // console.log(change.doc.data());
+                            var data = JSON.parse(JSON.stringify(change.doc.data()));
+                            console.log(data);
+
+                            // this.setState({user: data});
+                        }
+                    });
+                }
+            });
+        } else {
+            query.get().then((snapshot) => {
+                if (!snapshot.size) {
+                    console.log("No such a user!");
+                } else {
+                    snapshot.docChanges().forEach((change) => {
+                        if (change.type === 'added') {
+                            // console.log(change.doc.data());
+                            var data = JSON.parse(JSON.stringify(change.doc.data()));
+                            console.log(data);
+
+                            // this.setState({user: data});
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    getUsers() {
+        var query = Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50);
+        query.get().then((snapshot) => {
+            if (!snapshot.size) {
+                console.log("No such users!");
+            } else {
+                snapshot.docChanges().forEach((change) => {
+                    if (change.type === 'added') {
+                        // console.log(change.doc.data());
+                        var data = JSON.parse(JSON.stringify(change.doc.data()));
+                        console.log(data);
+
+                        // this.setState({users: data});
+                    }
+                });
+            }
+        });
+    }
+
+    // update - done
+    updateUser(userUid) {
+        var value = {
+            city: "Suwon",
+            about: firebase.firestore.FieldValue.delete()
+        };
+
+        var query = Firebase.firestore.collection('users');
+        query = query.where('uid', '==', userUid);
+        query.get().then((querySnapshot) => {
+            if (!querySnapshot.size) {
+                console.log("No such a user!");
+            } else {
+                querySnapshot.forEach((queryDocumentSnapshot) => {
+                    console.log(queryDocumentSnapshot.id, queryDocumentSnapshot.data());
+
+                    // or set()
+                    Firebase.firestore.collection('users').doc(queryDocumentSnapshot.id).update(value);
+                });
+            }
+        });
+    }
+
+    // add - done
+    addUser(userUid) { // firebase.auth().currentUser.uid
+        var user = {
+            uid: userUid,
             name: "Jay",
             country: "Korea",
             city: "Seoul",
@@ -181,57 +290,33 @@ export default class Detail extends React.Component {
             postedReviews: [ // review UID List (내가 작성한 리뷰)
                 "4321432143214321", "8765876587658765"
             ]
-        }).then(function (docRef) {
-            console.log("Document written with ID: ", docRef.id);
+        };
+
+        Firebase.firestore.collection("users").add(user).then((docRef) => {
+            console.log('Add User succeeded. Document written with ID:', docRef.id);
         }).catch(function (error) {
-            console.error("Error adding document: ", error);
+            console.error('Add User failed. Error adding document:', error);
         });
     }
 
-    watchUsers() {
-        Firebase.firestore.collection("users").onSnapshot((snapshot) => {
-            // const list = [];
-            // snapshot.docChanges().forEach((change) => {
-            snapshot.forEach((doc) => {
-                /*
-                list.push({
+    // remove - done
+    removeUser(userUid) {
+        var query = Firebase.firestore.collection('users');
+        query = query.where('uid', '==', userUid);
+        query.get().then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                doc.ref.delete().then(() => {
+                    console.log("Document successfully deleted!");
+                }).catch((error) => {
+                    console.error("Error removing document", error);
                 });
-
-                this.setState({
-                    users: list;
-                });
-                */
-
-                console.log('watchUsers', doc);
             });
+        }).catch((error) => {
+            console.log("Error getting documents", error);
         });
     }
 
-    getUser(userUid) {
-        var result = Firebase.firestore.collection('users').doc(userUid).get();
-        console.log('getUser', result);
-    }
-
-    getUsers() { // ToDo: async?? how to render?? - state var
-        var query = Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50);
-        // this.getDocumentsInQuery(query, render);
-        query.onSnapshot((snapshot) => {
-            if (snapshot.size) {
-
-                // snapshot.forEach((doc) => {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added') {
-                        this.setState({
-                            // users: change.doc
-                        });
-
-                        console.log('getUsers(added)', change.doc);
-                    }
-                });
-            }
-        });
-    }
-
+    // ToDo
     /*
     addReview(userUid, review) {
         var userDoc = Firebase.firestore.collection('users').doc(userUid);
@@ -293,7 +378,7 @@ export default class Detail extends React.Component {
         const uploadingImageUri = this.state.uploadingImageUri; // ToDo: render
 
         return (
-            <View style={styles.flex}>
+            <View style={styles.flex} >
 
                 <ActivityIndicator
                     style={styles.activityIndicator}
@@ -363,6 +448,33 @@ export default class Detail extends React.Component {
                             <View style={styles.header}>
                                 <Text type="title3" style={styles.headerText}>{'title1'}</Text>
                             </View>
+
+
+
+
+                            {/* test */}
+                            <TouchableOpacity onPress={() => this.updateUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>updateUser</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.removeUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>removeUser</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.getUsers()} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUsers</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.getUser(Firebase.auth.currentUser.uid, false)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUser</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.addUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addUser</Text>
+                            </TouchableOpacity>
+
+
+
 
                             <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Pick me</Text>
