@@ -4,7 +4,6 @@ import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackV
 import AuthMain from './AuthMain';
 import SignUpWithEmail from './SignUpWithEmail';
 import SignUpWithMobile from './SignUpWithMobile';
-import Welcome from './Welcome';
 
 
 export default createStackNavigator(
@@ -19,10 +18,6 @@ export default createStackNavigator(
 
         mobile: {
             screen: SignUpWithMobile
-        },
-
-        welcome: {
-            screen: Welcome // ToDo
         }
     },
     {

@@ -97,6 +97,8 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     componentDidMount() {
+        console.log('SignUpWithEmail::componentDidMount');
+
         let that = this;
         setTimeout(function () {
             that.refs['emailInput']._root.focus();
@@ -136,6 +138,26 @@ export default class SignUpWithEmail extends React.Component {
             // show icon
             this.setState({ emailIcon: 2 });
         }
+    }
+
+    moveToPassword(text) {
+        if (this.state.emailIcon !== 2) {
+            console.log('Please enter a valid email address.');
+
+            // show message box
+            this.state.value = 'Please enter a valid email address.';
+            this.showNotification();
+
+            this.setState({ emailIcon: 1 });
+
+            // set focus
+            this.refs['emailInput']._root.focus();
+
+            return;
+        }
+
+        // set focus
+        this.refs['pwInput']._root.focus();
     }
 
     validatePassword(text) {
@@ -182,6 +204,24 @@ export default class SignUpWithEmail extends React.Component {
         }
     }
 
+    moveToSignUp(text) {
+        if (this.state.pwIcon !== 2) {
+
+            // show message box
+            this.state.value = this.getPasswordErrorMessage(this.state.password);
+            this.showNotification();
+
+            this.setState({ pwIcon: 1 });
+
+            // set focus
+            this.refs['pwInput']._root.focus();
+
+            return;
+        }
+
+        this.processSignUp();
+    }
+
     getPasswordErrorMessage(text) {
         if (text.length < 6) {
             return 'Must be at least 6 characters.';
@@ -201,7 +241,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({secureText: 'Show', securePwInput: true});
         }
 
-        // ToDo: don't need this in ios, not working in android
+        // ToDo: don't need this in ios, not working in android. check!!
         this.refs['pwInput']._root.setNativeProps({ selection:{ start:this.state.password.length, end:this.state.password.length } });
     }
 
@@ -239,21 +279,23 @@ export default class SignUpWithEmail extends React.Component {
         this.refs['emailInput']._root.blur();
         this.refs['pwInput']._root.blur();
 
+        this.processSignUp();
+    }
 
+    processSignUp() {
         // show indicator
         this.setState({ showIndicator: true });
 
         try {
-            // firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password);
             Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
         } catch (error) {
+            console.log('error', error.toString());
 
             // close indicator
             this.setState({ showIndicator: false });
 
-            console.log('error', error.toString());
-
-            // ToDo: do something
+            this.state.value = 'An error occurred. Please try again.';
+            this.showNotification();
         }
     }
 
@@ -338,6 +380,7 @@ export default class SignUpWithEmail extends React.Component {
                             <Item>
                                 <Input ref='emailInput' autoCapitalize="none" style={{ height: 42, fontSize: 22, color: 'rgba(255, 255, 255, 0.8)' }} underlineColorAndroid="transparent" autoCorrect={false}
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
+                                    onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
                                 />
                                 {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -357,6 +400,7 @@ export default class SignUpWithEmail extends React.Component {
                                 <Input ref='pwInput' autoCapitalize="none" style={{ height: 42, fontSize: 22, color: 'rgba(255, 255, 255, 0.8)' }} underlineColorAndroid="transparent" autoCorrect={false}
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     secureTextEntry={this.state.securePwInput}
+                                    onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
                                 />
                                 {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}

@@ -3,8 +3,8 @@ import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
 
 export default class Welcome extends React.Component {
+
     render() {
-        const { goBack } = this.props.navigation;
 
         return (
             <View style={styles.container}>
@@ -13,6 +13,12 @@ export default class Welcome extends React.Component {
                     title='Go back'
                     onPress={() => {
                         this.props.navigation.goBack();
+                    }}
+                />
+                <Button
+                    title='Go to Main'
+                    onPress={() => {
+                        this.props.navigation.navigate('mainBottomTabNavigator');
                     }}
                 />
             </View>

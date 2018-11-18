@@ -10,7 +10,7 @@ module.exports = (path, app) => {
     app.use(bodyParser.urlencoded({
         extended: true
     }));
-    
+
     app.use((req, res, next) => {
         if (req.rawBody === undefined && req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
             getRawBody(req, {
@@ -18,7 +18,7 @@ module.exports = (path, app) => {
                 limit: "10mb",
                 encoding: contentType.parse(req).parameters.charset
             }, function (err, string) {
-                if (err) return next(err)
+                if (err) return next(err);
                 req.rawBody = string;
                 next();
             })
@@ -32,10 +32,14 @@ module.exports = (path, app) => {
             const busboy = new Busboy({
                 headers: req.headers
             });
+
             let fileBuffer = new Buffer("");
+
             req.files = {
                 file: []
             };
+
+            req.field = {};
 
             busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
                 file.on("data", (data) => {
@@ -52,13 +56,22 @@ module.exports = (path, app) => {
                     };
 
                     req.files.file.push(file_object);
+
                     next();
                 });
             });
+
+            // --
+            busboy.on("field", (fieldname, val) => {
+                req.field[fieldname] = val;
+                // console.log('Field [' + fieldname + ']: value: ' + val);
+            });
+
+            // --
 
             busboy.end(req.rawBody);
         } else {
             next();
         }
     });
-}
+};

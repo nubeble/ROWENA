@@ -27,7 +27,7 @@ type User = {
     name: string,
     country: string,
     city: string,
-    picture: Picture,
+    pictures: Picture[],
     location: Location,
     about: string,
     receivedReviews: string[],
@@ -78,7 +78,7 @@ export default class Home extends React.Component<NavigationProps<>> {
                             rating={user.averageRating}
                             reviews={`${user.receivedReviews.length} reviews`}
                             onPress={() => navigation.navigate("detail", { user })}
-                            picture={user.picture}
+                            picture={user.pictures[0]}
                             height={chunk.users.length === 1 ? height1 : height2}
                         />
                     ))

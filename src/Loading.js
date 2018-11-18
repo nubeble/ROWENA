@@ -17,6 +17,9 @@ const SansSerif = require("../fonts/Sans-Serif.ttf");
 
 @inject("feedStore", "profileStore", "userFeedStore")
 export default class Loading extends React.Component<ScreenProps<>> {
+    state = {
+        isUserAutoAuthenticated: true
+    };
 
     async componentDidMount(): Promise<void> {
         console.log('Loading::componentDidMount');
@@ -48,6 +51,7 @@ export default class Loading extends React.Component<ScreenProps<>> {
             const isUserAuthenticated = !!user;
 
             if (isUserAuthenticated) {
+
                 const { uid } = Firebase.auth.currentUser;
 
                 /*
@@ -59,9 +63,14 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 userFeedStore.init(userFeedQuery);
                 */
 
-
-                navigation.navigate('mainBottomTabNavigator');
+                if (this.state.isUserAutoAuthenticated) {
+                    navigation.navigate('mainBottomTabNavigator');
+                } else {
+                    navigation.navigate('welcome');
+                }
             } else {
+                this.setState( { isUserAutoAuthenticated: false } );
+
                 navigation.navigate("authStackNavigator");
             }
         });
