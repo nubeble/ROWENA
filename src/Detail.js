@@ -481,7 +481,7 @@ export default class Detail extends React.Component {
                         style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 22, alignSelf: 'baseline' }}
                         onPress={() => this.props.navigation.goBack()}
                     >
-                        <Ionicons name='md-arrow-back' color="red" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
     },
     searchBarStyle: {
         height: 80,
-        backgroundColor: 'rgb(0, 0, 255)', // test
+        // backgroundColor: 'rgb(0, 0, 255)', // test
         paddingBottom: 16,
         justifyContent: 'flex-end',
         alignItems: 'center'

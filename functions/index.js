@@ -158,9 +158,11 @@ api.post("/images", function (req, response, next) {
 
     const fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
 
-    return uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
+    uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
+        console.log('metadata', metadata);
+
         // get download URL
-        return storage.bucket(bucketName).file(fileDir).getSignedUrl({
+        storage.bucket(bucketName).file(fileDir).getSignedUrl({
             action: 'read',
             // expires: '03-09-2491'
             expires: '03-09-2200'
@@ -169,7 +171,7 @@ api.post("/images", function (req, response, next) {
             console.log('getSignedUrl', url);
 
             // update database - write command in realtime database
-            return admin.database().ref('/users').push({
+            admin.database().ref('/users').push({
                 command: 'addPicture',
                 userUid: req.field.userUid,
                 pictureIndex: req.field.pictureIndex,
@@ -197,6 +199,8 @@ api.post("/images", function (req, response, next) {
 
         next();
     });
+
+    return true;
 });
 
 const makeData = (index, url) => {
@@ -269,7 +273,7 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
     // Grab the current value of what was written to the Realtime Database.
     const command = snapshot.val();
 
-    return admin.database().ref('/users/' + context.params.pushId).once('value').then(function (dataSnapshot) {
+    admin.database().ref('/users/' + context.params.pushId).once('value').then((dataSnapshot) => {
         var userUid = (dataSnapshot.val() && dataSnapshot.val().userUid) || 'Anonymous';
         var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex) || 'Anonymous';
         var uri = (dataSnapshot.val() && dataSnapshot.val().uri) || 'Anonymous';
@@ -281,26 +285,26 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
             let data = makeData(pictureIndex, uri);
             var query = admin.firestore().collection('users');
             query = query.where('uid', '==', userUid);
-            return query.get().then((querySnapshot) => {
+            query.get().then((querySnapshot) => {
                 if (!querySnapshot.size) {
                     console.log("No such a user!");
                 } else {
                     querySnapshot.forEach((queryDocumentSnapshot) => {
                         // console.log(queryDocumentSnapshot.id, queryDocumentSnapshot.data());
-                        return admin.firestore().collection('users').doc(queryDocumentSnapshot.id).update(data)
-                            .then(() => {
-                                console.log("User info updated.");
+                        admin.firestore().collection('users').doc(queryDocumentSnapshot.id).update(data).then(() => {
+                            console.log("User info updated.");
 
-                                // remove
-                                return admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
-                                    console.log("Database removed.");
-                                }).catch((error) => console.log("Remove failed: " + error.message));
+                            // remove
+                            admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
+                                console.log("Database removed.");
                             });
+                        });
                     });
                 }
-
-            }).catch((error) => console.log('update user info error', error));
+            });
             // --
         }
     });
+
+    return true;
 });
