@@ -18,7 +18,7 @@ const cors = require("cors");
 const express = require("express");
 const fileUploader = require("./fileUploader");
 const api = express().use(cors({ origin: true }));
-fileUploader("/picture", api);
+fileUploader("/images", api);
 
 
 // // Create and Deploy Your First Cloud Functions
@@ -42,6 +42,7 @@ admin.initializeApp({
 admin.firestore().settings({ timestampsInSnapshots: true });
 
 
+/*
 // Take the text parameter passed to this HTTP endpoint and insert it into the
 // Realtime Database under the path /messages/:pushId/original
 exports.addMessage = functions.https.onRequest((req, res) => {
@@ -54,7 +55,6 @@ exports.addMessage = functions.https.onRequest((req, res) => {
         return res.redirect(303, snapshot.ref.toString());
     });
 });
-
 
 // Listens for new messages added to /messages/:pushId/original and creates an
 // uppercase version of the message to /messages/:pushId/uppercase
@@ -70,7 +70,7 @@ exports.makeUppercase = functions.database.ref('/messages/{pushId}/original').on
     // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
     return snapshot.ref.parent.child('uppercase').set(uppercase);
 });
-
+*/
 
 
 /*
@@ -152,87 +152,53 @@ exports.onFileDelete = functions.storage.object().onDelete((event) => {
 */
 
 api.post("/images", function (req, response, next) {
-    console.log('Upload Image 50', req.field);
+    console.log('Image Upload', req.field);
 
     const storage = admin.storage();
-
     const fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
 
-    uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
-        console.log('metadata', metadata);
+    return new Promise((resolve, reject) => {
 
-        // get download URL
-        storage.bucket(bucketName).file(fileDir).getSignedUrl({
-            action: 'read',
-            // expires: '03-09-2491'
-            expires: '03-09-2200'
-        }).then((signedUrl) => {
-            let url = signedUrl[0];
-            console.log('getSignedUrl', url);
+        uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
+            console.log('metadata', metadata);
+    
+            // get download URL
+            storage.bucket(bucketName).file(fileDir).getSignedUrl({
+                action: 'read',
+                // expires: '03-09-2491'
+                expires: '03-09-2200'
+            }).then((signedUrl) => {
+                let url = signedUrl[0];
+                // console.log('getSignedUrl', url);
+    
+                // update database - write command in realtime database
+                admin.database().ref('/users').push({
+                    command: 'addPicture',
+                    userUid: req.field.userUid,
+                    pictureIndex: req.field.pictureIndex,
+                    uri: url
+                }).then((snapshot) => {
+                    resolve();
 
-            // update database - write command in realtime database
-            admin.database().ref('/users').push({
-                command: 'addPicture',
-                userUid: req.field.userUid,
-                pictureIndex: req.field.pictureIndex,
-                uri: url
-            }).then((snapshot) => {
-                // return response
-                let result = {
-                    downloadUrl: url
-                };
-                response.status(200).send(result);
-
-                next();
+                    // return response
+                    let result = {
+                        downloadUrl: url
+                    };
+                    response.status(200).send(result);
+    
+                    next();
+                });
             });
-        }).catch((error) => {
-            console.log('getSignedUrl error', error);
-            // response.status(500).json({ error });
-            response.status(500).send(error);
+        }).catch(error => {
+            reject();
 
+            console.error('uploadImageToStorage', error);
+            response.status(500).send(error);
             next();
         });
-    }).catch(error => {
-        console.error(error);
-        // response.status(500).json({ error });
-        response.status(500).send(error);
 
-        next();
     });
-
-    return true;
 });
-
-const makeData = (index, url) => {
-    switch (index) {
-        case '0': return {
-            // 'pictures.one.preview': admin.firestore.FieldValue.delete(),
-            'pictures.one.uri': url
-        };
-
-        case '1': return {
-            'pictures.two.uri': url
-        };
-
-        case '2': return {
-            'pictures.three.uri': url
-        };
-
-        case '3': return {
-            'pictures.four.uri': url
-        };
-
-        case '4': return {
-            'pictures.five.uri': url
-        };
-
-        case '5': return {
-            'pictures.six.uri': url
-        };
-    }
-
-    return null;
-}
 
 // exports.api = functions.https.onRequest(api);
 const runtimeOpts = {
@@ -273,7 +239,7 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
     // Grab the current value of what was written to the Realtime Database.
     const command = snapshot.val();
 
-    admin.database().ref('/users/' + context.params.pushId).once('value').then((dataSnapshot) => {
+    return admin.database().ref('/users/' + context.params.pushId).once('value').then((dataSnapshot) => {
         var userUid = (dataSnapshot.val() && dataSnapshot.val().userUid) || 'Anonymous';
         var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex) || 'Anonymous';
         var uri = (dataSnapshot.val() && dataSnapshot.val().uri) || 'Anonymous';
@@ -305,6 +271,35 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
             // --
         }
     });
-
-    return true;
 });
+
+const makeData = (index, url) => {
+    switch (index) {
+        case '0': return {
+            // 'pictures.one.preview': admin.firestore.FieldValue.delete(),
+            'pictures.one.uri': url
+        };
+
+        case '1': return {
+            'pictures.two.uri': url
+        };
+
+        case '2': return {
+            'pictures.three.uri': url
+        };
+
+        case '3': return {
+            'pictures.four.uri': url
+        };
+
+        case '4': return {
+            'pictures.five.uri': url
+        };
+
+        case '5': return {
+            'pictures.six.uri': url
+        };
+    }
+
+    return null;
+}

@@ -161,9 +161,11 @@ export default class Loading extends React.Component<ScreenProps<>> {
     }
 
     updateUser(uid, name, email, phoneNumber) { // userUid, value
-
-        // ToDo: update attributes
-
+        var data = {
+            name: name,
+            email: email,
+            phoneNumber: phoneNumber
+        };
 
         var query = Firebase.firestore.collection('users');
         query = query.where('uid', '==', uid);

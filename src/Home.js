@@ -39,6 +39,8 @@ type User = {
 export default class Home extends React.Component<NavigationProps<>> {
 
     componentDidMount() {
+        console.log('Home::componentDidMount');
+        
         const themeProvider = ThemeProvider.getInstance();
         themeProvider.switchColors(Colors['Main']);
     }

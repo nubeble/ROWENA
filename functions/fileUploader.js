@@ -15,7 +15,7 @@ module.exports = (path, app) => {
         if (req.rawBody === undefined && req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
             getRawBody(req, {
                 length: req.headers["content-length"],
-                limit: "10mb",
+                limit: "3mb",
                 encoding: contentType.parse(req).parameters.charset
             }, function (err, string) {
                 if (err) return next(err);
