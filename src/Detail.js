@@ -25,6 +25,7 @@ export default class Detail extends React.Component {
     };
 
     componentDidMount() {
+        console.log('Detail::componentDidMount');
         // test
         // this.watchUsers();
     }

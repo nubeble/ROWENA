@@ -1,11 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions, Platform } from 'react-native';
+import { Constants, Location, Permissions } from 'expo';
 import { Card, Feed } from "./rne/src/components";
 import TravelAPI, { type Guide } from "./rne/src/travel/api";
 import type { NavigationProps } from "./rne/src/components";
 import type { Action } from "./rne/src/components/Model";
 import { ThemeProvider, Colors } from "./rne/src/components";
 import Firebase from './Firebase';
+
+
 
 /*
 type Chunk = {
@@ -19,8 +22,8 @@ type Chunk = {
 };
 
 // ToDo: from server DB
-const users = require("./users");
-const reviews = require("./reviews");
+const USERS = require("./users");
+const REVIEWS = require("./reviews");
 
 /* USER INFO */
 type User = {
@@ -38,26 +41,56 @@ type User = {
 
 
 export default class Home extends React.Component<NavigationProps<>> {
+    state = {
+        userLocationLoaded: false,
+        people: null
+
+    };
 
     componentDidMount() {
         console.log('Home::componentDidMount');
 
+        console.log('people', this.people);
+        
+        this.props.navigation.addListener('didFocus', this.focused);
+
         const themeProvider = ThemeProvider.getInstance();
         themeProvider.switchColors(Colors['Main']);
+    }
 
-
+    focused() {
+        console.log('Home::focused');
         // get user's location from database
-        const { uid } = Firebase.auth.currentUser;
-        var user = this.getUser(uid);
 
-        // if null then use gps and update database
-        if (!user) {
+        if (!this.state.userLocationLoaded) {
+            /*
+            const { uid } = Firebase.auth.currentUser;
 
+            this.getUser(uid, (user) => {
+                console.log("!!!! user !!!!", user);
+
+                // if null then use gps and update database
+                if (!user) {
+                    console.log('!!! user is null !!!');
+                    
+                    // ToDo: get gps
+                    this.getLocation((location) => {
+                        if (!location) return;
+
+                        // get people from database based on user's location
+                        var _users = this.getUsers(user.country, user.city);
+                        console.log('users', _users);
+
+                        // render
+                    });
+                }
+
+            });
+            */
+
+            this.setState({userLocationLoaded: true});
         }
 
-        // get people from database based on user's location
-        var users = this.getUsers(user.country, user.city);
-        console.log('users', users);
 
     }
 
@@ -70,7 +103,7 @@ export default class Home extends React.Component<NavigationProps<>> {
                 return null;
             } else {
                 querySnapshot.forEach(function(doc) {
-                    console.log(doc.id, " => ", doc.data());
+                    // console.log(doc.id, " => ", doc.data());
 
 
                     var user = doc.data();
@@ -110,6 +143,16 @@ export default class Home extends React.Component<NavigationProps<>> {
 
         return null;
     }
+
+    getLocation = async (cb) => {
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
+        if (status !== 'granted') {
+            console.log('Permission to access location was denied');
+        }
+    
+        let location = await Location.getCurrentPositionAsync({});
+        cb(location);
+    };
 
     renderItem = (chunk: Chunk): React.Node => { // ToDo
         const { navigation } = this.props;
@@ -172,7 +215,7 @@ export default class Home extends React.Component<NavigationProps<>> {
         ));
         console.log('windowing data:', data);
         */
-        const data = _windowing(users).map(users => (
+        const data = _windowing(USERS).map(users => (
             { uid: users.map(user => user.uid).join(""), users }
             // { uid: users.map(user => user.uid).join(""), users, key: parseInt(Math.random() * 1000) }
         ));
