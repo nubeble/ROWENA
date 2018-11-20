@@ -5,6 +5,7 @@ import TravelAPI, { type Guide } from "./rne/src/travel/api";
 import type { NavigationProps } from "./rne/src/components";
 import type { Action } from "./rne/src/components/Model";
 import { ThemeProvider, Colors } from "./rne/src/components";
+import Firebase from './Firebase';
 
 /*
 type Chunk = {
@@ -40,9 +41,74 @@ export default class Home extends React.Component<NavigationProps<>> {
 
     componentDidMount() {
         console.log('Home::componentDidMount');
-        
+
         const themeProvider = ThemeProvider.getInstance();
         themeProvider.switchColors(Colors['Main']);
+
+
+        // get user's location from database
+        const { uid } = Firebase.auth.currentUser;
+        var user = this.getUser(uid);
+
+        // if null then use gps and update database
+        if (!user) {
+
+        }
+
+        // get people from database based on user's location
+        var users = this.getUsers(user.country, user.city);
+        console.log('users', users);
+
+    }
+
+    getUser(uid) {
+        var query = Firebase.firestore.collection('users').where('uid', '==', uid);
+        query.get().then((querySnapshot) => {
+            if (!querySnapshot.size) {
+                console.log("No such a user!");
+
+                return null;
+            } else {
+                querySnapshot.forEach(function(doc) {
+                    console.log(doc.id, " => ", doc.data());
+
+
+                    var user = doc.data();
+                    console.log(user.country, user.city);
+
+                    return user;
+                });
+            }
+        });
+
+        return null;
+    }
+
+    getUsers(country, city) {
+        var query = Firebase.firestore.collection('users');
+        query. where('country', '==', country);
+        query. where('city', '==', city);
+        query.orderBy('averageRating', 'desc').limit(50);
+        query.get().then((querySnapshot) => {
+            if (!querySnapshot.size) {
+                console.log("No such a user!");
+
+                return null;
+            } else {
+                var users = [];
+                querySnapshot.forEach(function(doc) {
+                    console.log(doc.id, " => ", doc.data());
+
+
+                    var user = doc.data();
+                    users.push(user);
+                });
+
+                return users;
+            }
+        });
+
+        return null;
     }
 
     renderItem = (chunk: Chunk): React.Node => { // ToDo

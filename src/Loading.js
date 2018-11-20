@@ -51,8 +51,6 @@ export default class Loading extends React.Component<ScreenProps<>> {
             const isUserAuthenticated = !!user;
 
             if (isUserAuthenticated) {
-                
-
                 // ToDo: load user feed from database
                 /*
                 const { uid } = Firebase.auth.currentUser;
