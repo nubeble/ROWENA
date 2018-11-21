@@ -31,12 +31,24 @@ type User = {
     name: string,
     country: string,
     city: string,
-    pictures: Picture[],
+    email: string,
+    phoneNumber: string,
+    // pictures: Picture[],
+    pictures: Pictures,
     location: Location,
     about: string,
     receivedReviews: string[],
     averageRating: number,
     postedReviews: string[]
+};
+
+type Pictures = {
+    one: Picture,
+    two: Picture,
+    three: Picture,
+    four: Picture,
+    five: Picture,
+    six: Picture
 };
 
 
@@ -50,74 +62,59 @@ export default class Home extends React.Component<NavigationProps<>> {
     componentDidMount() {
         console.log('Home::componentDidMount');
 
-        console.log('people', this.people);
-        
-        this.props.navigation.addListener('didFocus', this.focused);
-
         const themeProvider = ThemeProvider.getInstance();
         themeProvider.switchColors(Colors['Main']);
-    }
 
-    focused() {
-        console.log('Home::focused');
-        // get user's location from database
-
-        if (!this.state.userLocationLoaded) {
-            /*
+        // console.log('userLocationLoaded', this.state.userLocationLoaded);
+        if (this.state.userLocationLoaded !== true) {
             const { uid } = Firebase.auth.currentUser;
 
             this.getUser(uid, (user) => {
-                console.log("!!!! user !!!!", user);
-
                 // if null then use gps and update database
                 if (!user) {
-                    console.log('!!! user is null !!!');
-                    
-                    // ToDo: get gps
+                    // get gps
                     this.getLocation((location) => {
                         if (!location) return;
 
-                        // get people from database based on user's location
-                        var _users = this.getUsers(user.country, user.city);
-                        console.log('users', _users);
+                        console.log('location', location);
 
-                        // render
+                        // ToDo: use location.country, location.city
+
+                        
+                    });
+                } else {
+                    // use user.country, user.city
+                    // get people from database based on user's location
+                    this.getUsers(user.country, user.city, uid, (users) => {
+                        console.log('users', users);
+
+                        this.setState({people: users});
                     });
                 }
-
             });
-            */
 
-            this.setState({userLocationLoaded: true});
+           this.setState({userLocationLoaded: true});
         }
-
-
     }
 
-    getUser(uid) {
+    getUser(uid, cb) {
         var query = Firebase.firestore.collection('users').where('uid', '==', uid);
         query.get().then((querySnapshot) => {
             if (!querySnapshot.size) {
                 console.log("No such a user!");
-
-                return null;
             } else {
                 querySnapshot.forEach(function(doc) {
                     // console.log(doc.id, " => ", doc.data());
-
-
                     var user = doc.data();
                     console.log(user.country, user.city);
 
-                    return user;
+                    cb(user);
                 });
             }
         });
-
-        return null;
     }
 
-    getUsers(country, city) {
+    getUsers(country, city, uid, cb) {
         var query = Firebase.firestore.collection('users');
         query. where('country', '==', country);
         query. where('city', '==', city);
@@ -125,23 +122,21 @@ export default class Home extends React.Component<NavigationProps<>> {
         query.get().then((querySnapshot) => {
             if (!querySnapshot.size) {
                 console.log("No such a user!");
-
-                return null;
             } else {
                 var users = [];
                 querySnapshot.forEach(function(doc) {
                     console.log(doc.id, " => ", doc.data());
 
-
                     var user = doc.data();
-                    users.push(user);
+
+                    if (user.uid !== uid) { // except me
+                        users.push(user);
+                    }
                 });
 
-                return users;
+                cb(users);
             }
         });
-
-        return null;
     }
 
     getLocation = async (cb) => {
@@ -149,12 +144,14 @@ export default class Home extends React.Component<NavigationProps<>> {
         if (status !== 'granted') {
             console.log('Permission to access location was denied');
         }
+
+        console.log('status', status);
     
         let location = await Location.getCurrentPositionAsync({});
         cb(location);
     };
 
-    renderItem = (chunk: Chunk): React.Node => { // ToDo
+    renderItem = (chunk: Chunk): React.Node => {
         const { navigation } = this.props;
 
         let gap = 2;
@@ -189,7 +186,8 @@ export default class Home extends React.Component<NavigationProps<>> {
                             rating={user.averageRating}
                             reviews={`${user.receivedReviews.length} reviews`}
                             onPress={() => navigation.navigate("detail", { user })}
-                            picture={user.pictures[0]}
+                            // picture={user.pictures[0]}
+                            picture={user.pictures.one.uri}
                             height={chunk.users.length === 1 ? height1 : height2}
                         />
                     ))
@@ -219,7 +217,7 @@ export default class Home extends React.Component<NavigationProps<>> {
             { uid: users.map(user => user.uid).join(""), users }
             // { uid: users.map(user => user.uid).join(""), users, key: parseInt(Math.random() * 1000) }
         ));
-        // console.log('windowing data:', data);
+        console.log('windowing data', data);
 
 
 
