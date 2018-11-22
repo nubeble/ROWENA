@@ -68,11 +68,13 @@ export default class Feed extends React.Component<FeedProps> {
                     renderItem={this.renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={this.loadMore}
+
                     ListEmptyComponent={(
                         <View style={styles.post}>
                             {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
                         </View>
                     )}
+                    
                     {...{ onScroll, bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>

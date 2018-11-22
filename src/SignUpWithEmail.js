@@ -289,6 +289,10 @@ export default class SignUpWithEmail extends React.Component {
         try {
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
             console.log('user', user);
+
+            // save user info to database
+            const profile = Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
+            await Firebase.firestore.collection("users").doc(user.user.uid).set(profile);
         } catch (error) {
             console.log('error', error);
 

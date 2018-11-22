@@ -143,7 +143,8 @@ const styles = StyleSheet.create({
         flexWrap: "wrap"
     },
     picture: {
-        height: width,
+        // height: width,
+        height: width / 16 * 9,
         borderRadius: 5
     }
 });

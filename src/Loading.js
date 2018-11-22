@@ -74,15 +74,21 @@ export default class Loading extends React.Component<ScreenProps<>> {
 
 
                 if (this.state.isUserAutoAuthenticated) {
-                    // update
-                    await this.updateUser(user.uid, user.displayName, user.email, user.phoneNumber);
+                    // update user info to database
+                    // await this.updateUser(user.uid, user.displayName, user.email, user.phoneNumber);
+                    var profile = {
+                        name: user.displayName,
+                        email: user.email,
+                        phoneNumber: user.phoneNumber
+                    };
+                    await Firebase.firestore.collection('users').doc(uid).update(profile);
 
                     console.log('move to main');
 
                     navigation.navigate('mainBottomTabNavigator');
                 } else {
                     // save user info to database
-                    await this.addUser(user.uid, user.displayName, user.email, user.phoneNumber);
+                    // await this.addUser(user.uid, user.displayName, user.email, user.phoneNumber);
 
                     console.log('move to welcome');
 

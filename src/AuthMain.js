@@ -30,16 +30,13 @@ export default class AuthMain extends React.Component {
             try {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
                 console.log('user', user);
+
+                // save user info to database
+                const profile = Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
+                await Firebase.firestore.collection("users").doc(user.user.uid).set(profile);
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
             }
-
-
-            // Get the user's name using Facebook's Graph API
-			/*
-			const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-			alert('Logged in!', `Hi ${(await response.json()).name}!`);
-			*/
         }
     }
 

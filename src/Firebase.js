@@ -24,4 +24,54 @@ export default class Firebase {
         Firebase.firestore.settings({ timestampsInSnapshots: true });
         Firebase.storage = firebase.storage();
     }
+
+
+    // firestore
+    static createProfile(uid, name, email, phoneNumber) { // set
+        const user = {
+            uid: uid,
+            name: name,
+            country: null,
+            city: null,
+            email: email,
+            phoneNumber: phoneNumber,
+            pictures: { // 6
+                one: {
+                    preview: null,
+                    uri: null
+                },
+                two: {
+                    preview: null,
+                    uri: null
+                },
+                three: {
+                    preview: null,
+                    uri: null
+                },
+                four: {
+                    preview: null,
+                    uri: null
+                },
+                five: {
+                    preview: null,
+                    uri: null
+                },
+                six: {
+                    preview: null,
+                    uri: null
+                }
+            },
+            location: {
+                longitude: 0.0, // 경도
+                latitude: 0.0 // 위도
+            },
+            about: null,
+            receivedReviews: [], // 나한테 달린 리뷰
+            // 총 리뷰 갯수 - receivedReviews.length
+            averageRating: 2.7, // 평균 평점 - 리뷰가 추가될 때마다 다시 계산해서 업데이트
+            postedReviews: [] // 내가 쓴 리뷰
+        };
+
+        return user;
+    }
 }
