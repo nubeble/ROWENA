@@ -1,16 +1,16 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import {View, StyleSheet, Dimensions, TouchableOpacity, Image} from "react-native";
-import {Feather as Icon} from "@expo/vector-icons";
-import {inject, observer} from "mobx-react/native";
-import {Constants, LinearGradient} from "expo";
+import { View, StyleSheet, Dimensions, TouchableOpacity, Image } from "react-native";
+import { Feather as Icon } from "@expo/vector-icons";
+import { inject, observer } from "mobx-react/native";
+import { Constants, LinearGradient } from "expo";
 
 import ProfileStore from "../ProfileStore";
 
-import {Text, Avatar, Theme, Images, Feed, FeedStore} from "../../components";
-import type {FeedEntry} from "../../components/Model";
-import type {ScreenProps} from "../../components/Types";
+import { Text, Avatar, Theme, Images, Feed, FeedStore } from "../../components";
+import type { FeedEntry } from "../../components/Model";
+import type { ScreenProps } from "../../components/Types";
 
 type InjectedProps = {
     profileStore: ProfileStore,
@@ -26,7 +26,7 @@ export default class ProfileComp extends React.Component<ScreenProps<> & Injecte
 
     @autobind
     settings() {
-        const {profile} = this.props.profileStore;
+        const { profile } = this.props.profileStore;
         this.props.navigation.navigate("Settings", { profile });
     }
 
@@ -42,8 +42,8 @@ export default class ProfileComp extends React.Component<ScreenProps<> & Injecte
     }
 
     render(): React.Node {
-        const {navigation, userFeedStore, profileStore} = this.props;
-        const {profile} = profileStore;
+        const { navigation, userFeedStore, profileStore } = this.props;
+        const { profile } = profileStore;
         return (
             <View style={styles.container}>
                 <LinearGradient
@@ -61,14 +61,17 @@ export default class ProfileComp extends React.Component<ScreenProps<> & Injecte
                                 </View>
                             </TouchableOpacity>
                             <View style={styles.title}>
+                                {/*
                                 <Text type="large" style={styles.outline}>{profile.outline}</Text>
+                                */}
+
                                 <Text type="header2" style={styles.name}>{profile.name}</Text>
                             </View>
                             <Avatar size={avatarSize} style={styles.avatar} {...profile.picture} />
                         </View>
                     )}
                     store={userFeedStore}
-                    {...{navigation}}
+                    {...{ navigation }}
                 />
             </View>
         );
@@ -76,8 +79,8 @@ export default class ProfileComp extends React.Component<ScreenProps<> & Injecte
 }
 
 const avatarSize = 100;
-const {width} = Dimensions.get("window");
-const {statusBarHeight} = Constants;
+const { width } = Dimensions.get("window");
+const { statusBarHeight } = Constants;
 const styles = StyleSheet.create({
     container: {
         flex: 1

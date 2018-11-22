@@ -190,9 +190,10 @@ api.post("/images", function (req, response, next) {
                 });
             });
         }).catch(error => {
+            console.error('uploadImageToStorage error', error);
+
             reject();
 
-            console.error('uploadImageToStorage', error);
             response.status(500).send(error);
             next();
         });
@@ -239,40 +240,69 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
     // Grab the current value of what was written to the Realtime Database.
     const command = snapshot.val();
 
-    return admin.database().ref('/users/' + context.params.pushId).once('value').then((dataSnapshot) => {
-        var userUid = (dataSnapshot.val() && dataSnapshot.val().userUid) || 'Anonymous';
-        var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex) || 'Anonymous';
-        var uri = (dataSnapshot.val() && dataSnapshot.val().uri) || 'Anonymous';
+    return new Promise((resolve, reject) => {
 
-        // console.log('Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
+        admin.database().ref('/users/' + context.params.pushId).once('value').then((dataSnapshot) => {
+            var userUid = (dataSnapshot.val() && dataSnapshot.val().userUid) || 'Anonymous';
+            var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex) || 'Anonymous';
+            var uri = (dataSnapshot.val() && dataSnapshot.val().uri) || 'Anonymous';
 
-        if (command === 'addPicture') {
-            // --
-            let data = makeData(pictureIndex, uri);
-            var query = admin.firestore().collection('users');
-            query = query.where('uid', '==', userUid);
-            query.get().then((querySnapshot) => {
-                if (!querySnapshot.size) {
-                    console.log("No such a user!");
-                } else {
-                    querySnapshot.forEach((queryDocumentSnapshot) => {
-                        // console.log(queryDocumentSnapshot.id, queryDocumentSnapshot.data());
-                        admin.firestore().collection('users').doc(queryDocumentSnapshot.id).update(data).then(() => {
-                            console.log("User info updated.");
+            // console.log('Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
 
-                            // remove
-                            admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
-                                console.log("Database removed.");
+            if (command === 'addPicture') {
+                let data = makeData(pictureIndex, uri);
+
+                admin.firestore().collection('users').doc(userUid).update(data).then(() => {
+                    console.log("User info updated.");
+
+                    // remove
+                    admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
+                        console.log("Database removed.");
+                    });
+
+                    resolve();
+                }).catch((error) => {
+                    console.log('update user error', err);
+
+                    reject(error);
+                });
+
+                // --
+                /*
+                let data = makeData(pictureIndex, uri);
+                var query = admin.firestore().collection('users');
+                query = query.where('uid', '==', userUid);
+                query.get().then((querySnapshot) => {
+                    if (!querySnapshot.size) {
+                        console.log("No such a user!");
+                    } else {
+                        querySnapshot.forEach((queryDocumentSnapshot) => {
+                            // console.log(queryDocumentSnapshot.id, queryDocumentSnapshot.data());
+                            admin.firestore().collection('users').doc(queryDocumentSnapshot.id).update(data).then(() => {
+                                console.log("User info updated.");
+
+                                // remove
+                                admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
+                                    console.log("Database removed.");
+                                });
+
+                                resolve();
                             });
                         });
-                    });
-                }
-            });
-            // --
-        }
+                    }
+                });
+                */
+                // --
+            }
+        }).catch(error => {
+            console.error('once error', error);
+
+            reject();
+        });
+
     });
 });
-
+/*
 const makeData = (index, url) => {
     switch (index) {
         case '0': return {
@@ -302,4 +332,50 @@ const makeData = (index, url) => {
     }
 
     return null;
+}
+*/
+const makeData = (index, url) => {
+    /*
+    switch (index) {
+        case '0': return {
+            // 'pictures.one.preview': admin.firestore.FieldValue.delete(),
+            'pictures.one.uri': url
+        };
+
+        case '1': return {
+            'pictures.two.uri': url
+        };
+
+        case '2': return {
+            'pictures.three.uri': url
+        };
+
+        case '3': return {
+            'pictures.four.uri': url
+        };
+
+        case '4': return {
+            'pictures.five.uri': url
+        };
+
+        case '5': return {
+            'pictures.six.uri': url
+        };
+    }
+
+    return null;
+    */
+    let key;
+    switch (index) {
+        case '0': key = 'one'; break;
+        case '1': key = 'two'; break;
+        case '2': key = 'three'; break;
+        case '3': key = 'four'; break;
+        case '4': key = 'five'; break;
+        case '5': key = 'six'; break;
+    }
+
+    let data = { [`pictures.${key}.uri`] : url };
+
+    return data;
 }

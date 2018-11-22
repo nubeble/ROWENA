@@ -27,10 +27,12 @@ export default class AuthMain extends React.Component {
         if (type === 'success') {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
 
-            // firebase.auth().signInWithCredential(credential).catch((error) => {
-            Firebase.auth.signInAndRetrieveDataWithCredential(credential).catch((error) => {
-                console.log('signInWithCredential, error:', error);
-            });
+            try {
+                const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
+                console.log('user', user);
+            } catch (error) {
+                console.log('signInAndRetrieveDataWithCredential error', error);
+            }
 
 
             // Get the user's name using Facebook's Graph API

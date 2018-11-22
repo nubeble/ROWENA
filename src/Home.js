@@ -9,21 +9,14 @@ import { ThemeProvider, Colors } from "./rne/src/components";
 import Firebase from './Firebase';
 
 
-
-/*
-type Chunk = {
-    id: string,
-    guides: Guide[]
-};
-*/
 type Chunk = {
     id: string,
     users: User[]
 };
 
 // ToDo: from server DB
-const USERS = require("./users");
-const REVIEWS = require("./reviews");
+const __USERS = require("./users");
+const __REVIEWS = require("./reviews");
 
 /* USER INFO */
 type User = {
@@ -55,8 +48,7 @@ type Pictures = {
 export default class Home extends React.Component<NavigationProps<>> {
     state = {
         userLocationLoaded: false,
-        people: null
-
+        girls: null
     };
 
     componentDidMount() {
@@ -69,34 +61,82 @@ export default class Home extends React.Component<NavigationProps<>> {
         if (this.state.userLocationLoaded !== true) {
             const { uid } = Firebase.auth.currentUser;
 
-            this.getUser(uid, (user) => {
-                // if null then use gps and update database
-                if (!user) {
-                    // get gps
-                    this.getLocation((location) => {
-                        if (!location) return;
+            this.setGirls(uid); // async, set state until it shows loading icon
 
-                        console.log('location', location);
-
-                        // ToDo: use location.country, location.city
-
-                        
-                    });
-                } else {
-                    // use user.country, user.city
-                    // get people from database based on user's location
-                    this.getUsers(user.country, user.city, uid, (users) => {
-                        console.log('users', users);
-
-                        this.setState({people: users});
-                    });
-                }
-            });
-
-           this.setState({userLocationLoaded: true});
+            this.setState({userLocationLoaded: true});
         }
     }
 
+    async setGirls(uid) {
+        // 1. get user's location
+        let location = {
+            country: null,
+            city: null
+        };
+
+        let user = await this.getUser(uid);
+
+        if (!user || !user.country || !user.city) {
+            // get gps
+            try {
+                let position = await this.getPosition();
+            } catch (error) {
+                console.log('getPosition error', error);
+
+                return;
+            }
+
+            // ToDo: get country, city from position
+            /*
+            location.country = position.country;
+            location.city = position.city;
+            */
+
+        } else {
+            console.log(user.country, user.city);
+            location.country = user.country;
+            location.city = user.city;
+        }
+
+        // 2. get girls
+        try {
+            let girls = await this.getGirls(location, uid);
+            if (!girls.length) this.setState({girls: girls});
+        } catch (error) {
+            console.log('getGirls error', error);
+        }
+    }
+    
+    getPosition() {
+        return new Promise(async (resolve, reject) => {
+            let { status } = await Permissions.askAsync(Permissions.LOCATION);
+            console.log('status', status);
+
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+
+                reject('Permission to access location was denied.');
+            } else {
+                let position = await Location.getCurrentPositionAsync({});
+
+                resolve(position);
+            }
+        });
+    }
+
+    getGirls(location, uid) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                let users = await this.getUsers(location.country, location.city, uid);
+                console.log('girls', users);
+                resolve(users);
+            } catch (error) {
+                reject(error);
+            }
+        });
+    }
+
+    /*
     getUser(uid, cb) {
         var query = Firebase.firestore.collection('users').where('uid', '==', uid);
         query.get().then((querySnapshot) => {
@@ -113,43 +153,64 @@ export default class Home extends React.Component<NavigationProps<>> {
             }
         });
     }
+    */
+    getUser(uid) {
+        return new Promise((resolve, reject) => {
+            Firebase.firestore.collection('users').doc(uid).get().then(doc => {
+                if (!doc.exists) {
+                    console.log('No such document!');
 
-    getUsers(country, city, uid, cb) {
-        var query = Firebase.firestore.collection('users');
-        query. where('country', '==', country);
-        query. where('city', '==', city);
-        query.orderBy('averageRating', 'desc').limit(50);
-        query.get().then((querySnapshot) => {
-            if (!querySnapshot.size) {
-                console.log("No such a user!");
-            } else {
-                var users = [];
-                querySnapshot.forEach(function(doc) {
-                    console.log(doc.id, " => ", doc.data());
+                    reject();
+                } else {
+                    console.log('user', doc.data());
 
-                    var user = doc.data();
+                    let user = doc.data();
+                    resolve(user);
+                }
+            }).catch(err => {
+                console.log('Error getting users', err);
 
-                    if (user.uid !== uid) { // except me
-                        users.push(user);
-                    }
-                });
-
-                cb(users);
-            }
+                reject(err);
+            });
         });
     }
 
-    getLocation = async (cb) => {
-        let { status } = await Permissions.askAsync(Permissions.LOCATION);
-        if (status !== 'granted') {
-            console.log('Permission to access location was denied');
-        }
+    getUsers(country, city, uid) {
+        return new Promise((resolve, reject) => {
+            var query = Firebase.firestore.collection('users');
+            query.where('country', '==', country);
+            query.where('city', '==', city);
+            query.orderBy('averageRating', 'desc').limit(50);
+            query.get().then((querySnapshot) => {
+                if (!querySnapshot.size) {
+                    console.log("No such a user!");
 
-        console.log('status', status);
-    
-        let location = await Location.getCurrentPositionAsync({});
-        cb(location);
-    };
+                    reject("No such a user!");
+                } else {
+                    let users = [];
+                    querySnapshot.forEach(function(doc) {
+                        // console.log(doc.id, " => ", doc.data());
+
+                        /*
+                        if (user.uid !== uid) { // except me
+                            users.push(user);
+                        }
+                        */
+                        if (doc.id != uid) { // except me
+                            let user = doc.data();
+                            users.push(user);
+                        }
+                    });
+
+                    resolve(users);
+                }
+            }).catch(err => {
+                console.log('Error getting users', err);
+
+                reject(err);
+            });
+        });
+    }
 
     renderItem = (chunk: Chunk): React.Node => {
         const { navigation } = this.props;
@@ -187,7 +248,7 @@ export default class Home extends React.Component<NavigationProps<>> {
                             reviews={`${user.receivedReviews.length} reviews`}
                             onPress={() => navigation.navigate("detail", { user })}
                             // picture={user.pictures[0]}
-                            picture={user.pictures.one.uri}
+                            picture={user.pictures.one}
                             height={chunk.users.length === 1 ? height1 : height2}
                         />
                     ))
@@ -205,28 +266,36 @@ export default class Home extends React.Component<NavigationProps<>> {
 
     render(): React.Node {
         const { renderItem, onPress } = this;
-        const { navigation } = this.props;
+        // const { navigation } = this.props;
+        const girls = this.state.girls;
 
         /*
-        const data = windowing(TravelAPI.guides).map(guides => (
-            { id: guides.map(guide => guide.id).join(""), guides } // (id, guides[]) - join two IDs
-        ));
-        console.log('windowing data:', data);
-        */
-        const data = _windowing(USERS).map(users => (
+        const data = _windowing(__USERS).map(users => (
             { uid: users.map(user => user.uid).join(""), users }
-            // { uid: users.map(user => user.uid).join(""), users, key: parseInt(Math.random() * 1000) }
         ));
-        console.log('windowing data', data);
+        */
+        // console.log('windowing data', data);
+
+        let data;
+        if (!girls) {
+            data = null;
+        } else {
+            data = _windowing(girls).map(users => (
+                { uid: users.map(user => user.uid).join(""), users }
+            ));
+        }
+        
 
 
 
 
-        // const title = "Guides";
+        /*
+        const title = "Guides";
         const rightAction: Action = {
             icon: "sign-out",
             onPress
         };
+        */
 
         let title1 = null, title2 = null, title3 = null;
 

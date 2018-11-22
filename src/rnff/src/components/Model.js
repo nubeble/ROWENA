@@ -4,13 +4,42 @@ export type Picture = {
     preview: string
 };
 
+/*
 export type Profile = {
     picture: Picture,
     name: string,
     outline: string
 };
+*/
+export type Profile = { // done
+    // outline: string, // ToDo
 
-export type Post = {
+    uid: string,
+    name: string,
+    country: string,
+    city: string,
+    email: string,
+    phoneNumber: string,
+    pictures: Pictures,
+    location: Location,
+    about: string,
+    receivedReviews: string[],
+    averageRating: number,
+    postedReviews: string[]
+};
+
+type Pictures = {
+    one: Picture,
+    two: Picture,
+    three: Picture,
+    four: Picture,
+    five: Picture,
+    six: Picture
+};
+
+
+
+export type Post = { // done
     uid: string,
     id: string,
     likes: string[],
@@ -20,7 +49,7 @@ export type Post = {
     picture: Picture
 };
 
-export type Comment = {
+export type Comment = { // ToDo
     id: string,
     text: string,
     uid: string,

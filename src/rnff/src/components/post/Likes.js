@@ -7,7 +7,7 @@ import {Feather as Icon} from "@expo/vector-icons";
 import Odometer from "./Odometer";
 
 import {Theme} from "../Theme";
-import Firebase from "../Firebase";
+import Firebase from "../../../../Firebase";
 
 type LikesProps = {
     color: string,

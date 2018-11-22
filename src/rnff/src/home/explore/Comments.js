@@ -10,7 +10,8 @@ import {observer} from "mobx-react/native";
 import CommentComp from "./Comment";
 import CommentsStore from "./CommentStore";
 
-import {Text, NavHeader, Theme, Firebase} from "../../components";
+import {Text, NavHeader, Theme} from "../../components";
+import Firebase from "../../../../Firebase"
 import type {ScreenParams} from "../../components/Types";
 import type {Comment} from "../../components/Model";
 

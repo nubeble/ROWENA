@@ -1,18 +1,18 @@
 // @flow
 import * as React from "react";
 import moment from "moment";
-import {StyleSheet, View, Dimensions, Platform} from "react-native";
+import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from "react-native";
 
 import LikesAndComments from "./LikesAndComments";
 
 import FeedStore from "../FeedStore";
 import Text from "../Text";
 import Avatar from "../Avatar";
-import {Theme} from "../Theme";
+import { Theme } from "../Theme";
 import SmartImage from "../SmartImage";
 
-import type {Post, Profile} from "../Model";
-import type {NavigationProps} from "../Types";
+import type { Post, Profile } from "../Model";
+import type { NavigationProps } from "../Types";
 
 type PostProps = NavigationProps<> & {
     post: Post,
@@ -37,7 +37,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
     }
 
     componentDidMount() {
-        const {post, store} = this.props;
+        const { post, store } = this.props;
         this.unsubscribeToPost = store.subscribeToPost(post.id, newPost => this.setState({ post: newPost }));
         // eslint-disable-next-line max-len
         this.unsubscribeToProfile = store.subscribeToProfile(post.uid, newProfile => this.setState({ profile: newProfile }));
@@ -49,9 +49,14 @@ export default class PostComp extends React.Component<PostProps, PostState> {
     }
 
     render(): React.Node {
-        const {navigation} = this.props;
-        const {post, profile} = this.state;
-        const {likes, comments} = post;
+        const { navigation } = this.props;
+        const { post, profile } = this.state;
+
+        // console.log('PostComp.post', post);
+        // console.log('PostComp.profile', profile);
+
+
+        const { likes, comments } = post;
         const contentStyle = [styles.content];
         const nameStyle = [styles.name];
         const textStyle = [styles.text];
@@ -63,40 +68,52 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             textStyle.push({ color: "white" });
             dateStyle.push({ color: "rgba(255, 255, 255, 0.8)" });
         }
+
         return (
-            <View style={styles.container}>
-                {
-                    post.picture && (
-                        <SmartImage
-                            preview={post.picture.preview}
-                            uri={post.picture.uri}
-                            style={styles.picture}
-                        />
-                    )
-                }
-                <View style={contentStyle}>
-                    <View style={styles.header}>
-                        <Avatar {...profile.picture} />
-                        <View style={styles.metadata}>
-                            <Text style={nameStyle}>{profile.name}</Text>
-                            <Text style={dateStyle}>{moment(post.timestamp, "X").fromNow()}</Text>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("detail", { post: post, profile: profile })}>
+
+                <View style={styles.container}>
+                    {
+                        post.picture && (
+                            <SmartImage
+                                preview={post.picture.preview}
+                                uri={post.picture.uri}
+                                style={styles.picture}
+                            />
+                        )
+                    }
+
+                    <View style={contentStyle}>
+
+                        <View style={styles.header}>
+                            <Avatar {...profile.pictures.one} />
+                            <View style={styles.metadata}>
+                                <Text style={nameStyle}>{profile.name}</Text>
+                                <Text style={dateStyle}>{moment(post.timestamp, "X").fromNow()}</Text>
+                            </View>
                         </View>
+
+                        {/*
+                        <View>
+                            <Text style={textStyle} gutterBottom>{post.text}</Text>
+                        </View>
+                        */}
+
+                        <LikesAndComments
+                            color={post.picture ? "white" : Theme.typography.color}
+                            id={post.id}
+                            {...{ navigation, likes, comments }}
+                        />
+
                     </View>
-                    <View>
-                        <Text style={textStyle} gutterBottom>{post.text}</Text>
-                    </View>
-                    <LikesAndComments
-                        color={post.picture ? "white" : Theme.typography.color}
-                        id={post.id}
-                        {...{navigation, likes, comments}}
-                    />
                 </View>
-            </View>
+            
+            </TouchableWithoutFeedback>
         );
     }
 }
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
     container: {
         borderRadius: 5,

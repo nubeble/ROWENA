@@ -1,7 +1,7 @@
 // @flow
 import {observable, computed} from "mobx";
 
-import {Firebase} from "../../components";
+import Firebase from "../../../../Firebase";
 import type {Comment, Comments, CommentEntry} from "../../components/Model";
 
 export default class CommentsStore {

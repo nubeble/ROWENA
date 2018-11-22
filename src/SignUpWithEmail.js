@@ -282,21 +282,22 @@ export default class SignUpWithEmail extends React.Component {
         this.processSignUp();
     }
 
-    processSignUp() {
+    async processSignUp() {
         // show indicator
         this.setState({ showIndicator: true });
 
         try {
-            Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
+            const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
+            console.log('user', user);
         } catch (error) {
-            console.log('error', error.toString());
-
-            // close indicator
-            this.setState({ showIndicator: false });
+            console.log('error', error);
 
             this.state.value = 'An error occurred. Please try again.';
             this.showNotification();
         }
+
+        // close indicator
+        this.setState({ showIndicator: false });
     }
 
     render() {

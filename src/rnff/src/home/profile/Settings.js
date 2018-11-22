@@ -5,13 +5,11 @@ import {StyleSheet, View, TouchableWithoutFeedback, Image} from "react-native";
 import {ImagePicker, Permissions} from "expo";
 import {Content} from "native-base";
 import {Feather as Icon} from "@expo/vector-icons";
-
 import {
-    NavHeader, Firebase, Button, TextField, Theme, ImageUpload, serializeException, RefreshIndicator
+    NavHeader, Button, TextField, Theme, ImageUpload, serializeException, RefreshIndicator
 } from "../../components";
-
+import Firebase from "../../../../Firebase"
 import EnableCameraRollPermission from "./EnableCameraRollPermission";
-
 import type {ScreenParams} from "../../components/Types";
 import type {Profile} from "../../components/Model";
 import type {Picture} from "../../components/ImageUpload";

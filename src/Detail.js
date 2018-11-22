@@ -26,8 +26,12 @@ export default class Detail extends React.Component {
 
     componentDidMount() {
         console.log('Detail::componentDidMount');
-        // test
-        // this.watchUsers();
+
+        const { post, profile } = this.props.navigation.state.params;
+
+        console.log('post', post);
+        console.log('profile', profile);
+
     }
 
     getImageType(ext) {
@@ -219,7 +223,7 @@ export default class Detail extends React.Component {
 
     /*** Database ***/
 
-    // read - done
+    // read - ToDo
     getUser(userUid, watching) {
         /*
         // get the entire collection
@@ -281,110 +285,125 @@ export default class Detail extends React.Component {
         }
     }
 
+    // let users = await getUsers();
     getUsers() {
-        var query = Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50);
-        query.get().then((snapshot) => {
-            if (!snapshot.size) {
-                console.log("No such users!");
-            } else {
-                snapshot.docChanges().forEach((change) => {
-                    if (change.type === 'added') {
-                        // console.log(change.doc.data());
-                        var data = JSON.parse(JSON.stringify(change.doc.data()));
-                        console.log(data);
+        return new Promise((resolve, reject) => {
+            let users = {};
 
-                        // this.setState({users: data});
-                    }
+            // Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50).get()
+            Firebase.firestore.collection("users").get().then((snapshot) => {
+                snapshot.forEach((doc) => {
+                    console.log(doc.id, '=>', doc.data());
+                    users[doc.id] = doc.data();
                 });
-            }
+
+                resolve(users);
+            }).catch((err) => {
+                console.log('Error getting documents', err);
+
+                reject(err);
+            });
         });
     }
 
-    // update - done
-    updateUser(userUid, value) {
-        if (!value) return;
+    addFeed(userUid) {
+        const id = this.uid(); // create uuid
 
-        /*
-        var value = {
-            city: "Suwon",
-            about: firebase.firestore.FieldValue.delete()
+        var feed = {
+            id: id,
+            comments: 0,
+            likes: [], // user id ("DpwskQXesHVOlNzFU6IzAvzUQhJ3")
+            picture: {
+                preview: null,
+                uri: null
+            },
+            text: "text",
+            timestamp: 1542408591,
+            // uid: userUid
+            uid: "DMKMeSouZ6RLEZNJR1snJLLpe3f1"
         };
-        */
 
-        var query = Firebase.firestore.collection('users');
-        query = query.where('uid', '==', userUid);
-        query.get().then((querySnapshot) => {
-            if (!querySnapshot.size) {
-                console.log("No such a user!");
-            } else {
-                querySnapshot.forEach((queryDocumentSnapshot) => {
-                    console.log(queryDocumentSnapshot.id, queryDocumentSnapshot.data());
-
-                    // or set()
-                    Firebase.firestore.collection('users').doc(queryDocumentSnapshot.id).update(value);
-                });
-            }
-        });
+        return Firebase.firestore.collection("feed").doc(id).set(feed);
     }
 
-    // add - done
+    uid(): string {
+        return `${this.id()}${this.id()}-${this.id()}-${this.id()}-${this.id()}-${this.id()}${this.id()}${this.id()}`;
+    }
+
+    id() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+
+    // await addUser
     addUser(userUid) {
+        // uid = this.uid();
+        // console.log('uid', uid);
+
         var user = {
             uid: userUid,
             name: "Rachel",
-            country: "Thailand",
-            city: "Bangkok",
-            pictures: { // 6
-                one: {
-                    // preview: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAAXNSR0IArs4c6QAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACXBIWXMAAAsTAAALEwEAmpwYAAABWWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyI+CiAgICAgICAgIDx0aWZmOk9yaWVudGF0aW9uPjE8L3RpZmY6T3JpZW50YXRpb24+CiAgICAgIDwvcmRmOkRlc2NyaXB0aW9uPgogICA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgpMwidZAAABgElEQVQYGQ2Qu0tbcQCFv1+87xCrSb0mJMaQpPGi1QwtilmEqlPHQuna/6B/gnOhQ6aOxaWUIuLiA4eIhSrSDg4mJAqNpNhq6qPk0cTcJLd3ONP5OB8cwcalg3BY0mDckLm7vcbs3lMzI3xs2NDHrQUe1RBMeAUM6vR6bR7nPhHe+UDYrvHar5PWBQE30rwqCBka5n2D8P46oaNV5P4V7bEI9vIrfA98lP51kKZ8Ov5WjWBujdBu1lUkcUSKwb33XKoG4WcvMFxGGmveEMitE9l8i9b283XUS0dTWa4oDGxnsVUNdeE5Ay8T8ZXE5zcoVzr5QIxoapikqXBhS0TyZYxfh9RH4u5i8Tv9E8hnJhl99JCJSgVNl5CsGGfiCcmtbaLzx4gNw3RKs2msoIZ1cc75aZ1ezSa1EOSnNUX5xy2xowLi3eKiY7n3mKU8N6XfNL0ysugx1OgTylhUp6cpVFtI8W4dvnyj8Nfh2qPQNboMyx4aHYXWQZFg9Q8zT+f4D7nQgfd+SkaGAAAAAElFTkSuQmCC",
+            country: "Korea",
+            city: "Seoul",
+            email: '',
+            phoneNumber: '',
+            /*
+            pictures: [
+                {
                     preview: '',
                     uri: 'https://firebasestorage.googleapis.com/v0/b/react-native-e.appspot.com/o/a2a3dd0004c35ac29dea5921158b5122d3f4a275.png?alt=media&token=2849b892-fbcd-4c5f-ba45-575694f9094a'
+                }
+            ],
+            */
+            pictures: { // 6
+                one: {
+                    preview: null,
+                    uri: null
                 },
                 two: {
-                    preview: '',
-                    uri: ''
+                    preview: null,
+                    uri: null
                 },
                 three: {
-                    preview: '',
-                    uri: ''
+                    preview: null,
+                    uri: null
                 },
                 four: {
-                    preview: '',
-                    uri: ''
+                    preview: null,
+                    uri: null
                 },
                 five: {
-                    preview: '',
-                    uri: ''
+                    preview: null,
+                    uri: null
                 },
                 six: {
-                    preview: '',
-                    uri: ''
+                    preview: null,
+                    uri: null
                 }
             },
             location: {
                 longitude: 100.46775760000003, // 경도
                 latitude: 13.7659225 // 위도
             },
-            about: "let's make love",
-            receivedReviews: [ // review UID List (나한테 달린 리뷰)
-            ],
-            // 총 리뷰 갯수 - receivedReviews.length
-
-            // 평균 평점 - 리뷰가 추가될 때마다 다시 계산해서 업데이트
+            about: "from Korea",
+            receivedReviews: [], // 총 리뷰 갯수 - receivedReviews.length
             averageRating: 2.7,
-            postedReviews: [ // review UID List (내가 작성한 리뷰)
-            ]
+            postedReviews: []
         };
 
+        return Firebase.firestore.collection("users").doc(uid).set(user);
+
+        /*
         Firebase.firestore.collection("users").add(user).then((docRef) => {
             console.log('Add User succeeded. Document written with ID:', docRef.id);
         }).catch(function (error) {
             console.error('Add User failed. Error adding document:', error);
         });
+        */
     }
 
-    // remove - done
+    // await removeUser
     removeUser(userUid) {
+        /*
         var query = Firebase.firestore.collection('users');
         query = query.where('uid', '==', userUid);
         query.get().then((querySnapshot) => {
@@ -398,6 +417,8 @@ export default class Detail extends React.Component {
         }).catch((error) => {
             console.log("Error getting documents", error);
         });
+        */
+       return Firebase.firestore.collection("users").doc(userUid).delete();
     }
 
     // ToDo
@@ -431,7 +452,7 @@ export default class Detail extends React.Component {
 
     render() {
         const { navigation } = this.props;
-        const { user } = navigation.state.params; // ToDo
+        // const { user } = navigation.state.params; // ToDo
 
         /*
         uid: string,
@@ -542,9 +563,8 @@ export default class Detail extends React.Component {
                             </View>
                             */}
 
-
-                            <TouchableOpacity onPress={() => this.updateUser(Firebase.auth.currentUser.uid, null)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>updateUser</Text>
+                            <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addFeed</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => this.removeUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >

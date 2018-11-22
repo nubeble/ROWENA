@@ -21,6 +21,14 @@ type AppState = {
 };
 */
 
+// $FlowFixMe
+// https://github.com/firebase/firebase-js-sdk/issues/97
+if (!console.ignoredYellowBox) {
+    console.ignoredYellowBox = [];
+}
+console.ignoredYellowBox.push("Setting a timer");
+
+
 
 // export default class App extends React.Component<AppProps, AppState> {
 export default class App extends React.Component {
@@ -59,7 +67,7 @@ export default class App extends React.Component {
 	componentDidMount() {
 		console.log('App::componentDidMount');
 
-		const { navigation } = this.props;
+		// const { navigation } = this.props;
 
 		StatusBar.setBarStyle('light-content');
 		if (Platform.OS === "android") {
@@ -180,11 +188,6 @@ export default class App extends React.Component {
 					</Provider>
 				</ThemeProvider>
 			</React.Fragment>
-
-
-
-
-
 
 		);
 	}

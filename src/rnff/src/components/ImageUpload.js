@@ -1,7 +1,7 @@
 // @flow
 import {ImageManipulator} from "expo";
 
-import Firebase from "./Firebase";
+import Firebase from "../../../Firebase";
 
 export type Picture = {
     uri: string,

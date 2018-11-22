@@ -16,7 +16,7 @@ export {default as SmartImage} from "./SmartImage";
 export {default as CacheManager} from "./CacheManager";
 export {default as RefreshIndicator} from "./RefreshIndicator";
 export {default as NavHeader} from "./NavHeader";
-export {default as Firebase} from "./Firebase";
+export {default as Firebase} from "../../../Firebase";
 export {default as FirstPost} from "./FirstPost";
 export {default as ImageUpload} from "./ImageUpload";
 export {default as Feed} from "./Feed";
