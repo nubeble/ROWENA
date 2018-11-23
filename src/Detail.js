@@ -222,30 +222,8 @@ export default class Detail extends React.Component {
 
 
     /*** Database ***/
-
-    // read - ToDo
+    /*
     getUser(userUid, watching) {
-        /*
-        // get the entire collection
-        Firebase.firestore.collection("users").get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                console.log('getUser', `${doc.id} => ${doc.data()}`);
-            });
-        });
-        */
-
-        /*
-        Firebase.firestore.collection('users').doc('x3qSq5PuBio0RodFVgTU'). ().then((doc) => {
-            if (doc.exists) {
-                console.log('getUser', doc.data());
-            } else {
-                console.log("No such document!");
-            }
-        }).catch((error) => {
-            console.log("Error getting document:", error);
-        });
-        */
-
         var query = Firebase.firestore.collection('users');
         query = query.where('uid', '==', userUid);
         // query = query.orderBy('averageRating', 'desc');
@@ -284,6 +262,7 @@ export default class Detail extends React.Component {
             });
         }
     }
+    */
 
     // let users = await getUsers();
     getUsers() {
@@ -573,10 +552,6 @@ export default class Detail extends React.Component {
 
                             <TouchableOpacity onPress={() => this.getUsers()} style={[styles.signUpButton, { marginBottom: 10 }]} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUsers</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.getUser(Firebase.auth.currentUser.uid, false)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUser</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => this.addUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >

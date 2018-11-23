@@ -300,12 +300,13 @@ export default class SignUpWithEmail extends React.Component {
             this.showNotification();
         }
 
+        // ToDo: Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks.
         // close indicator
-        this.setState({ showIndicator: false });
+        // this.setState({ showIndicator: false });
     }
 
     render() {
-        const { goBack } = this.props.navigation;
+        // const { goBack } = this.props.navigation;
         const showIndicator = this.state.showIndicator;
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
@@ -369,7 +370,7 @@ export default class SignUpWithEmail extends React.Component {
                         </View>
 
                         <Text style={{
-                            marginTop: 12,
+                            // marginTop: 2,
                             marginLeft: 22,
 
                             color: 'rgba(255, 255, 255, 0.8)',
@@ -392,7 +393,7 @@ export default class SignUpWithEmail extends React.Component {
                                 {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             </Item>
 
-                            <Label style={{ marginTop: 30, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontWeight: 'bold', marginLeft: 18 }} >PASSWORD</Label>
+                            <Label style={{ marginTop: 24, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontWeight: 'bold', marginLeft: 18 }} >PASSWORD</Label>
 
                             <TouchableOpacity
                                 style={{ position: 'absolute', top: 92, right: 10, alignSelf: 'baseline' }}
@@ -436,7 +437,7 @@ const styles = StyleSheet.create({
     signUpButton: {
         // marginTop: 40,
         position: 'absolute',
-        bottom: 30,
+        bottom: 10,
 
         width: '85%',
         height: 45,

@@ -1,10 +1,10 @@
 // @flow
 import * as _ from "lodash";
 import * as React from "react";
-import {Image as RNImage, Animated, StyleSheet, View, Platform} from "react-native";
-import {BlurView} from "expo";
-import type {____ViewStyleProp_Internal as Style} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import type {ImageSourcePropType} from "react-native/Libraries/Image/ImageSourcePropType";
+import { Image as RNImage, Animated, StyleSheet, View, Platform } from "react-native";
+import { BlurView } from "expo";
+import type { ____ViewStyleProp_Internal as Style } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import type { ImageSourcePropType } from "react-native/Libraries/Image/ImageSourcePropType";
 
 import CacheManager from "./CacheManager";
 
@@ -27,7 +27,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         intensity: new Animated.Value(100)
     };
 
-    async load({uri}: ImageProps): Promise<void> {
+    async load({ uri }: ImageProps): Promise<void> {
         if (uri) {
             const entry = CacheManager.get(uri);
             const path = await entry.getPath();
@@ -42,8 +42,8 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     }
 
     componentDidUpdate(prevProps: ImageProps, prevState: ImageState) {
-        const {preview} = this.props;
-        const {uri, intensity} = this.state;
+        const { preview } = this.props;
+        const { uri, intensity } = this.state;
         if (this.props.uri !== prevProps.uri) {
             this.load(this.props);
         } else if (uri && preview && uri !== preview && prevState.uri === undefined) {
@@ -54,14 +54,14 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     }
 
     componentWillUnmount() {
-        const {uri} = this.props;
+        const { uri } = this.props;
         const entry = CacheManager.get(uri);
         entry.cancel();
     }
 
     render(): React.Node {
-        const {preview, style, defaultSource, ...otherProps} = this.props;
-        const {uri, intensity} = this.state;
+        const { preview, style, defaultSource, ...otherProps } = this.props;
+        const { uri, intensity } = this.state;
         const hasDefaultSource = !!defaultSource;
         const hasPreview = !!preview;
         const hasURI = !!uri;
@@ -79,7 +79,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             )
         ];
         return (
-            <View {...{style}}>
+            <View {...{ style }}>
                 {
                     (hasDefaultSource && !hasPreview && !hasURI) && (
                         <RNImage
@@ -95,6 +95,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                             source={{ uri: preview }}
                             resizeMode="cover"
                             style={computedStyle}
+                            // style={[computedStyle, { borderWidth: 0, borderColor: 'transparent' }]}
                             blurRadius={Platform.OS === "android" ? 0.5 : 0}
                         />
                     )
@@ -104,18 +105,21 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                         <RNImage
                             source={{ uri }}
                             style={computedStyle}
+                            // style={[computedStyle, { borderWidth: 0, borderColor: 'transparent' }]}
                             {...otherProps}
                         />
                     )
                 }
                 {
                     hasPreview && Platform.OS === "ios" && (
-                        <AnimatedBlurView tint="dark" style={computedStyle} {...{intensity}} />
+                        <AnimatedBlurView tint="dark" style={computedStyle} {...{ intensity }} />
+                        // <AnimatedBlurView tint="dark" style={[computedStyle, { borderWidth: 0, borderColor: 'transparent' }]} {...{ intensity }} />
                     )
                 }
                 {
                     hasPreview && Platform.OS === "android" && (
                         <Animated.View style={[computedStyle, { backgroundColor: black, opacity }]} />
+                        // <Animated.View style={[computedStyle, { borderWidth: 0, borderColor: 'transparent', backgroundColor: black, opacity }]} />
                     )
                 }
             </View>
@@ -125,6 +129,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
 
 const black = "black";
 const propsToCopy = [
-    "borderRadius", "borderBottomLeftRadius", "borderBottomRightRadius", "borderTopLeftRadius", "borderTopRightRadius"
+    // "borderRadius", "borderBottomLeftRadius", "borderBottomRightRadius", "borderTopLeftRadius", "borderTopRightRadius"
+    "borderRadius", "borderBottomLeftRadius", "borderBottomRightRadius", "borderTopLeftRadius", "borderTopRightRadius", "borderColor", "borderWidth"
 ];
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
