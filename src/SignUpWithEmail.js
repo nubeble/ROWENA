@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import { Header } from 'react-navigation';
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -361,7 +362,7 @@ export default class SignUpWithEmail extends React.Component {
                         <View style={styles.searchBarStyle}>
 
                             <TouchableOpacity
-                                style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 22, alignSelf: 'baseline' }}
+                                style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
                                 onPress={() => this.props.navigation.goBack()}
                             >
                                 <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -429,8 +430,8 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchBarStyle: {
-        height: 80,
-        paddingBottom: 16,
+        height: Constants.statusBarHeight + Header.HEIGHT,
+        paddingBottom: 14 + 2,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },

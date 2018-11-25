@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions, FlatList } from 'react-native';
+import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -27,10 +28,11 @@ export default class Detail extends React.Component {
     componentDidMount() {
         console.log('Detail::componentDidMount');
 
-        const { post, profile } = this.props.navigation.state.params;
+        // const { post, profile } = this.props.navigation.state.params;
+        // console.log('post', post);
+        // console.log('profile', profile);
 
-        console.log('post', post);
-        console.log('profile', profile);
+        // const { feed, user } = this.props.navigation.state.params;
 
     }
 
@@ -286,7 +288,7 @@ export default class Detail extends React.Component {
     }
 
     addFeed(userUid) {
-        const id = this.uid(); // create uuid
+        const id = Util.uid(); // create uuid
 
         var feed = {
             id: id,
@@ -305,19 +307,8 @@ export default class Detail extends React.Component {
         return Firebase.firestore.collection("feed").doc(id).set(feed);
     }
 
-    uid(): string {
-        return `${this.id()}${this.id()}-${this.id()}-${this.id()}-${this.id()}-${this.id()}${this.id()}${this.id()}`;
-    }
-
-    id() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-
     // await addUser
     addUser(userUid) {
-        // uid = this.uid();
-        // console.log('uid', uid);
-
         var user = {
             uid: userUid,
             name: "Rachel",
@@ -479,7 +470,7 @@ export default class Detail extends React.Component {
 
                 <View style={styles.searchBarStyle}>
                     <TouchableOpacity
-                        style={{ marginTop: Constants.statusBarHeight + 30 + 2, marginLeft: 22, alignSelf: 'baseline' }}
+                        style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
                         onPress={() => this.props.navigation.goBack()}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -588,9 +579,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(26, 26, 26)'
     },
     searchBarStyle: {
-        height: 80,
-        // backgroundColor: 'rgb(0, 0, 255)', // test
-        paddingBottom: 16,
+        // height: Header.HEIGHT + 30,
+        height: Constants.statusBarHeight + Header.HEIGHT,
+        paddingBottom: 14 + 2,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },

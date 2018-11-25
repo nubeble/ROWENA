@@ -6,7 +6,7 @@ import { AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/
 
 import Chats from './Chats';
 import Likes from './Likes';
-import Me from './Me';
+import Profile from './Profile';
 
 
 import HomeStackNavigator from './HomeStackNavigator';
@@ -18,12 +18,11 @@ import SignUp from './SignUp';
 export default createBottomTabNavigator(
     {
         home: HomeStackNavigator,
-        // chats: Chats,
-        chats: Test,
-        // likes: Likes,
-        likes: SignIn,
-        // me: Me
-        me: SignUp
+        // likes: SignIn,
+        likes: Likes,
+        chats: Chats,
+        // chats: Test,
+        profile: Profile
     },
     {
         navigationOptions: ({ navigation }) => ({
@@ -46,15 +45,6 @@ export default createBottomTabNavigator(
                         style={{ color: tintColor }}
                     />;
 
-                } else if (navigation.state.routeName === 'chats') {
-
-                    return <Ionicons
-                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-                        name={'ios-chatbubbles'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />;
-
                 } else if (navigation.state.routeName === 'likes') {
 
                     return <Ionicons
@@ -64,7 +54,16 @@ export default createBottomTabNavigator(
                         style={{ color: tintColor }}
                     />;
 
-                } else if (navigation.state.routeName === 'me') {
+                } else if (navigation.state.routeName === 'chats') {
+
+                    return <Ionicons
+                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+                        name={'ios-chatbubbles'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />;
+
+                } else if (navigation.state.routeName === 'profile') {
 
                     return <FontAwesome
                         name={'user'}
@@ -78,10 +77,12 @@ export default createBottomTabNavigator(
 
         tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
             style: {
-                backgroundColor: 'rgb(26, 26, 26)'
+                backgroundColor: 'rgb(26, 26, 26)',
+                paddingTop: 10,
+                // height: 50
             },
             animationEnabled: true,
-            showLabel: true,
+            showLabel: false,
             showIcon: true,
             // tintColor: 'red',
             // activeTintColor: 'rgb(234, 68, 90)',

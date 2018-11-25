@@ -1,6 +1,7 @@
 // @flow
 import * as React from "react";
 import { FlatList, StyleSheet, View, Animated, Dimensions, TextInput, TouchableOpacity } from "react-native";
+import { Header } from 'react-navigation';
 import { Constants } from "expo";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -113,6 +114,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 
 
                 <View style={styles.searchBarStyle}>
+                    {/*
                     <View style={{ width: '70%', height: 32, backgroundColor: 'rgb(36, 36, 36)', borderColor: 'rgb(36, 36, 36)', borderRadius: 25, borderWidth: 1 }} >
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
@@ -132,6 +134,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
                             onEndEditing={()=> this.leaveEditing() }
                         />
                     </View>
+                    */}
                 </View>
 
 
@@ -229,8 +232,8 @@ const styles = StyleSheet.create({
             marginRight: StyleGuide.spacing.small,
         marginTop: StyleGuide.spacing.small
     },
-    searchBarStyle: { // View
-        height: 80,
+    searchBarStyle: {
+        height: Constants.statusBarHeight + Header.HEIGHT,
         paddingBottom: 14,
         justifyContent: 'flex-end',
         alignItems: 'center'
