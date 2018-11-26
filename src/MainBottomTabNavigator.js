@@ -78,7 +78,7 @@ export default createBottomTabNavigator(
         tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
             style: {
                 backgroundColor: 'rgb(26, 26, 26)',
-                paddingTop: 10,
+                paddingTop: 10, // ToDo: set padding
                 // height: 50
             },
             animationEnabled: true,

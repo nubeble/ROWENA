@@ -2,7 +2,7 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import moment from "moment";
-import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, Platform, Dimensions, TouchableOpacity, TextInput, Modal } from "react-native";
+import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, Platform, Dimensions, TouchableOpacity, TextInput, Modal, StatusBar } from "react-native";
 import { Header } from 'react-navigation';
 import { Constants } from "expo";
 import { inject, observer } from "mobx-react/native";
@@ -10,6 +10,7 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from "./rnff/src/components/SmartImage";
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
 
@@ -18,8 +19,10 @@ const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
-const Bangkok = { description: 'Bangkok, Thailand', geometry: { location: { lat: 13.7563309, lng: 100.5017651 } } };
-const HuaHin = { description: 'Cebu, Philippines', geometry: { location: { lat: 12.568452, lng: 99.9577223 } } };
+const Bangkok = { description: 'Bangkok, Thailand', place_id : 'ChIJ82ENKDJgHTERIEjiXbIAAQE', geometry: { location: { lat: 13.7563309, lng: 100.5017651 } } };
+const Manila = { description: 'Manila, Philippines', place_id : 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk', geometry: { location: { lat: 14.5995124, lng: 120.9842195 } } };
+const HoChiMinh = { description: 'Ho Chi Minh, Vietnam', place_id : 'ChIJ0T2NLikpdTERKxE8d61aX_E', geometry: { location: { lat: 10.8230989, lng: 106.6296638 } } };
+const Vientiane = { description: 'Vientiane, Laos', place_id : 'ChIJIXvtBoZoJDER3-7BGIaxkx8', geometry: { location: { lat: 17.9757058, lng: 102.6331035 } } };
 
 type ExploreState = {
     scrollAnimation: Animated.Value
@@ -36,9 +39,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     state = {
         scrollAnimation: new Animated.Value(0),
 
-        showModal: false
-
-        // showPlaceSearchListView: false
+        showModal: false,
+        searchText: ''
     };
 
     /*
@@ -96,18 +98,28 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                     transparent={false}
                     visible={this.state.showModal}
                     onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
+                        // Alert.alert('Modal has been closed.');
                     }}>
 
-                    <View style={styles.flex}>
-                        <View style={styles.searchBarStyle}>
+                    <View style={styles.modalFlex}>
+                        <View style={styles.modalSearchBarStyle}>
+                            <TouchableOpacity
+                                style={{ marginTop: Header.HEIGHT / 3 - 3, marginRight: 22, alignSelf: 'baseline' }}
+                                onPress={() => this.setState({ showModal: false })}
+                            >
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
 
+
+
+                            {/*
                             <TouchableHighlight
                                 onPress={() => {
                                     this.setState({ showModal: false });
                                 }}>
                                 <Text>Hide Modal</Text>
                             </TouchableHighlight>
+                            */}
                         </View>
 
                         <GooglePlacesAutocomplete
@@ -118,9 +130,25 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             // listViewDisplayed='auto'    // true/false/undefined
                             listViewDisplayed={this.state.showPlaceSearchListView}
                             fetchDetails={true}
+                            // fetchDetails={false}
                             renderDescription={row => row.description} // custom description render
                             onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                                console.log(data, details);
+                                console.log('data', data);
+                                console.log('details', details);
+
+                                console.log('data.place_id', data.place_id);
+                                
+                                // console.log('details', details.geometry.location);
+                                // const location = details.geometry.location;
+                                // location.lat;
+                                // location.lng;
+
+                                // close the modal in 0.3 sec
+                                let that = this;
+                                setTimeout(function () {
+                                    that.setState({ showModal: false });
+                                }, 300);
+
                             }}
 
                             getDefaultValue={() => ''}
@@ -172,11 +200,11 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                     // width: '100%',
                                     position: 'absolute',
                                     left: 0,
-                                    right: 12,
+                                    right: 40,
 
                                     height: 40,
-                                    // backgroundColor: 'transparent',
-                                    backgroundColor: '#777777',
+                                    backgroundColor: 'transparent',
+                                    // backgroundColor: '#777777',
                                     fontSize: 24,
                                     lineHeight: 28,
                                     fontWeight: '500',
@@ -207,7 +235,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                     color: "white"
                                 },
                                 predefinedPlacesDescription: {
-                                    color: 'rgb(234, 150, 24)'
+                                    // color: 'rgb(234, 150, 24)'
+                                    color: 'white'
                                 },
                                 poweredContainer: {
                                     backgroundColor: 'transparent',
@@ -234,7 +263,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             }}
 
                             filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-                            predefinedPlaces={[Bangkok, HuaHin]}
+                            predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
 
                             debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
                         // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
@@ -260,30 +289,40 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
                 <View style={styles.searchBarStyle}>
                     <View style={{
-                        width: '70%', height: 32, backgroundColor: 'rgb(36, 36, 36)',
-                        borderColor: 'rgb(36, 36, 36)', borderRadius: 25, borderWidth: 1
+                        width: '50%', height: 32,
+                        // backgroundColor: 'rgb(36, 36, 36)',
+                        backgroundColor: '#303030',
+                        borderColor: '#303030',
+                        borderRadius: 25, borderWidth: 1
                     }} >
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
+                            style={{ position: 'absolute', left: 10, top: 6, alignSelf: 'baseline' }}
                             onPress={() => {
-                                this.refs['searchInput'].focus();
-                                this.startEditing();
+                                // this.refs['searchInput'].focus();
+                                // this.startEditing();
+                                this.setState({ showModal: true });
                             }}
                         >
                             <FontAwesome name='search' color="grey" size={16} />
                         </TouchableOpacity>
 
-                        <TextInput
-                            ref='searchInput'
+                        <TouchableOpacity
                             style={{
-                                position: 'absolute', left: 40, right: 40, width: '100%', height: '100%',
-                                fontSize: 16, color: "white"
+                                position: 'absolute', left: 36, right: 40, width: '100%', height: '100%',
                             }}
-                            underlineColorAndroid="transparent"
-                            placeholder='Try "Bangkok"' placeholderTextColor='grey'
-                            onTouchStart={() => this.startEditing()}
-                            onEndEditing={() => this.leaveEditing()}
-                        />
+                            onPress={() => this.setState({ showModal: true })}>
+                            <TextInput
+                                // ref='searchInput'
+                                editable={false}
+                                style={{ fontSize: 16, color: "white" }}
+                                placeholder='Where to?' placeholderTextColor='grey'
+                                // underlineColorAndroid="transparent"
+                                // onTouchStart={() => this.startEditing()}
+                                // onEndEditing={() => this.leaveEditing()}
+                                value={this.state.searchText}
+                            />
+                        </TouchableOpacity>
+
                     </View>
                 </View>
 
@@ -365,7 +404,6 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     startEditing() {
         // ToDo: add animation
         // alert('startEditing()');
-        this.setState({ showModal: true });
     }
 
     leaveEditing() {
@@ -423,6 +461,22 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
+
+
+    modalFlex: {
+        flex: 1,
+        // backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'black'
+    },
+    modalSearchBarStyle: {
+        backgroundColor: 'black', // RN issue
+        height: Header.HEIGHT,
+        paddingBottom: 14 + 2,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+
 });
 
 

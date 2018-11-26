@@ -385,7 +385,10 @@ export default class SignUpWithEmail extends React.Component {
                         <Form style={{ marginTop: 18, marginLeft: 4, marginRight: 16 }} >
                             <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontWeight: 'bold', marginLeft: 18 }} >EMAIL ADDRESS</Label>
                             <Item>
-                                <Input ref='emailInput' autoCapitalize="none" style={{ height: 42, fontSize: 22, color: 'rgba(255, 255, 255, 0.8)' }} underlineColorAndroid="transparent" autoCorrect={false}
+                                <Input ref='emailInput' autoCapitalize="none" style={{ height: 42, fontSize: 22, color: 'rgba(255, 255, 255, 0.8)' }}
+                                    underlineColorAndroid="transparent"
+                                    autoCorrect={false}
+                                    keyboardType={'email-address'}
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
@@ -404,9 +407,12 @@ export default class SignUpWithEmail extends React.Component {
                             </TouchableOpacity>
 
                             <Item>
-                                <Input ref='pwInput' autoCapitalize="none" style={{ height: 42, fontSize: 22, color: 'rgba(255, 255, 255, 0.8)' }} underlineColorAndroid="transparent" autoCorrect={false}
-                                    selectionColor={'rgba(255, 255, 255, 0.8)'}
+                                <Input ref='pwInput' autoCapitalize="none" style={{ height: 42, fontSize: 22, color: 'rgba(255, 255, 255, 0.8)' }}
+                                    underlineColorAndroid="transparent"
+                                    autoCorrect={false}
+                                    // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
                                     secureTextEntry={this.state.securePwInput}
+                                    selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
                                 />

@@ -53,14 +53,14 @@ export default class Profile extends React.Component {
                 />
 
                 <View style={styles.searchBarStyle}>
-                    {/*
+
                     <TouchableOpacity
                         style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
-                        onPress={() => this.props.navigation.goBack()}
+                        // onPress={() => this.props.navigation.goBack()}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
-                    */}
+
                 </View>
 
                 <FlatList
@@ -129,16 +129,21 @@ export default class Profile extends React.Component {
     } // end of render()
 
     addFeed() {
-        let placeId = '39frri23uhfa73f398'; // ToDo: use google Places API
+        // let placeId = null; // ToDo: use google Places API
         // let image1Uri; // ToDo: use image picker
-        let note = 'note';
-        this.createFeed(Firebase.auth.currentUser.uid, placeId, null, null, null, null, note);
+
+        this.createFeed(Firebase.auth.currentUser.uid, null, null, null, null, null, null);
     }
 
-    // addFeed(userUid) { // user id, place id, feed id, pictures, reviews [review id], averageRating,
+    
     createFeed(userUid, placeId, image1Uri, image2Uri, image3Uri, image4Uri, note) {
-        // [review]
-        // user id, rating, date, title, content
+        // test
+        userUid = 'DMKMeSouZ6RLEZNJR1snJLLpe3f1'; // (facebook login)
+        placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
+        note = 'note';
+
+        // feed: user id, place id, feed id, pictures, note, reviews [review id], averageRating,
+        // review: user id, review id, rating, date, content
 
 
         // 1. upload images simultaneously & get download uri
@@ -148,10 +153,14 @@ export default class Profile extends React.Component {
         const id = Util.uid(); // create uuid
 
         var feed = {
-            id: id, // feed id
-            // uid: userUid,
-            uid: "DMKMeSouZ6RLEZNJR1snJLLpe3f1", // user uid
+            uid: userUid, // owner
             placeId: placeId,
+            location: {
+                description: null, // "Cebu, Philippines"
+                longitude: 0.0,
+                latitude: 0.0
+            },
+            id: id, // feed id
             pictures: { // 4
                 one: {
                     preview: null,
@@ -171,17 +180,16 @@ export default class Profile extends React.Component {
                 }
             },
             note: note,
-            timestamp: Date.now(), // 1543145425396
 
             // comments: 0,
             averageRating: 0.0,
             reviews: [],
+
+            timestamp: Date.now() // 1543145425396
         };
 
         return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).set(feed);
     }
-
-    
 }
 
 const styles = StyleSheet.create({
