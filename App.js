@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 // import ModalHost from 'expo/src/modal/ModalHost';
-import { ThemeProvider } from './src/rne/src/components';
+import { ThemeProvider, Colors } from './src/rne/src/components';
 import MainSwitchNavigator from './src/MainSwitchNavigator';
 import { FeedStore } from './src/rnff/src/components';
 import { Font, AppLoading } from 'expo';
@@ -73,6 +73,9 @@ export default class App extends React.Component {
 		if (Platform.OS === "android") {
 			StatusBar.setBackgroundColor("black");
 		}
+
+		ThemeProvider.getInstance().switchColors(Colors['Main']);
+
 
 		// this.ready();
 	}

@@ -3,6 +3,7 @@ import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackV
 
 // import Home from './Home';
 import Explore from './Explore';
+import Intro from './Intro';
 import Detail from './Detail';
 
 
@@ -11,6 +12,10 @@ export default createStackNavigator(
         home: {
             // screen: Home
             screen: Explore
+        },
+
+        intro: {
+            screen: Intro
         },
 
         detail: {

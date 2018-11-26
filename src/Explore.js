@@ -13,6 +13,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from "./rnff/src/components/SmartImage";
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
+import Firebase from './Firebase';
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -40,7 +41,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         scrollAnimation: new Animated.Value(0),
 
         showModal: false,
-        searchText: ''
+        searchText: '',
+        userLocationLoaded: false,
     };
 
     /*
@@ -51,7 +53,58 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     */
 
     componentDidMount() {
-        this.props.feedStore.checkForNewEntriesInFeed();
+        // this.props.feedStore.checkForNewEntriesInFeed();
+
+        // 1. get user location
+        // console.log('userLocationLoaded', this.state.userLocationLoaded);
+        if (this.state.userLocationLoaded !== true) {
+            const { uid } = Firebase.auth.currentUser;
+
+            Firebase.firestore.collection('users').doc(uid).get().then(doc => {
+                if (!doc.exists) {
+                    console.log('No such document!');
+                } else {
+                    console.log('user', doc.data());
+
+                    let user = doc.data();
+                    let place = user.location.description;
+                    console.log('user location', place);
+
+                    // 2.
+
+                }
+            });
+
+            
+            /*
+            if (!user || !user.country || !user.city) {
+                // get gps
+                try {
+                    let position = await this.getPosition();
+                } catch (error) {
+                    console.log('getPosition error', error);
+    
+                    return;
+                }
+    
+            } else {
+                console.log(user.country, user.city);
+                location.country = user.country;
+                location.city = user.city;
+            }
+            */
+
+
+
+            this.setState({userLocationLoaded: true});
+        }
+
+        // 2. get feed from the user location
+        
+        // 3.
+
+        
+        
     }
 
     render(): React.Node {
@@ -367,19 +420,10 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                     ListHeaderComponent={(
                         <Animated.View>
                             <TouchableOpacity onPress={() => {
-                                /*
-                                if (this.state.showPlaceSearchListView) {
-                                    this.setState({ showPlaceSearchListView: false });
-                                } else {
-                                    this.setState({ showPlaceSearchListView: true });
-                                }
-                                */
 
-                                if (this.state.showModal) {
-                                    this.setState({ showModal: false });
-                                } else {
-                                    this.setState({ showModal: true });
-                                }
+                                this.props.navigation.navigate("intro");
+                                console.log('move to Intro');
+
                             }}>
                                 <SmartImage
                                     style={styles.ad}
