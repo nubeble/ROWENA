@@ -104,6 +104,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         // 3.
 
         
+
+        // test
+        console.log('height', Dimensions.get('window').height);
         
     }
 
