@@ -1,6 +1,7 @@
 // tab navigator
 
 import React from 'react';
+import { Dimensions, Platform } from 'react-native';
 import { createBottomTabNavigator } from 'react-navigation';
 import { AntDesign, Ionicons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 
@@ -9,7 +10,9 @@ import Likes from './Likes';
 import Profile from './Profile';
 
 
-import HomeStackNavigator from './HomeStackNavigator';
+// import HomeStackNavigator from './HomeStackNavigator';
+import HomeSwitchNavigator from './HomeSwitchNavigator';
+
 import Test from './Test';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
@@ -17,11 +20,10 @@ import SignUp from './SignUp';
 
 export default createBottomTabNavigator(
     {
-        home: HomeStackNavigator,
-        // likes: SignIn,
+        // home: HomeStackNavigator,
+        home: HomeSwitchNavigator,
         likes: Likes,
         chats: Chats,
-        // chats: Test,
         profile: Profile
     },
     {
@@ -77,17 +79,20 @@ export default createBottomTabNavigator(
 
         tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
             style: {
-                backgroundColor: 'rgb(26, 26, 26)',
-                paddingTop: parseInt(Dimensions.get('window').height / 80)
-                // height: 50
+                backgroundColor: 'rgb(40, 40, 40)',
+                borderTopWidth: 1,
+                borderTopColor:'rgb(61, 61, 61)',
+                // paddingTop: parseInt(Dimensions.get('window').height / 80)
+                // paddingTop: Dimensions.get('window').height > 640 ? 10 : 2
+                paddingTop: Platform.OS === "ios" ? 10 : 0
             },
             animationEnabled: true,
             showLabel: false,
             showIcon: true,
             // tintColor: 'red',
             // activeTintColor: 'rgb(234, 68, 90)',
-            activeTintColor: 'rgb(234, 150, 24)',
-            inactiveTintColor: 'rgb(162, 162, 162)',
+            activeTintColor: 'rgb(255, 255, 255)',
+            inactiveTintColor: 'rgb(144, 144, 144)',
             tabStyle: {
                 // paddingVertical: 10
             }

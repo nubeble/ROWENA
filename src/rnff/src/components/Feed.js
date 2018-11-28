@@ -23,6 +23,7 @@ type FeedProps = NavigationProps<> & {
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
+    
     componentDidMount() {
         const { feed } = this.props.store;
         console.log('Feed::componentDidMount', feed);

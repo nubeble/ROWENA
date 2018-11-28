@@ -139,21 +139,24 @@ export default class Likes extends React.Component {
 
                             const rating = item.rating ? item.rating : 'na'
 
-                            return (<View><ListItem
-                                roundAvatar
-                                title={`${item.name}` + " (" + `${rating}` + ")"}
-                                subtitle={`${item.vicinity}`}
-                                avatar={{ uri: item.icon }}
-                                containerStyle={{ borderBottomWidth: 0 }}
-                            />
-                                <View
-                                    style={{
-                                        height: 1,
-                                        width: "86%",
-                                        backgroundColor: "#CED0CE",
-                                        marginLeft: "14%"
-                                    }}
-                                /></View>
+                            return (
+                                <View>
+                                    <ListItem
+                                        roundAvatar
+                                        title={`${item.name}` + " (" + `${rating}` + ")"}
+                                        subtitle={`${item.vicinity}`}
+                                        avatar={{ uri: item.icon }}
+                                        containerStyle={{ borderBottomWidth: 0 }}
+                                    />
+                                    <View
+                                        style={{
+                                            height: 1,
+                                            width: "86%",
+                                            backgroundColor: "#CED0CE",
+                                            marginLeft: "14%"
+                                        }}
+                                    />
+                                </View>
                             )
                         }}
                         onRefresh={this.handleRefresh}

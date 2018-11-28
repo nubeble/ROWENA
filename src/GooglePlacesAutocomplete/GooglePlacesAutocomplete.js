@@ -141,7 +141,7 @@ export default class GooglePlacesAutocomplete extends Component {
 		let that = this;
 		setTimeout(function () {
 			if (that.refs.textInput) that.refs.textInput.focus();
-		}, 500); // 0.5 sec
+		}, 200); // 0.2 sec
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -607,7 +607,7 @@ export default class GooglePlacesAutocomplete extends Component {
 				showsHorizontalScrollIndicator={false}
 				showsVerticalScrollIndicator={false}>
 				<TouchableHighlight
-					style={{ width: WINDOW.width, height: parseInt(Dimensions.get('window').height / 80) * 5 }}
+					style={{ width: WINDOW.width, height: parseInt(WINDOW.height / 80) * 5 }}
 					onPress={() => this._onPress(rowData)}
 					underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
 				>

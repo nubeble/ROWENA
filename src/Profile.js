@@ -67,7 +67,7 @@ export default class Profile extends React.Component {
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
-                        <Animated.View style={{ backgroundColor: '#000000' }}>
+                        <View style={{ backgroundColor: '#000000' }}>
 
                             <TouchableOpacity onPress={() => console.log(onPress)}>
                                 <SmartImage
@@ -116,7 +116,7 @@ export default class Profile extends React.Component {
                                 style={[styles.bottomButton, { marginBottom: 10 }]} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>ADD DOC(PLACE/BKK/FEED/...)</Text>
                             </TouchableOpacity>
-                        </Animated.View>
+                        </View>
                     )}
                     // scrollEventThrottle={1}
                     // columnWrapperStyle={undefined}
@@ -195,7 +195,7 @@ export default class Profile extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
     searchBarStyle: {
         height: Constants.statusBarHeight + Header.HEIGHT,
@@ -206,7 +206,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         paddingBottom: StyleGuide.spacing.small,
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
     ad: {
         width: Dimensions.get('window').width - 2,

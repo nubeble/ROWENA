@@ -64,8 +64,8 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 // ToDo: load user feed from database
                 const { uid } = Firebase.auth.currentUser;
 
-                const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc");
-                const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc");
+                const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc"); // 모든 feed
+                const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc"); // 내가 올린 feed
 
                 feedStore.init(feedQuery);
                 profileStore.init();

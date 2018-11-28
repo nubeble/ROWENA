@@ -1,230 +1,416 @@
-import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions, FlatList } from 'react-native';
+// @flow
+import autobind from "autobind-decorator";
+import * as React from "react";
+import moment from "moment";
+import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, 
+    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image
+} from "react-native";
 import { Header } from 'react-navigation';
-import { Constants, Permissions, ImagePicker, Linking } from "expo";
-import { StyleGuide } from "./rne/src/components/theme";
-import SmartImage from "./rnff/src/components/SmartImage";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { Constants } from "expo";
 import { inject, observer } from "mobx-react/native";
-import Firebase from "./Firebase"
-import Util from "./Util"
+import ProfileStore from "./rnff/src/home/ProfileStore";
+import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
+import type { ScreenProps } from "./rnff/src/components/Types";
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Firebase from './Firebase';
+import SearchModal from "./SearchModal";
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
+const AnimatedText = Animated.createAnimatedComponent(Text);
+const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
+type ExploreState = {
+    scrollAnimation: Animated.Value
+};
 
-
-// --
-import Carousel from './react-native-snap-carousel/src/carousel/Carousel';
-import Pagination from './react-native-snap-carousel/src/pagination/Pagination';
-import { Platform, ScrollView, StatusBar, SafeAreaView } from 'react-native';
-import LinearGradient from 'expo';
-
-import { sliderWidth, itemWidth } from './react-native-snap-carousel/example/src/styles/SliderEntry.style';
-import SliderEntry from './react-native-snap-carousel/example/src/components/SliderEntry';
-import styles, { colors } from './react-native-snap-carousel/example/src/styles/index.style';
-import { ENTRIES1, ENTRIES2 } from './react-native-snap-carousel/example/src/static/entries';
-import { scrollInterpolators, animatedStyles } from './react-native-snap-carousel/example/src/utils/animations';
-
-const IS_ANDROID = Platform.OS === 'android';
-const SLIDER_1_FIRST_ITEM = 1;
-// --
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
 
 
-// @inject("feedStore", "profileStore") @observer
-export default class Intro extends React.Component {
-    constructor (props) {
-        super(props);
-        this.state = {
-            slider1ActiveSlide: SLIDER_1_FIRST_ITEM
-        };
+// ToDo: 일단은 고정값으로 간다.
+// 추후 고정값이 아니라 query를 통해 가져와야 한다. place - feed length가 가장 많은 6개 (database indexes를 써서 미리 내림차순정렬로 가지고 있자.)
+// 이 때 thumbnail은 어떻게 가져올 지 고민!!
+const places = [
+    { // place
+        place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
+        description: 'Bangkok, Thailand',
+        city: 'Bangkok',
+        uri: require('../assets/place/Bangkok.jpg')
+        // uri: '../assets/thumbnail/Bangkok.png' // require('../assets/splash.png')
+        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
+	},
+	{
+        place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
+        description: 'Manila, Philippines',
+        city: 'Manila',
+        uri: require('../assets/place/Manila.jpg')
+        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
+        // uri: 'require("../assets/place/Manila.png")'
+    },
+    {
+        place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
+        description: 'Ho Chi Minh, Vietnam',
+        city: 'Ho Chi Minh',
+        uri: require('../assets/place/HoChiMinh.jpg')
+        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
+        // uri: 'require("../assets/place/HoChiMinh.png")'
+    },
+    {
+        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
+        description: 'Vientiane, Laos',
+        city: 'Vientiane',
+        uri: require('../assets/place/Vientiane.jpg')
+        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
+        // uri: 'require("../assets/place/Vientiane.png")'
+    },
+    {
+        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo
+        description: 'Phnom Penh, Cambodia',
+        city: 'Phnom Penh',
+        uri: require('../assets/place/PhnomPenh.jpg')
+    },
+    {
+        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo
+        description: 'Macau, Macao',
+        city: 'Macau',
+        uri: require('../assets/place/Macau.jpg')
+	}
+];
+
+
+
+@inject("feedStore", "profileStore") @observer
+export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
+    state = {
+        scrollAnimation: new Animated.Value(0),
+
+        searchText: '',
+
+    };
+
+    /*
+    @autobind
+    profile() {
+        this.props.navigation.navigate("Profile");
+    }
+    */
+
+    componentDidMount() {
+        // test
+        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640
     }
 
-    _renderItem ({item, index}) {
-        return <SliderEntry data={item} even={(index + 1) % 2 === 0} />;
+    loadFeed() { // load girls
+        this.props.feedStore.checkForNewEntriesInFeed();
+
+
+        // 1. get user location
+        const { uid } = Firebase.auth.currentUser;
+        Firebase.firestore.collection('users').doc(uid).get().then(doc => {
+            if (!doc.exists) {
+                console.log('No such document!');
+            } else {
+                console.log('user', doc.data());
+
+                let user = doc.data();
+                let place = user.location.description;
+                console.log('user location', place);
+
+                // 2.
+
+            }
+        });
+
+
+        /*
+        if (!user || !user.country || !user.city) {
+            // get gps
+            try {
+                let position = await this.getPosition();
+            } catch (error) {
+                console.log('getPosition error', error);
+
+                return;
+            }
+
+        } else {
+            console.log(user.country, user.city);
+            location.country = user.country;
+            location.city = user.city;
+        }
+        */
+
+        // 2. get feed from the user location
     }
 
-    _renderItemWithParallax ({item, index}, parallaxProps) {
-        return (
-            <SliderEntry
-              data={item}
-              even={(index + 1) % 2 === 0}
-              parallax={true}
-              parallaxProps={parallaxProps}
-            />
-        );
-    }
+    render(): React.Node {
+        const { feedStore, profileStore, navigation } = this.props;
+        const { profile } = profileStore;
 
-    _renderLightItem ({item, index}) {
-        return <SliderEntry data={item} even={false} />;
-    }
-
-    _renderDarkItem ({item, index}) {
-        return <SliderEntry data={item} even={true} />;
-    }
-
-    mainExample (number, title) {
-        const { slider1ActiveSlide } = this.state;
-
-        return (
-            <View style={styles.exampleContainer}>
-                <Text style={styles.title}>{`Example ${number}`}</Text>
-                <Text style={styles.subtitle}>{title}</Text>
-                <Carousel
-                  ref={c => this._slider1Ref = c}
-                  data={ENTRIES1}
-                  renderItem={this._renderItemWithParallax}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  hasParallaxImages={true}
-                  firstItem={SLIDER_1_FIRST_ITEM}
-                  inactiveSlideScale={0.94}
-                  inactiveSlideOpacity={0.7}
-                  // inactiveSlideShift={20}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  loop={true}
-                  loopClonesPerSide={2}
-                  // autoplay={true}
-                  // autoplayDelay={500}
-                  // autoplayInterval={3000}
-                  onSnapToItem={(index) => this.setState({ slider1ActiveSlide: index }) }
-                />
-                {/*
-                <Pagination
-                  dotsLength={ENTRIES1.length}
-                  activeDotIndex={slider1ActiveSlide}
-                  containerStyle={styles.paginationContainer}
-                  dotColor={'rgba(255, 255, 255, 0.92)'}
-                  dotStyle={styles.paginationDot}
-                  inactiveDotColor={colors.black}
-                  inactiveDotOpacity={0.4}
-                  inactiveDotScale={0.6}
-                  carouselRef={this._slider1Ref}
-                  tappableDots={!!this._slider1Ref}
-                />
-                */}
-            </View>
-        );
-    }
-
-    momentumExample (number, title) {
-        return (
-            <View style={styles.exampleContainer}>
-                <Text style={styles.title}>{`Example ${number}`}</Text>
-                <Text style={styles.subtitle}>{title}</Text>
-                <Carousel
-                  data={ENTRIES2}
-                  renderItem={this._renderItem}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  inactiveSlideScale={0.95}
-                  inactiveSlideOpacity={1}
-                  enableMomentum={true}
-                  activeSlideAlignment={'start'}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  activeAnimationType={'spring'}
-                  activeAnimationOptions={{
-                      friction: 4,
-                      tension: 40
-                  }}
-                />
-            </View>
-        );
-    }
-
-    layoutExample (number, title, type) {
-        const isTinder = type === 'tinder';
-        return (
-            <View style={[styles.exampleContainer, isTinder ? styles.exampleContainerDark : styles.exampleContainerLight]}>
-                <Text style={[styles.title, isTinder ? {} : styles.titleDark]}>{`Example ${number}`}</Text>
-                <Text style={[styles.subtitle, isTinder ? {} : styles.titleDark]}>{title}</Text>
-                <Carousel
-                  data={isTinder ? ENTRIES2 : ENTRIES1}
-                  renderItem={isTinder ? this._renderLightItem : this._renderItem}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  layout={type}
-                  loop={true}
-                />
-            </View>
-        );
-    }
-
-    customExample (number, title, refNumber, renderItemFunc) {
-        const isEven = refNumber % 2 === 0;
-
-        // Do not render examples on Android; because of the zIndex bug, they won't work as is
-        return !IS_ANDROID ? (
-            <View style={[styles.exampleContainer, isEven ? styles.exampleContainerDark : styles.exampleContainerLight]}>
-                <Text style={[styles.title, isEven ? {} : styles.titleDark]}>{`Example ${number}`}</Text>
-                <Text style={[styles.subtitle, isEven ? {} : styles.titleDark]}>{title}</Text>
-                <Carousel
-                  data={isEven ? ENTRIES2 : ENTRIES1}
-                  renderItem={renderItemFunc}
-                  sliderWidth={sliderWidth}
-                  itemWidth={itemWidth}
-                  containerCustomStyle={styles.slider}
-                  contentContainerCustomStyle={styles.sliderContentContainer}
-                  scrollInterpolator={scrollInterpolators[`scrollInterpolator${refNumber}`]}
-                  slideInterpolatedStyle={animatedStyles[`animatedStyles${refNumber}`]}
-                  useScrollView={true}
-                />
-            </View>
-        ) : false;
-    }
-
-    get gradient () {
-        return (
-            <LinearGradient
-              colors={[colors.background1, colors.background2]}
-              startPoint={{ x: 1, y: 0 }}
-              endPoint={{ x: 0, y: 1 }}
-              style={styles.gradient}
-            />
-        );
-    }
-
-    render () {
-        const example1 = this.mainExample(1, 'Default layout | Loop | Autoplay | Parallax | Scale | Opacity | Pagination with tappable dots');
-        const example2 = this.momentumExample(2, 'Momentum | Left-aligned | Active animation');
-        const example3 = this.layoutExample(3, '"Stack of cards" layout | Loop', 'stack');
-        const example4 = this.layoutExample(4, '"Tinder-like" layout | Loop', 'tinder');
-        const example5 = this.customExample(5, 'Custom animation 1', 1, this._renderItem);
-        const example6 = this.customExample(6, 'Custom animation 2', 2, this._renderLightItem);
-        const example7 = this.customExample(7, 'Custom animation 3', 3, this._renderDarkItem);
-        const example8 = this.customExample(8, 'Custom animation 4', 4, this._renderLightItem);
+        const { scrollAnimation } = this.state;
+        const opacity = scrollAnimation.interpolate({
+            inputRange: [0, 60],
+            outputRange: [1, 0],
+            extrapolate: "clamp"
+        });
+        const translateY = scrollAnimation.interpolate({
+            inputRange: [0, 60],
+            outputRange: [0, -60],
+            extrapolate: "clamp"
+        });
+        const fontSize = scrollAnimation.interpolate({
+            inputRange: [0, 60],
+            outputRange: [36, 24],
+            extrapolate: "clamp"
+        });
+        const height = scrollAnimation.interpolate({
+            inputRange: [0, 60],
+            outputRange: Platform.OS === "android" ? [70, 70] : [100, 60],
+            extrapolate: "clamp"
+        });
+        const marginTop = scrollAnimation.interpolate({
+            inputRange: [0, 60],
+            outputRange: [24, 0],
+            extrapolate: "clamp"
+        });
+        const shadowOpacity = scrollAnimation.interpolate({
+            inputRange: [0, 60],
+            outputRange: [0, 0.25],
+            extrapolate: "clamp"
+        });
 
         return (
-            <SafeAreaView style={styles.safeArea}>
-                <View style={styles.container}>
-                    <StatusBar
-                      translucent={true}
-                      backgroundColor={'rgba(0, 0, 0, 0.3)'}
-                      barStyle={'light-content'}
-                    />
-                    {/* this.gradient */}
-                    <ScrollView
-                      style={styles.scrollview}
-                      scrollEventThrottle={200}
-                      directionalLockEnabled={true}
-                    >
-                        { example1 }
-                        {/*
-                        { example2 }
-                        { example3 }
-                        { example4 }
-                        { example5 }
-                        { example6 }
-                        { example7 }
-                        { example8 }
-                        */}
+            <View style={styles.flex}>
 
-                    </ScrollView>
+                <SearchModal ref='searchModal'></SearchModal>
+
+                <View style={styles.searchBarStyle}>
+                    <View style={{
+                        width: '70%', height: 32,
+                        // backgroundColor: 'rgb(36, 36, 36)',
+                        backgroundColor: 'rgb(60, 60, 60)',
+                        // borderColor: '#303030',
+                        // borderWidth: 1,
+                        borderRadius: 25
+                    }} >
+                        <TouchableOpacity
+                            style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
+                            onPress={() => {
+                                this.refs.searchModal.showModal();
+                            }}
+                        >
+                            <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{ position: 'absolute', top: 2, left: 40, right: 40, width: '100%', height: '100%', }}
+                            onPress={() => {
+                                this.refs.searchModal.showModal();
+                            }}
+                        >
+                            <TextInput
+                                // ref='searchInput'
+                                editable={false}
+                                style={{ fontSize: 16, color: "white" }}
+                                placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
+                                // underlineColorAndroid="transparent"
+                                // onTouchStart={() => this.startEditing()}
+                                // onEndEditing={() => this.leaveEditing()}
+                                value={this.state.searchText}
+                            />
+                        </TouchableOpacity>
+
+                    </View>
                 </View>
-            </SafeAreaView>
+
+                <FlatList
+                    contentContainerStyle={styles.contentContainer}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={(
+                        <View>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{'Popular destinations'}</Text>
+                            </View>
+                        </View>
+                    )}
+                    scrollEventThrottle={1}
+                    columnWrapperStyle={styles.columnWrapperStyle}
+                    numColumns={2}
+                    data={places}
+                    keyExtractor={item => item.place_id}
+                    renderItem={({item, index}) => {
+                        return (
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator")}>
+                                <View style={styles.pictureContainer}>
+                                    <Image
+                                        style={styles.picture}
+                                        source={item.uri}
+                                    />
+
+                                    <View style={styles.content}>
+                                        <Text style={ {
+                                            textAlign: 'center',
+                                            fontWeight: '500',
+                                            color: "white",
+                                            fontSize: 21,
+                                            // flexWrap: "wrap"
+                                            }}>{item.city}</Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    }}
+                    ListFooterComponent={(
+                        <View style={{marginTop: 20}}>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{'Top-rated girls'}</Text>
+                            </View>
+
+
+                            {/* Add image carousel here.. */}
+
+
+
+                        </View>
+                    )}
+                />
+
+
+
+                {/* <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
+                    <Animated.View style={[styles.innerHeader, { height }]}>
+                        <View>
+                            <AnimatedText
+                                type="large"
+                                style={[styles.newPosts, { opacity, transform: [{ translateY }] }]}
+                            >
+                                New posts
+                            </AnimatedText>
+                            <AnimatedText
+                                type="header2"
+                                style={{ fontSize, marginTop }}
+                            >
+                                {moment().format("dddd")}
+                            </AnimatedText>
+                        </View>
+                        {
+                            profile && (
+                                <TouchableWithoutFeedback onPress={this.profile}>
+                                    <View>
+                                        <Avatar {...profile.pictures.one} />
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        }
+                    </Animated.View>
+                </AnimatedSafeAreaView> */}
+
+                
+            </View>
         );
+    } // end of render()
+
+    startEditing() {
+        // ToDo: add animation
+        // alert('startEditing()');
+    }
+
+    leaveEditing() {
+        // ToDo: add animation
+        // alert('leaveEditing()');
     }
 }
+
+const styles = StyleSheet.create({
+    flex: {
+        flex: 1,
+        backgroundColor: 'rgb(40, 40, 40)'
+    },
+    header: {
+        backgroundColor: "white",
+        shadowColor: "black",
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 5,
+        elevation: 8,
+        zIndex: 10000
+    },
+    innerHeader: {
+        marginHorizontal: Theme.spacing.base,
+        marginVertical: Theme.spacing.tiny,
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
+    },
+    newPosts: {
+        position: "absolute",
+        top: 0
+    },
+
+    //// SEARCH BAR ////
+    searchBarStyle: {
+        height: Constants.statusBarHeight + Header.HEIGHT,
+        paddingBottom: 14 + 2,
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    ad: {
+        width: Dimensions.get('window').width - 2,
+        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        marginBottom: Theme.spacing.small
+    },
+    titleContainer: {
+        padding: Theme.spacing.small
+    },
+    title: {
+        color: 'white',
+        fontSize: 18,
+        lineHeight: 20,
+        fontFamily: "SFProText-Semibold"
+    },
+    //// FlatList ////
+    contentContainer: {
+        flexGrow: 1,
+        backgroundColor: 'rgb(40, 40, 40)',
+        paddingBottom: Theme.spacing.base
+    },
+    columnWrapperStyle: {
+        /*
+        marginRight: Theme.spacing.small,
+        marginTop: Theme.spacing.small
+        */
+        flex:1,
+        justifyContent: 'center'
+    },
+
+    //// picture ////
+    pictureContainer: {
+        width: Dimensions.get('window').width / 2 - 24,
+        height: Dimensions.get('window').width / 2 - 24,
+        borderRadius: 2,
+        // backgroundColor: "yellow",
+        marginVertical: Theme.spacing.tiny,
+        marginHorizontal: Theme.spacing.tiny
+    },
+    picture: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 2
+    },
+    content: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        borderRadius: 2,
+        // backgroundColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        padding: Theme.spacing.small,
+        flex: 1,
+        justifyContent: 'center'
+    },
+
+
+
+});

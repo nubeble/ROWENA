@@ -69,14 +69,16 @@ export default class FeedStore {
         return posts.map(post => {
             const profile = this.profiles[post.uid];
 
-            console.log('joinProfiles profile', profile);
-            console.log('joinProfiles post', post);
+            // print
+            console.log('joinProfiles profile', profile, 'post', post);
 
             return { profile, post };
         });
     }
 
     async checkForNewEntriesInFeed(): Promise<void> {
+        console.log('checkForNewEntriesInFeed');
+        
         if (this.lastKnownEntry) {
             const snap = await this.query.endBefore(this.lastKnownEntry).get();
             if (snap.docs.length === 0) {
@@ -117,6 +119,7 @@ export default class FeedStore {
 
         const posts: Post[] = [];
         snap.forEach(postDoc => {
+            // print
             console.log('id', postDoc.id, 'data', postDoc.data());
 
             posts.push(postDoc.data());

@@ -205,14 +205,14 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
     container: {
         flexGrow: 1,
         paddingBottom: StyleGuide.spacing.small,
         // backgroundColor: StyleGuide.palette.black
         // backgroundColor: '#303030'
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
         header: {
             padding: StyleGuide.spacing.small

@@ -43,7 +43,7 @@ export default class SignIn extends React.Component {
 				console.log('result confirming signing in:', data);
 
 				// ToDo: this.props.screenprops //
-				this.props.screenProps.authenticate(true);
+				// this.props.screenProps.authenticate(true);
 			})
 			.catch(err => console.log('error confirming signing in:', err));
 	}

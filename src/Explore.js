@@ -2,28 +2,24 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import moment from "moment";
-import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, Platform, Dimensions, TouchableOpacity, TextInput, Modal, StatusBar } from "react-native";
+import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, 
+    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image
+} from "react-native";
 import { Header } from 'react-navigation';
 import { Constants } from "expo";
 import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
+import SmartImage from "./rnff/src/components/SmartImage";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import SmartImage from "./rnff/src/components/SmartImage";
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
 import Firebase from './Firebase';
+import SearchModal from "./SearchModal";
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
-
-// const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
-// const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
-const Bangkok = { description: 'Bangkok, Thailand', place_id : 'ChIJ82ENKDJgHTERIEjiXbIAAQE', geometry: { location: { lat: 13.7563309, lng: 100.5017651 } } };
-const Manila = { description: 'Manila, Philippines', place_id : 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk', geometry: { location: { lat: 14.5995124, lng: 120.9842195 } } };
-const HoChiMinh = { description: 'Ho Chi Minh, Vietnam', place_id : 'ChIJ0T2NLikpdTERKxE8d61aX_E', geometry: { location: { lat: 10.8230989, lng: 106.6296638 } } };
-const Vientiane = { description: 'Vientiane, Laos', place_id : 'ChIJIXvtBoZoJDER3-7BGIaxkx8', geometry: { location: { lat: 17.9757058, lng: 102.6331035 } } };
 
 type ExploreState = {
     scrollAnimation: Animated.Value
@@ -40,9 +36,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     state = {
         scrollAnimation: new Animated.Value(0),
 
-        showModal: false,
         searchText: '',
-        userLocationLoaded: false,
+
     };
 
     /*
@@ -53,68 +48,58 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     */
 
     componentDidMount() {
-        // this.props.feedStore.checkForNewEntriesInFeed();
+        // test
+        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640
+    }
+
+    loadFeed() { // load girls
+        this.props.feedStore.checkForNewEntriesInFeed();
+
 
         // 1. get user location
-        // console.log('userLocationLoaded', this.state.userLocationLoaded);
-        if (this.state.userLocationLoaded !== true) {
-            const { uid } = Firebase.auth.currentUser;
-
-            Firebase.firestore.collection('users').doc(uid).get().then(doc => {
-                if (!doc.exists) {
-                    console.log('No such document!');
-                } else {
-                    console.log('user', doc.data());
-
-                    let user = doc.data();
-                    let place = user.location.description;
-                    console.log('user location', place);
-
-                    // 2.
-
-                }
-            });
-
-            
-            /*
-            if (!user || !user.country || !user.city) {
-                // get gps
-                try {
-                    let position = await this.getPosition();
-                } catch (error) {
-                    console.log('getPosition error', error);
-    
-                    return;
-                }
-    
+        const { uid } = Firebase.auth.currentUser;
+        Firebase.firestore.collection('users').doc(uid).get().then(doc => {
+            if (!doc.exists) {
+                console.log('No such document!');
             } else {
-                console.log(user.country, user.city);
-                location.country = user.country;
-                location.city = user.city;
+                console.log('user', doc.data());
+
+                let user = doc.data();
+                let place = user.location.description;
+                console.log('user location', place);
+
+                // 2.
+
             }
-            */
+        });
 
 
+        /*
+        if (!user || !user.country || !user.city) {
+            // get gps
+            try {
+                let position = await this.getPosition();
+            } catch (error) {
+                console.log('getPosition error', error);
 
-            this.setState({userLocationLoaded: true});
+                return;
+            }
+
+        } else {
+            console.log(user.country, user.city);
+            location.country = user.country;
+            location.city = user.city;
         }
+        */
 
         // 2. get feed from the user location
-        
-        // 3.
-
-        
-
-        // test
-        console.log('height', Dimensions.get('window').height);
-        
     }
 
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
-        const { scrollAnimation } = this.state;
         const { profile } = profileStore;
 
+        const { scrollAnimation } = this.state;
         const opacity = scrollAnimation.interpolate({
             inputRange: [0, 60],
             outputRange: [1, 0],
@@ -149,229 +134,37 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         return (
             <View style={styles.flex}>
 
-                <Modal
-                    animationType="slide"
-                    transparent={false}
-                    visible={this.state.showModal}
-                    onRequestClose={() => {
-                        // Alert.alert('Modal has been closed.');
-                    }}>
-
-                    <View style={styles.modalFlex}>
-                        <View style={styles.modalSearchBarStyle}>
-                            <TouchableOpacity
-                                style={{ marginTop: Header.HEIGHT / 3 - 3, marginRight: 22, alignSelf: 'baseline' }}
-                                onPress={() => this.setState({ showModal: false })}
-                            >
-                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
-                            </TouchableOpacity>
-
-
-
-                            {/*
-                            <TouchableHighlight
-                                onPress={() => {
-                                    this.setState({ showModal: false });
-                                }}>
-                                <Text>Hide Modal</Text>
-                            </TouchableHighlight>
-                            */}
-                        </View>
-
-                        <GooglePlacesAutocomplete
-                            placeholder='Where to?'
-                            minLength={2} // minimum length of text to search
-                            autoFocus={false}
-                            returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
-                            // listViewDisplayed='auto'    // true/false/undefined
-                            listViewDisplayed={this.state.showPlaceSearchListView}
-                            fetchDetails={true}
-                            // fetchDetails={false}
-                            renderDescription={row => row.description} // custom description render
-                            onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                                console.log('data', data);
-                                console.log('details', details);
-
-                                console.log('data.place_id', data.place_id);
-                                
-                                // console.log('details', details.geometry.location);
-                                // const location = details.geometry.location;
-                                // location.lat;
-                                // location.lng;
-
-                                // close the modal in 0.3 sec
-                                let that = this;
-                                setTimeout(function () {
-                                    that.setState({ showModal: false });
-                                }, 300);
-
-                            }}
-
-                            getDefaultValue={() => ''}
-
-                            query={{
-                                // available options: https://developers.google.com/places/web-service/autocomplete
-                                key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
-                                language: 'en', // language of the results
-                                types: '(cities)' // default: 'geocode'
-                            }}
-
-                            styles={{
-                                container: {
-                                    // position: 'absolute',
-                                    // left: 0, right: 0,
-                                    // bottom: 0,
-
-                                    // width: '100%',
-
-                                    // height: 32,
-                                    // height: Dimensions.get('window').height - (Constants.statusBarHeight + 2), // - bottom tab height
-
-                                    // top: Constants.statusBarHeight + 2,
-                                    // backgroundColor: 'transparent',
-                                    backgroundColor: 'transparent',
-                                },
-                                textInputContainer: {
-                                    /*
-                                    position: 'absolute',
-                                    left: 40,
-                                    right: 40,
-                                    alignSelf: 'baseline',
-                                    borderRadius: 25,
-                                    */
-                                    height: 50,
-                                    backgroundColor: 'transparent',
-                                    // backgroundColor: 'grey',
-                                    borderTopColor: 'transparent',
-                                    borderBottomColor: 'transparent',
-                                },
-                                textInput: {
-                                    // width: '70%',
-                                    // position: 'absolute',
-                                    // left: 60,
-                                    // right: 60,
-                                    // backgroundColor: 'green',
-                                    //borderRadius: 25,
-
-                                    // width: '100%',
-                                    position: 'absolute',
-                                    left: 0,
-                                    right: 40,
-
-                                    height: 40,
-                                    backgroundColor: 'transparent',
-                                    // backgroundColor: '#777777',
-                                    fontSize: 24,
-                                    lineHeight: 28,
-                                    fontWeight: '500',
-                                    // fontFamily: "SFProText-Semibold",
-                                    color: "white",
-                                    // borderColor: 'transparent'
-
-                                    // selectionColor: 'rgb(234, 150, 24)'
-                                    
-                                },
-
-                                listView: {
-                                    marginTop: 20,
-                                    // position: 'absolute',
-                                    // width: '100%',
-                                    // left: 0, right: 0,
-                                    height: '100%',
-                                    backgroundColor: 'transparent'
-                                },
-                                separator: {
-                                    backgroundColor: 'transparent'
-                                },
-                                description: {
-                                    fontSize: 16,
-                                    lineHeight: 20,
-                                    height: 30,
-                                    fontWeight: '500',
-                                    color: "white"
-                                },
-                                predefinedPlacesDescription: {
-                                    // color: 'rgb(234, 150, 24)'
-                                    color: 'white'
-                                },
-                                poweredContainer: {
-                                    backgroundColor: 'transparent',
-                                    width: 0,
-                                    height: 0
-                                },
-                                powered: {
-                                    backgroundColor: 'transparent',
-                                    width: 0,
-                                    height: 0
-                                }
-                            }}
-
-                            currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-                            currentLocationLabel="Current location"
-                            nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-                            GoogleReverseGeocodingQuery={{
-                                // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-                            }}
-                            GooglePlacesSearchQuery={{
-                                // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-                                rankby: 'distance',
-                                types: 'food'
-                            }}
-
-                            filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-                            predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
-
-                            debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-                        // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
-                        /*
-                        renderLeftButton={() =>
-                            <TouchableOpacity
-                                style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
-                                onPress={() => {
-                                    // this.startEditing();
-                                }}
-                            >
-                                <FontAwesome name='search' color="grey" size={20} />
-                            </TouchableOpacity>
-                        }
-                        */
-                        // renderRightButton={() => <Text>Custom text after the input</Text>}
-                        />
-
-
-                    </View>
-
-                </Modal>
+                <SearchModal ref='searchModal'></SearchModal>
 
                 <View style={styles.searchBarStyle}>
                     <View style={{
-                        width: '50%', height: 32,
+                        width: '70%', height: 32,
                         // backgroundColor: 'rgb(36, 36, 36)',
-                        backgroundColor: '#303030',
-                        borderColor: '#303030',
-                        borderRadius: 25, borderWidth: 1
+                        backgroundColor: 'rgb(60, 60, 60)',
+                        // borderColor: '#303030',
+                        // borderWidth: 1,
+                        borderRadius: 25
                     }} >
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 10, top: 6, alignSelf: 'baseline' }}
+                            style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
                             onPress={() => {
-                                // this.refs['searchInput'].focus();
-                                // this.startEditing();
-                                this.setState({ showModal: true });
+                                this.refs.searchModal.showModal();
                             }}
                         >
-                            <FontAwesome name='search' color="grey" size={16} />
+                            <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={{
-                                position: 'absolute', left: 36, right: 40, width: '100%', height: '100%',
+                            style={{ position: 'absolute', top: 2, left: 40, right: 40, width: '100%', height: '100%', }}
+                            onPress={() => {
+                                this.refs.searchModal.showModal();
                             }}
-                            onPress={() => this.setState({ showModal: true })}>
+                        >
                             <TextInput
                                 // ref='searchInput'
                                 editable={false}
                                 style={{ fontSize: 16, color: "white" }}
-                                placeholder='Where to?' placeholderTextColor='grey'
+                                placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}
                                 // onEndEditing={() => this.leaveEditing()}
@@ -381,7 +174,6 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
                     </View>
                 </View>
-
 
                 {/* <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
                     <Animated.View style={[styles.innerHeader, { height }]}>
@@ -435,8 +227,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 />
                             </TouchableOpacity>
 
-                            <View style={styles.header}>
-                                <Text style={styles.headerText}>{'NEARBY GIRLS'}</Text>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{'NEARBY GIRLS'}</Text>
                             </View>
                         </Animated.View>
                     )}
@@ -444,6 +236,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                     // keyExtractor
                     {...{ navigation }}
                 />
+
             </View>
         );
     } // end of render()
@@ -462,7 +255,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
     header: {
         backgroundColor: "white",
@@ -484,10 +277,7 @@ const styles = StyleSheet.create({
         top: 0
     },
 
-
-
-
-
+    //// SEARCH BAR ////
     searchBarStyle: {
         height: Constants.statusBarHeight + Header.HEIGHT,
         paddingBottom: 14 + 2,
@@ -499,50 +289,58 @@ const styles = StyleSheet.create({
         height: (Dimensions.get('window').width - 2) / 21 * 9,
         marginBottom: Theme.spacing.small
     },
-    header: {
+    titleContainer: {
         padding: Theme.spacing.small
     },
-    headerText: {
-        color: 'rgba(255, 255, 255, 0.6)',
+    title: {
+        color: 'white',
         fontSize: 18,
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
+    //// FlatList ////
+    contentContainer: {
+        flexGrow: 1,
+        backgroundColor: 'rgb(40, 40, 40)',
+        paddingBottom: Theme.spacing.base
+    },
+    columnWrapperStyle: {
+        /*
+        marginRight: Theme.spacing.small,
+        marginTop: Theme.spacing.small
+        */
+        flex:1,
+        justifyContent: 'center'
+    },
 
-
-    modalFlex: {
+    //// picture ////
+    pictureContainer: {
+        width: Dimensions.get('window').width / 2 - 24,
+        height: Dimensions.get('window').width / 2 - 24,
+        borderRadius: 2,
+        // backgroundColor: "yellow",
+        marginVertical: Theme.spacing.tiny,
+        marginHorizontal: Theme.spacing.tiny
+    },
+    picture: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 2
+    },
+    content: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        borderRadius: 2,
+        // backgroundColor: "transparent",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        padding: Theme.spacing.small,
         flex: 1,
-        // backgroundColor: 'rgb(26, 26, 26)'
-        backgroundColor: 'black'
+        justifyContent: 'center'
     },
-    modalSearchBarStyle: {
-        backgroundColor: 'black', // RN issue
-        height: Header.HEIGHT,
-        paddingBottom: 14 + 2,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center'
-    },
+
+
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -74,10 +74,16 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     circle: {
+        /*
         height: 6,
         width: 6,
         borderRadius: 3,
-        backgroundColor: Theme.palette.primary,
+        */
+        height: 4,
+        width: 4,
+        borderRadius: 3,
+        // backgroundColor: Theme.palette.primary,
+        backgroundColor: 'grey',
         margin: Theme.spacing.tiny
     }
 });

@@ -576,7 +576,7 @@ export default class Detail extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
     searchBarStyle: {
         // height: Header.HEIGHT + 30,
@@ -588,7 +588,7 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         paddingBottom: StyleGuide.spacing.small,
-        backgroundColor: 'rgb(26, 26, 26)'
+        backgroundColor: 'rgb(40, 40, 40)'
     },
     ad: {
         width: Dimensions.get('window').width - 2,
