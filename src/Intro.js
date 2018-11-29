@@ -98,7 +98,7 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
 
     componentDidMount() {
         // test
-        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640
+        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640, , Tango: 731
     }
 
     loadFeed() { // load girls
@@ -238,7 +238,7 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                     keyExtractor={item => item.place_id}
                     renderItem={({item, index}) => {
                         return (
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator")}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item, key: this.props.navigation.state.key })}>
                                 <View style={styles.pictureContainer}>
                                     <Image
                                         style={styles.picture}
@@ -352,8 +352,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     ad: {
-        width: Dimensions.get('window').width - 2,
-        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
         marginBottom: Theme.spacing.small
     },
     titleContainer: {
@@ -382,8 +382,8 @@ const styles = StyleSheet.create({
 
     //// picture ////
     pictureContainer: {
-        width: Dimensions.get('window').width / 2 - 24,
-        height: Dimensions.get('window').width / 2 - 24,
+        width: parseInt(Dimensions.get('window').width) / 2 - 24,
+        height: parseInt(Dimensions.get('window').width) / 2 - 24,
         borderRadius: 2,
         // backgroundColor: "yellow",
         marginVertical: Theme.spacing.tiny,

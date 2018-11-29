@@ -2,10 +2,11 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import moment from "moment";
-import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, 
-    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image
+import {
+    StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback,
+    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image, ActivityIndicator
 } from "react-native";
-import { Header } from 'react-navigation';
+import { Header, NavigationActions, StackActions } from 'react-navigation';
 import { Constants } from "expo";
 import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
@@ -15,6 +16,7 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 import SearchModal from "./SearchModal";
+import { RefreshIndicator } from "./rnff/src/components";
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -36,6 +38,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
         searchText: '',
 
+        renderFeed: false,
+
     };
 
     /*
@@ -47,7 +51,23 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
     componentDidMount() {
         // test
-        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640
+        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640, Tango: 731
+
+        let place = this.props.screenProps.params.place;
+        let key = this.props.screenProps.params.key;
+        console.log('place', place);
+        console.log('key', key);
+
+        this.setState({ searchText: place.description });
+
+
+        setTimeout(() => {
+            !this.isCancelled && this.setState({ renderFeed: true });
+        }, 0);
+    }
+
+    componentWillUnmount() {
+        this.isCancelled = true;
     }
 
     loadFeed() { // load girls
@@ -91,6 +111,25 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         */
 
         // 2. get feed from the user location
+    }
+
+    goBack() {
+        this.props.navigation.goBack(this.props.screenProps.params.key);
+
+
+        /*
+        this.props.navigation.dispatch(NavigationActions.popToTop());
+        this.props.navigation.dispatch(NavigationActions.popToTop());
+        this.props.navigation.dispatch(NavigationActions.back());
+        */
+        /*
+        return this.props.navigation.dispatch(StackActions.reset(
+            {
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'intro' })]
+            }
+        ));
+        */
     }
 
     render(): React.Node {
@@ -159,7 +198,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 // ref='searchInput'
                                 pointerEvents="none"
                                 editable={false}
-                                style={{ width:'100%', height:'100%', fontSize: 17, color: "white", textAlign: 'center' }}
+                                style={{ width: '100%', height: '100%', fontSize: 17, color: "white", textAlign: 'center' }}
                                 placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}
@@ -198,39 +237,55 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                     </Animated.View>
                 </AnimatedSafeAreaView> */}
 
-                <Feed
-                    store={feedStore}
-                    onScroll={Animated.event([{
-                        nativeEvent: {
-                            contentOffset: {
-                                y: scrollAnimation
-                            }
-                        }
-                    }])}
-                    ListHeaderComponent={(
-                        <Animated.View>
-                            <TouchableOpacity onPress={() => {
+                {
+                    !this.state.renderFeed ?
+                        <ActivityIndicator
+                            style={styles.activityIndicator}
+                            animating={true}
+                            size="large"
+                            // color='rgba(255, 184, 24, 0.8)'
+                            color='rgba(255, 255, 255, 0.8)'
+                        />
+                        :
+                        <Feed
+                            store={feedStore}
+                            onScroll={Animated.event([{
+                                nativeEvent: {
+                                    contentOffset: {
+                                        y: scrollAnimation
+                                    }
+                                }
+                            }])}
+                            ListHeaderComponent={(
+                                <Animated.View>
+                                    <TouchableOpacity onPress={() => {
 
-                                // test
-                                this.props.navigation.navigate("intro");
-                                console.log('move to Intro');
+                                        console.log('move to Intro');
 
-                            }}>
-                                <SmartImage
-                                    style={styles.ad}
-                                    // preview={"data:image/gif;base64,R0lGODlhAQABAPAAAKyhmP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw=="}
-                                    uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
-                                />
-                            </TouchableOpacity>
+                                        // ToDo: go back to intro!! or reset!!!
+                                        // this.goBack();
 
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'NEARBY GIRLS'}</Text>
-                            </View>
-                        </Animated.View>
-                    )}
-                    {...{ navigation }}
-                />
 
+                                        // this.props.navigation.navigate("intro");
+                                        // this.props.navigation.goBack();
+
+
+                                    }}>
+                                        <SmartImage
+                                            style={styles.ad}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                                        />
+                                    </TouchableOpacity>
+
+                                    <View style={styles.titleContainer}>
+                                        <Text style={styles.title}>{'Explore all ???+ girls'}</Text>
+                                    </View>
+                                </Animated.View>
+                            )}
+                            {...{ navigation }}
+                        />
+                }
             </View>
         );
     } // end of render()
@@ -279,8 +334,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     ad: {
-        width: Dimensions.get('window').width - 2,
-        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
         marginBottom: Theme.spacing.small
     },
     titleContainer: {
@@ -303,14 +358,14 @@ const styles = StyleSheet.create({
         marginRight: Theme.spacing.small,
         marginTop: Theme.spacing.small
         */
-        flex:1,
+        flex: 1,
         justifyContent: 'center'
     },
 
     //// picture ////
     pictureContainer: {
-        width: Dimensions.get('window').width / 2 - 24,
-        height: Dimensions.get('window').width / 2 - 24,
+        width: parseInt(Dimensions.get('window').width) / 2 - 24,
+        height: parseInt(Dimensions.get('window').width) / 2 - 24,
         borderRadius: 2,
         // backgroundColor: "yellow",
         marginVertical: Theme.spacing.tiny,
@@ -334,6 +389,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
+
+    // loading indicator
+    activityIndicator: {
+        position: 'absolute',
+        top: 0, bottom: 0, left: 0, right: 0
+    }
 
 
 

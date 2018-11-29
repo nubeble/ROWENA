@@ -216,8 +216,8 @@ export default class Home extends React.Component<NavigationProps<>> {
         const { navigation } = this.props;
 
         let gap = 2;
-        const height1 = Dimensions.get('window').width - gap * 2;
-        const height2 = Dimensions.get('window').width / 2 - gap * 2; // image width - padding
+        const height1 = parseInt(Dimensions.get('window').width) - gap * 2;
+        const height2 = parseInt(Dimensions.get('window').width) / 2 - gap * 2; // image width - padding
 
         return (
             <View style={styles.row}>

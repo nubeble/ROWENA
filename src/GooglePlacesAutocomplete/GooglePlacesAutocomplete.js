@@ -136,12 +136,14 @@ export default class GooglePlacesAutocomplete extends Component {
 		this._handleChangeText(this.state.text);
 		this._isMounted = true;
 
-		console.log('GooglePlacesAutocomplete::componentDidMount');
+		// console.log('GooglePlacesAutocomplete::componentDidMount');
 
-		let that = this;
-		setTimeout(function () {
-			if (that.refs.textInput) that.refs.textInput.focus();
-		}, 300); // 0.3 sec
+		if (this._isMounted) {
+			let that = this;
+			setTimeout(function () {
+				if (that.refs.textInput) that.refs.textInput.focus();
+			}, 300); // 0.3 sec
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {

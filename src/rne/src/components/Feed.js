@@ -239,8 +239,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     ad: {
-        width: Dimensions.get('window').width - 2,
-        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
         marginBottom: StyleGuide.spacing.small
     }
 

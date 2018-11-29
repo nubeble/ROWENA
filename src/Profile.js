@@ -209,8 +209,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(40, 40, 40)'
     },
     ad: {
-        width: Dimensions.get('window').width - 2,
-        height: (Dimensions.get('window').width - 2) / 21 * 9,
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
         marginBottom: StyleGuide.spacing.small
     },
     activityIndicator: {

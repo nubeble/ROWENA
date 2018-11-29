@@ -20,11 +20,15 @@ export default class SearchModal extends React.Component {
     };
 
     showModal() {
-        this.setState({showModal: true});
+        !this.isCancelled && this.setState({showModal: true});
     }
 
     hideModal() {
-        this.setState({showModal: false});
+        !this.isCancelled && this.setState({showModal: false});
+    }
+
+    componentWillUnmount() {
+        this.isCancelled = true;
     }
 
     render() {
@@ -75,7 +79,6 @@ export default class SearchModal extends React.Component {
                             setTimeout(function () {
                                 that.hideModal();
                             }, 300);
-
                         }}
 
                         getDefaultValue={() => ''}
@@ -217,11 +220,12 @@ export default class SearchModal extends React.Component {
 const styles = StyleSheet.create({
     modalFlex: {
         flex: 1,
-        // backgroundColor: ''rgb(40, 40, 40)''
-        backgroundColor: 'black'
+        // backgroundColor: 'black' // ToDo: RN issue (only in android)
+        backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black' // ToDo: RN issue (only in android)
     },
     modalSearchBarStyle: {
-        backgroundColor: 'black', // RN issue (only in android)
+        // backgroundColor: 'black', // ToDo: RN issue (only in android)
+        backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black', // ToDo: RN issue (only in android)
         // height: Header.HEIGHT,
         height: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT : Header.HEIGHT,
 

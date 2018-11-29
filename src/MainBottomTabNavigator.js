@@ -82,8 +82,6 @@ export default createBottomTabNavigator(
                 backgroundColor: 'rgb(40, 40, 40)',
                 borderTopWidth: 1,
                 borderTopColor:'rgb(61, 61, 61)',
-                // paddingTop: parseInt(Dimensions.get('window').height / 80)
-                // paddingTop: Dimensions.get('window').height > 640 ? 10 : 2
                 paddingTop: Platform.OS === "ios" ? 10 : 0
             },
             animationEnabled: true,

@@ -23,7 +23,7 @@ type FeedProps = NavigationProps<> & {
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
-    
+
     componentDidMount() {
         const { feed } = this.props.store;
         console.log('Feed::componentDidMount', feed);
@@ -69,13 +69,11 @@ export default class Feed extends React.Component<FeedProps> {
                     renderItem={this.renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={this.loadMore}
-
                     ListEmptyComponent={(
                         <View style={styles.post}>
                             {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
                         </View>
                     )}
-                    
                     {...{ onScroll, bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
@@ -89,11 +87,5 @@ const styles = StyleSheet.create({
     },
     post: {
         paddingHorizontal: Theme.spacing.small
-    },
-
-
-
-
-
-
+    }
 });
