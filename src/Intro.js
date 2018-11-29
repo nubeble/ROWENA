@@ -188,14 +188,11 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                 <View style={styles.searchBarStyle}>
                     <View style={{
                         width: '70%', height: 32,
-                        // backgroundColor: 'rgb(36, 36, 36)',
                         backgroundColor: 'rgb(60, 60, 60)',
-                        // borderColor: '#303030',
-                        // borderWidth: 1,
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
+                            style={{ position: 'absolute', left: 12, top: 7, alignSelf: 'baseline' }}
                             onPress={() => {
                                 this.refs.searchModal.showModal();
                             }}
@@ -204,15 +201,16 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={{ position: 'absolute', top: 2, left: 40, right: 40, width: '100%', height: '100%', }}
+                            style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 this.refs.searchModal.showModal();
                             }}
                         >
                             <TextInput
                                 // ref='searchInput'
+                                pointerEvents="none"
                                 editable={false}
-                                style={{ fontSize: 16, color: "white" }}
+                                style={{ width:'100%', height:'100%', fontSize: 17, color: "white", textAlign: 'center' }}
                                 placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}
@@ -220,7 +218,6 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                                 value={this.state.searchText}
                             />
                         </TouchableOpacity>
-
                     </View>
                 </View>
 

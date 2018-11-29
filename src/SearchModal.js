@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { StyleSheet, Modal, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Modal, View, TouchableOpacity, Platform } from 'react-native';
 import { Header } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
+import { Constants } from 'expo';
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
@@ -40,7 +41,8 @@ export default class SearchModal extends React.Component {
                 <View style={styles.modalFlex}>
                     <View style={styles.modalSearchBarStyle}>
                         <TouchableOpacity
-                            style={{ marginTop: Header.HEIGHT / 3 - 3, marginRight: 22, alignSelf: 'baseline' }}
+                            style={{ marginTop: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT / 3 - 3 : Header.HEIGHT / 3 - 3,
+                                marginRight: 22, alignSelf: 'baseline' }}
                             onPress={() => this.hideModal()}
                         >
                             <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -219,8 +221,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'black'
     },
     modalSearchBarStyle: {
-        backgroundColor: 'black', // RN issue
-        height: Header.HEIGHT,
+        backgroundColor: 'black', // RN issue (only in android)
+        // height: Header.HEIGHT,
+        height: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT : Header.HEIGHT,
+
+
         paddingBottom: 14 + 2,
         flexDirection: 'row',
         justifyContent: 'flex-end',
