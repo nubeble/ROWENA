@@ -184,17 +184,6 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
                     )}
                     scrollEventThrottle={1}
                     columnWrapperStyle={(numColumns && numColumns > 0) ? styles.columnWrapperStyle : undefined}
-                    // --
-                    /*
-                    ListEmptyComponent={(
-                        <View style={styles.post}>
-                            {loading ? <RefreshIndicator /> : <FirstPost {...{navigation}} />}
-                        </View>
-                    )}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={this.loadMore}
-                    */
-                    // --
                     {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
                 />
             </View>

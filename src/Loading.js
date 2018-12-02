@@ -28,7 +28,6 @@ export default class Loading extends React.Component<ScreenProps<>> {
     async componentDidMount(): Promise<void> {
         console.log('Loading::componentDidMount');
 
-        // const { navigation } = this.props;
         const { navigation, feedStore, profileStore, userFeedStore } = this.props;
 
         const fonts = Font.loadAsync({
@@ -58,19 +57,17 @@ export default class Loading extends React.Component<ScreenProps<>> {
             const isUserAuthenticated = !!user;
 
             if (isUserAuthenticated) {
-
-
-
-                // ToDo: load user feed from database
                 const { uid } = Firebase.auth.currentUser;
-
-                const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc"); // 모든 feed
-                const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc"); // 내가 올린 feed
-
+                /*
+                const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc"); // 전체 feed
                 feedStore.init(feedQuery);
-                profileStore.init();
-                userFeedStore.init(userFeedQuery);
 
+                profileStore.init();
+
+                const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc"); // 내가 올린 feed
+                userFeedStore.init(userFeedQuery);
+                */
+                profileStore.init();
 
 
                 if (this.state.isUserAutoAuthenticated) {

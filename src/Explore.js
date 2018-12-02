@@ -33,12 +33,15 @@ type InjectedProps = {
 
 @inject("feedStore", "profileStore") @observer
 export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
+
     state = {
         scrollAnimation: new Animated.Value(0),
 
         searchText: '',
 
         renderFeed: false,
+
+        // localFeeds: new FeedStore(),
 
     };
 
@@ -50,27 +53,29 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     */
 
     componentDidMount() {
-        // test
-        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640, Tango: 731
-
         let place = this.props.screenProps.params.place;
-        let key = this.props.screenProps.params.key;
         console.log('place', place);
-        console.log('key', key);
 
         this.setState({ searchText: place.description });
 
+        // ToDo: database indexes
+        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
+        // this.state.localFeeds.init(query);
+        this.props.feedStore.init(query);
+
+
 
         setTimeout(() => {
-            !this.isCancelled && this.setState({ renderFeed: true });
+            !this.isClosed && this.setState({ renderFeed: true });
         }, 0);
     }
 
     componentWillUnmount() {
-        this.isCancelled = true;
+        this.isClosed = true;
     }
 
     loadFeed() { // load girls
+        /*
         this.props.feedStore.checkForNewEntriesInFeed();
 
 
@@ -90,6 +95,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
             }
         });
+        */
 
 
         /*
@@ -113,9 +119,11 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         // 2. get feed from the user location
     }
 
-    goBack() {
-        this.props.navigation.goBack(this.props.screenProps.params.key);
+    moveToIntro() {
+        this.props.screenProps.rootNavigation.navigate('intro');
 
+        // this.props.navigation.goBack(this.props.screenProps.params.key);
+        // this.props.navigation.dispatch(NavigationActions.back());
 
         /*
         this.props.navigation.dispatch(NavigationActions.popToTop());
@@ -134,7 +142,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
-        const { profile } = profileStore;
+        // const { profile } = profileStore;
+        
+        // const feedStore = this.state.localFeeds;
 
         const { scrollAnimation } = this.state;
         const opacity = scrollAnimation.interpolate({
@@ -259,17 +269,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             ListHeaderComponent={(
                                 <Animated.View>
                                     <TouchableOpacity onPress={() => {
-
                                         console.log('move to Intro');
-
-                                        // ToDo: go back to intro!! or reset!!!
-                                        // this.goBack();
-
-
-                                        // this.props.navigation.navigate("intro");
-                                        // this.props.navigation.goBack();
-
-
+                                        this.moveToIntro();
                                     }}>
                                         <SmartImage
                                             style={styles.ad}
@@ -291,12 +292,10 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     } // end of render()
 
     startEditing() {
-        // ToDo: add animation
         // alert('startEditing()');
     }
 
     leaveEditing() {
-        // ToDo: add animation
         // alert('leaveEditing()');
     }
 }
@@ -347,49 +346,7 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
-    //// FlatList ////
-    contentContainer: {
-        flexGrow: 1,
-        backgroundColor: 'rgb(40, 40, 40)',
-        paddingBottom: Theme.spacing.base
-    },
-    columnWrapperStyle: {
-        /*
-        marginRight: Theme.spacing.small,
-        marginTop: Theme.spacing.small
-        */
-        flex: 1,
-        justifyContent: 'center'
-    },
-
-    //// picture ////
-    pictureContainer: {
-        width: parseInt(Dimensions.get('window').width) / 2 - 24,
-        height: parseInt(Dimensions.get('window').width) / 2 - 24,
-        borderRadius: 2,
-        // backgroundColor: "yellow",
-        marginVertical: Theme.spacing.tiny,
-        marginHorizontal: Theme.spacing.tiny
-    },
-    picture: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 2
-    },
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        borderRadius: 2,
-        // backgroundColor: "transparent",
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        padding: Theme.spacing.small,
-        flex: 1,
-        justifyContent: 'center'
-    },
-
+    
     // loading indicator
     activityIndicator: {
         position: 'absolute',

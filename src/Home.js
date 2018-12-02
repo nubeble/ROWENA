@@ -376,7 +376,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
     if (windows[windows.length - 1].length === 0) windows.pop();
 
 
-    // ToDo: test
+    // test
 
     let tmp = cloneArray(windows);
 

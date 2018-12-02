@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 // import ModalHost from 'expo/src/modal/ModalHost';
 import { ThemeProvider, Colors } from './src/rne/src/components';
-import MainSwitchNavigator from './src/MainSwitchNavigator';
+// import MainSwitchNavigator from './src/MainSwitchNavigator';
 import { FeedStore } from './src/rnff/src/components';
 import { Font, AppLoading } from 'expo';
 import { configure } from 'mobx';
@@ -24,7 +24,7 @@ type AppState = {
 // $FlowFixMe
 // https://github.com/firebase/firebase-js-sdk/issues/97
 if (!console.ignoredYellowBox) {
-    console.ignoredYellowBox = [];
+	console.ignoredYellowBox = [];
 }
 console.ignoredYellowBox.push("Setting a timer");
 
@@ -35,6 +35,7 @@ export default class App extends React.Component {
 
 	feedStore = new FeedStore();
 	profileStore = new ProfileStore();
+	
 	userFeedStore = new FeedStore();
 
 	state = {
@@ -207,3 +208,246 @@ const styles = StyleSheet.create({
 	},
 	*/
 });
+
+
+
+
+
+
+import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
+import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
+
+import Loading from './src/Loading';
+import Welcome from './src/Welcome'
+import AuthMain from './src/AuthMain';
+import SignUpWithEmail from './src/SignUpWithEmail';
+import SignUpWithMobile from './src/SignUpWithMobile';
+import Chats from './src/Chats';
+import Likes from './src/Likes';
+import ProfileScreen from './src/Profile';
+import Intro from './src/Intro';
+import ExploreScreen from './src/Explore';
+import Detail from './src/Detail';
+
+
+const HomeStackNavigator = createStackNavigator(
+	{
+		home: {
+			screen: ExploreScreen
+		},
+		detail: {
+			screen: Detail
+		}
+	},
+	{
+		initialRouteName: 'home',
+		mode: 'card',
+		headerMode: 'none',
+		navigationOptions: {
+			gesturesEnabled: false,
+		},
+		transitionConfig: () => ({
+			screenInterpolator: StackViewStyleInterpolator.forHorizontal
+		})
+	}
+);
+
+class HomeStackNavigatorWrapper extends React.Component {
+	static router = HomeStackNavigator.router;
+
+	render() {
+		return (
+			<HomeStackNavigator navigation={this.props.navigation}
+
+
+				screenProps={{
+					params: this.props.navigation.state.params,
+					rootNavigation: this.props.navigation
+				}}
+
+
+
+			/>
+		);
+	}
+}
+
+const HomeSwitchNavigator = createSwitchNavigator(
+	{
+		intro: { screen: Intro },
+
+		// homeStackNavigator: { screen: HomeStackNavigator }
+		homeStackNavigator: { screen: HomeStackNavigatorWrapper }
+	},
+	{
+		initialRouteName: 'intro'
+	}
+);
+
+class HomeSwitchNavigatorWrapper extends React.Component {
+	static router = HomeSwitchNavigator.router;
+
+	render() {
+		return (
+			<HomeSwitchNavigator navigation={this.props.navigation}
+				screenProps={{
+					params: this.props.navigation.state.params,
+					rootNavigation: this.props.navigation
+				}}
+			/>
+		);
+	}
+}
+
+const MainBottomTabNavigator = createBottomTabNavigator(
+	{
+		home: HomeSwitchNavigatorWrapper,
+		likes: Likes,
+		chats: Chats,
+		profile: ProfileScreen
+	},
+	{
+		navigationOptions: ({ navigation }) => ({
+			// title: `${navigation.state.params.name}'s Profile!`,
+			title: 'Title',
+			tabBarLabel: navigation.state.routeName,
+
+			tabBarIcon: ({ tintColor, focused }) => {
+
+				// console.log('navigation: ', navigation);
+
+				// let iconName;
+
+				if (navigation.state.routeName === 'home') {
+
+					return <Ionicons
+						// name={focused ? 'compass' : 'compass-outline'}
+						name={'md-compass'}
+						size={30}
+						style={{ color: tintColor }}
+					/>;
+
+				} else if (navigation.state.routeName === 'likes') {
+
+					return <Ionicons
+						// name={focused ? 'ios-heart' : 'ios-heart-empty'}
+						name={'ios-heart'}
+						size={30}
+						style={{ color: tintColor }}
+					/>;
+
+				} else if (navigation.state.routeName === 'chats') {
+
+					return <Ionicons
+						// name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+						name={'ios-chatbubbles'}
+						size={30}
+						style={{ color: tintColor }}
+					/>;
+
+				} else if (navigation.state.routeName === 'profile') {
+
+					return <FontAwesome
+						name={'user'}
+						size={30}
+						style={{ color: tintColor }}
+					/>;
+				}
+
+			},
+		}),
+
+		tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+			style: {
+				backgroundColor: 'rgb(40, 40, 40)',
+				borderTopWidth: 1,
+				borderTopColor: 'rgb(61, 61, 61)',
+				paddingTop: Platform.OS === "ios" ? 10 : 0
+			},
+			animationEnabled: true,
+			showLabel: false,
+			showIcon: true,
+			// tintColor: 'red',
+			// activeTintColor: 'rgb(234, 68, 90)',
+			activeTintColor: 'rgb(255, 255, 255)',
+			inactiveTintColor: 'rgb(144, 144, 144)',
+			tabStyle: {
+				// paddingVertical: 10
+			}
+		},
+	}
+);
+
+class MainBottomTabNavigatorWrapper extends React.Component {
+	static router = MainBottomTabNavigator.router;
+
+	render() {
+		return (
+			<MainBottomTabNavigator navigation={this.props.navigation}
+				screenProps={{
+					params: this.props.navigation.state.params,
+					rootNavigation: this.props.navigation
+				}}
+			/>
+		);
+	}
+}
+
+const AuthStackNavigator = createStackNavigator(
+	{
+		authMain: {
+			screen: AuthMain
+		},
+
+		email: {
+			screen: SignUpWithEmail
+		},
+
+		mobile: {
+			screen: SignUpWithMobile
+		}
+	},
+	{
+		mode: 'card',
+		headerMode: 'none',
+		navigationOptions: {
+			gesturesEnabled: false,
+		},
+		transitionConfig: () => ({
+			screenInterpolator: StackViewStyleInterpolator.forHorizontal
+		})
+	}
+);
+
+class AuthStackNavigatorWrapper extends React.Component {
+	static router = AuthStackNavigator.router;
+
+	render() {
+		return (
+			<AuthStackNavigator navigation={this.props.navigation}
+				screenProps={{
+					params: this.props.navigation.state.params,
+					rootNavigation: this.props.navigation
+				}}
+			/>
+		);
+	}
+}
+
+const MainSwitchNavigator = createSwitchNavigator(
+	{
+		loading: { screen: Loading },
+
+		welcome: { screen: Welcome },
+
+		authStackNavigator: { screen: AuthStackNavigatorWrapper }, // stack navigator
+
+		// welcome & guile
+
+		mainBottomTabNavigator: { screen: MainBottomTabNavigatorWrapper } // tab navigator
+	},
+	{
+		initialRouteName: 'loading'
+	}
+);

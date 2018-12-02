@@ -12,7 +12,8 @@ export default class HomeStackNavigatorWrapper extends React.Component {
                 screenProps={{
                     params: navigation.state.params,
                     rootNavigation: navigation
-                }} />
+                }}
+            />
         );
     }
 }

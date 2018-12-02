@@ -28,6 +28,7 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-31.0.0.tar.gz",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^0.19.1",
+    "react-native-image-crop-picker": "^0.21.3",
     "react-native-keyboard-spacer": "^0.4.1",
     "react-navigation": "^2.18.2",
     "symbol-observable": "^1.2.0"

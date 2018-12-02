@@ -2,7 +2,8 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import moment from "moment";
-import { StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback, 
+import {
+    StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback,
     Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image
 } from "react-native";
 import { Header } from 'react-navigation';
@@ -18,6 +19,7 @@ import SearchModal from "./SearchModal";
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
+/*
 type ExploreState = {
     scrollAnimation: Animated.Value
 };
@@ -26,6 +28,7 @@ type InjectedProps = {
     feedStore: FeedStore,
     profileStore: ProfileStore
 };
+*/
 
 
 // ToDo: 일단은 고정값으로 간다.
@@ -37,51 +40,44 @@ const places = [
         description: 'Bangkok, Thailand',
         city: 'Bangkok',
         uri: require('../assets/place/Bangkok.jpg')
-        // uri: '../assets/thumbnail/Bangkok.png' // require('../assets/splash.png')
-        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
-	},
-	{
+    },
+    {
         place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
         description: 'Manila, Philippines',
         city: 'Manila',
         uri: require('../assets/place/Manila.jpg')
-        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
-        // uri: 'require("../assets/place/Manila.png")'
     },
     {
         place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
         description: 'Ho Chi Minh, Vietnam',
         city: 'Ho Chi Minh',
         uri: require('../assets/place/HoChiMinh.jpg')
-        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
-        // uri: 'require("../assets/place/HoChiMinh.png")'
     },
     {
         place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
         description: 'Vientiane, Laos',
         city: 'Vientiane',
         uri: require('../assets/place/Vientiane.jpg')
-        // uri: 'http://image.newdaily.co.kr/site/data/img/2015/06/10/2015061000209_0.png'
-        // uri: 'require("../assets/place/Vientiane.png")'
     },
     {
-        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo
+        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo: change it real
         description: 'Phnom Penh, Cambodia',
         city: 'Phnom Penh',
         uri: require('../assets/place/PhnomPenh.jpg')
     },
     {
-        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo
+        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo: change it real
         description: 'Macau, Macao',
         city: 'Macau',
         uri: require('../assets/place/Macau.jpg')
-	}
+    }
 ];
 
 
 
-@inject("feedStore", "profileStore") @observer
-export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
+// @inject("feedStore", "profileStore") @observer
+// export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
+export default class Intro extends React.Component {
     state = {
         scrollAnimation: new Animated.Value(0),
 
@@ -98,10 +94,11 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
 
     componentDidMount() {
         // test
-        console.log('window height', Dimensions.get('window').height); // iphone X: 812, Galaxy S7: 640, , Tango: 731
+        console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
     }
 
     loadFeed() { // load girls
+        /*
         this.props.feedStore.checkForNewEntriesInFeed();
 
 
@@ -121,6 +118,7 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
 
             }
         });
+        */
 
 
         /*
@@ -145,8 +143,8 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
     }
 
     render(): React.Node {
-        const { feedStore, profileStore, navigation } = this.props;
-        const { profile } = profileStore;
+        // const { feedStore, profileStore, navigation } = this.props;
+        // const { profile } = profileStore;
 
         const { scrollAnimation } = this.state;
         const opacity = scrollAnimation.interpolate({
@@ -210,7 +208,7 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                                 // ref='searchInput'
                                 pointerEvents="none"
                                 editable={false}
-                                style={{ width:'100%', height:'100%', fontSize: 17, color: "white", textAlign: 'center' }}
+                                style={{ width: '100%', height: '100%', fontSize: 17, color: "white", textAlign: 'center' }}
                                 placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}
@@ -231,14 +229,14 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                             </View>
                         </View>
                     )}
-                    scrollEventThrottle={1}
+                    // scrollEventThrottle={1}
                     columnWrapperStyle={styles.columnWrapperStyle}
                     numColumns={2}
                     data={places}
                     keyExtractor={item => item.place_id}
-                    renderItem={({item, index}) => {
+                    renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item, key: this.props.navigation.state.key })}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}>
                                 <View style={styles.pictureContainer}>
                                     <Image
                                         style={styles.picture}
@@ -246,20 +244,20 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                                     />
 
                                     <View style={styles.content}>
-                                        <Text style={ {
+                                        <Text style={{
                                             textAlign: 'center',
                                             fontWeight: '500',
                                             color: "white",
                                             fontSize: 21,
                                             // flexWrap: "wrap"
-                                            }}>{item.city}</Text>
+                                        }}>{item.city}</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
                         );
                     }}
                     ListFooterComponent={(
-                        <View style={{marginTop: 20}}>
+                        <View style={{ marginTop: 20 }}>
                             <View style={styles.titleContainer}>
                                 <Text style={styles.title}>{'Top-rated girls'}</Text>
                             </View>
@@ -303,18 +301,16 @@ export default class Intro extends React.Component<ScreenProps<> & InjectedProps
                     </Animated.View>
                 </AnimatedSafeAreaView> */}
 
-                
+
             </View>
         );
     } // end of render()
 
     startEditing() {
-        // ToDo: add animation
         // alert('startEditing()');
     }
 
     leaveEditing() {
-        // ToDo: add animation
         // alert('leaveEditing()');
     }
 }
@@ -376,7 +372,7 @@ const styles = StyleSheet.create({
         marginRight: Theme.spacing.small,
         marginTop: Theme.spacing.small
         */
-        flex:1,
+        flex: 1,
         justifyContent: 'center'
     },
 
@@ -385,7 +381,6 @@ const styles = StyleSheet.create({
         width: parseInt(Dimensions.get('window').width) / 2 - 24,
         height: parseInt(Dimensions.get('window').width) / 2 - 24,
         borderRadius: 2,
-        // backgroundColor: "yellow",
         marginVertical: Theme.spacing.tiny,
         marginHorizontal: Theme.spacing.tiny
     },
@@ -401,13 +396,9 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         borderRadius: 2,
-        // backgroundColor: "transparent",
         backgroundColor: "rgba(0, 0, 0, 0.4)",
         padding: Theme.spacing.small,
         flex: 1,
         justifyContent: 'center'
-    },
-
-
-
+    }
 });

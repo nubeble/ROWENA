@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -9,11 +9,17 @@ import * as firebase from "firebase";
 
 export default class AuthMain extends React.Component {
     state = {
+        showIndicator: false,
+
         /*
         email: '',
         password: '',
         */
     };
+
+    componentWillUnmount() {
+        this.isClosed = true;
+    }
 
     async continueWithFacebook() {
         const {
@@ -27,16 +33,27 @@ export default class AuthMain extends React.Component {
         if (type === 'success') {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
 
+            // show indicator
+            this.setState({ showIndicator: true });
+
+            // ToDo: disable buttons
+
             try {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
                 console.log('user', user);
 
                 // save user info to database
-                const profile = Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
-                await Firebase.firestore.collection("users").doc(user.user.uid).set(profile);
+                await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
+
+                // ToDo: error handling - messagebox (please try again)
             }
+
+            // ToDo: enable buttons
+
+            // close indicator
+            !this.isClosed && this.setState({ showIndicator: false });
         }
     }
 
@@ -64,6 +81,13 @@ export default class AuthMain extends React.Component {
 
                 <View
                     style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
+
+                    <ActivityIndicator
+                        style={styles.activityIndicator}
+                        animating={this.state.showIndicator}
+                        size="large"
+                        color='white'
+                    />
 
                     <View style={styles.logo}>
 
@@ -298,6 +322,10 @@ const styles = StyleSheet.create({
 
         color: 'rgba(255, 255, 255, 0.8)',
         fontWeight: '100'
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: 0, bottom: 0, left: 0, right: 0
     },
 
 

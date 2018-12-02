@@ -20,15 +20,15 @@ export default class SearchModal extends React.Component {
     };
 
     showModal() {
-        !this.isCancelled && this.setState({showModal: true});
+        !this.isClosed && this.setState({showModal: true});
     }
 
     hideModal() {
-        !this.isCancelled && this.setState({showModal: false});
+        !this.isClosed && this.setState({showModal: false});
     }
 
     componentWillUnmount() {
-        this.isCancelled = true;
+        this.isClosed = true;
     }
 
     render() {
@@ -67,7 +67,9 @@ export default class SearchModal extends React.Component {
                             console.log('data', data);
                             console.log('details', details);
 
+                            
                             console.log('data.place_id', data.place_id);
+                            console.log('data.description', data.description);
 
                             // console.log('details', details.geometry.location);
                             // const location = details.geometry.location;

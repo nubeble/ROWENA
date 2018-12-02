@@ -38,14 +38,16 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
     componentDidMount() {
         const { post, store } = this.props;
-        this.unsubscribeToPost = store.subscribeToPost(post.id, newPost => this.setState({ post: newPost }));
+        this.unsubscribeToPost = store.subscribeToPost(post.placeId, post.id, newPost => !this.isClosed && this.setState({ post: newPost }));
         // eslint-disable-next-line max-len
-        this.unsubscribeToProfile = store.subscribeToProfile(post.uid, newProfile => this.setState({ profile: newProfile }));
+        this.unsubscribeToProfile = store.subscribeToProfile(post.uid, newProfile => !this.isClosed && this.setState({ profile: newProfile }));
     }
 
     componentWillUnmount() {
         this.unsubscribeToPost();
         this.unsubscribeToProfile();
+
+        this.isClosed = true;
     }
 
     render(): React.Node {
@@ -56,12 +58,13 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         // console.log('PostComp.profile', profile);
 
 
-        const { likes, comments } = post;
+        // const { likes, comments } = post;
         const contentStyle = [styles.content];
         const nameStyle = [styles.name];
         const textStyle = [styles.text];
         const dateStyle = [];
-        if (post.picture) {
+        // if (post.picture) {
+        if (post.pictures.one.uri) {
             contentStyle.push(StyleSheet.absoluteFill);
             // contentStyle.push({ backgroundColor: "rgba(0, 0, 0, 0.25)", borderRadius: 2 });
             contentStyle.push({ backgroundColor: "transparent", borderRadius: 2 });
@@ -75,17 +78,23 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
                 <View style={styles.container}>
                     {
-                        post.picture && (
+                        // post.picture && (
+                        post.pictures.one.uri && (
                             <SmartImage
+                                /*
                                 preview={post.picture.preview}
                                 uri={post.picture.uri}
+                                */
+                                // ToDo: use image list (one, two, ...)
+                                preview={post.pictures.one.preview}
+                                uri={post.pictures.one.uri}
                                 style={styles.picture}
                             />
                         )
                     }
 
                     <View style={contentStyle}>
-
+                        {/*
                         <View style={styles.header}>
                             <Avatar {...profile.pictures.one} />
                             <View style={styles.metadata}>
@@ -103,9 +112,8 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                             id={post.id}
                             {...{ navigation, likes, comments }}
                         />
-
+                        */}
                     </View>
-
                 </View>
             
             </TouchableWithoutFeedback>

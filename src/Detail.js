@@ -9,8 +9,6 @@ import Firebase from "./Firebase"
 import { StyleGuide } from "./rne/src/components/theme";
 import Image from "./rne/src/components/Image";
 
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
-
 
 export default class Detail extends React.Component {
     state = {
@@ -96,15 +94,15 @@ export default class Detail extends React.Component {
 
 
                 // upload image
-                var that = this;
+                // var that = this;
                 this.uploadImage(result.uri, index, (uri) => {
                     switch (index) {
-                        case 0: that.setState({uploadImage1: uri}); break;
-                        case 1: that.setState({uploadImage2: uri}); break;
-                        case 2: that.setState({uploadImage3: uri}); break;
-                        case 3: that.setState({uploadImage4: uri}); break;
-                        case 4: that.setState({uploadImage5: uri}); break;
-                        case 5: that.setState({uploadImage6: uri}); break;
+                        case 0: this.setState({uploadImage1: uri}); break;
+                        case 1: this.setState({uploadImage2: uri}); break;
+                        case 2: this.setState({uploadImage3: uri}); break;
+                        case 3: this.setState({uploadImage4: uri}); break;
+                        case 4: this.setState({uploadImage5: uri}); break;
+                        case 5: this.setState({uploadImage6: uri}); break;
                     }
 
                     // save to database
@@ -213,7 +211,7 @@ export default class Detail extends React.Component {
         } catch (error) {
             console.error(error);
 
-            // ToDo: messagebox (please try again)
+            // ToDo: error handling - messagebox (please try again)
         }
     }
 
@@ -391,7 +389,7 @@ export default class Detail extends React.Component {
        return Firebase.firestore.collection("users").doc(userUid).delete();
     }
 
-    // ToDo
+    // ToDo: check this
     /*
     addReview(userUid, review) {
         var userDoc = Firebase.firestore.collection('users').doc(userUid);
@@ -436,6 +434,7 @@ export default class Detail extends React.Component {
         postedReviews: string[]
         */
 
+        /*
         const onScroll = Animated.event(
             [{
                 nativeEvent: {
@@ -446,10 +445,8 @@ export default class Detail extends React.Component {
             }],
             { useNativeDriver: true }
         );
+        */
 
-        // const { goBack } = this.props.navigation;
-
-        const showIndicator = this.state.showIndicator;
         const uploadImage1 = this.state.uploadImage1;
         const uploadImage2 = this.state.uploadImage2;
         const uploadImage3 = this.state.uploadImage3;
@@ -463,7 +460,7 @@ export default class Detail extends React.Component {
 
                 <ActivityIndicator
                     style={styles.activityIndicator}
-                    animating={showIndicator}
+                    animating={this.state.showIndicator}
                     size="large"
                     color='white'
                 />
@@ -477,7 +474,7 @@ export default class Detail extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <AnimatedFlatList
+                <FlatList
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
@@ -561,10 +558,10 @@ export default class Detail extends React.Component {
 
                         </Animated.View>
                     )}
-                    scrollEventThrottle={1}
-                    columnWrapperStyle={undefined}
+                    // scrollEventThrottle={1}
+                    // columnWrapperStyle={undefined}
                     // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
-                    {...{ onScroll }}
+                    // {...{ onScroll }}
                 />
 
             </View>

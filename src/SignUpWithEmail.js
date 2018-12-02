@@ -32,6 +32,10 @@ export default class SignUpWithEmail extends React.Component {
         secureText: 'Show',
     };
 
+    componentWillUnmount() {
+        this.isClosed = true;
+    }
+
     showNotification = () => {
         if (!this._showNotification) {
             this._showNotification = true;
@@ -292,8 +296,7 @@ export default class SignUpWithEmail extends React.Component {
             console.log('user', user);
 
             // save user info to database
-            const profile = Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
-            await Firebase.firestore.collection("users").doc(user.user.uid).set(profile);
+            await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
         } catch (error) {
             console.log('error', error);
 
@@ -301,9 +304,9 @@ export default class SignUpWithEmail extends React.Component {
             this.showNotification();
         }
 
-        // ToDo: Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks.
+        // Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks.
         // close indicator
-        // this.setState({ showIndicator: false });
+        !this.isClosed && this.setState({ showIndicator: false });
     }
 
     render() {

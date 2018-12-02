@@ -32,7 +32,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             const entry = CacheManager.get(uri);
             const path = await entry.getPath();
             if (path) {
-                this.setState({ uri: path });
+                !this.isClosed && this.setState({ uri: path });
             }
         }
     }
@@ -57,6 +57,8 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         const { uri } = this.props;
         const entry = CacheManager.get(uri);
         entry.cancel();
+
+        this.isClosed = true;
     }
 
     render(): React.Node {
