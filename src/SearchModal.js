@@ -133,19 +133,15 @@ export default class SearchModal extends React.Component {
                                 position: 'absolute',
                                 left: 0,
                                 right: 40,
-
                                 height: 40,
                                 backgroundColor: 'transparent',
-                                // backgroundColor: '#777777',
                                 fontSize: 24,
                                 lineHeight: 28,
-                                fontWeight: '500',
-                                // fontFamily: "SFProText-Semibold",
+                                // fontWeight: '500',
                                 color: "white",
                                 // borderColor: 'transparent'
 
-                                // selectionColor: 'rgb(234, 150, 24)'
-
+                                fontFamily: "SFProText-Semibold",
                             },
 
                             listView: {
@@ -163,8 +159,9 @@ export default class SearchModal extends React.Component {
                                 fontSize: 16,
                                 lineHeight: 20,
                                 height: 30,
-                                fontWeight: '500',
-                                color: "white"
+                                // fontWeight: '500',
+                                color: "white",
+                                fontFamily: "SFProText-Semibold",
                             },
                             predefinedPlacesDescription: {
                                 // color: 'rgb(234, 150, 24)'

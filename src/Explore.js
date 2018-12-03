@@ -56,7 +56,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         let place = this.props.screenProps.params.place;
         console.log('place', place);
 
-        this.setState({ searchText: place.description });
+        !this.isClosed && this.setState({ searchText: place.description });
 
         // ToDo: database indexes
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
@@ -185,17 +185,22 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
                 <View style={styles.searchBarStyle}>
                     <View style={{
-                        width: '70%', height: 32,
+                        width: '70%', height: 34,
                         backgroundColor: 'rgb(60, 60, 60)',
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 12, top: 7, alignSelf: 'baseline' }}
+                            style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             onPress={() => {
-                                this.refs.searchModal.showModal();
+                                // this.refs.searchModal.showModal();
+                                console.log('move to Intro');
+                                this.moveToIntro();
                             }}
                         >
+                            {/*
                             <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
+                            */}
+                            <FontAwesome name='chevron-left' color="white" size={16} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -208,7 +213,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 // ref='searchInput'
                                 pointerEvents="none"
                                 editable={false}
-                                style={{ width: '100%', height: '100%', fontSize: 17, color: "white", textAlign: 'center' }}
+                                style={{ width: '100%', height: '100%', fontSize: 14, fontFamily: "SFProText-Semibold", color: "white", textAlign: 'center' }}
                                 placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}

@@ -31,54 +31,60 @@ type InjectedProps = {
 */
 
 
-// ToDo: 일단은 고정값으로 간다.
-// 추후 고정값이 아니라 query를 통해 가져와야 한다. place - feed length가 가장 많은 6개 (database indexes를 써서 미리 내림차순정렬로 가지고 있자.)
-// 이 때 thumbnail은 어떻게 가져올 지 고민!!
-const places = [
-    { // place
-        place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-        description: 'Bangkok, Thailand',
-        city: 'Bangkok',
-        uri: require('../assets/place/Bangkok.jpg')
-    },
-    {
-        place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
-        description: 'Manila, Philippines',
-        city: 'Manila',
-        uri: require('../assets/place/Manila.jpg')
-    },
-    {
-        place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
-        description: 'Ho Chi Minh, Vietnam',
-        city: 'Ho Chi Minh',
-        uri: require('../assets/place/HoChiMinh.jpg')
-    },
-    {
-        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
-        description: 'Vientiane, Laos',
-        city: 'Vientiane',
-        uri: require('../assets/place/Vientiane.jpg')
-    },
-    {
-        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo: change it real
-        description: 'Phnom Penh, Cambodia',
-        city: 'Phnom Penh',
-        uri: require('../assets/place/PhnomPenh.jpg')
-    },
-    {
-        place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8', // ToDo: change it real
-        description: 'Macau, Macao',
-        city: 'Macau',
-        uri: require('../assets/place/Macau.jpg')
-    }
-];
-
-
 
 // @inject("feedStore", "profileStore") @observer
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
     state = {
+        // ToDo: 일단은 고정값으로 간다.
+        // 추후 고정값이 아니라 query를 통해 가져와야 한다. place - feed length가 가장 많은 6개 (database indexes를 써서 미리 내림차순정렬로 가지고 있자.)
+        // 이 때 thumbnail은 어떻게 가져올 지 고민!!
+        places: [
+            {
+                place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
+                description: 'Bangkok, Thailand',
+                city: 'Bangkok',
+                uri: require('../assets/place/Bangkok.jpg'),
+                length: 0
+            },
+            {
+                place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
+                description: 'Manila, Philippines',
+                city: 'Manila',
+                uri: require('../assets/place/Manila.jpg'),
+                length: 0
+            },
+            {
+                place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
+                description: 'Ho Chi Minh, Vietnam',
+                city: 'Ho Chi Minh',
+                uri: require('../assets/place/HoChiMinh.jpg'),
+                length: 0
+            },
+            {
+                place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
+                description: 'Vientiane, Laos',
+                city: 'Vientiane',
+                uri: require('../assets/place/Vientiane.jpg'),
+                length: 0
+            },
+            {
+                place_id: 'ChIJ42tqxz1RCTERuyW1WugOAZw',
+                description: 'Phnom Penh, Cambodia',
+                city: 'Phnom Penh',
+                uri: require('../assets/place/PhnomPenh.jpg'),
+                length: 0
+            },
+            {
+                place_id: 'ChIJnUvjRenzaS4RoobX2g-_cVM',
+                description: 'Jakarta, Indonesia',
+                city: 'Jakarta',
+                uri: require('../assets/place/Macau.jpg'),
+                length: 0
+            }
+        ],
+
+
         scrollAnimation: new Animated.Value(0),
 
         searchText: '',
@@ -92,9 +98,33 @@ export default class Intro extends React.Component {
     }
     */
 
-    componentDidMount() {
+    async componentDidMount() {
         // test
         console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
+
+
+        // ToDo: load city length
+        // let _places = await Firebase.getPlaceLength(this.state.places);
+
+        const places = this.state.places;
+        for (var i = 0; i < places.length; i++) {
+            let placeId = places[i].place_id;
+
+            let size = 0;
+            // get document length
+            await Firebase.firestore.collection("place").doc(placeId).collection("feed").get().then(snapshot => {
+                size = snapshot.size;
+                console.log('getPlaceLength()', size);
+            });
+
+            places[i].length = size;
+        }
+
+        !this.isClosed && this.setState({ places });
+    }
+
+    componentWillUnmount() {
+        this.isClosed = true;
     }
 
     loadFeed() { // load girls
@@ -185,12 +215,12 @@ export default class Intro extends React.Component {
 
                 <View style={styles.searchBarStyle}>
                     <View style={{
-                        width: '70%', height: 32,
+                        width: '70%', height: 34,
                         backgroundColor: 'rgb(60, 60, 60)',
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 12, top: 7, alignSelf: 'baseline' }}
+                            style={{ position: 'absolute', left: 12, top: 8, alignSelf: 'baseline' }}
                             onPress={() => {
                                 this.refs.searchModal.showModal();
                             }}
@@ -208,7 +238,7 @@ export default class Intro extends React.Component {
                                 // ref='searchInput'
                                 pointerEvents="none"
                                 editable={false}
-                                style={{ width: '100%', height: '100%', fontSize: 17, color: "white", textAlign: 'center' }}
+                                style={{ width: '100%', height: '100%', fontSize: 14, fontFamily: "SFProText-Semibold", color: "white", textAlign: 'center' }}
                                 placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}
@@ -232,7 +262,7 @@ export default class Intro extends React.Component {
                     // scrollEventThrottle={1}
                     columnWrapperStyle={styles.columnWrapperStyle}
                     numColumns={2}
-                    data={places}
+                    data={this.state.places}
                     keyExtractor={item => item.place_id}
                     renderItem={({ item, index }) => {
                         return (
@@ -245,12 +275,32 @@ export default class Intro extends React.Component {
 
                                     <View style={styles.content}>
                                         <Text style={{
-                                            textAlign: 'center',
+                                            textAlign: 'left',
+                                            /*
                                             fontWeight: '500',
                                             color: "white",
-                                            fontSize: 21,
+                                            fontSize: 20,
+                                            */
+                                            color: "white",
+                                            fontSize: 17,
+                                            lineHeight: 22,
+                                            fontFamily: "SFProText-Semibold"
                                             // flexWrap: "wrap"
                                         }}>{item.city}</Text>
+
+                                        <Text style={{
+                                            textAlign: 'left',
+                                            /*
+                                            fontWeight: '500',
+                                            color: "rgba(211, 211, 211, 0.8)",
+                                            fontSize: 18,
+                                            */
+                                            color: "rgb(211, 211, 211)",
+                                            fontSize: 15,
+                                            lineHeight: 20,
+                                            fontFamily: "SFProText-Regular"
+                                            // flexWrap: "wrap"
+                                        }}>{`${(item.length) ? item.length + '+ girls' : ''}`}</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
@@ -399,6 +449,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.4)",
         padding: Theme.spacing.small,
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'flex-end'
     }
 });

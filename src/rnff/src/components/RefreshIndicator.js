@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
         height: 6,
         width: 6,
         */
-        height: Dimensions.get('window').height / 100 - 1,
-        width: Dimensions.get('window').height / 100 - 1,
+        height: Dimensions.get('window').height / 100,
+        width: Dimensions.get('window').height / 100,
 
         borderRadius: 3,
         // backgroundColor: Theme.palette.primary,

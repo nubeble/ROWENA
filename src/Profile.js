@@ -263,7 +263,8 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                     }}
                     onEndReachedThreshold={0.5}
                     onEndReached={this.onScrollHandler}
-                    ListFooterComponent={(
+                    ListFooterComponent={
+                        this.state.isLoadingFeeds && (
                         <ActivityIndicator
                             style={styles.bottomIndicator}
                             animating={this.state.isLoadingFeeds}
@@ -291,14 +292,21 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
     async addFeed() {
         let userUid = Firebase.auth.currentUser.uid;
-        // let userUid = 'yzYwYGD5WqZk9ZC4D4I2dx7mMnX2';
-        let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE'; // Bangkok, Thailand
+        /*
+        let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         const location = {
             description: 'Bangkok, Thailand',
             longitude: 100.5017651, // ToDo: use google api
             latitude: 13.7563309
         };
-        const image1Uri = 'https://pbs.twimg.com/media/CoWxFiUXgAAJ9Or.jpg'; // ToDo: use image picker
+        */
+        let placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
+        const location = {
+            description: 'Ho Chi Minh, Vietnam',
+            longitude: 100.5017651, // ToDo: use google api
+            latitude: 13.7563309
+        };
+        const image1Uri = 'http://tenasia.hankyung.com/webwp_kr/wp-content/uploads/2017/02/2017022722084954500-540x360.jpg'; // ToDo: use image picker
         const image2Uri = null;
         const image3Uri = null;
         const image4Uri = null;

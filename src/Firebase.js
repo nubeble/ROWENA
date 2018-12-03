@@ -166,5 +166,37 @@ export default class Firebase {
         return userFeeds;
     }
 
+    static async getPlaceLength(places) {
+        let _places = [];
+
+        // places.forEach(element => {
+        for (var i = 0; i < places.length; i++) {
+            let placeId = places[i].place_id;
+
+            let size = 0;
+            // get document length
+            await Firebase.firestore.collection("place").doc(placeId).collection("feed").get().then(snapshot => {
+                size = snapshot.size;
+                console.log('getPlaceLength()', size);
+            });
+
+            // places[i].length = size;
+            _places[i].length = size;
+        // });
+        }
+
+        console.log('_places', _places);
+        
+        return _places;
+    }
+
+
+
+
+
+
+
+
+
 
 }

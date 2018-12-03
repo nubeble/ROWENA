@@ -10,5 +10,43 @@ export default class Util extends React.Component {
         return `${id()}${id()}-${id()}-${id()}-${id()}-${id()}${id()}${id()}`;
     }
 
+    static getImageType(ext) {
+        switch (ext.toLowerCase()) {
+            case 'gif':
+                return 'image/gif';
+
+            case 'png':
+                return 'image/png';
+
+            case 'jpg':
+                // return 'image/jpg';
+                return 'image/jpeg';
+
+            case 'jpeg':
+                return 'image/jpeg';
+
+            case 'bmp':
+                return 'image/bmp';
+
+            default:
+                return '';
+        }
+    }
+
+    static isImage(ext) {
+        switch (ext.toLowerCase()) {
+            case 'jpg':
+            case 'jpeg':
+            case 'gif':
+            case 'bmp':
+            case 'png':
+                //etc
+                return true;
+        }
+
+        return false;
+    }
+
+
 
 }

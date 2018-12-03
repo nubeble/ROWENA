@@ -1,13 +1,19 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions, FlatList } from 'react-native';
+import {
+    StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
+    FlatList, ScrollView
+} from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
-import * as firebase from 'firebase';
-import Firebase from "./Firebase"
+// import * as firebase from 'firebase';
+// import Firebase from "./Firebase"
 import { StyleGuide } from "./rne/src/components/theme";
 import Image from "./rne/src/components/Image";
+import Util from "./Util"
+
+
 
 
 export default class Detail extends React.Component {
@@ -20,7 +26,9 @@ export default class Detail extends React.Component {
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage5: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'
+        uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+
+
     };
 
     componentDidMount() {
@@ -34,42 +42,6 @@ export default class Detail extends React.Component {
 
     }
 
-    getImageType(ext) {
-        switch (ext.toLowerCase()) {
-            case 'gif':
-                return 'image/gif';
-
-            case 'png':
-                return 'image/png';
-
-            case 'jpg':
-                // return 'image/jpg';
-                return 'image/jpeg';
-
-            case 'jpeg':
-                return 'image/jpeg';
-
-            case 'bmp':
-                return 'image/bmp';
-
-            default:
-                return '';
-        }
-    }
-
-    isImage(ext) {
-        switch (ext.toLowerCase()) {
-            case 'jpg':
-            case 'jpeg':
-            case 'gif':
-            case 'bmp':
-            case 'png':
-                //etc
-                return true;
-        }
-
-        return false;
-    }
 
     async pickImage(index) {
         const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
@@ -97,12 +69,12 @@ export default class Detail extends React.Component {
                 // var that = this;
                 this.uploadImage(result.uri, index, (uri) => {
                     switch (index) {
-                        case 0: this.setState({uploadImage1: uri}); break;
-                        case 1: this.setState({uploadImage2: uri}); break;
-                        case 2: this.setState({uploadImage3: uri}); break;
-                        case 3: this.setState({uploadImage4: uri}); break;
-                        case 4: this.setState({uploadImage5: uri}); break;
-                        case 5: this.setState({uploadImage6: uri}); break;
+                        case 0: this.setState({ uploadImage1: uri }); break;
+                        case 1: this.setState({ uploadImage2: uri }); break;
+                        case 2: this.setState({ uploadImage3: uri }); break;
+                        case 3: this.setState({ uploadImage4: uri }); break;
+                        case 4: this.setState({ uploadImage5: uri }); break;
+                        case 5: this.setState({ uploadImage6: uri }); break;
                     }
 
                     // save to database
@@ -162,12 +134,12 @@ export default class Detail extends React.Component {
         const fileName = uri.split('/').pop();
         var ext = fileName.split('.').pop();
 
-        if (!this.isImage(ext)) {
+        if (!Util.isImage(ext)) {
             alert('invalid image file!');
             return;
         }
 
-        var type = this.getImageType(ext);
+        var type = Util.getImageType(ext);
         // console.log('file type:', type);
 
         const formData = new FormData();
@@ -386,7 +358,7 @@ export default class Detail extends React.Component {
             console.log("Error getting documents", error);
         });
         */
-       return Firebase.firestore.collection("users").doc(userUid).delete();
+        return Firebase.firestore.collection("users").doc(userUid).delete();
     }
 
     // ToDo: check this
@@ -417,35 +389,9 @@ export default class Detail extends React.Component {
 
 
 
-
     render() {
         const { navigation } = this.props;
         // const { user } = navigation.state.params; // ToDo
-
-        /*
-        uid: string,
-        name: string,
-        country: string,
-        city: string,
-        picture: Picture,
-        location: Location,
-        about: string,
-        receivedReviews: string[],
-        postedReviews: string[]
-        */
-
-        /*
-        const onScroll = Animated.event(
-            [{
-                nativeEvent: {
-                    contentOffset: {
-                        y: new Animated.Value(0)
-                    }
-                }
-            }],
-            { useNativeDriver: true }
-        );
-        */
 
         const uploadImage1 = this.state.uploadImage1;
         const uploadImage2 = this.state.uploadImage2;
@@ -480,14 +426,43 @@ export default class Detail extends React.Component {
                     ListHeaderComponent={(
                         <Animated.View style={{ backgroundColor: '#000000' }}>
 
+
+
+                            {/*
                             <TouchableOpacity onPress={() => this.uploadPicture(0)}>
-                                {/* key, uri, preview, style */}
                                 <Image
                                     style={styles.ad}
                                     uri={uploadImage1}
                                 />
                             </TouchableOpacity>
+                            */}
 
+
+
+                            <ScrollView horizontal={true} contentContainerStyle={{ flex: 0 }}>
+                                <Image
+                                    style={styles.ad}
+                                    uri={uploadImage1}
+                                />
+                                <Image
+                                    style={styles.ad}
+                                    uri={uploadImage1}
+                                />
+                                <Image
+                                    style={styles.ad}
+                                    uri={uploadImage1}
+                                />
+                                <Image
+                                    style={styles.ad}
+                                    uri={uploadImage1}
+                                />
+                                <Image
+                                    style={styles.ad}
+                                    uri={uploadImage1}
+                                />
+                            </ScrollView>
+
+                            {/*
                             <TouchableOpacity onPress={() => this.uploadPicture(1)}>
                                 <Image
                                     style={styles.ad}
@@ -522,6 +497,7 @@ export default class Detail extends React.Component {
                                     uri={uploadImage6}
                                 />
                             </TouchableOpacity>
+                            */}
 
 
                             {/*
@@ -558,10 +534,10 @@ export default class Detail extends React.Component {
 
                         </Animated.View>
                     )}
-                    // scrollEventThrottle={1}
-                    // columnWrapperStyle={undefined}
-                    // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
-                    // {...{ onScroll }}
+                // scrollEventThrottle={1}
+                // columnWrapperStyle={undefined}
+                // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
+                // {...{ onScroll }}
                 />
 
             </View>
@@ -619,5 +595,12 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
+
+
+
+
+
+
+
 
 });
