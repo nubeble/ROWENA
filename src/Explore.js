@@ -17,6 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
+import Carousel from './Carousel';
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -143,7 +144,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
-        
+
         // const feedStore = this.state.localFeeds;
 
         const { scrollAnimation } = this.state;
@@ -273,6 +274,66 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             }])}
                             ListHeaderComponent={(
                                 <Animated.View>
+
+                                    <Carousel
+                                        delay={2000}
+                                        style={styles.carousel}
+                                        autoplay
+                                        pageInfo
+                                        onAnimateNextPage={(p) => console.log(p)}
+                                    >
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            console.log('move to Intro');
+                                            this.moveToIntro();
+                                        }}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                                            />
+                                        </TouchableWithoutFeedback>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            console.log('move to Intro');
+                                            this.moveToIntro();
+                                        }}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
+                                            />
+                                        </TouchableWithoutFeedback>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            console.log('move to Intro');
+                                            this.moveToIntro();
+                                        }}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
+                                            />
+                                        </TouchableWithoutFeedback>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            console.log('move to Intro');
+                                            this.moveToIntro();
+                                        }}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
+                                            />
+                                        </TouchableWithoutFeedback>
+                                        <TouchableWithoutFeedback onPress={() => {
+                                            console.log('move to Intro');
+                                            this.moveToIntro();
+                                        }}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
+                                            />
+                                        </TouchableWithoutFeedback>
+                                    </Carousel>
+                                    {/*
                                     <TouchableOpacity onPress={() => {
                                         console.log('move to Intro');
                                         this.moveToIntro();
@@ -283,6 +344,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                             uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
                                         />
                                     </TouchableOpacity>
+                                    */}
 
                                     <View style={styles.titleContainer}>
                                         <Text style={styles.title}>{'Explore all ???+ girls'}</Text>
@@ -337,11 +399,24 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
+    /*
     ad: {
         width: parseInt(Dimensions.get('window').width) - 2,
         height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
         marginBottom: Theme.spacing.small
     },
+    */
+    // Carousel
+    carousel: {
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
+        marginBottom: Theme.spacing.small
+    },
+    item: {
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9
+    },
+
     titleContainer: {
         padding: Theme.spacing.small
     },
@@ -351,7 +426,7 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
-    
+
     // loading indicator
     activityIndicator: {
         position: 'absolute',

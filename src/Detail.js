@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, ScrollView
+    FlatList, ScrollView, TouchableWithoutFeedback
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
@@ -11,8 +11,15 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // import Firebase from "./Firebase"
 import { StyleGuide } from "./rne/src/components/theme";
 import Image from "./rne/src/components/Image";
+import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util"
 
+
+
+
+// import Carousel from 'react-native-looped-carousel';
+import Carousel from './Carousel';
+// const { width, height } = Dimensions.get('window');
 
 
 
@@ -27,6 +34,11 @@ export default class Detail extends React.Component {
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage5: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+
+
+
+
+        // size: { width, height },
 
 
     };
@@ -439,6 +451,87 @@ export default class Detail extends React.Component {
 
 
 
+
+                            <View style={{ flex: 1 }}>
+                                <Carousel
+                                    delay={2000}
+                                    style={styles.carousel}
+                                    autoplay
+                                    pageInfo
+                                    onAnimateNextPage={(p) => console.log(p)}
+                                >
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        console.log('move to Intro');
+                                        this.moveToIntro();
+                                    }}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        console.log('move to Intro');
+                                        this.moveToIntro();
+                                    }}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        console.log('move to Intro');
+                                        this.moveToIntro();
+                                    }}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        console.log('move to Intro');
+                                        this.moveToIntro();
+                                    }}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
+                                        />
+                                    </TouchableWithoutFeedback>
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        console.log('move to Intro');
+                                        this.moveToIntro();
+                                    }}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
+                                        />
+                                    </TouchableWithoutFeedback>
+
+
+
+                                    {/*
+
+                                    <View style={[{ backgroundColor: '#BADA55' }, styles.pictures]}>
+                                    <Text>1</Text>
+                                    </View>
+                                    <View style={[{ backgroundColor: 'red' }, styles.pictures]}>
+                                    <Text>2</Text>
+                                    </View>
+                                    <View style={[{ backgroundColor: 'blue' }, styles.pictures]}>
+                                    <Text>3</Text>
+                                    </View>
+
+                                    */}
+
+
+
+                                </Carousel>
+                            </View>
+
                             <ScrollView horizontal={true} contentContainerStyle={{ flex: 0 }}>
                                 <Image
                                     style={styles.ad}
@@ -594,6 +687,16 @@ const styles = StyleSheet.create({
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
+    },
+
+    carousel: {
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 16 * 9,
+        marginBottom: Theme.spacing.small
+    },
+    item: {
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 16 * 9
     },
 
 
