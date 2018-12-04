@@ -454,11 +454,13 @@ export default class Detail extends React.Component {
 
                             <View style={{ flex: 1 }}>
                                 <Carousel
-                                    delay={2000}
                                     style={styles.carousel}
-                                    autoplay
-                                    pageInfo
-                                    onAnimateNextPage={(p) => console.log(p)}
+                                    autoplay={true}
+                                    delay={2000}
+                                    pageInfo={true}
+                                    onAnimateNextPage={(p) => {
+                                        // console.log(p);
+                                    }}
                                 >
                                     <TouchableWithoutFeedback onPress={() => {
                                         console.log('move to Intro');
@@ -510,25 +512,6 @@ export default class Detail extends React.Component {
                                             uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
                                         />
                                     </TouchableWithoutFeedback>
-
-
-
-                                    {/*
-
-                                    <View style={[{ backgroundColor: '#BADA55' }, styles.pictures]}>
-                                    <Text>1</Text>
-                                    </View>
-                                    <View style={[{ backgroundColor: 'red' }, styles.pictures]}>
-                                    <Text>2</Text>
-                                    </View>
-                                    <View style={[{ backgroundColor: 'blue' }, styles.pictures]}>
-                                    <Text>3</Text>
-                                    </View>
-
-                                    */}
-
-
-
                                 </Carousel>
                             </View>
 
@@ -690,13 +673,13 @@ const styles = StyleSheet.create({
     },
 
     carousel: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 16 * 9,
-        marginBottom: Theme.spacing.small
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width / 16 * 9,
+        marginBottom: StyleGuide.spacing.large
     },
     item: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 16 * 9
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width / 16 * 9,
     },
 
 

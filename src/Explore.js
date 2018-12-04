@@ -276,15 +276,17 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 <Animated.View>
 
                                     <Carousel
-                                        delay={2000}
                                         style={styles.carousel}
-                                        autoplay
-                                        pageInfo
-                                        onAnimateNextPage={(p) => console.log(p)}
+                                        autoplay={true}
+                                        delay={2000}
+                                        pageInfo={true}
+                                        onAnimateNextPage={(p) => {
+                                            // console.log(p);
+                                        }}
                                     >
                                         <TouchableWithoutFeedback onPress={() => {
                                             console.log('move to Intro');
-                                            this.moveToIntro();
+                                            // this.moveToIntro();
                                         }}>
                                             <SmartImage
                                                 style={styles.item}
@@ -294,7 +296,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                         </TouchableWithoutFeedback>
                                         <TouchableWithoutFeedback onPress={() => {
                                             console.log('move to Intro');
-                                            this.moveToIntro();
+                                            // this.moveToIntro();
                                         }}>
                                             <SmartImage
                                                 style={styles.item}
@@ -304,7 +306,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                         </TouchableWithoutFeedback>
                                         <TouchableWithoutFeedback onPress={() => {
                                             console.log('move to Intro');
-                                            this.moveToIntro();
+                                            // this.moveToIntro();
                                         }}>
                                             <SmartImage
                                                 style={styles.item}
@@ -314,7 +316,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                         </TouchableWithoutFeedback>
                                         <TouchableWithoutFeedback onPress={() => {
                                             console.log('move to Intro');
-                                            this.moveToIntro();
+                                            // this.moveToIntro();
                                         }}>
                                             <SmartImage
                                                 style={styles.item}
@@ -324,7 +326,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                         </TouchableWithoutFeedback>
                                         <TouchableWithoutFeedback onPress={() => {
                                             console.log('move to Intro');
-                                            this.moveToIntro();
+                                            // this.moveToIntro();
                                         }}>
                                             <SmartImage
                                                 style={styles.item}
@@ -408,13 +410,13 @@ const styles = StyleSheet.create({
     */
     // Carousel
     carousel: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width / 21 * 9,
         marginBottom: Theme.spacing.small
     },
     item: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width / 21 * 9,
     },
 
     titleContainer: {

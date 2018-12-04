@@ -146,12 +146,15 @@ export default class Carousel extends Component {
         } else if (children) {
             pages.push(children[0]);
         } else {
-            pages.push(<View><Text>
-                You are supposed to add children inside Carousel
-      </Text></View>);
+            pages.push(<View><Text>You are supposed to add children inside Carousel</Text></View>);
         }
+
         return pages.map((page, i) => (
-            <TouchableWithoutFeedback style={[{ ...size }, pageStyle]} key={`page${i}`}>
+            <TouchableWithoutFeedback style={[{ ...size }, pageStyle]} key={`page${i}`} onPress={() => { // ToDo
+                console.log('move to Intro');
+                // this.moveToIntro();
+            }}
+            >
                 {page}
             </TouchableWithoutFeedback>
         ));
@@ -177,6 +180,8 @@ export default class Carousel extends Component {
     _onScrollEnd = (event) => {
         const offset = { ...event.nativeEvent.contentOffset };
         const page = this._calculateCurrentPage(offset.x);
+        console.log('current page', page);
+
         this._placeCritical(page);
         this._setCurrentPage(page);
         this._setUpTimer();
@@ -187,6 +192,7 @@ export default class Carousel extends Component {
         const direction = currentOffset > this.offset ? 'right' : 'left';
         this.offset = currentOffset;
         const nextPage = this._calculateNextPage(direction);
+
         if (this.nextPage !== nextPage) {
             this.nextPage = nextPage;
             if (this.props.onPageBeingChanged) {
@@ -248,10 +254,15 @@ export default class Carousel extends Component {
     }
 
     animateToPage = (page) => {
+        console.log('animateToPage', page);
+
         const { currentPage, childrenLength, size: { width } } = this.state;
         const { isLooped } = this.props;
         const nextPage = this._normalizePageNumber(page);
         this._clearTimer();
+
+        console.log('currentPage', currentPage, 'nextPage', nextPage);
+
         if (nextPage === currentPage) {
             // pass
         } else if (nextPage === 0) {
@@ -282,6 +293,7 @@ export default class Carousel extends Component {
             }
             this._scrollTo({ offset: nextPage * width, animated: true });
         }
+
         this._setCurrentPage(nextPage);
         this._setUpTimer();
     }
@@ -514,5 +526,5 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderColor: 'white',
         borderWidth: 1,
-    },
+    }
 });
