@@ -13,14 +13,8 @@ import { StyleGuide } from "./rne/src/components/theme";
 import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util"
-
-
-
-
-// import Carousel from 'react-native-looped-carousel';
-import Carousel from './Carousel';
-// const { width, height } = Dimensions.get('window');
-
+// import Carousel from './Carousel';
+import Swiper from './Swiper'
 
 
 export default class Detail extends React.Component {
@@ -34,12 +28,6 @@ export default class Detail extends React.Component {
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage5: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-
-
-
-
-        // size: { width, height },
-
 
     };
 
@@ -438,30 +426,17 @@ export default class Detail extends React.Component {
                     ListHeaderComponent={(
                         <Animated.View style={{ backgroundColor: '#000000' }}>
 
-
-
-                            {/*
-                            <TouchableOpacity onPress={() => this.uploadPicture(0)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                            </TouchableOpacity>
-                            */}
-
-
-
-
-                            <View style={{ flex: 1 }}>
-                                <Carousel
-                                    style={styles.carousel}
-                                    autoplay={true}
-                                    delay={2000}
-                                    pageInfo={true}
-                                    onAnimateNextPage={(p) => {
-                                        // console.log(p);
-                                    }}
-                                >
+                            <Swiper
+                                style={styles.wrapper}
+                                containerStyle={{ marginBottom: 50 }}
+                                width={Dimensions.get('window').width}
+                                height={Dimensions.get('window').width / 16 * 9}
+                                loop={false}
+                                autoplay={false}
+                                autoplayTimeout={3}
+                                paginationStyle={{bottom: 4}}
+                            >
+                                <View style={styles.slide}>
                                     <TouchableWithoutFeedback onPress={() => {
                                         console.log('move to Intro');
                                         this.moveToIntro();
@@ -472,6 +447,8 @@ export default class Detail extends React.Component {
                                             uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
                                         />
                                     </TouchableWithoutFeedback>
+                                </View>
+                                <View style={styles.slide}>
                                     <TouchableWithoutFeedback onPress={() => {
                                         console.log('move to Intro');
                                         this.moveToIntro();
@@ -482,6 +459,8 @@ export default class Detail extends React.Component {
                                             uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
                                         />
                                     </TouchableWithoutFeedback>
+                                </View>
+                                <View style={styles.slide}>
                                     <TouchableWithoutFeedback onPress={() => {
                                         console.log('move to Intro');
                                         this.moveToIntro();
@@ -492,6 +471,8 @@ export default class Detail extends React.Component {
                                             uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
                                         />
                                     </TouchableWithoutFeedback>
+                                </View>
+                                <View style={styles.slide}>
                                     <TouchableWithoutFeedback onPress={() => {
                                         console.log('move to Intro');
                                         this.moveToIntro();
@@ -502,43 +483,81 @@ export default class Detail extends React.Component {
                                             uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
                                         />
                                     </TouchableWithoutFeedback>
-                                    <TouchableWithoutFeedback onPress={() => {
-                                        console.log('move to Intro');
-                                        this.moveToIntro();
-                                    }}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
-                                        />
-                                    </TouchableWithoutFeedback>
-                                </Carousel>
-                            </View>
+                                </View>
+                            </Swiper>
 
-                            <ScrollView horizontal={true} contentContainerStyle={{ flex: 0 }}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                            </ScrollView>
+{/*
+                            <Swiper
+                                style={styles.wrapper}
+                                width={swiperWidth}
+                                height={swiperHeight}
+                                renderPagination={renderPagination}
+                                loop={true}
+                            >
+                                <TouchableWithoutFeedback onPress={() => {
+                                    console.log('move to Intro');
+                                    this.moveToIntro();
+                                }}>
+                                    <SmartImage
+                                        style={styles.item}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                                    />
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    console.log('move to Intro');
+                                    this.moveToIntro();
+                                }}>
+                                    <SmartImage
+                                        style={styles.item}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
+                                    />
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    console.log('move to Intro');
+                                    this.moveToIntro();
+                                }}>
+                                    <SmartImage
+                                        style={styles.item}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
+                                    />
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    console.log('move to Intro');
+                                    this.moveToIntro();
+                                }}>
+                                    <SmartImage
+                                        style={styles.item}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
+                                    />
+                                </TouchableWithoutFeedback>
+                                <TouchableWithoutFeedback onPress={() => {
+                                    console.log('move to Intro');
+                                    this.moveToIntro();
+                                }}>
+                                    <SmartImage
+                                        style={styles.item}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
+                                    />
+                                </TouchableWithoutFeedback>
+                            </Swiper>
+*/}
+
+
+                            
 
                             {/*
+                            <TouchableOpacity onPress={() => this.uploadPicture(0)}>
+                                <Image
+                                    style={styles.ad}
+                                    uri={uploadImage1}
+                                />
+                            </TouchableOpacity>
+
                             <TouchableOpacity onPress={() => this.uploadPicture(1)}>
                                 <Image
                                     style={styles.ad}
@@ -672,6 +691,7 @@ const styles = StyleSheet.create({
         top: 0, bottom: 0, left: 0, right: 0
     },
 
+    /*
     carousel: {
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width / 16 * 9,
@@ -681,11 +701,27 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width / 16 * 9,
     },
+    */
 
 
 
-
-
+    wrapper: {
+    },
+    slide: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    text: {
+        color: '#fff',
+        fontSize: 30,
+        fontWeight: 'bold'
+    },
+    item: {
+        // flex: 1,
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width / 16 * 9,
+    },
 
 
 

@@ -17,7 +17,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
-import Carousel from './Carousel';
+import Swiper from './Swiper'
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -274,67 +274,65 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             }])}
                             ListHeaderComponent={(
                                 <Animated.View>
-
-                                    <Carousel
-                                        style={styles.carousel}
+                                    <Swiper
+                                        style={styles.wrapper}
+                                        containerStyle={{ marginBottom: 100 }}
+                                        width={Dimensions.get('window').width}
+                                        height={Dimensions.get('window').width / 21 * 9}
+                                        loop={false}
                                         autoplay={true}
-                                        delay={2000}
-                                        pageInfo={true}
-                                        onAnimateNextPage={(p) => {
-                                            // console.log(p);
-                                        }}
+                                        autoplayTimeout={3}
+                                        paginationStyle={{ bottom: 4 }}
                                     >
-                                        <TouchableWithoutFeedback onPress={() => {
-                                            console.log('move to Intro');
-                                            // this.moveToIntro();
-                                        }}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
-                                            />
-                                        </TouchableWithoutFeedback>
-                                        <TouchableWithoutFeedback onPress={() => {
-                                            console.log('move to Intro');
-                                            // this.moveToIntro();
-                                        }}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
-                                            />
-                                        </TouchableWithoutFeedback>
-                                        <TouchableWithoutFeedback onPress={() => {
-                                            console.log('move to Intro');
-                                            // this.moveToIntro();
-                                        }}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
-                                            />
-                                        </TouchableWithoutFeedback>
-                                        <TouchableWithoutFeedback onPress={() => {
-                                            console.log('move to Intro');
-                                            // this.moveToIntro();
-                                        }}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
-                                            />
-                                        </TouchableWithoutFeedback>
-                                        <TouchableWithoutFeedback onPress={() => {
-                                            console.log('move to Intro');
-                                            // this.moveToIntro();
-                                        }}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
-                                            />
-                                        </TouchableWithoutFeedback>
-                                    </Carousel>
+                                        <View style={styles.slide}>
+                                            <TouchableWithoutFeedback onPress={() => {
+                                                console.log('move to Intro');
+                                                this.moveToIntro();
+                                            }}>
+                                                <SmartImage
+                                                    style={styles.item}
+                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                    uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                                                />
+                                            </TouchableWithoutFeedback>
+                                        </View>
+                                        <View style={styles.slide}>
+                                            <TouchableWithoutFeedback onPress={() => {
+                                                console.log('move to Intro');
+                                                // this.moveToIntro();
+                                            }}>
+                                                <SmartImage
+                                                    style={styles.item}
+                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                    uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
+                                                />
+                                            </TouchableWithoutFeedback>
+                                        </View>
+                                        <View style={styles.slide}>
+                                            <TouchableWithoutFeedback onPress={() => {
+                                                console.log('move to Intro');
+                                                // this.moveToIntro();
+                                            }}>
+                                                <SmartImage
+                                                    style={styles.item}
+                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                    uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
+                                                />
+                                            </TouchableWithoutFeedback>
+                                        </View>
+                                        <View style={styles.slide}>
+                                            <TouchableWithoutFeedback onPress={() => {
+                                                console.log('move to Intro');
+                                                // this.moveToIntro();
+                                            }}>
+                                                <SmartImage
+                                                    style={styles.item}
+                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                    uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
+                                                />
+                                            </TouchableWithoutFeedback>
+                                        </View>
+                                    </Swiper>
                                     {/*
                                     <TouchableOpacity onPress={() => {
                                         console.log('move to Intro');
@@ -401,20 +399,16 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
-    /*
-    ad: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
-        marginBottom: Theme.spacing.small
+    //// Swiper ////
+    wrapper: {
     },
-    */
-    // Carousel
-    carousel: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 21 * 9,
-        marginBottom: Theme.spacing.small
+    slide: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     item: {
+        // flex: 1,
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width / 21 * 9,
     },
