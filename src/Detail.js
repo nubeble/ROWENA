@@ -485,7 +485,7 @@ export default class Detail extends React.Component {
                             </Swiper>
                             */}
 
-{/*
+                            {/*
                             <Swiper
                                 style={styles.wrapper}
                                 width={swiperWidth}
@@ -547,7 +547,7 @@ export default class Detail extends React.Component {
 */}
 
 
-                            
+
 
                             {/*
                             <TouchableOpacity onPress={() => this.uploadPicture(0)}>
@@ -640,103 +640,95 @@ export default class Detail extends React.Component {
     }
 
     renderSwiper(post) {
+        let pictures = [];
 
-        const pictures = [];
-        for (let i = 0; i < post.pictures.length; i++) { // {/* ToDo: get one, two, three, for */}
+        let value = post.pictures.one.uri;
+        if (value) {
             pictures.push(
-                <View style={styles.slide}>
-                <TouchableWithoutFeedback onPress={() => {
-                    console.log('move to Intro');
-                    // this.moveToIntro();
-                }}>
-                    
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
-                    />
-                </TouchableWithoutFeedback>
+                <View style={styles.slide} key={`one`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
                 </View>
             );
         }
-        
+
+        value = post.pictures.two.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`two`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+            );
+        }
+
+        value = post.pictures.three.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`three`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+            );
+        }
+
+        value = post.pictures.four.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`four`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+            );
+        }
+
         return (
             <Swiper
-            style={styles.wrapper}
-            containerStyle={{ marginBottom: 50 }}
-            width={Dimensions.get('window').width}
-            height={Dimensions.get('window').width / 16 * 9}
-            loop={false}
-            autoplay={false}
-            autoplayTimeout={3}
-            paginationStyle={{bottom: 4}}
-        >
-                {bullets}
+                style={styles.wrapper}
+                containerStyle={{ marginBottom: 50 }}
+                width={Dimensions.get('window').width}
+                // height={Dimensions.get('window').width / 16 * 9}
+                height={Dimensions.get('window').width}
+                loop={false}
+                autoplay={false}
+                autoplayTimeout={3}
+                paginationStyle={{ bottom: 4 }}
+            >
+                {pictures}
             </Swiper>
         );
-
-
-
-        <Swiper
-            style={styles.wrapper}
-            containerStyle={{ marginBottom: 50 }}
-            width={Dimensions.get('window').width}
-            height={Dimensions.get('window').width / 16 * 9}
-            loop={false}
-            autoplay={false}
-            autoplayTimeout={3}
-            paginationStyle={{bottom: 4}}
-        >
-            <View style={styles.slide}>
-                <TouchableWithoutFeedback onPress={() => {
-                    console.log('move to Intro');
-                    this.moveToIntro();
-                }}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
-                    />
-                </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.slide}>
-                <TouchableWithoutFeedback onPress={() => {
-                    console.log('move to Intro');
-                    this.moveToIntro();
-                }}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
-                    />
-                </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.slide}>
-                <TouchableWithoutFeedback onPress={() => {
-                    console.log('move to Intro');
-                    this.moveToIntro();
-                }}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
-                    />
-                </TouchableWithoutFeedback>
-            </View>
-            <View style={styles.slide}>
-                <TouchableWithoutFeedback onPress={() => {
-                    console.log('move to Intro');
-                    this.moveToIntro();
-                }}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
-                    />
-                </TouchableWithoutFeedback>
-            </View>
-        </Swiper>
-    
     }
 }
 
@@ -801,9 +793,6 @@ const styles = StyleSheet.create({
         height: Dimensions.get('window').width / 16 * 9,
     },
     */
-
-
-
     wrapper: {
     },
     slide: {
@@ -819,7 +808,8 @@ const styles = StyleSheet.create({
     item: {
         // flex: 1,
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 16 * 9,
+        // height: Dimensions.get('window').width / 16 * 9,
+        height: Dimensions.get('window').width
     },
 
 

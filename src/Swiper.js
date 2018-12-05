@@ -203,6 +203,9 @@ export default class extends Component {
     componentWillUpdate(nextProps, nextState) {
         // If the index has changed, we notify the parent via the onIndexChanged callback
         if (this.state.index !== nextState.index) this.props.onIndexChanged(nextState.index)
+
+        // ToDo
+        this._index = nextState.index;
     }
 
     initState(props, updateIndex = false) {
@@ -256,7 +259,8 @@ export default class extends Component {
         };
 
         // ToDo
-        this._autoplayDirection = this.props.autoplayDirection;
+        this._index = initState.index;
+        this._direction = this.props.autoplayDirection;
 
         return initState
     }
@@ -330,14 +334,20 @@ export default class extends Component {
             ) return this.setState({ autoplayEnd: true })
             */
 
-            if (this._autoplayDirection && this.state.index >= this.state.total - 1) this._autoplayDirection = !this._autoplayDirection;
-            if (!this._autoplayDirection && this.state.index <= 0) this._autoplayDirection = !this._autoplayDirection;
+            // console.log('autoplay() index', this._index, 'direction', this._direction);
+
+            if (this._direction) { // ->
+                if (this._index >= this.state.total - 1) { // 젤 마지막이면방향 전환
+                    this._direction = !this._direction;
+                }
+            } else { // <-
+                if (this._index <= 0) { // 젤 처음이면 방향전환
+                    this._direction = !this._direction;
+                }
+            }
 
             // this.scrollBy(this.props.autoplayDirection ? 1 : -1)
-            this.scrollBy(this._autoplayDirection ? 1 : -1)
-
-            // console.log('autoplay() index', this.state.index, 'length', this.state.total);
-
+            this.scrollBy(this._direction ? 1 : -1)
         }, this.props.autoplayTimeout * 1000)
     }
 
@@ -369,7 +379,7 @@ export default class extends Component {
         }
 
         this.updateIndex(e.nativeEvent.contentOffset, this.state.dir, () => {
-            this.autoplay()
+            this.autoplay() // ToDo: 스크롤을 빨리 넘기면 autoplay 타이머가 동작하지 않는다.
             this.loopJump()
 
             // if `onMomentumScrollEnd` registered will be called here
@@ -537,8 +547,10 @@ export default class extends Component {
         const ActiveDot = this.props.activeDot || <View style={[{
             // backgroundColor: this.props.activeDotColor || '#007aff',
             backgroundColor: this.props.activeDotColor || 'white',
-            width: 8,
-            height: 8,
+            // width: 8,
+            // height: 8,
+            width: 6,
+            height: 6,
             borderRadius: 4,
             marginLeft: 3,
             marginRight: 3,
@@ -547,8 +559,10 @@ export default class extends Component {
         }, this.props.activeDotStyle]} />
         const Dot = this.props.dot || <View style={[{
             backgroundColor: this.props.dotColor || 'rgba(0,0,0,.3)',
-            width: 8,
-            height: 8,
+            // width: 8,
+            // height: 8,
+            width: 5,
+            height: 5,
             borderRadius: 4,
             marginLeft: 3,
             marginRight: 3,
@@ -665,6 +679,7 @@ export default class extends Component {
                 onPageScrollStateChanged={this.onPageScrollStateChanged}
                 onPageSelected={this.onScrollEnd}
                 key={pages.length}
+                // bounces={this.props.bounces} // ToDo: block bounce!!
                 style={[styles.wrapperAndroid, this.props.style]}>
                 {pages}
             </ViewPagerAndroid>

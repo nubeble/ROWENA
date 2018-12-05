@@ -278,77 +278,103 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             }])}
                             ListHeaderComponent={(
                                 <Animated.View>
-                                    <Swiper
-                                        style={styles.wrapper}
-                                        containerStyle={{ marginBottom: 20 }}
-                                        width={Dimensions.get('window').width}
-                                        height={Dimensions.get('window').width / 21 * 9}
-                                        loop={false}
-                                        autoplay={true}
-                                        autoplayTimeout={3}
-                                        paginationStyle={{ bottom: 4 }}
-                                    >
-                                        <View style={styles.slide}>
-                                            <TouchableWithoutFeedback onPress={() => {
-                                                console.log('move to Intro');
-                                                this.moveToIntro();
-                                            }}>
+
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        let index;
+                                        if (this.currentSwiperIndex === undefined) {
+                                            index = 0;
+                                        } else {
+                                            index = this.currentSwiperIndex;
+                                        }
+
+                                        console.log('TouchableWithoutFeedback onPress', index);
+
+                                        // ToDo: use index
+                                    }}>
+                                        <Swiper
+                                            style={styles.wrapper}
+                                            containerStyle={{ marginBottom: 20 }}
+                                            width={Dimensions.get('window').width}
+                                            height={Dimensions.get('window').width / 21 * 9}
+                                            loop={false}
+                                            autoplay={true}
+                                            autoplayTimeout={3}
+                                            paginationStyle={{ bottom: 4 }}
+                                            onIndexChanged={(index) => {
+                                                // console.log('onIndexChanged', index);
+                                                this.currentSwiperIndex = index;
+                                            }}
+                                        >
+                                            <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                     uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
                                                 />
-                                            </TouchableWithoutFeedback>
-                                        </View>
-                                        <View style={styles.slide}>
-                                            <TouchableWithoutFeedback onPress={() => {
-                                                console.log('move to Intro');
-                                                // this.moveToIntro();
-                                            }}>
+                                                <View style={styles.content}>
+                                                    <Text style={{
+                                                        textAlign: 'center',
+                                                        fontWeight: '500',
+                                                        color: "black",
+                                                        fontSize: 21,
+                                                        fontFamily: "SFProText-Semibold"
+                                                    }}>{"advertising area 1"}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                     uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
                                                 />
-                                            </TouchableWithoutFeedback>
-                                        </View>
-                                        <View style={styles.slide}>
-                                            <TouchableWithoutFeedback onPress={() => {
-                                                console.log('move to Intro');
-                                                // this.moveToIntro();
-                                            }}>
+                                                <View style={styles.content}>
+                                                    <Text style={{
+                                                        textAlign: 'center',
+                                                        fontWeight: '500',
+                                                        color: "black",
+                                                        fontSize: 21,
+                                                        fontFamily: "SFProText-Semibold"
+                                                    }}>{"advertising area 2"}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                     uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
                                                 />
-                                            </TouchableWithoutFeedback>
-                                        </View>
-                                        <View style={styles.slide}>
-                                            <TouchableWithoutFeedback onPress={() => {
-                                                console.log('move to Intro');
-                                                // this.moveToIntro();
-                                            }}>
+                                                <View style={styles.content}>
+                                                    <Text style={{
+                                                        textAlign: 'center',
+                                                        fontWeight: '500',
+                                                        color: "black",
+                                                        fontSize: 21,
+                                                        fontFamily: "SFProText-Semibold"
+                                                    }}>{"advertising area 3"}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                     uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
                                                 />
-                                            </TouchableWithoutFeedback>
-                                        </View>
-                                    </Swiper>
-                                    {/*
-                                    <TouchableOpacity onPress={() => {
-                                        console.log('move to Intro');
-                                        this.moveToIntro();
-                                    }}>
-                                        <SmartImage
-                                            style={styles.ad}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
-                                        />
-                                    </TouchableOpacity>
-                                    */}
+                                                <View style={styles.content}>
+                                                    <Text style={{
+                                                        textAlign: 'center',
+                                                        fontWeight: '500',
+                                                        color: "black",
+                                                        fontSize: 21,
+                                                        fontFamily: "SFProText-Semibold"
+                                                    }}>{"advertising area 4"}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        </Swiper>
+                                    </TouchableWithoutFeedback>
 
                                     <View style={styles.titleContainer}>
                                         <Text style={styles.title}>
@@ -433,6 +459,18 @@ const styles = StyleSheet.create({
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
+    },
+
+
+    // test
+    content: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        padding: Theme.spacing.small,
+        flex: 1,
     }
 
 
