@@ -39,6 +39,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         scrollAnimation: new Animated.Value(0),
 
         searchText: '',
+        cityName: '',
+        feedSize: 0,
 
         renderFeed: false,
 
@@ -55,9 +57,11 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
     componentDidMount() {
         let place = this.props.screenProps.params.place;
-        console.log('place', place);
+        let length = this.props.screenProps.params.length;
+        let city = place.city;
+        console.log('place', place, 'length', length, 'city', city);
 
-        !this.isClosed && this.setState({ searchText: place.description });
+        !this.isClosed && this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
         // ToDo: database indexes
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
@@ -276,7 +280,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 <Animated.View>
                                     <Swiper
                                         style={styles.wrapper}
-                                        containerStyle={{ marginBottom: 100 }}
+                                        containerStyle={{ marginBottom: 20 }}
                                         width={Dimensions.get('window').width}
                                         height={Dimensions.get('window').width / 21 * 9}
                                         loop={false}
@@ -347,7 +351,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                     */}
 
                                     <View style={styles.titleContainer}>
-                                        <Text style={styles.title}>{'Explore all ???+ girls'}</Text>
+                                        <Text style={styles.title}>
+                                            {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.cityName}
+                                        </Text>
                                     </View>
                                 </Animated.View>
                             )}

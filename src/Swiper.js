@@ -336,7 +336,7 @@ export default class extends Component {
             // this.scrollBy(this.props.autoplayDirection ? 1 : -1)
             this.scrollBy(this._autoplayDirection ? 1 : -1)
 
-            console.log('!!!! index', this.state.index, 'length', this.state.total);
+            // console.log('autoplay() index', this.state.index, 'length', this.state.total);
 
         }, this.props.autoplayTimeout * 1000)
     }

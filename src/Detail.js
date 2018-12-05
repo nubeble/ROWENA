@@ -34,14 +34,10 @@ export default class Detail extends React.Component {
     componentDidMount() {
         console.log('Detail::componentDidMount');
 
-        // const { post, profile } = this.props.navigation.state.params;
-        // console.log('post', post);
-        // console.log('profile', profile);
-
-        // const { feed, user } = this.props.navigation.state.params;
-
+        const { post, profile } = this.props.navigation.state.params;
+        console.log('post', post);
+        console.log('profile', profile);
     }
-
 
     async pickImage(index) {
         const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
@@ -426,6 +422,8 @@ export default class Detail extends React.Component {
                     ListHeaderComponent={(
                         <Animated.View style={{ backgroundColor: '#000000' }}>
 
+                            {this.renderSwiper(this.props.navigation.state.params.post)}
+                            {/*
                             <Swiper
                                 style={styles.wrapper}
                                 containerStyle={{ marginBottom: 50 }}
@@ -485,6 +483,7 @@ export default class Detail extends React.Component {
                                     </TouchableWithoutFeedback>
                                 </View>
                             </Swiper>
+                            */}
 
 {/*
                             <Swiper
@@ -638,6 +637,106 @@ export default class Detail extends React.Component {
             </View>
 
         );
+    }
+
+    renderSwiper(post) {
+
+        const pictures = [];
+        for (let i = 0; i < post.pictures.length; i++) { // {/* ToDo: get one, two, three, for */}
+            pictures.push(
+                <View style={styles.slide}>
+                <TouchableWithoutFeedback onPress={() => {
+                    console.log('move to Intro');
+                    // this.moveToIntro();
+                }}>
+                    
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                    />
+                </TouchableWithoutFeedback>
+                </View>
+            );
+        }
+        
+        return (
+            <Swiper
+            style={styles.wrapper}
+            containerStyle={{ marginBottom: 50 }}
+            width={Dimensions.get('window').width}
+            height={Dimensions.get('window').width / 16 * 9}
+            loop={false}
+            autoplay={false}
+            autoplayTimeout={3}
+            paginationStyle={{bottom: 4}}
+        >
+                {bullets}
+            </Swiper>
+        );
+
+
+
+        <Swiper
+            style={styles.wrapper}
+            containerStyle={{ marginBottom: 50 }}
+            width={Dimensions.get('window').width}
+            height={Dimensions.get('window').width / 16 * 9}
+            loop={false}
+            autoplay={false}
+            autoplayTimeout={3}
+            paginationStyle={{bottom: 4}}
+        >
+            <View style={styles.slide}>
+                <TouchableWithoutFeedback onPress={() => {
+                    console.log('move to Intro');
+                    this.moveToIntro();
+                }}>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                    />
+                </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.slide}>
+                <TouchableWithoutFeedback onPress={() => {
+                    console.log('move to Intro');
+                    this.moveToIntro();
+                }}>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
+                    />
+                </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.slide}>
+                <TouchableWithoutFeedback onPress={() => {
+                    console.log('move to Intro');
+                    this.moveToIntro();
+                }}>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
+                    />
+                </TouchableWithoutFeedback>
+            </View>
+            <View style={styles.slide}>
+                <TouchableWithoutFeedback onPress={() => {
+                    console.log('move to Intro');
+                    this.moveToIntro();
+                }}>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={'https://appzzang.me/data/editor/1811/a3c7092c8861bae6e83dec4217493a19_1542390647_7622.jpg'}
+                    />
+                </TouchableWithoutFeedback>
+            </View>
+        </Swiper>
+    
     }
 }
 

@@ -266,7 +266,8 @@ export default class Intro extends React.Component {
                     keyExtractor={item => item.place_id}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}>
+                            <TouchableOpacity onPress={() =>
+                                this.props.navigation.navigate("homeStackNavigator", { place: item, length: this.state.places[index].length })}>
                                 <View style={styles.pictureContainer}>
                                     <Image
                                         style={styles.picture}
