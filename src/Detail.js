@@ -9,12 +9,11 @@ import { Constants, Permissions, ImagePicker, Linking } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 // import * as firebase from 'firebase';
 // import Firebase from "./Firebase"
-import { StyleGuide } from "./rne/src/components/theme";
+// import { StyleGuide } from "./rne/src/components/theme";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util"
-// import Carousel from './Carousel';
 import Swiper from './Swiper'
 
 
@@ -421,7 +420,7 @@ export default class Detail extends React.Component {
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
-                        <Animated.View style={{ backgroundColor: '#000000' }}>
+                        <Animated.View style={{ backgroundColor: 'rgb(40, 40, 40)' }}>
 
                             {this.renderSwiper(this.props.navigation.state.params.post)}
 
@@ -476,12 +475,6 @@ export default class Detail extends React.Component {
                             */}
 
 
-                            {/*
-                            <View style={styles.header}>
-                                <Text type="title3" style={styles.headerText}>{'title1'}</Text>
-                            </View>
-                            */}
-
                             <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addFeed</Text>
                             </TouchableOpacity>
@@ -528,7 +521,7 @@ export default class Detail extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
-                    <TouchableWithoutFeedback onPress={() => {
+                    <TouchableWithoutFeedback onPress={() => { // ToDo: remove!
                         console.log('move to Intro');
                         // this.moveToIntro();
                     }}>
@@ -628,21 +621,17 @@ const styles = StyleSheet.create({
     },
     container: {
         flexGrow: 1,
-        paddingBottom: StyleGuide.spacing.small,
-        backgroundColor: 'rgb(40, 40, 40)'
+        paddingBottom: Theme.spacing.small,
+        // backgroundColor: 'rgb(40, 40, 40)'
     },
+    /*
     ad: {
         width: parseInt(Dimensions.get('window').width) - 2,
         height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
-        marginBottom: StyleGuide.spacing.small
+        // marginBottom: Theme.spacing.small
+        paddingBottom: Theme.spacing.small
     },
-    header: {
-        padding: StyleGuide.spacing.tiny
-    },
-    headerText: {
-        color: StyleGuide.palette.white
-    },
-
+    */
 
     signUpButton: {
         //position: 'absolute',
@@ -664,17 +653,6 @@ const styles = StyleSheet.create({
         top: 0, bottom: 0, left: 0, right: 0
     },
 
-    /*
-    carousel: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 16 * 9,
-        marginBottom: StyleGuide.spacing.large
-    },
-    item: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 16 * 9,
-    },
-    */
     wrapper: {
     },
     slide: {

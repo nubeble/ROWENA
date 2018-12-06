@@ -4,7 +4,7 @@ import * as React from "react";
 import moment from "moment";
 import {
     StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback,
-    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image
+    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image, Button
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Constants } from "expo";
@@ -16,8 +16,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 import SearchModal from "./SearchModal";
 
-const AnimatedText = Animated.createAnimatedComponent(Text);
-const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
+// const AnimatedText = Animated.createAnimatedComponent(Text);
+// const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 /*
 type ExploreState = {
@@ -29,6 +29,7 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 */
+
 
 
 
@@ -84,10 +85,8 @@ export default class Intro extends React.Component {
             }
         ],
 
-
-        scrollAnimation: new Animated.Value(0),
-
         searchText: '',
+
 
     };
 
@@ -100,6 +99,7 @@ export default class Intro extends React.Component {
 
     async componentDidMount() {
         // test
+        console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
 
@@ -176,37 +176,6 @@ export default class Intro extends React.Component {
         // const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
 
-        const { scrollAnimation } = this.state;
-        const opacity = scrollAnimation.interpolate({
-            inputRange: [0, 60],
-            outputRange: [1, 0],
-            extrapolate: "clamp"
-        });
-        const translateY = scrollAnimation.interpolate({
-            inputRange: [0, 60],
-            outputRange: [0, -60],
-            extrapolate: "clamp"
-        });
-        const fontSize = scrollAnimation.interpolate({
-            inputRange: [0, 60],
-            outputRange: [36, 24],
-            extrapolate: "clamp"
-        });
-        const height = scrollAnimation.interpolate({
-            inputRange: [0, 60],
-            outputRange: Platform.OS === "android" ? [70, 70] : [100, 60],
-            extrapolate: "clamp"
-        });
-        const marginTop = scrollAnimation.interpolate({
-            inputRange: [0, 60],
-            outputRange: [24, 0],
-            extrapolate: "clamp"
-        });
-        const shadowOpacity = scrollAnimation.interpolate({
-            inputRange: [0, 60],
-            outputRange: [0, 0.25],
-            extrapolate: "clamp"
-        });
 
         return (
             <View style={styles.flex}>
@@ -284,7 +253,8 @@ export default class Intro extends React.Component {
                                             textAlign: 'center',
                                             fontWeight: '500',
                                             color: "white",
-                                            fontSize: 22,
+                                            // fontSize: 22,
+                                            fontSize: parseInt(Dimensions.get('window').width / 100) + 18,
                                             fontFamily: "SFProText-Semibold"
                                         }}>{item.city}</Text>
 
@@ -297,9 +267,9 @@ export default class Intro extends React.Component {
                                             textAlign: 'center',
                                             fontWeight: '500',
                                             color: "rgba(211, 211, 211, 0.8)",
-                                            fontSize: 18,
+                                            // fontSize: 18,
+                                            fontSize: parseInt(Dimensions.get('window').width / 100) + 12,
                                             fontFamily: "SFProText-Regular"
-                                            // flexWrap: "wrap"
                                         }}>{`${(item.length) ? item.length + '+ girls' : ''}`}</Text>
                                     </View>
                                 </View>
@@ -317,40 +287,10 @@ export default class Intro extends React.Component {
 
 
 
+
                         </View>
                     )}
                 />
-
-
-
-                {/* <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
-                    <Animated.View style={[styles.innerHeader, { height }]}>
-                        <View>
-                            <AnimatedText
-                                type="large"
-                                style={[styles.newPosts, { opacity, transform: [{ translateY }] }]}
-                            >
-                                New posts
-                            </AnimatedText>
-                            <AnimatedText
-                                type="header2"
-                                style={{ fontSize, marginTop }}
-                            >
-                                {moment().format("dddd")}
-                            </AnimatedText>
-                        </View>
-                        {
-                            profile && (
-                                <TouchableWithoutFeedback onPress={this.profile}>
-                                    <View>
-                                        <Avatar {...profile.pictures.one} />
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            )
-                        }
-                    </Animated.View>
-                </AnimatedSafeAreaView> */}
-
 
             </View>
         );
@@ -428,11 +368,15 @@ const styles = StyleSheet.create({
 
     //// picture ////
     pictureContainer: {
-        width: parseInt(Dimensions.get('window').width) / 2 - 24,
-        height: parseInt(Dimensions.get('window').width) / 2 - 24,
+        // width: parseInt(Dimensions.get('window').width) / 2 - 12,
+        // height: parseInt(Dimensions.get('window').width) / 2 - 12,
+        width: parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2,
+        height: parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2,
         borderRadius: 2,
-        marginVertical: Theme.spacing.tiny,
-        marginHorizontal: Theme.spacing.tiny
+        // marginVertical: Theme.spacing.tiny,
+        // marginHorizontal: Theme.spacing.tiny
+        marginVertical: 4,
+        marginHorizontal: 4,
     },
     picture: {
         width: '100%',
@@ -446,11 +390,15 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         borderRadius: 2,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
         padding: Theme.spacing.small,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
         // justifyContent: 'flex-end'
-    }
+    },
+
+
+
+
 });

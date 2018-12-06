@@ -379,7 +379,7 @@ export default class extends Component {
         }
 
         this.updateIndex(e.nativeEvent.contentOffset, this.state.dir, () => {
-            this.autoplay() // ToDo: 스크롤을 빨리 넘기면 autoplay 타이머가 동작하지 않는다.
+            this.autoplay() // ToDo: 스크롤을 빨리 넘기면 autoplay 타이머가 동작하지 않는다!
             this.loopJump()
 
             // if `onMomentumScrollEnd` registered will be called here

@@ -706,20 +706,24 @@ const styles = StyleSheet.create({
     },
     //// picture ////
     pictureContainer: {
-        width: (parseInt(Dimensions.get('window').width) - 2) / 3,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 3,
-        // borderRadius: 2,
+        // width: (parseInt(Dimensions.get('window').width) - 2) / 3,
+        // height: (parseInt(Dimensions.get('window').width) - 2) / 3,
+        width: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
+        height: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
         /*
         marginVertical: Theme.spacing.tiny,
-        marginHorizontal: Theme.spacing.tiny
+        marginHorizontal: Theme.spacing.tiny,
         */
-        marginVertical: 1,
-        marginHorizontal: 1
+        marginVertical: 2,
+        marginHorizontal: 2,
+
+        borderRadius: 2
     },
     picture: {
         width: '100%',
         height: '100%',
-        // borderRadius: 2
+        
+        borderRadius: 2
     },
     content: {
         position: 'absolute',
@@ -727,11 +731,12 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         bottom: 0,
-        // borderRadius: 2,
         backgroundColor: "rgba(0, 0, 0, 0.4)",
         padding: Theme.spacing.small,
         flex: 1,
-        justifyContent: 'center'
+        justifyContent: 'center',
+
+        borderRadius: 2,
     },
 
     titleContainer: {
