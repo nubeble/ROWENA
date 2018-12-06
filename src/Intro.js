@@ -276,29 +276,28 @@ export default class Intro extends React.Component {
 
                                     <View style={styles.content}>
                                         <Text style={{
-                                            textAlign: 'left',
-                                            /*
+                                            // textAlign: 'left',
+                                            // color: "white",
+                                            // fontSize: 17,
+                                            // lineHeight: 22,
+
+                                            textAlign: 'center',
                                             fontWeight: '500',
                                             color: "white",
-                                            fontSize: 20,
-                                            */
-                                            color: "white",
-                                            fontSize: 17,
-                                            lineHeight: 22,
+                                            fontSize: 22,
                                             fontFamily: "SFProText-Semibold"
-                                            // flexWrap: "wrap"
                                         }}>{item.city}</Text>
 
                                         <Text style={{
-                                            textAlign: 'left',
-                                            /*
+                                            // textAlign: 'left',
+                                            // color: "rgb(211, 211, 211)",
+                                            // fontSize: 15,
+                                            // lineHeight: 20,
+
+                                            textAlign: 'center',
                                             fontWeight: '500',
                                             color: "rgba(211, 211, 211, 0.8)",
                                             fontSize: 18,
-                                            */
-                                            color: "rgb(211, 211, 211)",
-                                            fontSize: 15,
-                                            lineHeight: 20,
                                             fontFamily: "SFProText-Regular"
                                             // flexWrap: "wrap"
                                         }}>{`${(item.length) ? item.length + '+ girls' : ''}`}</Text>
@@ -447,9 +446,11 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         borderRadius: 2,
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
         padding: Theme.spacing.small,
         flex: 1,
-        justifyContent: 'flex-end'
+        alignItems: 'center',
+        justifyContent: 'center'
+        // justifyContent: 'flex-end'
     }
 });
