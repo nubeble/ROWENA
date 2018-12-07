@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
     },
 
 
-    // test
+    // test: advertising area
     content: {
         position: 'absolute',
         left: 0,

@@ -1,530 +1,775 @@
-// https://github.com/phil-r/react-native-looped-carousel
-
-import React, { Component } from 'react';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
-    Platform,
-    StyleSheet,
     Text,
-    ScrollView,
-    TouchableOpacity,
     View,
     ViewPropTypes,
-    TouchableWithoutFeedback,
-} from 'react-native';
-import PropTypes from 'prop-types';
-import isEqual from 'lodash.isequal';
-
-
-const PAGE_CHANGE_DELAY = 4000;
-
-// if ViewPropTypes is not defined fall back to View.propTypes (to support RN < 0.44)
-const viewPropTypes = ViewPropTypes || View.propTypes;
+    ScrollView,
+    Dimensions,
+    TouchableOpacity,
+    ViewPagerAndroid,
+    Platform,
+    ActivityIndicator
+} from 'react-native'
 
 /**
- * Animates pages in cycle
- * (loop possible if children count > 1)
-*/
-export default class Carousel extends Component {
+ * Default styles
+ * @type {StyleSheetPropType}
+ */
+const styles = {
+    container: {
+        backgroundColor: 'transparent',
+        position: 'relative',
+        flex: 1
+    },
+
+    wrapperIOS: {
+        backgroundColor: 'transparent',
+    },
+
+    wrapperAndroid: {
+        backgroundColor: 'transparent',
+        flex: 1
+    },
+
+    slide: {
+        backgroundColor: 'transparent',
+    },
+
+    pagination_x: {
+        position: 'absolute',
+        bottom: 25,
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent'
+    },
+
+    pagination_y: {
+        position: 'absolute',
+        right: 15,
+        top: 0,
+        bottom: 0,
+        flexDirection: 'column',
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'transparent'
+    },
+
+    title: {
+        height: 30,
+        justifyContent: 'center',
+        position: 'absolute',
+        paddingLeft: 10,
+        bottom: -30,
+        left: 0,
+        flexWrap: 'nowrap',
+        width: 250,
+        backgroundColor: 'transparent'
+    },
+
+    buttonWrapper: {
+        backgroundColor: 'transparent',
+        flexDirection: 'row',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+
+    buttonText: {
+        fontSize: 50,
+        color: '#007aff'
+    }
+};
+
+export default class extends Component {
+    /**
+     * Props Validation
+     * @type {Object}
+     */
     static propTypes = {
+        horizontal: PropTypes.bool,
         children: PropTypes.node.isRequired,
+        containerStyle: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.number,
+        ]),
+        style: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.number,
+        ]),
+        scrollViewStyle: PropTypes.oneOfType([
+            PropTypes.object,
+            PropTypes.number,
+        ]),
+        pagingEnabled: PropTypes.bool,
+        showsHorizontalScrollIndicator: PropTypes.bool,
+        showsVerticalScrollIndicator: PropTypes.bool,
+        bounces: PropTypes.bool,
+        scrollsToTop: PropTypes.bool,
+        removeClippedSubviews: PropTypes.bool,
+        automaticallyAdjustContentInsets: PropTypes.bool,
+        showsPagination: PropTypes.bool,
+        showsButtons: PropTypes.bool,
+        disableNextButton: PropTypes.bool,
+        loadMinimal: PropTypes.bool,
+        loadMinimalSize: PropTypes.number,
+        loadMinimalLoader: PropTypes.element,
+        loop: PropTypes.bool,
         autoplay: PropTypes.bool,
-        delay: PropTypes.number,
-        currentPage: PropTypes.number,
-        style: viewPropTypes.style,
-        pageStyle: viewPropTypes.style,
-        contentContainerStyle: viewPropTypes.style,
-        pageInfo: PropTypes.bool,
-        pageInfoBackgroundColor: PropTypes.string,
-        pageInfoTextStyle: Text.propTypes.style,
-        pageInfoBottomContainerStyle: viewPropTypes.style,
-        pageInfoTextSeparator: PropTypes.string,
-        bullets: PropTypes.bool,
-        bulletsContainerStyle: Text.propTypes.style,
-        bulletStyle: Text.propTypes.style,
-        arrows: PropTypes.bool,
-        arrowsContainerStyle: Text.propTypes.style,
-        arrowStyle: Text.propTypes.style,
-        leftArrowStyle: Text.propTypes.style,
-        rightArrowStyle: Text.propTypes.style,
-        leftArrowText: PropTypes.string,
-        rightArrowText: PropTypes.string,
-        chosenBulletStyle: Text.propTypes.style,
-        onAnimateNextPage: PropTypes.func,
-        onPageBeingChanged: PropTypes.func,
-        swipe: PropTypes.bool,
-        isLooped: PropTypes.bool,
-    };
+        autoplayTimeout: PropTypes.number,
+        autoplayDirection: PropTypes.bool,
+        index: PropTypes.number,
+        renderPagination: PropTypes.func,
+        dotStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        activeDotStyle: PropTypes.oneOfType([PropTypes.object, PropTypes.number]),
+        dotColor: PropTypes.string,
+        activeDotColor: PropTypes.string,
+        /**
+         * Called when the index has changed because the user swiped.
+         */
+        onIndexChanged: PropTypes.func
+    }
 
+    /**
+     * Default props
+     * @return {object} props
+     * @see http://facebook.github.io/react-native/docs/scrollview.html
+     */
     static defaultProps = {
-        delay: PAGE_CHANGE_DELAY,
-        autoplay: true,
-        pageInfo: false,
-        bullets: false,
-        arrows: false,
-        pageInfoBackgroundColor: 'rgba(0, 0, 0, 0.25)',
-        pageInfoTextSeparator: ' / ',
-        currentPage: 0,
-        style: undefined,
-        pageStyle: undefined,
-        contentContainerStyle: undefined,
-        pageInfoTextStyle: undefined,
-        pageInfoBottomContainerStyle: undefined,
-        bulletsContainerStyle: undefined,
-        chosenBulletStyle: undefined,
-        bulletStyle: undefined,
-        arrowsContainerStyle: undefined,
-        arrowStyle: undefined,
-        leftArrowStyle: undefined,
-        rightArrowStyle: undefined,
-        leftArrowText: '',
-        rightArrowText: '',
-        onAnimateNextPage: undefined,
-        onPageBeingChanged: undefined,
-        swipe: true,
-        isLooped: true,
-    };
+        horizontal: true,
+        pagingEnabled: true,
+        showsHorizontalScrollIndicator: false,
+        showsVerticalScrollIndicator: false,
+        bounces: false,
+        scrollsToTop: false,
+        removeClippedSubviews: true,
+        automaticallyAdjustContentInsets: false,
+        showsPagination: true,
+        showsButtons: false,
+        disableNextButton: false,
+        loop: true,
+        loadMinimal: false,
+        loadMinimalSize: 1,
+        autoplay: false,
+        autoplayTimeout: 2.5,
+        autoplayDirection: true,
+        index: 0,
+        onIndexChanged: () => null
+    }
 
-    constructor(props) {
-        super(props);
-        const size = { width: 0, height: 0 };
-        if (props.children) {
-            const childrenLength = React.Children.count(props.children) || 1;
-            this.state = {
-                currentPage: props.currentPage,
-                size,
-                childrenLength,
-                contents: null,
-            };
-        } else {
-            this.state = { size };
-        }
-        this.offset = 0;
-        this.nextPage = 0;
+    /**
+     * Init states
+     * @return {object} states
+     */
+    state = this.initState(this.props)
+
+    /**
+     * Initial render flag
+     * @type {bool}
+     */
+    initialRender = true
+
+    /**
+     * autoplay timer
+     * @type {null}
+     */
+    autoplayTimer = null
+    loopJumpTimer = null
+
+    componentWillReceiveProps(nextProps) {
+        if (!nextProps.autoplay && this.autoplayTimer) clearTimeout(this.autoplayTimer)
+        this.setState(this.initState(nextProps, this.props.index !== nextProps.index))
     }
 
     componentDidMount() {
-        if (this.state.childrenLength) {
-            this._setUpTimer();
-        }
+        this.autoplay()
     }
 
     componentWillUnmount() {
-        this._clearTimer();
+        this.autoplayTimer && clearTimeout(this.autoplayTimer)
+        this.loopJumpTimer && clearTimeout(this.loopJumpTimer)
     }
 
-    componentWillReceiveProps({ children }) {
-        if (!isEqual(this.props.children, children)) {
-            const { currentPage } = this.state;
-            this._clearTimer();
-            let childrenLength = 0;
-            if (children) {
-                childrenLength = React.Children.count(children) || 1;
-            }
-            const nextPage = currentPage >= childrenLength ? childrenLength - 1 : currentPage;
-            this.setState({ childrenLength }, () => {
-                this.animateToPage(nextPage);
-                this._setUpTimer();
-            });
+    componentWillUpdate(nextProps, nextState) {
+        // If the index has changed, we notify the parent via the onIndexChanged callback
+        if (this.state.index !== nextState.index) this.props.onIndexChanged(nextState.index)
+
+        // ToDo
+        this._index = nextState.index;
+    }
+
+    initState(props, updateIndex = false) {
+        // set the current state
+        const state = this.state || { width: 0, height: 0, offset: { x: 0, y: 0 } }
+
+        const initState = {
+            autoplayEnd: false,
+            loopJump: false,
+            offset: {}
         }
-    }
 
-    _setUpPages() {
-        const { size } = this.state;
-        const { children: propsChildren, isLooped, pageStyle } = this.props;
-        const children = React.Children.toArray(propsChildren);
-        const pages = [];
+        initState.total = props.children ? props.children.length || 1 : 0
 
-        if (children && children.length > 1) {
-            // add all pages
-            pages.push(...children);
-            // We want to make infinite pages structure like this: 1-2-3-1-2
-            // so we add first and second page again to the end
-            if (isLooped) {
-                pages.push(children[0]);
-                pages.push(children[1]);
-            }
-        } else if (children) {
-            pages.push(children[0]);
+        if (state.total === initState.total && !updateIndex) {
+            // retain the index
+            initState.index = state.index
         } else {
-            pages.push(<View><Text>You are supposed to add children inside Carousel</Text></View>);
+            initState.index = initState.total > 1 ? Math.min(props.index, initState.total - 1) : 0
         }
 
-        return pages.map((page, i) => (
-            <TouchableWithoutFeedback style={[{ ...size }, pageStyle]} key={`page${i}`} onPress={() => { // ToDo
-                console.log('move to Intro');
-                // this.moveToIntro();
-            }}
-            >
-                {page}
-            </TouchableWithoutFeedback>
-        ));
-    }
+        // Default: horizontal
+        const { width, height } = Dimensions.get('window')
 
-    getCurrentPage() {
-        return this.state.currentPage;
-    }
+        initState.dir = props.horizontal === false ? 'y' : 'x'
 
-    _setCurrentPage = (currentPage) => {
-        this.setState({ currentPage }, () => {
-            if (this.props.onAnimateNextPage) {
-                // FIXME: called twice on ios with auto-scroll
-                this.props.onAnimateNextPage(currentPage);
-            }
-        });
-    }
-
-    _onScrollBegin = () => {
-        this._clearTimer();
-    }
-
-    _onScrollEnd = (event) => {
-        const offset = { ...event.nativeEvent.contentOffset };
-        const page = this._calculateCurrentPage(offset.x);
-        console.log('current page', page);
-
-        this._placeCritical(page);
-        this._setCurrentPage(page);
-        this._setUpTimer();
-    }
-
-    _onScroll = (event) => {
-        const currentOffset = event.nativeEvent.contentOffset.x;
-        const direction = currentOffset > this.offset ? 'right' : 'left';
-        this.offset = currentOffset;
-        const nextPage = this._calculateNextPage(direction);
-
-        if (this.nextPage !== nextPage) {
-            this.nextPage = nextPage;
-            if (this.props.onPageBeingChanged) {
-                this.props.onPageBeingChanged(this.nextPage);
-            }
-        }
-    }
-
-    _onLayout = (event) => {
-        const { height, width } = event.nativeEvent.layout;
-        this.setState({ size: { width, height } });
-        // remove setTimeout wrapper when https://github.com/facebook/react-native/issues/6849 is resolved.
-        setTimeout(() => this._placeCritical(this.state.currentPage), 0);
-    }
-
-    _clearTimer = () => {
-        clearTimeout(this.timer);
-    }
-
-    _setUpTimer = () => {
-        // only for cycling
-        if (this.props.autoplay && React.Children.count(this.props.children) > 1) {
-            this._clearTimer();
-            this.timer = setTimeout(this._animateNextPage, this.props.delay);
-        }
-    }
-
-    _scrollTo = ({ offset, animated, nofix }) => {
-        if (this.scrollView) {
-            this.scrollView.scrollTo({ y: 0, x: offset, animated });
-
-            // Fix bug #50
-            if (!nofix && Platform.OS === 'android' && !animated) {
-                this.scrollView.scrollTo({ y: 0, x: offset, animated: true });
-            }
-        }
-    }
-
-    _animateNextPage = () => {
-        const { currentPage } = this.state;
-        const nextPage = this._normalizePageNumber(currentPage + 1);
-
-        // prevent from looping
-        if (!this.props.isLooped && nextPage < currentPage) {
-            return;
-        }
-        this.animateToPage(nextPage);
-    }
-
-    _animatePreviousPage = () => {
-        const { currentPage } = this.state;
-        const nextPage = this._normalizePageNumber(currentPage - 1);
-
-        // prevent from looping
-        if (!this.props.isLooped && nextPage > currentPage) {
-            return;
-        }
-        this.animateToPage(nextPage);
-    }
-
-    animateToPage = (page) => {
-        console.log('animateToPage', page);
-
-        const { currentPage, childrenLength, size: { width } } = this.state;
-        const { isLooped } = this.props;
-        const nextPage = this._normalizePageNumber(page);
-        this._clearTimer();
-
-        console.log('currentPage', currentPage, 'nextPage', nextPage);
-
-        if (nextPage === currentPage) {
-            // pass
-        } else if (nextPage === 0) {
-            if (isLooped) {
-                // animate properly based on direction
-                if (currentPage !== childrenLength - 1) {
-                    this._scrollTo({
-                        offset: (childrenLength + 2) * width,
-                        animated: false,
-                        nofix: true,
-                    });
-                }
-                this._scrollTo({ offset: childrenLength * width, animated: true });
-            } else {
-                this._scrollTo({ offset: 0, animated: true });
-            }
-        } else if (nextPage === 1) {
-            // To properly animate from the first page we need to move view
-            // to its original position first (not needed if not looped)
-            if (currentPage === 0 && isLooped) {
-                this._scrollTo({ offset: 0, animated: false, nofix: true });
-            }
-            this._scrollTo({ offset: width, animated: true });
+        if (props.width) {
+            initState.width = props.width
+        } else if (this.state && this.state.width) {
+            initState.width = this.state.width
         } else {
-            // Last page is allowed to jump to the first through the "border"
-            if (currentPage === 0 && nextPage !== childrenLength - 1) {
-                this._scrollTo({ offset: 0, animated: false, nofix: true });
-            }
-            this._scrollTo({ offset: nextPage * width, animated: true });
+            initState.width = width;
         }
 
-        this._setCurrentPage(nextPage);
-        this._setUpTimer();
-    }
-
-    _placeCritical = (page) => {
-        const { isLooped } = this.props;
-        const { childrenLength, size: { width } } = this.state;
-        let offset = 0;
-        // if page number is bigger then length - something is incorrect
-        if (page < childrenLength) {
-            if (page === 0 && isLooped) {
-                // in "looped" scenario first page shold be placed after the last one
-                offset = childrenLength * width;
-            } else {
-                offset = page * width;
-            }
+        if (props.height) {
+            initState.height = props.height
+        } else if (this.state && this.state.height) {
+            initState.height = this.state.height
+        } else {
+            initState.height = height;
         }
 
-        this._scrollTo({ offset, animated: false });
-    }
+        initState.offset[initState.dir] = initState.dir === 'y'
+            ? height * props.index
+            : width * props.index
 
-    _normalizePageNumber = (page) => {
-        const { childrenLength } = this.state;
 
-        if (page === childrenLength) {
-            return 0;
-        } else if (page > childrenLength) {
-            return 1;
-        } else if (page < 0) {
-            return childrenLength - 1;
-        }
-        return page;
-    }
-
-    _calculateCurrentPage = (offset) => {
-        const { width } = this.state.size;
-        const page = Math.round(offset / width);
-        return this._normalizePageNumber(page);
-    }
-
-    _calculateNextPage = (direction) => {
-        const { width } = this.state.size;
-        const ratio = this.offset / width;
-        const page = direction === 'right' ? Math.ceil(ratio) : Math.floor(ratio);
-        return this._normalizePageNumber(page);
-    }
-
-    _renderPageInfo = (pageLength) =>
-        (<View style={[styles.pageInfoBottomContainer, this.props.pageInfoBottomContainerStyle]} pointerEvents="none">
-            <View style={styles.pageInfoContainer}>
-                <View
-                    style={[styles.pageInfoPill, { backgroundColor: this.props.pageInfoBackgroundColor }]}
-                >
-                    <Text
-                        style={[styles.pageInfoText, this.props.pageInfoTextStyle]}
-                    >
-                        {`${this.state.currentPage + 1}${this.props.pageInfoTextSeparator}${pageLength}`}
-                    </Text>
-                </View>
-            </View>
-        </View>)
-
-    _renderBullets = (pageLength) => {
-        const bullets = [];
-        for (let i = 0; i < pageLength; i += 1) {
-            bullets.push(
-                <TouchableWithoutFeedback onPress={() => this.animateToPage(i)} key={`bullet${i}`}>
-                    <View
-                        style={i === this.state.currentPage ?
-                            [styles.chosenBullet, this.props.chosenBulletStyle] :
-                            [styles.bullet, this.props.bulletStyle]}
-                    />
-                </TouchableWithoutFeedback>);
-        }
-        return (
-            <View style={[styles.bullets, this.props.bulletsContainerStyle]} pointerEvents="box-none">
-                {bullets}
-            </View>
-        );
-    }
-
-    _renderArrows = () => {
-        let { currentPage } = this.state;
-        const { childrenLength } = this.state;
-        if (currentPage < 1) {
-            currentPage = childrenLength;
-        }
-        return (
-            <View style={styles.arrows} pointerEvents="box-none">
-                <View style={[styles.arrowsContainer, this.props.arrowsContainerStyle]} pointerEvents="box-none">
-                    <TouchableOpacity
-                        onPress={this._animatePreviousPage}
-                        style={this.props.arrowStyle}
-                    >
-                        <Text style={this.props.leftArrowStyle}>
-                            {this.props.leftArrowText ? this.props.leftArrowText : 'Left'}
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={this._animateNextPage}
-                        style={this.props.arrowStyle}
-                    >
-                        <Text style={this.props.rightArrowStyle}>
-                            {this.props.rightArrowText ? this.props.rightArrowText : 'Right'}
-                        </Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        );
-    }
-
-    render() {
-        const contents = this._setUpPages();
-
-        const containerProps = {
-            onLayout: this._onLayout,
-            style: [this.props.style],
+        this.internals = {
+            ...this.internals,
+            isScrolling: false
         };
 
-        const { size, childrenLength } = this.state;
+        // ToDo
+        this._index = initState.index;
+        this._direction = this.props.autoplayDirection;
+
+        return initState
+    }
+
+    // include internals with state
+    fullState() {
+        return Object.assign({}, this.state, this.internals)
+    }
+
+    onLayout = (event) => {
+        const { width, height } = event.nativeEvent.layout
+        const offset = this.internals.offset = {}
+        const state = { width, height }
+
+        if (this.state.total > 1) {
+            let setup = this.state.index
+            if (this.props.loop) {
+                setup++
+            }
+            offset[this.state.dir] = this.state.dir === 'y'
+                ? height * setup
+                : width * setup
+        }
+
+        // only update the offset in state if needed, updating offset while swiping
+        // causes some bad jumping / stuttering
+        if (!this.state.offset || width !== this.state.width || height !== this.state.height) {
+            state.offset = offset
+        }
+
+        // related to https://github.com/leecade/react-native-swiper/issues/570
+        // contentOffset is not working in react 0.48.x so we need to use scrollTo
+        // to emulate offset.
+        if (Platform.OS === 'ios') {
+            if (this.initialRender && this.state.total > 1) {
+                this.scrollView.scrollTo({ ...offset, animated: false })
+                this.initialRender = false;
+            }
+        }
+
+        this.setState(state)
+    }
+
+    loopJump = () => {
+        if (!this.state.loopJump) return
+        const i = this.state.index + (this.props.loop ? 1 : 0)
+        const scrollView = this.scrollView
+        this.loopJumpTimer = setTimeout(() => scrollView.setPageWithoutAnimation &&
+            scrollView.setPageWithoutAnimation(i), 50)
+    }
+
+    /**
+     * Automatic rolling
+     */
+    autoplay = () => {
+        if (!Array.isArray(this.props.children) ||
+            !this.props.autoplay ||
+            this.internals.isScrolling ||
+            this.state.autoplayEnd) return
+
+        this.autoplayTimer && clearTimeout(this.autoplayTimer)
+        this.autoplayTimer = setTimeout(() => {
+            // ToDo
+            /*
+            if (!this.props.loop && (
+                // this.props.autoplayDirection
+                this._autoplayDirection
+                    ? this.state.index === this.state.total - 1
+                    : this.state.index === 0
+            )
+            ) return this.setState({ autoplayEnd: true })
+            */
+
+            // console.log('autoplay() index', this._index, 'direction', this._direction);
+
+            if (this._direction) { // ->
+                if (this._index >= this.state.total - 1) { // 젤 마지막이면방향 전환
+                    this._direction = !this._direction;
+                }
+            } else { // <-
+                if (this._index <= 0) { // 젤 처음이면 방향전환
+                    this._direction = !this._direction;
+                }
+            }
+
+            // this.scrollBy(this.props.autoplayDirection ? 1 : -1)
+            this.scrollBy(this._direction ? 1 : -1)
+        }, this.props.autoplayTimeout * 1000)
+    }
+
+    /**
+     * Scroll begin handle
+     * @param  {object} e native event
+     */
+    onScrollBegin = e => {
+        // update scroll state
+        this.internals.isScrolling = true
+        this.props.onScrollBeginDrag && this.props.onScrollBeginDrag(e, this.fullState(), this)
+    }
+
+    /**
+     * Scroll end handle
+     * @param  {object} e native event
+     */
+    onScrollEnd = e => {
+        // update scroll state
+        this.internals.isScrolling = false
+
+        // making our events coming from android compatible to updateIndex logic
+        if (!e.nativeEvent.contentOffset) {
+            if (this.state.dir === 'x') {
+                e.nativeEvent.contentOffset = { x: e.nativeEvent.position * this.state.width }
+            } else {
+                e.nativeEvent.contentOffset = { y: e.nativeEvent.position * this.state.height }
+            }
+        }
+
+        this.updateIndex(e.nativeEvent.contentOffset, this.state.dir, () => {
+            this.autoplay() // ToDo: 스크롤을 빨리 넘기면 autoplay 타이머가 동작하지 않는다!
+            this.loopJump()
+
+            // if `onMomentumScrollEnd` registered will be called here
+            this.props.onMomentumScrollEnd && this.props.onMomentumScrollEnd(e, this.fullState(), this)
+        })
+    }
+
+    /*
+     * Drag end handle
+     * @param {object} e native event
+     */
+    onScrollEndDrag = e => {
+        const { contentOffset } = e.nativeEvent
+        const { horizontal, children } = this.props
+        const { index } = this.state
+        const { offset } = this.internals
+        const previousOffset = horizontal ? offset.x : offset.y
+        const newOffset = horizontal ? contentOffset.x : contentOffset.y
+
+        if (previousOffset === newOffset &&
+            (index === 0 || index === children.length - 1)) {
+            this.internals.isScrolling = false
+        }
+    }
+
+    /**
+     * Update index after scroll
+     * @param  {object} offset content offset
+     * @param  {string} dir    'x' || 'y'
+     */
+    updateIndex = (offset, dir, cb) => {
+        const state = this.state
+        let index = state.index
+        if (!this.internals.offset)   // Android not setting this onLayout first? https://github.com/leecade/react-native-swiper/issues/582
+            this.internals.offset = {}
+        const diff = offset[dir] - this.internals.offset[dir]
+        const step = dir === 'x' ? state.width : state.height
+        let loopJump = false
+
+        // Do nothing if offset no change.
+        if (!diff) return
+
+        // Note: if touch very very quickly and continuous,
+        // the variation of `index` more than 1.
+        // parseInt() ensures it's always an integer
+        index = parseInt(index + Math.round(diff / step))
+
+        if (this.props.loop) {
+            if (index <= -1) {
+                index = state.total - 1
+                offset[dir] = step * state.total
+                loopJump = true
+            } else if (index >= state.total) {
+                index = 0
+                offset[dir] = step
+                loopJump = true
+            }
+        }
+
+        const newState = {}
+        newState.index = index
+        newState.loopJump = loopJump
+
+        this.internals.offset = offset
+
+        // only update offset in state if loopJump is true
+        if (loopJump) {
+            // when swiping to the beginning of a looping set for the third time,
+            // the new offset will be the same as the last one set in state.
+            // Setting the offset to the same thing will not do anything,
+            // so we increment it by 1 then immediately set it to what it should be,
+            // after render.
+            if (offset[dir] === this.internals.offset[dir]) {
+                newState.offset = { x: 0, y: 0 }
+                newState.offset[dir] = offset[dir] + 1
+                this.setState(newState, () => {
+                    this.setState({ offset: offset }, cb)
+                })
+            } else {
+                newState.offset = offset
+                this.setState(newState, cb)
+            }
+        } else {
+            this.setState(newState, cb)
+        }
+    }
+
+    /**
+     * Scroll by index
+     * @param  {number} index offset index
+     * @param  {bool} animated
+     */
+
+    scrollBy = (index, animated = true) => {
+        if (this.internals.isScrolling || this.state.total < 2) return
+        const state = this.state
+        const diff = (this.props.loop ? 1 : 0) + index + this.state.index
+        let x = 0
+        let y = 0
+        if (state.dir === 'x') x = diff * state.width
+        if (state.dir === 'y') y = diff * state.height
+
+        if (Platform.OS !== 'ios') {
+            this.scrollView && this.scrollView[animated ? 'setPage' : 'setPageWithoutAnimation'](diff)
+        } else {
+            this.scrollView && this.scrollView.scrollTo({ x, y, animated })
+        }
+
+        // update scroll state
+        this.internals.isScrolling = true
+        this.setState({
+            autoplayEnd: false
+        })
+
+        // trigger onScrollEnd manually in android
+        if (!animated || Platform.OS !== 'ios') {
+            setImmediate(() => {
+                this.onScrollEnd({
+                    nativeEvent: {
+                        position: diff
+                    }
+                })
+            })
+        }
+    }
+
+    scrollViewPropOverrides = () => {
+        const props = this.props
+        let overrides = {}
+
+        /*
+        const scrollResponders = [
+          'onMomentumScrollBegin',
+          'onTouchStartCapture',
+          'onTouchStart',
+          'onTouchEnd',
+          'onResponderRelease',
+        ]
+        */
+
+        for (let prop in props) {
+            // if(~scrollResponders.indexOf(prop)
+            if (typeof props[prop] === 'function' &&
+                prop !== 'onMomentumScrollEnd' &&
+                prop !== 'renderPagination' &&
+                prop !== 'onScrollBeginDrag'
+            ) {
+                let originResponder = props[prop]
+                overrides[prop] = (e) => originResponder(e, this.fullState(), this)
+            }
+        }
+
+        return overrides
+    }
+
+    /**
+     * Render pagination
+     * @return {object} react-dom
+     */
+    renderPagination = () => {
+        // By default, dots only show when `total` >= 2
+        if (this.state.total <= 1) return null
+
+        let dots = []
+        const ActiveDot = this.props.activeDot || <View style={[{
+            // backgroundColor: this.props.activeDotColor || '#007aff',
+            backgroundColor: this.props.activeDotColor || 'white',
+            // width: 8,
+            // height: 8,
+            width: 6,
+            height: 6,
+            borderRadius: 4,
+            marginLeft: 3,
+            marginRight: 3,
+            marginTop: 3,
+            marginBottom: 3
+        }, this.props.activeDotStyle]} />
+        const Dot = this.props.dot || <View style={[{
+            backgroundColor: this.props.dotColor || 'rgba(0,0,0,.3)',
+            // width: 8,
+            // height: 8,
+            width: 5,
+            height: 5,
+            borderRadius: 4,
+            marginLeft: 3,
+            marginRight: 3,
+            marginTop: 3,
+            marginBottom: 3
+        }, this.props.dotStyle]} />
+        for (let i = 0; i < this.state.total; i++) {
+            dots.push(i === this.state.index
+                ? React.cloneElement(ActiveDot, { key: i })
+                : React.cloneElement(Dot, { key: i })
+            )
+        }
 
         return (
-            <View {...containerProps}>
-                <ScrollView
-                    ref={(c) => { this.scrollView = c; }}
-                    onScrollBeginDrag={this._onScrollBegin}
-                    onMomentumScrollEnd={this._onScrollEnd}
-                    onScroll={this._onScroll}
-                    alwaysBounceHorizontal={false}
-                    alwaysBounceVertical={false}
-                    contentInset={{ top: 0 }}
-                    automaticallyAdjustContentInsets={false}
-                    showsHorizontalScrollIndicator={false}
-                    horizontal
-                    pagingEnabled
-                    bounces={false}
-                    scrollEnabled={this.props.swipe}
-                    contentContainerStyle={[
-                        styles.horizontalScroll,
-                        this.props.contentContainerStyle,
-                        {
-                            width: size.width * (childrenLength +
-                                (childrenLength > 1 && this.props.isLooped ? 2 : 0)),
-                            height: size.height,
-                        },
-                    ]}
-                >
-                    {contents}
-                </ScrollView>
-                {this.props.arrows && this._renderArrows(this.state.childrenLength)}
-                {this.props.bullets && this._renderBullets(this.state.childrenLength)}
-                {this.props.pageInfo && this._renderPageInfo(this.state.childrenLength)}
+            <View pointerEvents='none' style={[styles['pagination_' + this.state.dir], this.props.paginationStyle]}>
+                {dots}
             </View>
-        );
+        )
+    }
+
+    renderTitle = () => {
+        const child = this.props.children[this.state.index]
+        const title = child && child.props && child.props.title
+        return title
+            ? (<View style={styles.title}>
+                {this.props.children[this.state.index].props.title}
+            </View>)
+            : null
+    }
+
+    renderNextButton = () => {
+        let button = null
+
+        if (this.props.loop ||
+            this.state.index !== this.state.total - 1) {
+            button = this.props.nextButton || <Text style={styles.buttonText}>›</Text>
+        }
+
+        return (
+            <TouchableOpacity
+                onPress={() => button !== null && this.scrollBy(1)}
+                disabled={this.props.disableNextButton}
+            >
+                <View>
+                    {button}
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    renderPrevButton = () => {
+        let button = null
+
+        if (this.props.loop || this.state.index !== 0) {
+            button = this.props.prevButton || <Text style={styles.buttonText}>‹</Text>
+        }
+
+        return (
+            <TouchableOpacity onPress={() => button !== null && this.scrollBy(-1)}>
+                <View>
+                    {button}
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    renderButtons = () => {
+        return (
+            <View pointerEvents='box-none' style={[styles.buttonWrapper, {
+                width: this.state.width,
+                height: this.state.height
+            }, this.props.buttonWrapperStyle]}>
+                {this.renderPrevButton()}
+                {this.renderNextButton()}
+            </View>
+        )
+    }
+
+    refScrollView = view => {
+        this.scrollView = view;
+    }
+
+    onPageScrollStateChanged = state => {
+        switch (state) {
+            case 'dragging':
+                return this.onScrollBegin();
+
+            case 'idle':
+            case 'settling':
+                if (this.props.onTouchEnd) this.props.onTouchEnd();
+        }
+    }
+
+    renderScrollView = pages => {
+        // const children = this.props.children;
+
+        if (Platform.OS === 'ios') {
+            return (
+                <ScrollView ref={this.refScrollView}
+                    {...this.props}
+                    {...this.scrollViewPropOverrides()}
+                    contentContainerStyle={[styles.wrapperIOS, this.props.style]}
+                    contentOffset={this.state.offset}
+                    onScrollBeginDrag={this.onScrollBegin}
+                    onMomentumScrollEnd={this.onScrollEnd}
+                    onScrollEndDrag={this.onScrollEndDrag}
+                    style={this.props.scrollViewStyle}
+                >
+                    {pages}
+                </ScrollView>
+            );
+        } else {
+            return (
+                <ViewPagerAndroid ref={this.refScrollView}
+                    {...this.props}
+                    initialPage={this.props.loop ? this.state.index + 1 : this.state.index}
+                    onPageScrollStateChanged={this.onPageScrollStateChanged}
+                    onPageSelected={this.onScrollEnd}
+                    key={pages.length}
+                    style={[styles.wrapperAndroid, this.props.style]}
+                    pageMargin={-40}
+                >
+                    {pages}
+                </ViewPagerAndroid>
+            );
+        }
+    }
+
+    /**
+     * Default render
+     * @return {object} react-dom
+     */
+    render() {
+        const state = this.state
+        const props = this.props
+        const {
+            index,
+            total,
+            width,
+            height
+        } = this.state;
+        const {
+            children,
+            containerStyle,
+            loop,
+            loadMinimal,
+            loadMinimalSize,
+            loadMinimalLoader,
+            renderPagination,
+            showsButtons,
+            showsPagination,
+        } = this.props;
+        // let dir = state.dir
+        // let key = 0
+        const loopVal = loop ? 1 : 0
+        let pages = []
+
+        const pageStyle = [{ width: width, height: height }, styles.slide]
+        const pageStyleLoading = {
+            width,
+            height,
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center'
+        }
+
+        // For make infinite at least total > 1
+        if (total > 1) {
+            // Re-design a loop model for avoid img flickering
+            pages = Object.keys(children)
+            if (loop) {
+                pages.unshift(total - 1 + '')
+                pages.push('0')
+            }
+
+            pages = pages.map((page, i) => {
+                if (loadMinimal) {
+                    if (i >= (index + loopVal - loadMinimalSize) &&
+                        i <= (index + loopVal + loadMinimalSize)) {
+                        return <View style={pageStyle} key={i}>{children[page]}</View>
+                    } else {
+                        return (
+                            <View style={pageStyleLoading} key={i}>
+                                {loadMinimalLoader ? loadMinimalLoader : <ActivityIndicator />}
+                            </View>
+                        )
+                    }
+                } else {
+                    // return <View style={pageStyle} key={i}>{children[page]}</View>
+                    return children[page];
+                }
+            })
+        } else {
+            pages = <View style={pageStyle} key={0}>{children}</View>
+        }
+
+        return (
+            <View style={[styles.container, containerStyle]} onLayout={this.onLayout}>
+                {this.renderScrollView(pages)}
+                {/*
+                {showsPagination && (renderPagination
+                    ? renderPagination(index, total, this)
+                    : this.renderPagination())}
+                {this.renderTitle()}
+                {showsButtons && this.renderButtons()}
+                */}
+            </View>
+        )
     }
 }
-
-const styles = StyleSheet.create({
-    horizontalScroll: {
-        position: 'absolute',
-    },
-    pageInfoBottomContainer: {
-        position: 'absolute',
-        bottom: 10,
-        /*
-        left: 0,
-        right: 0,
-        */
-        // left: 0,
-        right: 10,
-        backgroundColor: 'transparent',
-    },
-    pageInfoContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: 'transparent',
-    },
-    pageInfoPill: {
-        // width: 80,
-        width: 36,
-        height: 18,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    pageInfoText: {
-        textAlign: 'center',
-        fontSize: 10,
-        lineHeight: 12,
-        fontFamily: "SFProText-Regular",
-        color: 'white'
-    },
-    bullets: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 10,
-        height: 30,
-        backgroundColor: 'transparent',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flexDirection: 'row',
-    },
-    arrows: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        bottom: 0,
-        top: 0,
-        backgroundColor: 'transparent',
-    },
-    arrowsContainer: {
-        flex: 1,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-    },
-    chosenBullet: {
-        margin: 10,
-        width: 10,
-        height: 10,
-        borderRadius: 20,
-        backgroundColor: 'white',
-    },
-    bullet: {
-        margin: 10,
-        width: 10,
-        height: 10,
-        borderRadius: 20,
-        backgroundColor: 'transparent',
-        borderColor: 'white',
-        borderWidth: 1,
-    }
-});
