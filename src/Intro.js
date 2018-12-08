@@ -31,14 +31,11 @@ type InjectedProps = {
 };
 */
 
-const itemWidth = Dimensions.get('window').width - 40;
-const itemHeight = parseInt(Dimensions.get('window').width - 40) / 4 * 3;
+const _itemWidth = Dimensions.get('window').width - 40;
+const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 4 * 3;
 
 
-
-import Carousel from './Carousel';
-
-
+import Carousel from "./Carousel";
 
 
 // @inject("feedStore", "profileStore") @observer
@@ -95,21 +92,7 @@ export default class Intro extends React.Component {
 
         searchText: '',
 
-
-        childrenLength: 5,
-        currentPage: 0,
-
     };
-
-    constructor(props) {
-        super(props);
-
-        this.offset = 0;
-        this.nextPage = 0;
-    }
-
-
-
 
     /*
     @autobind
@@ -196,7 +179,6 @@ export default class Intro extends React.Component {
     render(): React.Node {
         // const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
-
 
         return (
             <View style={styles.flex}>
@@ -311,27 +293,22 @@ export default class Intro extends React.Component {
                                 ref={(scrollView) => { this.scrollView = scrollView; }}
                                 horizontal={true}
                                 showsHorizontalScrollIndicator={false}
-
-                                // decelerationRate={0.7}
-
-                                decelerationRate={'fast'}
-                                snapToInterval={Dimensions.get('window').width - 30} // width - (YOUR_INSET_LEFT + YOUR_INSET_RIGHT)
-                                snapToAlignment={"center"}
                                 /*
-                                contentInset={{
-                                    top: 0,
-                                    left: 15, // YOUR_INSET_LEFT
-                                    bottom: 0,
-                                    right: 15, // YOUR_INSET_RIGHT
-                                }}
+                                    decelerationRate={'fast'}
+                                    // decelerationRate={0.7}
+                                    snapToInterval={Dimensions.get('window').width - 30} // width - (YOUR_INSET_LEFT + YOUR_INSET_RIGHT)
+                                    snapToAlignment={"center"}
+                                    contentInset={{
+                                        top: 0,
+                                        left: 15, // YOUR_INSET_LEFT
+                                        bottom: 0,
+                                        right: 15, // YOUR_INSET_RIGHT
+                                    }}
                                 */
-                                contentInset={{ top: 0 }}
-                                automaticallyAdjustContentInsets={false}
+                                // automaticallyAdjustContentInsets={false}
 
                                 alwaysBounceHorizontal={false}
                                 alwaysBounceVertical={false}
-
-
                                 bounces={false}
                             >
                                 <View style={styles.view1}>
@@ -370,6 +347,8 @@ export default class Intro extends React.Component {
                                     />
                                 </View>
                             </ScrollView>
+
+
 
                             {/*
                             <Carousel
@@ -432,96 +411,6 @@ export default class Intro extends React.Component {
     leaveEditing() {
         // alert('leaveEditing()');
     }
-
-
-
-    _onScrollEnd = (event) => {
-        const offset = { ...event.nativeEvent.contentOffset };
-        const page = this._calculateCurrentPage(offset.x);
-
-        this._placeCritical(page);
-        this._setCurrentPage(page);
-    }
-
-    _calculateCurrentPage = (offset) => {
-        // const { width } = this.state.size;
-        const width = Dimensions.get('window').width - 20;
-        const page = Math.round(offset / width); // index
-
-
-
-        return this._normalizePageNumber(page);
-    }
-
-    _normalizePageNumber = (page) => {
-        const { childrenLength } = this.state;
-
-        if (page === childrenLength) {
-            return 0;
-        } else if (page > childrenLength) {
-            return 1;
-        } else if (page < 0) {
-            return childrenLength - 1;
-        }
-        return page;
-    }
-
-    _placeCritical = (page) => {
-        // const { isLooped } = this.props;
-        const { childrenLength } = this.state;
-        const width = Dimensions.get('window').width;
-        let offset = 0;
-        // if page number is bigger then length - something is incorrect
-        if (page < childrenLength) {
-            offset = page * width;
-        }
-
-        this._scrollTo({ offset, animated: true });
-    }
-
-    _scrollTo = ({ offset, animated, nofix }) => {
-        offset = offset - 30;
-
-        console.log('_scrollTo', offset);
-
-        if (this.scrollView) {
-            this.scrollView.scrollTo({ y: 0, x: offset, animated });
-
-            // Fix bug #50
-            if (!nofix && Platform.OS === 'android' && !animated) { // ToDo
-                this.scrollView.scrollTo({ y: 0, x: offset, animated: true });
-            }
-        }
-    }
-
-    _setCurrentPage = (currentPage) => {
-        this.setState({ currentPage: currentPage });
-    }
-
-
-
-    _onScroll = (event) => {
-        const currentOffset = event.nativeEvent.contentOffset.x;
-        const direction = currentOffset > this.offset ? 'right' : 'left';
-        this.offset = currentOffset;
-
-        const nextPage = this._calculateNextPage(direction);
-        if (this.nextPage !== nextPage) {
-            this.nextPage = nextPage;
-        }
-    }
-
-    _calculateNextPage = (direction) => {
-        const width = Dimensions.get('window').width;
-        const ratio = this.offset / width;
-        const page = direction === 'right' ? Math.ceil(ratio) : Math.floor(ratio);
-        return this._normalizePageNumber(page);
-    }
-
-
-
-
-
 
 }
 
@@ -621,8 +510,8 @@ const styles = StyleSheet.create({
     //// ScrollView ////
     view1: {
         backgroundColor: 'blue',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         borderRadius: 2,
         // paddingHorizontal : 30
         // margin: 10
@@ -635,8 +524,8 @@ const styles = StyleSheet.create({
     },
     view2: {
         backgroundColor: 'red',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         borderRadius: 2,
         // paddingHorizontal : 30
         marginLeft: 5,
@@ -644,8 +533,8 @@ const styles = StyleSheet.create({
     },
     view3: {
         backgroundColor: 'orange',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         borderRadius: 2,
         // paddingHorizontal : 30
         marginLeft: 5,
@@ -653,8 +542,8 @@ const styles = StyleSheet.create({
     },
     view4: {
         backgroundColor: 'yellow',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         borderRadius: 2,
         // paddingHorizontal : 30
         marginLeft: 5,
@@ -662,8 +551,8 @@ const styles = StyleSheet.create({
     },
     view5: {
         backgroundColor: 'green',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         borderRadius: 2,
         // paddingHorizontal : 30
         marginLeft: 5,
@@ -686,8 +575,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
         */
         backgroundColor: 'green',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         /*
         marginLeft: 20,
         marginRight: 5
@@ -695,8 +584,8 @@ const styles = StyleSheet.create({
     },
     slide_m: {
         backgroundColor: 'green',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         /*
         marginLeft: 5,
         marginRight: 5
@@ -704,8 +593,8 @@ const styles = StyleSheet.create({
     },
     slide_l: {
         backgroundColor: 'green',
-        width: itemWidth,
-        height: itemHeight,
+        width: _itemWidth,
+        height: _itemHeight,
         /*
         marginLeft: 5,
         marginRight: 20
