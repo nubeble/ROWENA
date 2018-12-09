@@ -32,6 +32,14 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
     state = {
         showIndicator: false,
 
+        uploadingImage: false,
+        uploadImage1: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+        uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+        uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+        uploadImage5: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+        uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+
         renderFeeds: [],
         isLoadingFeeds: false,
         currentFeedIndex: 0
@@ -484,7 +492,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             console.log('result of launchImageLibraryAsync:', result);
 
             if (!result.cancelled) {
-                // this.setState({ uploadingImage: true });
+                this.setState({ uploadingImage: true });
 
                 // show indicator
                 this.setState({ showIndicator: true });
@@ -593,6 +601,33 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             // ToDo: error handling
         }
     }
+    /*
+    async uploadImage(uri, imageName) {
+        const response = await fetch(uri);
+
+        if (response.ok) {
+            const blob = await response.blob();
+
+            let ref = firebase.storage().ref().child('images/' + imageName);
+
+            const snapshot = ref.put(blob)
+                .then(() => { console.log('uploadImage success.'); alert('Your photo has successfully uploaded.'); })
+                .catch((error) => { console.log('error:', error); alert('Please try again.'); });
+
+            const uploadedImage = snapshot.downloadURL;
+            this.setState({ uploadingImageUri: uploadedImage });
+
+        } else {
+            alert('Please try again.');
+        }
+    }
+    */
+
+
+
+
+
+
 }
 
 const styles = StyleSheet.create({

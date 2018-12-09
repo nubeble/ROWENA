@@ -361,11 +361,20 @@ export default class extends Component {
         this.props.onScrollBeginDrag && this.props.onScrollBeginDrag(e, this.fullState(), this)
     }
 
+    __onScrollEnd() {
+        // console.log('__onScrollEnd');
+        this.internals.isScrolling = false;
+
+        this.autoplay();
+    }
+
     /**
      * Scroll end handle
      * @param  {object} e native event
      */
     onScrollEnd = e => {
+        // console.log('onScrollEnd');
+
         // update scroll state
         this.internals.isScrolling = false
 
@@ -379,7 +388,7 @@ export default class extends Component {
         }
 
         this.updateIndex(e.nativeEvent.contentOffset, this.state.dir, () => {
-            this.autoplay() // ToDo: 스크롤을 빨리 넘기면 autoplay 타이머가 동작하지 않는다!
+            this.autoplay()
             this.loopJump()
 
             // if `onMomentumScrollEnd` registered will be called here
@@ -648,11 +657,20 @@ export default class extends Component {
     onPageScrollStateChanged = state => {
         switch (state) {
             case 'dragging':
-                return this.onScrollBegin();
+                // console.log('dragging');
+                this.onScrollBegin();
+            break;
 
             case 'idle':
-            case 'settling':
+                // console.log('idle');
+                this.__onScrollEnd();
                 if (this.props.onTouchEnd) this.props.onTouchEnd();
+            break;
+
+            case 'settling':
+                // console.log('settling');
+                if (this.props.onTouchEnd) this.props.onTouchEnd();
+            break;
         }
     }
 
@@ -679,7 +697,7 @@ export default class extends Component {
                 onPageScrollStateChanged={this.onPageScrollStateChanged}
                 onPageSelected={this.onScrollEnd}
                 key={pages.length}
-                // bounces={this.props.bounces} // ToDo: block bounce!!
+                bounces={this.props.bounces}
                 style={[styles.wrapperAndroid, this.props.style]}>
                 {pages}
             </ViewPagerAndroid>

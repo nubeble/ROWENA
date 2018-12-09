@@ -121,11 +121,6 @@ export default class Feed extends React.Component<FeedProps> {
                         )
                     )}
 
-
-
-
-
-
                     {...{ onScroll, bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
@@ -146,7 +141,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: Theme.spacing.small
     },
     bottomIndicator: {
-        marginTop: 20,
+        // marginTop: 20,
+        marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
         marginBottom: 20
     }
 });

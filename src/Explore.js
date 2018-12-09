@@ -279,6 +279,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             ListHeaderComponent={(
                                 <Animated.View>
 
+                                    {/* advertising banner */}
                                     <TouchableWithoutFeedback onPress={() => {
                                         let index;
                                         if (this.currentSwiperIndex === undefined) {
@@ -309,8 +310,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                                                    uri={'https://aydencreative.com/files/2018/10/180221-AYD-Website-Header_Mockup-1.jpg'}
                                                 />
+                                                {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -321,13 +323,15 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     }}>{"advertising area 1"}
                                                     </Text>
                                                 </View>
+                                                */}
                                             </View>
                                             <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
+                                                    uri={'https://www.esentra.com.tw/wp-content/uploads/2013/02/f2c70a681b8679277edc6d5e77ee5477.jpg'}
                                                 />
+                                                {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -338,13 +342,15 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     }}>{"advertising area 2"}
                                                     </Text>
                                                 </View>
+                                                */}
                                             </View>
                                             <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
+                                                    uri={'https://www.thefriaryguildford.com/wp-content/uploads/2018/04/7640-365-Creative-Web-Banners-AW6.jpg'}
                                                 />
+                                                {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -355,13 +361,15 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     }}>{"advertising area 3"}
                                                     </Text>
                                                 </View>
+                                                */}
                                             </View>
                                             <View style={styles.slide}>
                                                 <SmartImage
                                                     style={styles.item}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
+                                                    uri={'https://www.designer-daily.com/wp-content/uploads/2015/02/wifi.jpg'}
                                                 />
+                                                {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -372,6 +380,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     }}>{"advertising area 4"}
                                                     </Text>
                                                 </View>
+                                                */}
                                             </View>
                                         </Swiper>
                                     </TouchableWithoutFeedback>

@@ -334,7 +334,7 @@ export default class Intro extends React.Component {
                             </Carousel>
 
                             <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Recently listed girls around the world'}</Text>
+                                <Text style={styles.title}>{'Recently listed girls'}</Text>
                             </View>
 
                             <Carousel>

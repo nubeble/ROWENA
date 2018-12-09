@@ -53,6 +53,15 @@ export default class FeedStore {
 
     // eslint-disable-next-line flowtype/no-weak-types
     init(query: any) {
+        // 1209
+        // --
+        this.cursor = undefined;
+        this.lastKnownEntry = undefined;
+        this.query = undefined;
+        this.profiles = {};
+        this.feed = undefined;
+        // --
+
         this.query = query;
         this.loadFeed();
     }

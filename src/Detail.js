@@ -21,14 +21,6 @@ export default class Detail extends React.Component {
     state = {
         showIndicator: false,
 
-        uploadingImage: false,
-        uploadImage1: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage5: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-
     };
 
     componentDidMount() {
@@ -39,154 +31,173 @@ export default class Detail extends React.Component {
         console.log('profile', profile);
     }
 
-    async pickImage(index) {
-        const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
-        const { status: cameraRollPermission } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-        if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 1.0
-            });
-
-            console.log('result of launchImageLibraryAsync:', result);
-
-            if (!result.cancelled) {
-                this.setState({ uploadingImage: true });
-
-                // show indicator
-                this.setState({ showIndicator: true });
-
-                // ToDo: show progress bar
+    render() {
+        const { navigation } = this.props;
 
 
-                // upload image
-                // var that = this;
-                this.uploadImage(result.uri, index, (uri) => {
-                    switch (index) {
-                        case 0: this.setState({ uploadImage1: uri }); break;
-                        case 1: this.setState({ uploadImage2: uri }); break;
-                        case 2: this.setState({ uploadImage3: uri }); break;
-                        case 3: this.setState({ uploadImage4: uri }); break;
-                        case 4: this.setState({ uploadImage5: uri }); break;
-                        case 5: this.setState({ uploadImage6: uri }); break;
-                    }
+        return (
+            <View style={styles.flex} >
 
-                    // save to database
-                    /*
-                    var data = {
-                        pictures: {
-                            uri: uri
-                        }
-                    };
+                <ActivityIndicator
+                    style={styles.activityIndicator}
+                    animating={this.state.showIndicator}
+                    size="large"
+                    color='white'
+                />
 
-                    this.updateUser(Firebase.auth.currentUser.uid, data);
-                    */
-                });
+                <View style={styles.searchBarStyle}>
+                    <TouchableOpacity
+                        style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
+                        onPress={() => this.props.navigation.goBack()}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+                </View>
+
+                <FlatList
+                    contentContainerStyle={styles.container}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={(
+                        <Animated.View style={{ backgroundColor: 'rgb(40, 40, 40)' }}>
+                            {/* profile pictures */}
+                            {this.renderSwiper(this.props.navigation.state.params.post)}
+
+                            <View style={styles.descriptionContainer}>
+                                <Text style={styles.descriptionTitle}>{'The Siam'}</Text>
+
+                                {/* rating * review */}
+                            </View>
+
+                            <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addFeed</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.removeUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>removeUser</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.getUsers()} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUsers</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity onPress={() => this.addUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addUser</Text>
+                            </TouchableOpacity>
 
 
-                /*
-                const fileName = result.uri.split('/').pop();
-                const url = await firebase.storage().ref(fileName).getDownloadURL();
-                console.log('download URL:', url);
-                */
 
 
+                            {/*
+                            <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Pick me</Text>
+                            </TouchableOpacity>
+                            */}
 
-                // close indicator
-                this.setState({ showIndicator: false });
 
-                this.setState({ uploadingImage: false });
+                        </Animated.View>
+                    )}
+                // scrollEventThrottle={1}
+                // columnWrapperStyle={undefined}
+                // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
+                // {...{ onScroll }}
+                />
 
-            } // press OK
-        } else {
-            Linking.openURL('app-settings:');
-        }
+            </View>
+
+        );
     }
 
-    /*
-    async uploadImage(uri, imageName) {
-        const response = await fetch(uri);
+    renderSwiper(post) {
+        let pictures = [];
 
-        if (response.ok) {
-            const blob = await response.blob();
-
-            let ref = firebase.storage().ref().child('images/' + imageName);
-
-            const snapshot = ref.put(blob)
-                .then(() => { console.log('uploadImage success.'); alert('Your photo has successfully uploaded.'); })
-                .catch((error) => { console.log('error:', error); alert('Please try again.'); });
-
-            const uploadedImage = snapshot.downloadURL;
-            this.setState({ uploadingImageUri: uploadedImage });
-
-        } else {
-            alert('Please try again.');
-        }
-    }
-    */
-    async uploadImage(uri, index, cb) {
-        const fileName = uri.split('/').pop();
-        var ext = fileName.split('.').pop();
-
-        if (!Util.isImage(ext)) {
-            alert('invalid image file!');
-            return;
-        }
-
-        var type = Util.getImageType(ext);
-        // console.log('file type:', type);
-
-        const formData = new FormData();
-        formData.append("image", {
-            // uri: uri,
-            uri,
-            name: fileName,
-            type: type
-        });
-        formData.append("userUid", Firebase.auth.currentUser.uid);
-        formData.append("pictureIndex", index);
-
-        try {
-            let response = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/api/images",
-                {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "multipart/form-data"
-                    },
-                    body: formData
-                }
+        let value = post.pictures.one.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`one`}>
+                    <TouchableWithoutFeedback onPress={() => { // ToDo: remove!
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
             );
-
-            let responseJson = await response.json();
-            console.log('responseJson', responseJson);
-
-            // console.log('responseJson', await response.json());
-
-            cb(responseJson.downloadUrl);
-
-            /*
-            try {
-                let downloadURL = await Firebase.storage.ref(responseJson.name).getDownloadURL();
-                // let downloadURL = await Firebase.storage.child(responseJson.name).getDownloadURL();
-                cb(downloadURL);
-            } catch (error) {
-                console.error(error);
-            }
-            */
-        } catch (error) {
-            console.error(error);
-
-            // ToDo: error handling - messagebox (please try again)
         }
-    }
 
-    uploadPicture(index) {
-        this.pickImage(index);
-    }
+        value = post.pictures.two.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`two`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+            );
+        }
 
+        value = post.pictures.three.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`three`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+            );
+        }
+
+        value = post.pictures.four.uri;
+        if (value) {
+            pictures.push(
+                <View style={styles.slide} key={`four`}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('move to Intro');
+                        // this.moveToIntro();
+                    }}>
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableWithoutFeedback>
+                </View>
+            );
+        }
+
+        return (
+            <Swiper
+                style={styles.wrapper}
+                containerStyle={{ marginBottom: 20 }}
+                width={Dimensions.get('window').width}
+                // height={Dimensions.get('window').width / 16 * 9}
+                height={Dimensions.get('window').width}
+                loop={false}
+                autoplay={false}
+                autoplayTimeout={3}
+                paginationStyle={{ bottom: 4 }}
+            >
+                {pictures}
+            </Swiper>
+        );
+    }
 
 
     /*** Database ***/
@@ -379,232 +390,6 @@ export default class Detail extends React.Component {
         });
     }
     */
-
-
-
-
-
-
-    render() {
-        const { navigation } = this.props;
-        // const { user } = navigation.state.params; // ToDo
-
-        const uploadImage1 = this.state.uploadImage1;
-        const uploadImage2 = this.state.uploadImage2;
-        const uploadImage3 = this.state.uploadImage3;
-        const uploadImage4 = this.state.uploadImage4;
-        const uploadImage5 = this.state.uploadImage5;
-        const uploadImage6 = this.state.uploadImage6;
-
-
-        return (
-            <View style={styles.flex} >
-
-                <ActivityIndicator
-                    style={styles.activityIndicator}
-                    animating={this.state.showIndicator}
-                    size="large"
-                    color='white'
-                />
-
-                <View style={styles.searchBarStyle}>
-                    <TouchableOpacity
-                        style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
-                        onPress={() => this.props.navigation.goBack()}
-                    >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-                </View>
-
-                <FlatList
-                    contentContainerStyle={styles.container}
-                    showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={(
-                        <Animated.View style={{ backgroundColor: 'rgb(40, 40, 40)' }}>
-
-                            {this.renderSwiper(this.props.navigation.state.params.post)}
-
-                            <View style={styles.descriptionContainer}>
-                                <Text style={styles.descriptionTitle}>{'The Siam'}</Text>
-
-                                {/* rating * review */}
-                            </View>
-
-                            {/*
-                            <TouchableOpacity onPress={() => this.uploadPicture(0)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage1}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.uploadPicture(1)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage2}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.uploadPicture(2)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage3}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.uploadPicture(3)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage4}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.uploadPicture(4)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage5}
-                                />
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.uploadPicture(5)}>
-                                <Image
-                                    style={styles.ad}
-                                    uri={uploadImage6}
-                                />
-                            </TouchableOpacity>
-                            */}
-
-
-                            <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addFeed</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.removeUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>removeUser</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.getUsers()} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUsers</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.addUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addUser</Text>
-                            </TouchableOpacity>
-
-
-
-
-                            {/*
-                            <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Pick me</Text>
-                            </TouchableOpacity>
-                            */}
-
-
-                        </Animated.View>
-                    )}
-                // scrollEventThrottle={1}
-                // columnWrapperStyle={undefined}
-                // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
-                // {...{ onScroll }}
-                />
-
-            </View>
-
-        );
-    }
-
-    renderSwiper(post) {
-        let pictures = [];
-
-        let value = post.pictures.one.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`one`}>
-                    <TouchableWithoutFeedback onPress={() => { // ToDo: remove!
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
-                </View>
-            );
-        }
-
-        value = post.pictures.two.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`two`}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
-                </View>
-            );
-        }
-
-        value = post.pictures.three.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`three`}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
-                </View>
-            );
-        }
-
-        value = post.pictures.four.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`four`}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
-                </View>
-            );
-        }
-
-        return (
-            <Swiper
-                style={styles.wrapper}
-                containerStyle={{ marginBottom: 50 }}
-                width={Dimensions.get('window').width}
-                // height={Dimensions.get('window').width / 16 * 9}
-                height={Dimensions.get('window').width}
-                loop={false}
-                autoplay={false}
-                autoplayTimeout={3}
-                paginationStyle={{ bottom: 4 }}
-            >
-                {pictures}
-            </Swiper>
-        );
-    }
 }
 
 const styles = StyleSheet.create({
@@ -624,15 +409,6 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.small,
         // backgroundColor: 'rgb(40, 40, 40)'
     },
-    /*
-    ad: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
-        // marginBottom: Theme.spacing.small
-        paddingBottom: Theme.spacing.small
-    },
-    */
-
     signUpButton: {
         //position: 'absolute',
         //bottom: 30,
