@@ -98,56 +98,6 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         this.setState({ isLoadingFeeds: false, currentFeedIndex: currentFeedIndex + count, renderFeeds: [...this.state.renderFeeds, ...newRecords] });
     }
 
-
-
-
-
-
-    @autobind
-    loadMore() {
-        // this.props.userFeedStore.loadFeed();
-    }
-
-    @autobind
-    keyExtractor(item: FeedEntry): string {
-        return item.post.id;
-    }
-
-    @autobind
-    renderItem({ item }: FlatListItem<FeedEntry>): React.Node {
-        // const { navigation, store } = this.props;
-        const { post, profile } = item; // ToDo
-
-        return (
-            /*
-            <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }} />
-            </View>
-            */
-            <TouchableOpacity onPress={() => console.log('go to detail')}>
-                <View style={styles.pictureContainer}>
-                    <SmartImage
-                        style={styles.picture}
-                        preview={item.post.pictures.one.preview}
-                        uri={item.post.pictures.one.uri}
-                    />
-
-                    <View style={styles.content}>
-                        {/*
-                        <Text style={{
-                            textAlign: 'center',
-                            fontWeight: '500',
-                            color: "white",
-                            fontSize: 21,
-                            // flexWrap: "wrap"
-                        }}>{item.city}</Text>
-                    */}
-                    </View>
-                </View>
-            </TouchableOpacity>
-        );
-    }
-
     
 
     render() {

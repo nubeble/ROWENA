@@ -16,6 +16,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 import SearchModal from "./SearchModal";
 import SmartImage from "./rnff/src/components/SmartImage";
+import Carousel from './Carousel'
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -32,10 +33,8 @@ type InjectedProps = {
 */
 
 const _itemWidth = Dimensions.get('window').width - 40;
-const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 4 * 3;
+const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
 
-
-import Carousel from "./Carousel";
 
 
 // @inject("feedStore", "profileStore") @observer
@@ -92,7 +91,9 @@ export default class Intro extends React.Component {
 
         searchText: '',
 
+
     };
+
 
     /*
     @autobind
@@ -231,7 +232,6 @@ export default class Intro extends React.Component {
                             </View>
                         </View>
                     )}
-                    // scrollEventThrottle={1}
                     columnWrapperStyle={styles.columnWrapperStyle}
                     numColumns={2}
                     data={this.state.places}
@@ -285,115 +285,106 @@ export default class Intro extends React.Component {
                                 <Text style={styles.title}>{'Top-rated girls'}</Text>
                             </View>
 
-
-                            {/* Add image carousel here.. */}
-
-                            <ScrollView
-                                style={{ paddingBottom: Theme.spacing.base }}
-                                ref={(scrollView) => { this.scrollView = scrollView; }}
-                                horizontal={true}
-                                showsHorizontalScrollIndicator={false}
-                                /*
-                                    decelerationRate={'fast'}
-                                    // decelerationRate={0.7}
-                                    snapToInterval={Dimensions.get('window').width - 30} // width - (YOUR_INSET_LEFT + YOUR_INSET_RIGHT)
-                                    snapToAlignment={"center"}
-                                    contentInset={{
-                                        top: 0,
-                                        left: 15, // YOUR_INSET_LEFT
-                                        bottom: 0,
-                                        right: 15, // YOUR_INSET_RIGHT
-                                    }}
-                                */
-                                // automaticallyAdjustContentInsets={false}
-
-                                alwaysBounceHorizontal={false}
-                                alwaysBounceVertical={false}
-                                bounces={false}
-                            >
+                            <Carousel>
                                 <View style={styles.view1}>
-                                    <SmartImage
-                                        style={styles.item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'http://kr.people.com.cn/NMediaFile/2017/0804/FOREIGN201708041514000585670445943.jpg'}
-                                    />
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('0')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://2.bp.blogspot.com/-z2h6jj8PCKw/WiVyrSTiBUI/AAAAAAAAG7A/9D8ggDsoY5QArutqvVfzhSd82f5GtviAgCLcBGAs/s1600/%25EC%25A0%259C%25EB%25AA%25A9-%25EC%2597%2586%25EC%259D%258C2.gif'}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.view2}>
-                                    <SmartImage
-                                        style={styles.item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'http://image.cloud.sbs.co.kr/smr/clip/201806/15/Xj56w3N3h7jEMCD5cyJZ4f_640.jpg'}
-                                    />
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://coinpan.com/files/attach/images/198/637/529/067/504ea1e1eae11d0485347359ba31e0c5.gif'}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.view3}>
-                                    <SmartImage
-                                        style={styles.item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'https://www.thedailypost.kr/wp-content/uploads/2017/02/H52Am.jpg'}
-                                    />
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://www.nemopan.com/files/attach/images/6294/443/061/012/2926fb2e2919796604716f0aeb79c39b.gif'}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.view4}>
-                                    <SmartImage
-                                        style={styles.item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'http://kstatic.inven.co.kr/upload/2017/07/05/bbs/i13856102909.jpg'}
-                                    />
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://t1.daumcdn.net/cfile/tistory/253E1A3D56F8F68821'}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                                 <View style={styles.view5}>
-                                    <SmartImage
-                                        style={styles.item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
-                                    />
-                                </View>
-                            </ScrollView>
-
-
-
-                            {/*
-                            <Carousel
-                                style={styles.wrapper}
-                                containerStyle={{ marginBottom: 20 }}
-                                width={Dimensions.get('window').width}
-                                height={Dimensions.get('window').width / 4 * 3}
-                                loop={false}
-                                autoplay={false}
-                                // paginationStyle={{ bottom: 4 }}
-                                onIndexChanged={(index) => {
-                                    // console.log('onIndexChanged', index);
-                                    this.currentSwiperIndex = index;
-                                }}
-                            >
-                                <View style={styles.slide_f} key={'0'}>
-                                    <SmartImage
-                                        style={styles._item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
-                                    />
-                                </View>
-                                <View style={styles.slide_m} key={'1'}>
-                                    <SmartImage
-                                        style={styles._item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile10.uf.tistory.com%2Fimage%2F2535634A58D7CE280462A4'}
-                                    />
-                                </View>
-                                <View style={styles.slide_m} key={'2'}>
-                                    <SmartImage
-                                        style={styles._item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'https://cdn.clien.net/web/api/file/F01/5277958/e16aaf1ee2f745acb1d.PNG?w=780&h=30000'}
-                                    />
-                                </View>
-                                <View style={styles.slide_l} key={'3'}>
-                                    <SmartImage
-                                        style={styles._item}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={'https://scontent-frx5-1.cdninstagram.com/vp/d1db3afc164d1ca671eeb1a8e2c4ded5/5C82F8D0/t51.2885-15/e35/43063022_181319842784322_7879118230333023640_n.jpg?se=8&ig_cache_key=MTg4NDk1MzA4NDIzMzQxOTYyMA%3D%3D.2'}
-                                    />
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://fimg4.pann.com/new/download.jsp?FileID=47136904'}
+                                        />
+                                    </TouchableOpacity>
                                 </View>
                             </Carousel>
-                            */}
+
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{'Recently listed girls around the world'}</Text>
+                            </View>
+
+                            <Carousel>
+                                <View style={styles.view1}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('0')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view2}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://image.cloud.sbs.co.kr/smr/clip/201806/15/Xj56w3N3h7jEMCD5cyJZ4f_640.jpg'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view3}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://www.thedailypost.kr/wp-content/uploads/2017/02/H52Am.jpg'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view4}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://kstatic.inven.co.kr/upload/2017/07/05/bbs/i13856102909.jpg'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view5}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                            </Carousel>
+
 
 
                         </View>
@@ -411,6 +402,7 @@ export default class Intro extends React.Component {
     leaveEditing() {
         // alert('leaveEditing()');
     }
+
 
 }
 
@@ -485,7 +477,7 @@ const styles = StyleSheet.create({
         // marginVertical: Theme.spacing.tiny,
         // marginHorizontal: Theme.spacing.tiny
         marginVertical: 4,
-        marginHorizontal: 4,
+        marginHorizontal: 4
     },
     picture: {
         width: '100%',
@@ -507,9 +499,9 @@ const styles = StyleSheet.create({
         // justifyContent: 'flex-end'
     },
 
-    //// ScrollView ////
+    //// ScrollView item ////
     view1: {
-        backgroundColor: 'blue',
+        backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
@@ -523,7 +515,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     view2: {
-        backgroundColor: 'red',
+        backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
@@ -532,7 +524,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     view3: {
-        backgroundColor: 'orange',
+        backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
@@ -541,7 +533,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     view4: {
-        backgroundColor: 'yellow',
+        backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
@@ -550,7 +542,7 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     view5: {
-        backgroundColor: 'green',
+        backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
@@ -564,46 +556,7 @@ const styles = StyleSheet.create({
         borderRadius: 2,
     },
 
-    //// Carousel ////
-    wrapper: {
-        // marginLeft: 10
-    },
-    slide_f: {
-        /*
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-        */
-        backgroundColor: 'green',
-        width: _itemWidth,
-        height: _itemHeight,
-        /*
-        marginLeft: 20,
-        marginRight: 5
-        */
-    },
-    slide_m: {
-        backgroundColor: 'green',
-        width: _itemWidth,
-        height: _itemHeight,
-        /*
-        marginLeft: 5,
-        marginRight: 5
-        */
-    },
-    slide_l: {
-        backgroundColor: 'green',
-        width: _itemWidth,
-        height: _itemHeight,
-        /*
-        marginLeft: 5,
-        marginRight: 20
-        */
-    },
-    _item: {
-        width: '100%',
-        height: '100%'
-    },
+
 
 
 

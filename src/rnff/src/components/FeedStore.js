@@ -45,6 +45,12 @@ export default class FeedStore {
     @computed get feed(): Feed { return this._feed; }
     set feed(feed: Feed) { this._feed = feed; }
 
+
+    // 1209
+    setAddToFeedFinishedCallback(cb) {
+        this.addToFeedFinishedCallback = cb;
+    }
+
     // eslint-disable-next-line flowtype/no-weak-types
     init(query: any) {
         this.query = query;
@@ -115,6 +121,9 @@ export default class FeedStore {
                 this.feed = [];
             }
 
+            // 1209
+            if(this.addToFeedFinishedCallback !== undefined && this.addToFeedFinishedCallback) this.addToFeedFinishedCallback(false);
+
             return;
         }
 
@@ -137,6 +146,9 @@ export default class FeedStore {
 
         this.addToFeed(feed);
         this.cursor = _.last(snap.docs);
+
+        // 1209
+        if(this.addToFeedFinishedCallback !== undefined && this.addToFeedFinishedCallback) this.addToFeedFinishedCallback(true);
     }
 
     addToFeed(entries: FeedEntry[]) {

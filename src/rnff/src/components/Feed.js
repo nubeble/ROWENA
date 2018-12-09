@@ -1,7 +1,7 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import { StyleSheet, View, FlatList, SafeAreaView } from "react-native";
+import { StyleSheet, View, FlatList, SafeAreaView, ActivityIndicator } from "react-native";
 import { observer } from "mobx-react/native";
 import { type AnimatedEvent } from "react-native/Libraries/Animated/src/AnimatedEvent";
 import FeedStore from "./FeedStore";
@@ -24,9 +24,34 @@ type FeedProps = NavigationProps<> & {
 @observer
 export default class Feed extends React.Component<FeedProps> {
 
+    state = {
+        isLoadingFeed: false
+
+    };
+
     componentDidMount() {
         const { feed } = this.props.store; // FeedStore
         console.log('Feed::componentDidMount', feed);
+
+        // 1209
+        this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
+    }
+    
+    componentWillUnmount() {
+        this.isClosed = true;
+    }
+
+    @autobind
+    onAddToFeedFinished(result) {
+        console.log('onAddToFeedFinished', result);
+        // ToDo:
+
+        if (!result) {
+            // don't call loadFeed() again.
+            this.allFeedsLoaded = true;
+        }
+
+        !this.isClosed && this.setState({isLoadingFeed: false});
     }
 
     @autobind
@@ -37,6 +62,13 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     loadMore() {
+        if (this.state.isLoadingFeed) return;
+
+        if (this.allFeedsLoaded) return;
+
+        // 1209
+        !this.isClosed && this.setState({isLoadingFeed: true});
+
         this.props.store.loadFeed();
     }
 
@@ -63,6 +95,7 @@ export default class Feed extends React.Component<FeedProps> {
         return (
             <SafeAreaView style={styles.list}>
                 <FlatList
+                    contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator
                     data={feed}
                     keyExtractor={this.keyExtractor}
@@ -74,6 +107,25 @@ export default class Feed extends React.Component<FeedProps> {
                             {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
                         </View>
                     )}
+
+                    // 1209
+                    ListFooterComponent={(
+                        this.state.isLoadingFeed && (
+                        <ActivityIndicator
+                            style={styles.bottomIndicator}
+                            animating={this.state.isLoadingFeed}
+                            size="small"
+                            // color='rgba(255, 184, 24, 0.8)'
+                            color='rgba(255, 255, 255, 0.8)'
+                        />
+                        )
+                    )}
+
+
+
+
+
+
                     {...{ onScroll, bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
@@ -82,10 +134,19 @@ export default class Feed extends React.Component<FeedProps> {
 }
 
 const styles = StyleSheet.create({
+    contentContainer: {
+        flexGrow: 1,
+        // backgroundColor: 'rgb(40, 40, 40)',
+        paddingBottom: Theme.spacing.base
+    },
     list: {
         flex: 1
     },
     post: {
         paddingHorizontal: Theme.spacing.small
+    },
+    bottomIndicator: {
+        marginTop: 20,
+        marginBottom: 20
     }
 });
