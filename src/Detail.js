@@ -17,7 +17,20 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util"
 import Swiper from './Swiper'
 
-
+const tmp = "Woke up to the sound of pouring rain\
+The wind would whisper and I'd think of you\
+And all the tears you cried, that called my name\
+And when you needed me I came through\
+I paint a picture of the days gone by\
+When love went blind and you would make me see\
+I'd stare a lifetime into your eyes\
+So that I knew that you were there for me\
+Time after time you there for me\
+Remember yesterday, walking hand in hand\
+Love letters in the sand, I remember you\
+Through the sleepless nights through every endless day\
+I'd want to hear you say, I remember you oh oh\
+";
 
 export default class Detail extends React.Component {
     state = {
@@ -88,7 +101,8 @@ export default class Detail extends React.Component {
                             position: 'absolute',
                             bottom: 16, // paddingBottom from searchBarStyle
                             right: 22,
-                            alignSelf: 'baseline' }}
+                            alignSelf: 'baseline'
+                        }}
                         onPress={() => Alert.alert("Not Implemented")}
                     >
                         <Ionicons name='md-heart-empty' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -104,16 +118,25 @@ export default class Detail extends React.Component {
                             {this.renderSwiper(this.props.navigation.state.params.post)}
 
                             <View style={styles.infoContainer}>
-                                <Text style={styles.infoTitle}>{this.props.navigation.state.params.post.name} {this.props.navigation.state.params.post.age}</Text>
+                                {/*
+                                <Text style={styles.name}>{this.props.navigation.state.params.post.name}
+                                    <Text style={styles.age}> {this.props.navigation.state.params.post.age}</Text>
+                                </Text>
+                                */}
+                                <Text style={styles.name}>{this.props.navigation.state.params.post.name}</Text>
+                                <Text style={styles.size}>{this.props.navigation.state.params.post.age}yr 163cm 48kg</Text>
 
-                                <Text style={styles.infoNote}>averageRating: {this.props.navigation.state.params.post.averageRating}</Text>
-                                <Text style={styles.infoNote}>note: {this.props.navigation.state.params.post.note}</Text>
+                                {/* rating | review */}
+                                <Text style={styles.infoNote}>{this.props.navigation.state.params.post.averageRating}</Text>
 
-                                <Text style={styles.infoNote}>{moment(this.props.navigation.state.params.post.timestamp).fromNow()}</Text>
-                                
+
+                                <Text style={styles.infoNote}>{this.props.navigation.state.params.post.note}</Text>
+                                <Text style={styles.infoNote}>{tmp}</Text>
+
+                                <Text style={styles.infoNote}>posted {moment(this.props.navigation.state.params.post.timestamp).fromNow()}</Text>
 
                                 {/* map */}
-                                {/* rating | review */}
+                                
                             </View>
 
                             <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
@@ -488,6 +511,25 @@ const styles = StyleSheet.create({
 
         backgroundColor: 'rgb(27,27,27)'
     },
+    name: {
+        color: 'white',
+        fontSize: 30,
+        lineHeight: 43,
+        fontFamily: "SFProText-Semibold"
+    },
+    size: {
+        color: "white",
+        fontSize: 18,
+        lineHeight: 20,
+        fontFamily: "SFProText-Semibold"
+    },
+    age: {
+        color: 'white',
+        fontSize: 30,
+        lineHeight: 43,
+        fontFamily: "SFProText-Regular"
+    },
+
     infoTitle: {
         color: 'white',
         fontSize: 30,
@@ -495,10 +537,10 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Semibold"
     },
     infoNote: {
-        fontSize:16,
+        fontSize: 16,
         color: "#696969",
         // textAlign: 'center'
-        marginTop:10,
+        marginTop: 10,
 
         // lineHeight: 20,
         fontFamily: "SFProText-Semibold"
