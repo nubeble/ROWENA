@@ -264,6 +264,8 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             longitude: 100.5017651, // ToDo: use google api
             latitude: 13.7563309
         };
+        const name = 'name';
+        const age = 20;
         const image1Uri = 'http://tenasia.hankyung.com/webwp_kr/wp-content/uploads/2017/02/2017022722084954500-540x360.jpg'; // ToDo: use image picker
         const image2Uri = null;
         const image3Uri = null;
@@ -271,9 +273,9 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const note = 'note';
 
         const feedId = Util.uid(); // create uuid
-        await Firebase.createFeed(feedId, userUid, placeId, location, image1Uri, image2Uri, image3Uri, image4Uri, note);
+        await Firebase.createFeed(feedId, userUid, placeId, name, age, location, image1Uri, image2Uri, image3Uri, image4Uri, note);
 
-        // add fields to feeds
+        // add fields to feeds in profile
 
         /*
         '0': {
@@ -419,60 +421,6 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
 
 
-
-    createFeed(userUid, placeId, image1Uri, image2Uri, image3Uri, image4Uri, note) {
-        // test
-        userUid = 'yzYwYGD5WqZk9ZC4D4I2dx7mMnX2'; // iphone
-        note = 'note';
-
-        // feed: user id, place id, feed id, pictures, note, reviews [review id], averageRating,
-        // review: user id, review id, rating, date, content
-
-
-        // 1. upload images simultaneously & get download uri
-        // image1Uri, ...
-
-
-        const id = Util.uid(); // create uuid
-
-        var feed = {
-            uid: userUid, // owner
-            placeId: placeId,
-            location: {
-                description: 'Bangkok, Thailand',
-                longitude: 100.5017651,
-                latitude: 13.7563309
-            },
-            id: id, // feed id
-            pictures: { // 4
-                one: {
-                    // preview: null,
-                    uri: null
-                },
-                two: {
-                    // preview: null,
-                    uri: null
-                },
-                three: {
-                    // preview: null,
-                    uri: null
-                },
-                four: {
-                    // preview: null,
-                    uri: null
-                }
-            },
-            note: note,
-
-            // comments: 0,
-            averageRating: 0.0,
-            reviews: [],
-
-            timestamp: Date.now() // 1543145425396
-        };
-
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).set(feed);
-    }
 
     uploadPicture(index) {
         this.pickImage(index);

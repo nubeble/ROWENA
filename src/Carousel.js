@@ -26,50 +26,45 @@ export default class extends Component {
                 // justifyContent: 'center',
                 paddingBottom: Theme.spacing.base
             }}>
-            <ScrollView
-                keyboardShouldPersistTaps={'always'}
-                keyboardDismissMode={'interactive'}
-                // style={{ paddingBottom: Theme.spacing.base }}
-                ref={(scrollView) => { this.scrollView = scrollView; }}
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
+                <ScrollView
+                    keyboardShouldPersistTaps={'always'}
+                    keyboardDismissMode={'interactive'}
+                    // style={{ paddingBottom: Theme.spacing.base }}
+                    ref={(scrollView) => { this.scrollView = scrollView; }}
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
 
-                /*
-                    decelerationRate={'fast'}
-                    // decelerationRate={0.7}
-                    snapToInterval={Dimensions.get('window').width - 30} // width - (YOUR_INSET_LEFT + YOUR_INSET_RIGHT)
-                    snapToAlignment={"center"}
-                    contentInset={{
-                        top: 0,
-                        left: 15, // YOUR_INSET_LEFT
-                        bottom: 0,
-                        right: 15, // YOUR_INSET_RIGHT
-                    }}
-                */
-                // automaticallyAdjustContentInsets={false}
+                    /*
+                        decelerationRate={'fast'}
+                        // decelerationRate={0.7}
+                        snapToInterval={Dimensions.get('window').width - 30} // width - (YOUR_INSET_LEFT + YOUR_INSET_RIGHT)
+                        snapToAlignment={"center"}
+                        contentInset={{
+                            top: 0,
+                            left: 15, // YOUR_INSET_LEFT
+                            bottom: 0,
+                            right: 15, // YOUR_INSET_RIGHT
+                        }}
+                    */
+                    // automaticallyAdjustContentInsets={false}
 
-                alwaysBounceHorizontal={false}
-                alwaysBounceVertical={false}
-                bounces={false}
+                    alwaysBounceHorizontal={false}
+                    alwaysBounceVertical={false}
+                    bounces={false}
 
-                decelerationRate={0.8} // works fine in android!
+                    decelerationRate={0.2} // works fine in android!
+                    
+                    // scrollEventThrottle={16} // works fine in android
+                    scrollEventThrottle={1} // for ios, tango
 
-                // scrollEventThrottle={12}
-                // onScroll={this._onScroll}
-                // onScrollBeginDrag={this._onScroll}
-
-                // scrollEventThrottle={16} // works fine in android
-
-                scrollEventThrottle={1} // for ios
-
-                onScroll={this._onScroll}
-                onScrollEndDrag={this._onScrollEnd}
-                onScrollBeginDrag={this._onScrollBegin}
-                contentInset={{ top: 0 }}
-                automaticallyAdjustContentInsets={false}
-            >
-                {this.props.children}
-            </ScrollView>
+                    onScroll={this._onScroll}
+                    onScrollEndDrag={this._onScrollEnd}
+                    onScrollBeginDrag={this._onScrollBegin}
+                    contentInset={{ top: 0 }}
+                    automaticallyAdjustContentInsets={false}
+                >
+                    {this.props.children}
+                </ScrollView>
             </View>
         );
     }
@@ -83,33 +78,12 @@ export default class extends Component {
         // console.log('_onScrollEnd offset', offset.x);
 
         const prevOffset = this.getPrevOffset();
-        console.log('_onScrollEnd prevOffset', prevOffset);
-        if (prevOffset === -1) return;
+        // console.log('_onScrollEnd prevOffset', prevOffset);
 
         let direction = offset.x > prevOffset ? 'right' : 'left';
         let speed = offset.x - prevOffset;
         if (speed < 0) speed = speed * -1;
-        console.log('speed', speed);
-
-        /*
-        let direction = offset.x > this.offset ? 'right' : 'left';
-        let speed = offset.x - this.offset;
-        if (speed < 0) speed = speed * -1;
-        console.log('speed', speed);
-        // console.log('direction', direction);
-        */
-
-        /*
-       const direction = this.direction;
-       const speed = this.speed;
-       console.log('speed', speed, 'direction', direction);
-       */
-
-        /*
-        const speed = this.speed;
-        const direction = this.direction;
-        console.log('_onScrollEnd speed', speed, 'direction', direction);
-        */
+        // console.log('speed', speed);
 
         let limit;
         if (Platform.OS === "ios") {
@@ -126,7 +100,7 @@ export default class extends Component {
                 page = this.currentPage - 1;
             }
 
-            console.log('page', page);
+            // console.log('page', page);
 
             if (page < 0 || page >= this.childrenLength) return;
         } else {
@@ -169,6 +143,10 @@ export default class extends Component {
         }
 
         return -1;
+    }
+
+    getPageOffset(page) {
+        return page * (_itemWidth + 10);
     }
 
     _normalizePageNumber = (page) => {
@@ -216,58 +194,13 @@ export default class extends Component {
 
     _onScroll = (event) => {
         const currentOffset = event.nativeEvent.contentOffset.x;
-        console.log('onScroll x:', currentOffset);
-
-        /*
-        if (this.offset === undefined) {
-            this.offset = currentOffset;
-            return;
-        }
-
-        let speed = currentOffset - this.offset;
-        let direction = currentOffset > this.offset ? 'right' : 'left';
-        if (speed < 0) speed = speed * -1;
-        this.speed = speed;
-        this.direction = direction;
-
-
-        console.log('_onScroll speed', speed);
-
-        this.offset = currentOffset;
-        */
-
-
-
-        /*
-        if (speed > 40 && !this.isScrolling) {
-
-            // this.isScrolling = true;
-
-            let page;
-            if (direction === 'right') {
-                page = this.currentPage + 1;
-            } else {
-                page = this.currentPage - 1;
-            }
-
-            console.log('page', page);
-
-            if (page < 0 || page >= this.childrenLength) return;
-
-
-            this._placeCritical(page);
-            this.currentPage = page;
-        }
-        */
-
-
-        // this.offset = currentOffset;
+        // console.log('onScroll x:', currentOffset);
 
         if (this.offsetList.length >= 1024) {
             // init
             let tmp = [];
-            tmp [0] = this.offsetList[this.offsetList.length - 2];
-            tmp [1] = this.offsetList[this.offsetList.length - 1];
+            tmp[0] = this.offsetList[this.offsetList.length - 2];
+            tmp[1] = this.offsetList[this.offsetList.length - 1];
 
             this.offsetList = tmp;
         }
@@ -277,18 +210,22 @@ export default class extends Component {
 
     getPrevOffset() {
         if (this.offsetList.length === 0) {
-            return -1;
+            return this.getPageOffset(this.currentPage);
         }
 
         if (this.offsetList.length === 1) {
-            return this.offsetList[0];
+            // return this.offsetList[0];
+            return this.getPageOffset(this.currentPage);
         }
 
         if (this.offsetList.length === 2) {
+            /*
             let a = this.offsetList[0];
             let b = this.offsetList[1];
             let c = (a + b) / 2;
             return c;
+            */
+            return this.getPageOffset(this.currentPage);
         }
 
         let a = this.offsetList[this.offsetList.length - 3];

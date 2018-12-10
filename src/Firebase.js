@@ -69,7 +69,7 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).set(profile);
     }
 
-    static async createFeed(feedId, userUid, placeId, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
+    static async createFeed(feedId, userUid, placeId, name, age, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
         // const id = Util.uid(); // create uuid
 
         const feed = {
@@ -82,6 +82,8 @@ export default class Firebase {
                 latitude: 13.7563309
             },
             */
+            name: name,
+            age: age,
             location: location,
             id: feedId,
             pictures: { // 4

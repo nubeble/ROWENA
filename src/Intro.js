@@ -286,8 +286,8 @@ export default class Intro extends React.Component {
                             </View>
 
                             <Carousel>
-                                <View style={styles.view1}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('0')}>
+                                <View style={styles.view_front}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -295,8 +295,8 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view2}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -304,8 +304,8 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view3}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -313,8 +313,8 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view4}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -322,8 +322,35 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view5}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://jjalbang.today/jj1ic.gif'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://upload2.inven.co.kr/upload/2017/10/07/bbs/i15561885543.gif'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://file2.instiz.net/data/file2/2017/04/25/c/8/e/c8e389c7dc8d8ee4bde9523ff398b54d.gif'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view_rear}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -338,7 +365,7 @@ export default class Intro extends React.Component {
                             </View>
 
                             <Carousel>
-                                <View style={styles.view1}>
+                                <View style={styles.view_front}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('0')}>
                                         <SmartImage
                                             style={styles.item}
@@ -347,7 +374,7 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view2}>
+                                <View style={styles.view_middle}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
                                         <SmartImage
                                             style={styles.item}
@@ -356,7 +383,7 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view3}>
+                                <View style={styles.view_middle}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
                                         <SmartImage
                                             style={styles.item}
@@ -365,7 +392,7 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view4}>
+                                <View style={styles.view_middle}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
                                         <SmartImage
                                             style={styles.item}
@@ -374,7 +401,7 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
-                                <View style={styles.view5}>
+                                <View style={styles.view_rear}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
                                         <SmartImage
                                             style={styles.item}
@@ -500,53 +527,27 @@ const styles = StyleSheet.create({
     },
 
     //// ScrollView item ////
-    view1: {
+    view_front: {
         backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
-        // paddingHorizontal : 30
-        // margin: 10
-        /*
-        marginLeft: 20,
-        marginRight: 5
-        */
         marginLeft: 20,
         marginRight: 5
     },
-    view2: {
+    view_middle: {
         backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
-        // paddingHorizontal : 30
         marginLeft: 5,
         marginRight: 5
     },
-    view3: {
+    view_rear: {
         backgroundColor: 'black',
         width: _itemWidth,
         height: _itemHeight,
         borderRadius: 2,
-        // paddingHorizontal : 30
-        marginLeft: 5,
-        marginRight: 5
-    },
-    view4: {
-        backgroundColor: 'black',
-        width: _itemWidth,
-        height: _itemHeight,
-        borderRadius: 2,
-        // paddingHorizontal : 30
-        marginLeft: 5,
-        marginRight: 5
-    },
-    view5: {
-        backgroundColor: 'black',
-        width: _itemWidth,
-        height: _itemHeight,
-        borderRadius: 2,
-        // paddingHorizontal : 30
         marginLeft: 5,
         marginRight: 20
     },

@@ -36,7 +36,10 @@ export default class SignUpWithEmail extends React.Component {
         this.isClosed = true;
     }
 
-    showNotification = () => {
+    showNotification = (msg) => {
+        // this.state.value = msg;
+        this.setState({value, msg});
+
         if (!this._showNotification) {
             this._showNotification = true;
 
@@ -150,8 +153,7 @@ export default class SignUpWithEmail extends React.Component {
             console.log('Please enter a valid email address.');
 
             // show message box
-            this.state.value = 'Please enter a valid email address.';
-            this.showNotification();
+            this.showNotification('Please enter a valid email address.');
 
             this.setState({ emailIcon: 1 });
 
@@ -213,8 +215,8 @@ export default class SignUpWithEmail extends React.Component {
         if (this.state.pwIcon !== 2) {
 
             // show message box
-            this.state.value = this.getPasswordErrorMessage(this.state.password);
-            this.showNotification();
+            const msg = this.getPasswordErrorMessage(this.state.password);
+            this.showNotification(msg);
 
             this.setState({ pwIcon: 1 });
 
@@ -255,8 +257,7 @@ export default class SignUpWithEmail extends React.Component {
             console.log('Please enter a valid email address.');
 
             // show message box
-            this.state.value = 'Please enter a valid email address.';
-            this.showNotification();
+            this.showNotification('Please enter a valid email address.');
 
             this.setState({ emailIcon: 1 });
 
@@ -269,8 +270,8 @@ export default class SignUpWithEmail extends React.Component {
         if (this.state.pwIcon !== 2) {
 
             // show message box
-            this.state.value = this.getPasswordErrorMessage(this.state.password);
-            this.showNotification();
+            const msg = this.getPasswordErrorMessage(this.state.password);
+            this.showNotification(msg);
 
             this.setState({ pwIcon: 1 });
 
@@ -300,11 +301,9 @@ export default class SignUpWithEmail extends React.Component {
         } catch (error) {
             console.log('error', error);
 
-            this.state.value = 'An error occurred. Please try again.';
-            this.showNotification();
+            this.showNotification('An error occurred. Please try again.');
         }
 
-        // Warning: Can't call setState (or forceUpdate) on an unmounted component. This is a no-op, but it indicates a memory leak in your application. To fix, cancel all subscriptions and asynchronous tasks.
         // close indicator
         !this.isClosed && this.setState({ showIndicator: false });
     }

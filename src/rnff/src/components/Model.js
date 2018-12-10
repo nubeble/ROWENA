@@ -50,7 +50,7 @@ export type Comment = {
 };
 */
 
-// feed: user id, place id, feed id, pictures, location, note, reviews[review id], averageRating
+// feed: user id, place id, feed id, pictures, location, note, reviews[review id], averageRating, name, age
 export type Post = {
     uid: string,
     id: string,
@@ -60,6 +60,8 @@ export type Post = {
     placeId: string,
     // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼)
     averageRating: number,
+    name: string,
+    age: number,
     timestamp: number
 };
 

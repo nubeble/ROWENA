@@ -81,19 +81,13 @@ export default class Loading extends React.Component<ScreenProps<>> {
                     await Firebase.firestore.collection('users').doc(uid).update(profile);
 
                     console.log('move to main');
-
                     navigation.navigate('mainBottomTabNavigator');
                 } else {
-                    // save user info to database
-                    // await this.addUser(user.uid, user.displayName, user.email, user.phoneNumber);
-
                     console.log('move to welcome');
-
                     navigation.navigate('welcome');
                 }
             } else {
                 this.setState( { isUserAutoAuthenticated: false } );
-
                 navigation.navigate("authStackNavigator");
             }
         });

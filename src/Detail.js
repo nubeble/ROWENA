@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, ScrollView, TouchableWithoutFeedback
+    FlatList, ScrollView, TouchableWithoutFeedback, Alert
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking } from "expo";
@@ -11,10 +11,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // import Firebase from "./Firebase"
 // import { StyleGuide } from "./rne/src/components/theme";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
+import moment from 'moment';
 import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util"
 import Swiper from './Swiper'
+
 
 
 export default class Detail extends React.Component {
@@ -27,12 +29,41 @@ export default class Detail extends React.Component {
         console.log('Detail::componentDidMount');
 
         const { post, profile } = this.props.navigation.state.params;
-        console.log('post', post);
-        console.log('profile', profile);
+
+        /*
+        type Post = {
+            uid: string,
+            id: string,
+            location: Location, // 1
+            note: string, // 2
+            pictures: Pictures, // 3
+            placeId: string, // 4
+            // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼) // 7
+            averageRating: number, // 5
+            timestamp: number, // 6
+
+            name: string, // 7
+            age: number // 8
+        };
+
+        type Profile = {
+            uid: string,
+            name: string,
+            country: string,
+            city: string,
+            email: string,
+            phoneNumber: string,
+            picture: Picture,
+            location: Location,
+            about: string,
+            feeds: Feed[],
+            postedReviews: string[]
+        };
+        */
     }
 
     render() {
-        const { navigation } = this.props;
+        // const { navigation } = this.props;
 
 
         return (
@@ -52,6 +83,16 @@ export default class Detail extends React.Component {
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            position: 'absolute',
+                            bottom: 16, // paddingBottom from searchBarStyle
+                            right: 22,
+                            alignSelf: 'baseline' }}
+                        onPress={() => Alert.alert("Not Implemented")}
+                    >
+                        <Ionicons name='md-heart-empty' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
                 </View>
 
                 <FlatList
@@ -62,10 +103,17 @@ export default class Detail extends React.Component {
                             {/* profile pictures */}
                             {this.renderSwiper(this.props.navigation.state.params.post)}
 
-                            <View style={styles.descriptionContainer}>
-                                <Text style={styles.descriptionTitle}>{'The Siam'}</Text>
+                            <View style={styles.infoContainer}>
+                                <Text style={styles.infoTitle}>{this.props.navigation.state.params.post.name} {this.props.navigation.state.params.post.age}</Text>
 
-                                {/* rating * review */}
+                                <Text style={styles.infoNote}>averageRating: {this.props.navigation.state.params.post.averageRating}</Text>
+                                <Text style={styles.infoNote}>note: {this.props.navigation.state.params.post.note}</Text>
+
+                                <Text style={styles.infoNote}>{moment(this.props.navigation.state.params.post.timestamp).fromNow()}</Text>
+                                
+
+                                {/* map */}
+                                {/* rating | review */}
                             </View>
 
                             <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
@@ -114,16 +162,11 @@ export default class Detail extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
-                    <TouchableWithoutFeedback onPress={() => { // ToDo: remove!
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={value}
+                    />
                 </View>
             );
         }
@@ -132,16 +175,11 @@ export default class Detail extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`two`}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={value}
+                    />
                 </View>
             );
         }
@@ -150,16 +188,11 @@ export default class Detail extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`three`}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={value}
+                    />
                 </View>
             );
         }
@@ -168,19 +201,15 @@ export default class Detail extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`four`}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log('move to Intro');
-                        // this.moveToIntro();
-                    }}>
-                        <SmartImage
-                            style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableWithoutFeedback>
+                    <SmartImage
+                        style={styles.item}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={value}
+                    />
                 </View>
             );
         }
+
 
         return (
             <Swiper
@@ -401,8 +430,10 @@ const styles = StyleSheet.create({
         // height: Header.HEIGHT + 30,
         height: Constants.statusBarHeight + Header.HEIGHT,
         paddingBottom: 14 + 2,
+
+        flexDirection: 'column',
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        // alignItems: 'center'
     },
     container: {
         flexGrow: 1,
@@ -449,18 +480,27 @@ const styles = StyleSheet.create({
     },
 
 
-    descriptionContainer: {
+    infoContainer: {
         flex: 1,
         //justifyContent: 'center',
         //alignItems: 'center',
         padding: Theme.spacing.small,
 
-        backgroundColor: 'blue'
+        backgroundColor: 'rgb(27,27,27)'
     },
-    descriptionTitle: {
+    infoTitle: {
         color: 'white',
-        fontSize: 18,
-        lineHeight: 20,
+        fontSize: 30,
+        lineHeight: 43,
+        fontFamily: "SFProText-Semibold"
+    },
+    infoNote: {
+        fontSize:16,
+        color: "#696969",
+        // textAlign: 'center'
+        marginTop:10,
+
+        // lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
 
