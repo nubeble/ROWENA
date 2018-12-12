@@ -69,7 +69,11 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).set(profile);
     }
 
-    static async createFeed(feedId, userUid, placeId, name, age, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
+    static async deleteProfile(uid) {
+        await Firebase.firestore.collection("users").doc(uid).delete();
+    }
+
+    static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
         // const id = Util.uid(); // create uuid
 
         const feed = {
@@ -84,6 +88,8 @@ export default class Firebase {
             */
             name: name,
             age: age,
+            height: height,
+            weight: weight,
             location: location,
             id: feedId,
             pictures: { // 4
@@ -190,6 +196,91 @@ export default class Firebase {
         console.log('_places', _places);
         
         return _places;
+    }
+
+    static async addReview(placeId, feedId, userUid, comment, rating) {
+        const id = Util.uid();
+
+        const review = {
+            id: id,
+            uid: userUid,
+            rating: rating,
+            comment: comment,
+            timestamp: Date.now()
+        };
+
+        // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").add(review);
+        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
+
+
+        // 업데이트 2개 - averageRating, postedReviews
+
+        let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        let userRef = Firebase.firestore.collection("users").doc(userUid);
+
+        let size = await this.getReviewsSize(placeId, feedId);
+        // console.log('returned size', size);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            // averageRating (number)
+            const feedDoc = await transaction.get(feedRef);
+            let averageRating = feedDoc.data().averageRating;
+            let totalRating = averageRating * (size - 1);
+            totalRating += review.rating;
+            averageRating = totalRating / size;
+            averageRating = averageRating.toFixed(1);
+            console.log('averageRating', averageRating);
+            transaction.update(feedRef, { averageRating: Number(averageRating) });
+
+            // postedReviews (array)
+            let data = {
+                postedReviews: firebase.firestore.FieldValue.arrayUnion(id)
+            };
+            await transaction.update(userRef, data);
+        });
+    };
+
+    static async removeReview(placeId, feedId, reviewId, userUid) {
+        const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).get();
+        let rating = reviewDoc.data().rating; // rating, comment, timestamp
+
+        // 업데이트 2개 - averageRating, postedReviews
+
+        let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        let userRef = Firebase.firestore.collection("users").doc(userUid);
+
+        let size = await this.getReviewsSize(placeId, feedId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            // averageRating (number)
+            const feedDoc = await transaction.get(feedRef);
+            let averageRating = feedDoc.data().averageRating;
+            let totalRating = averageRating * size;
+            totalRating -= rating;
+            averageRating = totalRating / (size - 1);
+            averageRating = averageRating.toFixed(1);
+            console.log('averageRating', averageRating);
+            transaction.update(feedRef, { averageRating: Number(averageRating) });
+
+            // postedReviews (array)
+            let data = {
+                postedReviews: firebase.firestore.FieldValue.arrayRemove(reviewId)
+            };
+            await transaction.update(userRef, data);
+        });
+
+        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).delete();
+    }
+
+    async getReviewsSize(placeId, feedId) {
+        let size = -1;
+
+        await Firebase.firestore.collection("place").doc(placeId).collection("feed")
+            .doc(feedId).collection("reviews").get().then(snap => {
+                size = snap.size;
+            });
+
+        return size;
     }
 
 

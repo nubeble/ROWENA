@@ -4,7 +4,7 @@ import {
     FlatList, ScrollView, TouchableWithoutFeedback, Alert
 } from 'react-native';
 import { Header } from 'react-navigation';
-import { Constants, Permissions, ImagePicker, Linking } from "expo";
+import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
 // import * as firebase from 'firebase';
@@ -14,8 +14,11 @@ import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import moment from 'moment';
 import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
-import Util from "./Util"
-import Swiper from './Swiper'
+import Util from "./Util";
+import Swiper from './Swiper';
+import { Rating, AirbnbRating } from './react-native-ratings/src';
+import AntDesign from "react-native-vector-icons/AntDesign";
+
 
 const tmp = "Woke up to the sound of pouring rain\
 The wind would whisper and I'd think of you\
@@ -29,8 +32,10 @@ Time after time you there for me\
 Remember yesterday, walking hand in hand\
 Love letters in the sand, I remember you\
 Through the sleepless nights through every endless day\
-I'd want to hear you say, I remember you oh oh\
+I'd want to hear you say, I remember you\
 ";
+
+
 
 export default class Detail extends React.Component {
     state = {
@@ -76,7 +81,7 @@ export default class Detail extends React.Component {
     }
 
     render() {
-        // const { navigation } = this.props;
+        const { post, profile } = this.props.navigation.state.params;
 
 
         return (
@@ -115,48 +120,111 @@ export default class Detail extends React.Component {
                     ListHeaderComponent={(
                         <Animated.View style={{ backgroundColor: 'rgb(40, 40, 40)' }}>
                             {/* profile pictures */}
-                            {this.renderSwiper(this.props.navigation.state.params.post)}
+                            {this.renderSwiper(post)}
 
                             <View style={styles.infoContainer}>
+                                <Text style={styles.date}>posted {moment(post.timestamp).fromNow()}</Text>
+
                                 {/*
-                                <Text style={styles.name}>{this.props.navigation.state.params.post.name}
-                                    <Text style={styles.age}> {this.props.navigation.state.params.post.age}</Text>
-                                </Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} >
+                                    <Text style={styles.name}>{post.name}</Text>
+                                    <Text style={styles.size}>
+                                        {post.age}yr {post.height}cm {post.weight}kg
+                                    </Text>
+                                </View>
                                 */}
-                                <Text style={styles.name}>{this.props.navigation.state.params.post.name}</Text>
-                                <Text style={styles.size}>{this.props.navigation.state.params.post.age}yr 163cm 48kg</Text>
 
-                                {/* rating | review */}
-                                <Text style={styles.infoNote}>{this.props.navigation.state.params.post.averageRating}</Text>
+                                <Text style={styles.name}>{post.name}</Text>
+                                <Text style={styles.size}>
+                                    {post.age}yr {post.height}cm {post.weight}kg
+                                </Text>
 
+                                <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: 10, paddingBottom: 10 }}>
+                                    <View style={{ width: '27%' }}>
+                                        <AirbnbRating
+                                            count={5}
+                                            readOnly={true}
+                                            showRating={false}
+                                            defaultRating={4}
+                                            size={16}
+                                            margin={1}
+                                        // style={{alignSelf: 'flex-start'}}
+                                        />
+                                    </View>
 
-                                <Text style={styles.infoNote}>{this.props.navigation.state.params.post.note}</Text>
-                                <Text style={styles.infoNote}>{tmp}</Text>
+                                    {/*
+                                    // ToDo: draw stars based on averge rating & get review count
+                                    <Text style={styles.rating}>{post.averageRating}</Text>
+                                    */}
+                                    <Text style={styles.rating}>4.4</Text>
 
-                                <Text style={styles.infoNote}>posted {moment(this.props.navigation.state.params.post.timestamp).fromNow()}</Text>
+                                    <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                    <Text style={styles.reviewCount}>12</Text>
+                                </View>
+
+                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+
+                                <Text style={styles.note}>{post.note}
+                                    {tmp}
+                                </Text>
+
+                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
 
                                 {/* map */}
-                                
+                                <TouchableOpacity activeOpacity={0.5} onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}>
+                                <View style={styles.mapContainer}>
+                                    <MapView
+                                        ref={map => { this.map = map }}
+                                        style={styles.map}
+                                        mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                        region={{
+                                            longitude: post.location.longitude,
+                                            latitude: post.location.latitude,
+                                            latitudeDelta: 0.001,
+                                            longitudeDelta: 0.001
+                                        }}
+                                        scrollEnabled={false}
+                                        zoomEnabled={false}
+                                        rotateEnabled={false}
+                                        pitchEnabled={false}
+                                    >
+                                        <MapView.Marker
+                                            coordinate={{
+                                                longitude: post.location.longitude,
+                                                latitude: post.location.latitude
+                                            }}
+                                        // title={'title'}
+                                        // description={'description'}
+                                        />
+                                    </MapView>
+                                </View>
+                                </TouchableOpacity>
+
+                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+
+                                <Text style={styles.review}>Share your experience to help others</Text>
+                                <View style={{ marginBottom: 10 }}>
+                                    <AirbnbRating
+                                        onFinishRating={this.ratingCompleted}
+                                        showRating={false}
+                                        count={5}
+                                        defaultRating={0}
+                                        size={32}
+                                        margin={3}
+                                    />
+                                </View>
+
+                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+
+                                {/* ToDo: show reviews */}
+
+                                {/* ToDo: contact button */}
+
                             </View>
-
-                            <TouchableOpacity onPress={() => this.addFeed(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addFeed</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.removeUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>removeUser</Text>
-                            </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => this.getUsers()} style={[styles.signUpButton, { marginBottom: 10 }]} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUsers</Text>
                             </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => this.addUser(Firebase.auth.currentUser.uid)} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>addUser</Text>
-                            </TouchableOpacity>
-
-
-
 
                             {/*
                             <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
@@ -237,7 +305,7 @@ export default class Detail extends React.Component {
         return (
             <Swiper
                 style={styles.wrapper}
-                containerStyle={{ marginBottom: 20 }}
+                // containerStyle={{ marginBottom: 10 }}
                 width={Dimensions.get('window').width}
                 // height={Dimensions.get('window').width / 16 * 9}
                 height={Dimensions.get('window').width}
@@ -251,49 +319,25 @@ export default class Detail extends React.Component {
         );
     }
 
+    ratingCompleted(rating) {
+        console.log("Rating is: " + rating);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*** Database ***/
-    /*
-    getUser(userUid, watching) {
-        var query = Firebase.firestore.collection('users');
-        query = query.where('uid', '==', userUid);
-        // query = query.orderBy('averageRating', 'desc');
-
-        if (watching) {
-            query.onSnapshot((snapshot) => {
-                if (!snapshot.size) {
-                    console.log("No such a user!");
-                } else {
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === 'added') {
-                            // console.log(change.doc.data());
-                            var data = JSON.parse(JSON.stringify(change.doc.data()));
-                            console.log(data);
-
-                            // this.setState({user: data});
-                        }
-                    });
-                }
-            });
-        } else {
-            query.get().then((snapshot) => {
-                if (!snapshot.size) {
-                    console.log("No such a user!");
-                } else {
-                    snapshot.docChanges().forEach((change) => {
-                        if (change.type === 'added') {
-                            // console.log(change.doc.data());
-                            var data = JSON.parse(JSON.stringify(change.doc.data()));
-                            console.log(data);
-
-                            // this.setState({user: data});
-                        }
-                    });
-                }
-            });
-        }
-    }
-    */
 
     // let users = await getUsers();
     getUsers() {
@@ -314,110 +358,6 @@ export default class Detail extends React.Component {
                 reject(err);
             });
         });
-    }
-
-    addFeed(userUid) {
-        const id = Util.uid(); // create uuid
-
-        var feed = {
-            id: id,
-            comments: 0,
-            likes: [], // user id ("DpwskQXesHVOlNzFU6IzAvzUQhJ3")
-            picture: {
-                preview: null,
-                uri: null
-            },
-            text: "text",
-            timestamp: 1542408591,
-            // uid: userUid
-            uid: "DMKMeSouZ6RLEZNJR1snJLLpe3f1"
-        };
-
-        return Firebase.firestore.collection("feed").doc(id).set(feed);
-    }
-
-    // await addUser
-    addUser(userUid) {
-        var user = {
-            uid: userUid,
-            name: "Rachel",
-            country: "Korea",
-            city: "Seoul",
-            email: '',
-            phoneNumber: '',
-            /*
-            pictures: [
-                {
-                    preview: '',
-                    uri: 'https://firebasestorage.googleapis.com/v0/b/react-native-e.appspot.com/o/a2a3dd0004c35ac29dea5921158b5122d3f4a275.png?alt=media&token=2849b892-fbcd-4c5f-ba45-575694f9094a'
-                }
-            ],
-            */
-            pictures: { // 6
-                one: {
-                    preview: null,
-                    uri: null
-                },
-                two: {
-                    preview: null,
-                    uri: null
-                },
-                three: {
-                    preview: null,
-                    uri: null
-                },
-                four: {
-                    preview: null,
-                    uri: null
-                },
-                five: {
-                    preview: null,
-                    uri: null
-                },
-                six: {
-                    preview: null,
-                    uri: null
-                }
-            },
-            location: {
-                longitude: 100.46775760000003, // 경도
-                latitude: 13.7659225 // 위도
-            },
-            about: "from Korea",
-            receivedReviews: [], // 총 리뷰 갯수 - receivedReviews.length
-            averageRating: 2.7,
-            postedReviews: []
-        };
-
-        return Firebase.firestore.collection("users").doc(uid).set(user);
-
-        /*
-        Firebase.firestore.collection("users").add(user).then((docRef) => {
-            console.log('Add User succeeded. Document written with ID:', docRef.id);
-        }).catch(function (error) {
-            console.error('Add User failed. Error adding document:', error);
-        });
-        */
-    }
-
-    // await removeUser
-    removeUser(userUid) {
-        /*
-        var query = Firebase.firestore.collection('users');
-        query = query.where('uid', '==', userUid);
-        query.get().then((querySnapshot) => {
-            querySnapshot.forEach((doc) => {
-                doc.ref.delete().then(() => {
-                    console.log("Document successfully deleted!");
-                }).catch((error) => {
-                    console.error("Error removing document", error);
-                });
-            });
-        }).catch((error) => {
-            console.log("Error getting documents", error);
-        });
-        */
-        return Firebase.firestore.collection("users").doc(userUid).delete();
     }
 
     // ToDo: check this
@@ -501,49 +441,99 @@ const styles = StyleSheet.create({
         // height: Dimensions.get('window').width / 16 * 9,
         height: Dimensions.get('window').width
     },
+    date: {
+        fontSize: 16,
+        fontFamily: "SFProText-Light",
+        color: "grey",
+        textAlign: 'right'
+        // marginTop: 10,
 
+        // lineHeight: 20,
 
+    },
     infoContainer: {
         flex: 1,
         //justifyContent: 'center',
         //alignItems: 'center',
-        padding: Theme.spacing.small,
-
+        // padding: Theme.spacing.small,
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.small,
+        paddingLeft: Theme.spacing.small,
+        paddingRight: Theme.spacing.small,
         backgroundColor: 'rgb(27,27,27)'
     },
     name: {
         color: 'white',
-        fontSize: 30,
-        lineHeight: 43,
-        fontFamily: "SFProText-Semibold"
+        fontSize: 24,
+        lineHeight: 24,
+        fontFamily: "SFProText-Semibold",
+        paddingBottom: Theme.spacing.tiny
     },
     size: {
         color: "white",
         fontSize: 18,
-        lineHeight: 20,
-        fontFamily: "SFProText-Semibold"
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular",
+        paddingBottom: Theme.spacing.tiny
+        /*
+        position: 'absolute',
+        right: 0
+        */
     },
-    age: {
-        color: 'white',
-        fontSize: 30,
-        lineHeight: 43,
+    rating: {
+        marginLeft: 4,
+        // marginTop: 0,
+        // backgroundColor: 'red',
+        color: '#f1c40f',
+        fontSize: 18,
+        lineHeight: 20,
         fontFamily: "SFProText-Regular"
     },
-
-    infoTitle: {
+    reviewCount: {
+        marginLeft: 4,
         color: 'white',
-        fontSize: 30,
-        lineHeight: 43,
-        fontFamily: "SFProText-Semibold"
+        fontSize: 18,
+        lineHeight: 20,
+        fontFamily: "SFProText-Regular"
     },
-    infoNote: {
+    note: {
+        color: 'white',
         fontSize: 16,
-        color: "#696969",
-        // textAlign: 'center'
+        fontFamily: "SFProText-Regular",
         marginTop: 10,
-
-        // lineHeight: 20,
-        fontFamily: "SFProText-Semibold"
+        marginBottom: 10
+    },
+    mapContainer: {
+        paddingTop: Theme.spacing.small,
+        paddingBottom: Theme.spacing.small
+    },
+    /*
+    mapCropContainer: {
+        backgroundColor: 'yellow',
+        // marginTop: -25,
+        // marginBottom: -25
+        position: 'absolute',
+        width: '100%',
+        height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 4 * 3 - 100,
+        top: 20,
+        // bottom: 20,
+        // right: 0,
+        // width: 50,
+        // height: 50 
+    },
+    */
+    map: {
+        width: '100%',
+        height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 5 * 3
+    },
+    review: {
+        color: 'grey',
+        textAlign: 'center',
+        fontSize: 16,
+        lineHeight: 16,
+        fontFamily: "SFProText-Regular",
+        paddingTop: 10,
+        paddingBottom: 10
     },
 
 

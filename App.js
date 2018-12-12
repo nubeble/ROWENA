@@ -229,6 +229,7 @@ import ProfileScreen from './src/Profile';
 import Intro from './src/Intro';
 import ExploreScreen from './src/Explore';
 import Detail from './src/Detail';
+import MapScreen from './src/MapScreen'
 
 
 const HomeStackNavigator = createStackNavigator(
@@ -238,6 +239,9 @@ const HomeStackNavigator = createStackNavigator(
 		},
 		detail: {
 			screen: Detail
+		},
+		map: {
+			screen: MapScreen
 		}
 	},
 	{
@@ -356,6 +360,8 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 				}
 
 			},
+
+			// tabBarVisible: navigation.state.routeName === 'home' &&
 		}),
 
 		tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)

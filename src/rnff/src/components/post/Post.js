@@ -25,8 +25,8 @@ type PostState = {
     profile: Profile
 };
 
-export default class PostComp extends React.Component<PostProps, PostState> {
 
+export default class PostComp extends React.Component<PostProps, PostState> {
     state: $Shape<PostState> = {};
 
     unsubscribeToPost: () => void;
@@ -122,6 +122,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 }
 
 const { width } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
     container: {
         borderRadius: 2,
