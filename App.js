@@ -245,11 +245,11 @@ const HomeStackNavigator = createStackNavigator(
 		}
 	},
 	{
-		initialRouteName: 'home',
+		// initialRouteName: 'home',
 		mode: 'card',
 		headerMode: 'none',
 		navigationOptions: {
-			gesturesEnabled: false,
+			gesturesEnabled: false
 		},
 		transitionConfig: () => ({
 			screenInterpolator: StackViewStyleInterpolator.forHorizontal
@@ -263,15 +263,10 @@ class HomeStackNavigatorWrapper extends React.Component {
 	render() {
 		return (
 			<HomeStackNavigator navigation={this.props.navigation}
-
-
 				screenProps={{
 					params: this.props.navigation.state.params,
 					rootNavigation: this.props.navigation
 				}}
-
-
-
 			/>
 		);
 	}
@@ -418,7 +413,7 @@ const AuthStackNavigator = createStackNavigator(
 		mode: 'card',
 		headerMode: 'none',
 		navigationOptions: {
-			gesturesEnabled: false,
+			gesturesEnabled: false
 		},
 		transitionConfig: () => ({
 			screenInterpolator: StackViewStyleInterpolator.forHorizontal

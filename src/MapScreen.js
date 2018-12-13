@@ -4,6 +4,12 @@ import { MapView } from 'expo';
 
 
 export default class MapScreen extends React.Component {
+    componentDidMount() {
+
+        console.log('!!!!!!!!!', this.props.navigation);
+
+    }
+
     render() {
         return (
             <MapView
