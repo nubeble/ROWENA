@@ -2,14 +2,20 @@ import React from 'react';
 import { StyleSheet, Platform, StatusBar } from 'react-native';
 // import ModalHost from 'expo/src/modal/ModalHost';
 import { ThemeProvider, Colors } from './src/rne/src/components';
-// import MainSwitchNavigator from './src/MainSwitchNavigator';
-import { FeedStore } from './src/rnff/src/components';
-import { Font, AppLoading } from 'expo';
 import { configure } from 'mobx';
 import { Provider } from "mobx-react/native";
-import { Profile, Explore, Share, SharePicture, HomeTab, Comments, Settings, ProfileStore } from "./src/rnff/src/home";
+import { FeedStore } from './src/rnff/src/components';
+import { ProfileStore } from "./src/rnff/src/home";
 
 configure({ enforceActions: 'observed' })
+
+// $FlowFixMe
+// https://github.com/firebase/firebase-js-sdk/issues/97
+if (!console.ignoredYellowBox) {
+	console.ignoredYellowBox = [];
+}
+console.ignoredYellowBox.push("Setting a timer");
+
 
 // const onNavigationStateChange = () => undefined;
 
@@ -21,87 +27,31 @@ type AppState = {
 };
 */
 
-// $FlowFixMe
-// https://github.com/firebase/firebase-js-sdk/issues/97
-if (!console.ignoredYellowBox) {
-	console.ignoredYellowBox = [];
-}
-console.ignoredYellowBox.push("Setting a timer");
-
 
 
 // export default class App extends React.Component<AppProps, AppState> {
 export default class App extends React.Component {
-
 	feedStore = new FeedStore();
 	profileStore = new ProfileStore();
-	
+
 	userFeedStore = new FeedStore();
 
 	state = {
-		/*
-		email: '',
-		password: '',
-		*/
-
-		/*
-		userName: '',
-		phoneNumber: '',
-		confirmationCode: '',
-		*/
-
-		// isReady: false,
 	};
-
-	/*
-	ready() {
-		this.setState({ isReady: true });
-	}
-	*/
-
-	/*
-	constructor(props) {
-		super(props);
-	}
-	*/
 
 	componentDidMount() {
 		console.log('App::componentDidMount');
 
-		// const { navigation } = this.props;
-
 		StatusBar.setBarStyle('light-content');
-		if (Platform.OS === "android") {
+		if (Platform.OS === "android") { // ToDo: remove
 			StatusBar.setBackgroundColor("black");
 		}
 
 		ThemeProvider.getInstance().switchColors(Colors['Main']);
-
-
-		// this.ready();
 	}
-
-	/*
-	logIn(email, password) {
-
-		try {
-
-			firebase.auth().signInWithEmailAndPassword(email, password).then(function (user) {
-				console.log(user);
-			})
-
-		} catch (error) {
-			console.log('signInWithEmailAndPassword', error.toString());
-		}
-
-	}
-	*/
-
-
 
 	render() {
 		const { feedStore, profileStore, userFeedStore } = this;
-
 
 		const statusBar = (
 			<StatusBar
@@ -111,68 +61,7 @@ export default class App extends React.Component {
 			/>
 		);
 
-		/*
-		if (isReady === false) {
-			return (
-				<React.Fragment>
-
-					{statusBar}
-
-					<AppLoading />
-
-				</React.Fragment>
-			);
-		}
-		*/
-
-		// Main View
-
 		return (
-
-			/*
-			<Container style={styles.container}>
-
-				<Form>
-					<Item floatingLabel>
-						<Label>Email</Label>
-						<Input
-							autoCorrect={false}
-							autoCapitalize="none"
-							onChangeText={(email) => this.setState({ email })} // this.setState({ email: '', password: '' });
-						/>
-					</Item>
-					<Item floatingLabel>
-						<Label>Password</Label>
-						<Input
-							autoCorrect={false}
-							autoCapitalize="none"
-							secureTextEntry={true}
-							onChangeText={(password) => this.setState({ password })}
-						/>
-					</Item>
-				</Form>
-
-				<Button style={{ marginTop: 10 }}
-					full
-					rounded
-					success
-					onPress={() => this.logIn(this.state.email, this.state.password)}
-				>
-					<Text style={{ color: 'white' }}>Log in</Text>
-				</Button>
-
-				<Button style={{ marginTop: 10 }}
-					full
-					rounded
-					primary
-					onPress={() => this.signUp(this.state.email, this.state.password)}
-				>
-					<Text style={{ color: 'white' }}>Sign up</Text>
-				</Button>
-
-			</Container>
-			*/
-
 			<React.Fragment>
 				{statusBar}
 
@@ -192,26 +81,9 @@ export default class App extends React.Component {
 					</Provider>
 				</ThemeProvider>
 			</React.Fragment>
-
 		);
 	}
 }
-
-const styles = StyleSheet.create({
-	/*
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		// alignItems: 'center',
-		justifyContent: 'center',
-		padding: 10
-	},
-	*/
-});
-
-
-
-
 
 
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
@@ -245,7 +117,6 @@ const HomeStackNavigator = createStackNavigator(
 		}
 	},
 	{
-		// initialRouteName: 'home',
 		mode: 'card',
 		headerMode: 'none',
 		navigationOptions: {
@@ -275,8 +146,6 @@ class HomeStackNavigatorWrapper extends React.Component {
 const HomeSwitchNavigator = createSwitchNavigator(
 	{
 		intro: { screen: Intro },
-
-		// homeStackNavigator: { screen: HomeStackNavigator }
 		homeStackNavigator: { screen: HomeStackNavigatorWrapper }
 	},
 	{
@@ -299,6 +168,24 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 	}
 }
 
+HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
+	/*
+	console.log('router', navigation.router);
+	console.log('state', navigation.state);
+	console.log('homeStackNavigator index', navigation.state.routes[1].index);
+	*/
+
+    if (navigation.state.routes[1].index === 2) {
+        return {
+            tabBarVisible: false
+        };
+	}
+	
+    return {
+        tabBarVisible: true
+    };
+};
+
 const MainBottomTabNavigator = createBottomTabNavigator(
 	{
 		home: HomeSwitchNavigatorWrapper,
@@ -311,9 +198,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 			// title: `${navigation.state.params.name}'s Profile!`,
 			title: 'Title',
 			tabBarLabel: navigation.state.routeName,
-
 			tabBarIcon: ({ tintColor, focused }) => {
-
 				// console.log('navigation: ', navigation);
 
 				// let iconName;
@@ -353,30 +238,25 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 						style={{ color: tintColor }}
 					/>;
 				}
-
-			},
-
-			// tabBarVisible: navigation.state.routeName === 'home' &&
+			}
 		}),
-
-		tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+		tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
 			style: {
-				backgroundColor: 'rgb(40, 40, 40)',
+				backgroundColor: 'black',
 				borderTopWidth: 1,
-				borderTopColor: 'rgb(61, 61, 61)',
+				borderTopColor: 'rgb(34, 34, 34)',
 				paddingTop: Platform.OS === "ios" ? 10 : 0
 			},
 			animationEnabled: true,
 			showLabel: false,
 			showIcon: true,
 			// tintColor: 'red',
-			// activeTintColor: 'rgb(234, 68, 90)',
 			activeTintColor: 'rgb(255, 255, 255)',
 			inactiveTintColor: 'rgb(144, 144, 144)',
 			tabStyle: {
 				// paddingVertical: 10
 			}
-		},
+		}
 	}
 );
 
@@ -444,7 +324,7 @@ const MainSwitchNavigator = createSwitchNavigator(
 
 		authStackNavigator: { screen: AuthStackNavigatorWrapper }, // stack navigator
 
-		// welcome & guile
+		// ToDo: welcome & guile
 
 		mainBottomTabNavigator: { screen: MainBottomTabNavigatorWrapper } // tab navigator
 	},

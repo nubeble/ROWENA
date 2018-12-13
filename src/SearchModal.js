@@ -45,8 +45,13 @@ export default class SearchModal extends React.Component {
                 <View style={styles.modalFlex}>
                     <View style={styles.modalSearchBarStyle}>
                         <TouchableOpacity
-                            style={{ marginTop: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT / 3 - 3 : Header.HEIGHT / 3 - 3,
-                                marginRight: 22, alignSelf: 'baseline' }}
+                            // style={{ marginTop: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT / 3 - 3 : Header.HEIGHT / 3 - 3, marginRight: 22, alignSelf: 'baseline' }}
+                            style={{
+                                position: 'absolute',
+                                bottom: 8 + 4, // paddingBottom from searchBarStyle
+                                right: 22,
+                                alignSelf: 'baseline'
+                            }}
                             onPress={() => this.hideModal()}
                         >
                             <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -220,16 +225,15 @@ const styles = StyleSheet.create({
     modalFlex: {
         flex: 1,
         // backgroundColor: 'black' // ToDo: RN issue (only in android)
-        backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black' // ToDo: RN issue (only in android)
+        backgroundColor: Platform.OS === "ios" ? 'black' : 'black' // ToDo: RN issue (only in android)
     },
     modalSearchBarStyle: {
         // backgroundColor: 'black', // ToDo: RN issue (only in android)
-        backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black', // ToDo: RN issue (only in android)
-        // height: Header.HEIGHT,
-        height: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT : Header.HEIGHT,
-
-
-        paddingBottom: 14 + 2,
+        // backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black', // ToDo: RN issue (only in android)
+        // height: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT : Header.HEIGHT,
+        // paddingBottom: 14 + 2,
+        height: Platform.OS === "ios" ? Constants.statusBarHeight + 8 + 34 + 8 : 8 + 34 + 8,
+        paddingBottom: 8 + 4, // paddingBottom from searchBarStyle
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center'

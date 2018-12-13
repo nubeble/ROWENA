@@ -96,7 +96,14 @@ export default class Detail extends React.Component {
 
                 <View style={styles.searchBarStyle}>
                     <TouchableOpacity
-                        style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
+                        // style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
+                        // style={{ marginTop: Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
+                        style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            left: 22,
+                            alignSelf: 'baseline'
+                        }}
                         onPress={() => this.props.navigation.goBack()}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -104,7 +111,7 @@ export default class Detail extends React.Component {
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 16, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBarStyle
                             right: 22,
                             alignSelf: 'baseline'
                         }}
@@ -118,7 +125,7 @@ export default class Detail extends React.Component {
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
-                        <Animated.View style={{ backgroundColor: 'rgb(40, 40, 40)' }}>
+                        <Animated.View style={{ backgroundColor: 'black' }}>
                             {/* profile pictures */}
                             {this.renderSwiper(post)}
 
@@ -162,13 +169,13 @@ export default class Detail extends React.Component {
                                     <Text style={styles.reviewCount}>12</Text>
                                 </View>
 
-                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
 
                                 <Text style={styles.note}>{post.note}
                                     {tmp}
                                 </Text>
 
-                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
 
                                 {/* map */}
                                 <TouchableOpacity activeOpacity={0.5} onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}>
@@ -177,7 +184,7 @@ export default class Detail extends React.Component {
                                         ref={map => { this.map = map }}
                                         style={styles.map}
                                         mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                        region={{
+                                        initialRegion={{
                                             longitude: post.location.longitude,
                                             latitude: post.location.latitude,
                                             latitudeDelta: 0.001,
@@ -200,7 +207,7 @@ export default class Detail extends React.Component {
                                 </View>
                                 </TouchableOpacity>
 
-                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
 
                                 <Text style={styles.review}>Share your experience to help others</Text>
                                 <View style={{ marginBottom: 10 }}>
@@ -214,7 +221,7 @@ export default class Detail extends React.Component {
                                     />
                                 </View>
 
-                                <View style={{ borderBottomColor: 'rgb(61, 61, 61)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
 
                                 {/* ToDo: show reviews */}
 
@@ -387,12 +394,11 @@ export default class Detail extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
     searchBarStyle: {
-        // height: Header.HEIGHT + 30,
-        height: Constants.statusBarHeight + Header.HEIGHT,
-        paddingBottom: 14 + 2,
+        height: Constants.statusBarHeight + 8 + 34 + 8,
+        paddingBottom: 8,
 
         flexDirection: 'column',
         justifyContent: 'flex-end',
@@ -400,8 +406,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flexGrow: 1,
-        paddingBottom: Theme.spacing.small,
-        // backgroundColor: 'rgb(40, 40, 40)'
+        paddingBottom: Theme.spacing.small
     },
     signUpButton: {
         //position: 'absolute',
@@ -460,7 +465,7 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.small,
         paddingLeft: Theme.spacing.small,
         paddingRight: Theme.spacing.small,
-        backgroundColor: 'rgb(27,27,27)'
+        // backgroundColor: 'rgb(27,27,27)'
     },
     name: {
         color: 'white',

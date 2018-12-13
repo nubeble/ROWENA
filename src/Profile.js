@@ -123,14 +123,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
                 <View style={styles.searchBarStyle}>
 
-                    {/*
-                    <TouchableOpacity
-                        style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
-                        // onPress={() => this.props.navigation.goBack()}
-                    >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-                    */}
+                    {/* add components here.. */}
 
                 </View>
 
@@ -512,18 +505,18 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
     searchBarStyle: {
-        height: Constants.statusBarHeight + Header.HEIGHT,
-        paddingBottom: 14 + 2,
+        height: Constants.statusBarHeight + 8 + 34 + 8,
+        paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
     container: {
         flexGrow: 1,
         paddingBottom: StyleGuide.spacing.small,
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
     ad: {
         width: parseInt(Dimensions.get('window').width) - 2,
@@ -556,7 +549,7 @@ const styles = StyleSheet.create({
     //// FlatList ////
     contentContainer: {
         flexGrow: 1,
-        backgroundColor: 'rgb(40, 40, 40)',
+        backgroundColor: 'black',
         // paddingBottom: Theme.spacing.base
     },
     columnWrapperStyle: {

@@ -98,7 +98,7 @@ export default class AuthMain extends React.Component {
                             fontFamily: "FriendlySchoolmatesRegular",
                             // fontFamily: "SansSerif",
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 40,
+                            fontSize: 36,
                             fontWeight: 'bold',
                             textAlign: 'center'
                         }}>ROWENA</Text>

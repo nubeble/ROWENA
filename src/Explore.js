@@ -191,7 +191,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                 <View style={styles.searchBarStyle}>
                     <View style={{
                         width: '70%', height: 34,
-                        backgroundColor: 'rgb(60, 60, 60)',
+                        backgroundColor: 'rgb(34, 34, 34)',
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
@@ -411,8 +411,10 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
+
+
     header: {
         backgroundColor: "white",
         shadowColor: "black",
@@ -433,14 +435,13 @@ const styles = StyleSheet.create({
         top: 0
     },
 
-    //// SEARCH BAR ////
+
     searchBarStyle: {
-        height: Constants.statusBarHeight + Header.HEIGHT,
-        paddingBottom: 14 + 2,
+        height: Constants.statusBarHeight + 8 + 34 + 8,
+        paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
-    //// Swiper ////
     wrapper: {
     },
     slide: {
@@ -451,7 +452,7 @@ const styles = StyleSheet.create({
     item: {
         // flex: 1,
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 21 * 9,
+        height: Dimensions.get('window').width / 21 * 9
     },
 
     titleContainer: {
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         padding: Theme.spacing.small,
-        flex: 1,
+        flex: 1
     }
 
 

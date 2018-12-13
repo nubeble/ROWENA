@@ -194,18 +194,20 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
     container: {
         flexGrow: 1,
         paddingBottom: StyleGuide.spacing.small,
         // backgroundColor: StyleGuide.palette.black
         // backgroundColor: '#303030'
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
+
+
         header: {
             padding: StyleGuide.spacing.small
-            // </T>padding: StyleGuide.spacing.tiny
+            // padding: StyleGuide.spacing.tiny
     },
         headerText: {
             color: 'rgba(255, 255, 255, 0.6)',
@@ -227,6 +229,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
+
+
     ad: {
         width: parseInt(Dimensions.get('window').width) - 2,
         height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,

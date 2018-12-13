@@ -189,7 +189,7 @@ export default class Intro extends React.Component {
                 <View style={styles.searchBarStyle}>
                     <View style={{
                         width: '70%', height: 34,
-                        backgroundColor: 'rgb(60, 60, 60)',
+                        backgroundColor: 'rgb(34, 34, 34)',
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
@@ -436,7 +436,7 @@ export default class Intro extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'rgb(40, 40, 40)'
+        backgroundColor: 'black'
     },
     header: {
         backgroundColor: "white",
@@ -460,8 +460,10 @@ const styles = StyleSheet.create({
 
     //// SEARCH BAR ////
     searchBarStyle: {
-        height: Constants.statusBarHeight + Header.HEIGHT,
-        paddingBottom: 14 + 2,
+        // height: Constants.statusBarHeight + Header.HEIGHT,
+        // paddingBottom: 14 + 2,
+        height: Constants.statusBarHeight + 8 + 34 + 8,
+        paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
@@ -482,7 +484,7 @@ const styles = StyleSheet.create({
     //// FlatList ////
     contentContainer: {
         flexGrow: 1,
-        backgroundColor: 'rgb(40, 40, 40)',
+        backgroundColor: 'black',
         paddingBottom: Theme.spacing.base
     },
     columnWrapperStyle: {

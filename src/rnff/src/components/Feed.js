@@ -131,7 +131,6 @@ export default class Feed extends React.Component<FeedProps> {
 const styles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
-        // backgroundColor: 'rgb(40, 40, 40)',
         paddingBottom: Theme.spacing.base
     },
     list: {

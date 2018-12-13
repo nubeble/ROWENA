@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView } from 'react-native';
 import { Header } from 'react-navigation';
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
@@ -38,7 +38,7 @@ export default class SignUpWithEmail extends React.Component {
 
     showNotification = (msg) => {
         // this.state.value = msg;
-        this.setState({value, msg});
+        this.setState({ value, msg });
 
         if (!this._showNotification) {
             this._showNotification = true;
@@ -122,10 +122,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.password === '') {
             // disable
-            this.setState( {invalid: true, signUpButtomTextColor: 'rgba(255,255,255,0.3)'} );
+            this.setState({ invalid: true, signUpButtomTextColor: 'rgba(255,255,255,0.3)' });
         } else {
             // enable
-            this.setState( {invalid: false, signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)'} );
+            this.setState({ invalid: false, signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)' });
         }
 
         if (this._showNotification) {
@@ -176,10 +176,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.email === '') {
             // disable
-            this.setState( {invalid: true, signUpButtomTextColor: 'rgba(255,255,255,0.3)'} );
+            this.setState({ invalid: true, signUpButtomTextColor: 'rgba(255,255,255,0.3)' });
         } else {
             // enable
-            this.setState( {invalid: false, signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)'} );
+            this.setState({ invalid: false, signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)' });
         }
 
         if (this._showNotification) {
@@ -243,13 +243,13 @@ export default class SignUpWithEmail extends React.Component {
 
     toggleSecureText() {
         if (this.state.secureText === 'Show') {
-            this.setState({secureText: 'Hide', securePwInput: false});
+            this.setState({ secureText: 'Hide', securePwInput: false });
         } else {
-            this.setState({secureText: 'Show', securePwInput: true});
+            this.setState({ secureText: 'Show', securePwInput: true });
         }
 
         // ToDo: don't need this in ios, not working in android. check!!
-        this.refs['pwInput']._root.setNativeProps({ selection:{ start:this.state.password.length, end:this.state.password.length } });
+        this.refs['pwInput']._root.setNativeProps({ selection: { start: this.state.password.length, end: this.state.password.length } });
     }
 
     signUp() {
@@ -362,14 +362,17 @@ export default class SignUpWithEmail extends React.Component {
                         */}
 
                         <View style={styles.searchBarStyle}>
-
                             <TouchableOpacity
-                                style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
+                                style={{
+                                    position: 'absolute',
+                                    bottom: 8 + 4, // paddingBottom from searchBarStyle
+                                    left: 22,
+                                    alignSelf: 'baseline'
+                                }}
                                 onPress={() => this.props.navigation.goBack()}
                             >
                                 <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                             </TouchableOpacity>
-
                         </View>
 
                         <Text style={{
@@ -423,9 +426,18 @@ export default class SignUpWithEmail extends React.Component {
                             </Item>
                         </Form>
 
+                        {/*
                         <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={ this.state.invalid } >
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                         </TouchableOpacity>
+                        */}
+                        <KeyboardAvoidingView style={{ position: 'absolute', bottom: 10, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                            <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
+                            </TouchableOpacity>
+                        </KeyboardAvoidingView>
+
+
                     </View>
                 </View>
             </ImageBackground>
@@ -438,11 +450,14 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchBarStyle: {
-        height: Constants.statusBarHeight + Header.HEIGHT,
-        paddingBottom: 14 + 2,
+        // height: Constants.statusBarHeight + Header.HEIGHT,
+        // paddingBottom: 14 + 2,
+        height: Constants.statusBarHeight + 8 + 34 + 8,
+        paddingBottom: 8 + 4, // paddingBottom from searchBarStyle
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
+    /*
     signUpButton: {
         // marginTop: 40,
         position: 'absolute',
@@ -458,6 +473,21 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: "transparent",
         borderWidth: 0
+    },
+    */
+    signUpButton: {
+        // marginTop: 40,
+        // position: 'absolute',
+        // bottom: 10,
+        width: '85%',
+        height: 45,
+        // alignSelf: 'center',
+        backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
+        borderRadius: 5,
+        // borderColor: "transparent",
+        // borderWidth: 0
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     activityIndicator: {
         position: 'absolute',
