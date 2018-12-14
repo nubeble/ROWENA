@@ -18,6 +18,7 @@ import Util from "./Util";
 import Swiper from './Swiper';
 import { Rating, AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import autobind from "autobind-decorator";
 
 
 const tmp = "Woke up to the sound of pouring rain\
@@ -27,12 +28,6 @@ And when you needed me I came through\
 I paint a picture of the days gone by\
 When love went blind and you would make me see\
 I'd stare a lifetime into your eyes\
-So that I knew that you were there for me\
-Time after time you there for me\
-Remember yesterday, walking hand in hand\
-Love letters in the sand, I remember you\
-Through the sleepless nights through every endless day\
-I'd want to hear you say, I remember you\
 ";
 
 
@@ -40,8 +35,28 @@ I'd want to hear you say, I remember you\
 export default class Detail extends React.Component {
     state = {
         showIndicator: false,
+        rating: 0,
+        scrollPosition: 0,
 
     };
+
+    onGoBack() {
+        console.log('Detail::onGoBack');
+
+        this.setState({ rating: 0 });
+        this.refs.rating.setPosition(0); // bug in AirbnbRating
+
+
+        // ToDo: vertical 스크롤 좌표를 기억하고 있다가, 넘어갔다오면 다시 셋팅!
+        // this._flatList.scrollToOffset(this.state.scrollPosition);
+        this._flatList.scrollToEnd({animated: false});
+    }
+
+    @autobind
+    handleScroll(event) {
+        console.log(event.nativeEvent.contentOffset.y);
+        this.setState({ scrollPosition: event.nativeEvent.contentOffset.y });
+    }
 
     componentDidMount() {
         console.log('Detail::componentDidMount');
@@ -122,6 +137,11 @@ export default class Detail extends React.Component {
                 </View>
 
                 <FlatList
+
+                    ref={(fl) => this._flatList = fl}
+                    onScroll={this.handleScroll}
+
+
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
@@ -178,33 +198,36 @@ export default class Detail extends React.Component {
                                 <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
 
                                 {/* map */}
-                                <TouchableOpacity activeOpacity={0.5} onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}>
-                                <View style={styles.mapContainer}>
-                                    <MapView
-                                        ref={map => { this.map = map }}
-                                        style={styles.map}
-                                        mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                        initialRegion={{
-                                            longitude: post.location.longitude,
-                                            latitude: post.location.latitude,
-                                            latitudeDelta: 0.001,
-                                            longitudeDelta: 0.001
-                                        }}
-                                        scrollEnabled={false}
-                                        zoomEnabled={false}
-                                        rotateEnabled={false}
-                                        pitchEnabled={false}
-                                    >
-                                        <MapView.Marker
-                                            coordinate={{
+                                <TouchableOpacity activeOpacity={0.5}
+                                    // onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() })}
+                                    onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
+                                >
+                                    <View style={styles.mapContainer}>
+                                        <MapView
+                                            ref={map => { this.map = map }}
+                                            style={styles.map}
+                                            mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                            initialRegion={{
                                                 longitude: post.location.longitude,
-                                                latitude: post.location.latitude
+                                                latitude: post.location.latitude,
+                                                latitudeDelta: 0.001,
+                                                longitudeDelta: 0.001
                                             }}
-                                        // title={'title'}
-                                        // description={'description'}
-                                        />
-                                    </MapView>
-                                </View>
+                                            scrollEnabled={false}
+                                            zoomEnabled={false}
+                                            rotateEnabled={false}
+                                            pitchEnabled={false}
+                                        >
+                                            <MapView.Marker
+                                                coordinate={{
+                                                    longitude: post.location.longitude,
+                                                    latitude: post.location.latitude
+                                                }}
+                                            // title={'title'}
+                                            // description={'description'}
+                                            />
+                                        </MapView>
+                                    </View>
                                 </TouchableOpacity>
 
                                 <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
@@ -212,10 +235,11 @@ export default class Detail extends React.Component {
                                 <Text style={styles.review}>Share your experience to help others</Text>
                                 <View style={{ marginBottom: 10 }}>
                                     <AirbnbRating
+                                        ref='rating'
                                         onFinishRating={this.ratingCompleted}
                                         showRating={false}
                                         count={5}
-                                        defaultRating={0}
+                                        defaultRating={this.state.rating}
                                         size={32}
                                         margin={3}
                                     />
@@ -225,12 +249,12 @@ export default class Detail extends React.Component {
 
                                 {/* ToDo: show reviews */}
 
-                                {/* ToDo: contact button */}
 
                             </View>
 
-                            <TouchableOpacity onPress={() => this.getUsers()} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>getUsers</Text>
+                            {/* ToDo: contact button */}
+                            <TouchableOpacity onPress={() => this.contact()} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Contact</Text>
                             </TouchableOpacity>
 
                             {/*
@@ -326,69 +350,21 @@ export default class Detail extends React.Component {
         );
     }
 
+    @autobind
     ratingCompleted(rating) {
-        console.log("Rating is: " + rating);
+        // console.log("Rating is: " + rating);
+
+        const { post, profile } = this.props.navigation.state.params;
+        // this.navigation.navigate("review", { post: post, profile: profile })
+        setTimeout(() => {
+            // this.props.navigation.navigate("review", { post: post, profile: profile, rating: rating });
+            this.props.navigation.navigate("review", { post: post, profile: profile, rating: rating, onGoBack: () => this.onGoBack() });
+        }, 1500); // 1.5 sec
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*** Database ***/
-
-    // let users = await getUsers();
-    getUsers() {
-        return new Promise((resolve, reject) => {
-            let users = {};
-
-            // Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50).get()
-            Firebase.firestore.collection("users").get().then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    console.log(doc.id, '=>', doc.data());
-                    users[doc.id] = doc.data();
-                });
-
-                resolve(users);
-            }).catch((err) => {
-                console.log('Error getting documents', err);
-
-                reject(err);
-            });
-        });
+    contact() {
+        // ToDo
     }
-
-    // ToDo: check this
-    /*
-    addReview(userUid, review) {
-        var userDoc = Firebase.firestore.collection('users').doc(userUid);
-        var newReviewDoc = userDoc.collection('receivedReviews').doc();
-
-        return Firebase.firestore.runTransaction((transaction) => {
-            return transaction.get(userDoc).then((doc) => {
-                var data = doc.data();
-
-                var newAverage = (data.numRatings * data.avgRating + rating.rating) / (data.numRatings + 1);
-
-                transaction.update(userDoc, {
-                    numRatings: data.numRatings + 1,
-                    avgRating: newAverage
-                });
-
-                return transaction.set(newReviewDoc, rating);
-            });
-        });
-    }
-    */
 }
 
 const styles = StyleSheet.create({
@@ -452,9 +428,7 @@ const styles = StyleSheet.create({
         color: "grey",
         textAlign: 'right'
         // marginTop: 10,
-
         // lineHeight: 20,
-
     },
     infoContainer: {
         flex: 1,
@@ -512,21 +486,6 @@ const styles = StyleSheet.create({
         paddingTop: Theme.spacing.small,
         paddingBottom: Theme.spacing.small
     },
-    /*
-    mapCropContainer: {
-        backgroundColor: 'yellow',
-        // marginTop: -25,
-        // marginBottom: -25
-        position: 'absolute',
-        width: '100%',
-        height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 4 * 3 - 100,
-        top: 20,
-        // bottom: 20,
-        // right: 0,
-        // width: 50,
-        // height: 50 
-    },
-    */
     map: {
         width: '100%',
         height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 5 * 3

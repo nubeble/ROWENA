@@ -41,7 +41,10 @@ export default class MapScreen extends React.Component {
                             left: 22,
                             alignSelf: 'baseline'
                         }}
-                        onPress={() => this.props.navigation.goBack()}
+                        onPress={() => {
+                            // this.props.navigation.state.params.onGoBack();
+                            this.props.navigation.goBack();
+                        }}
                     >
                         <Ionicons name='md-arrow-back' color="black" size={24} />
                     </TouchableOpacity>

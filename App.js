@@ -102,6 +102,7 @@ import Intro from './src/Intro';
 import ExploreScreen from './src/Explore';
 import Detail from './src/Detail';
 import MapScreen from './src/MapScreen'
+import ReviewScreen from './src/ReviewScreen'
 
 
 const HomeStackNavigator = createStackNavigator(
@@ -114,6 +115,9 @@ const HomeStackNavigator = createStackNavigator(
 		},
 		map: {
 			screen: MapScreen
+		},
+		review: {
+			screen: ReviewScreen
 		}
 	},
 	{
@@ -173,9 +177,10 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
 	console.log('router', navigation.router);
 	console.log('state', navigation.state);
 	console.log('homeStackNavigator index', navigation.state.routes[1].index);
+	console.log('homeStackNavigator index', navigation.state.routes[1].routes.length);
 	*/
-
-    if (navigation.state.routes[1].index === 2) {
+	if (navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
+		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'review') {
         return {
             tabBarVisible: false
         };

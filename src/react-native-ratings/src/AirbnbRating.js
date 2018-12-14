@@ -17,6 +17,10 @@ export default class AirbnbRating extends Component {
         readOnly: false
     };
 
+    setPosition(position) {
+        this.setState({ position: position });
+    }
+
     constructor() {
         super()
 
