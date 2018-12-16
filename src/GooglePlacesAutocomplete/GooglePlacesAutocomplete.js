@@ -751,6 +751,7 @@ export default class GooglePlacesAutocomplete extends Component {
 						{this._renderLeftButton()}
 						<TextInput
 							ref="textInput"
+							keyboardAppearance={'dark'}
 
 
 							selectionColor='rgb(234, 150, 24)'

@@ -218,7 +218,7 @@ export default class Firebase {
         let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
-        let size = await this.getReviewsSize(placeId, feedId);
+        let size = await Firebase.getReviewsSize(placeId, feedId);
         // console.log('returned size', size);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -249,7 +249,7 @@ export default class Firebase {
         let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
-        let size = await this.getReviewsSize(placeId, feedId);
+        let size = await Firebase.getReviewsSize(placeId, feedId);
 
         await Firebase.firestore.runTransaction(async transaction => {
             // averageRating (number)
@@ -272,7 +272,7 @@ export default class Firebase {
         await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).delete();
     }
 
-    async getReviewsSize(placeId, feedId) {
+    static async getReviewsSize(placeId, feedId) {
         let size = -1;
 
         await Firebase.firestore.collection("place").doc(placeId).collection("feed")

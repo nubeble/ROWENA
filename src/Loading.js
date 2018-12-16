@@ -1,10 +1,12 @@
 import React from 'react';
 import { StyleSheet, StatusBar } from 'react-native';
-import { Font, AppLoading } from 'expo';
+import { Font, AppLoading, Asset } from 'expo';
 import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
 import { inject } from "mobx-react/native";
 import type { ScreenProps } from "./src/rnff/components/Types";
+import PreloadImage from './PreloadImage';
+import Star from './react-native-ratings/src/Star';
 
 // $FlowFixMe
 const SFProTextBold = require("../fonts/SF-Pro-Text-Bold.otf");
@@ -42,11 +44,14 @@ export default class Loading extends React.Component<ScreenProps<>> {
             "SansSerif": SansSerif
         });
 
-        const images = Images.downloadAsync(); // logo
+        // const images = Images.downloadAsync(); // logo
+        // const icons = loadIcons();
+        // await Promise.all([fonts, ...images, icons]);
 
-        const icons = loadIcons();
+        const preload = PreloadImage.downloadAsync();
+        const star = Star.downloadAsync();
+        await Promise.all([fonts, ...preload, ...star]);
 
-        await Promise.all([fonts, ...images, icons]);
 
 
         Firebase.init();

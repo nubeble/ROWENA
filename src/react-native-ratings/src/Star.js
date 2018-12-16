@@ -1,14 +1,30 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, Animated, TouchableOpacity } from 'react-native';
+import { Asset } from 'expo';
 
 const STAR_IMAGE = require('./images/airbnb-star.png');
 const STAR_SELECTED_IMAGE = require('./images/airbnb-star-selected.png');
 const STAR_SIZE = 40;
 
+
 export default class Star extends PureComponent {
     static defaultProps = {
         selectedColor: '#f1c40f'
     };
+
+    // --
+    // static STAR_IMAGE = _STAR_IMAGE;
+    // static STAR_SELECTED_IMAGE = _STAR_SELECTED_IMAGE;
+
+    static downloadAsync(): Promise<*>[] {
+        return [
+            Asset.loadAsync([
+                STAR_IMAGE,
+                STAR_SELECTED_IMAGE
+            ])
+        ];
+    }
+    // --
 
     constructor() {
         super();

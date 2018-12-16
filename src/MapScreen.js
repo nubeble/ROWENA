@@ -32,7 +32,6 @@ export default class MapScreen extends React.Component {
 
         return (
             <View style={styles.flex}>
-
                 <View style={styles.searchBarStyle}>
                     <TouchableOpacity
                         style={{
@@ -90,7 +89,6 @@ export default class MapScreen extends React.Component {
                     />
                 </MapView>
             </View>
-
         );
     }
 

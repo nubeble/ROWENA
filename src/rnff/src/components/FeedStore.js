@@ -187,7 +187,7 @@ export default class FeedStore {
         return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(async snap => {
             // const post = snap.docs[0].data();
             const post = snap.data();
-            console.log('feed changed.', post); // ToDo: check!!!
+            console.log('feed changed.', post);
             callback(post);
 
             this.feed.forEach((entry, index) => {

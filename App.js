@@ -173,13 +173,18 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 }
 
 HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
+	console.log('state', navigation.state);
+	
 	/*
 	console.log('router', navigation.router);
 	console.log('state', navigation.state);
 	console.log('homeStackNavigator index', navigation.state.routes[1].index);
 	console.log('homeStackNavigator index', navigation.state.routes[1].routes.length);
 	*/
-	if (navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
+
+	// if (!navigation.state.routes[1].isTransitioning &&
+	if(
+		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
 		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'review') {
         return {
             tabBarVisible: false

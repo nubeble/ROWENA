@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView, Keyboard, Dimensions } from 'react-native';
 import { Header } from 'react-navigation';
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
@@ -7,6 +7,8 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 // import * as firebase from 'firebase';
 import Firebase from './Firebase'
+import autobind from "autobind-decorator";
+import PreloadImage from './PreloadImage';
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -20,7 +22,6 @@ export default class SignUpWithEmail extends React.Component {
 
         showIndicator: false,
 
-        value: '',
         notification: '',
         opacity: new Animated.Value(0),
         offset: new Animated.Value(0),
@@ -30,23 +31,45 @@ export default class SignUpWithEmail extends React.Component {
 
         securePwInput: true,
         secureText: 'Show',
+        bottomLocation: Dimensions.get('window').height
     };
 
+    componentDidMount() {
+        console.log('SignUpWithEmail::componentDidMount');
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+
+        let that = this;
+        setTimeout(function () {
+            that.refs['emailInput']._root.focus();
+        }, 750); // 0.75 sec
+    }
+
     componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+
         this.isClosed = true;
     }
 
-    showNotification = (msg) => {
-        // this.state.value = msg;
-        this.setState({ value, msg });
+    @autobind
+    _keyboardDidShow(e) {
+        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+    }
 
+    @autobind
+    _keyboardDidHide() {
+        this.setState({ bottomLocation: Dimensions.get('window').height });
+    }
+
+    showNotification = (msg) => {
         if (!this._showNotification) {
             this._showNotification = true;
 
             this.setState(
                 {
-                    value: "",
-                    notification: this.state.value,
+                    notification: msg
                 },
                 () => {
                     this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
@@ -102,15 +125,6 @@ export default class SignUpWithEmail extends React.Component {
         });
 
         this._showNotification = false;
-    }
-
-    componentDidMount() {
-        console.log('SignUpWithEmail::componentDidMount');
-
-        let that = this;
-        setTimeout(function () {
-            that.refs['emailInput']._root.focus();
-        }, 750); // 0.75 sec
     }
 
     validateEmail(text) {
@@ -318,31 +332,35 @@ export default class SignUpWithEmail extends React.Component {
             transform: [
                 {
                     translateY: this.state.offset
-                },
-            ],
+                }
+            ]
         };
 
         return (
             <ImageBackground
-                style={{ flex: 1, width: null, height: null }}
-                source={require('../assets/splash.png')}
-                imageStyle={{ resizeMode: 'cover' }}
-                blurRadius={3}
+                // style={{ flex: 1, width: null, height: null }}
+                style={{
+                    flex: 1,
+                    position: 'absolute',
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').height
+                }}
+                source={PreloadImage.Splash}
+                // imageStyle={{ resizeMode: 'cover' }}
+                resizeMode='cover'
+                // blurRadius={3}
+                blurRadius={20}
             >
-                <View
-                    style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
-
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
                     <View style={styles.container}>
 
                         <Animated.View
                             style={[styles.notification, notificationStyle]}
                             ref={notification => this._notification = notification}
                         >
-                            <Text style={styles.notificationText}>
-                                {this.state.notification}
-                            </Text>
+                            <Text style={styles.notificationText}>{this.state.notification}</Text>
                             <TouchableOpacity
-                                style={{ position: 'absolute', right: 18, top: 4, alignSelf: 'baseline' }}
+                                style={{ position: 'absolute', right: 18, bottom: 0, alignSelf: 'baseline' }}
                                 onPress={() => this.hideNotification()}
                             >
                                 <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
@@ -397,6 +415,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
+                                    keyboardAppearance={'dark'}
                                 />
                                 {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -420,6 +439,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
+                                    keyboardAppearance={'dark'}
                                 />
                                 {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -431,7 +451,7 @@ export default class SignUpWithEmail extends React.Component {
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                         </TouchableOpacity>
                         */}
-                        <KeyboardAvoidingView style={{ position: 'absolute', bottom: 10, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                        <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomLocation - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                             <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                             </TouchableOpacity>
@@ -487,37 +507,13 @@ const styles = StyleSheet.create({
         // borderColor: "transparent",
         // borderWidth: 0
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     activityIndicator: {
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0, right: 0,
-
-        // margin: 'auto',
-
-
-        /*
-        maxWidth: '100%',
-        maxHeight: '100%',
-        width: 'auto',
-        height: 'auto'
-        */
-
-
-        /*
-        // alignSelf: 'center',
-        left: 0,
-        right: 0,
-        top: 50,
-        bottom: 0,
-        // margin: auto;
-
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        height: 80
-        */
+        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
+        /*
         position: "absolute",
         left: 0,
         right: 0,
@@ -527,11 +523,22 @@ const styles = StyleSheet.create({
         top: Constants.statusBarHeight,
         // top: 0,
         height: 30,
-        backgroundColor: "rgba(255, 184, 24, 0.8)"
+        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        zIndex: 10000
+        */
+        position: "absolute",
+        width: '100%',
+        height: 56,
+        top: 0,
+        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        zIndex: 10000
     },
     notificationText: {
+        position: 'absolute',
+        bottom: 4,
         alignSelf: 'center',
+        fontSize: 12,
+        fontFamily: "SFProText-Semibold",
         color: "#FFF"
-    },
-
+    }
 });

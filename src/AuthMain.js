@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 // import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
 import Firebase from './Firebase';
 import * as firebase from "firebase";
+import PreloadImage from './PreloadImage';
 
 export default class AuthMain extends React.Component {
     state = {
@@ -70,18 +71,20 @@ export default class AuthMain extends React.Component {
 
         return (
             <ImageBackground
-                style={{ flex: 1, width: null, height: null }}
-                source={require('../assets/splash.png')}
-                imageStyle={{ resizeMode: 'cover' }}
-                blurRadius={3}
+                // style={{ flex: 1, width: null, height: null }}
+                style={{
+                    flex: 1,
+                    position: 'absolute',
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').height
+                }}
+                source={PreloadImage.Splash}
+                // imageStyle={{ resizeMode: 'cover' }}
+                resizeMode='cover'
+                // blurRadius={3}
+                blurRadius={20}
             >
-                {/*
-                <Image style={styles.bgimage} blurRadius={3} source={require('../assets/splash.png')} />
-            */}
-
-                <View
-                    style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
-
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
                     <ActivityIndicator
                         style={styles.activityIndicator}
                         animating={this.state.showIndicator}

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, ScrollView, TouchableWithoutFeedback, Alert
+    FlatList, ScrollView, TouchableWithoutFeedback, Alert, Image
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
@@ -12,7 +12,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 // import { StyleGuide } from "./rne/src/components/theme";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import moment from 'moment';
-import Image from "./rne/src/components/Image";
+// import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
 import Swiper from './Swiper';
@@ -36,26 +36,21 @@ export default class Detail extends React.Component {
     state = {
         showIndicator: false,
         rating: 0,
-        scrollPosition: 0,
-
+        isNavigating: false
     };
 
-    onGoBack() {
+    onGoBack() { // back from rating
         console.log('Detail::onGoBack');
+
+        this.setState({ isNavigating: false });
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
+        // this._flatList.scrollToEnd();
+        // this.refs.list.scrollToEnd();
 
-        // ToDo: vertical 스크롤 좌표를 기억하고 있다가, 넘어갔다오면 다시 셋팅!
-        // this._flatList.scrollToOffset(this.state.scrollPosition);
-        this._flatList.scrollToEnd({animated: false});
-    }
-
-    @autobind
-    handleScroll(event) {
-        console.log(event.nativeEvent.contentOffset.y);
-        this.setState({ scrollPosition: event.nativeEvent.contentOffset.y });
+        // this._flatList.scrollToOffset({ offset: Dimensions.get('window').height, animated: false });
     }
 
     componentDidMount() {
@@ -101,7 +96,6 @@ export default class Detail extends React.Component {
 
         return (
             <View style={styles.flex} >
-
                 <ActivityIndicator
                     style={styles.activityIndicator}
                     animating={this.state.showIndicator}
@@ -137,11 +131,8 @@ export default class Detail extends React.Component {
                 </View>
 
                 <FlatList
-
                     ref={(fl) => this._flatList = fl}
-                    onScroll={this.handleScroll}
-
-
+                    // ref='list'
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={(
@@ -189,17 +180,21 @@ export default class Detail extends React.Component {
                                     <Text style={styles.reviewCount}>12</Text>
                                 </View>
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
 
                                 <Text style={styles.note}>{post.note}
                                     {tmp}
                                 </Text>
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
 
                                 {/* map */}
                                 <TouchableOpacity activeOpacity={0.5}
-                                    // onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() })}
+                                    /*
+                                    onPress={() => {
+                                        this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() });
+                                    }}
+                                    */
                                     onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
                                 >
                                     <View style={styles.mapContainer}>
@@ -230,9 +225,24 @@ export default class Detail extends React.Component {
                                     </View>
                                 </TouchableOpacity>
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
 
-                                <Text style={styles.review}>Share your experience to help others</Text>
+                                {/* ToDo: show reviews */}
+
+                                <View style={styles.reviews}>
+                                    <Image
+                                        style={{width: '100%', height: 140, marginBottom: 10}}
+                                        resizeMode={'cover'}
+                                        source={require('../assets/sample1.jpg')}
+                                    />
+                                    <Image
+                                        style={{width: '100%', height: 400}}
+                                        resizeMode={'cover'}
+                                        source={require('../assets/sample2.jpg')}
+                                    />
+                                </View>
+
+                                <Text style={styles.ratingText}>Share your experience to help others</Text>
                                 <View style={{ marginBottom: 10 }}>
                                     <AirbnbRating
                                         ref='rating'
@@ -245,35 +255,28 @@ export default class Detail extends React.Component {
                                     />
                                 </View>
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%' }} />
-
-                                {/* ToDo: show reviews */}
-
-
+                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
                             </View>
 
                             {/* ToDo: contact button */}
                             <TouchableOpacity onPress={() => this.contact()} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Contact</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
                             </TouchableOpacity>
-
-                            {/*
-                            <TouchableOpacity onPress={() => this.pickImage()} style={styles.signUpButton} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Pick me</Text>
-                            </TouchableOpacity>
-                            */}
-
 
                         </Animated.View>
+                    )}
+
+                    ListFooterComponent={
+                        this.state.isNavigating && (
+                        <View style={{width: '100%', height: 100}} // 100: (enough) height of tab bar
+                        />
                     )}
                 // scrollEventThrottle={1}
                 // columnWrapperStyle={undefined}
                 // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
                 // {...{ onScroll }}
                 />
-
             </View>
-
         );
     }
 
@@ -355,11 +358,12 @@ export default class Detail extends React.Component {
         // console.log("Rating is: " + rating);
 
         const { post, profile } = this.props.navigation.state.params;
-        // this.navigation.navigate("review", { post: post, profile: profile })
+
+        this.setState({isNavigating: true});
+
         setTimeout(() => {
-            // this.props.navigation.navigate("review", { post: post, profile: profile, rating: rating });
             this.props.navigation.navigate("review", { post: post, profile: profile, rating: rating, onGoBack: () => this.onGoBack() });
-        }, 1500); // 1.5 sec
+        }, 500); // 0.5 sec
     }
 
     contact() {
@@ -385,19 +389,13 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.small
     },
     signUpButton: {
-        //position: 'absolute',
-        //bottom: 30,
-
         width: '85%',
         height: 45,
         alignSelf: 'center',
-
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "grey",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
         borderRadius: 5,
-        borderColor: "transparent",
-        borderWidth: 0
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     activityIndicator: {
         position: 'absolute',
@@ -479,8 +477,8 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontFamily: "SFProText-Regular",
-        marginTop: 10,
-        marginBottom: 10
+        paddingTop: 10,
+        paddingBottom: 10
     },
     mapContainer: {
         paddingTop: Theme.spacing.small,
@@ -490,7 +488,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 5 * 3
     },
-    review: {
+    ratingText: {
         color: 'grey',
         textAlign: 'center',
         fontSize: 16,
@@ -498,6 +496,17 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular",
         paddingTop: 10,
         paddingBottom: 10
+    },
+    reviews: {
+        width: '100%',
+        // height: 500,
+        paddingTop: 10,
+        paddingBottom: 10,
+        backgroundColor: 'red'
+    },
+    sample: {
+        width: '100%',
+        height: '100%'
     },
 
 

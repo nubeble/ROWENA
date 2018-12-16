@@ -16,7 +16,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 import SearchModal from "./SearchModal";
 import SmartImage from "./rnff/src/components/SmartImage";
-import Carousel from './Carousel'
+import Carousel from './Carousel';
+import PreloadImage from './PreloadImage';
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -49,42 +50,48 @@ export default class Intro extends React.Component {
                 place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
                 description: 'Bangkok, Thailand',
                 city: 'Bangkok',
-                uri: require('../assets/place/Bangkok.jpg'),
+                // uri: require('../assets/place/Bangkok.jpg'),
+                uri: PreloadImage.Bangkok,
                 length: 0
             },
             {
                 place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
                 description: 'Manila, Philippines',
                 city: 'Manila',
-                uri: require('../assets/place/Manila.jpg'),
+                // uri: require('../assets/place/Manila.jpg'),
+                uri: PreloadImage.Manila,
                 length: 0
             },
             {
                 place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
                 description: 'Ho Chi Minh, Vietnam',
                 city: 'Ho Chi Minh',
-                uri: require('../assets/place/HoChiMinh.jpg'),
+                // uri: require('../assets/place/HoChiMinh.jpg'),
+                uri: PreloadImage.HoChiMinh,
                 length: 0
             },
             {
                 place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
                 description: 'Vientiane, Laos',
                 city: 'Vientiane',
-                uri: require('../assets/place/Vientiane.jpg'),
+                // uri: require('../assets/place/Vientiane.jpg'),
+                uri: PreloadImage.Vientiane,
                 length: 0
             },
             {
                 place_id: 'ChIJ42tqxz1RCTERuyW1WugOAZw',
                 description: 'Phnom Penh, Cambodia',
                 city: 'Phnom Penh',
-                uri: require('../assets/place/PhnomPenh.jpg'),
+                // uri: require('../assets/place/PhnomPenh.jpg'),
+                uri: PreloadImage.PhnomPenh,
                 length: 0
             },
             {
                 place_id: 'ChIJnUvjRenzaS4RoobX2g-_cVM',
                 description: 'Jakarta, Indonesia',
                 city: 'Jakarta',
-                uri: require('../assets/place/Macau.jpg'),
+                // uri: require('../assets/place/Macau.jpg'),
+                uri: PreloadImage.Jakarta,
                 length: 0
             }
         ],

@@ -59,6 +59,7 @@ export default class SearchModal extends React.Component {
                     </View>
 
                     <GooglePlacesAutocomplete
+                        enablePoweredByContainer={false}
                         placeholder='Where to?'
                         minLength={2} // minimum length of text to search
                         autoFocus={false}
