@@ -173,8 +173,6 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 }
 
 HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
-	console.log('state', navigation.state);
-	
 	/*
 	console.log('router', navigation.router);
 	console.log('state', navigation.state);

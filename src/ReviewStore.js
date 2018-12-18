@@ -5,6 +5,7 @@ import Firebase from "./Firebase";
 import type { Review, Reviews, ReviewEntry } from "./rnff/src/components/Model";
 
 
+
 export default class ReviewStore {
     @observable _reviews: Reviews = [];
     // @observable _review: string = ""; // ToDo
@@ -18,9 +19,10 @@ export default class ReviewStore {
     */
 
 
-    async init(placeId: string, feedId: string): Promise<void> {
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews")
-            .orderBy("timestamp", "desc");
+    async init(placeId: string, feedId: string): Promise<void> { // get [{review: profile}] in real time
+        // console.log('placeId', placeId, 'feedId', feedId);
+
+        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
 
         query.onSnapshot(async snap => {
             const reviews: Promise<ReviewEntry>[] = [];
@@ -28,31 +30,22 @@ export default class ReviewStore {
             snap.forEach(reviewDoc => reviews.push((async () => {
                 const review = reviewDoc.data();
 
-                const profileDoc = await Firebase.firestore.collection("users").doc(review.uid).get();
+                const profileDoc = await Firebase.firestore.collection("users").doc(review.uid).get(); // get user uid
                 const profile = profileDoc.data();
+
+                // console.log('review', review, 'profile', profile);
 
                 return { review, profile };
             })()));
 
             this.reviews = await Promise.all(reviews);
+
+            // console.log('reviews', this.reviews);
         });
     }
 
+    /*
     async addReview(placeId: string, feedId: string, review: Review): Promise<void> {
-        // this.review = ""; // ToDo
-
-        /*
-        const postRef = Firebase.firestore.collection("feed").doc(postId);
-
-        await postRef.collection("reviews").add(review);
-
-        await Firebase.firestore.runTransaction(async transaction => {
-            const postDoc = await transaction.get(postRef);
-            const reviews = postDoc.data().reviews + 1;
-            transaction.update(postRef, { reviews });
-        });
-        */
-
         let userUid = review.uid;
         let reviewId = review.id;
 
@@ -64,7 +57,7 @@ export default class ReviewStore {
         let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
-        let size = await this.getReviewsSize(placeId, feedId);
+        let size = await Firebase.getReviewsSize(placeId, feedId);
         // console.log('returned size', size);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -85,4 +78,5 @@ export default class ReviewStore {
             await transaction.update(userRef, data);
         });
     }
+    */
 }

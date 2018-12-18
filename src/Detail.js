@@ -19,24 +19,26 @@ import Swiper from './Swiper';
 import { Rating, AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import autobind from "autobind-decorator";
+import ReviewStore from "./ReviewStore";
+import ReadMore from "./ReadMore";
+import { autorun } from 'mobx';
 
 
-const tmp = "Woke up to the sound of pouring rain\
-The wind would whisper and I'd think of you\
-And all the tears you cried, that called my name\
-And when you needed me I came through\
-I paint a picture of the days gone by\
-When love went blind and you would make me see\
-I'd stare a lifetime into your eyes\
-";
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there";
 
 
 
 export default class Detail extends React.Component {
+    reviewStore: ReviewStore = new ReviewStore();
+
     state = {
         showIndicator: false,
         rating: 0,
-        isNavigating: false
+        isNavigating: false,
+
+
+        reviews: [],
+        // showReviews: false
     };
 
     onGoBack() { // back from rating
@@ -53,7 +55,8 @@ export default class Detail extends React.Component {
         // this._flatList.scrollToOffset({ offset: Dimensions.get('window').height, animated: false });
     }
 
-    componentDidMount() {
+    async componentDidMount(): Promise<void> {
+        // componentDidMount() {
         console.log('Detail::componentDidMount');
 
         const { post, profile } = this.props.navigation.state.params;
@@ -88,6 +91,12 @@ export default class Detail extends React.Component {
             postedReviews: string[]
         };
         */
+
+        this.reviewStore.init(post.placeId, post.id);
+
+        autorun(() => {
+            this.setState({reviews: this.reviewStore.reviews});
+        });
     }
 
     render() {
@@ -157,8 +166,8 @@ export default class Detail extends React.Component {
                                     {post.age}yr {post.height}cm {post.weight}kg
                                 </Text>
 
-                                <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: 10, paddingBottom: 10 }}>
-                                    <View style={{ width: '27%' }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                    <View style={{ width: '28%', alignItems: 'flex-start' }}>
                                         <AirbnbRating
                                             count={5}
                                             readOnly={true}
@@ -180,11 +189,15 @@ export default class Detail extends React.Component {
                                     <Text style={styles.reviewCount}>12</Text>
                                 </View>
 
+                                {/*
                                 <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
+                                */}
 
-                                <Text style={styles.note}>{post.note}
-                                    {tmp}
-                                </Text>
+                                {/*
+                                <Text style={styles.note}>{post.note}</Text>
+                                */}
+                                <Text style={styles.note}>{tmp}</Text>
+
 
                                 <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
 
@@ -227,19 +240,22 @@ export default class Detail extends React.Component {
 
                                 <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
 
-                                {/* ToDo: show reviews */}
-
-                                <View style={styles.reviews}>
+                                <View style={styles.reviewsContainer}>
+                                    {/* show review chart */}
                                     <Image
-                                        style={{width: '100%', height: 140, marginBottom: 10}}
+                                        style={{ width: '100%', height: 140, marginBottom: 10 }}
                                         resizeMode={'cover'}
                                         source={require('../assets/sample1.jpg')}
                                     />
+                                    {/*
                                     <Image
-                                        style={{width: '100%', height: 400}}
+                                        style={{ width: '100%', height: 400 }}
                                         resizeMode={'cover'}
                                         source={require('../assets/sample2.jpg')}
                                     />
+                                    */}
+
+                                    {this.renderReviews(this.state.reviews)}
                                 </View>
 
                                 <Text style={styles.ratingText}>Share your experience to help others</Text>
@@ -268,9 +284,9 @@ export default class Detail extends React.Component {
 
                     ListFooterComponent={
                         this.state.isNavigating && (
-                        <View style={{width: '100%', height: 100}} // 100: (enough) height of tab bar
-                        />
-                    )}
+                            <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
+                            />
+                        )}
                 // scrollEventThrottle={1}
                 // columnWrapperStyle={undefined}
                 // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
@@ -353,17 +369,102 @@ export default class Detail extends React.Component {
         );
     }
 
+    renderReviews(reviews) { // draw items up to 4
+        console.log('reviews length', reviews.length);
+
+        const reviewArray = [];
+
+        for (var i = 0; i < reviews.length; i++) {
+            if (i > 3) break;
+
+            const review = reviews[i];
+
+            const _profile = review.profile;
+            const _review = review.review;
+
+            reviewArray.push(
+                <View key={i}>
+                    {/* ToDo: add profile image */}
+                    
+                    <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Jay Kim'}</Text>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                        {/* ToDo: draw stars based on averge rating & get review count */}
+                        <View style={{ width: '25%', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={4}
+                                size={12}
+                                margin={1}
+                                // style={{alignSelf: 'flex-start'}}
+                            />
+                        </View>
+                        <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+
+                        <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                    </View>
+
+                    <ReadMore
+                        numberOfLines={2}
+                        // onReady={() => this.readingCompleted()}
+                    >
+                        {/*
+                        <Text style={styles.reviewText}>{tmp}</Text>
+                        */}
+                        <Text style={styles.reviewText}>{_review.comment}</Text>
+                    </ReadMore>
+
+                    <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 8, marginBottom: 8 }} />
+                </View>
+            );
+
+        // });
+        }
+
+        return (
+            <View style={styles.reviewContainer}>
+                {reviewArray}
+
+                {/* Read all ??? reviews button */}
+                <TouchableOpacity
+                    // onpress
+                >
+                    <View style={{width: '100%', height: Dimensions.get('window').height / 14,
+                        justifyContent: 'center',
+                        // alignItems: 'center',
+                        // backgroundColor: 'blue',
+                        // borderTopWidth: 1,
+                        // borderBottomWidth: 1,
+                        // borderColor: 'rgb(34, 34, 34)'
+                    }}>
+                        <Text style={{fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular"}}>Read all ??? reviews button</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 8, marginBottom: 8 }} />
+            </View>
+        );
+
+    }
+
     @autobind
     ratingCompleted(rating) {
         // console.log("Rating is: " + rating);
 
         const { post, profile } = this.props.navigation.state.params;
 
-        this.setState({isNavigating: true});
+        this.setState({ isNavigating: true });
 
         setTimeout(() => {
             this.props.navigation.navigate("review", { post: post, profile: profile, rating: rating, onGoBack: () => this.onGoBack() });
         }, 500); // 0.5 sec
+    }
+
+    readingCompleted() {
+        console.log("reading done");
+        // this.setState({showReviews: true});
     }
 
     contact() {
@@ -425,8 +526,6 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Light",
         color: "grey",
         textAlign: 'right'
-        // marginTop: 10,
-        // lineHeight: 20,
     },
     infoContainer: {
         flex: 1,
@@ -458,7 +557,7 @@ const styles = StyleSheet.create({
         */
     },
     rating: {
-        marginLeft: 4,
+        marginLeft: 1,
         // marginTop: 0,
         // backgroundColor: 'red',
         color: '#f1c40f',
@@ -474,15 +573,15 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular"
     },
     note: {
-        color: 'white',
+        color: 'silver',
         fontSize: 16,
         fontFamily: "SFProText-Regular",
-        paddingTop: 10,
-        paddingBottom: 10
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny
     },
     mapContainer: {
-        paddingTop: Theme.spacing.small,
-        paddingBottom: Theme.spacing.small
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny
     },
     map: {
         width: '100%',
@@ -497,16 +596,57 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10
     },
-    reviews: {
+    reviewsContainer: {
         width: '100%',
         // height: 500,
-        paddingTop: 10,
-        paddingBottom: 10,
-        backgroundColor: 'red'
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny,
+        // backgroundColor: 'red'
     },
     sample: {
         width: '100%',
         height: '100%'
+    },
+    reviewContainer: {
+        marginHorizontal: 10,
+        padding: 10,
+        // borderRadius: 3,
+        // borderColor: 'rgba(0,0,0,0.1)',
+        // borderWidth: 1,
+        // backgroundColor: 'yellow',
+    },
+    reviewText: {
+        // color: 'rgba(255, 255, 255, 0.8)',
+        color: 'silver',
+        fontSize: 14,
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular"
+    },
+    reviewName: {
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        // paddingBottom: Theme.spacing.tiny
+    },
+    reviewRating: {
+        // backgroundColor: 'red',
+        // marginLeft: 4,
+        // marginTop: 0,
+        marginLeft: 1,
+        color: '#f1c40f',
+        fontSize: 14,
+        lineHeight: 15,
+        // lineHeight: 20,
+        fontFamily: "SFProText-Regular"
+    },
+    reviewDate: {
+        // backgroundColor: 'red',
+        marginLeft: 20,
+        color: 'grey',
+        fontSize: 14,
+        lineHeight: 15,
+        // lineHeight: 20,
+        fontFamily: "SFProText-Regular"
     },
 
 

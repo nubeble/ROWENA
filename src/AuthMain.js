@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions, Platform } from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -81,8 +81,7 @@ export default class AuthMain extends React.Component {
                 source={PreloadImage.Splash}
                 // imageStyle={{ resizeMode: 'cover' }}
                 resizeMode='cover'
-                // blurRadius={3}
-                blurRadius={20}
+                blurRadius={Platform.OS === "ios" ? 20 : 2}
             >
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
                     <ActivityIndicator

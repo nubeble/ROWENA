@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView, Keyboard, Dimensions } from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView,
+    Keyboard, Dimensions, Platform, StatusBar } from 'react-native';
 import { Header } from 'react-navigation';
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
@@ -42,7 +43,7 @@ export default class SignUpWithEmail extends React.Component {
 
         let that = this;
         setTimeout(function () {
-            that.refs['emailInput']._root.focus();
+            !that.isClosed && that.refs['emailInput'] && that.refs['emailInput']._root.focus();
         }, 750); // 0.75 sec
     }
 
@@ -105,6 +106,8 @@ export default class SignUpWithEmail extends React.Component {
                     });
                 }
             );
+
+            StatusBar.setHidden(true);
         }
     };
 
@@ -123,6 +126,8 @@ export default class SignUpWithEmail extends React.Component {
                 ])
             ]).start();
         });
+
+        StatusBar.setHidden(false);
 
         this._showNotification = false;
     }
@@ -348,8 +353,7 @@ export default class SignUpWithEmail extends React.Component {
                 source={PreloadImage.Splash}
                 // imageStyle={{ resizeMode: 'cover' }}
                 resizeMode='cover'
-                // blurRadius={3}
-                blurRadius={20}
+                blurRadius={Platform.OS === "ios" ? 20 : 2}
             >
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
                     <View style={styles.container}>
@@ -360,9 +364,9 @@ export default class SignUpWithEmail extends React.Component {
                         >
                             <Text style={styles.notificationText}>{this.state.notification}</Text>
                             <TouchableOpacity
-                                style={{ position: 'absolute', right: 18, bottom: 0, alignSelf: 'baseline' }}
-                                onPress={() => this.hideNotification()}
-                            >
+                        style={styles.notificationButton}
+                        onPress={() => this.hideNotification()}
+                    >
                                 <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                             </TouchableOpacity>
                         </Animated.View>
@@ -513,32 +517,28 @@ const styles = StyleSheet.create({
         position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
-        /*
-        position: "absolute",
-        left: 0,
-        right: 0,
-        //paddingHorizontal: 7,
-        //paddingVertical: 15,
-        justifyContent: 'center',
-        top: Constants.statusBarHeight,
-        // top: 0,
-        height: 30,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
-        zIndex: 10000
-        */
         position: "absolute",
         width: '100%',
-        height: 56,
+        height: Constants.statusBarHeight + 10,
         top: 0,
         backgroundColor: "rgba(255, 184, 24, 0.8)",
-        zIndex: 10000
+        zIndex: 10000,
+
+        flexDirection: 'column',
+        justifyContent: 'center'
     },
     notificationText: {
         position: 'absolute',
-        bottom: 4,
+        // bottom: 0,
         alignSelf: 'center',
         fontSize: 12,
         fontFamily: "SFProText-Semibold",
         color: "#FFF"
+    },
+    notificationButton: {
+        position: 'absolute',
+        right: 18,
+        // bottom: 0,
+        alignSelf: 'baseline'
     }
 });

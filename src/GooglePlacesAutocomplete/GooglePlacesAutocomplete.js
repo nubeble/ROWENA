@@ -139,7 +139,8 @@ export default class GooglePlacesAutocomplete extends Component {
 		if (!this.isClosed) {
 			let that = this;
 			setTimeout(function () {
-				if (that.refs.textInput) !that.isClosed && that.refs.textInput.focus();
+				// if (that.refs.textInput) !that.isClosed && that.refs.textInput.focus();
+				!that.isClosed && that.refs.textInput && that.refs.textInput.focus();
 			}, 500); // 0.5 sec
 		}
 	}
