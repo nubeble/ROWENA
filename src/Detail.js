@@ -7,6 +7,8 @@ import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
 // import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 // import * as firebase from 'firebase';
 // import Firebase from "./Firebase"
 // import { StyleGuide } from "./rne/src/components/theme";
@@ -17,7 +19,6 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
 import Swiper from './Swiper';
 import { Rating, AirbnbRating } from './react-native-ratings/src';
-import AntDesign from "react-native-vector-icons/AntDesign";
 import autobind from "autobind-decorator";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
@@ -167,7 +168,7 @@ export default class Detail extends React.Component {
                                 </Text>
 
                                 <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                                    <View style={{ width: '28%', alignItems: 'flex-start' }}>
+                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                         <AirbnbRating
                                             count={5}
                                             readOnly={true}
@@ -390,7 +391,7 @@ export default class Detail extends React.Component {
 
                     <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
                         {/* ToDo: draw stars based on averge rating & get review count */}
-                        <View style={{ width: '25%', alignItems: 'flex-start' }}>
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                             <AirbnbRating
                                 count={5}
                                 readOnly={true}
@@ -429,7 +430,9 @@ export default class Detail extends React.Component {
 
                 {/* Read all ??? reviews button */}
                 <TouchableOpacity
-                    // onpress
+                    onPress={() => {
+                        this.props.navigation.navigate("readReview", { reviewStore: this.reviewStore });
+                    }}
                 >
                     <View style={{width: '100%', height: Dimensions.get('window').height / 14,
                         justifyContent: 'center',
@@ -439,7 +442,9 @@ export default class Detail extends React.Component {
                         // borderBottomWidth: 1,
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
-                        <Text style={{fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular"}}>Read all ??? reviews button</Text>
+                        <Text style={{fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular"}}>Read all ??? reviews</Text>
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{position: 'absolute', right: 12}} />
+
                     </View>
                 </TouchableOpacity>
 
@@ -458,7 +463,7 @@ export default class Detail extends React.Component {
         this.setState({ isNavigating: true });
 
         setTimeout(() => {
-            this.props.navigation.navigate("review", { post: post, profile: profile, rating: rating, onGoBack: () => this.onGoBack() });
+            this.props.navigation.navigate("writeReview", { post: post, profile: profile, rating: rating, onGoBack: () => this.onGoBack() });
         }, 500); // 0.5 sec
     }
 
@@ -557,7 +562,7 @@ const styles = StyleSheet.create({
         */
     },
     rating: {
-        marginLeft: 1,
+        marginLeft: 4,
         // marginTop: 0,
         // backgroundColor: 'red',
         color: '#f1c40f',
@@ -632,7 +637,7 @@ const styles = StyleSheet.create({
         // backgroundColor: 'red',
         // marginLeft: 4,
         // marginTop: 0,
-        marginLeft: 1,
+        marginLeft: 4,
         color: '#f1c40f',
         fontSize: 14,
         lineHeight: 15,

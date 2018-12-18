@@ -91,7 +91,7 @@ import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackV
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 import Loading from './src/Loading';
-import Welcome from './src/Welcome'
+import Welcome from './src/Welcome';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithMobile from './src/SignUpWithMobile';
@@ -101,8 +101,9 @@ import ProfileScreen from './src/Profile';
 import Intro from './src/Intro';
 import ExploreScreen from './src/Explore';
 import Detail from './src/Detail';
-import MapScreen from './src/MapScreen'
-import ReviewScreen from './src/ReviewScreen'
+import MapScreen from './src/MapScreen';
+import WriteReviewScreen from './src/WriteReviewScreen';
+import ReadReviewScreen from './src/ReadReviewScreen';
 
 
 const HomeStackNavigator = createStackNavigator(
@@ -116,8 +117,11 @@ const HomeStackNavigator = createStackNavigator(
 		map: {
 			screen: MapScreen
 		},
-		review: {
-			screen: ReviewScreen
+		readReview: {
+			screen: ReadReviewScreen
+		},
+		writeReview: {
+			screen: WriteReviewScreen
 		}
 	},
 	{
@@ -183,7 +187,7 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
 	// if (!navigation.state.routes[1].isTransitioning &&
 	if(
 		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
-		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'review') {
+		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'writeReview') {
         return {
             tabBarVisible: false
         };

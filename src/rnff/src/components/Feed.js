@@ -26,7 +26,6 @@ export default class Feed extends React.Component<FeedProps> {
 
     state = {
         isLoadingFeed: false
-
     };
 
     componentDidMount() {

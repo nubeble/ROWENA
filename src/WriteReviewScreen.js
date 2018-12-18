@@ -14,7 +14,7 @@ import Firebase from "./Firebase";
 import Toast from 'react-native-simple-toast';
 
 
-export default class ReviewScreen extends React.Component {
+export default class WriteReviewScreen extends React.Component {
     state = {
         rating: 5,
         invalid: false,
