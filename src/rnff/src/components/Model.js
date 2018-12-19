@@ -1,5 +1,3 @@
-// @flow
-
 export type Profile = {
     uid: string,
     name: string,
@@ -84,17 +82,12 @@ export type Review = {
 };
 
 
-
-
-
 export type FeedEntry = { post: Post, profile: Profile };
 export type Feed = FeedEntry[];
 
 
-
 export type ReviewEntry = { review: Review, profile: Profile };
 export type Reviews = ReviewEntry[];
-
 
 
 export type CommentEntry = { comment: Comment, profile: Profile };

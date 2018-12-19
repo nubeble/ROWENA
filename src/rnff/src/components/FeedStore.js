@@ -30,6 +30,7 @@ const DEFAULT_PROFILE: Profile = {
 
 type Subscription = () => void;
 
+
 export default class FeedStore {
     // eslint-disable-next-line flowtype/no-weak-types
     cursor: any;
@@ -66,32 +67,6 @@ export default class FeedStore {
         this.loadFeed();
     }
 
-    async joinProfiles(posts: Post[]): Promise<FeedEntry[]> { // feed와 feed의 owner를 계산
-        console.log('FeedStore::joinProfiles');
-
-        const uids = posts.map(post => post.uid).filter(uid => this.profiles[uid] === undefined);
-
-        const profilePromises = _.uniq(uids).map(uid => (async () => {
-            try {
-                const profileDoc = await Firebase.firestore.collection("users").doc(uid).get();
-                this.profiles[uid] = profileDoc.data();
-            } catch (e) {
-                this.profiles[uid] = DEFAULT_PROFILE;
-            }
-        })());
-
-        await Promise.all(profilePromises);
-
-        return posts.map(post => {
-            const profile = this.profiles[post.uid];
-
-            // print
-            console.log('joinProfiles profile', profile, 'post', post);
-
-            return { profile, post };
-        });
-    }
-
     async checkForNewEntriesInFeed(): Promise<void> {
         console.log('checkForNewEntriesInFeed');
 
@@ -108,7 +83,7 @@ export default class FeedStore {
                 posts.push(postDoc.data());
             });
 
-            console.log('checkForNewEntriesInFeed() posts', posts); // ToDo: check!!
+            console.log('checkForNewEntriesInFeed() posts', posts);
 
             const feed = await this.joinProfiles(posts);
             this.addToFeed(feed);
@@ -211,6 +186,32 @@ export default class FeedStore {
                     this.feed[index].profile = profile;
                 }
             });
+        });
+    }
+
+    async joinProfiles(posts: Post[]): Promise<FeedEntry[]> { // feed와 feed의 owner를 계산
+        console.log('FeedStore::joinProfiles');
+
+        const uids = posts.map(post => post.uid).filter(uid => this.profiles[uid] === undefined);
+
+        const profilePromises = _.uniq(uids).map(uid => (async () => {
+            try {
+                const profileDoc = await Firebase.firestore.collection("users").doc(uid).get();
+                this.profiles[uid] = profileDoc.data();
+            } catch (e) {
+                this.profiles[uid] = DEFAULT_PROFILE;
+            }
+        })());
+
+        await Promise.all(profilePromises);
+
+        return posts.map(post => {
+            const profile = this.profiles[post.uid];
+
+            // print
+            console.log('joinProfiles profile', profile, 'post', post);
+
+            return { profile, post };
         });
     }
 }

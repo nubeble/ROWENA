@@ -38,8 +38,7 @@ export default class Detail extends React.Component {
         isNavigating: false,
 
 
-        reviews: [],
-        // showReviews: false
+        reviews: [] // ToDo: remove
     };
 
     onGoBack() { // back from rating
@@ -93,11 +92,16 @@ export default class Detail extends React.Component {
         };
         */
 
+
+        /*
         this.reviewStore.init(post.placeId, post.id);
 
         autorun(() => {
             this.setState({reviews: this.reviewStore.reviews});
         });
+        */
+        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+        this.reviewStore.init(query);
     }
 
     render() {
