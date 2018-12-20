@@ -42,9 +42,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         cityName: '',
         feedSize: 0,
 
-        renderFeed: false,
+        // renderFeed: false,
+        renderFeed: true, // ToDo: consider!!
 
-        // localFeeds: new FeedStore(),
 
     };
 
@@ -63,65 +63,18 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
         !this.isClosed && this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
-        // ToDo: database indexes
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
-        // this.state.localFeeds.init(query);
         this.props.feedStore.init(query);
 
-
-
+        /*
         setTimeout(() => {
             !this.isClosed && this.setState({ renderFeed: true });
         }, 0);
+        */
     }
 
     componentWillUnmount() {
         this.isClosed = true;
-    }
-
-    loadFeed() { // load girls
-        /*
-        this.props.feedStore.checkForNewEntriesInFeed();
-
-
-        // 1. get user location
-        const { uid } = Firebase.auth.currentUser;
-        Firebase.firestore.collection('users').doc(uid).get().then(doc => {
-            if (!doc.exists) {
-                console.log('No such document!');
-            } else {
-                console.log('user', doc.data());
-
-                let user = doc.data();
-                let place = user.location.description;
-                console.log('user location', place);
-
-                // 2.
-
-            }
-        });
-        */
-
-
-        /*
-        if (!user || !user.country || !user.city) {
-            // get gps
-            try {
-                let position = await this.getPosition();
-            } catch (error) {
-                console.log('getPosition error', error);
-
-                return;
-            }
-
-        } else {
-            console.log(user.country, user.city);
-            location.country = user.country;
-            location.city = user.city;
-        }
-        */
-
-        // 2. get feed from the user location
     }
 
     moveToIntro() {
@@ -148,8 +101,6 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
-
-        // const feedStore = this.state.localFeeds;
 
         const { scrollAnimation } = this.state;
         const opacity = scrollAnimation.interpolate({

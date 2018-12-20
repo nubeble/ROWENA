@@ -10,7 +10,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 // import * as firebase from 'firebase';
-// import Firebase from "./Firebase"
+import Firebase from "./Firebase";
 // import { StyleGuide } from "./rne/src/components/theme";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import moment from 'moment';
@@ -22,13 +22,13 @@ import { Rating, AirbnbRating } from './react-native-ratings/src';
 import autobind from "autobind-decorator";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
-import { autorun } from 'mobx';
+import { observer } from "mobx-react/native";
 
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there";
 
 
-
+@observer
 export default class Detail extends React.Component {
     reviewStore: ReviewStore = new ReviewStore();
 
@@ -38,7 +38,7 @@ export default class Detail extends React.Component {
         isNavigating: false,
 
 
-        reviews: [] // ToDo: remove
+        // renderReview: false,
     };
 
     onGoBack() { // back from rating
@@ -55,12 +55,11 @@ export default class Detail extends React.Component {
         // this._flatList.scrollToOffset({ offset: Dimensions.get('window').height, animated: false });
     }
 
-    async componentDidMount(): Promise<void> {
-        // componentDidMount() {
+    // async componentDidMount(): Promise<void> { // ToDo
+    componentDidMount() {
         console.log('Detail::componentDidMount');
 
         const { post, profile } = this.props.navigation.state.params;
-
         /*
         type Post = {
             uid: string,
@@ -100,8 +99,14 @@ export default class Detail extends React.Component {
             this.setState({reviews: this.reviewStore.reviews});
         });
         */
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query);
+
+        /*
+        setTimeout(() => {
+            !this.isClosed && this.setState({ renderReview: true });
+        }, 0);
+        */
     }
 
     render() {
@@ -260,7 +265,8 @@ export default class Detail extends React.Component {
                                     />
                                     */}
 
-                                    {this.renderReviews(this.state.reviews)}
+                                    
+                                    {this.renderReviews(this.reviewStore.reviews)}
                                 </View>
 
                                 <Text style={styles.ratingText}>Share your experience to help others</Text>
@@ -375,58 +381,61 @@ export default class Detail extends React.Component {
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('reviews length', reviews.length);
-
         const reviewArray = [];
 
-        for (var i = 0; i < reviews.length; i++) {
-            if (i > 3) break;
+        if (reviews === undefined) {
+            console.log('reviews is undefined');
+        } else {
+            console.log('reviews length', reviews.length);
 
-            const review = reviews[i];
+            for (var i = 0; i < reviews.length; i++) {
+                if (i > 3) break;
 
-            const _profile = review.profile;
-            const _review = review.review;
+                const review = reviews[i];
 
-            reviewArray.push(
-                <View key={i}>
-                    {/* ToDo: add profile image */}
-                    
-                    <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Jay Kim'}</Text>
+                const _profile = review.profile;
+                const _review = review.review;
 
-                    <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                        {/* ToDo: draw stars based on averge rating & get review count */}
-                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                            <AirbnbRating
-                                count={5}
-                                readOnly={true}
-                                showRating={false}
-                                defaultRating={4}
-                                size={12}
-                                margin={1}
+                reviewArray.push(
+                    <View key={i}>
+                        {/* ToDo: add profile image */}
+
+                        <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Jay Kim'}</Text>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                            {/* ToDo: draw stars based on averge rating & get review count */}
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={4}
+                                    size={12}
+                                    margin={1}
                                 // style={{alignSelf: 'flex-start'}}
-                            />
+                                />
+                            </View>
+                            <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+
+                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
-                        <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
 
-                        <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                    </View>
-
-                    <ReadMore
-                        numberOfLines={2}
+                        <ReadMore
+                            numberOfLines={2}
                         // onReady={() => this.readingCompleted()}
-                    >
-                        {/*
-                        <Text style={styles.reviewText}>{tmp}</Text>
-                        */}
-                        <Text style={styles.reviewText}>{_review.comment}</Text>
-                    </ReadMore>
+                        >
+                            {/*
+                            <Text style={styles.reviewText}>{tmp}</Text>
+                            */}
+                            <Text style={styles.reviewText}>{_review.comment}</Text>
+                        </ReadMore>
 
-                    <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 8, marginBottom: 8 }} />
-                </View>
-            );
-
-        // });
+                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 8, marginBottom: 8 }} />
+                    </View>
+                );
+            } // end of for
         }
+
 
         return (
             <View style={styles.reviewContainer}>
@@ -438,7 +447,8 @@ export default class Detail extends React.Component {
                         this.props.navigation.navigate("readReview", { reviewStore: this.reviewStore });
                     }}
                 >
-                    <View style={{width: '100%', height: Dimensions.get('window').height / 14,
+                    <View style={{
+                        width: '100%', height: Dimensions.get('window').height / 14,
                         justifyContent: 'center',
                         // alignItems: 'center',
                         // backgroundColor: 'blue',
@@ -446,8 +456,8 @@ export default class Detail extends React.Component {
                         // borderBottomWidth: 1,
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
-                        <Text style={{fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular"}}>Read all ??? reviews</Text>
-                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{position: 'absolute', right: 12}} />
+                        <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all ??? reviews</Text>
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                     </View>
                 </TouchableOpacity>

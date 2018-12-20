@@ -61,6 +61,8 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     loadMore() {
+        console.log('loadMore');
+        
         if (this.state.isLoadingFeed) return;
 
         if (this.allFeedsLoaded) return;

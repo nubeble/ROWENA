@@ -67,31 +67,6 @@ export default class FeedStore {
         this.loadFeed();
     }
 
-    async checkForNewEntriesInFeed(): Promise<void> {
-        console.log('checkForNewEntriesInFeed');
-
-        if (this.lastKnownEntry) {
-            const snap = await this.query.endBefore(this.lastKnownEntry).get();
-            if (snap.docs.length === 0) {
-                if (!this.feed) {
-                    this.feed = [];
-                }
-                return;
-            }
-            const posts: Post[] = [];
-            snap.forEach(postDoc => {
-                posts.push(postDoc.data());
-            });
-
-            console.log('checkForNewEntriesInFeed() posts', posts);
-
-            const feed = await this.joinProfiles(posts);
-            this.addToFeed(feed);
-            // eslint-disable-next-line prefer-destructuring
-            this.lastKnownEntry = snap.docs[0];
-        }
-    }
-
     async loadFeed(): Promise<void> {
         // eslint-disable-next-line prefer-destructuring
         let query = this.query;
@@ -141,6 +116,31 @@ export default class FeedStore {
         const feed = _.uniqBy([...this.feed.slice(), ...entries], entry => entry.post.id);
 
         this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]);
+    }
+
+    async checkForNewEntriesInFeed(): Promise<void> {
+        console.log('checkForNewEntriesInFeed');
+
+        if (this.lastKnownEntry) {
+            const snap = await this.query.endBefore(this.lastKnownEntry).get();
+            if (snap.docs.length === 0) {
+                if (!this.feed) {
+                    this.feed = [];
+                }
+                return;
+            }
+            const posts: Post[] = [];
+            snap.forEach(postDoc => {
+                posts.push(postDoc.data());
+            });
+
+            console.log('checkForNewEntriesInFeed() posts', posts);
+
+            const feed = await this.joinProfiles(posts);
+            this.addToFeed(feed);
+            // eslint-disable-next-line prefer-destructuring
+            this.lastKnownEntry = snap.docs[0];
+        }
     }
 
     subscribeToPost(placeId: string, id: string, callback: Post => void): Subscription {

@@ -49,7 +49,7 @@ export default class ReviewStore {
     profiles: { [uid: string]: Profile } = {};
 
     setAddToReviewFinishedCallback(cb) {
-        this.addToReviewFinishedCallback = cb;
+        this.addToReviewFinishedCallback = cb; // to block keeping calling loadReview() while scrolling 
     }
 
     init(query: any) {
@@ -95,6 +95,7 @@ export default class ReviewStore {
         }
 
         this.addToReview(_reviews);
+
         this.cursor = _.last(snap.docs);
 
         // 1209
@@ -125,9 +126,39 @@ export default class ReviewStore {
     }
 
     addToReview(entries: ReviewEntry[]) {
-        const _reviews = _.uniqBy([...this.reviews.slice(), ...entries], entry => entry.post.id);
+        const _reviews = _.uniqBy([...this.reviews.slice(), ...entries], entry => entry.review.id);
 
         this.reviews = _.orderBy(_reviews, entry => entry.review.timestamp, ["desc"]);
+    }
+
+    async checkForNewEntries(): Promise<void> {
+        console.log('checkForNewEntries', this.lastKnownEntry);
+
+        if (this.lastKnownEntry) {
+            const snap = await this.query.endBefore(this.lastKnownEntry).get();
+            if (snap.docs.length === 0) {
+                if (!this.reviews) {
+                    this.reviews = [];
+                }
+
+                return;
+            }
+
+            const reviews: Review[] = [];
+            snap.forEach(reviewDoc => {
+                reviews.push(reviewDoc.data());
+            });
+
+            const _reviews = await this.joinProfiles(reviews);
+            if (!this.reviews) {
+                this.reviews = [];
+                this.lastKnownEntry = snap.docs[0];
+            }
+
+            this.addToReview(_reviews);
+
+            this.lastKnownEntry = snap.docs[0];
+        }
     }
 
 

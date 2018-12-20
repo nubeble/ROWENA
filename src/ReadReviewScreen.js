@@ -22,26 +22,15 @@ export default class ReadReviewScreen extends React.Component {
 
     componentDidMount() {
         const { reviewStore } = this.props.navigation.state.params;
+        console.log('reviews', reviewStore.reviews);
 
-        console.log('reviewStore', reviewStore);
+        // reviewStore.checkForNewEntries(); // do not use here
 
         /*
-        let place = this.props.screenProps.params.place;
-        let length = this.props.screenProps.params.length;
-        let city = place.city;
-        console.log('place', place, 'length', length, 'city', city);
-
-        !this.isClosed && this.setState({ searchText: place.description, cityName: city, feedSize: length });
-
-        // ToDo: database indexes
-        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
-        // this.state.localFeeds.init(query);
-        this.props.feedStore.init(query);
-        */
-
         setTimeout(() => {
             !this.isClosed && this.setState({ renderReview: true });
         }, 0);
+        */
     }
 
     componentWillUnmount() {
@@ -120,6 +109,7 @@ export default class ReadReviewScreen extends React.Component {
 
     @autobind
     renderItem({ item }: FlatListItem<ReviewEntry>): React.Node {
+        /*
         const { navigation, store } = this.props;
         const { post, profile } = item;
 
@@ -128,10 +118,12 @@ export default class ReadReviewScreen extends React.Component {
                 <Post {...{ navigation, post, store, profile }} />
             </View>
         );
+        */
     }
 
     @autobind
     loadMore() {
+        /*
         if (this.state.isLoadingFeed) return;
 
         if (this.allFeedsLoaded) return;
@@ -139,6 +131,7 @@ export default class ReadReviewScreen extends React.Component {
         !this.isClosed && this.setState({isLoadingFeed: true});
 
         this.props.store.loadFeed();
+        */
     }
 }
 
