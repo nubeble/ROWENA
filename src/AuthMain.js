@@ -88,7 +88,7 @@ export default class AuthMain extends React.Component {
                         style={styles.activityIndicator}
                         animating={this.state.showIndicator}
                         size="large"
-                        color='white'
+                        color='grey'
                     />
 
                     <View style={styles.logo}>

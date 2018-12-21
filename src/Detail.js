@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, ScrollView, TouchableWithoutFeedback, Alert, Image
+    FlatList, ScrollView, TouchableWithoutFeedback, Alert, Image, Keyboard, KeyboardAvoidingView, TextInput
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
@@ -9,6 +9,7 @@ import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 // import * as firebase from 'firebase';
 import Firebase from "./Firebase";
 // import { StyleGuide } from "./rne/src/components/theme";
@@ -36,77 +37,61 @@ export default class Detail extends React.Component {
         showIndicator: false,
         rating: 0,
         isNavigating: false,
-
-
-        // renderReview: false,
+        renderReview: false,
+        isOwner: false,
+        showKeyboard: false,
+        bottomLocation: Dimensions.get('window').height
     };
 
-    onGoBack() { // back from rating
-        console.log('Detail::onGoBack');
+    onGoBack(result) { // back from rating
+        console.log('Detail::onGoBack', result);
 
         this.setState({ isNavigating: false });
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
-        // this._flatList.scrollToEnd();
-        // this.refs.list.scrollToEnd();
-
-        // this._flatList.scrollToOffset({ offset: Dimensions.get('window').height, animated: false });
+        // reload reviews
+        if (result) {
+            const { post, profile } = this.props.navigation.state.params;
+            const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+            this.reviewStore.init(query);
+        }
     }
 
     // async componentDidMount(): Promise<void> { // ToDo
     componentDidMount() {
         console.log('Detail::componentDidMount');
 
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+
         const { post, profile } = this.props.navigation.state.params;
-        /*
-        type Post = {
-            uid: string,
-            id: string,
-            location: Location, // 1
-            note: string, // 2
-            pictures: Pictures, // 3
-            placeId: string, // 4
-            // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼) // 7
-            averageRating: number, // 5
-            timestamp: number, // 6
 
-            name: string, // 7
-            age: number // 8
-        };
+        const isOwner = this.isOwner(post.uid, Firebase.auth.currentUser.uid);
+        this.setState({isOwner});
 
-        type Profile = {
-            uid: string,
-            name: string,
-            country: string,
-            city: string,
-            email: string,
-            phoneNumber: string,
-            picture: Picture,
-            location: Location,
-            about: string,
-            feeds: Feed[],
-            postedReviews: string[]
-        };
-        */
-
-
-        /*
-        this.reviewStore.init(post.placeId, post.id);
-
-        autorun(() => {
-            this.setState({reviews: this.reviewStore.reviews});
-        });
-        */
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query);
 
-        /*
         setTimeout(() => {
             !this.isClosed && this.setState({ renderReview: true });
         }, 0);
-        */
+    }
+
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+
+        this.isClosed = true;
+    }
+
+    isOwner(postUid, uid) {
+        if (postUid === uid) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     render() {
@@ -114,14 +99,7 @@ export default class Detail extends React.Component {
 
 
         return (
-            <View style={styles.flex} >
-                <ActivityIndicator
-                    style={styles.activityIndicator}
-                    animating={this.state.showIndicator}
-                    size="large"
-                    color='white'
-                />
-
+            <View style={styles.flex}>
                 <View style={styles.searchBarStyle}>
                     <TouchableOpacity
                         // style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
@@ -149,20 +127,43 @@ export default class Detail extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <FlatList
-                    ref={(fl) => this._flatList = fl}
-                    // ref='list'
-                    contentContainerStyle={styles.container}
-                    showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={(
-                        <Animated.View style={{ backgroundColor: 'black' }}>
-                            {/* profile pictures */}
-                            {this.renderSwiper(post)}
+                {
+                    !this.state.renderReview ?
+                        <ActivityIndicator
+                            style={styles.activityIndicator}
+                            animating={true}
+                            size="large"
+                            color='grey'
+                        />
+                        :
+                        <FlatList
+                            ref={(fl) => this._flatList = fl}
+                            // ref='list'
+                            contentContainerStyle={styles.container}
+                            showsVerticalScrollIndicator={true}
+                            ListHeaderComponent={(
+                                <Animated.View
+                                // style={{ backgroundColor: 'black' }}
+                                >
+                                    {/* profile pictures */}
+                                    {this.renderSwiper(post)}
 
-                            <View style={styles.infoContainer}>
-                                <Text style={styles.date}>posted {moment(post.timestamp).fromNow()}</Text>
+                                    <View style={styles.infoContainer}>
+                                        {/*
+                                        <Text style={styles.date}>posted {moment(post.timestamp).fromNow()}</Text>
+                                        */}
 
-                                {/*
+                                        <TouchableWithoutFeedback onPress={this.profile}>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                                <View style={styles.circle}></View>
+                                                <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                            </View>
+                                        </TouchableWithoutFeedback>
+
+
+
+
+                                        {/*
                                 <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} >
                                     <Text style={styles.name}>{post.name}</Text>
                                     <Text style={styles.size}>
@@ -171,138 +172,163 @@ export default class Detail extends React.Component {
                                 </View>
                                 */}
 
-                                <Text style={styles.name}>{post.name}</Text>
-                                <Text style={styles.size}>
-                                    {post.age}yr {post.height}cm {post.weight}kg
-                                </Text>
+                                        <Text style={styles.name}>{post.name}</Text>
+                                        <Text style={styles.size}>
+                                            {post.age}yr {post.height}cm {post.weight}kg
+                                        </Text>
 
-                                <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                        <AirbnbRating
-                                            count={5}
-                                            readOnly={true}
-                                            showRating={false}
-                                            defaultRating={4}
-                                            size={16}
-                                            margin={1}
-                                        // style={{alignSelf: 'flex-start'}}
-                                        />
-                                    </View>
+                                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                                <AirbnbRating
+                                                    count={5}
+                                                    readOnly={true}
+                                                    showRating={false}
+                                                    defaultRating={4}
+                                                    size={16}
+                                                    margin={1}
+                                                />
+                                            </View>
 
-                                    {/*
-                                    // ToDo: draw stars based on averge rating & get review count
-                                    <Text style={styles.rating}>{post.averageRating}</Text>
-                                    */}
-                                    <Text style={styles.rating}>4.4</Text>
+                                            {/* ToDo: draw stars based on averge rating & get review count
+                                            {post.averageRating}
+                                            */}
+                                            <Text style={styles.rating}>4.4</Text>
 
-                                    <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
-                                    <Text style={styles.reviewCount}>12</Text>
-                                </View>
+                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                            <Text style={styles.reviewCount}>12</Text>
+                                        </View>
 
-                                {/*
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
-                                */}
-
-                                {/*
-                                <Text style={styles.note}>{post.note}</Text>
-                                */}
-                                <Text style={styles.note}>{tmp}</Text>
+                                        {/*
+                                        <Text style={styles.note}>{tmp}</Text>
+                                        */}
+                                        <Text style={styles.note}>{post.note}</Text>
 
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
+                                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                {/* map */}
-                                <TouchableOpacity activeOpacity={0.5}
-                                    /*
-                                    onPress={() => {
-                                        this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() });
-                                    }}
-                                    */
-                                    onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
-                                >
-                                    <View style={styles.mapContainer}>
-                                        <MapView
-                                            ref={map => { this.map = map }}
-                                            style={styles.map}
-                                            mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                            initialRegion={{
-                                                longitude: post.location.longitude,
-                                                latitude: post.location.latitude,
-                                                latitudeDelta: 0.001,
-                                                longitudeDelta: 0.001
+                                        {/* map */}
+                                        <TouchableOpacity activeOpacity={0.5}
+                                            /*
+                                            onPress={() => {
+                                                this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() });
                                             }}
-                                            scrollEnabled={false}
-                                            zoomEnabled={false}
-                                            rotateEnabled={false}
-                                            pitchEnabled={false}
+                                            */
+                                            onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
                                         >
-                                            <MapView.Marker
-                                                coordinate={{
-                                                    longitude: post.location.longitude,
-                                                    latitude: post.location.latitude
-                                                }}
-                                            // title={'title'}
-                                            // description={'description'}
+                                            <View style={styles.mapContainer}>
+                                                <MapView
+                                                    ref={map => { this.map = map }}
+                                                    style={styles.map}
+                                                    mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                                    initialRegion={{
+                                                        longitude: post.location.longitude,
+                                                        latitude: post.location.latitude,
+                                                        latitudeDelta: 0.001,
+                                                        longitudeDelta: 0.001
+                                                    }}
+                                                    scrollEnabled={false}
+                                                    zoomEnabled={false}
+                                                    rotateEnabled={false}
+                                                    pitchEnabled={false}
+                                                >
+                                                    <MapView.Marker
+                                                        coordinate={{
+                                                            longitude: post.location.longitude,
+                                                            latitude: post.location.latitude
+                                                        }}
+                                                    // title={'title'}
+                                                    // description={'description'}
+                                                    />
+                                                </MapView>
+                                            </View>
+                                        </TouchableOpacity>
+
+                                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                        <View style={styles.reviewsContainer}>
+                                            {/* show review chart */}
+                                            <Image
+                                                style={{ width: '100%', height: 140, marginBottom: 10 }}
+                                                resizeMode={'cover'}
+                                                source={require('../assets/sample1.jpg')}
                                             />
-                                        </MapView>
+
+                                            {this.renderReviews(this.reviewStore.reviews)}
+                                        </View>
+
+                                        <Text style={styles.ratingText}>Share your experience to help others</Text>
+                                        <View style={{ marginBottom: 10 }}>
+                                            <AirbnbRating
+                                                ref='rating'
+                                                onFinishRating={this.ratingCompleted}
+                                                showRating={false}
+                                                count={5}
+                                                defaultRating={this.state.rating}
+                                                size={32}
+                                                margin={3}
+                                            />
+                                        </View>
+
+                                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
                                     </View>
-                                </TouchableOpacity>
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
+                                    {/* contact button */}
+                                    <TouchableOpacity onPress={() => this.contact()} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
+                                    </TouchableOpacity>
 
-                                <View style={styles.reviewsContainer}>
-                                    {/* show review chart */}
-                                    <Image
-                                        style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                        resizeMode={'cover'}
-                                        source={require('../assets/sample1.jpg')}
+                                </Animated.View>
+                            )}
+
+                            ListFooterComponent={
+                                this.state.isNavigating && (
+                                    <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
                                     />
-                                    {/*
-                                    <Image
-                                        style={{ width: '100%', height: 400 }}
-                                        resizeMode={'cover'}
-                                        source={require('../assets/sample2.jpg')}
-                                    />
-                                    */}
+                                )
+                            }
+                        // scrollEventThrottle={1}
+                        // columnWrapperStyle={undefined}
+                        // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
+                        // {...{ onScroll }}
+                        />
+                }
 
-                                    
-                                    {this.renderReviews(this.reviewStore.reviews)}
-                                </View>
+                {
+                    this.state.showKeyboard && (
+                        <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomLocation - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%',
+                            backgroundColor: 'red'
+                         }}>
 
-                                <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                <View style={{ marginBottom: 10 }}>
-                                    <AirbnbRating
-                                        ref='rating'
-                                        onFinishRating={this.ratingCompleted}
-                                        showRating={false}
-                                        count={5}
-                                        defaultRating={this.state.rating}
-                                        size={32}
-                                        margin={3}
-                                    />
-                                </View>
+                            <TextInput
+                                // autoFocus
+                                // ref='reply'
+                                ref={(c) => {this._reply = c;}}
+                                // multiline={true}
+                                // numberOfLines={4}
+                                style={{
+                                    // padding: 12, // not working in ios
+                                    paddingTop: 12,
+                                    paddingBottom: 12,
+                                    paddingLeft: 12,
+                                    paddingRight: 12,
 
-                                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 16, marginBottom: 16 }} />
-                            </View>
-
-                            {/* ToDo: contact button */}
-                            <TouchableOpacity onPress={() => this.contact()} style={[styles.signUpButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
-                            </TouchableOpacity>
-
-                        </Animated.View>
-                    )}
-
-                    ListFooterComponent={
-                        this.state.isNavigating && (
-                            <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
+                                    borderRadius: 5,
+                                    width: '100%',
+                                    height: Dimensions.get('window').height / 5,
+                                    fontSize: 16, fontFamily: "SFProText-Regular",
+                                    color: "white", textAlign: 'justify', textAlignVertical: 'top', backgroundColor: '#212121'
+                                }}
+                                placeholder='Share details of your own experience'
+                                placeholderTextColor='rgb(160, 160, 160)'
+                                underlineColorAndroid="transparent"
+                                autoCorrect={false}
+                                keyboardAppearance={'dark'} // Todo: what about android??
+                                // onChangeText={(text) => this.onChangeText(text)}
                             />
-                        )}
-                // scrollEventThrottle={1}
-                // columnWrapperStyle={undefined}
-                // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
-                // {...{ onScroll }}
-                />
+
+                        </KeyboardAvoidingView>
+                    )
+                }
             </View>
         );
     }
@@ -385,6 +411,22 @@ export default class Detail extends React.Component {
 
         if (reviews === undefined) {
             console.log('reviews is undefined');
+            reviewArray.push(
+                <ActivityIndicator
+                    key={'indicator'}
+                    style={{
+                        /*
+                        position: 'absolute',
+                        top: 0, bottom: 0, left: 0, right: 0
+                        */
+                       marginTop:20,
+                       marginBottom:20,
+                    }}
+                    animating={true}
+                    size="large"
+                    color='grey'
+                />
+            );
         } else {
             console.log('reviews length', reviews.length);
 
@@ -397,12 +439,15 @@ export default class Detail extends React.Component {
                 const _review = review.review;
 
                 reviewArray.push(
-                    <View key={i}>
+                    <View key={_review.id}>
                         {/* ToDo: add profile image */}
 
-                        <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Jay Kim'}</Text>
+                        <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
+                            <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Max Power'}</Text>
+                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                        </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.xSmall }}>
                             {/* ToDo: draw stars based on averge rating & get review count */}
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
@@ -412,25 +457,61 @@ export default class Detail extends React.Component {
                                     defaultRating={4}
                                     size={12}
                                     margin={1}
-                                // style={{alignSelf: 'flex-start'}}
+                                />
+                            </View>
+                            <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+                        </View>
+
+
+
+                        {/*
+                        <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Max Power'}</Text>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={4}
+                                    size={12}
+                                    margin={1}
                                 />
                             </View>
                             <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
 
                             <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
+                        */}
 
-                        <ReadMore
-                            numberOfLines={2}
-                        // onReady={() => this.readingCompleted()}
-                        >
-                            {/*
-                            <Text style={styles.reviewText}>{tmp}</Text>
-                            */}
-                            <Text style={styles.reviewText}>{_review.comment}</Text>
-                        </ReadMore>
+                        <View style={{ paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
+                            <ReadMore
+                                numberOfLines={2}
+                            // onReady={() => this.readingCompleted()}
+                            >
+                                {/*
+                                <Text style={styles.reviewText}>{tmp}</Text>
+                                */}                                
+                                <Text style={styles.reviewText}>{_review.comment}</Text>
+                            </ReadMore>
+                        </View>
 
-                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 8, marginBottom: 8 }} />
+                        {
+                            this.state.isOwner && (
+                                <TouchableOpacity
+                                    onPress={() => this.showKeyboard()}
+                                >
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        {/*
+                                        <MaterialIcons name='reply' color="silver" size={16} />
+                                        */}
+                                        <Text style={{marginLeft: 4, fontSize: 14, fontFamily: "SFProText-Light", color: "silver"}}>Reply</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            )
+                        }
+
+                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                     </View>
                 );
             } // end of for
@@ -444,7 +525,7 @@ export default class Detail extends React.Component {
                 {/* Read all ??? reviews button */}
                 <TouchableOpacity
                     onPress={() => {
-                        this.props.navigation.navigate("readReview", { reviewStore: this.reviewStore });
+                        this.props.navigation.navigate("readReview", { reviewStore: this.reviewStore, isOwner: this.state.isOwner });
                     }}
                 >
                     <View style={{
@@ -462,7 +543,7 @@ export default class Detail extends React.Component {
                     </View>
                 </TouchableOpacity>
 
-                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: 8, marginBottom: 8 }} />
+                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
             </View>
         );
 
@@ -477,7 +558,7 @@ export default class Detail extends React.Component {
         this.setState({ isNavigating: true });
 
         setTimeout(() => {
-            this.props.navigation.navigate("writeReview", { post: post, profile: profile, rating: rating, onGoBack: () => this.onGoBack() });
+            this.props.navigation.navigate("writeReview", { post: post, profile: profile, rating: rating, onGoBack: (result) => this.onGoBack(result) });
         }, 500); // 0.5 sec
     }
 
@@ -488,6 +569,33 @@ export default class Detail extends React.Component {
 
     contact() {
         // ToDo
+    }
+
+    @autobind
+    _keyboardDidShow(e) {
+        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+    }
+
+    @autobind
+    _keyboardDidHide() {
+        this.setState({ bottomLocation: Dimensions.get('window').height });
+    }
+
+    showKeyboard() {
+        // this.setState({showKeyboard: true});
+        this.setState({showKeyboard: true}, () => this._reply.focus());
+
+        // console.log('this', this);
+        //console.log('this');
+
+
+        /*
+        let that = this;
+        this.setState({showKeyboard: true}, () => that.refs.reply.focus());
+        */
+
+        //this.refs['reply'].focus();
+        // this._input.focus();
     }
 }
 
@@ -521,6 +629,15 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
+    replyButton: {
+        width: '85%',
+        height: 45,
+        alignSelf: 'center',
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 
     wrapper: {
     },
@@ -540,11 +657,17 @@ const styles = StyleSheet.create({
         // height: Dimensions.get('window').width / 16 * 9,
         height: Dimensions.get('window').width
     },
+    circle: {
+        width: 10,
+        height: 10,
+        borderRadius: 10 / 2,
+        backgroundColor: 'rgb(70, 154, 32)'
+    },
     date: {
-        fontSize: 16,
+        marginLeft: 4,
+        fontSize: 14,
         fontFamily: "SFProText-Light",
-        color: "grey",
-        textAlign: 'right'
+        color: "grey"
     },
     infoContainer: {
         flex: 1,
@@ -594,6 +717,7 @@ const styles = StyleSheet.create({
     note: {
         color: 'silver',
         fontSize: 16,
+        lineHeight: 24,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.tiny,
         paddingBottom: Theme.spacing.tiny
@@ -641,11 +765,33 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontFamily: "SFProText-Regular"
     },
+    /*
     reviewName: {
         color: 'white',
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        // paddingBottom: Theme.spacing.tiny
+    },
+    reviewDate: {
+        // backgroundColor: 'red',
+        marginLeft: 20,
+        color: 'grey',
+        fontSize: 14,
+        lineHeight: 15,
+        // lineHeight: 20,
+        fontFamily: "SFProText-Regular"
+    },
+    */
+    reviewName: {
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+    },
+    reviewDate: {
+        color: 'grey',
+        fontSize: 14,
+        fontFamily: "SFProText-Light",
+
+        marginLeft: 'auto'
     },
     reviewRating: {
         // backgroundColor: 'red',
@@ -657,17 +803,38 @@ const styles = StyleSheet.create({
         lineHeight: 15,
         // lineHeight: 20,
         fontFamily: "SFProText-Regular"
-    },
-    reviewDate: {
-        // backgroundColor: 'red',
-        marginLeft: 20,
-        color: 'grey',
-        fontSize: 14,
-        lineHeight: 15,
-        // lineHeight: 20,
-        fontFamily: "SFProText-Regular"
-    },
-
-
-
+    }
 });
+
+
+/*
+    type Post = {
+        uid: string,
+        id: string,
+        location: Location, // 1
+        note: string, // 2
+        pictures: Pictures, // 3
+        placeId: string, // 4
+        // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼) // 7
+        averageRating: number, // 5
+        timestamp: number, // 6
+
+        name: string, // 7
+        age: number // 8
+    };
+
+    type Profile = {
+        uid: string,
+        name: string,
+        country: string,
+        city: string,
+        email: string,
+        phoneNumber: string,
+        picture: Picture,
+        location: Location,
+        about: string,
+        feeds: Feed[],
+        postedReviews: string[]
+    };
+*/
+

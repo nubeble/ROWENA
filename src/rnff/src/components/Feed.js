@@ -35,22 +35,21 @@ export default class Feed extends React.Component<FeedProps> {
         // 1209
         this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
     }
-    
-    componentWillUnmount() {
-        this.isClosed = true;
-    }
 
     @autobind
     onAddToFeedFinished(result) {
         console.log('onAddToFeedFinished', result);
-        // ToDo:
 
         if (!result) {
             // don't call loadFeed() again.
             this.allFeedsLoaded = true;
         }
 
-        !this.isClosed && this.setState({isLoadingFeed: false});
+        !this.isClosed && this.setState({ isLoadingFeed: false });
+    }
+
+    componentWillUnmount() {
+        this.isClosed = true;
     }
 
     @autobind
@@ -62,13 +61,13 @@ export default class Feed extends React.Component<FeedProps> {
     @autobind
     loadMore() {
         console.log('loadMore');
-        
+
         if (this.state.isLoadingFeed) return;
 
         if (this.allFeedsLoaded) return;
 
         // 1209
-        !this.isClosed && this.setState({isLoadingFeed: true});
+        !this.isClosed && this.setState({ isLoadingFeed: true });
 
         this.props.store.loadFeed();
     }
@@ -112,13 +111,13 @@ export default class Feed extends React.Component<FeedProps> {
                     // 1209
                     ListFooterComponent={(
                         this.state.isLoadingFeed && (
-                        <ActivityIndicator
-                            style={styles.bottomIndicator}
-                            animating={this.state.isLoadingFeed}
-                            size="small"
-                            // color='rgba(255, 184, 24, 0.8)'
-                            color='rgba(255, 255, 255, 0.8)'
-                        />
+                            <ActivityIndicator
+                                style={styles.bottomIndicator}
+                                animating={this.state.isLoadingFeed}
+                                size="small"
+                                // color='rgba(255, 184, 24, 0.8)'
+                                color='grey'
+                            />
                         )
                     )}
 

@@ -1,11 +1,9 @@
 import React from 'react';
 import {
-    StyleSheet, Dimensions, View, TouchableOpacity,
-    TouchableWithoutFeedback,
-    TextInput, Keyboard, KeyboardAvoidingView, Animated, StatusBar
+    StyleSheet, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard,
+    KeyboardAvoidingView, Animated, StatusBar
 } from 'react-native';
 import { Constants } from 'expo';
-// import { Header } from 'react-navigation';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text, Theme } from './rnff/src/components';
 import { AirbnbRating } from './react-native-ratings/src';
@@ -23,8 +21,7 @@ export default class WriteReviewScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0),
-
+        offset: new Animated.Value(0)
     };
 
     componentDidMount() {
@@ -33,7 +30,6 @@ export default class WriteReviewScreen extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
 
-        // console.log('rating', rating);
         this.setState({ rating });
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
 
@@ -67,13 +63,11 @@ export default class WriteReviewScreen extends React.Component {
 
     @autobind
     _keyboardDidHide() {
-        //alert('Keyboard Hidden');
         this.setState({ bottomLocation: Dimensions.get('window').height });
     }
 
     @autobind
     ratingCompleted(rating) {
-        // console.log("Rating is: " + rating);
         this.setState({ rating });
     }
 
@@ -83,10 +77,10 @@ export default class WriteReviewScreen extends React.Component {
         // go back
         let that = this;
         setTimeout(function () {
-            Toast.show('Your review has been submitted!');
+            Toast.showWithGravity('Your review has been submitted!', Toast.SHORT, Toast.CENTER);
 
             if(!that.isClosed) {
-                that.props.navigation.state.params.onGoBack();
+                that.props.navigation.state.params.onGoBack(true);
                 that.props.navigation.goBack();
             }
         }, 300); // 0.3 sec
@@ -128,7 +122,7 @@ export default class WriteReviewScreen extends React.Component {
                             alignSelf: 'baseline'
                         }}
                         onPress={() => {
-                            this.props.navigation.state.params.onGoBack();
+                            this.props.navigation.state.params.onGoBack(false);
                             this.props.navigation.goBack();
                         }}
                     >
@@ -158,9 +152,9 @@ export default class WriteReviewScreen extends React.Component {
                             this.refs['comment'].blur();
                         }}
                     >
-                    {/*
-                    <Text style={styles.review}>Share your experience to help others</Text>
-                    */}
+                        {/*
+                        <Text style={styles.review}>Share your experience to help others</Text>
+                        */}
                         <View style={{ marginBottom: 10 + 16 }}>
                             <AirbnbRating
                                 ref='rating'
@@ -351,15 +345,6 @@ export default class WriteReviewScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    /*
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		// alignItems: 'center',
-		justifyContent: 'center',
-    }
-    */
-
     flex: {
         flex: 1,
         backgroundColor: 'black'
@@ -443,11 +428,5 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-
-
-
-
-
+    }
 });
-

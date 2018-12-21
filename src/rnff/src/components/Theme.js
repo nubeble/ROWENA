@@ -36,6 +36,7 @@ type Theme = {
         micro: Typography
     },
     spacing: {
+        xSmall: number,
         tiny: number,
         small: number,
         base: number,
@@ -101,6 +102,7 @@ const theme: Theme = {
         }
     },
     spacing: {
+        xSmall: 4,
         tiny: 8,
         small: 16,
         base: 24,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Dimensions, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MapView, Constants } from 'expo';
 import { Header } from 'react-navigation';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -14,7 +14,8 @@ export default class MapScreen extends React.Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
         },
-        ready: false
+        ready: false,
+        renderMap: false
     };
 
     componentDidMount() {
@@ -22,6 +23,14 @@ export default class MapScreen extends React.Component {
         // console.log('HomeStackNavigator', this.props.screenProps.rootNavigation.router); // HomeStackNavigator
 
         // this.getCurrentPosition();
+
+        setTimeout(() => {
+            !this.isClosed && this.setState({ renderMap: true });
+        }, 0);
+    }
+
+    componentWillUnmount() {
+        this.isClosed = true;
     }
 
     render() {
@@ -64,30 +73,40 @@ export default class MapScreen extends React.Component {
                     <Text style={styles.distance}>? kilometers away</Text>
                 </View>
 
-                <MapView
-                    ref={map => { this.map = map }}
-                    style={styles.map}
-                    initialRegion={{
-                        latitude: latitude,
-                        longitude: longitude,
-                        latitudeDelta: 0.03,
-                        longitudeDelta: 0.03
-                    }}
-                    showsUserLocation={true}
-                    // showsMyLocationButton={true}
-                    onMapReady={this.onMapReady}
-                    onRegionChange={this.onRegionChange}
-                    onRegionChangeComplete={this.onRegionChangeComplete}
-                >
-                    <MapView.Marker
-                        coordinate={{
-                            latitude: latitude,
-                            longitude: longitude
-                        }}
-                    // title={'title'}
-                    // description={'description'}
-                    />
-                </MapView>
+                {
+                    !this.state.renderMap ?
+                        <ActivityIndicator
+                            style={styles.activityIndicator}
+                            animating={true}
+                            size="large"
+                            color='grey'
+                        />
+                        :
+                        <MapView
+                            ref={map => { this.map = map }}
+                            style={styles.map}
+                            initialRegion={{
+                                latitude: latitude,
+                                longitude: longitude,
+                                latitudeDelta: 0.03,
+                                longitudeDelta: 0.03
+                            }}
+                            showsUserLocation={true}
+                            // showsMyLocationButton={true}
+                            onMapReady={this.onMapReady}
+                            onRegionChange={this.onRegionChange}
+                            onRegionChangeComplete={this.onRegionChangeComplete}
+                        >
+                            <MapView.Marker
+                                coordinate={{
+                                    latitude: latitude,
+                                    longitude: longitude
+                                }}
+                            // title={'title'}
+                            // description={'description'}
+                            />
+                        </MapView>
+                }
             </View>
         );
     }
@@ -179,4 +198,8 @@ const styles = StyleSheet.create({
         height: '100%'
         */
     },
+    activityIndicator: {
+        position: 'absolute',
+        top: 0, bottom: 0, left: 0, right: 0
+    }
 });

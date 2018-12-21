@@ -1,36 +1,54 @@
 import * as React from "react";
 import autobind from "autobind-decorator";
 import moment from "moment";
-import { StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList, Image, ActivityIndicator } from "react-native";
+import { StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList, Image, ActivityIndicator, TouchableOpacity } from "react-native";
 import { Header, NavigationActions, StackActions } from 'react-navigation';
 import { Constants } from "expo";
-import { inject, observer } from "mobx-react/native";
-import ProfileStore from "./rnff/src/home/ProfileStore";
-import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
+import { Text, Theme, Avatar } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import SmartImage from "./rnff/src/components/SmartImage";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
-import { RefreshIndicator } from "./rnff/src/components";
+import { RefreshIndicator, FirstPost } from "./rnff/src/components";
+import { AirbnbRating } from './react-native-ratings/src';
+// import ReadMore from "./ReadMore";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew that you were there for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
 
 export default class ReadReviewScreen extends React.Component {
     state = {
         renderReview: false,
+        isLoadingReview: false,
+
+        reviewLength: 0,
+        isOwner: false
     };
 
     componentDidMount() {
-        const { reviewStore } = this.props.navigation.state.params;
-        console.log('reviews', reviewStore.reviews);
+        const { reviewStore, isOwner } = this.props.navigation.state.params;
+        // console.log('reviews', reviewStore.reviews);
 
-        // reviewStore.checkForNewEntries(); // do not use here
+        this.setState({isOwner});
 
-        /*
+        // reviewStore.checkForNewEntries(); // do not use here!
+
+        reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
+
         setTimeout(() => {
             !this.isClosed && this.setState({ renderReview: true });
         }, 0);
-        */
+    }
+
+    @autobind
+    onAddToReviewFinished(result) {
+        console.log('onAddToReviewFinished', result);
+
+        if (!result) {
+            this.allReviewsLoaded = true; // don't call loadReview() again!
+        }
+
+        !this.isClosed && this.setState({ isLoadingReview: false });
     }
 
     componentWillUnmount() {
@@ -43,14 +61,28 @@ export default class ReadReviewScreen extends React.Component {
 
     render(): React.Node {
         const { reviewStore } = this.props.navigation.state.params;
-        // const { navigation } = this.props;
+        const { navigation } = this.props;
 
-        const reviews = reviewStore.reviews;
+        // const reviews = reviewStore.reviews;
+        const { reviews } = reviewStore;
+
+        const loading = reviews === undefined;
 
         return (
             <View style={styles.flex}>
 
                 <View style={styles.searchBarStyle}>
+                    <TouchableOpacity
+                        style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            left: 22,
+                            alignSelf: 'baseline'
+                        }}
+                        onPress={() => this.props.navigation.goBack()}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
                 </View>
 
                 {
@@ -59,13 +91,10 @@ export default class ReadReviewScreen extends React.Component {
                             style={styles.activityIndicator}
                             animating={true}
                             size="large"
-                            // color='rgba(255, 184, 24, 0.8)'
-                            color='rgba(255, 255, 255, 0.8)'
+                            color='grey'
                         />
                         :
-
                         <FlatList
-                            // data={feed} // feedStore.feed
                             data={reviews}
                             keyExtractor={this.keyExtractor}
                             renderItem={this.renderItem}
@@ -79,24 +108,23 @@ export default class ReadReviewScreen extends React.Component {
                                 <View>
                                 </View>
                             )}
+                            */
                             ListEmptyComponent={(
-                                <View style={styles.post}>
+                                <View style={{ paddingHorizontal: Theme.spacing.small }}>
                                     {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
                                 </View>
                             )}
                             ListFooterComponent={(
-                                this.state.isLoadingFeed && (
-                                <ActivityIndicator
-                                    style={styles.bottomIndicator}
-                                    animating={this.state.isLoadingFeed}
-                                    size="small"
-                                    color='rgba(255, 255, 255, 0.8)'
-                                />
+                                this.state.isLoadingReview && (
+                                    <ActivityIndicator
+                                        style={styles.bottomIndicator}
+                                        animating={this.state.isLoadingReview}
+                                        size="small"
+                                        color='grey'
+                                    />
                                 )
                             )}
-                            */
                         />
-
                 }
             </View >
         );
@@ -109,29 +137,72 @@ export default class ReadReviewScreen extends React.Component {
 
     @autobind
     renderItem({ item }: FlatListItem<ReviewEntry>): React.Node {
-        /*
-        const { navigation, store } = this.props;
-        const { post, profile } = item;
+        const _profile = item.profile;
+        const _review = item.review;
 
         return (
-            <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }} />
+
+            <View>
+                {/* ToDo: add profile image */}
+
+                <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                    <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Max Power'}</Text>
+                    <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                </View>
+
+                <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny }}>
+                    {/* ToDo: draw stars based on averge rating & get review count */}
+                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                        <AirbnbRating
+                            count={5}
+                            readOnly={true}
+                            showRating={false}
+                            defaultRating={4}
+                            size={14}
+                            margin={1}
+                        />
+                    </View>
+                    <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+                </View>
+
+                <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                    {/*
+                    <Text style={styles.reviewText}>{tmp}</Text>
+                    */}
+                    <Text style={styles.reviewText}>{_review.comment}</Text>
+                </View>
+
+                {
+                    this.state.isOwner && (
+                        <TouchableOpacity
+                            // onPress={this.profile}
+                        >
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                {/*
+                                <MaterialIcons name='reply' color="silver" size={16} />
+                                */}
+                                <Text style={{marginLeft: 4, fontSize: 15, fontFamily: "SFProText-Light", color: "silver"}}>Reply</Text>
+                            </View>
+                        </TouchableOpacity>
+                    )
+                }
+
+                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.base, marginBottom: Theme.spacing.base }} />
             </View>
+
         );
-        */
     }
 
     @autobind
     loadMore() {
-        /*
-        if (this.state.isLoadingFeed) return;
+        if (this.state.isLoadingReview) return;
 
-        if (this.allFeedsLoaded) return;
+        if (this.allReviewsLoaded) return;
 
-        !this.isClosed && this.setState({isLoadingFeed: true});
+        !this.isClosed && this.setState({ isLoadingReview: true });
 
-        this.props.store.loadFeed();
-        */
+        const { reviewStore } = this.props.navigation.state.params;
+        reviewStore.loadReview();
     }
 }
 
@@ -145,92 +216,74 @@ const styles = StyleSheet.create({
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center',
-
-        backgroundColor: 'yellow'
+        // backgroundColor: 'red'
     },
     contentContainer: {
         flexGrow: 1,
-        paddingBottom: Theme.spacing.base
+        // paddingBottom: Theme.spacing.base
+
+        // flex: 1,
+        // padding: Theme.spacing.small,
+        // paddingTop: Theme.spacing.tiny,
+
+        // paddingTop: Theme.spacing.small,
+        // paddingBottom: Theme.spacing.small,
+        paddingLeft: Theme.spacing.base,
+        paddingRight: Theme.spacing.base
     },
-    list: {
-        flex: 1
+
+    reviewContainer: {
+        marginHorizontal: 10,
+        padding: 10,
+        // borderRadius: 3,
+        // borderColor: 'rgba(0,0,0,0.1)',
+        // borderWidth: 1,
+        // backgroundColor: 'yellow',
     },
-    post: {
-        paddingHorizontal: Theme.spacing.small
+    reviewText: {
+        color: 'silver',
+        fontSize: 15,
+        lineHeight: 22,
+        fontFamily: "SFProText-Regular"
     },
+    reviewName: {
+        color: 'white',
+        fontSize: 15,
+        fontFamily: "SFProText-Semibold",
+        // paddingBottom: Theme.spacing.tiny
+        // backgroundColor: 'red',
+
+        // alignSelf: 'flex-start'
+    },
+    reviewDate: {
+        // backgroundColor: 'red',
+        // marginLeft: 27,
+        color: 'grey',
+        fontSize: 15,
+        fontFamily: "SFProText-Light",
+
+        marginLeft: 'auto'
+    },
+    reviewRating: {
+        // backgroundColor: 'red',
+        // marginLeft: 4,
+        // marginTop: 0,
+        marginLeft: 4,
+        color: '#f1c40f',
+        fontSize: 15,
+        lineHeight: 17,
+        // lineHeight: 20,
+        fontFamily: "SFProText-Regular"
+    },
+
     bottomIndicator: {
         // marginTop: 20,
         marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
         marginBottom: 20
     },
-
-
-
-
-
-    header: {
-        backgroundColor: "white",
-        shadowColor: "black",
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 5,
-        elevation: 8,
-        zIndex: 10000
-    },
-    innerHeader: {
-        marginHorizontal: Theme.spacing.base,
-        marginVertical: Theme.spacing.tiny,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center"
-    },
-    newPosts: {
-        position: "absolute",
-        top: 0
-    },
-
-
-    
-    wrapper: {
-    },
-    slide: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    item: {
-        // flex: 1,
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 21 * 9
-    },
-
-    titleContainer: {
-        padding: Theme.spacing.small
-    },
-    title: {
-        color: 'white',
-        fontSize: 18,
-        lineHeight: 20,
-        fontFamily: "SFProText-Semibold"
-    },
-
     // loading indicator
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
-    },
-
-
-    // test: advertising area
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        padding: Theme.spacing.small,
-        flex: 1
     }
-
-
-
 });

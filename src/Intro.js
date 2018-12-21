@@ -445,26 +445,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'black'
     },
-    header: {
-        backgroundColor: "white",
-        shadowColor: "black",
-        shadowOffset: { width: 0, height: 2 },
-        shadowRadius: 5,
-        elevation: 8,
-        zIndex: 10000
-    },
-    innerHeader: {
-        marginHorizontal: Theme.spacing.base,
-        marginVertical: Theme.spacing.tiny,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center"
-    },
-    newPosts: {
-        position: "absolute",
-        top: 0
-    },
-
     //// SEARCH BAR ////
     searchBarStyle: {
         // height: Constants.statusBarHeight + Header.HEIGHT,

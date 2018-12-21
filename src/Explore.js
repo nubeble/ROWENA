@@ -41,11 +41,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         searchText: '',
         cityName: '',
         feedSize: 0,
-
-        // renderFeed: false,
-        renderFeed: true, // ToDo: consider!!
-
-
+        renderFeed: false
     };
 
     /*
@@ -66,11 +62,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query);
 
-        /*
         setTimeout(() => {
             !this.isClosed && this.setState({ renderFeed: true });
         }, 0);
-        */
     }
 
     componentWillUnmount() {
@@ -215,7 +209,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             animating={true}
                             size="large"
                             // color='rgba(255, 184, 24, 0.8)'
-                            color='rgba(255, 255, 255, 0.8)'
+                            // color='rgba(255, 255, 255, 0.8)'
+                            color='grey'
                         />
                         :
                         <Feed

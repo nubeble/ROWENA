@@ -118,7 +118,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                     style={styles.activityIndicator}
                     animating={showIndicator}
                     size="large"
-                    color='white'
+                    color='grey'
                 />
 
                 <View style={styles.searchBarStyle}>
@@ -218,10 +218,9 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                         this.state.isLoadingFeeds && (
                         <ActivityIndicator
                             style={styles.bottomIndicator}
-                            animating={this.state.isLoadingFeeds}
+                            animating={true}
                             size="small"
-                            // color='rgba(255, 184, 24, 0.8)'
-                            color='rgba(255, 255, 255, 0.8)'
+                            color='grey'
                         />
                     )}
 

@@ -78,7 +78,7 @@ export default class ReviewStore {
                 this.reviews = [];
             }
 
-            if(this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(false);
+            if (this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(false);
 
             return;
         }
@@ -99,7 +99,7 @@ export default class ReviewStore {
         this.cursor = _.last(snap.docs);
 
         // 1209
-        if(this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(true);
+        if (this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(true);
     }
 
     async joinProfiles(reviews: Review[]): Promise<ReviewEntry[]> { // mapping review and review writer
