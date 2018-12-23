@@ -12,7 +12,7 @@ configure({ enforceActions: 'observed' })
 // $FlowFixMe
 // https://github.com/firebase/firebase-js-sdk/issues/97
 if (!console.ignoredYellowBox) {
-	console.ignoredYellowBox = [];
+    console.ignoredYellowBox = [];
 }
 console.ignoredYellowBox.push("Setting a timer");
 
@@ -31,42 +31,42 @@ type AppState = {
 
 // export default class App extends React.Component<AppProps, AppState> {
 export default class App extends React.Component {
-	feedStore = new FeedStore();
-	profileStore = new ProfileStore();
+    feedStore = new FeedStore();
+    profileStore = new ProfileStore();
 
-	userFeedStore = new FeedStore();
+    userFeedStore = new FeedStore();
 
-	state = {
-	};
+    state = {
+    };
 
-	componentDidMount() {
-		console.log('App::componentDidMount');
+    componentDidMount() {
+        console.log('App::componentDidMount');
 
-		StatusBar.setBarStyle('light-content');
-		if (Platform.OS === "android") { // ToDo: remove
-			// StatusBar.setBackgroundColor("black");
-			StatusBar.setBackgroundColor(Theme.color.background);
-		}
+        StatusBar.setBarStyle('light-content');
+        if (Platform.OS === "android") { // ToDo: remove
+            // StatusBar.setBackgroundColor("black");
+            StatusBar.setBackgroundColor(Theme.color.background);
+        }
 
-		// ThemeProvider.getInstance().switchColors(Colors['Main']); // ToDo
-	}
+        // ThemeProvider.getInstance().switchColors(Colors['Main']); // ToDo
+    }
 
-	render() {
-		const { feedStore, profileStore, userFeedStore } = this;
+    render() {
+        const { feedStore, profileStore, userFeedStore } = this;
 
-		const statusBar = (
-			<StatusBar
-				translucent
-				backgroundColor="transparent"
-				barStyle="light-content"
-			/>
-		);
+        const statusBar = (
+            <StatusBar
+                translucent
+                backgroundColor="transparent"
+                barStyle="light-content"
+            />
+        );
 
-		return (
-			<React.Fragment>
-				{statusBar}
+        return (
+            <React.Fragment>
+                {statusBar}
 
-				{/*
+                {/*
 				<ThemeProvider>
 					<PlayerProvider>
 						<ModalHost>
@@ -76,7 +76,7 @@ export default class App extends React.Component {
 				</ThemeProvider>
 				*/}
 
-				{/*
+                {/*
 				<ThemeProvider>
 					<Provider {...{ feedStore, profileStore, userFeedStore }}>
 						<MainSwitchNavigator />
@@ -84,12 +84,12 @@ export default class App extends React.Component {
 				</ThemeProvider>
 				*/}
 
-				<Provider {...{ feedStore, profileStore, userFeedStore }}>
-					<MainSwitchNavigator />
-				</Provider>
-			</React.Fragment>
-		);
-	}
+                <Provider {...{ feedStore, profileStore, userFeedStore }}>
+                    <MainSwitchNavigator />
+                </Provider>
+            </React.Fragment>
+        );
+    }
 }
 
 
@@ -115,73 +115,73 @@ import ReadReviewScreen from './src/ReadReviewScreen';
 
 
 const HomeStackNavigator = createStackNavigator(
-	{
-		home: {
-			screen: ExploreScreen
-		},
-		detail: {
-			screen: Detail
-		},
-		map: {
-			screen: MapScreen
-		},
-		readReview: {
-			screen: ReadReviewScreen
-		},
-		writeReview: {
-			screen: WriteReviewScreen
-		}
-	},
-	{
-		mode: 'card',
-		headerMode: 'none',
-		navigationOptions: {
-			gesturesEnabled: false
-		},
-		transitionConfig: () => ({
-			screenInterpolator: StackViewStyleInterpolator.forHorizontal
-		})
-	}
+    {
+        home: {
+            screen: ExploreScreen
+        },
+        detail: {
+            screen: Detail
+        },
+        map: {
+            screen: MapScreen
+        },
+        readReview: {
+            screen: ReadReviewScreen
+        },
+        writeReview: {
+            screen: WriteReviewScreen
+        }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
 );
 
 class HomeStackNavigatorWrapper extends React.Component {
-	static router = HomeStackNavigator.router;
+    static router = HomeStackNavigator.router;
 
-	render() {
-		return (
-			<HomeStackNavigator navigation={this.props.navigation}
-				screenProps={{
-					params: this.props.navigation.state.params,
-					rootNavigation: this.props.navigation
-				}}
-			/>
-		);
-	}
+    render() {
+        return (
+            <HomeStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
 }
 
 const HomeSwitchNavigator = createSwitchNavigator(
-	{
-		intro: { screen: Intro },
-		homeStackNavigator: { screen: HomeStackNavigatorWrapper }
-	},
-	{
-		initialRouteName: 'intro'
-	}
+    {
+        intro: { screen: Intro },
+        homeStackNavigator: { screen: HomeStackNavigatorWrapper }
+    },
+    {
+        initialRouteName: 'intro'
+    }
 );
 
 class HomeSwitchNavigatorWrapper extends React.Component {
-	static router = HomeSwitchNavigator.router;
+    static router = HomeSwitchNavigator.router;
 
-	render() {
-		return (
-			<HomeSwitchNavigator navigation={this.props.navigation}
-				screenProps={{
-					params: this.props.navigation.state.params,
-					rootNavigation: this.props.navigation
-				}}
-			/>
-		);
-	}
+    render() {
+        return (
+            <HomeSwitchNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
 }
 
 HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
@@ -192,102 +192,102 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
 	console.log('homeStackNavigator index', navigation.state.routes[1].routes.length);
 	*/
 
-	// if (!navigation.state.routes[1].isTransitioning &&
-	if (
-		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
-		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'writeReview') {
-		return {
-			tabBarVisible: false
-		};
-	}
+    // if (!navigation.state.routes[1].isTransitioning &&
+    if (
+        navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
+        navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'writeReview') {
+        return {
+            tabBarVisible: false
+        };
+    }
 
-	return {
-		tabBarVisible: true
-	};
+    return {
+        tabBarVisible: true
+    };
 };
 
 const MainBottomTabNavigator = createBottomTabNavigator(
-	{
-		home: HomeSwitchNavigatorWrapper,
-		likes: Likes,
-		chats: Chats,
-		profile: ProfileScreen
-	},
-	{
-		navigationOptions: ({ navigation }) => ({
-			// title: `${navigation.state.params.name}'s Profile!`,
-			title: 'Title',
-			tabBarLabel: navigation.state.routeName,
-			tabBarIcon: ({ tintColor, focused }) => {
-				// console.log('navigation: ', navigation);
+    {
+        home: HomeSwitchNavigatorWrapper,
+        likes: Likes,
+        chats: Chats,
+        profile: ProfileScreen
+    },
+    {
+        navigationOptions: ({ navigation }) => ({
+            // title: `${navigation.state.params.name}'s Profile!`,
+            title: 'Title',
+            tabBarLabel: navigation.state.routeName,
+            tabBarIcon: ({ tintColor, focused }) => {
+                // console.log('navigation: ', navigation);
 
-				// let iconName;
+                // let iconName;
 
-				if (navigation.state.routeName === 'home') {
-					return <Ionicons
-						// name={focused ? 'compass' : 'compass-outline'}
-						name={'md-compass'}
-						size={30}
-						style={{ color: tintColor }}
-					/>;
-				} else if (navigation.state.routeName === 'likes') {
-					return <Ionicons
-						// name={focused ? 'ios-heart' : 'ios-heart-empty'}
-						name={'ios-heart'}
-						size={30}
-						style={{ color: tintColor }}
-					/>;
-				} else if (navigation.state.routeName === 'chats') {
-					return <Ionicons
-						// name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-						name={'ios-chatbubbles'}
-						size={30}
-						style={{ color: tintColor }}
-					/>;
-				} else if (navigation.state.routeName === 'profile') {
-					return <FontAwesome
-						name={'user'}
-						size={30}
-						style={{ color: tintColor }}
-					/>;
-				}
-			}
-		}),
-		tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
-			style: {
-				// backgroundColor: 'black',
-				backgroundColor: Theme.color.background,
-				borderTopWidth: 1,
-				borderTopColor: Theme.color.line,
-				paddingTop: Platform.OS === "ios" ? 10 : 0
-			},
-			animationEnabled: true,
-			showLabel: false,
-			showIcon: true,
-			// tintColor: 'red',
-			activeTintColor: 'rgb(255, 255, 255)',
-			inactiveTintColor: 'rgb(145, 145, 145)',
-			tabStyle: {
-				// paddingVertical: 10
-			}
-		}
-	}
+                if (navigation.state.routeName === 'home') {
+                    return <Ionicons
+                        // name={focused ? 'compass' : 'compass-outline'}
+                        name={'md-compass'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />;
+                } else if (navigation.state.routeName === 'likes') {
+                    return <Ionicons
+                        // name={focused ? 'ios-heart' : 'ios-heart-empty'}
+                        name={'ios-heart'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />;
+                } else if (navigation.state.routeName === 'chats') {
+                    return <Ionicons
+                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+                        name={'ios-chatbubbles'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />;
+                } else if (navigation.state.routeName === 'profile') {
+                    return <FontAwesome
+                        name={'user'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />;
+                }
+            }
+        }),
+        tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
+            style: {
+                // backgroundColor: 'black',
+                backgroundColor: Theme.color.background,
+                borderTopWidth: 1,
+                borderTopColor: Theme.color.line,
+                paddingTop: Platform.OS === "ios" ? 10 : 0
+            },
+            animationEnabled: true,
+            showLabel: false,
+            showIcon: true,
+            // tintColor: 'red',
+            activeTintColor: 'rgb(255, 255, 255)',
+            inactiveTintColor: 'rgb(145, 145, 145)',
+            tabStyle: {
+                // paddingVertical: 10
+            }
+        }
+    }
 );
 
 class MainBottomTabNavigatorWrapper extends React.Component {
-	static router = MainBottomTabNavigator.router;
-	
-	render() {
-		return (
-			<MainBottomTabNavigator navigation={this.props.navigation}
-				screenProps={{
-					params: this.props.navigation.state.params,
-					rootNavigation: this.props.navigation
-				}}
-			/>
+    static router = MainBottomTabNavigator.router;
 
-		);
-	}
+    render() {
+        return (
+            <MainBottomTabNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+
+        );
+    }
 
 	/*
 	state = {
@@ -335,59 +335,59 @@ class MainBottomTabNavigatorWrapper extends React.Component {
 }
 
 const AuthStackNavigator = createStackNavigator(
-	{
-		authMain: {
-			screen: AuthMain
-		},
+    {
+        authMain: {
+            screen: AuthMain
+        },
 
-		email: {
-			screen: SignUpWithEmail
-		},
+        email: {
+            screen: SignUpWithEmail
+        },
 
-		mobile: {
-			screen: SignUpWithMobile
-		}
-	},
-	{
-		mode: 'card',
-		headerMode: 'none',
-		navigationOptions: {
-			gesturesEnabled: false
-		},
-		transitionConfig: () => ({
-			screenInterpolator: StackViewStyleInterpolator.forHorizontal
-		})
-	}
+        mobile: {
+            screen: SignUpWithMobile
+        }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
 );
 
 class AuthStackNavigatorWrapper extends React.Component {
-	static router = AuthStackNavigator.router;
+    static router = AuthStackNavigator.router;
 
-	render() {
-		return (
-			<AuthStackNavigator navigation={this.props.navigation}
-				screenProps={{
-					params: this.props.navigation.state.params,
-					rootNavigation: this.props.navigation
-				}}
-			/>
-		);
-	}
+    render() {
+        return (
+            <AuthStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
 }
 
 const MainSwitchNavigator = createSwitchNavigator(
-	{
-		loading: { screen: Loading },
+    {
+        loading: { screen: Loading },
 
-		welcome: { screen: Welcome },
+        welcome: { screen: Welcome },
 
-		authStackNavigator: { screen: AuthStackNavigatorWrapper }, // stack navigator
+        authStackNavigator: { screen: AuthStackNavigatorWrapper }, // stack navigator
 
-		// ToDo: welcome & guile
+        // ToDo: welcome & guile
 
-		mainBottomTabNavigator: { screen: MainBottomTabNavigatorWrapper } // tab navigator
-	},
-	{
-		initialRouteName: 'loading'
-	}
+        mainBottomTabNavigator: { screen: MainBottomTabNavigatorWrapper } // tab navigator
+    },
+    {
+        initialRouteName: 'loading'
+    }
 );
