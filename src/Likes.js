@@ -14,14 +14,6 @@ var _ = require('lodash');
 
 
 export default class Likes extends React.Component {
-    /*
-    render() {
-        return (
-            <View style={styles.container}>
-            </View>
-        );
-    }
-    */
     constructor(props) {
         super(props);
 
@@ -44,9 +36,9 @@ export default class Likes extends React.Component {
                 const latitude = Number(position.coords.latitude.toFixed(6));
                 const longitude = Number(position.coords.longitude.toFixed(6));
                 const { pageToken } = this.state;
-                const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=Your_Api_Key
+                const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A
     `
-                const urlNext = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=Your_Api_Key&pagetoken=${pageToken}`;
+                const urlNext = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A&pagetoken=${pageToken}`;
 
                 let url = pageToken === '' ? urlFirst : urlNext
                 console.log(url);

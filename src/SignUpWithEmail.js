@@ -524,13 +524,14 @@ const styles = StyleSheet.create({
         zIndex: 10000,
 
         flexDirection: 'column',
-        justifyContent: 'center'
+        // justifyContent: 'center'
+        justifyContent: 'flex-end'
     },
     notificationText: {
         position: 'absolute',
         // bottom: 0,
         alignSelf: 'center',
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: "SFProText-Semibold",
         color: "#FFF"
     },
@@ -538,6 +539,6 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 18,
         // bottom: 0,
-        alignSelf: 'baseline'
+        // alignSelf: 'baseline'
     }
 });

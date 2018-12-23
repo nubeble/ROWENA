@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, ScrollView, TouchableWithoutFeedback, Alert, Image, Keyboard, KeyboardAvoidingView, TextInput
+    FlatList, ScrollView, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput,
+    StatusBar
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
@@ -24,6 +25,7 @@ import autobind from "autobind-decorator";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
 import { observer } from "mobx-react/native";
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there";
@@ -33,6 +35,8 @@ const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'
 export default class Detail extends React.Component {
     reviewStore: ReviewStore = new ReviewStore();
 
+    replyViewHeight = Dimensions.get('window').height / 9;
+
     state = {
         showIndicator: false,
         rating: 0,
@@ -40,7 +44,11 @@ export default class Detail extends React.Component {
         renderReview: false,
         isOwner: false,
         showKeyboard: false,
-        bottomLocation: Dimensions.get('window').height
+        bottomLocation: Dimensions.get('window').height,
+
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(0)
     };
 
     onGoBack(result) { // back from rating
@@ -59,17 +67,24 @@ export default class Detail extends React.Component {
         }
     }
 
-    // async componentDidMount(): Promise<void> { // ToDo
     componentDidMount() {
         console.log('Detail::componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+
+        /*
+        this._flatList.measure((ox, oy, width, height, px, py) => {
+            this.setState({ flatListY: oy} );
+        });
+        */
 
         const { post, profile } = this.props.navigation.state.params;
 
         const isOwner = this.isOwner(post.uid, Firebase.auth.currentUser.uid);
-        this.setState({isOwner});
+        this.setState({ isOwner });
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query);
@@ -82,6 +97,8 @@ export default class Detail extends React.Component {
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.keyboardDidWillListener.remove();
+        this.keyboardWillShowListener.remove();
 
         this.isClosed = true;
     }
@@ -97,9 +114,31 @@ export default class Detail extends React.Component {
     render() {
         const { post, profile } = this.props.navigation.state.params;
 
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [
+                {
+                    translateY: this.state.offset
+                }
+            ]
+        };
+
 
         return (
             <View style={styles.flex}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => this.hideNotification()}
+                    >
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBarStyle}>
                     <TouchableOpacity
                         // style={{ marginTop: Constants.statusBarHeight + Header.HEIGHT / 3, marginLeft: 22, alignSelf: 'baseline' }}
@@ -137,40 +176,22 @@ export default class Detail extends React.Component {
                         />
                         :
                         <FlatList
-                            ref={(fl) => this._flatList = fl}
                             // ref='list'
+                            ref={(fl) => this._flatList = fl}
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
                             ListHeaderComponent={(
-                                <Animated.View
-                                // style={{ backgroundColor: 'black' }}
-                                >
+                                <View>
                                     {/* profile pictures */}
                                     {this.renderSwiper(post)}
 
                                     <View style={styles.infoContainer}>
-                                        {/*
-                                        <Text style={styles.date}>posted {moment(post.timestamp).fromNow()}</Text>
-                                        */}
-
                                         <TouchableWithoutFeedback onPress={this.profile}>
                                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                                 <View style={styles.circle}></View>
                                                 <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
                                             </View>
                                         </TouchableWithoutFeedback>
-
-
-
-
-                                        {/*
-                                <View style={{ flexDirection: 'row', alignItems: 'flex-start' }} >
-                                    <Text style={styles.name}>{post.name}</Text>
-                                    <Text style={styles.size}>
-                                        {post.age}yr {post.height}cm {post.weight}kg
-                                    </Text>
-                                </View>
-                                */}
 
                                         <Text style={styles.name}>{post.name}</Text>
                                         <Text style={styles.size}>
@@ -202,11 +223,12 @@ export default class Detail extends React.Component {
                                         <Text style={styles.note}>{tmp}</Text>
                                         */}
                                         <Text style={styles.note}>{post.note}</Text>
+                                    </View>
 
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                        {/* map */}
+                                    {/* map */}
+                                    <View style={styles.mapContainer}>
                                         <TouchableOpacity activeOpacity={0.5}
                                             /*
                                             onPress={() => {
@@ -215,7 +237,7 @@ export default class Detail extends React.Component {
                                             */
                                             onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
                                         >
-                                            <View style={styles.mapContainer}>
+                                            <View style={styles.mapView}>
                                                 <MapView
                                                     ref={map => { this.map = map }}
                                                     style={styles.map}
@@ -242,20 +264,22 @@ export default class Detail extends React.Component {
                                                 </MapView>
                                             </View>
                                         </TouchableOpacity>
+                                    </View>
 
-                                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                        <View style={styles.reviewsContainer}>
-                                            {/* show review chart */}
-                                            <Image
-                                                style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                                resizeMode={'cover'}
-                                                source={require('../assets/sample1.jpg')}
-                                            />
+                                    <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
+                                        {/* ToDo: show review chart */}
+                                        <Image
+                                            style={{ width: '100%', height: 140, marginBottom: 10 }}
+                                            resizeMode={'cover'}
+                                            source={require('../assets/sample1.jpg')}
+                                        />
 
-                                            {this.renderReviews(this.reviewStore.reviews)}
-                                        </View>
+                                        {this.renderReviews(this.reviewStore.reviews)}
+                                    </View>
 
+                                    <View style={styles.writeReviewContainer}>
                                         <Text style={styles.ratingText}>Share your experience to help others</Text>
                                         <View style={{ marginBottom: 10 }}>
                                             <AirbnbRating
@@ -268,16 +292,15 @@ export default class Detail extends React.Component {
                                                 margin={3}
                                             />
                                         </View>
-
-                                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
                                     </View>
 
-                                    {/* contact button */}
-                                    <TouchableOpacity onPress={() => this.contact()} style={[styles.signUpButton, { marginBottom: 10 }]} >
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                    <TouchableOpacity onPress={() => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
                                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
                                     </TouchableOpacity>
 
-                                </Animated.View>
+                                </View>
                             )}
 
                             ListFooterComponent={
@@ -295,40 +318,88 @@ export default class Detail extends React.Component {
 
                 {
                     this.state.showKeyboard && (
-                        <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomLocation - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%',
-                            backgroundColor: 'red'
-                         }}>
+                        <View style={{
+                            position: 'absolute',
+                            top: this.state.bottomLocation - this.replyViewHeight,
+                            height: this.replyViewHeight,
+                            width: '100%',
+                            flexDirection: 'row',
+                            // justifyContent: 'center',
+                            // alignItems:'center',
+                            flex: 1,
+
+                            paddingTop: 10,
+                            paddingBottom: 6,
+                            paddingLeft: 10,
+                            paddingRight: 0,
+
+                            borderTopWidth: 1,
+                            borderTopColor: Theme.color.line,
+                            // backgroundColor: 'red',
+                            backgroundColor: Theme.color.background
+                        }}>
 
                             <TextInput
                                 // autoFocus
                                 // ref='reply'
-                                ref={(c) => {this._reply = c;}}
-                                // multiline={true}
-                                // numberOfLines={4}
+                                ref={(c) => { this._reply = c; }}
+                                multiline={true}
+                                numberOfLines={3}
                                 style={{
+                                    /*
+                                    width: '80%',
+                                    // width: Dimensions.get('window').width * 0.5,
+                                    height: '90%',
+                                    */
+                                    flex: 0.85,
+
                                     // padding: 12, // not working in ios
-                                    paddingTop: 12,
-                                    paddingBottom: 12,
-                                    paddingLeft: 12,
-                                    paddingRight: 12,
+                                    paddingTop: 10,
+                                    paddingBottom: 10,
+                                    paddingLeft: 10,
+                                    paddingRight: 10,
 
                                     borderRadius: 5,
-                                    width: '100%',
-                                    height: Dimensions.get('window').height / 5,
-                                    fontSize: 16, fontFamily: "SFProText-Regular",
-                                    color: "white", textAlign: 'justify', textAlignVertical: 'top', backgroundColor: '#212121'
+                                    fontSize: 14,
+                                    fontFamily: "SFProText-Regular",
+                                    color: "white", textAlign: 'justify', textAlignVertical: 'top',
+                                    backgroundColor: '#212121',
+
                                 }}
-                                placeholder='Share details of your own experience'
+                                placeholder='Reply to a review...'
                                 placeholderTextColor='rgb(160, 160, 160)'
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
                                 keyboardAppearance={'dark'} // Todo: what about android??
-                                // onChangeText={(text) => this.onChangeText(text)}
+                                onChangeText={(text) => this.onChangeText(text)}
                             />
+                            <TouchableOpacity
+                                style={{
+                                    // marginLeft: 10,
+                                    // width: Dimensions.get('window').width * 0.2,
+                                    /*
+                                    width: '10%',
+                                    height: '90%',
+                                    */
+                                    flex: 0.15,
+                                    // borderRadius: 5,
+                                    // backgroundColor: 'red',
 
-                        </KeyboardAvoidingView>
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}
+                                onPress={() => this.sendReply()}
+                            >
+                                <Ionicons name='ios-send' color="rgb(62, 165, 255)" size={24} />
+                            </TouchableOpacity>
+                        </View>
                     )
                 }
+
+                <Toast
+                    ref="toast"
+                    position='center'
+                />
             </View>
         );
     }
@@ -410,7 +481,7 @@ export default class Detail extends React.Component {
         const reviewArray = [];
 
         if (reviews === undefined) {
-            console.log('reviews is undefined');
+            // console.log('reviews is undefined');
             reviewArray.push(
                 <ActivityIndicator
                     key={'indicator'}
@@ -419,8 +490,8 @@ export default class Detail extends React.Component {
                         position: 'absolute',
                         top: 0, bottom: 0, left: 0, right: 0
                         */
-                       marginTop:20,
-                       marginBottom:20,
+                        marginTop: 20,
+                        marginBottom: 20
                     }}
                     animating={true}
                     size="large"
@@ -438,8 +509,11 @@ export default class Detail extends React.Component {
                 const _profile = review.profile;
                 const _review = review.review;
 
+                const ref = 'review' + i;
+                const index = i;
+
                 reviewArray.push(
-                    <View key={_review.id}>
+                    <View key={_review.id} ref={ref}>
                         {/* ToDo: add profile image */}
 
                         <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
@@ -491,27 +565,22 @@ export default class Detail extends React.Component {
                             >
                                 {/*
                                 <Text style={styles.reviewText}>{tmp}</Text>
-                                */}                                
+                                */}
                                 <Text style={styles.reviewText}>{_review.comment}</Text>
                             </ReadMore>
                         </View>
 
                         {
                             this.state.isOwner && (
-                                <TouchableOpacity
-                                    onPress={() => this.showKeyboard()}
-                                >
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                        {/*
-                                        <MaterialIcons name='reply' color="silver" size={16} />
-                                        */}
-                                        <Text style={{marginLeft: 4, fontSize: 14, fontFamily: "SFProText-Light", color: "silver"}}>Reply</Text>
-                                    </View>
-                                </TouchableOpacity>
+                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.showKeyboard(ref, index)}>
+                                        <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
+                                    </TouchableOpacity>
+                                </View>
                             )
                         }
 
-                        <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                     </View>
                 );
             } // end of for
@@ -525,7 +594,13 @@ export default class Detail extends React.Component {
                 {/* Read all ??? reviews button */}
                 <TouchableOpacity
                     onPress={() => {
-                        this.props.navigation.navigate("readReview", { reviewStore: this.reviewStore, isOwner: this.state.isOwner });
+                        this.props.navigation.navigate("readReview",
+                            {
+                                reviewStore: this.reviewStore,
+                                isOwner: this.state.isOwner,
+                                placeId: this.props.navigation.state.params.post.placeId,
+                                feedId: this.props.navigation.state.params.post.id
+                            });
                     }}
                 >
                     <View style={{
@@ -543,10 +618,16 @@ export default class Detail extends React.Component {
                     </View>
                 </TouchableOpacity>
 
-                <View style={{ borderBottomColor: 'rgb(34, 34, 34)', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
             </View>
         );
+    }
 
+    onLayoutReviewsContainer = (event) => {
+        // console.log('onLayoutReviewsContainer', event.nativeEvent.layout);
+
+        const { y } = event.nativeEvent.layout;
+        this.reviewsContainerY = y;
     }
 
     @autobind
@@ -562,18 +643,39 @@ export default class Detail extends React.Component {
         }, 500); // 0.5 sec
     }
 
-    readingCompleted() {
-        console.log("reading done");
-        // this.setState({showReviews: true});
-    }
+    @autobind
+    _keyboardDidShow(e) {
+        const height = Dimensions.get('window').height -
+            (Constants.statusBarHeight + 8 + 34 + 8) -
+            e.endCoordinates.height -
+            this._itemHeight - (Theme.spacing.tiny * 2 + 1);
 
-    contact() {
-        // ToDo
+        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+        /*
+        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height,
+            replyViewHeight: height
+        });
+        */
     }
 
     @autobind
-    _keyboardDidShow(e) {
-        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+    _keyboardWillShow(e) {
+        if (!this.selectedItem) return;
+
+        this.refs[this.selectedItem].measure((fx, fy, width, height, px, py) => {
+            const keyboardHeight = e.endCoordinates.height;
+
+            const chartHeight = Theme.spacing.tiny + 140 + 10;
+            const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
+
+            const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+
+            const borderWidth = 1;
+
+            const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - (height - Theme.spacing.tiny) - searchBarHeight + borderWidth;
+
+            this._flatList.scrollToOffset({ offset: y - gap, animated: true });
+        });
     }
 
     @autobind
@@ -581,28 +683,128 @@ export default class Detail extends React.Component {
         this.setState({ bottomLocation: Dimensions.get('window').height });
     }
 
-    showKeyboard() {
-        // this.setState({showKeyboard: true});
-        this.setState({showKeyboard: true}, () => this._reply.focus());
+    @autobind
+    _keyboardWillHide() {
+        this.setState({ showKeyboard: false });
 
-        // console.log('this', this);
-        //console.log('this');
+        this.selectedItem = undefined;
+        this.selectedItemIndex = undefined;
 
+        if (this._showNotification) {
+            this.hideNotification();
+            this._showNotification = false;
+        }
+    }
 
-        /*
-        let that = this;
-        this.setState({showKeyboard: true}, () => that.refs.reply.focus());
-        */
+    showKeyboard(ref, index) {
+        if (this.state.showKeyboard) return;
 
-        //this.refs['reply'].focus();
-        // this._input.focus();
+        this.setState({ showKeyboard: true }, () => {
+            this._reply.focus();
+        });
+
+        this.selectedItem = ref;
+        this.selectedItemIndex = index;
+    }
+
+    showNotification = (msg) => {
+        if (!this._showNotification) {
+            this._showNotification = true;
+
+            this.setState({ notification: msg },
+                () => {
+                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                        this.state.offset.setValue(height * -1);
+
+                        Animated.sequence([
+                            Animated.parallel([
+                                Animated.timing(this.state.opacity, {
+                                    toValue: 1,
+                                    duration: 200,
+                                }),
+                                Animated.timing(this.state.offset, {
+                                    toValue: 0,
+                                    duration: 200,
+                                }),
+                            ])
+                        ]).start();
+                    });
+                }
+            );
+
+            StatusBar.setHidden(true);
+        }
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 200,
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: height * -1,
+                        duration: 200,
+                    })
+                ])
+            ]).start();
+        });
+
+        StatusBar.setHidden(false);
+
+        this._showNotification = false;
+    }
+
+    onChangeText(text) {
+        if (this._showNotification) {
+            this.hideNotification();
+            this._showNotification = false;
+        }
+    }
+
+    sendReply() {
+        let message = this._reply._lastNativeText;
+        console.log('message', message);
+
+        if (message === undefined || message === '') {
+            this.showNotification('Please enter a valid reply.');
+
+            return;
+        }
+
+        this.addReply(message);
+
+        this.refs.toast.show('Your reply has been submitted!', 500, () => {
+            if (!this.isClosed) {
+                this._reply.blur();
+            }
+        });
+    }
+
+    async addReply(message) {
+        const { post, profile } = this.props.navigation.state.params;
+
+        let placeId = post.placeId;
+        let feedId = post.id;
+
+        let reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
+
+        let userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
+
+        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
+    };
+
+    contact() {
+        // ToDo
     }
 }
 
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: Theme.color.background
     },
     searchBarStyle: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
@@ -615,15 +817,6 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         paddingBottom: Theme.spacing.small
-    },
-    signUpButton: {
-        width: '85%',
-        height: 45,
-        alignSelf: 'center',
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center'
     },
     activityIndicator: {
         position: 'absolute',
@@ -664,7 +857,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        marginLeft: 4,
+        marginLeft: 8,
         fontSize: 14,
         fontFamily: "SFProText-Light",
         color: "grey"
@@ -675,10 +868,9 @@ const styles = StyleSheet.create({
         //alignItems: 'center',
         // padding: Theme.spacing.small,
         paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.small,
+        paddingBottom: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small,
-        // backgroundColor: 'rgb(27,27,27)'
+        paddingRight: Theme.spacing.small
     },
     name: {
         color: 'white',
@@ -724,6 +916,12 @@ const styles = StyleSheet.create({
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny,
+        paddingLeft: Theme.spacing.small,
+        paddingRight: Theme.spacing.small,
+    },
+    mapView: {
+        paddingTop: Theme.spacing.tiny,
         paddingBottom: Theme.spacing.tiny
     },
     map: {
@@ -740,11 +938,10 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
     reviewsContainer: {
-        width: '100%',
-        // height: 500,
         paddingTop: Theme.spacing.tiny,
         paddingBottom: Theme.spacing.tiny,
-        // backgroundColor: 'red'
+        paddingLeft: Theme.spacing.small,
+        paddingRight: Theme.spacing.small,
     },
     sample: {
         width: '100%',
@@ -803,6 +1000,50 @@ const styles = StyleSheet.create({
         lineHeight: 15,
         // lineHeight: 20,
         fontFamily: "SFProText-Regular"
+    },
+    writeReviewContainer: {
+        // flex: 1,
+        //justifyContent: 'center',
+        //alignItems: 'center',
+        // padding: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny,
+        paddingLeft: Theme.spacing.small,
+        paddingRight: Theme.spacing.small
+    },
+    contactButton: {
+        width: '85%',
+        height: 45,
+        alignSelf: 'center',
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    notification: {
+        position: "absolute",
+        width: '100%',
+        height: Constants.statusBarHeight + 10,
+        top: 0,
+        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        zIndex: 10000,
+
+        flexDirection: 'column',
+        // justifyContent: 'center'
+        justifyContent: 'flex-end'
+    },
+    notificationText: {
+        position: 'absolute',
+        // bottom: 0,
+        alignSelf: 'center',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        color: "#FFF"
+    },
+    notificationButton: {
+        position: 'absolute',
+        right: 18,
+        // bottom: 0,
+        // alignSelf: 'baseline'
     }
 });
 

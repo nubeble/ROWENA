@@ -190,11 +190,11 @@ export default class Firebase {
 
             // places[i].length = size;
             _places[i].length = size;
-        // });
+            // });
         }
 
         console.log('_places', _places);
-        
+
         return _places;
     }
 
@@ -282,6 +282,21 @@ export default class Firebase {
 
         return size;
     }
+
+    static async addReply(placeId, feedId, reviewId, userUid, message) {
+        const id = Util.uid();
+
+        const reply = {
+            reply: {
+                id: id,
+                uid: userUid,
+                comment: message,
+                timestamp: Date.now()
+            }
+        };
+
+        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).update(reply);
+    };
 
 
 

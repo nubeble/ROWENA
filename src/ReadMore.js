@@ -108,6 +108,7 @@ function nextFrameAsync() {
 const styles = StyleSheet.create({
     button: {
         color: "#888",
+        fontFamily: "SFProText-Light",
         marginTop: 5
     }
 });

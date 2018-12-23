@@ -130,13 +130,12 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
         return (
             <View style={styles.flex}>
-
                 <SearchModal ref='searchModal'></SearchModal>
 
                 <View style={styles.searchBarStyle}>
                     <View style={{
                         width: '70%', height: 34,
-                        backgroundColor: 'rgb(34, 34, 34)',
+                        backgroundColor: Theme.color.component,
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
@@ -357,7 +356,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: Theme.color.background
     },
 
 
@@ -405,7 +404,7 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: 'white',
+        color: Theme.color.text1,
         fontSize: 18,
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"

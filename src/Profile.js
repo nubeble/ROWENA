@@ -3,7 +3,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Animated, Dimensions, FlatList } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
-import { StyleGuide } from "./rne/src/components/theme";
+// import { StyleGuide } from "./rne/src/components/theme";
 // import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -504,7 +504,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: Theme.color.background
     },
     searchBarStyle: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
@@ -514,13 +514,13 @@ const styles = StyleSheet.create({
     },
     container: {
         flexGrow: 1,
-        paddingBottom: StyleGuide.spacing.small,
-        backgroundColor: 'black'
+        paddingBottom: Theme.spacing.small,
+        // backgroundColor: 'black'
     },
     ad: {
         width: parseInt(Dimensions.get('window').width) - 2,
         height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
-        marginBottom: StyleGuide.spacing.small
+        marginBottom: Theme.spacing.small
     },
     activityIndicator: {
         position: 'absolute',
@@ -548,7 +548,7 @@ const styles = StyleSheet.create({
     //// FlatList ////
     contentContainer: {
         flexGrow: 1,
-        backgroundColor: 'black',
+        // backgroundColor: 'black',
         // paddingBottom: Theme.spacing.base
     },
     columnWrapperStyle: {

@@ -9,7 +9,7 @@ import { Text, Theme } from './rnff/src/components';
 import { AirbnbRating } from './react-native-ratings/src';
 import autobind from "autobind-decorator";
 import Firebase from "./Firebase";
-import Toast from 'react-native-simple-toast';
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 
 export default class WriteReviewScreen extends React.Component {
@@ -72,22 +72,26 @@ export default class WriteReviewScreen extends React.Component {
     }
 
     post() {
-        this.addReview();
+        let comment = this.refs['comment']._lastNativeText;
+        if (comment === undefined || comment === '') {
+            this.showNotification('Please enter a valid comment.');
 
-        // go back
-        let that = this;
-        setTimeout(function () {
-            Toast.showWithGravity('Your review has been submitted!', Toast.SHORT, Toast.CENTER);
+            return;
+        }
 
-            if(!that.isClosed) {
-                that.props.navigation.state.params.onGoBack(true);
-                that.props.navigation.goBack();
+        this.addReview(comment);
+
+        this.refs.toast.show('Your review has been submitted!', 500, () => {
+            if (!this.isClosed) {
+                this.props.navigation.state.params.onGoBack(true);
+                this.props.navigation.goBack();
             }
-        }, 300); // 0.3 sec
+        });
     }
 
     render() {
         const { post, profile } = this.props.navigation.state.params;
+
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [
@@ -148,7 +152,8 @@ export default class WriteReviewScreen extends React.Component {
                 <View style={styles.infoContainer}>
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            console.log('TouchableWithoutFeedback onPress');
+                            // console.log('TouchableWithoutFeedback onPress');
+                            // hide keyboard
                             this.refs['comment'].blur();
                         }}
                     >
@@ -200,10 +205,20 @@ export default class WriteReviewScreen extends React.Component {
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Post</Text>
                     </TouchableOpacity>
                 </KeyboardAvoidingView>
+
+                <Toast
+                    ref="toast"
+                    // style={{backgroundColor:'red'}}
+                    // textStyle={{color:'red'}}
+                    // opacity={0.8}
+                    position='center'
+                /*
+                positionValue={200}
+                fadeInDuration={750}
+                fadeOutDuration={1000}
+                */
+                />
             </View>
-
-
-
         );
     }
 
@@ -315,7 +330,7 @@ export default class WriteReviewScreen extends React.Component {
     */
 
     // from Profile.js
-    async addReview() {
+    async addReview(comment) {
         const { post, profile } = this.props.navigation.state.params;
 
         // test
@@ -326,15 +341,6 @@ export default class WriteReviewScreen extends React.Component {
 
         let userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
         console.log('user uid', userUid);
-
-        // let comment = 'best girl ever!';
-        let comment = this.refs['comment']._lastNativeText;
-        if (comment === undefined || comment === '') {
-            this.showNotification('Please enter a valid comment.');
-
-            return;
-        }
-        console.log('comment', comment);
 
         let rating = this.state.rating;
         console.log('rating', rating);
@@ -347,7 +353,7 @@ export default class WriteReviewScreen extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'black'
+        backgroundColor: Theme.color.background
     },
     notification: {
         position: "absolute",
@@ -358,13 +364,14 @@ const styles = StyleSheet.create({
         zIndex: 10000,
 
         flexDirection: 'column',
-        justifyContent: 'center'
+        // justifyContent: 'center'
+        justifyContent: 'flex-end'
     },
     notificationText: {
         position: 'absolute',
         // bottom: 0,
         alignSelf: 'center',
-        fontSize: 12,
+        fontSize: 14,
         fontFamily: "SFProText-Semibold",
         color: "#FFF"
     },
@@ -372,7 +379,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 18,
         // bottom: 0,
-        alignSelf: 'baseline'
+        // alignSelf: 'baseline'
     },
     searchBarStyle: {
         /*

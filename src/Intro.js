@@ -190,13 +190,12 @@ export default class Intro extends React.Component {
 
         return (
             <View style={styles.flex}>
-
                 <SearchModal ref='searchModal'></SearchModal>
 
                 <View style={styles.searchBarStyle}>
                     <View style={{
                         width: '70%', height: 34,
-                        backgroundColor: 'rgb(34, 34, 34)',
+                        backgroundColor: Theme.color.component,
                         borderRadius: 25
                     }} >
                         <TouchableOpacity
@@ -262,7 +261,7 @@ export default class Intro extends React.Component {
 
                                             textAlign: 'center',
                                             fontWeight: '500',
-                                            color: "white",
+                                            color: Theme.color.text1,
                                             // fontSize: 22,
                                             fontSize: parseInt(Dimensions.get('window').width / 100) + 18,
                                             fontFamily: "SFProText-Semibold"
@@ -276,7 +275,7 @@ export default class Intro extends React.Component {
 
                                             textAlign: 'center',
                                             fontWeight: '500',
-                                            color: "rgba(211, 211, 211, 0.8)",
+                                            color: Theme.color.text2,
                                             // fontSize: 18,
                                             fontSize: parseInt(Dimensions.get('window').width / 100) + 12,
                                             fontFamily: "SFProText-Regular"
@@ -443,8 +442,10 @@ export default class Intro extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: 'black'
+        // backgroundColor: 'black'
+        backgroundColor: Theme.color.background
     },
+
     //// SEARCH BAR ////
     searchBarStyle: {
         // height: Constants.statusBarHeight + Header.HEIGHT,
@@ -463,16 +464,17 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: 'white',
+        color: Theme.color.text1,
         fontSize: 18,
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
+
     //// FlatList ////
     contentContainer: {
         flexGrow: 1,
-        backgroundColor: 'black',
-        paddingBottom: Theme.spacing.base
+        // backgroundColor: 'black',
+        paddingBottom: Theme.spacing.tiny
     },
     columnWrapperStyle: {
         /*
@@ -543,12 +545,6 @@ const styles = StyleSheet.create({
     item: {
         width: '100%',
         height: '100%',
-        borderRadius: 2,
-    },
-
-
-
-
-
-
+        borderRadius: 2
+    }
 });

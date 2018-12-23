@@ -4,6 +4,7 @@ import { Header } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
 import { Constants } from 'expo';
+import { Theme } from './rnff/src/components';
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
@@ -20,11 +21,11 @@ export default class SearchModal extends React.Component {
     };
 
     showModal() {
-        !this.isClosed && this.setState({showModal: true});
+        !this.isClosed && this.setState({ showModal: true });
     }
 
     hideModal() {
-        !this.isClosed && this.setState({showModal: false});
+        !this.isClosed && this.setState({ showModal: false });
     }
 
     componentWillUnmount() {
@@ -73,7 +74,7 @@ export default class SearchModal extends React.Component {
                             console.log('data', data);
                             console.log('details', details);
 
-                            
+
                             console.log('data.place_id', data.place_id);
                             console.log('data.description', data.description);
 
@@ -201,20 +202,20 @@ export default class SearchModal extends React.Component {
                         predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
 
                         debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-                    // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
-                    /*
-                    renderLeftButton={() =>
-                        <TouchableOpacity
-                            style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
-                            onPress={() => {
-                                // this.startEditing();
-                            }}
-                        >
-                            <FontAwesome name='search' color="grey" size={20} />
-                        </TouchableOpacity>
-                    }
-                    */
-                    // renderRightButton={() => <Text>Custom text after the input</Text>}
+                        // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
+                        /*
+                        renderLeftButton={() =>
+                            <TouchableOpacity
+                                style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
+                                onPress={() => {
+                                    // this.startEditing();
+                                }}
+                            >
+                                <FontAwesome name='search' color="grey" size={20} />
+                            </TouchableOpacity>
+                        }
+                        */
+                        // renderRightButton={() => <Text>Custom text after the input</Text>}
                     />
                 </View>
             </Modal>
@@ -226,7 +227,7 @@ const styles = StyleSheet.create({
     modalFlex: {
         flex: 1,
         // backgroundColor: 'black' // ToDo: RN issue (only in android)
-        backgroundColor: Platform.OS === "ios" ? 'black' : 'black' // ToDo: RN issue (only in android)
+        backgroundColor: Platform.OS === "ios" ? Theme.color.background : 'rgb(20, 20, 20)' // ToDo: RN issue (only in android)
     },
     modalSearchBarStyle: {
         // backgroundColor: 'black', // ToDo: RN issue (only in android)

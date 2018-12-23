@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard } from 'react-native';
 // import ModalHost from 'expo/src/modal/ModalHost';
-import { ThemeProvider, Colors } from './src/rne/src/components';
+// import { ThemeProvider, Colors } from './src/rne/src/components';
 import { configure } from 'mobx';
 import { Provider } from "mobx-react/native";
-import { FeedStore } from './src/rnff/src/components';
+import { FeedStore, Theme } from './src/rnff/src/components';
 import { ProfileStore } from "./src/rnff/src/home";
 
 configure({ enforceActions: 'observed' })
@@ -44,10 +44,11 @@ export default class App extends React.Component {
 
 		StatusBar.setBarStyle('light-content');
 		if (Platform.OS === "android") { // ToDo: remove
-			StatusBar.setBackgroundColor("black");
+			// StatusBar.setBackgroundColor("black");
+			StatusBar.setBackgroundColor(Theme.color.background);
 		}
 
-		ThemeProvider.getInstance().switchColors(Colors['Main']);
+		// ThemeProvider.getInstance().switchColors(Colors['Main']); // ToDo
 	}
 
 	render() {
@@ -75,11 +76,17 @@ export default class App extends React.Component {
 				</ThemeProvider>
 				*/}
 
+				{/*
 				<ThemeProvider>
 					<Provider {...{ feedStore, profileStore, userFeedStore }}>
 						<MainSwitchNavigator />
 					</Provider>
 				</ThemeProvider>
+				*/}
+
+				<Provider {...{ feedStore, profileStore, userFeedStore }}>
+					<MainSwitchNavigator />
+				</Provider>
 			</React.Fragment>
 		);
 	}
@@ -89,6 +96,7 @@ export default class App extends React.Component {
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import autobind from "autobind-decorator";
 
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
@@ -185,17 +193,17 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
 	*/
 
 	// if (!navigation.state.routes[1].isTransitioning &&
-	if(
+	if (
 		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'map' ||
 		navigation.state.routes[1].routes[navigation.state.routes[1].routes.length - 1].routeName === 'writeReview') {
-        return {
-            tabBarVisible: false
-        };
+		return {
+			tabBarVisible: false
+		};
 	}
-	
-    return {
-        tabBarVisible: true
-    };
+
+	return {
+		tabBarVisible: true
+	};
 };
 
 const MainBottomTabNavigator = createBottomTabNavigator(
@@ -216,34 +224,27 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 				// let iconName;
 
 				if (navigation.state.routeName === 'home') {
-
 					return <Ionicons
 						// name={focused ? 'compass' : 'compass-outline'}
 						name={'md-compass'}
 						size={30}
 						style={{ color: tintColor }}
 					/>;
-
 				} else if (navigation.state.routeName === 'likes') {
-
 					return <Ionicons
 						// name={focused ? 'ios-heart' : 'ios-heart-empty'}
 						name={'ios-heart'}
 						size={30}
 						style={{ color: tintColor }}
 					/>;
-
 				} else if (navigation.state.routeName === 'chats') {
-
 					return <Ionicons
 						// name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
 						name={'ios-chatbubbles'}
 						size={30}
 						style={{ color: tintColor }}
 					/>;
-
 				} else if (navigation.state.routeName === 'profile') {
-
 					return <FontAwesome
 						name={'user'}
 						size={30}
@@ -254,9 +255,10 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 		}),
 		tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
 			style: {
-				backgroundColor: 'black',
+				// backgroundColor: 'black',
+				backgroundColor: Theme.color.background,
 				borderTopWidth: 1,
-				borderTopColor: 'rgb(34, 34, 34)',
+				borderTopColor: Theme.color.line,
 				paddingTop: Platform.OS === "ios" ? 10 : 0
 			},
 			animationEnabled: true,
@@ -264,7 +266,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 			showIcon: true,
 			// tintColor: 'red',
 			activeTintColor: 'rgb(255, 255, 255)',
-			inactiveTintColor: 'rgb(144, 144, 144)',
+			inactiveTintColor: 'rgb(145, 145, 145)',
 			tabStyle: {
 				// paddingVertical: 10
 			}
@@ -274,7 +276,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
 
 class MainBottomTabNavigatorWrapper extends React.Component {
 	static router = MainBottomTabNavigator.router;
-
+	
 	render() {
 		return (
 			<MainBottomTabNavigator navigation={this.props.navigation}
@@ -283,8 +285,53 @@ class MainBottomTabNavigatorWrapper extends React.Component {
 					rootNavigation: this.props.navigation
 				}}
 			/>
+
 		);
 	}
+
+	/*
+	state = {
+		isVisible: true
+	};
+
+	componentDidMount() {
+		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+	}
+
+	componentWillUnmount() {
+		this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+	}
+
+	@autobind
+    _keyboardDidShow(e) {
+        this.setState({
+			isVisible: false
+		})
+    }
+
+    @autobind
+    _keyboardDidHide() {
+        this.setState({
+			isVisible: true
+		})
+    }
+
+	render() {
+		return (
+			this.state.isVisible ?
+				<MainBottomTabNavigator navigation={this.props.navigation}
+					screenProps={{
+						params: this.props.navigation.state.params,
+						rootNavigation: this.props.navigation
+					}}
+				/>
+			:
+				null
+		);
+	}
+	*/
 }
 
 const AuthStackNavigator = createStackNavigator(

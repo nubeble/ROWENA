@@ -8,6 +8,14 @@ type Typography = {
 type Color = string;
 
 type Theme = {
+    color: {
+        background: Color,
+        component: Color,
+        line: Color,
+        text1: Color,
+        text2: Color,
+        // ToDo: add here
+    },
     palette: {
         primary: Color,
         info: Color,
@@ -46,6 +54,14 @@ type Theme = {
 };
 
 const theme: Theme = {
+    color: {
+        background: "rgb(40, 40, 40)",
+        component: "rgb(61, 61, 61)",
+        line: "rgb(62, 62, 62)",
+        text1: "rgb(255, 255, 255)",
+        text2: "rgb(178, 178, 178)",
+        // ToDo: add here
+    },
     palette: {
         primary: "#00AAFF",
         info: "#00A699",

@@ -85,12 +85,14 @@ export default class extends Component {
         if (speed < 0) speed = speed * -1;
         // console.log('speed', speed);
 
-        let limit;
+        let limit = 10; // speed limit
+        /*
         if (Platform.OS === "ios") {
             limit = 20;
         } else { // android
             limit = 10;
         }
+        */
 
         let page;
         if (speed > limit) {
@@ -105,7 +107,10 @@ export default class extends Component {
             if (page < 0 || page >= this.childrenLength) return;
         } else {
             page = this._calculateCurrentPage(offset.x);
-            if (page === -1) return;
+            // if (page === -1) return;
+            if (page === -1) {
+                page = this.currentPage;
+            }
         }
 
         this._placeCritical(page);
