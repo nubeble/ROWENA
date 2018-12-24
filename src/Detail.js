@@ -51,6 +51,12 @@ export default class Detail extends React.Component {
         offset: new Animated.Value(0)
     };
 
+    constructor(props) {
+        super(props);
+
+        this.itemHeights = {};
+    }
+
     onGoBack(result) { // back from rating
         console.log('Detail::onGoBack', result);
 
@@ -74,12 +80,6 @@ export default class Detail extends React.Component {
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
         this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
-
-        /*
-        this._flatList.measure((ox, oy, width, height, px, py) => {
-            this.setState({ flatListY: oy} );
-        });
-        */
 
         const { post, profile } = this.props.navigation.state.params;
 
@@ -509,11 +509,12 @@ export default class Detail extends React.Component {
                 const _profile = review.profile;
                 const _review = review.review;
 
-                const ref = 'review' + i;
+                // const _ref = 'review' + i;
+                const ref = _review.id;
                 const index = i;
 
                 reviewArray.push(
-                    <View key={_review.id} ref={ref}>
+                    <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
                         {/* ToDo: add profile image */}
 
                         <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
@@ -631,6 +632,13 @@ export default class Detail extends React.Component {
     }
 
     @autobind
+    onItemLayout(event, index) {
+        const { x, y, width, height } = event.nativeEvent.layout;
+
+        this.itemHeights[index] = height;
+    }
+
+    @autobind
     ratingCompleted(rating) {
         // console.log("Rating is: " + rating);
 
@@ -645,21 +653,60 @@ export default class Detail extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        const height = Dimensions.get('window').height -
-            (Constants.statusBarHeight + 8 + 34 + 8) -
-            e.endCoordinates.height -
-            this._itemHeight - (Theme.spacing.tiny * 2 + 1);
+        console.log('_keyboardDidShow');
 
         this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+
+
+
+        // from _keyboardWillShow
+        if (!this.selectedItem) return;
+
         /*
-        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height,
-            replyViewHeight: height
+        this.refs[this.selectedItem].measure((fx, fy, width, height, px, py) => {
+            console.log(fx, fy, width, height, px, py);
+
+            const keyboardHeight = e.endCoordinates.height;
+
+            const chartHeight = Theme.spacing.tiny + 140 + 10;
+            const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
+
+            const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+
+            const borderWidth = 1;
+
+            const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - (height - Theme.spacing.tiny) - searchBarHeight + borderWidth;
+
+            console.log('y', y, 'gap', gap);
+
+            this._flatList.scrollToOffset({ offset: y - gap, animated: true });
         });
         */
+        let totalHeights = 0;
+        for (var i = 0; i < this.selectedItemIndex; i++) {
+            var h = this.itemHeights[i];
+            if (h) {
+                // totalHeights += h + 1; // ToDo: separator
+                totalHeights += h; // ToDo: separator
+            }
+        }
+
+        const chartHeight = Theme.spacing.tiny + 140 + 10; // OK
+        const y = this.reviewsContainerY + chartHeight + totalHeights; // OK
+
+        const height = this.itemHeights[this.selectedItemIndex]; // OK
+        const keyboardHeight = e.endCoordinates.height; // OK
+        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8); // OK
+
+        const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
+
+        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
     }
 
     @autobind
     _keyboardWillShow(e) {
+        console.log('_keyboardWillShow');
+
         if (!this.selectedItem) return;
 
         this.refs[this.selectedItem].measure((fx, fy, width, height, px, py) => {
@@ -680,11 +727,28 @@ export default class Detail extends React.Component {
 
     @autobind
     _keyboardDidHide() {
+        // from _keyboardWillHide
+        this.setState({ showKeyboard: false });
+
+        this.selectedItem = undefined;
+        this.selectedItemIndex = undefined;
+
+        if (this._showNotification) {
+            this.hideNotification();
+            this._showNotification = false;
+        }
+
+
+
+        console.log('_keyboardDidHide');
+
         this.setState({ bottomLocation: Dimensions.get('window').height });
     }
 
     @autobind
     _keyboardWillHide() {
+        console.log('_keyboardWillHide');
+
         this.setState({ showKeyboard: false });
 
         this.selectedItem = undefined;

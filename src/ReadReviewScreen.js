@@ -39,7 +39,6 @@ export default class ReadReviewScreen extends React.Component {
     constructor(props) {
         super(props);
 
-        this.itemRefs = {};
         this.itemHeights = [];
     }
 
@@ -275,12 +274,7 @@ export default class ReadReviewScreen extends React.Component {
         const ref = item.review.id;
 
         return (
-            <View
-                ref={(_ref) => { this.itemRefs[item.review.id] = _ref; }}
-                onLayout={(event) => this.onItemLayout(event, index)}
-                style={{ paddingBottom: Theme.spacing.tiny }}
-            >
-
+            <View style={{ paddingBottom: Theme.spacing.tiny }} onLayout={(event) => this.onItemLayout(event, index)}>
                 {/* ToDo: add profile image */}
 
                 <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.base, paddingBottom: Theme.spacing.tiny }}>
@@ -358,11 +352,6 @@ export default class ReadReviewScreen extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        const height = Dimensions.get('window').height -
-            (Constants.statusBarHeight + 8 + 34 + 8) -
-            e.endCoordinates.height -
-            this._itemHeight - (Theme.spacing.tiny * 2 + 1);
-
         this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
     }
 

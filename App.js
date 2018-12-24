@@ -97,6 +97,7 @@ import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator }
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import autobind from "autobind-decorator";
+import { BottomTabBar } from 'react-navigation-tabs';
 
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
@@ -206,73 +207,132 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
     };
 };
 
+var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
+    style: {
+        backgroundColor: Theme.color.background,
+        borderTopWidth: 1,
+        borderTopColor: Theme.color.line,
+        // paddingTop: Platform.OS === "ios" ? 10 : 0
+        // alignItems: 'center'
+        // alignItems: 'stretch'
+    },
+    animationEnabled: true,
+    showLabel: false,
+    showIcon: true,
+    // tintColor: 'red',
+    activeTintColor: 'rgb(255, 255, 255)',
+    inactiveTintColor: 'rgb(145, 145, 145)',
+    tabStyle: {
+        // paddingVertical: 10
+    }
+};
+
 const MainBottomTabNavigator = createBottomTabNavigator(
     {
-        home: HomeSwitchNavigatorWrapper,
-        likes: Likes,
-        chats: Chats,
-        profile: ProfileScreen
+        home: {
+            screen: HomeSwitchNavigatorWrapper,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        likes: {
+            screen: Likes,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        chats: {
+            screen: Chats,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        profile: {
+            screen: ProfileScreen,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        }
     },
-    {
-        navigationOptions: ({ navigation }) => ({
-            // title: `${navigation.state.params.name}'s Profile!`,
-            title: 'Title',
-            tabBarLabel: navigation.state.routeName,
-            tabBarIcon: ({ tintColor, focused }) => {
-                // console.log('navigation: ', navigation);
 
-                // let iconName;
+    (Platform.OS === "android")
+        ?
+        {
+            tabBarComponent: props => <TabBarComponent {...props} />,
+            tabBarPosition: 'bottom',
 
-                if (navigation.state.routeName === 'home') {
-                    return <Ionicons
-                        // name={focused ? 'compass' : 'compass-outline'}
-                        name={'md-compass'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />;
-                } else if (navigation.state.routeName === 'likes') {
-                    return <Ionicons
-                        // name={focused ? 'ios-heart' : 'ios-heart-empty'}
-                        name={'ios-heart'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />;
-                } else if (navigation.state.routeName === 'chats') {
-                    return <Ionicons
-                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-                        name={'ios-chatbubbles'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />;
-                } else if (navigation.state.routeName === 'profile') {
-                    return <FontAwesome
-                        name={'user'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />;
-                }
-            }
-        }),
-        tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
-            style: {
-                // backgroundColor: 'black',
-                backgroundColor: Theme.color.background,
-                borderTopWidth: 1,
-                borderTopColor: Theme.color.line,
-                paddingTop: Platform.OS === "ios" ? 10 : 0
-            },
-            animationEnabled: true,
-            showLabel: false,
-            showIcon: true,
-            // tintColor: 'red',
-            activeTintColor: 'rgb(255, 255, 255)',
-            inactiveTintColor: 'rgb(145, 145, 145)',
-            tabStyle: {
-                // paddingVertical: 10
+            tabBarOptions: _tabBarOptions
+        }
+        :
+        {
+            tabBarOptions: _tabBarOptions
+        }
+);
+
+function _navigationOptions(navigation) {
+    return {
+        // title: `${navigation.state.params.name}'s Profile!`,
+        title: 'Title',
+        tabBarLabel: navigation.state.routeName,
+        tabBarIcon: ({ tintColor, focused }) => {
+            // console.log('navigation: ', navigation);
+
+            // let iconName;
+
+            if (navigation.state.routeName === 'home') {
+                return <Ionicons
+                    // name={focused ? 'compass' : 'compass-outline'}
+                    name={'md-compass'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+            } else if (navigation.state.routeName === 'likes') {
+                return <Ionicons
+                    // name={focused ? 'ios-heart' : 'ios-heart-empty'}
+                    name={'ios-heart'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+            } else if (navigation.state.routeName === 'chats') {
+                return <Ionicons
+                    // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+                    name={'ios-chatbubbles'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+            } else if (navigation.state.routeName === 'profile') {
+                return <FontAwesome
+                    name={'user'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
             }
         }
+    };
+}
+
+class TabBarComponent extends React.Component {
+    state = {
+        visible: true
     }
-);
+
+    componentDidMount() {
+        if (Platform.OS === 'android') {
+            this.keyboardEventListeners = [
+                Keyboard.addListener('keyboardDidShow', this.visible(false)),
+                Keyboard.addListener('keyboardDidHide', this.visible(true))
+            ];
+        }
+    }
+
+    componentWillUnmount() {
+        this.keyboardEventListeners && this.keyboardEventListeners.forEach((eventListener) => eventListener.remove());
+    }
+
+    visible = visible => () => this.setState({ visible });
+
+    render() {
+        if (!this.state.visible) {
+            return null;
+        } else {
+            return (
+                <BottomTabBar {...this.props} />
+            );
+        }
+    }
+}
 
 class MainBottomTabNavigatorWrapper extends React.Component {
     static router = MainBottomTabNavigator.router;
@@ -288,50 +348,6 @@ class MainBottomTabNavigatorWrapper extends React.Component {
 
         );
     }
-
-	/*
-	state = {
-		isVisible: true
-	};
-
-	componentDidMount() {
-		this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-	}
-
-	componentWillUnmount() {
-		this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-	}
-
-	@autobind
-    _keyboardDidShow(e) {
-        this.setState({
-			isVisible: false
-		})
-    }
-
-    @autobind
-    _keyboardDidHide() {
-        this.setState({
-			isVisible: true
-		})
-    }
-
-	render() {
-		return (
-			this.state.isVisible ?
-				<MainBottomTabNavigator navigation={this.props.navigation}
-					screenProps={{
-						params: this.props.navigation.state.params,
-						rootNavigation: this.props.navigation
-					}}
-				/>
-			:
-				null
-		);
-	}
-	*/
 }
 
 const AuthStackNavigator = createStackNavigator(
