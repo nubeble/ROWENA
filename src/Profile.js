@@ -69,7 +69,6 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
     async getUserFeeds() {
         if (this.state.isLoadingFeeds) {
-
             this.setState({refreshing: false});
             return;
         }
@@ -168,15 +167,15 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                // onPress={() => this.addReview()}
+                                onPress={() => this.removeFeed()}
                                 style={[styles.bottomButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Add Review</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Remove Feed</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 // onPress={() => this.removeReview()}
                                 style={[styles.bottomButton, { marginBottom: 50 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Remove Review</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Test</Text>
                             </TouchableOpacity>
 
 
@@ -252,7 +251,6 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                 refreshing: true
             },
             () => {
-                // this.fetchData();
                 this.getUserFeeds();
             }
         );
@@ -266,7 +264,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
     async addFeed() {
         const feedId = Util.uid(); // create uuid
 
-        let userUid = Firebase.auth.currentUser.uid;
+        const userUid = Firebase.auth.currentUser.uid;
         /*
         let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         const location = {
@@ -275,7 +273,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             latitude: 13.7563309
         };
         */
-        let placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
+        const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
         const location = {
             description: 'Ho Chi Minh, Vietnam',
             longitude: 106.6296638,
@@ -292,6 +290,29 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const note = 'note';
         
         await Firebase.createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note);
+    }
+
+    async removeFeed() {
+        const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
+
+        /*
+        73cd41ca-a4d6-3000-1319-e574d9e880a5
+        797c9de5-c755-88d8-6c84-77def8eda233
+        81ba368c-71df-c879-28de-87ea286168ce
+        8d278181-b27f-f494-5742-7998c7349836
+        92e715bb-1fce-6d8f-3b43-fee3963c24f5
+        94347f79-c9e3-331a-84c3-54ae3a4004c2
+        a7752a8e-1174-4356-c935-a99733a3fab4
+        dff5b525-f8ed-f93e-0e8c-2914f24b5c5f
+        ea872d72-e067-6828-11e9-c263ac19ab82
+        eca42d18-8e39-16f3-96d8-d726a3661511
+        ed73661e-0b31-eedc-1e3d-5e263bba7658
+        f41eedbf-6fda-4cf5-de97-95a6773bfecf
+        f91b9d68-3131-8b83-9407-d7c9c80243be
+        */
+        const feedId = '797c9de5-c755-88d8-6c84-77def8eda233';
+
+        await Firebase.deleteFeed(placeId, feedId);
     }
 
     uploadPicture(index) {

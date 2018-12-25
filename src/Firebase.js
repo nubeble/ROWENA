@@ -113,7 +113,15 @@ export default class Firebase {
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
 
+        const placeRef = Firebase.firestore.collection("place").doc(placeId);
+
         await Firebase.firestore.runTransaction(async transaction => {
+            // update count first!
+            const placeDoc = await transaction.get(placeRef);
+            let count = placeDoc.data().count;
+            console.log('count', count);
+            transaction.update(placeRef, { count: Number(count + 1) });
+
             transaction.set(feedRef, feed);
 
             // add fields to feeds in user profile
@@ -129,7 +137,20 @@ export default class Firebase {
     }
 
     static async deleteFeed(placeId, feedId) {
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).delete();
+        // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).delete();
+
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const placeRef = Firebase.firestore.collection("place").doc(placeId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            // update count first!
+            const placeDoc = await transaction.get(placeRef);
+            let count = placeDoc.data().count;
+            console.log('count', count);
+            transaction.update(placeRef, { count: Number(count - 1) });
+
+            transaction.delete(feedRef);
+        });
     }
 
     /*

@@ -118,6 +118,7 @@ export default class Intro extends React.Component {
     }
 
     // load feed length of each cities
+    /*
     async getPlaceLength() {
         let places = this.state.places;
 
@@ -136,6 +137,57 @@ export default class Intro extends React.Component {
         }
 
         this.setState({ places, refreshing: false });
+    }
+    */
+    getPlaceLength() {
+        let places = this.state.places;
+
+        const ref1 = Firebase.firestore.collection("place").doc(places[0].place_id);
+        const ref2 = Firebase.firestore.collection("place").doc(places[1].place_id);
+        const ref3 = Firebase.firestore.collection("place").doc(places[2].place_id);
+        const ref4 = Firebase.firestore.collection("place").doc(places[3].place_id);
+        const ref5 = Firebase.firestore.collection("place").doc(places[4].place_id);
+        const ref6 = Firebase.firestore.collection("place").doc(places[5].place_id);
+
+        Firebase.firestore.runTransaction(async transaction => {
+            const t1 = transaction.get(ref1);
+            const t2 = transaction.get(ref2);
+            const t3 = transaction.get(ref3);
+            const t4 = transaction.get(ref4);
+            const t5 = transaction.get(ref5);
+            const t6 = transaction.get(ref6);
+
+            const all = Promise.all([t1, t2, t3, t4, t5, t6]);
+
+            all.then(docs => {
+                doc1 = docs[0];
+                doc2 = docs[1];
+                doc3 = docs[2];
+                doc4 = docs[3];
+                doc5 = docs[4];
+                doc6 = docs[5];
+
+                let count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0;
+
+                if (doc1.exists) count1 = doc1.data().count;
+                if (doc2.exists) count2 = doc2.data().count;
+                if (doc3.exists) count3 = doc3.data().count;
+                if (doc4.exists) count4 = doc4.data().count;
+                if (doc5.exists) count5 = doc5.data().count;
+                if (doc6.exists) count6 = doc6.data().count;
+
+                console.log(count1, count2, count3, count4, count5, count6);
+
+                places[0].length = count1;
+                places[1].length = count2;
+                places[2].length = count3;
+                places[3].length = count4;
+                places[4].length = count5;
+                places[5].length = count6;
+
+                this.setState({ places, refreshing: false });
+            });
+        });
     }
 
     componentWillUnmount() {
