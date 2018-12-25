@@ -9,15 +9,26 @@ import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
 
 // $FlowFixMe
+/*
 const SFProTextBold = require("../fonts/SF-Pro-Text-Bold.otf");
 const SFProTextSemibold = require("../fonts/SF-Pro-Text-Semibold.otf");
 const SFProTextRegular = require("../fonts/SF-Pro-Text-Regular.otf");
 const SFProTextMedium = require("../fonts/SF-Pro-Text-Medium.otf");
 const SFProTextHeavy = require("../fonts/SF-Pro-Text-Heavy.otf");
 const SFProTextLight = require("../fonts/SF-Pro-Text-Light.otf");
-const FriendlySchoolmatesItalic = require("../fonts/Friendly-Schoolmates-Italic.otf");
-const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf");
+*/
+const SFProTextBold = require("../fonts/SuisseIntl/SuisseIntl-Bold.otf");
+const SFProTextSemibold = require("../fonts/SuisseIntl/SuisseIntl-SemiBold.otf");
+const SFProTextRegular = require("../fonts/SuisseIntl/SuisseIntl-Regular.otf");
+const SFProTextMedium = require("../fonts/SuisseIntl/SuisseIntl-Medium.otf");
+const SFProTextLight = require("../fonts/SuisseIntl/SuisseIntl-Light.otf");
+
+// const SuisseIntlUltraLightItalic = require("../fonts/SuisseIntl/SuisseIntl-UltraLightItalic.otf");
+const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
+
+const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // Logo
 const SansSerif = require("../fonts/Sans-Serif.ttf");
+
 
 
 
@@ -37,9 +48,10 @@ export default class Loading extends React.Component<ScreenProps<>> {
             "SFProText-Semibold": SFProTextSemibold,
             "SFProText-Regular": SFProTextRegular,
             "SFProText-Medium": SFProTextMedium,
-            "SFProText-Heavy": SFProTextHeavy,
+            // "SFProText-Heavy": SFProTextHeavy,
             "SFProText-Light": SFProTextLight,
-            "FriendlySchoolmatesItalic": FriendlySchoolmatesItalic,
+            // "SuisseIntl-UltraLightItalic": SuisseIntlUltraLightItalic,
+            "SuisseIntl-ThinItalic": SuisseIntlThinItalic,
             "FriendlySchoolmatesRegular": FriendlySchoolmatesRegular,
             "SansSerif": SansSerif
         });

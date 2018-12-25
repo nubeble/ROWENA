@@ -6,17 +6,13 @@ import {
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
-// import ImagePicker from 'react-native-image-picker'; // ToDo: consider
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-// import * as firebase from 'firebase';
 import Firebase from "./Firebase";
-// import { StyleGuide } from "./rne/src/components/theme";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import moment from 'moment';
-// import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
 import Swiper from './Swiper';
@@ -43,6 +39,7 @@ export default class Detail extends React.Component {
         isNavigating: false,
         renderReview: false,
         isOwner: false,
+
         showKeyboard: false,
         bottomLocation: Dimensions.get('window').height,
 
@@ -78,8 +75,8 @@ export default class Detail extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-        this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
-        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+        // this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
+        // this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
 
         const { post, profile } = this.props.navigation.state.params;
 
@@ -97,14 +94,14 @@ export default class Detail extends React.Component {
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-        this.keyboardDidWillListener.remove();
-        this.keyboardWillShowListener.remove();
+        // this.keyboardDidWillListener.remove();
+        // this.keyboardWillShowListener.remove();
 
         this.isClosed = true;
     }
 
-    isOwner(postUid, uid) {
-        if (postUid === uid) {
+    isOwner(uid1, uid2) {
+        if (uid1 === uid2) {
             return true;
         } else {
             return false;
@@ -175,145 +172,151 @@ export default class Detail extends React.Component {
                             color='grey'
                         />
                         :
-                        <FlatList
-                            // ref='list'
-                            ref={(fl) => this._flatList = fl}
-                            contentContainerStyle={styles.container}
-                            showsVerticalScrollIndicator={true}
-                            ListHeaderComponent={(
-                                <View>
-                                    {/* profile pictures */}
-                                    {this.renderSwiper(post)}
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                            }}
+                        >
+                            <FlatList
+                                // ref='list'
+                                ref={(fl) => this._flatList = fl}
+                                contentContainerStyle={styles.container}
+                                showsVerticalScrollIndicator={true}
+                                ListHeaderComponent={(
+                                    <View>
+                                        {/* profile pictures */}
+                                        {this.renderSwiper(post)}
 
-                                    <View style={styles.infoContainer}>
-                                        <TouchableWithoutFeedback onPress={this.profile}>
-                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                                <View style={styles.circle}></View>
-                                                <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
-                                            </View>
-                                        </TouchableWithoutFeedback>
+                                        <View style={styles.infoContainer}>
+                                            <TouchableWithoutFeedback onPress={this.profile}>
+                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                                    <View style={styles.circle}></View>
+                                                    <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                                </View>
+                                            </TouchableWithoutFeedback>
 
-                                        <Text style={styles.name}>{post.name}</Text>
-                                        <Text style={styles.size}>
-                                            {post.age}yr {post.height}cm {post.weight}kg
+                                            <Text style={styles.name}>{post.name}</Text>
+                                            <Text style={styles.size}>
+                                                {post.age}yr {post.height}cm {post.weight}kg
                                         </Text>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                                    <AirbnbRating
+                                                        count={5}
+                                                        readOnly={true}
+                                                        showRating={false}
+                                                        defaultRating={4}
+                                                        size={16}
+                                                        margin={1}
+                                                    />
+                                                </View>
+
+                                                {/* ToDo: draw stars based on averge rating & get review count
+                                                    {post.averageRating}
+                                                */}
+                                                <Text style={styles.rating}>4.4</Text>
+
+                                                <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                                <Text style={styles.reviewCount}>12</Text>
+                                            </View>
+
+                                            {/*
+                                                <Text style={styles.note}>{tmp}</Text>
+                                            */}
+                                            <Text style={styles.note}>{post.note}</Text>
+                                        </View>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                        {/* map */}
+                                        <View style={styles.mapContainer}>
+                                            <TouchableOpacity activeOpacity={0.5}
+                                                /*
+                                                onPress={() => {
+                                                    this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() });
+                                                }}
+                                                */
+                                                onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
+                                            >
+                                                <View style={styles.mapView}>
+                                                    <MapView
+                                                        ref={map => { this.map = map }}
+                                                        style={styles.map}
+                                                        mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                                        initialRegion={{
+                                                            longitude: post.location.longitude,
+                                                            latitude: post.location.latitude,
+                                                            latitudeDelta: 0.001,
+                                                            longitudeDelta: 0.001
+                                                        }}
+                                                        scrollEnabled={false}
+                                                        zoomEnabled={false}
+                                                        rotateEnabled={false}
+                                                        pitchEnabled={false}
+                                                    >
+                                                        <MapView.Marker
+                                                            coordinate={{
+                                                                longitude: post.location.longitude,
+                                                                latitude: post.location.latitude
+                                                            }}
+                                                        // title={'title'}
+                                                        // description={'description'}
+                                                        />
+                                                    </MapView>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                        <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
+                                            {/* ToDo: show review chart */}
+                                            <Image
+                                                style={{ width: '100%', height: 140, marginBottom: 10 }}
+                                                resizeMode={'cover'}
+                                                source={require('../assets/sample1.jpg')}
+                                            />
+
+                                            {this.renderReviews(this.reviewStore.reviews)}
+                                        </View>
+
+                                        <View style={styles.writeReviewContainer}>
+                                            <Text style={styles.ratingText}>Share your experience to help others</Text>
+                                            <View style={{ marginBottom: 10 }}>
                                                 <AirbnbRating
-                                                    count={5}
-                                                    readOnly={true}
+                                                    ref='rating'
+                                                    onFinishRating={this.ratingCompleted}
                                                     showRating={false}
-                                                    defaultRating={4}
-                                                    size={16}
-                                                    margin={1}
+                                                    count={5}
+                                                    defaultRating={this.state.rating}
+                                                    size={32}
+                                                    margin={3}
                                                 />
                                             </View>
-
-                                            {/* ToDo: draw stars based on averge rating & get review count
-                                            {post.averageRating}
-                                            */}
-                                            <Text style={styles.rating}>4.4</Text>
-
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
-                                            <Text style={styles.reviewCount}>12</Text>
                                         </View>
 
-                                        {/*
-                                        <Text style={styles.note}>{tmp}</Text>
-                                        */}
-                                        <Text style={styles.note}>{post.note}</Text>
-                                    </View>
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    {/* map */}
-                                    <View style={styles.mapContainer}>
-                                        <TouchableOpacity activeOpacity={0.5}
-                                            /*
-                                            onPress={() => {
-                                                this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() });
-                                            }}
-                                            */
-                                            onPress={() => this.props.navigation.navigate("map", { post: post, profile: profile })}
-                                        >
-                                            <View style={styles.mapView}>
-                                                <MapView
-                                                    ref={map => { this.map = map }}
-                                                    style={styles.map}
-                                                    mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                                    initialRegion={{
-                                                        longitude: post.location.longitude,
-                                                        latitude: post.location.latitude,
-                                                        latitudeDelta: 0.001,
-                                                        longitudeDelta: 0.001
-                                                    }}
-                                                    scrollEnabled={false}
-                                                    zoomEnabled={false}
-                                                    rotateEnabled={false}
-                                                    pitchEnabled={false}
-                                                >
-                                                    <MapView.Marker
-                                                        coordinate={{
-                                                            longitude: post.location.longitude,
-                                                            latitude: post.location.latitude
-                                                        }}
-                                                    // title={'title'}
-                                                    // description={'description'}
-                                                    />
-                                                </MapView>
-                                            </View>
+                                        <TouchableOpacity onPress={() => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
+                                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
                                         </TouchableOpacity>
+
                                     </View>
+                                )}
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                        {/* ToDo: show review chart */}
-                                        <Image
-                                            style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                            resizeMode={'cover'}
-                                            source={require('../assets/sample1.jpg')}
+                                ListFooterComponent={
+                                    this.state.isNavigating && (
+                                        <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
                                         />
-
-                                        {this.renderReviews(this.reviewStore.reviews)}
-                                    </View>
-
-                                    <View style={styles.writeReviewContainer}>
-                                        <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                        <View style={{ marginBottom: 10 }}>
-                                            <AirbnbRating
-                                                ref='rating'
-                                                onFinishRating={this.ratingCompleted}
-                                                showRating={false}
-                                                count={5}
-                                                defaultRating={this.state.rating}
-                                                size={32}
-                                                margin={3}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <TouchableOpacity onPress={() => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
-                                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
-                                    </TouchableOpacity>
-
-                                </View>
-                            )}
-
-                            ListFooterComponent={
-                                this.state.isNavigating && (
-                                    <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
-                                    />
-                                )
-                            }
-                        // scrollEventThrottle={1}
-                        // columnWrapperStyle={undefined}
-                        // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
-                        // {...{ onScroll }}
-                        />
+                                    )
+                                }
+                            // scrollEventThrottle={1}
+                            // columnWrapperStyle={undefined}
+                            // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
+                            // {...{ onScroll }}
+                            />
+                        </TouchableWithoutFeedback>
                 }
 
                 {
@@ -328,23 +331,21 @@ export default class Detail extends React.Component {
                             // alignItems:'center',
                             flex: 1,
 
-                            paddingTop: 10,
-                            paddingBottom: 6,
+                            paddingTop: 8,
+                            paddingBottom: 8,
                             paddingLeft: 10,
                             paddingRight: 0,
 
                             borderTopWidth: 1,
                             borderTopColor: Theme.color.line,
-                            // backgroundColor: 'red',
                             backgroundColor: Theme.color.background
                         }}>
 
                             <TextInput
-                                // autoFocus
                                 // ref='reply'
                                 ref={(c) => { this._reply = c; }}
                                 multiline={true}
-                                numberOfLines={3}
+                                numberOfLines={2}
                                 style={{
                                     /*
                                     width: '80%',
@@ -353,7 +354,7 @@ export default class Detail extends React.Component {
                                     */
                                     flex: 0.85,
 
-                                    // padding: 12, // not working in ios
+                                    // padding: 8, // not working in ios
                                     paddingTop: 10,
                                     paddingBottom: 10,
                                     paddingLeft: 10,
@@ -398,7 +399,9 @@ export default class Detail extends React.Component {
 
                 <Toast
                     ref="toast"
-                    position='center'
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2}
+                    opacity={0.6}
                 />
             </View>
         );
@@ -480,6 +483,8 @@ export default class Detail extends React.Component {
     renderReviews(reviews) { // draw items up to 4
         const reviewArray = [];
 
+        let reviewLength = 0;
+
         if (reviews === undefined) {
             // console.log('reviews is undefined');
             reviewArray.push(
@@ -501,6 +506,8 @@ export default class Detail extends React.Component {
         } else {
             console.log('reviews length', reviews.length);
 
+            reviewLength = reviews.length;
+
             for (var i = 0; i < reviews.length; i++) {
                 if (i > 3) break;
 
@@ -512,6 +519,14 @@ export default class Detail extends React.Component {
                 // const _ref = 'review' + i;
                 const ref = _review.id;
                 const index = i;
+
+                const reply = _review.reply;
+
+                const isMyReview = this.isOwner(_review.uid, Firebase.auth.currentUser.uid);
+
+                let isMyReply = undefined;
+                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.auth.currentUser.uid);
+
 
                 reviewArray.push(
                     <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -537,28 +552,6 @@ export default class Detail extends React.Component {
                             <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
                         </View>
 
-
-
-                        {/*
-                        <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Max Power'}</Text>
-
-                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                <AirbnbRating
-                                    count={5}
-                                    readOnly={true}
-                                    showRating={false}
-                                    defaultRating={4}
-                                    size={12}
-                                    margin={1}
-                                />
-                            </View>
-                            <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
-
-                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                        </View>
-                        */}
-
                         <View style={{ paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
                             <ReadMore
                                 numberOfLines={2}
@@ -572,7 +565,59 @@ export default class Detail extends React.Component {
                         </View>
 
                         {
-                            this.state.isOwner && (
+                            isMyReview && !reply && (
+                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                        onPress={() => this.removeReview(index)}
+                                    >
+                                        <Text ref='delete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            )
+                        }
+
+                        {
+                            // comment, id, timestamp, uid
+                            reply && (
+                                <View style={{
+                                    paddingTop: Theme.spacing.tiny,
+                                    paddingBottom: Theme.spacing.tiny,
+                                    paddingLeft: Theme.spacing.tiny,
+                                    paddingRight: Theme.spacing.tiny,
+                                    backgroundColor: Theme.color.highlight, borderRadius: 2
+                                }}>
+
+                                    <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.xSmall }}>
+                                        <Text style={styles.replyOwner}>Management Response</Text>
+                                        <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
+                                    </View>
+
+                                    <ReadMore
+                                        numberOfLines={2}
+                                    >
+                                        {/*
+                                        <Text style={styles.reviewText}>{tmp}</Text>
+                                        */}
+                                        <Text style={styles.replyComment}>{reply.comment}</Text>
+                                    </ReadMore>
+
+                                    {
+                                        isMyReply && (
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                                    onPress={() => this.removeReply(index)}
+                                                >
+                                                    <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )
+                                    }
+                                </View>
+                            )
+                        }
+
+                        {
+                            this.state.isOwner && !reply && (
                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                     <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.showKeyboard(ref, index)}>
                                         <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
@@ -613,7 +658,7 @@ export default class Detail extends React.Component {
                         // borderBottomWidth: 1,
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
-                        <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all ??? reviews</Text>
+                        <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all {reviewLength}+ reviews</Text>
                         <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                     </View>
@@ -653,10 +698,9 @@ export default class Detail extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        console.log('_keyboardDidShow');
+        // console.log('_keyboardDidShow');
 
         this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
-
 
 
         // from _keyboardWillShow
@@ -686,8 +730,7 @@ export default class Detail extends React.Component {
         for (var i = 0; i < this.selectedItemIndex; i++) {
             var h = this.itemHeights[i];
             if (h) {
-                // totalHeights += h + 1; // ToDo: separator
-                totalHeights += h; // ToDo: separator
+                totalHeights += h;
             }
         }
 
@@ -700,12 +743,12 @@ export default class Detail extends React.Component {
 
         const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
 
-        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
+        this._flatList.scrollToOffset({ offset: y - gap, animated: true }); // precisely fit!
     }
 
     @autobind
     _keyboardWillShow(e) {
-        console.log('_keyboardWillShow');
+        // console.log('_keyboardWillShow');
 
         if (!this.selectedItem) return;
 
@@ -728,7 +771,7 @@ export default class Detail extends React.Component {
     @autobind
     _keyboardDidHide() {
         // from _keyboardWillHide
-        this.setState({ showKeyboard: false });
+        // this.setState({ showKeyboard: false });
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
@@ -739,15 +782,14 @@ export default class Detail extends React.Component {
         }
 
 
-
-        console.log('_keyboardDidHide');
+        // console.log('_keyboardDidHide');
 
         this.setState({ bottomLocation: Dimensions.get('window').height });
     }
 
     @autobind
     _keyboardWillHide() {
-        console.log('_keyboardWillHide');
+        // console.log('_keyboardWillHide');
 
         this.setState({ showKeyboard: false });
 
@@ -828,8 +870,12 @@ export default class Detail extends React.Component {
         }
     }
 
+    contact() {
+        // ToDo
+    }
+
     sendReply() {
-        let message = this._reply._lastNativeText;
+        const message = this._reply._lastNativeText;
         console.log('message', message);
 
         if (message === undefined || message === '') {
@@ -842,7 +888,13 @@ export default class Detail extends React.Component {
 
         this.refs.toast.show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
-                this._reply.blur();
+                // this._reply.blur();
+                this.setState({ showKeyboard: false });
+
+                // ToDo: reload only the added review!
+                const { post, profile } = this.props.navigation.state.params;
+                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                this.reviewStore.init(query);
             }
         });
     }
@@ -850,18 +902,56 @@ export default class Detail extends React.Component {
     async addReply(message) {
         const { post, profile } = this.props.navigation.state.params;
 
-        let placeId = post.placeId;
-        let feedId = post.id;
+        const placeId = post.placeId;
+        const feedId = post.id;
+        const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
+        const userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
 
-        let reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
-
-        let userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
-
-        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
+        // await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
+        await Firebase.addReply(placeId, feedId, reviewId, userUid, message); // ToDo
     };
 
-    contact() {
-        // ToDo
+    async removeReview(index) {
+        // ToDo: show dialog
+
+        const { post, profile } = this.props.navigation.state.params;
+
+        const placeId = post.placeId;
+        const feedId = post.id;
+        const reviewId = this.reviewStore.reviews[index].review.id;
+        const userUid = Firebase.auth.currentUser.uid;
+
+        await Firebase.removeReview(placeId, feedId, reviewId, userUid);
+
+        this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+            if (!this.isClosed) {
+                // refresh UI
+                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                this.reviewStore.init(query);
+            }
+        });
+    }
+
+    async removeReply(index) {
+        // ToDo: show dialog
+
+        const { post, profile } = this.props.navigation.state.params;
+
+        const placeId = post.placeId;
+        const feedId = post.id;
+        const reviewId = this.reviewStore.reviews[index].review.id;
+        const replyId = this.reviewStore.reviews[index].review.reply.id;
+        const userUid = Firebase.auth.currentUser.uid;
+
+        await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
+
+        this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+            if (!this.isClosed) {
+                // refresh UI
+                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                this.reviewStore.init(query);
+            }
+        });
     }
 }
 
@@ -939,36 +1029,36 @@ const styles = StyleSheet.create({
     name: {
         color: 'white',
         fontSize: 24,
-        lineHeight: 24,
         fontFamily: "SFProText-Semibold",
-        paddingBottom: Theme.spacing.tiny
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
     },
     size: {
         color: "white",
         fontSize: 18,
-        lineHeight: 18,
         fontFamily: "SFProText-Regular",
-        paddingBottom: Theme.spacing.tiny
-        /*
-        position: 'absolute',
-        right: 0
-        */
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
     },
     rating: {
         marginLeft: 4,
-        // marginTop: 0,
-        // backgroundColor: 'red',
+
         color: '#f1c40f',
         fontSize: 18,
-        lineHeight: 20,
-        fontFamily: "SFProText-Regular"
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
     },
     reviewCount: {
         marginLeft: 4,
+
         color: 'white',
         fontSize: 18,
-        lineHeight: 20,
-        fontFamily: "SFProText-Regular"
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
     },
     note: {
         color: 'silver',
@@ -1051,19 +1141,36 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 14,
         fontFamily: "SFProText-Light",
-
         marginLeft: 'auto'
     },
     reviewRating: {
-        // backgroundColor: 'red',
-        // marginLeft: 4,
-        // marginTop: 0,
         marginLeft: 4,
+
         color: '#f1c40f',
         fontSize: 14,
-        lineHeight: 15,
-        // lineHeight: 20,
-        fontFamily: "SFProText-Regular"
+        lineHeight: 13,
+        fontFamily: "SFProText-Regular",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
+    },
+    replyOwner: {
+        // color: "rgb(170, 170, 170)",
+        color: "#E5E5E5",
+        fontSize: 14,
+        // lineHeight: 18,
+        fontFamily: "SuisseIntl-ThinItalic"
+    },
+    replyDate: {
+        color: 'grey',
+        fontSize: 14,
+        fontFamily: "SFProText-Light",
+        marginLeft: 'auto'
+    },
+    replyComment: {
+        color: 'white',
+        fontSize: 14,
+        lineHeight: 18,
+        fontFamily: "SuisseIntl-ThinItalic"
     },
     writeReviewContainer: {
         // flex: 1,
@@ -1110,36 +1217,3 @@ const styles = StyleSheet.create({
         // alignSelf: 'baseline'
     }
 });
-
-
-/*
-    type Post = {
-        uid: string,
-        id: string,
-        location: Location, // 1
-        note: string, // 2
-        pictures: Pictures, // 3
-        placeId: string, // 4
-        // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼) // 7
-        averageRating: number, // 5
-        timestamp: number, // 6
-
-        name: string, // 7
-        age: number // 8
-    };
-
-    type Profile = {
-        uid: string,
-        name: string,
-        country: string,
-        city: string,
-        email: string,
-        phoneNumber: string,
-        picture: Picture,
-        location: Location,
-        about: string,
-        feeds: Feed[],
-        postedReviews: string[]
-    };
-*/
-

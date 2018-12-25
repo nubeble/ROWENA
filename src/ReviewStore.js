@@ -25,7 +25,7 @@ const DEFAULT_PROFILE: Profile = {
     about: 'about',
     // feeds: {},
     feeds: [],
-    postedReviews: []
+    reviews: []
 };
 
 
@@ -52,7 +52,7 @@ export default class ReviewStore {
         this.addToReviewFinishedCallback = cb; // to block keeping calling loadReview() while scrolling 
     }
 
-    init(query: any) {
+    init(query: any, count = DEFAULT_PAGE_SIZE) {
         // --
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
@@ -62,17 +62,17 @@ export default class ReviewStore {
         // --
 
         this.query = query;
-        this.loadReview();
+        this.loadReview(count);
     }
 
-    async loadReview(): Promise<void> {
+    async loadReview(count = DEFAULT_PAGE_SIZE): Promise<void> {
         let query = this.query;
 
         if (this.cursor) {
             query = query.startAfter(this.cursor);
         }
 
-        const snap = await query.limit(DEFAULT_PAGE_SIZE).get();
+        const snap = await query.limit(count).get();
         if (snap.docs.length === 0) {
             if (!this.reviews) {
                 this.reviews = [];
@@ -98,7 +98,6 @@ export default class ReviewStore {
 
         this.cursor = _.last(snap.docs);
 
-        // 1209
         if (this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(true);
     }
 

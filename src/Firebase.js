@@ -48,22 +48,21 @@ export default class Firebase {
             },
             about: null,
 
-            // feeds: {}, // 내가 등록한 feed. ToDo: 삭제 시 배열을 전체 검색
+            feeds: [], // 내가 등록한 feed. ToDo: 삭제 시 배열을 전체 검색
             /*
-            '0': {
+            {
                 'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
                 'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
             },
-            '1': {
+            {
                 'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
                 'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
             },
             ...
             */
 
-            feeds: [],
-
-            postedReviews: [] // [review id] 내가 남긴 리뷰. ToDo: 삭제 시 배열을 전체 검색
+            reviews: [], // 내가 남긴 리뷰.
+            replies: []
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);
@@ -74,18 +73,9 @@ export default class Firebase {
     }
 
     static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
-        // const id = Util.uid(); // create uuid
-
         const feed = {
-            uid: userUid, // owner
+            uid: userUid,
             placeId: placeId,
-            /*
-            location: {
-                description: 'Bangkok, Thailand',
-                longitude: 100.5017651,
-                latitude: 13.7563309
-            },
-            */
             name: name,
             age: age,
             height: height,
@@ -112,47 +102,42 @@ export default class Firebase {
             },
             note: note,
 
-            // reviews: [], // ToDo: collection 으로 변경!!!
+            // reviews: [], // collection
 
             // 총 리뷰 갯수 - reviews.length
             averageRating: 0.0, // 리뷰가 추가될 때마다 다시 계산해서 업데이트
 
-            timestamp: Date.now() // 1543145425396
-        };
-
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).set(feed);
-    }
-
-    static async createReview(userUid, rating, comment) {
-        const id = Util.uid(); // create uuid
-
-        const review = {
-            uid: userUid,
-            id: id,
-            rating: rating,
-            comment: comment,
             timestamp: Date.now()
         };
 
-        return await Firebase.firestore.collection("reviews").doc(id).set(review);
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const userRef = Firebase.firestore.collection("users").doc(userUid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            transaction.set(feedRef, feed);
+
+            // add fields to feeds in user profile
+            let data = {
+                feeds: firebase.firestore.FieldValue.arrayUnion({
+                    placeId: placeId,
+                    feedId: feedId
+                })
+            };
+
+            transaction.update(userRef, data);
+        });
     }
 
+    static async deleteFeed(placeId, feedId) {
+        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).delete();
+    }
+
+    /*
     static async getUserFeeds(profile) { // user posted feeds
         const feeds = profile.feeds; // object NOT map
 
         const keys = Object.keys(feeds);
         console.log('user feeds length', keys.length);
-        /*
-        '0': {
-            'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-            'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-        },
-        '1': {
-            'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-            'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-        },
-        ...
-        */
 
         let userFeeds = [];
 
@@ -162,9 +147,7 @@ export default class Firebase {
 
             var value = feeds.get(key);
 
-            // ToDo:
-            const feedDoc = await Firebase.firestore.collection("place").doc(value.placeId).collection("feed")
-                .doc(value.feedId).get();
+            const feedDoc = await Firebase.firestore.collection("place").doc(value.placeId).collection("feed").doc(value.feedId).get();
 
             userFeeds.push(feedDoc.data());
         }
@@ -173,30 +156,7 @@ export default class Firebase {
 
         return userFeeds;
     }
-
-    static async getPlaceLength(places) {
-        let _places = [];
-
-        // places.forEach(element => {
-        for (var i = 0; i < places.length; i++) {
-            let placeId = places[i].place_id;
-
-            let size = 0;
-            // get document length
-            await Firebase.firestore.collection("place").doc(placeId).collection("feed").get().then(snapshot => {
-                size = snapshot.size;
-                console.log('getPlaceLength()', size);
-            });
-
-            // places[i].length = size;
-            _places[i].length = size;
-            // });
-        }
-
-        console.log('_places', _places);
-
-        return _places;
-    }
+    */
 
     static async addReview(placeId, feedId, userUid, comment, rating) {
         const id = Util.uid();
@@ -213,7 +173,7 @@ export default class Firebase {
         await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
 
-        // 업데이트 2개 - averageRating, postedReviews
+        // 업데이트 2개 - averageRating, reviews
 
         let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
@@ -232,11 +192,18 @@ export default class Firebase {
             console.log('averageRating', averageRating);
             transaction.update(feedRef, { averageRating: Number(averageRating) });
 
-            // postedReviews (array)
-            let data = {
-                postedReviews: firebase.firestore.FieldValue.arrayUnion(id)
+            // add new review item (map) in reviews (array)
+            const item = {
+                placeId: placeId,
+                feedId: feedId,
+                reviewId: id
             };
-            await transaction.update(userRef, data);
+
+            let data = {
+                reviews: firebase.firestore.FieldValue.arrayUnion(item)
+            };
+
+            transaction.update(userRef, data);
         });
     };
 
@@ -244,7 +211,7 @@ export default class Firebase {
         const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).get();
         let rating = reviewDoc.data().rating; // rating, comment, timestamp
 
-        // 업데이트 2개 - averageRating, postedReviews
+        // 업데이트 2개 - averageRating, reviews
 
         let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
@@ -262,10 +229,17 @@ export default class Firebase {
             console.log('averageRating', averageRating);
             transaction.update(feedRef, { averageRating: Number(averageRating) });
 
-            // postedReviews (array)
-            let data = {
-                postedReviews: firebase.firestore.FieldValue.arrayRemove(reviewId)
+            // remove review item (map) in reviews (array)
+            const item = {
+                placeId: placeId,
+                feedId: feedId,
+                reviewId: reviewId
             };
+
+            let data = {
+                reviews: firebase.firestore.FieldValue.arrayRemove(item)
+            };
+
             await transaction.update(userRef, data);
         });
 
@@ -284,9 +258,9 @@ export default class Firebase {
     }
 
     static async addReply(placeId, feedId, reviewId, userUid, message) {
-        const id = Util.uid();
+        const id = Util.uid(); // reply id
 
-        const reply = {
+        const replyData = {
             reply: {
                 id: id,
                 uid: userUid,
@@ -295,16 +269,49 @@ export default class Firebase {
             }
         };
 
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).update(reply);
+        // add reply ref in profile (userUid)
+        let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+        let userRef = Firebase.firestore.collection("users").doc(userUid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            transaction.update(reviewRef, replyData);
+
+            const item = {
+                placeId: placeId,
+                feedId: feedId,
+                reviewId: reviewId,
+                replyId: id
+            };
+
+            let userData = {
+                replies: firebase.firestore.FieldValue.arrayUnion(item)
+            };
+
+            transaction.update(userRef, userData);
+        });
     };
 
+    static async removeReply(placeId, feedId, reviewId, replyId, userUid) {
+        let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+        let userRef = Firebase.firestore.collection("users").doc(userUid);
 
+        await Firebase.firestore.runTransaction(async transaction => {
+            transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
 
+            const item = {
+                placeId: placeId,
+                feedId: feedId,
+                reviewId: reviewId,
+                replyId: replyId
+            };
 
+            let data = {
+                replies: firebase.firestore.FieldValue.arrayRemove(item)
+            };
 
-
-
-
+            transaction.update(userRef, data);
+        });
+    }
 
 
 }

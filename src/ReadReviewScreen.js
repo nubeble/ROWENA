@@ -3,7 +3,7 @@ import autobind from "autobind-decorator";
 import moment from "moment";
 import {
     StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList,
-    ActivityIndicator, TouchableOpacity, Keyboard, TextInput
+    ActivityIndicator, TouchableOpacity, Keyboard, TextInput, TouchableWithoutFeedback
 } from "react-native";
 import { Header, NavigationActions, StackActions } from 'react-navigation';
 import { Constants } from "expo";
@@ -47,8 +47,8 @@ export default class ReadReviewScreen extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-        this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
-        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+        // this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
+        // this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
 
         const { reviewStore, isOwner } = this.props.navigation.state.params;
         // console.log('reviews', reviewStore.reviews);
@@ -78,8 +78,8 @@ export default class ReadReviewScreen extends React.Component {
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-        this.keyboardDidWillListener.remove();
-        this.keyboardWillShowListener.remove();
+        // this.keyboardDidWillListener.remove();
+        // this.keyboardWillShowListener.remove();
 
         this.isClosed = true;
     }
@@ -145,35 +145,41 @@ export default class ReadReviewScreen extends React.Component {
                             color='grey'
                         />
                         :
-                        <FlatList
-                            ref={(fl) => this._flatList = fl}
-                            data={reviews}
-                            keyExtractor={this.keyExtractor}
-                            renderItem={this.renderItem}
-                            onEndReachedThreshold={0.5}
-                            onEndReached={this.loadMore}
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                            }}
+                        >
+                            <FlatList
+                                ref={(fl) => this._flatList = fl}
+                                data={reviews}
+                                keyExtractor={this.keyExtractor}
+                                renderItem={this.renderItem}
+                                onEndReachedThreshold={0.5}
+                                onEndReached={this.loadMore}
 
-                            contentContainerStyle={styles.contentContainer}
-                            showsVerticalScrollIndicator
+                                contentContainerStyle={styles.contentContainer}
+                                showsVerticalScrollIndicator
 
-                            ListEmptyComponent={(
-                                <View style={{ paddingHorizontal: Theme.spacing.small }}>
-                                    {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
-                                </View>
-                            )}
-                            ListFooterComponent={(
-                                this.state.isLoadingReview && (
-                                    <ActivityIndicator
-                                        style={styles.bottomIndicator}
-                                        animating={this.state.isLoadingReview}
-                                        size="small"
-                                        color='grey'
-                                    />
-                                )
-                            )}
+                                ListEmptyComponent={(
+                                    <View style={{ paddingHorizontal: Theme.spacing.small }}>
+                                        {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                                    </View>
+                                )}
+                                ListFooterComponent={(
+                                    this.state.isLoadingReview && (
+                                        <ActivityIndicator
+                                            style={styles.bottomIndicator}
+                                            animating={this.state.isLoadingReview}
+                                            size="small"
+                                            color='grey'
+                                        />
+                                    )
+                                )}
 
-                            ItemSeparatorComponent={this.itemSeparatorComponent}
-                        />
+                                ItemSeparatorComponent={this.itemSeparatorComponent}
+                            />
+                        </TouchableWithoutFeedback>
                 }
 
                 {
@@ -187,8 +193,8 @@ export default class ReadReviewScreen extends React.Component {
 
                             flex: 1,
 
-                            paddingTop: 10,
-                            paddingBottom: 6,
+                            paddingTop: 8,
+                            paddingBottom: 8,
                             paddingLeft: 10,
                             paddingRight: 0,
 
@@ -203,14 +209,8 @@ export default class ReadReviewScreen extends React.Component {
                                 multiline={true}
                                 numberOfLines={3}
                                 style={{
-                                    /*
-                                    width: '80%',
-                                    // width: Dimensions.get('window').width * 0.5,
-                                    height: '90%',
-                                    */
                                     flex: 0.85,
 
-                                    // padding: 12, // not working in ios
                                     paddingTop: 10,
                                     paddingBottom: 10,
                                     paddingLeft: 10,
@@ -231,16 +231,7 @@ export default class ReadReviewScreen extends React.Component {
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity style={{
-                                // marginLeft: 10,
-                                // width: Dimensions.get('window').width * 0.2,
-                                /*
-                                width: '10%',
-                                height: '90%',
-                                */
                                 flex: 0.15,
-                                // borderRadius: 5,
-                                // backgroundColor: 'red',
-
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}
@@ -255,7 +246,9 @@ export default class ReadReviewScreen extends React.Component {
 
                 <Toast
                     ref="toast"
-                    position='center'
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2}
+                    opacity={0.6}
                 />
             </View >
         );
@@ -272,6 +265,14 @@ export default class ReadReviewScreen extends React.Component {
         const _review = item.review;
 
         const ref = item.review.id;
+
+        const reply = _review.reply;
+
+        const isMyReview = this.isOwner(_review.uid, Firebase.auth.currentUser.uid);
+
+        let isMyReply = undefined;
+        if (reply) isMyReply = this.isOwner(reply.uid, Firebase.auth.currentUser.uid);
+
 
         return (
             <View style={{ paddingBottom: Theme.spacing.tiny }} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -305,7 +306,55 @@ export default class ReadReviewScreen extends React.Component {
                 </View>
 
                 {
-                    this.state.isOwner ?
+                    isMyReview && !reply && (
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                onPress={() => this.removeReview(index)}
+                            >
+                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+
+                {
+                    // comment, id, timestamp, uid
+                    reply && (
+                        <View style={{
+                            paddingTop: Theme.spacing.small,
+                            paddingBottom: Theme.spacing.small,
+                            paddingLeft: Theme.spacing.small,
+                            paddingRight: Theme.spacing.small,
+                            backgroundColor: Theme.color.highlight, borderRadius: 2
+                        }}>
+
+                            <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.small }}>
+                                <Text style={styles.replyOwner}>Management Response</Text>
+                                <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
+                            </View>
+
+                            {/*
+                                <Text style={styles.reviewText}>{tmp}</Text>
+                            */}
+                            <Text style={styles.replyComment}>{reply.comment}</Text>
+
+                            {
+                                isMyReply && (
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                            onPress={() => this.removeReply(index)}
+                                        >
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            }
+                        </View>
+                    )
+                }
+
+                {
+                    this.state.isOwner && !reply ?
                         (
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingBottom: Theme.spacing.base }}>
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.showKeyboard(ref, index)}>
@@ -322,13 +371,21 @@ export default class ReadReviewScreen extends React.Component {
         );
     }
 
+    isOwner(uid1, uid2) {
+        if (uid1 === uid2) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     @autobind
     loadMore() {
         if (this.state.isLoadingReview) return;
 
         if (this.allReviewsLoaded) return;
 
-        !this.isClosed && this.setState({ isLoadingReview: true });
+        this.setState({ isLoadingReview: true });
 
         const { reviewStore } = this.props.navigation.state.params;
         reviewStore.loadReview();
@@ -353,6 +410,28 @@ export default class ReadReviewScreen extends React.Component {
     @autobind
     _keyboardDidShow(e) {
         this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+
+
+        // from _keyboardWillShow
+        if (!this.selectedItem) return;
+
+        let totalHeights = 0;
+        for (var i = 0; i < this.selectedItemIndex; i++) {
+            var h = this.itemHeights[i];
+            if (h) {
+                totalHeights += h + 1;
+            }
+        }
+
+        const height = this.itemHeights[this.selectedItemIndex];
+        const keyboardHeight = e.endCoordinates.height;
+        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+
+        const y = totalHeights;
+
+        const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
+
+        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
     }
 
     @autobind
@@ -380,6 +459,18 @@ export default class ReadReviewScreen extends React.Component {
 
     @autobind
     _keyboardDidHide() {
+        // from _keyboardWillHide
+        this.setState({ showKeyboard: false });
+
+        this.selectedItem = undefined;
+        this.selectedItemIndex = undefined;
+
+        if (this._showNotification) {
+            this.hideNotification();
+            this._showNotification = false;
+        }
+
+
         this.setState({ bottomLocation: Dimensions.get('window').height });
     }
 
@@ -468,7 +559,11 @@ export default class ReadReviewScreen extends React.Component {
     }
 
     sendReply() {
-        let message = this._reply._lastNativeText;
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+
+        const count = reviewStore.reviews.length;
+
+        const message = this._reply._lastNativeText;
         console.log('message', message);
 
         if (message === undefined || message === '') {
@@ -481,7 +576,11 @@ export default class ReadReviewScreen extends React.Component {
 
         this.refs.toast.show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
-                this._reply.blur();
+                // this._reply.blur();
+                this.setState({ showKeyboard: false });
+
+                const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+                reviewStore.init(query, count + 1); // refresh all // ToDo: reload only the changed review
             }
         });
     }
@@ -489,12 +588,54 @@ export default class ReadReviewScreen extends React.Component {
     async addReply(message) {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
-        let reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
-
-        let userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
+        const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
+        const userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
 
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
+
+    async removeReview(index) {
+        // ToDo: show dialog
+
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+
+        const reviewId = reviewStore.reviews[index].review.id;
+        const userUid = Firebase.auth.currentUser.uid;
+
+        const count = reviewStore.reviews.length;
+
+        await Firebase.removeReview(placeId, feedId, reviewId, userUid);
+
+        this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+            if (!this.isClosed) {
+                // refresh UI
+                const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+                reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
+            }
+        });
+    }
+
+    async removeReply(index) {
+        // ToDo: show dialog
+
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+
+        const reviewId = reviewStore.reviews[index].review.id;
+        const replyId = reviewStore.reviews[index].review.reply.id;
+        const userUid = Firebase.auth.currentUser.uid;
+
+        const count = reviewStore.reviews.length;
+
+        await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
+
+        this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+            if (!this.isClosed) {
+                // refresh UI
+                const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+                reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
+            }
+        });
+    }
 }
 
 const styles = StyleSheet.create({
@@ -522,7 +663,6 @@ const styles = StyleSheet.create({
         paddingLeft: Theme.spacing.base,
         paddingRight: Theme.spacing.base
     },
-
     reviewContainer: {
         marginHorizontal: 10,
         padding: 10,
@@ -552,21 +692,38 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 15,
         fontFamily: "SFProText-Light",
-
         marginLeft: 'auto'
     },
     reviewRating: {
-        // backgroundColor: 'red',
-        // marginLeft: 4,
-        // marginTop: 0,
         marginLeft: 4,
+
         color: '#f1c40f',
         fontSize: 15,
-        lineHeight: 17,
-        // lineHeight: 20,
-        fontFamily: "SFProText-Regular"
-    },
+        lineHeight: 14,
 
+        fontFamily: "SFProText-Regular",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
+    },
+    replyOwner: {
+        // color: "rgb(170, 170, 170)",
+        color: "#E5E5E5",
+        fontSize: 15,
+        // lineHeight: 22,
+        fontFamily: "SuisseIntl-ThinItalic"
+    },
+    replyDate: {
+        color: 'grey',
+        fontSize: 15,
+        fontFamily: "SFProText-Light",
+        marginLeft: 'auto'
+    },
+    replyComment: {
+        color: 'white',
+        fontSize: 15,
+        lineHeight: 22,
+        fontFamily: "SuisseIntl-ThinItalic"
+    },
     bottomIndicator: {
         // marginTop: 20,
         marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)

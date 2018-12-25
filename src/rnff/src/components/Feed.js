@@ -25,14 +25,14 @@ type FeedProps = NavigationProps<> & {
 export default class Feed extends React.Component<FeedProps> {
 
     state = {
-        isLoadingFeed: false
+        isLoadingFeed: false,
+        refreshing: false
     };
 
     componentDidMount() {
         const { feed } = this.props.store; // FeedStore
         console.log('Feed::componentDidMount', feed);
 
-        // 1209
         this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
     }
 
@@ -45,7 +45,7 @@ export default class Feed extends React.Component<FeedProps> {
             this.allFeedsLoaded = true;
         }
 
-        !this.isClosed && this.setState({ isLoadingFeed: false });
+        !this.isClosed && this.setState({ isLoadingFeed: false, refreshing: false });
     }
 
     componentWillUnmount() {
@@ -62,12 +62,17 @@ export default class Feed extends React.Component<FeedProps> {
     loadMore() {
         console.log('loadMore');
 
-        if (this.state.isLoadingFeed) return;
+        if (this.state.isLoadingFeed) {
+            this.setState({ refreshing: false });
+            return;
+        }
 
-        if (this.allFeedsLoaded) return;
+        if (this.allFeedsLoaded) {
+            this.setState({ refreshing: false });
+            return;
+        }
 
-        // 1209
-        !this.isClosed && this.setState({ isLoadingFeed: true });
+        this.setState({ isLoadingFeed: true });
 
         this.props.store.loadFeed();
     }
@@ -108,12 +113,11 @@ export default class Feed extends React.Component<FeedProps> {
                         </View>
                     )}
 
-                    // 1209
                     ListFooterComponent={(
                         this.state.isLoadingFeed && (
                             <ActivityIndicator
                                 style={styles.bottomIndicator}
-                                animating={this.state.isLoadingFeed}
+                                animating={true}
                                 size="small"
                                 // color='rgba(255, 184, 24, 0.8)'
                                 color='grey'
@@ -121,11 +125,25 @@ export default class Feed extends React.Component<FeedProps> {
                         )
                     )}
 
+                    onRefresh={this.handleRefresh}
+                    refreshing={this.state.refreshing}
+
                     {...{ onScroll, bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
         );
     }
+
+    handleRefresh = () => {
+        this.setState(
+            {
+                refreshing: true
+            },
+            () => {
+                this.loadMore();
+            }
+        );
+    };
 }
 
 const styles = StyleSheet.create({

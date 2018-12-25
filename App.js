@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions } from 'react-native';
 // import ModalHost from 'expo/src/modal/ModalHost';
 // import { ThemeProvider, Colors } from './src/rne/src/components';
 import { configure } from 'mobx';
@@ -212,9 +212,7 @@ var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
         backgroundColor: Theme.color.background,
         borderTopWidth: 1,
         borderTopColor: Theme.color.line,
-        // paddingTop: Platform.OS === "ios" ? 10 : 0
-        // alignItems: 'center'
-        // alignItems: 'stretch'
+        paddingTop: Platform.OS === "ios" ? parseInt(Dimensions.get('window').height / 80) : 0
     },
     animationEnabled: true,
     showLabel: false,

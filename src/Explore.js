@@ -57,7 +57,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         let city = place.city;
         console.log('place', place, 'length', length, 'city', city);
 
-        !this.isClosed && this.setState({ searchText: place.description, cityName: city, feedSize: length });
+        this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query);

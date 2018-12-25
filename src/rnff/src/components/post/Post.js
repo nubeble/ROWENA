@@ -38,9 +38,9 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
     componentDidMount() {
         const { post, store } = this.props;
-        this.unsubscribeToPost = store.subscribeToPost(post.placeId, post.id, newPost => !this.isClosed && this.setState({ post: newPost }));
+        this.unsubscribeToPost = store.subscribeToPost(post.placeId, post.id, newPost => this.setState({ post: newPost }));
         // eslint-disable-next-line max-len
-        this.unsubscribeToProfile = store.subscribeToProfile(post.uid, newProfile => !this.isClosed && this.setState({ profile: newProfile }));
+        this.unsubscribeToProfile = store.subscribeToProfile(post.uid, newProfile => this.setState({ profile: newProfile }));
     }
 
     componentWillUnmount() {

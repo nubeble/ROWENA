@@ -22,7 +22,7 @@ const DEFAULT_PROFILE: Profile = {
     about: 'about',
     // feeds: {},
     feeds: [],
-    postedReviews: []
+    reviews: []
 };
 
 export default class ProfileStore {

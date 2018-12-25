@@ -11,6 +11,7 @@ type Theme = {
     color: {
         background: Color,
         component: Color,
+        highlight: Color,
         line: Color,
         text1: Color,
         text2: Color,
@@ -57,6 +58,7 @@ const theme: Theme = {
     color: {
         background: "rgb(40, 40, 40)",
         component: "rgb(61, 61, 61)",
+        highlight: "rgb(33, 33, 33)",
         line: "rgb(62, 62, 62)",
         text1: "rgb(255, 255, 255)",
         text2: "rgb(178, 178, 178)",

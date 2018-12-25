@@ -25,7 +25,7 @@ const DEFAULT_PROFILE: Profile = {
     about: 'about',
     // feeds: {},
     feeds: [],
-    postedReviews: []
+    reviews: []
 };
 
 type Subscription = () => void;
@@ -47,21 +47,17 @@ export default class FeedStore {
     set feed(feed: Feed) { this._feed = feed; }
 
 
-    // 1209
     setAddToFeedFinishedCallback(cb) {
         this.addToFeedFinishedCallback = cb;
     }
 
     // eslint-disable-next-line flowtype/no-weak-types
     init(query: any) {
-        // 1209
-        // --
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
         this.query = undefined;
         this.profiles = {};
         this.feed = undefined;
-        // --
 
         this.query = query;
         this.loadFeed();
@@ -82,7 +78,6 @@ export default class FeedStore {
                 this.feed = [];
             }
 
-            // 1209
             if(this.addToFeedFinishedCallback !== undefined && this.addToFeedFinishedCallback) this.addToFeedFinishedCallback(false);
 
             return;
@@ -108,7 +103,6 @@ export default class FeedStore {
         this.addToFeed(feed);
         this.cursor = _.last(snap.docs);
 
-        // 1209
         if(this.addToFeedFinishedCallback !== undefined && this.addToFeedFinishedCallback) this.addToFeedFinishedCallback(true);
     }
 

@@ -37,15 +37,15 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage5: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage6: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
 
         renderFeeds: [],
         isLoadingFeeds: false,
-        currentFeedIndex: 0
+        currentFeedIndex: 0,
+
+        refreshing: false,
     };
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log('Profile::componentDidMount');
         // console.log('this.props.feedStore', this.props.feedStore);
         // console.log('this.props.profileStore', this.props.profileStore);
@@ -55,20 +55,24 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
 
         const { profile } = this.props.profileStore;
-        console.log('Profile::componentDidMount() profile', profile);
+        // console.log('Profile::componentDidMount() profile', profile);
 
-        this._getUserFeeds();
+        this.getUserFeeds();
     }
 
     @autobind
     onScrollHandler() {
         console.log('Profile::onScrollHandler');
 
-        this._getUserFeeds();
+        this.getUserFeeds();
     }
 
-    async _getUserFeeds() {
-        if (this.state.isLoadingFeeds) return;
+    async getUserFeeds() {
+        if (this.state.isLoadingFeeds) {
+
+            this.setState({refreshing: false});
+            return;
+        }
 
         this.setState({ isLoadingFeeds: true });
 
@@ -80,7 +84,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const length = keys.length;
 
         if (currentFeedIndex >= length) {
-            this.setState({ isLoadingFeeds: false });
+            this.setState({ isLoadingFeeds: false, refreshing: false });
             return;
         }
 
@@ -93,9 +97,8 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             var num = i;
             var key = num.toString();
             var value = feeds.get(key);
-            console.log(key, value);
-            const feedDoc = await Firebase.firestore.collection("place").doc(value.placeId).collection("feed")
-                .doc(value.feedId).get();
+            // console.log(key, value);
+            const feedDoc = await Firebase.firestore.collection("place").doc(value.placeId).collection("feed").doc(value.feedId).get();
             const _data = feedDoc.data();
             newRecords.push(_data);
 
@@ -103,10 +106,9 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             // console.log('count', count);
         }
 
-        this.setState({ isLoadingFeeds: false, currentFeedIndex: currentFeedIndex + count, renderFeeds: [...this.state.renderFeeds, ...newRecords] });
+        this.setState({ isLoadingFeeds: false, currentFeedIndex: currentFeedIndex + count, renderFeeds: [...this.state.renderFeeds, ...newRecords],
+            refreshing: false });
     }
-
-    
 
     render() {
         const showIndicator = this.state.showIndicator;
@@ -162,15 +164,17 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
                             <TouchableOpacity onPress={() => this.addFeed()}
                                 style={[styles.bottomButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Add Feed (girl)</Text>
+                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Add Feed</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => this.addReview()}
+                            <TouchableOpacity
+                                // onPress={() => this.addReview()}
                                 style={[styles.bottomButton, { marginBottom: 10 }]} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Add Review</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => this.removeReview()}
+                            <TouchableOpacity
+                                // onPress={() => this.removeReview()}
                                 style={[styles.bottomButton, { marginBottom: 50 }]} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Remove Review</Text>
                             </TouchableOpacity>
@@ -189,7 +193,9 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                     keyExtractor={item => item.id}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}>
+                            <TouchableOpacity
+                                // onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}
+                            >
                                 <View style={styles.pictureContainer}>
                                     <SmartImage
                                         preview={item.pictures.one.preview}
@@ -197,7 +203,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                                         style={styles.picture}
                                     />
 
-                                    {/*}
+                                    {/*
                                     <View style={styles.content}>
                                         <Text style={{
                                             textAlign: 'center',
@@ -224,24 +230,42 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                         />
                     )}
 
-                /*
-                ListEmptyComponent={(
-                    <View style={styles.post}>
-                        {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
-                    </View>
-                )}
-                */
+                    /*
+                    ListEmptyComponent={(
+                        <View style={styles.post}>
+                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                        </View>
+                    )}
+                    */
 
-
+                    onRefresh={this.handleRefresh}
+                    refreshing={this.state.refreshing}
                 />
-
             </View>
 
         );
     } // end of render()
 
+    handleRefresh = () => {
+        this.setState(
+            {
+                refreshing: true
+            },
+            () => {
+                // this.fetchData();
+                this.getUserFeeds();
+            }
+        );
+    };
+
+
+
+
+
+
     async addFeed() {
-        // 1. create new feed
+        const feedId = Util.uid(); // create uuid
+
         let userUid = Firebase.auth.currentUser.uid;
         /*
         let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
@@ -266,84 +290,9 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const image3Uri = null;
         const image4Uri = null;
         const note = 'note';
-
-        const feedId = Util.uid(); // create uuid
+        
         await Firebase.createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note);
-
-        // 2. add fields to feeds in user profile
-        /*
-        '0': {
-            'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-            'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-        }
-        */
-
-        
-        /*
-        let index = Object.keys(this.props.profileStore.profile.feeds).length;
-        console.log('index', index);
-        
-        let data = {
-            feeds: {
-                [`${index}`] : {
-                    placeId: placeId,
-                    feedId: feedId
-                }
-            }
-        };
-        */
-        let data = {
-            feeds: firebase.firestore.FieldValue.arrayUnion({
-                placeId: placeId,
-                feedId: feedId
-            })
-        };
-
-        await Firebase.firestore.collection('users').doc(userUid).update(data);
     }
-
-    async addReview() {
-        // test
-        let placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E'; // 호치민
-        let feedId = 'b0247934-f097-2094-dbfc-3a63da957de7'; // 제니
-
-        let userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람 (이러면 자추인데..)
-        let comment = 'best girl ever!';
-        let rating = 5;
-
-        await Firebase.addReview(placeId, feedId, userUid, comment, rating);
-    };
-
-    async removeReview() {
-        // ToDo: show review information in UI
-        /*
-        const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).get();
-        let rating = reviewDoc.data().rating; // rating, comment, timestamp
-        */
-
-
-        // test
-        let placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E'; // 호치민
-        let feedId = 'b0247934-f097-2094-dbfc-3a63da957de7'; // 제니
-
-        let reviewId = '4dcc875c-20c5-1ffc-5f3d-ff2d79b470be'; // ToDo: check
-
-        let userUid = Firebase.auth.currentUser.uid;
-
-        await Firebase.removeReview(placeId, feedId, reviewId, userUid);
-     }
-
-
-
-
-
-
-
-
-
-
-
-
 
     uploadPicture(index) {
         this.pickImage(index);
@@ -379,8 +328,6 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                         case 1: this.setState({ uploadImage2: uri }); break;
                         case 2: this.setState({ uploadImage3: uri }); break;
                         case 3: this.setState({ uploadImage4: uri }); break;
-                        case 4: this.setState({ uploadImage5: uri }); break;
-                        case 5: this.setState({ uploadImage6: uri }); break;
                     }
 
                     // save to database

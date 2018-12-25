@@ -98,6 +98,7 @@ export default class Intro extends React.Component {
 
         searchText: '',
 
+        refreshing: false,
 
     };
 
@@ -109,21 +110,23 @@ export default class Intro extends React.Component {
     }
     */
 
-    async componentDidMount() {
-        // test
-        console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
-        console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
+    componentDidMount() {
+        // console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
+        this.getPlaceLength();
+    }
 
-        // ToDo: load city length
-        // let _places = await Firebase.getPlaceLength(this.state.places);
+    // load feed length of each cities
+    async getPlaceLength() {
+        let places = this.state.places;
 
-        const places = this.state.places;
         for (var i = 0; i < places.length; i++) {
             let placeId = places[i].place_id;
 
             let size = 0;
-            // get document length
+
+            // get documents length of collection
             await Firebase.firestore.collection("place").doc(placeId).collection("feed").get().then(snapshot => {
                 size = snapshot.size;
                 console.log('getPlaceLength()', size);
@@ -132,7 +135,7 @@ export default class Intro extends React.Component {
             places[i].length = size;
         }
 
-        !this.isClosed && this.setState({ places });
+        this.setState({ places, refreshing: false });
     }
 
     componentWillUnmount() {
@@ -254,31 +257,19 @@ export default class Intro extends React.Component {
 
                                     <View style={styles.content}>
                                         <Text style={{
-                                            // textAlign: 'left',
-                                            // color: "white",
-                                            // fontSize: 17,
-                                            // lineHeight: 22,
-
                                             textAlign: 'center',
-                                            fontWeight: '500',
                                             color: Theme.color.text1,
-                                            // fontSize: 22,
-                                            fontSize: parseInt(Dimensions.get('window').width / 100) + 18,
-                                            fontFamily: "SFProText-Semibold"
+                                            fontSize: 20,
+                                            lineHeight: 26,
+                                            fontFamily: "SFProText-Bold"
                                         }}>{item.city}</Text>
 
                                         <Text style={{
-                                            // textAlign: 'left',
-                                            // color: "rgb(211, 211, 211)",
-                                            // fontSize: 15,
-                                            // lineHeight: 20,
-
                                             textAlign: 'center',
-                                            fontWeight: '500',
                                             color: Theme.color.text2,
-                                            // fontSize: 18,
-                                            fontSize: parseInt(Dimensions.get('window').width / 100) + 12,
-                                            fontFamily: "SFProText-Regular"
+                                            fontSize: 14,
+                                            lineHeight: 18,
+                                            fontFamily: "SFProText-Semibold"
                                         }}>{`${(item.length) ? item.length + '+ girls' : ''}`}</Text>
                                     </View>
                                 </View>
@@ -417,16 +408,26 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                             </Carousel>
-
-
-
                         </View>
                     )}
+                    onRefresh={this.handleRefresh}
+                    refreshing={this.state.refreshing}
                 />
 
             </View>
         );
     } // end of render()
+
+    handleRefresh = () => {
+        this.setState(
+            {
+                refreshing: true
+            },
+            () => {
+                this.getPlaceLength();
+            }
+        );
+    };
 
     startEditing() {
         // alert('startEditing()');
