@@ -149,7 +149,7 @@ export default class Intro extends React.Component {
         const ref5 = Firebase.firestore.collection("place").doc(places[4].place_id);
         const ref6 = Firebase.firestore.collection("place").doc(places[5].place_id);
 
-        Firebase.firestore.runTransaction(async transaction => {
+        Firebase.firestore.runTransaction(transaction => {
             const t1 = transaction.get(ref1);
             const t2 = transaction.get(ref2);
             const t3 = transaction.get(ref3);
@@ -159,7 +159,7 @@ export default class Intro extends React.Component {
 
             const all = Promise.all([t1, t2, t3, t4, t5, t6]);
 
-            all.then(docs => {
+            return all.then(docs => {
                 doc1 = docs[0];
                 doc2 = docs[1];
                 doc3 = docs[2];

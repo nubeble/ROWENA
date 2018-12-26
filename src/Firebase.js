@@ -112,19 +112,56 @@ export default class Firebase {
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
-
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
-            // update count first!
+            // update count first
+            transaction.get(placeRef).then(async function(doc) {
+                if (doc.exists) {
+                    let count = 0;
+
+                    let field = doc.data().count;
+                    if (field) {
+                        count = field;
+                    }
+
+                    // 1. count
+                    console.log('count', count);
+                    transaction.update(placeRef, { count: Number(count + 1) });
+
+                    transaction.set(feedRef, feed);
+
+                } else {
+                    // doc not created yet
+
+                    // 1. then write feed first
+                    await transaction.set(feedRef, feed);
+
+                    // 2. then write count 1
+                    transaction.update(placeRef, { count: 1 });
+                    
+                }
+
+                
+            });
+
+            /*
             const placeDoc = await transaction.get(placeRef);
-            let count = placeDoc.data().count;
+            if (placeDoc.exists) {
+                let count = placeDoc.data().count;
+            }
             console.log('count', count);
             transaction.update(placeRef, { count: Number(count + 1) });
+            */
 
-            transaction.set(feedRef, feed);
+            // 1. write feed
+            // transaction.set(feedRef, feed);
 
-            // add fields to feeds in user profile
+            // 2. write count
+
+
+
+            // 3. add fields to feeds in user profile
             let data = {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: placeId,
