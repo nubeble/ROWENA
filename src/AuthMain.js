@@ -100,7 +100,7 @@ export default class AuthMain extends React.Component {
                             fontFamily: "FriendlySchoolmatesRegular",
                             // fontFamily: "SansSerif",
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 36,
+                            fontSize: 42,
                             fontWeight: 'bold',
                             textAlign: 'center'
                         }}>ROWENA</Text>
@@ -137,7 +137,7 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            // onPress={() => navigate('Daftar')}
+                        // onPress={() => navigate('Daftar')}
                         >
                             <Text style={{ marginBottom: 150, marginTop: 30, color: 'rgba(255, 255, 255, 0.8)' }} >
                                 <Text>Already a member? </Text>
@@ -262,21 +262,18 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '35%',
         justifyContent: 'center',
-        alignItems: 'center',
-        // backgroundColor: '#ff9a9a'
+        alignItems: 'center'
     },
     empty: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
-        // backgroundColor: 'white'
+        alignItems: 'center'
     },
     contents: {
         width: '100%',
         height: '50%',
         justifyContent: 'flex-end',
-        alignItems: 'center',
-        // backgroundColor: '#1ad657'
+        alignItems: 'center'
     },
     signUpWithFacebookButton: {
         justifyContent: 'center',

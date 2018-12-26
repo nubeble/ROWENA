@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
 
 
 export default class Welcome extends React.Component {
@@ -8,16 +8,24 @@ export default class Welcome extends React.Component {
     };
 
     render() {
+        const buttonGap = 100;
+
         return (
             <View style={styles.container}>
-
                 <Image
-                    style={{ width: '100%', height: 300, marginTop: 100, marginBottom: 100 }}
+                    style={{ width: '100%', height: 200, marginTop: 80, marginBottom: 40 }}
                     resizeMode={'cover'}
                     source={require('../assets/sample2.png')}
                 />
 
-                <View style={{ position: 'absolute', top: this.state.bottomLocation - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <Image
+                    style={{ width: '100%', height: 200 }}
+                    resizeMode={'contain'}
+                    source={require('../assets/sample3.png')}
+                />
+
+
+                <View style={{ position: 'absolute', top: this.state.bottomLocation - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('mainBottomTabNavigator')} style={styles.signUpButton}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Get Started</Text>
                     </TouchableOpacity>
@@ -32,7 +40,7 @@ export default class Welcome extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         // alignItems: 'center',
         backgroundColor: 'rgb(175, 175, 175)'
     },
