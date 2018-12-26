@@ -295,22 +295,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
     async removeFeed() {
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
 
-        /*
-        73cd41ca-a4d6-3000-1319-e574d9e880a5
-        797c9de5-c755-88d8-6c84-77def8eda233
-        81ba368c-71df-c879-28de-87ea286168ce
-        8d278181-b27f-f494-5742-7998c7349836
-        92e715bb-1fce-6d8f-3b43-fee3963c24f5
-        94347f79-c9e3-331a-84c3-54ae3a4004c2
-        a7752a8e-1174-4356-c935-a99733a3fab4
-        dff5b525-f8ed-f93e-0e8c-2914f24b5c5f
-        ea872d72-e067-6828-11e9-c263ac19ab82
-        eca42d18-8e39-16f3-96d8-d726a3661511
-        ed73661e-0b31-eedc-1e3d-5e263bba7658
-        f41eedbf-6fda-4cf5-de97-95a6773bfecf
-        f91b9d68-3131-8b83-9407-d7c9c80243be
-        */
-        const feedId = '797c9de5-c755-88d8-6c84-77def8eda233';
+        const feedId = '6598abb5-6c55-cf4b-5dec-86b8a1bd5f69';
 
         await Firebase.deleteFeed(placeId, feedId);
     }

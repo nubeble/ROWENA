@@ -23,7 +23,6 @@ type FeedProps = NavigationProps<> & {
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
-
     state = {
         isLoadingFeed: false,
         refreshing: false

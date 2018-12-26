@@ -483,7 +483,9 @@ export default class Detail extends React.Component {
     renderReviews(reviews) { // draw items up to 4
         const reviewArray = [];
 
-        let reviewLength = 0;
+        // let reviewLength = 0;
+        const { post, profile } = this.props.navigation.state.params;
+        let reviewLength = post.reviewCount;
 
         if (reviews === undefined) {
             // console.log('reviews is undefined');
@@ -506,7 +508,7 @@ export default class Detail extends React.Component {
         } else {
             console.log('reviews length', reviews.length);
 
-            reviewLength = reviews.length;
+            // reviewLength = reviews.length;
 
             for (var i = 0; i < reviews.length; i++) {
                 if (i > 3) break;

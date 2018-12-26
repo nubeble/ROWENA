@@ -117,7 +117,6 @@ export default class Intro extends React.Component {
         this.getPlaceLength();
     }
 
-    // load feed length of each cities
     /*
     async getPlaceLength() {
         let places = this.state.places;
@@ -139,7 +138,8 @@ export default class Intro extends React.Component {
         this.setState({ places, refreshing: false });
     }
     */
-    getPlaceLength() {
+    /*
+    async getPlaceLength() {
         let places = this.state.places;
 
         const ref1 = Firebase.firestore.collection("place").doc(places[0].place_id);
@@ -149,94 +149,75 @@ export default class Intro extends React.Component {
         const ref5 = Firebase.firestore.collection("place").doc(places[4].place_id);
         const ref6 = Firebase.firestore.collection("place").doc(places[5].place_id);
 
-        Firebase.firestore.runTransaction(transaction => {
-            const t1 = transaction.get(ref1);
-            const t2 = transaction.get(ref2);
-            const t3 = transaction.get(ref3);
-            const t4 = transaction.get(ref4);
-            const t5 = transaction.get(ref5);
-            const t6 = transaction.get(ref6);
+        let count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0;
 
-            const all = Promise.all([t1, t2, t3, t4, t5, t6]);
+        await Firebase.firestore.runTransaction(transaction => {
+            return new Promise(resolve => {
+                const t1 = transaction.get(ref1);
+                const t2 = transaction.get(ref2);
+                const t3 = transaction.get(ref3);
+                const t4 = transaction.get(ref4);
+                const t5 = transaction.get(ref5);
+                const t6 = transaction.get(ref6);
 
-            return all.then(docs => {
-                doc1 = docs[0];
-                doc2 = docs[1];
-                doc3 = docs[2];
-                doc4 = docs[3];
-                doc5 = docs[4];
-                doc6 = docs[5];
+                const all = Promise.all([t1, t2, t3, t4, t5, t6]);
+                all.then(docs => {
+                    doc1 = docs[0];
+                    doc2 = docs[1];
+                    doc3 = docs[2];
+                    doc4 = docs[3];
+                    doc5 = docs[4];
+                    doc6 = docs[5];
 
-                let count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0;
+                    if (doc1.exists) count1 = doc1.data().count;
+                    if (doc2.exists) count2 = doc2.data().count;
+                    if (doc3.exists) count3 = doc3.data().count;
+                    if (doc4.exists) count4 = doc4.data().count;
+                    if (doc5.exists) count5 = doc5.data().count;
+                    if (doc6.exists) count6 = doc6.data().count;
 
-                if (doc1.exists) count1 = doc1.data().count;
-                if (doc2.exists) count2 = doc2.data().count;
-                if (doc3.exists) count3 = doc3.data().count;
-                if (doc4.exists) count4 = doc4.data().count;
-                if (doc5.exists) count5 = doc5.data().count;
-                if (doc6.exists) count6 = doc6.data().count;
-
-                console.log(count1, count2, count3, count4, count5, count6);
-
-                places[0].length = count1;
-                places[1].length = count2;
-                places[2].length = count3;
-                places[3].length = count4;
-                places[4].length = count5;
-                places[5].length = count6;
-
-                this.setState({ places, refreshing: false });
+                    resolve(true);
+                });
             });
         });
+
+        console.log(count1, count2, count3, count4, count5, count6);
+
+        places[0].length = count1;
+        places[1].length = count2;
+        places[2].length = count3;
+        places[3].length = count4;
+        places[4].length = count5;
+        places[5].length = count6;
+
+        this.setState({ places, refreshing: false });
+    }
+    */
+    async getPlaceLength() { // load feed length of each cities
+        let places = this.state.places;
+
+        for (var i = 0; i < places.length; i++) {
+            let placeId = places[i].place_id;
+
+            let count = 0;
+
+            // ToDo: read multiple documents with transaction
+            await Firebase.firestore.collection("place").doc(placeId).get().then(doc => {
+                if (doc.exists) {
+                    const field = doc.data().count;
+                    if (field) count = field;
+                }
+
+                console.log('getPlaceLength', i, count);
+                places[i].length = count;
+            });
+
+            this.setState({ places, refreshing: false });
+        }
     }
 
     componentWillUnmount() {
         this.isClosed = true;
-    }
-
-    loadFeed() { // load girls
-        /*
-        this.props.feedStore.checkForNewEntriesInFeed();
-
-
-        // 1. get user location
-        const { uid } = Firebase.auth.currentUser;
-        Firebase.firestore.collection('users').doc(uid).get().then(doc => {
-            if (!doc.exists) {
-                console.log('No such document!');
-            } else {
-                console.log('user', doc.data());
-
-                let user = doc.data();
-                let place = user.location.description;
-                console.log('user location', place);
-
-                // 2.
-
-            }
-        });
-        */
-
-
-        /*
-        if (!user || !user.country || !user.city) {
-            // get gps
-            try {
-                let position = await this.getPosition();
-            } catch (error) {
-                console.log('getPosition error', error);
-
-                return;
-            }
-
-        } else {
-            console.log(user.country, user.city);
-            location.country = user.country;
-            location.city = user.city;
-        }
-        */
-
-        // 2. get feed from the user location
     }
 
     render(): React.Node {

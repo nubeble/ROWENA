@@ -20,7 +20,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew that you were there for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
 
-export default class ReadReviewScreen extends React.Component {
+export default class ReadAllReviewScreen extends React.Component {
     replyViewHeight = Dimensions.get('window').height / 9;
 
     state = {
@@ -33,7 +33,9 @@ export default class ReadReviewScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0)
+        offset: new Animated.Value(0),
+
+        refreshing: false
     };
 
     constructor(props) {
@@ -43,7 +45,7 @@ export default class ReadReviewScreen extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ReadReviewScreen::componentDidMount');
+        console.log('ReadAllReviewScreen::componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -72,7 +74,7 @@ export default class ReadReviewScreen extends React.Component {
             this.allReviewsLoaded = true; // don't call loadReview() again!
         }
 
-        !this.isClosed && this.setState({ isLoadingReview: false });
+        !this.isClosed && this.setState({ isLoadingReview: false, refreshing: false });
     }
 
     componentWillUnmount() {
@@ -178,6 +180,9 @@ export default class ReadReviewScreen extends React.Component {
                                 )}
 
                                 ItemSeparatorComponent={this.itemSeparatorComponent}
+
+                                onRefresh={this.handleRefresh}
+                                refreshing={this.state.refreshing}
                             />
                         </TouchableWithoutFeedback>
                 }
@@ -253,6 +258,18 @@ export default class ReadReviewScreen extends React.Component {
             </View >
         );
     } // end of render()
+
+    handleRefresh = () => {
+        this.setState(
+            {
+                refreshing: true
+            },
+            () => {
+                // this.getPlaceLength();
+                this.loadMore();
+            }
+        );
+    };
 
     @autobind
     keyExtractor(item: ReviewEntry): string {
@@ -381,9 +398,15 @@ export default class ReadReviewScreen extends React.Component {
 
     @autobind
     loadMore() {
-        if (this.state.isLoadingReview) return;
+        if (this.state.isLoadingReview) {
+            this.setState({ refreshing: false });
+            return;
+        }
 
-        if (this.allReviewsLoaded) return;
+        if (this.allReviewsLoaded) {
+            this.setState({ refreshing: false });
+            return;
+        }
 
         this.setState({ isLoadingReview: true });
 

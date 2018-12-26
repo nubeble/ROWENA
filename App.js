@@ -112,7 +112,7 @@ import ExploreScreen from './src/Explore';
 import Detail from './src/Detail';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
-import ReadReviewScreen from './src/ReadReviewScreen';
+import ReadAllReviewScreen from './src/ReadAllReviewScreen';
 
 
 const HomeStackNavigator = createStackNavigator(
@@ -127,7 +127,7 @@ const HomeStackNavigator = createStackNavigator(
             screen: MapScreen
         },
         readReview: {
-            screen: ReadReviewScreen
+            screen: ReadAllReviewScreen
         },
         writeReview: {
             screen: WriteReviewScreen
