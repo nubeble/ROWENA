@@ -23,7 +23,6 @@ const DEFAULT_PROFILE: Profile = {
         latitude: 0.0
     },
     about: 'about',
-    // feeds: {},
     feeds: [],
     reviews: []
 };
@@ -49,6 +48,10 @@ export default class FeedStore {
 
     setAddToFeedFinishedCallback(cb) {
         this.addToFeedFinishedCallback = cb;
+    }
+
+    loadFeedFromTheStart() {
+        if(this.query) this.init(this.query);
     }
 
     // eslint-disable-next-line flowtype/no-weak-types

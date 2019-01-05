@@ -23,7 +23,6 @@ const DEFAULT_PROFILE: Profile = {
         latitude: 0.0
     },
     about: 'about',
-    // feeds: {},
     feeds: [],
     reviews: []
 };
@@ -52,14 +51,16 @@ export default class ReviewStore {
         this.addToReviewFinishedCallback = cb; // to block keeping calling loadReview() while scrolling 
     }
 
+    loadReviewFromTheStart() {
+        if(this.query) this.init(this.query);
+    }
+
     init(query: any, count = DEFAULT_PAGE_SIZE) {
-        // --
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
         this.query = undefined;
         this.profiles = {};
         this.reviews = undefined;
-        // --
 
         this.query = query;
         this.loadReview(count);

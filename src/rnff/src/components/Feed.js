@@ -30,7 +30,7 @@ export default class Feed extends React.Component<FeedProps> {
 
     componentDidMount() {
         const { feed } = this.props.store; // FeedStore
-        console.log('Feed::componentDidMount', feed);
+        // console.log('Feed::componentDidMount', feed);
 
         this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
     }
@@ -139,10 +139,16 @@ export default class Feed extends React.Component<FeedProps> {
                 refreshing: true
             },
             () => {
-                this.loadMore();
+                // this.loadMore();
+                this.allFeedsLoaded = false;
+                this.loadFeedFromTheStart();
             }
         );
     };
+
+    loadFeedFromTheStart() {
+        this.props.store.loadFeedFromTheStart();
+    }
 }
 
 const styles = StyleSheet.create({

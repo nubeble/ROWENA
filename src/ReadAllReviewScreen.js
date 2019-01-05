@@ -265,11 +265,17 @@ export default class ReadAllReviewScreen extends React.Component {
                 refreshing: true
             },
             () => {
-                // this.getPlaceLength();
-                this.loadMore();
+                // this.loadMore();
+                this.allReviewsLoaded = false;
+                this.loadReviewFromTheStart();
             }
         );
     };
+
+    loadReviewFromTheStart() {
+        const { reviewStore } = this.props.navigation.state.params;
+        reviewStore.loadReviewFromTheStart();
+    }
 
     @autobind
     keyExtractor(item: ReviewEntry): string {

@@ -86,7 +86,6 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 */
                 profileStore.init();
 
-
                 if (this.state.isUserAutoAuthenticated) {
                     // update user info to database
                     // await this.updateUser(user.uid, user.displayName, user.email, user.phoneNumber);

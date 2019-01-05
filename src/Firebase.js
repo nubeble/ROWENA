@@ -11,11 +11,13 @@ const config = {
     messagingSenderId: "457192015889"
 };
 
+// Firebase.instance = new Firebase();
 
 export default class Firebase {
     static auth: firebase.auth.Auth;
     static firestore: firebase.firestore.Firestore;
     static storage: firebase.storage.Storage;
+    static database: firebase.database.Database;
 
     static init() {
         firebase.initializeApp(config);
@@ -24,6 +26,7 @@ export default class Firebase {
         Firebase.firestore = firebase.firestore();
         Firebase.firestore.settings({ timestampsInSnapshots: true });
         Firebase.storage = firebase.storage();
+        Firebase.database = firebase.database();
     }
 
 
@@ -133,7 +136,13 @@ export default class Firebase {
 
             // 3. update (add fields to feeds in user profile)
             let data = {
+                /*
                 feeds: firebase.firestore.FieldValue.arrayUnion({
+                    placeId: placeId,
+                    feedId: feedId
+                })
+                */
+                feeds: Firebase.firestore.FieldValue.arrayUnion({
                     placeId: placeId,
                     feedId: feedId
                 })
@@ -227,7 +236,8 @@ export default class Firebase {
             };
 
             let data = {
-                reviews: firebase.firestore.FieldValue.arrayUnion(item)
+                // reviews: firebase.firestore.FieldValue.arrayUnion(item)
+                reviews: Firebase.firestore.FieldValue.arrayUnion(item)
             };
 
             transaction.update(userRef, data);
@@ -269,7 +279,8 @@ export default class Firebase {
             };
 
             let data = {
-                reviews: firebase.firestore.FieldValue.arrayRemove(item)
+                // reviews: firebase.firestore.FieldValue.arrayRemove(item)
+                reviews: Firebase.firestore.FieldValue.arrayRemove(item)
             };
 
             transaction.update(userRef, data);
@@ -322,7 +333,8 @@ export default class Firebase {
                 };
 
                 let userData = {
-                    replies: firebase.firestore.FieldValue.arrayUnion(item)
+                    // replies: firebase.firestore.FieldValue.arrayUnion(item)
+                    replies: Firebase.firestore.FieldValue.arrayUnion(item)
                 };
 
                 transaction.update(userRef, userData);
@@ -338,7 +350,8 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(transaction => {
             return new Promise(resolve => {
-                transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
+                // transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
+                transaction.update(reviewRef, { reply: Firebase.firestore.FieldValue.delete() });
 
                 const item = {
                     placeId: placeId,
@@ -348,7 +361,8 @@ export default class Firebase {
                 };
 
                 let data = {
-                    replies: firebase.firestore.FieldValue.arrayRemove(item)
+                    // replies: firebase.firestore.FieldValue.arrayRemove(item)
+                    replies: Firebase.firestore.FieldValue.arrayRemove(item)
                 };
 
                 transaction.update(userRef, data);
@@ -357,6 +371,111 @@ export default class Firebase {
             });
         });
     }
+
+    //// database ////
+    /*
+    get ref() {
+        Firebase.firebase.database().ref('chat');
+    }
+    */
+
+    // receive
+
+    static parseChild = snapshot => {
+        const { timestamp: numberStamp, text, user } = snapshot.val();
+        const { key: _id } = snapshot;
+
+        const timestamp = new Date(numberStamp);
+
+        const message = {
+            _id,
+            timestamp,
+            text,
+            user
+        };
+
+        return message;
+    };
+
+    static parseValue = (snapshot, id) => { // IN map, OUT array
+        const array = [];
+        snapshot.forEach(item => {
+            // console.log(item.key, item.val());
+            const key = item.key;
+            const value = item.val();
+
+            if (key !== id) {
+                const { timestamp: numberStamp, text, user } = value;
+                const _id = key;
+                const timestamp = new Date(numberStamp);
+
+                const message = {
+                    _id,
+                    timestamp,
+                    text,
+                    user
+                };
+
+                array.push(message);
+            }
+        });
+
+        if (array.length === 0) return null;
+
+        return array.reverse();
+    };
+
+
+
+    static chatOn = callback => {
+        Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
+            if (snapshot.exists()) {
+                callback(Firebase.parseChild(snapshot));
+            }
+        });
+    }
+
+    static chatOff() {
+        Firebase.database.ref('chat').off();
+    }
+
+    static loadMore = (timestamp, id, callback) => {
+        // console.log('timestamp', timestamp);
+
+        Firebase.database.ref('chat').orderByChild('timestamp').endAt(timestamp).limitToLast(20).once('value', snapshot => {
+            if (snapshot.exists()) {
+                // console.log('snapshot', snapshot.val());
+                callback(Firebase.parseValue(snapshot, id));
+            }
+        });
+    }
+
+    //// send
+
+    static uid() {
+        return (Firebase.auth.currentUser || {}).uid;
+    }
+
+    static timestamp() {
+        return firebase.database.ServerValue.TIMESTAMP;
+    }
+
+    static sendMessage(messages) {
+        for (let i = 0; i < messages.length; i++) {
+            const { text, user } = messages[i];
+
+            const message = {
+                text,
+                user,
+                timestamp: Firebase.timestamp()
+            };
+
+            Firebase.database.ref('chat').push(message);
+        }
+    };
+
+
+
 
 
 }

@@ -19,12 +19,14 @@ import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper'
 
+/*
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 type ExploreState = {
     scrollAnimation: Animated.Value
 };
+*/
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -33,9 +35,10 @@ type InjectedProps = {
 
 
 @inject("feedStore", "profileStore") @observer
-export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
+// export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
+export default class Explore extends React.Component<ScreenProps<> & InjectedProps> {
     state = {
-        scrollAnimation: new Animated.Value(0),
+        // scrollAnimation: new Animated.Value(0),
 
         searchText: '',
         cityName: '',
@@ -95,6 +98,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
 
+        /*
         const { scrollAnimation } = this.state;
         const opacity = scrollAnimation.interpolate({
             inputRange: [0, 60],
@@ -126,6 +130,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
             outputRange: [0, 0.25],
             extrapolate: "clamp"
         });
+        */
 
         return (
             <View style={styles.flex}>
@@ -213,6 +218,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                         :
                         <Feed
                             store={feedStore}
+                            /*
                             onScroll={Animated.event([{
                                 nativeEvent: {
                                     contentOffset: {
@@ -220,6 +226,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                     }
                                 }
                             }])}
+                            */
                             ListHeaderComponent={(
                                 <Animated.View>
 

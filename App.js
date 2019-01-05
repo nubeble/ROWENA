@@ -104,7 +104,9 @@ import Welcome from './src/Welcome';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithMobile from './src/SignUpWithMobile';
-import Chats from './src/Chats';
+// import Chats from './src/Chats';
+import ChatMain from './src/ChatMain';
+import ChatRoom from './src/ChatRoom';
 import Likes from './src/Likes';
 import ProfileScreen from './src/Profile';
 import Intro from './src/Intro';
@@ -225,6 +227,56 @@ var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     }
 };
 
+const ChatStackNavigator = createStackNavigator(
+    {
+        chat: {
+            screen: ChatMain
+        },
+        room: {
+            screen: ChatRoom
+        }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class ChatStackNavigatorWrapper extends React.Component {
+    static router = ChatStackNavigator.router;
+
+    render() {
+        return (
+            <ChatStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+ChatStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    // console.log('navigation.state.routes', navigation.state.routes);
+
+    if (navigation.state.routes[1] && navigation.state.routes[1].routeName === 'room') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
+
 const MainBottomTabNavigator = createBottomTabNavigator(
     {
         home: {
@@ -235,8 +287,14 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             screen: Likes,
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         },
+        /*
         chats: {
             screen: Chats,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        */
+        chat: {
+            screen: ChatStackNavigatorWrapper,
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         },
         profile: {
@@ -283,7 +341,8 @@ function _navigationOptions(navigation) {
                     size={30}
                     style={{ color: tintColor }}
                 />;
-            } else if (navigation.state.routeName === 'chats') {
+            // } else if (navigation.state.routeName === 'chats') {
+            } else if (navigation.state.routeName === 'chat') {
                 return <Ionicons
                     // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
                     name={'ios-chatbubbles'}
