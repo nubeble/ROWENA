@@ -361,7 +361,6 @@ export default class Firebase {
                 };
 
                 let data = {
-                    // replies: firebase.firestore.FieldValue.arrayRemove(item)
                     replies: Firebase.firestore.FieldValue.arrayRemove(item)
                 };
 
@@ -374,14 +373,39 @@ export default class Firebase {
 
     //// database ////
 
+    static createChatRoom() {
+        const id = Util.uid();
+
+        const data = {
+            timestamp: Firebase.timestamp()
+        };
+
+        Firebase.database.ref('chat').child(id).set(data);
+    }
+
     static loadChatRoomList = callback => {
-        Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('value', snapshot => {
+        Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(10).on('value', snapshot => {
             if (snapshot.exists()) {
-                // ToDo: invert the results
+                
 
                 // callback(Firebase.parseChild(snapshot));
 
-                callback(snapshot.val());
+                // callback(snapshot.val());
+
+                /*
+                snapshot.forEach(function (child) {
+                    console.log(child.key + ': ' + child.val());
+                });
+                */
+                
+                // invert the results
+                let list = [];
+                Util.reverseSnapshot(snapshot).forEach(child => {
+                    // console.log(child.key, child.val().timestamp);
+                    list.push(child.val());
+                });
+
+                callback(list);
             }
         });
     }
@@ -442,9 +466,10 @@ export default class Firebase {
 
 
 
-    // static chatOn = (id, callback) => {
-    static chatOn = callback => {
-        Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
+    static chatOn = (id, callback) => {
+    // static chatOn = callback => {
+        // Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
+        Firebase.database.ref('chat' + '/' + id + 'contents').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
             if (snapshot.exists()) {
                 callback(Firebase.parseChild(snapshot));
             }
@@ -490,6 +515,17 @@ export default class Firebase {
             Firebase.database.ref('chat').push(message);
         }
     };
+
+    // tmp
+    static send(id, user, message) {
+        const data = {
+            message,
+            user,
+            timestamp: Firebase.timestamp()
+        };
+
+        Firebase.database.ref('chat' + '/' + id + '/contents').push(data);
+    }
 
 
 

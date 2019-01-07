@@ -47,6 +47,16 @@ export default class Util extends React.Component {
         return false;
     }
 
+    static reverseSnapshot(snapshot) {
+        let reversed = [];
+
+        snapshot.forEach(child => {
+            reversed.unshift(child);
+        });
+
+        return reversed;
+    }
+
 
 
 }

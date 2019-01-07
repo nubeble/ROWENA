@@ -1,5 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import {
+    StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator,
+    Dimensions, FlatList, TouchableWithoutFeedback
+} from 'react-native';
+import autobind from "autobind-decorator";
+import { Theme, RefreshIndicator, FirstPost } from "./rnff/src/components";
+import { Constants } from "expo";
+import Firebase from './Firebase';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Toast, { DURATION } from 'react-native-easy-toast';
+
 
 export default class ChatMain extends React.Component {
     state = {
@@ -10,6 +20,8 @@ export default class ChatMain extends React.Component {
     }
 
     componentDidMount() {
+        console.log('ChatMain::componentDidMount');
+
         // load chat room list
         Firebase.loadChatRoomList(list => {
             console.log('list', list);
@@ -47,13 +59,9 @@ export default class ChatMain extends React.Component {
     }
 
     render(): React.Node {
-        const { reviewStore } = this.props.navigation.state.params;
         const { navigation } = this.props;
 
-        // const reviews = reviewStore.reviews;
-        const { reviews } = reviewStore;
-
-        const loading = reviews === undefined;
+        // const loading = reviews === undefined;
 
         return (
             /*
@@ -72,22 +80,63 @@ export default class ChatMain extends React.Component {
             */
             <View style={styles.flex}>
                 <View style={styles.searchBarStyle}>
-                    {/*
+
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
                             bottom: 8 + 4, // paddingBottom from searchBarStyle
-                            left: 22,
+                            left: 50,
                             alignSelf: 'baseline'
                         }}
-                        onPress={() => this.props.navigation.goBack()}
+                        onPress={() => {
+                            Firebase.createChatRoom();
+                        }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
-                    */}
+
+                    <TouchableOpacity
+                        style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            left: 100,
+                            alignSelf: 'baseline'
+                        }}
+                        onPress={() => {
+                            // sendMessage
+
+                            const id = '49620e74-d4b1-0adc-5f11-6ceb9f5640e6';
+                            const message = 'hi';
+                            const user = {
+                                name: 'name',
+                                uid: Firebase.uid()
+                            };
+
+                            Firebase.send(id, user, message);
+                        }}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            left: 150,
+                            alignSelf: 'baseline'
+                        }}
+                        onPress={() => {
+                            // go to chat room
+                            this.moveToRoom();
+                        }}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+
                 </View>
 
                 {
+/*
                     !this.state.renderChat ?
                         <ActivityIndicator
                             style={styles.activityIndicator}
@@ -96,41 +145,38 @@ export default class ChatMain extends React.Component {
                             color='grey'
                         />
                         :
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-                            }}
-                        >
-                            <FlatList
-                                ref={(fl) => this._flatList = fl}
-                                data={reviews}
-                                keyExtractor={this.keyExtractor}
-                                renderItem={this.renderItem}
-                                onEndReachedThreshold={0.5}
-                                onEndReached={this.loadMore}
 
-                                contentContainerStyle={styles.contentContainer}
-                                showsVerticalScrollIndicator
+                        <FlatList
+                            ref={(fl) => this._flatList = fl}
+                            data={reviews}
+                            keyExtractor={this.keyExtractor}
+                            renderItem={this.renderItem}
+                            onEndReachedThreshold={0.5}
+                            onEndReached={this.loadMore}
 
-                                ListEmptyComponent={(
-                                    <View style={{ paddingHorizontal: Theme.spacing.small }}>
-                                        {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
-                                    </View>
-                                )}
-                                ListFooterComponent={(
-                                    this.state.isLoadingChat && (
-                                        <ActivityIndicator
-                                            style={styles.bottomIndicator}
-                                            animating={this.state.isLoadingChat}
-                                            size="small"
-                                            color='grey'
-                                        />
-                                    )
-                                )}
+                            contentContainerStyle={styles.contentContainer}
+                            showsVerticalScrollIndicator
 
-                                ItemSeparatorComponent={this.itemSeparatorComponent}
-                            />
-                        </TouchableWithoutFeedback>
+                            ListEmptyComponent={(
+                                <View style={{ paddingHorizontal: Theme.spacing.small }}>
+                                    {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                                </View>
+                            )}
+
+                            ListFooterComponent={(
+                                this.state.isLoadingChat && (
+                                    <ActivityIndicator
+                                        style={styles.bottomIndicator}
+                                        animating={this.state.isLoadingChat}
+                                        size="small"
+                                        color='grey'
+                                    />
+                                )
+                            )}
+
+                            ItemSeparatorComponent={this.itemSeparatorComponent}
+                        />
+*/
                 }
 
                 <Toast
