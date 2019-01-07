@@ -26,7 +26,7 @@ export default class ReadAllReviewScreen extends React.Component {
     state = {
         renderReview: false,
         isLoadingReview: false,
-        reviewLength: 0,
+        // reviewLength: 0,
         isOwner: false,
         showKeyboard: false,
         bottomLocation: Dimensions.get('window').height,

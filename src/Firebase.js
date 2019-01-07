@@ -373,6 +373,21 @@ export default class Firebase {
     }
 
     //// database ////
+
+    static loadChatRoomList = callback => {
+        Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('value', snapshot => {
+            if (snapshot.exists()) {
+                // ToDo: invert the results
+
+                // callback(Firebase.parseChild(snapshot));
+
+                callback(snapshot.val());
+            }
+        });
+    }
+
+
+
     /*
     get ref() {
         Firebase.firebase.database().ref('chat');
@@ -427,6 +442,7 @@ export default class Firebase {
 
 
 
+    // static chatOn = (id, callback) => {
     static chatOn = callback => {
         Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
             if (snapshot.exists()) {
@@ -435,6 +451,7 @@ export default class Firebase {
         });
     }
 
+    // static chatOff = (id) => {
     static chatOff() {
         Firebase.database.ref('chat').off();
     }
