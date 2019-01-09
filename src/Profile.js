@@ -20,10 +20,6 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-type FlatListItem<T> = {
-    item: T
-};
-
 const MAX_FEED_COUNT = 6; // 3 x 2
 
 
@@ -264,7 +260,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
     async addFeed() {
         const feedId = Util.uid(); // create uuid
 
-        const userUid = Firebase.auth.currentUser.uid;
+        const userUid = Firebase.uid();
         /*
         let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         const location = {
@@ -344,7 +340,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                         }
                     };
 
-                    this.updateUser(Firebase.auth.currentUser.uid, data);
+                    this.updateUser(Firebase.uid(), data);
                     */
                 });
 
@@ -387,8 +383,8 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             name: fileName,
             type: type
         });
-        formData.append("userUid", Firebase.auth.currentUser.uid);
-        // formData.append("feedId", Firebase.auth.currentUser.uid);
+        formData.append("userUid", Firebase.uid());
+        // formData.append("feedId", Firebase.uid());
         formData.append("pictureIndex", index);
 
         try {

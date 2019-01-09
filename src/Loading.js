@@ -74,7 +74,7 @@ export default class Loading extends React.Component<ScreenProps<>> {
             const isUserAuthenticated = !!user;
 
             if (isUserAuthenticated) {
-                const { uid } = Firebase.auth.currentUser;
+                // const { uid } = Firebase.auth.currentUser;
                 /*
                 const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc"); // 전체 feed
                 feedStore.init(feedQuery);
@@ -88,13 +88,14 @@ export default class Loading extends React.Component<ScreenProps<>> {
 
                 if (this.state.isUserAutoAuthenticated) {
                     // update user info to database
-                    // await this.updateUser(user.uid, user.displayName, user.email, user.phoneNumber);
-                    var profile = {
+                    const profile = {
                         name: user.displayName,
                         email: user.email,
                         phoneNumber: user.phoneNumber
                     };
-                    await Firebase.firestore.collection('users').doc(uid).update(profile);
+
+                    // await Firebase.firestore.collection('users').doc(uid).update(profile);
+                    await Firebase.updateProfile(profile);
 
                     console.log('move to main');
                     navigation.navigate('mainBottomTabNavigator');
@@ -104,6 +105,8 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 }
             } else {
                 this.setState( { isUserAutoAuthenticated: false } );
+
+                console.log('move to auth');
                 navigation.navigate("authStackNavigator");
             }
         });

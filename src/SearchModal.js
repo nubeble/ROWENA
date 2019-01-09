@@ -122,11 +122,11 @@ export default class SearchModal extends React.Component {
                                 alignSelf: 'baseline',
                                 borderRadius: 25,
                                 */
-                                height: 50,
-                                backgroundColor: 'transparent',
+                                // height: 50,
                                 // backgroundColor: 'grey',
+                                backgroundColor: 'transparent',
                                 borderTopColor: 'transparent',
-                                borderBottomColor: 'transparent',
+                                borderBottomColor: 'transparent'
                             },
                             textInput: {
                                 // width: '70%',
@@ -136,19 +136,21 @@ export default class SearchModal extends React.Component {
                                 // backgroundColor: 'green',
                                 //borderRadius: 25,
 
-                                // width: '100%',
+                                // textAlignVertical: 'top',
+                                // alignSelf: 'center',
+                                /*
                                 position: 'absolute',
                                 left: 0,
-                                right: 40,
-                                height: 40,
-                                backgroundColor: 'transparent',
-                                fontSize: 24,
-                                lineHeight: 28,
-                                // fontWeight: '500',
-                                color: "white",
-                                // borderColor: 'transparent'
+                                right: 60,
+                                height: 60,
+                                */
 
-                                fontFamily: "SFProText-Semibold",
+                                backgroundColor: 'transparent',
+                                // backgroundColor: "rgb(61, 61, 61)",
+                                height: 40,
+                                fontSize: 24,
+                                color: "white",
+                                fontFamily: "SFProText-Regular"
                             },
 
                             listView: {
@@ -168,7 +170,7 @@ export default class SearchModal extends React.Component {
                                 height: 30,
                                 // fontWeight: '500',
                                 color: "white",
-                                fontFamily: "SFProText-Semibold",
+                                fontFamily: "SFProText-Regular",
                             },
                             predefinedPlacesDescription: {
                                 // color: 'rgb(234, 150, 24)'
@@ -202,20 +204,20 @@ export default class SearchModal extends React.Component {
                         predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
 
                         debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-                        // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
-                        /*
-                        renderLeftButton={() =>
-                            <TouchableOpacity
-                                style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
-                                onPress={() => {
-                                    // this.startEditing();
-                                }}
-                            >
-                                <FontAwesome name='search' color="grey" size={20} />
-                            </TouchableOpacity>
-                        }
-                        */
-                        // renderRightButton={() => <Text>Custom text after the input</Text>}
+                    // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
+                    /*
+                    renderLeftButton={() =>
+                        <TouchableOpacity
+                            style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
+                            onPress={() => {
+                                // this.startEditing();
+                            }}
+                        >
+                            <FontAwesome name='search' color="grey" size={20} />
+                        </TouchableOpacity>
+                    }
+                    */
+                    // renderRightButton={() => <Text>Custom text after the input</Text>}
                     />
                 </View>
             </Modal>

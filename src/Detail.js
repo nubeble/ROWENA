@@ -80,7 +80,7 @@ export default class Detail extends React.Component {
 
         const { post, profile } = this.props.navigation.state.params;
 
-        const isOwner = this.isOwner(post.uid, Firebase.auth.currentUser.uid);
+        const isOwner = this.isOwner(post.uid, Firebase.uid());
         this.setState({ isOwner });
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
@@ -200,7 +200,7 @@ export default class Detail extends React.Component {
                                                 {post.age}yr {post.height}cm {post.weight}kg
                                         </Text>
 
-                                            <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
                                                 <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                     <AirbnbRating
                                                         count={5}
@@ -524,10 +524,10 @@ export default class Detail extends React.Component {
 
                 const reply = _review.reply;
 
-                const isMyReview = this.isOwner(_review.uid, Firebase.auth.currentUser.uid);
+                const isMyReview = this.isOwner(_review.uid, Firebase.uid());
 
                 let isMyReply = undefined;
-                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.auth.currentUser.uid);
+                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.uid());
 
 
                 reviewArray.push(
@@ -539,7 +539,7 @@ export default class Detail extends React.Component {
                             <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.xSmall }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             {/* ToDo: draw stars based on averge rating & get review count */}
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
@@ -554,7 +554,7 @@ export default class Detail extends React.Component {
                             <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
                         </View>
 
-                        <View style={{ paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
+                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
                             <ReadMore
                                 numberOfLines={2}
                             // onReady={() => this.readingCompleted()}
@@ -873,7 +873,10 @@ export default class Detail extends React.Component {
     }
 
     contact() {
-        // ToDo
+        // ToDo: move to chat
+
+
+        // 1. create chat room or (just move if exists)
     }
 
     sendReply() {
@@ -907,7 +910,7 @@ export default class Detail extends React.Component {
         const placeId = post.placeId;
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
+        const userUid = Firebase.uid(); // 리뷰를 쓴 사람
 
         // await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message); // ToDo
@@ -921,7 +924,7 @@ export default class Detail extends React.Component {
         const placeId = post.placeId;
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[index].review.id;
-        const userUid = Firebase.auth.currentUser.uid;
+        const userUid = Firebase.uid();
 
         await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
@@ -943,7 +946,7 @@ export default class Detail extends React.Component {
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[index].review.id;
         const replyId = this.reviewStore.reviews[index].review.reply.id;
-        const userUid = Firebase.auth.currentUser.uid;
+        const userUid = Firebase.uid();
 
         await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
@@ -1015,6 +1018,7 @@ const styles = StyleSheet.create({
     date: {
         marginLeft: 8,
         fontSize: 14,
+        lineHeight: 14,
         fontFamily: "SFProText-Light",
         color: "grey"
     },
@@ -1050,7 +1054,7 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
+        // paddingBottom: Theme.spacing.xSmall
     },
     reviewCount: {
         marginLeft: 4,
@@ -1060,7 +1064,7 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
+        // paddingBottom: Theme.spacing.xSmall
     },
     note: {
         color: 'silver',
@@ -1149,11 +1153,11 @@ const styles = StyleSheet.create({
         marginLeft: 4,
 
         color: '#f1c40f',
-        fontSize: 14,
+        fontSize: 13,
         lineHeight: 13,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
+        // paddingBottom: Theme.spacing.xSmall
     },
     replyOwner: {
         // color: "rgb(170, 170, 170)",

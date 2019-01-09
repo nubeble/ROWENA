@@ -15,6 +15,8 @@ export default class ChatRoom extends React.Component {
     */
 
     state = {
+        name: '',
+        id: '',
         messages: []
     };
 
@@ -25,7 +27,13 @@ export default class ChatRoom extends React.Component {
     }
 
     componentDidMount() {
-        Firebase.chatOn(message => {
+        console.log('ChatRoom::componentDidMount');
+
+        const item = this.props.navigation.state.params.item;
+
+        this.setState({name: item.users[1].name, id: item.id});
+
+        Firebase.chatOn(item.id, message => {
             console.log('on message', message);
 
             this.setState(previousState => ({
@@ -35,14 +43,19 @@ export default class ChatRoom extends React.Component {
     }
 
     componentWillUnmount() {
-        Firebase.chatOff();
+        console.log('ChatRoom::componentWillUnmount');
+
+        const item = this.props.navigation.state.params.item;
+
+        Firebase.chatOff(item.id);
     }
 
     get user() {
         // Return our name and our UID for GiftedChat to parse
         return {
-            name: this.props.navigation.state.params.name, // ToDo
-            uid: Firebase.uid()
+            // name: this.props.navigation.state.params.name, // ToDo
+            // uid: Firebase.uid()
+            _id: Firebase.uid()
         };
     }
 
@@ -66,6 +79,18 @@ export default class ChatRoom extends React.Component {
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+
+                    <Text
+                        style={{
+                            color: 'grey',
+                            fontSize: 18,
+                            fontFamily: "SFProText-Semibold",
+                            alignSelf: 'center'
+                        }}
+                    >
+                    {this.state.name}
+                    </Text>
+
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
@@ -80,7 +105,7 @@ export default class ChatRoom extends React.Component {
                 </View>
                 <GiftedChat
                     messages={this.state.messages}
-                    onSend={(messages) => Firebase.sendMessage(messages)}
+                    onSend={(messages) => Firebase.sendMessage(this.state.id, messages)}
                     user={this.user}
 
                     listViewProps={{
@@ -122,9 +147,10 @@ export default class ChatRoom extends React.Component {
 
         const timestamp = this.state.messages[this.state.messages.length - 1].timestamp;
         const date = new Date(timestamp);
-        const id = this.state.messages[this.state.messages.length - 1]._id;
+        const lastMessageTimestamp = date.getTime();
+        const lastMessageId = this.state.messages[this.state.messages.length - 1]._id;
 
-        Firebase.loadMore(date.getTime(), id, message => {
+        Firebase.loadMoreMessage(this.state.id, lastMessageTimestamp, lastMessageId, message => {
             if (message) {
                 console.log('message list', message);
 

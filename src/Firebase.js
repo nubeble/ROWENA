@@ -71,6 +71,24 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).set(profile);
     }
 
+    static async updateProfile(profile) {
+        const { uid } = Firebase.auth.currentUser;
+
+        await Firebase.firestore.collection('users').doc(uid).update(profile);
+
+        // ToDo: update info to firebase auth
+        /*
+        Firebase.auth.currentUser.updateProfile({
+            displayName: "Jane Q. User",
+            photoURL: "https://example.com/jane-q-user/profile.jpg"
+        }).then(function () {
+            // Update successful.
+        }).catch(function (error) {
+            // An error happened.
+        });
+        */
+    }
+
     static async deleteProfile(uid) {
         await Firebase.firestore.collection("users").doc(uid).delete();
     }
@@ -373,35 +391,29 @@ export default class Firebase {
 
     //// database ////
 
-    static createChatRoom() {
-        const id = Util.uid();
+    static createChatRoom(users) {
+        const uid = Firebase.uid(); // user uid
+        const id = Util.uid(); // chat room id
 
         const data = {
-            timestamp: Firebase.timestamp()
+            id: id,
+            // timestamp: 9999999999999,
+            timestamp: 1111111111111,
+            contents: 'last message',
+            users: users
         };
 
-        Firebase.database.ref('chat').child(id).set(data);
+        Firebase.database.ref('chat').child(uid).child(id).set(data);
     }
 
-    static loadChatRoomList = callback => {
-        Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(10).on('value', snapshot => {
+    static loadChatRoom = callback => {
+        const uid = Firebase.uid(); // user uid
+
+        Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(10).on('value', snapshot => {
             if (snapshot.exists()) {
-                
-
-                // callback(Firebase.parseChild(snapshot));
-
-                // callback(snapshot.val());
-
-                /*
-                snapshot.forEach(function (child) {
-                    console.log(child.key + ': ' + child.val());
-                });
-                */
-                
                 // invert the results
                 let list = [];
                 Util.reverseSnapshot(snapshot).forEach(child => {
-                    // console.log(child.key, child.val().timestamp);
                     list.push(child.val());
                 });
 
@@ -410,15 +422,27 @@ export default class Firebase {
         });
     }
 
+    static loadMoreChatRoom = (timestamp, id, callback) => {
+        // console.log('timestamp', timestamp);
 
+        const uid = Firebase.uid(); // user uid
 
-    /*
-    get ref() {
-        Firebase.firebase.database().ref('chat');
+        Firebase.database.ref('chat').child(uid).orderByChild('timestamp').endAt(timestamp).limitToLast(10 + 1).once('value', snapshot => {
+            if (snapshot.exists()) {
+                // invert the results
+                let list = [];
+                Util.reverseSnapshot(snapshot).forEach(child => {
+                    if (child.val().id !== id) { // filter by id
+                        list.push(child.val());
+                    }
+                });
+
+                callback(list);
+            }
+        });
     }
-    */
 
-    // receive
+    //// receive
 
     static parseChild = snapshot => {
         const { timestamp: numberStamp, text, user } = snapshot.val();
@@ -436,7 +460,7 @@ export default class Firebase {
         return message;
     };
 
-    static parseValue = (snapshot, id) => { // IN map, OUT array
+    static parseValue = (snapshot, id) => {
         const array = [];
         snapshot.forEach(item => {
             // console.log(item.key, item.val());
@@ -464,30 +488,24 @@ export default class Firebase {
         return array.reverse();
     };
 
-
-
     static chatOn = (id, callback) => {
-    // static chatOn = callback => {
-        // Firebase.database.ref('chat').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
-        Firebase.database.ref('chat' + '/' + id + 'contents').orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
+        Firebase.database.ref('contents').child(id).orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
             if (snapshot.exists()) {
                 callback(Firebase.parseChild(snapshot));
             }
         });
     }
 
-    // static chatOff = (id) => {
-    static chatOff() {
-        Firebase.database.ref('chat').off();
+    static chatOff(id) {
+        Firebase.database.ref('contents').child(id).off();
     }
 
-    static loadMore = (timestamp, id, callback) => {
-        // console.log('timestamp', timestamp);
+    static loadMoreMessage = (id, lastMessageTimestamp, lastMessageId, callback) => {
+        // console.log('timestamp', lastMessageTimestamp);
 
-        Firebase.database.ref('chat').orderByChild('timestamp').endAt(timestamp).limitToLast(20).once('value', snapshot => {
+        Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(20 + 1).once('value', snapshot => {
             if (snapshot.exists()) {
-                // console.log('snapshot', snapshot.val());
-                callback(Firebase.parseValue(snapshot, id));
+                callback(Firebase.parseValue(snapshot, lastMessageId));
             }
         });
     }
@@ -498,37 +516,87 @@ export default class Firebase {
         return (Firebase.auth.currentUser || {}).uid;
     }
 
+    static user() {
+        var user = Firebase.auth.currentUser;
+        var name, email, photoUrl, uid, emailVerified;
+
+        if (user != null) {
+            name = user.displayName;
+            email = user.email;
+            photoUrl = user.photoURL;
+            emailVerified = user.emailVerified;
+            uid = user.uid;
+        }
+
+        const data = {
+            name: name,
+            email: email,
+            photoUrl: photoUrl,
+            emailVerified: emailVerified,
+            uid, uid
+        };
+
+        return data;
+    }
+
     static timestamp() {
+        // return Firebase.database.ServerValue.TIMESTAMP;
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static sendMessage(messages) {
+    static sendMessage(id, messages) {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
+            const timestamp = Firebase.timestamp();
 
-            const message = {
+            const pushData = {
                 text,
                 user,
-                timestamp: Firebase.timestamp()
+                timestamp: timestamp
             };
-
-            Firebase.database.ref('chat').push(message);
+    
+            // Firebase.database.ref('chat' + '/' + id + '/contents').push(data);
+            Firebase.database.ref('contents').child(id).push(pushData);
+    
+            // update timestamp, contents to chat
+    
+            const updateData = {
+                contents: text,
+                timestamp: timestamp
+            };
+    
+            const uid = Firebase.uid();
+    
+            Firebase.database.ref('chat').child(uid).child(id).update(updateData);
         }
     };
 
     // tmp
-    static send(id, user, message) {
-        const data = {
-            message,
+    /*
+    static send(id, user, text) { // 2. add chat contents
+        const timestamp = Firebase.timestamp();
+
+        const pushData = {
+            text,
             user,
-            timestamp: Firebase.timestamp()
+            timestamp: timestamp
         };
 
-        Firebase.database.ref('chat' + '/' + id + '/contents').push(data);
+        // Firebase.database.ref('chat' + '/' + id + '/contents').push(data);
+        Firebase.database.ref('contents').child(id).push(pushData);
+
+        // update timestamp, contents to chat
+
+        const updateData = {
+            contents: text,
+            timestamp: timestamp
+        };
+
+        const uid = Firebase.uid();
+
+        Firebase.database.ref('chat').child(uid).child(id).update(updateData);
     }
-
-
-
+    */
 
 
 }

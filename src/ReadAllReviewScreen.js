@@ -17,6 +17,10 @@ import { AirbnbRating } from './react-native-ratings/src';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 
+type FlatListItem<T> = {
+    item: T
+};
+
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew that you were there for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
 
@@ -291,10 +295,10 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const reply = _review.reply;
 
-        const isMyReview = this.isOwner(_review.uid, Firebase.auth.currentUser.uid);
+        const isMyReview = this.isOwner(_review.uid, Firebase.uid());
 
         let isMyReply = undefined;
-        if (reply) isMyReply = this.isOwner(reply.uid, Firebase.auth.currentUser.uid);
+        if (reply) isMyReply = this.isOwner(reply.uid, Firebase.uid());
 
 
         return (
@@ -306,7 +310,7 @@ export default class ReadAllReviewScreen extends React.Component {
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'flex-start', paddingTop: Theme.spacing.tiny }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny }}>
                     {/* ToDo: draw stars based on averge rating & get review count */}
                     <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                         <AirbnbRating
@@ -321,7 +325,7 @@ export default class ReadAllReviewScreen extends React.Component {
                     <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
                 </View>
 
-                <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                <View style={{ paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.tiny }}>
                     {/*
                     <Text style={styles.reviewText}>{tmp}</Text>
                     */}
@@ -618,7 +622,7 @@ export default class ReadAllReviewScreen extends React.Component {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
         const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.auth.currentUser.uid; // 리뷰를 쓴 사람
+        const userUid = Firebase.uid(); // 리뷰를 쓴 사람
 
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
@@ -629,7 +633,7 @@ export default class ReadAllReviewScreen extends React.Component {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
         const reviewId = reviewStore.reviews[index].review.id;
-        const userUid = Firebase.auth.currentUser.uid;
+        const userUid = Firebase.uid();
 
         const count = reviewStore.reviews.length;
 
@@ -651,7 +655,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const reviewId = reviewStore.reviews[index].review.id;
         const replyId = reviewStore.reviews[index].review.reply.id;
-        const userUid = Firebase.auth.currentUser.uid;
+        const userUid = Firebase.uid();
 
         const count = reviewStore.reviews.length;
 
@@ -728,11 +732,11 @@ const styles = StyleSheet.create({
 
         color: '#f1c40f',
         fontSize: 15,
-        lineHeight: 14,
+        lineHeight: 15,
 
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
+        // paddingBottom: Theme.spacing.xSmall
     },
     replyOwner: {
         // color: "rgb(170, 170, 170)",

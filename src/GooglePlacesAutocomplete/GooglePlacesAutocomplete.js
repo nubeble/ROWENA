@@ -36,6 +36,7 @@ const defaultStyles = {
 		flexDirection: 'row',
 	},
 	textInput: {
+		/*
 		backgroundColor: '#FFFFFF',
 		height: 28,
 		borderRadius: 5,
@@ -48,6 +49,26 @@ const defaultStyles = {
 		marginRight: 8,
 		fontSize: 15,
 		flex: 1
+		*/
+
+		flex: 1,
+		borderRadius: 5,
+		marginTop: 9,
+		marginLeft: 8,
+		marginRight: 8,
+
+		paddingLeft: 8,
+		paddingRight: 8,
+
+
+
+		backgroundColor: "rgb(61, 61, 61)",
+		height: 40,
+		fontSize: 22,
+		color: "white",
+		fontFamily: "SFProText-Regular",
+
+
 	},
 	poweredContainer: {
 		justifyContent: 'flex-end',
@@ -752,6 +773,7 @@ export default class GooglePlacesAutocomplete extends Component {
 					>
 						{this._renderLeftButton()}
 						<TextInput
+							multiline={false}
 							ref="textInput"
 							keyboardAppearance={'dark'}
 
