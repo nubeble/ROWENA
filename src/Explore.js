@@ -166,7 +166,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 // ref='searchInput'
                                 pointerEvents="none"
                                 editable={false}
-                                style={{ width: '100%', height: '100%', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Semibold", color: "white", textAlign: 'center' }}
+                                style={{ width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", color: "white", textAlign: 'center' }}
                                 placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
                                 // underlineColorAndroid="transparent"
                                 // onTouchStart={() => this.startEditing()}

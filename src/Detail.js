@@ -73,6 +73,13 @@ export default class Detail extends React.Component {
     componentDidMount() {
         console.log('Detail::componentDidMount');
 
+        const width = Dimensions.get('window').width;
+        const height = Dimensions.get('window').height;
+
+        console.log(width, height);
+
+
+
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         // this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
@@ -1016,6 +1023,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
+        backgroundColor: 'rgb(70, 154, 32)',
+
+        
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,
@@ -1047,24 +1057,25 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.xSmall
     },
     rating: {
-        marginLeft: 4,
+        marginLeft: 5,
 
         color: '#f1c40f',
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.xSmall,
-        // paddingBottom: Theme.spacing.xSmall
+        // paddingTop: Theme.spacing.xSmall
+        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
+
     },
     reviewCount: {
-        marginLeft: 4,
+        marginLeft: 5,
 
         color: 'white',
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.xSmall,
-        // paddingBottom: Theme.spacing.xSmall
+        // paddingTop: Theme.spacing.xSmall
+        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     note: {
         color: 'silver',
@@ -1156,8 +1167,8 @@ const styles = StyleSheet.create({
         fontSize: 13,
         lineHeight: 13,
         fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.xSmall,
-        // paddingBottom: Theme.spacing.xSmall
+        // paddingTop: Theme.spacing.xSmall
+        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     replyOwner: {
         // color: "rgb(170, 170, 170)",

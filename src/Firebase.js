@@ -154,13 +154,7 @@ export default class Firebase {
 
             // 3. update (add fields to feeds in user profile)
             let data = {
-                /*
                 feeds: firebase.firestore.FieldValue.arrayUnion({
-                    placeId: placeId,
-                    feedId: feedId
-                })
-                */
-                feeds: Firebase.firestore.FieldValue.arrayUnion({
                     placeId: placeId,
                     feedId: feedId
                 })
@@ -254,8 +248,7 @@ export default class Firebase {
             };
 
             let data = {
-                // reviews: firebase.firestore.FieldValue.arrayUnion(item)
-                reviews: Firebase.firestore.FieldValue.arrayUnion(item)
+                reviews: firebase.firestore.FieldValue.arrayUnion(item)
             };
 
             transaction.update(userRef, data);
@@ -297,8 +290,7 @@ export default class Firebase {
             };
 
             let data = {
-                // reviews: firebase.firestore.FieldValue.arrayRemove(item)
-                reviews: Firebase.firestore.FieldValue.arrayRemove(item)
+                reviews: firebase.firestore.FieldValue.arrayRemove(item)
             };
 
             transaction.update(userRef, data);
@@ -351,8 +343,7 @@ export default class Firebase {
                 };
 
                 let userData = {
-                    // replies: firebase.firestore.FieldValue.arrayUnion(item)
-                    replies: Firebase.firestore.FieldValue.arrayUnion(item)
+                    replies: firebase.firestore.FieldValue.arrayUnion(item)
                 };
 
                 transaction.update(userRef, userData);
@@ -368,8 +359,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(transaction => {
             return new Promise(resolve => {
-                // transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
-                transaction.update(reviewRef, { reply: Firebase.firestore.FieldValue.delete() });
+                transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
 
                 const item = {
                     placeId: placeId,
@@ -379,7 +369,7 @@ export default class Firebase {
                 };
 
                 let data = {
-                    replies: Firebase.firestore.FieldValue.arrayRemove(item)
+                    replies: firebase.firestore.FieldValue.arrayRemove(item)
                 };
 
                 transaction.update(userRef, data);
