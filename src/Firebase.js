@@ -71,9 +71,7 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).set(profile);
     }
 
-    static async updateProfile(profile) {
-        const { uid } = Firebase.auth.currentUser;
-
+    static async updateProfile(uid, profile) {
         await Firebase.firestore.collection('users').doc(uid).update(profile);
 
         // ToDo: update info to firebase auth
@@ -128,7 +126,8 @@ export default class Firebase {
 
             averageRating: 0.0, // 리뷰가 추가될 때마다 다시 계산해서 업데이트
 
-            timestamp: Date.now()
+            // timestamp: Date.now()
+            timestamp: Firebase.timestamp()
         };
 
         // 1. write feed first
@@ -214,7 +213,7 @@ export default class Firebase {
             uid: userUid,
             rating: rating,
             comment: comment,
-            timestamp: Date.now()
+            timestamp: Firebase.timestamp()
         };
 
         // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").add(review);
@@ -323,7 +322,7 @@ export default class Firebase {
                 id: id,
                 uid: userUid,
                 comment: message,
-                timestamp: Date.now()
+                timestamp: Firebase.timestamp()
             }
         };
 
@@ -381,24 +380,23 @@ export default class Firebase {
 
     //// database ////
 
-    static createChatRoom(users) {
-        const uid = Firebase.uid(); // user uid
+    static async createChatRoom(uid, users) {
         const id = Util.uid(); // chat room id
 
         const data = {
             id: id,
-            // timestamp: 9999999999999,
-            timestamp: 1111111111111,
-            contents: 'last message',
+            // timestamp: 1111111111111,
+            timestamp: Firebase.timestamp(),
+            contents: '', // last message
             users: users
         };
 
-        Firebase.database.ref('chat').child(uid).child(id).set(data);
+        await Firebase.database.ref('chat').child(uid).child(id).set(data);
+
+        return data;
     }
 
-    static loadChatRoom = callback => {
-        const uid = Firebase.uid(); // user uid
-
+    static loadChatRoom(uid, callback) {
         Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(10).on('value', snapshot => {
             if (snapshot.exists()) {
                 // invert the results
@@ -412,10 +410,8 @@ export default class Firebase {
         });
     }
 
-    static loadMoreChatRoom = (timestamp, id, callback) => {
+    static loadMoreChatRoom(uid, timestamp, id, callback) {
         // console.log('timestamp', timestamp);
-
-        const uid = Firebase.uid(); // user uid
 
         Firebase.database.ref('chat').child(uid).orderByChild('timestamp').endAt(timestamp).limitToLast(10 + 1).once('value', snapshot => {
             if (snapshot.exists()) {
@@ -490,7 +486,7 @@ export default class Firebase {
         Firebase.database.ref('contents').child(id).off();
     }
 
-    static loadMoreMessage = (id, lastMessageTimestamp, lastMessageId, callback) => {
+    static loadMoreMessage(id, lastMessageTimestamp, lastMessageId, callback) {
         // console.log('timestamp', lastMessageTimestamp);
 
         Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(20 + 1).once('value', snapshot => {
@@ -534,7 +530,7 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static sendMessage(id, messages) {
+    static async sendMessage(id, messages, uid) {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
             const timestamp = Firebase.timestamp();
@@ -544,20 +540,18 @@ export default class Firebase {
                 user,
                 timestamp: timestamp
             };
-    
+
             // Firebase.database.ref('chat' + '/' + id + '/contents').push(data);
-            Firebase.database.ref('contents').child(id).push(pushData);
-    
+            await Firebase.database.ref('contents').child(id).push(pushData);
+
             // update timestamp, contents to chat
-    
+
             const updateData = {
                 contents: text,
                 timestamp: timestamp
             };
-    
-            const uid = Firebase.uid();
-    
-            Firebase.database.ref('chat').child(uid).child(id).update(updateData);
+
+            await Firebase.database.ref('chat').child(uid).child(id).update(updateData);
         }
     };
 
@@ -587,6 +581,29 @@ export default class Firebase {
         Firebase.database.ref('chat').child(uid).child(id).update(updateData);
     }
     */
+
+    static async findChatRoom(myUid, postId) {
+        let room = null;
+
+        await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
+            // const data = snapshot.val();
+            // console.log('data', data);
+
+            snapshot.forEach(item => {
+                // console.log(item.key, item.val());
+                // const key = item.key;
+                const value = item.val();
+                const users = value.users;
+
+                if (users[1].pid === postId) {
+                    room = value;
+                }
+            });
+        });
+
+        return room;
+    }
+
 
 
 }

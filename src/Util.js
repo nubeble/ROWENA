@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from "moment";
 
 const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
@@ -55,6 +56,25 @@ export default class Util extends React.Component {
         });
 
         return reversed;
+    }
+
+    static getTime(timestamp) {
+        let time;
+
+        const today = moment();
+        const yesterday = moment().subtract(1, 'day');
+
+        if (moment(timestamp).isSame(today, 'day')) {
+            time = moment(timestamp).format('h:mm a');
+        } else if (moment(timestamp).isSame(yesterday, 'day')) {
+            time = 'Yesterday';
+        } else {
+            time = moment(timestamp).fromNow();
+
+            if (time === 'a day ago') time = 'Yesterday';
+        }
+
+        return time;
     }
 
 

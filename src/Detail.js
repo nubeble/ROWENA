@@ -1,8 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, ScrollView, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput,
-    StatusBar
+    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
@@ -24,7 +23,7 @@ import { observer } from "mobx-react/native";
 import Toast, { DURATION } from 'react-native-easy-toast';
 
 
-const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there";
+// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there";
 
 
 @observer
@@ -57,7 +56,7 @@ export default class Detail extends React.Component {
     onGoBack(result) { // back from rating
         console.log('Detail::onGoBack', result);
 
-        this.setState({ isNavigating: false });
+        // this.setState({ isNavigating: false }); // ToDo: move to onFocus
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -73,17 +72,19 @@ export default class Detail extends React.Component {
     componentDidMount() {
         console.log('Detail::componentDidMount');
 
+        /*
         const width = Dimensions.get('window').width;
         const height = Dimensions.get('window').height;
 
         console.log(width, height);
-
-
+        */
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         // this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
         // this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         const { post, profile } = this.props.navigation.state.params;
 
@@ -98,11 +99,22 @@ export default class Detail extends React.Component {
         }, 0);
     }
 
+    @autobind
+    onFocus() {
+        // console.log('Detail::onFocus');
+
+        if (this.state.isNavigating) this.setState({ isNavigating: false });
+    }
+
     componentWillUnmount() {
+        console.log('Detail::componentWillUnmount');
+
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         // this.keyboardDidWillListener.remove();
         // this.keyboardWillShowListener.remove();
+
+        this.onFocusListener.remove();
 
         this.isClosed = true;
     }
@@ -117,6 +129,8 @@ export default class Detail extends React.Component {
 
     render() {
         const { post, profile } = this.props.navigation.state.params;
+
+        // const name = post.name;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -168,6 +182,18 @@ export default class Detail extends React.Component {
                     >
                         <Ionicons name='md-heart-empty' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+
+                    {/*
+                    <Text
+                        style={{
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 20,
+                            fontFamily: "SFProText-Semibold",
+                            alignSelf: 'center',
+                            paddingBottom: 4
+                        }}
+                    >{name}</Text>
+                    */}
                 </View>
 
                 {
@@ -305,7 +331,7 @@ export default class Detail extends React.Component {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                        <TouchableOpacity onPress={() => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
+                                        <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
                                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
                                         </TouchableOpacity>
 
@@ -370,9 +396,10 @@ export default class Detail extends React.Component {
                                     borderRadius: 5,
                                     fontSize: 14,
                                     fontFamily: "SFProText-Regular",
-                                    color: "white", textAlign: 'justify', textAlignVertical: 'top',
-                                    backgroundColor: '#212121',
-
+                                    color: "white",
+                                    textAlign: 'justify',
+                                    textAlignVertical: 'top',
+                                    backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
                                 placeholderTextColor='rgb(160, 160, 160)'
@@ -879,11 +906,45 @@ export default class Detail extends React.Component {
         }
     }
 
-    contact() {
-        // ToDo: move to chat
+    async contact() {
+        const { post, profile } = this.props.navigation.state.params;
 
+        // 1. find existing chat room (by uid)
+        const room = await Firebase.findChatRoom(Firebase.uid(), post.id);
 
-        // 1. create chat room or (just move if exists)
+        if (room) {
+            this.setState({ isNavigating: true });
+
+            this.props.navigation.navigate('room', { item: room });
+        } else {
+            // create new chat room
+            // --
+            const uid = Firebase.uid();
+
+            const user1 = {
+                uid: uid,
+                // name: Firebase.user().name ? Firebase.user().name : 'name',
+                // picture: Firebase.user().photoUrl ? Firebase.user().photoUrl : 'uri',
+            };
+
+            const user2 = {
+                pid: post.id, // post id
+                uid: post.uid, // boss
+                name: post.name,
+                picture: post.pictures.one.uri
+            };
+
+            let users = [];
+            users.push(user1);
+            users.push(user2);
+
+            const item = await Firebase.createChatRoom(uid, users);
+            // --
+
+            this.setState({ isNavigating: true });
+
+            this.props.navigation.navigate('room', { item: item });
+        }
     }
 
     sendReply() {
@@ -975,7 +1036,6 @@ const styles = StyleSheet.create({
     searchBarStyle: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
-
         flexDirection: 'column',
         justifyContent: 'flex-end',
         // alignItems: 'center'
@@ -1025,7 +1085,7 @@ const styles = StyleSheet.create({
     date: {
         backgroundColor: 'rgb(70, 154, 32)',
 
-        
+
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,

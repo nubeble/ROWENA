@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Constants } from "expo";
 import { Theme } from "./rnff/src/components";
 import { GiftedChat } from 'react-native-gifted-chat';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 
 export default class ChatRoom extends React.Component {
@@ -17,7 +18,8 @@ export default class ChatRoom extends React.Component {
     state = {
         name: '',
         id: '',
-        messages: []
+        messages: [],
+        showAlert: false
     };
 
     constructor(props) {
@@ -31,12 +33,12 @@ export default class ChatRoom extends React.Component {
 
         const item = this.props.navigation.state.params.item;
 
-        this.setState({name: item.users[1].name, id: item.id});
+        this.setState({ name: item.users[1].name, id: item.id });
 
         Firebase.chatOn(item.id, message => {
             console.log('on message', message);
 
-            this.setState(previousState => ({
+            !this.isClosed && this.setState(previousState => ({
                 messages: GiftedChat.append(previousState.messages, message)
             }));
         });
@@ -48,6 +50,8 @@ export default class ChatRoom extends React.Component {
         const item = this.props.navigation.state.params.item;
 
         Firebase.chatOff(item.id);
+
+        this.isClosed = true;
     }
 
     get user() {
@@ -75,21 +79,21 @@ export default class ChatRoom extends React.Component {
                             left: 22,
                             alignSelf: 'baseline'
                         }}
-                        onPress={() => this.props.navigation.goBack()}
+                        onPress={() => {
+                            this.props.navigation.goBack();
+                        }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     <Text
                         style={{
-                            color: 'grey',
-                            fontSize: 18,
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 20,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'center'
                         }}
-                    >
-                    {this.state.name}
-                    </Text>
+                    >{this.state.name}</Text>
 
                     <TouchableOpacity
                         style={{
@@ -98,18 +102,16 @@ export default class ChatRoom extends React.Component {
                             right: 22,
                             alignSelf: 'baseline'
                         }}
-                        onPress={() => Alert.alert("Not Implemented")}
+                        onPress={() => this.setState({ showAlert: true })}
                     >
-                        <Ionicons name='md-heart-empty' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
                 <GiftedChat
                     messages={this.state.messages}
-                    onSend={(messages) => Firebase.sendMessage(this.state.id, messages)}
+                    onSend={async (messages) => await Firebase.sendMessage(this.state.id, messages, Firebase.uid())}
                     user={this.user}
-
                     listViewProps={{
-
                         scrollEventThrottle: 400,
                         onScroll: ({ nativeEvent }) => {
                             // console.log('nativeEvent', nativeEvent);
@@ -133,6 +135,26 @@ export default class ChatRoom extends React.Component {
                         */
                     }}
                 />
+
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Want to leave your chatroom?"
+                    // message="I have a message for you!"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="No"
+                    confirmText="Yes"
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={() => {
+                        this.setState({ showAlert: false });
+                    }}
+                    onConfirmPressed={() => {
+                        this.setState({ showAlert: false });
+                    }}
+                />
             </View>
         );
     } // end of render
@@ -154,7 +176,7 @@ export default class ChatRoom extends React.Component {
             if (message) {
                 console.log('message list', message);
 
-                this.setState(previousState => ({
+                !this.isClosed && this.setState(previousState => ({
                     messages: GiftedChat.prepend(previousState.messages, message)
                 }));
 

@@ -1,34 +1,34 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, TextInput, TouchableOpacity, ActivityIndicator,
-    Dimensions, FlatList, TouchableHighlight
+    StyleSheet, Text, View, ActivityIndicator, Dimensions, FlatList, TouchableHighlight
 } from 'react-native';
 import autobind from "autobind-decorator";
-import { Theme, RefreshIndicator, FirstPost } from "./rnff/src/components";
+import { Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Constants } from "expo";
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
-import moment from "moment";
+import Util from "./Util";
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 
 export default class ChatMain extends React.Component {
     state = {
         name: '',
-
         renderChat: false,
         isLoadingChat: false,
-
-
-        chatRoomList: []
+        chatRoomList: [],
+        showAlert: false
     }
 
     componentDidMount() {
         console.log('ChatMain::componentDidMount');
 
+        const uid = Firebase.uid(); // user uid
+
         // load chat room list
-        Firebase.loadChatRoom(list => {
+        Firebase.loadChatRoom(uid, list => {
             console.log('list', list);
 
             this.setState({ chatRoomList: list });
@@ -63,8 +63,6 @@ export default class ChatMain extends React.Component {
     render(): React.Node {
         const { navigation } = this.props;
 
-        // const loading = reviews === undefined;
-
         return (
             /*
             <View style={styles.container}>
@@ -82,7 +80,15 @@ export default class ChatMain extends React.Component {
             */
             <View style={styles.flex}>
                 <View style={styles.searchBarStyle}>
-
+                    <Text
+                        style={{
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 20,
+                            fontFamily: "SFProText-Semibold",
+                            alignSelf: 'center'
+                        }}
+                    >Messages</Text>
+                    {/*
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
@@ -90,11 +96,13 @@ export default class ChatMain extends React.Component {
                             left: 50,
                             alignSelf: 'baseline'
                         }}
-                        onPress={() => {
+                        onPress={async () => { // test
+                            const uid = Firebase.uid(); // user uid
+
                             const user1 = {
                                 // name: 'me',
                                 name: Firebase.user().name ? Firebase.user().name : 'name',
-                                uid: Firebase.uid(),
+                                uid: uid,
                                 // picture: 'uri' // thumbnail image uri
                                 picture: Firebase.user().photoUrl ? Firebase.user().photoUrl : 'uri',
                             };
@@ -110,7 +118,7 @@ export default class ChatMain extends React.Component {
                             users.push(user1);
                             users.push(user2);
 
-                            Firebase.createChatRoom(users);
+                            await Firebase.createChatRoom(uid, users);
                         }}
                     >
                         <Ionicons name='ios-checkbox-outline' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -154,7 +162,7 @@ export default class ChatMain extends React.Component {
                     >
                         <Ionicons name='ios-call' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
-
+*/}
                 </View>
 
                 {
@@ -169,7 +177,6 @@ export default class ChatMain extends React.Component {
                         <FlatList
                             ref={(fl) => this._flatList = fl}
                             data={this.state.chatRoomList}
-                            // data={this.state.chatRoomList.reverse()}
                             keyExtractor={this.keyExtractor}
                             renderItem={this.renderItem}
                             onEndReachedThreshold={0.5}
@@ -177,13 +184,7 @@ export default class ChatMain extends React.Component {
 
                             contentContainerStyle={styles.contentContainer}
                             showsVerticalScrollIndicator
-                            /*
-                                                        ListEmptyComponent={(
-                                                            <View style={{ paddingHorizontal: Theme.spacing.small }}>
-                                                                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
-                                                            </View>
-                                                        )}
-                            */
+
                             ListFooterComponent={(
                                 this.state.isLoadingChat && (
                                     <ActivityIndicator
@@ -195,7 +196,7 @@ export default class ChatMain extends React.Component {
                                 )
                             )}
 
-                            ItemSeparatorComponent={this.itemSeparatorComponent}
+                        // ItemSeparatorComponent={this.itemSeparatorComponent}
                         />
 
                 }
@@ -205,6 +206,26 @@ export default class ChatMain extends React.Component {
                     position='top'
                     positionValue={Dimensions.get('window').height / 2}
                     opacity={0.6}
+                />
+
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Want to leave your chatroom?"
+                    // message="I have a message for you!"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="No, cancel"
+                    confirmText="Yes, delete it"
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={() => {
+                        this.setState({ showAlert: false });
+                    }}
+                    onConfirmPressed={() => {
+                        this.setState({ showAlert: false });
+                    }}
                 />
             </View >
         );
@@ -232,9 +253,11 @@ export default class ChatMain extends React.Component {
         const users = item.users;
         const user = users[1]; // opponent
         const timestamp = item.timestamp; // 3:01 PM 11:33 AM Yesterday 00 days ago
+        const time = Util.getTime(timestamp);
+
         const contents = item.contents; // last message
 
-        const viewHeight = Dimensions.get('window').height / 12;
+        const viewHeight = Dimensions.get('window').height / 10;
 
         const avatarHeight = viewHeight;
 
@@ -242,7 +265,7 @@ export default class ChatMain extends React.Component {
             <TouchableHighlight onPress={() => this.props.navigation.navigate('room', { item: item, index: index })}>
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
-                        width: '20%', height: viewHeight,
+                        width: '24%', height: viewHeight,
                         // backgroundColor: '#00BCD4',
                         justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
                     }} >
@@ -255,9 +278,9 @@ export default class ChatMain extends React.Component {
                     </View>
 
                     <View style={{
-                        width: '50%', height: viewHeight,
+                        width: '46%', height: viewHeight,
                         // backgroundColor: 'yellow',
-                        justifyContent: 'center', alignItems: 'flex-start'
+                        justifyContent: 'space-between', alignItems: 'flex-start'
                     }} >
                         <Text style={styles.name}>{user.name}</Text>
                         <Text style={styles.contents}>{contents}</Text>
@@ -268,7 +291,7 @@ export default class ChatMain extends React.Component {
                         // backgroundColor: '#4CAF50',
                         justifyContent: 'flex-start', alignItems: 'flex-end', paddingRight: Theme.spacing.xSmall
                     }} >
-                        <Text style={styles.time}>{moment(timestamp).fromNow()}</Text>
+                        <Text style={styles.time}>{time}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -287,10 +310,12 @@ export default class ChatMain extends React.Component {
 
         // this.setState({ isLoading: true });
 
+        const uid = Firebase.uid(); // user uid
+
         const timestamp = this.state.chatRoomList[this.state.chatRoomList.length - 1].timestamp;
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
-        Firebase.loadMoreChatRoom(timestamp, id, list => {
+        Firebase.loadMoreChatRoom(uid, timestamp, id, list => {
             console.log('loadMoreChatRoom', list);
 
             if (list.length === 0) {
@@ -328,7 +353,6 @@ export default class ChatMain extends React.Component {
                 newList.sort(this.compare);
 
                 // console.log('newList', newList);
-
 
                 this.setState({ chatRoomList: newList });
             }
@@ -385,8 +409,8 @@ const styles = StyleSheet.create({
     searchBarStyle: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
+        flexDirection: 'column',
         justifyContent: 'flex-end',
-        alignItems: 'center',
         // backgroundColor: 'red'
     },
     contentContainer: {
@@ -398,33 +422,17 @@ const styles = StyleSheet.create({
     },
     name: {
         color: Theme.color.text1,
-        fontSize: 16,
+        fontSize: 17,
         fontFamily: "SFProText-Semibold"
     },
     contents: {
         color: Theme.color.text2,
-        fontSize: 14,
+        fontSize: 15,
         fontFamily: "SFProText-Light"
     },
     time: {
         color: 'grey',
         fontSize: 12,
         fontFamily: "SFProText-Light"
-    },
-
-
-
-
-    // test
-    reviewText: {
-        color: 'silver',
-        fontSize: 15,
-        lineHeight: 22,
-        fontFamily: "SFProText-Regular"
-    },
-
-
-
-
-
+    }
 });

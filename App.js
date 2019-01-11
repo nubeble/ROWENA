@@ -1,7 +1,10 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox } from 'react-native';
 // import ModalHost from 'expo/src/modal/ModalHost';
-// import { ThemeProvider, Colors } from './src/rne/src/components';
+import { StyleProvider } from "native-base";
+import getTheme from "./src/rnff/native-base-theme/components";
+import variables from "./src/rnff/native-base-theme/variables/commonColor";
+import _ from 'lodash';
 import { configure } from 'mobx';
 import { Provider } from "mobx-react/native";
 import { FeedStore, Theme } from './src/rnff/src/components';
@@ -10,31 +13,25 @@ import { ProfileStore } from "./src/rnff/src/home";
 configure({ enforceActions: 'observed' })
 
 // $FlowFixMe
+/*
 // https://github.com/firebase/firebase-js-sdk/issues/97
 if (!console.ignoredYellowBox) {
     console.ignoredYellowBox = [];
 }
 console.ignoredYellowBox.push("Setting a timer");
-
-
-// const onNavigationStateChange = () => undefined;
-
-/*
-type AppProps = {};
-
-type AppState = {
-	isReady: boolean,
-};
 */
+YellowBox.ignoreWarnings(['Setting a timer']);
+const _console = _.clone(console);
+console.warn = message => {
+    if (message.indexOf('Setting a timer') <= -1) {
+        _console.warn(message);
+    }
+};
 
-
-
-// export default class App extends React.Component<AppProps, AppState> {
 export default class App extends React.Component {
     feedStore = new FeedStore();
     profileStore = new ProfileStore();
-
-    userFeedStore = new FeedStore();
+    // userFeedStore = new FeedStore();
 
     state = {
     };
@@ -44,15 +41,13 @@ export default class App extends React.Component {
 
         StatusBar.setBarStyle('light-content');
         if (Platform.OS === "android") { // ToDo: remove
-            // StatusBar.setBackgroundColor("black");
             StatusBar.setBackgroundColor(Theme.color.background);
         }
-
-        // ThemeProvider.getInstance().switchColors(Colors['Main']); // ToDo
     }
 
     render() {
-        const { feedStore, profileStore, userFeedStore } = this;
+        // const { feedStore, profileStore, userFeedStore } = this;
+        const { feedStore, profileStore } = this;
 
         const statusBar = (
             <StatusBar
@@ -66,27 +61,16 @@ export default class App extends React.Component {
             <React.Fragment>
                 {statusBar}
 
-                {/*
-				<ThemeProvider>
-					<PlayerProvider>
-						<ModalHost>
-							<MainNavigator {...{ onNavigationStateChange }} />
-						</ModalHost>
-					</PlayerProvider>
-				</ThemeProvider>
-				*/}
-
-                {/*
-				<ThemeProvider>
-					<Provider {...{ feedStore, profileStore, userFeedStore }}>
-						<MainSwitchNavigator />
-					</Provider>
-				</ThemeProvider>
-				*/}
-
-                <Provider {...{ feedStore, profileStore, userFeedStore }}>
-                    <MainSwitchNavigator />
-                </Provider>
+                <StyleProvider style={getTheme(variables)}>
+                    {/*
+                    <Provider {...{ feedStore, profileStore, userFeedStore }}>
+                        <MainSwitchNavigator onNavigationStateChange={() => undefined} />
+                    </Provider>
+                    */}
+                    <Provider {...{ feedStore, profileStore }}>
+                        <MainSwitchNavigator onNavigationStateChange={() => undefined} />
+                    </Provider>
+                </StyleProvider>
             </React.Fragment>
         );
     }
@@ -341,7 +325,7 @@ function _navigationOptions(navigation) {
                     size={30}
                     style={{ color: tintColor }}
                 />;
-            // } else if (navigation.state.routeName === 'chats') {
+                // } else if (navigation.state.routeName === 'chats') {
             } else if (navigation.state.routeName === 'chat') {
                 return <Ionicons
                     // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}

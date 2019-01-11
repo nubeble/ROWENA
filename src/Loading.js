@@ -32,7 +32,8 @@ const SansSerif = require("../fonts/Sans-Serif.ttf");
 
 
 
-@inject("feedStore", "profileStore", "userFeedStore")
+// @inject("feedStore", "profileStore", "userFeedStore")
+@inject("feedStore", "profileStore")
 export default class Loading extends React.Component<ScreenProps<>> {
     state = {
         isUserAutoAuthenticated: true
@@ -41,7 +42,8 @@ export default class Loading extends React.Component<ScreenProps<>> {
     async componentDidMount(): Promise<void> {
         console.log('Loading::componentDidMount');
 
-        const { navigation, feedStore, profileStore, userFeedStore } = this.props;
+        // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
+        const { navigation, feedStore, profileStore } = this.props;
 
         const fonts = Font.loadAsync({
             "SFProText-Bold": SFProTextBold,
@@ -95,7 +97,8 @@ export default class Loading extends React.Component<ScreenProps<>> {
                     };
 
                     // await Firebase.firestore.collection('users').doc(uid).update(profile);
-                    await Firebase.updateProfile(profile);
+                    const { uid } = Firebase.auth.currentUser;
+                    await Firebase.updateProfile(uid, profile);
 
                     console.log('move to main');
                     navigation.navigate('mainBottomTabNavigator');
