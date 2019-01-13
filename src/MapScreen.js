@@ -34,18 +34,18 @@ export default class MapScreen extends React.Component {
     }
 
     render() {
-        const { post, profile } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
 
         const latitude = post.location.latitude;
         const longitude = post.location.longitude;
 
         return (
             <View style={styles.flex}>
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             left: 22,
                             alignSelf: 'baseline'
                         }}
@@ -60,7 +60,7 @@ export default class MapScreen extends React.Component {
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             right: 22,
                             alignSelf: 'baseline'
                         }}
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     flex: {
         flex: 1
     },
-    searchBarStyle: {
+    searchBar: {
         position: 'absolute',
         top: 0,
         left: 0,
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     },
     distance: {
         position: 'absolute',
-        bottom: 8 + 4 + 3, // paddingBottom from searchBarStyle
+        bottom: 8 + 4 + 3, // paddingBottom from searchBar
         alignSelf: 'center',
         fontSize: 16,
         fontFamily: "SFProText-Semibold",

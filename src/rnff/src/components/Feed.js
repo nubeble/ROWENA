@@ -59,7 +59,7 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     loadMore() {
-        console.log('loadMore');
+        console.log('Feed::loadMore');
 
         if (this.state.isLoadingFeed) {
             this.setState({ refreshing: false });

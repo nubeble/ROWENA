@@ -118,7 +118,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                     color='grey'
                 />
 
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
 
                     {/* add components here.. */}
 
@@ -455,7 +455,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Theme.color.background
     },
-    searchBarStyle: {
+    searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
         justifyContent: 'flex-end',

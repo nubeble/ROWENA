@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, ActivityIndicator, Dimensions, FlatList, TouchableHighlight
+    StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, ActivityIndicator
 } from 'react-native';
 import autobind from "autobind-decorator";
 import { Theme } from "./rnff/src/components";
@@ -25,6 +25,9 @@ export default class ChatMain extends React.Component {
     componentDidMount() {
         console.log('ChatMain::componentDidMount');
 
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+
         const uid = Firebase.uid(); // user uid
 
         // load chat room list
@@ -42,17 +45,23 @@ export default class ChatMain extends React.Component {
     }
 
     @autobind
-    onAddToChatFinished(result) {
-        console.log('onAddToChatFinished', result);
+    onFocus() {
+        console.log('ChatMain::onFocus');
+        this.isFocused = true;
+    }
 
-        if (!result) {
-            this.allChatsLoaded = true; // don't call again!
-        }
-
-        !this.isClosed && this.setState({ isLoadingChat: false });
+    @autobind
+    onBlur() {
+        console.log('ChatMain::onBlur');
+        this.isFocused = false;
     }
 
     componentWillUnmount() {
+        console.log('ChatMain::componentWillUnmount');
+
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
         this.isClosed = true;
     }
 
@@ -79,20 +88,22 @@ export default class ChatMain extends React.Component {
             </View>
             */
             <View style={styles.flex}>
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
+
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 20,
+                            fontSize: 18,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'center'
                         }}
                     >Messages</Text>
+                    
                     {/*
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             left: 50,
                             alignSelf: 'baseline'
                         }}
@@ -127,7 +138,7 @@ export default class ChatMain extends React.Component {
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             left: 100,
                             alignSelf: 'baseline'
                         }}
@@ -151,7 +162,7 @@ export default class ChatMain extends React.Component {
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             left: 150,
                             alignSelf: 'baseline'
                         }}
@@ -166,38 +177,31 @@ export default class ChatMain extends React.Component {
                 </View>
 
                 {
-                    !this.state.renderChat ?
-                        <ActivityIndicator
-                            style={styles.activityIndicator}
-                            animating={true}
-                            size="large"
-                            color='grey'
-                        />
-                        :
-                        <FlatList
-                            ref={(fl) => this._flatList = fl}
-                            data={this.state.chatRoomList}
-                            keyExtractor={this.keyExtractor}
-                            renderItem={this.renderItem}
-                            onEndReachedThreshold={0.5}
-                            onEndReached={this.loadMore}
+                    this.state.renderChat &&
+                    <FlatList
+                        ref={(fl) => this._flatList = fl}
+                        data={this.state.chatRoomList}
+                        keyExtractor={this.keyExtractor}
+                        renderItem={this.renderItem}
+                        onEndReachedThreshold={0.5}
+                        onEndReached={this.loadMore}
 
-                            contentContainerStyle={styles.contentContainer}
-                            showsVerticalScrollIndicator
+                        contentContainerStyle={styles.contentContainer}
+                        showsVerticalScrollIndicator
 
-                            ListFooterComponent={(
-                                this.state.isLoadingChat && (
-                                    <ActivityIndicator
-                                        style={styles.bottomIndicator}
-                                        animating={this.state.isLoadingChat}
-                                        size="small"
-                                        color='grey'
-                                    />
-                                )
-                            )}
+                        ListFooterComponent={(
+                            this.state.isLoadingChat && (
+                                <ActivityIndicator
+                                    style={styles.bottomIndicator}
+                                    animating={this.state.isLoadingChat}
+                                    size="small"
+                                    color='grey'
+                                />
+                            )
+                        )}
 
-                        // ItemSeparatorComponent={this.itemSeparatorComponent}
-                        />
+                    // ItemSeparatorComponent={this.itemSeparatorComponent}
+                    />
 
                 }
 
@@ -252,7 +256,7 @@ export default class ChatMain extends React.Component {
 
         const users = item.users;
         const user = users[1]; // opponent
-        const timestamp = item.timestamp; // 3:01 PM 11:33 AM Yesterday 00 days ago
+        const timestamp = item.timestamp;
         const time = Util.getTime(timestamp);
 
         const contents = item.contents; // last message
@@ -300,15 +304,15 @@ export default class ChatMain extends React.Component {
 
     @autobind
     loadMore() {
-        console.log('ChatMain::loadMore');
+        console.log('ChatMain::loadMore', this.isFocused);
+
+        if (!this.isFocused) return;
 
         if (this.state.chatRoomList.length <= 0) return;
 
         if (this.allChatRoomsLoaded) return;
 
-        // if (this.state.isLoading) return;
-
-        // this.setState({ isLoading: true });
+        this.setState({ isLoadingChat: true });
 
         const uid = Firebase.uid(); // user uid
 
@@ -356,6 +360,8 @@ export default class ChatMain extends React.Component {
 
                 this.setState({ chatRoomList: newList });
             }
+
+            this.setState({ isLoadingChat: false });
         });
     }
 
@@ -406,12 +412,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Theme.color.background
     },
-    searchBarStyle: {
+    searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
         flexDirection: 'column',
-        justifyContent: 'flex-end',
-        // backgroundColor: 'red'
+        justifyContent: 'flex-end'
     },
     contentContainer: {
         flexGrow: 1,
@@ -434,5 +439,9 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 12,
         fontFamily: "SFProText-Light"
-    }
+    },
+    bottomIndicator: {
+        marginTop: 20,
+        marginBottom: 20
+    },
 });

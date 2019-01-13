@@ -32,7 +32,7 @@ export default class SignUpWithEmail extends React.Component {
 
         securePwInput: true,
         secureText: 'Show',
-        bottomLocation: Dimensions.get('window').height
+        bottomPosition: Dimensions.get('window').height
     };
 
     componentDidMount() {
@@ -56,12 +56,12 @@ export default class SignUpWithEmail extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+        !this.isClosed && this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
     }
 
     @autobind
     _keyboardDidHide() {
-        this.setState({ bottomLocation: Dimensions.get('window').height });
+        !this.isClosed && this.setState({ bottomPosition: Dimensions.get('window').height });
     }
 
     showNotification = (msg) => {
@@ -382,11 +382,11 @@ export default class SignUpWithEmail extends React.Component {
                         <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }} />
                         */}
 
-                        <View style={styles.searchBarStyle}>
+                        <View style={styles.searchBar}>
                             <TouchableOpacity
                                 style={{
                                     position: 'absolute',
-                                    bottom: 8 + 4, // paddingBottom from searchBarStyle
+                                    bottom: 8 + 4, // paddingBottom from searchBar
                                     left: 22,
                                     alignSelf: 'baseline'
                                 }}
@@ -454,7 +454,7 @@ export default class SignUpWithEmail extends React.Component {
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                         </TouchableOpacity>
                         */}
-                        <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomLocation - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                        <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomPosition - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                             <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                             </TouchableOpacity>
@@ -472,11 +472,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    searchBarStyle: {
-        // height: Constants.statusBarHeight + Header.HEIGHT,
-        // paddingBottom: 14 + 2,
+    searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
-        paddingBottom: 8 + 4, // paddingBottom from searchBarStyle
+        // paddingBottom: 8 + 4, // paddingBottom from searchBar
+        paddingBottom: 8, // paddingBottom from searchBar
         justifyContent: 'flex-end',
         alignItems: 'center'
     },

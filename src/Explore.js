@@ -15,7 +15,7 @@ import type { ScreenProps } from "./rnff/src/components/Types";
 import SmartImage from "./rnff/src/components/SmartImage";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
-import SearchModal from "./SearchModal";
+// import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper'
 
@@ -46,18 +46,15 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         renderFeed: false
     };
 
-    /*
-    @autobind
-    profile() {
-        this.props.navigation.navigate("Profile");
-    }
-    */
-
     componentDidMount() {
-        let place = this.props.screenProps.params.place;
-        let length = this.props.screenProps.params.length;
+        // console.log('Explore::componentDidMount', this.props);
+        // const params = this.props.screenProps.params;
+        const params = this.props.navigation.state.params;
+
+        let place = params.place;
+        let length = params.length;
         let city = place.city;
-        console.log('place', place, 'length', length, 'city', city);
+        console.log('Explore::componentDidMount', 'place', place, 'length', length, 'city', city);
 
         this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
@@ -134,9 +131,11 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
         return (
             <View style={styles.flex}>
+                {/*
                 <SearchModal ref='searchModal'></SearchModal>
+                */}
 
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,
                         backgroundColor: Theme.color.component,
@@ -145,21 +144,18 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             onPress={() => {
-                                // this.refs.searchModal.showModal();
                                 console.log('move to Intro');
-                                this.moveToIntro();
+                                this.props.screenProps.rootNavigation.navigate('intro'); // ToDo: maybe goback
                             }}
                         >
-                            {/*
-                            <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
-                            */}
                             <FontAwesome name='chevron-left' color="white" size={16} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                this.refs.searchModal.showModal();
+                                // this.refs.searchModal.showModal();
+                                this.props.navigation.navigate("exploreSearchModal");
                             }}
                         >
                             <TextInput
@@ -206,16 +202,17 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                 </AnimatedSafeAreaView> */}
 
                 {
+/*
                     !this.state.renderFeed ?
                         <ActivityIndicator
                             style={styles.activityIndicator}
                             animating={true}
                             size="large"
-                            // color='rgba(255, 184, 24, 0.8)'
-                            // color='rgba(255, 255, 255, 0.8)'
                             color='grey'
                         />
                         :
+*/
+                    this.state.renderFeed &&
                         <Feed
                             store={feedStore}
                             /*
@@ -385,9 +382,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0
     },
-
-
-    searchBarStyle: {
+    searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
         justifyContent: 'flex-end',
@@ -415,8 +410,6 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
-
-    // loading indicator
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0

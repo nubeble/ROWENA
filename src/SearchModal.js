@@ -43,13 +43,13 @@ export default class SearchModal extends React.Component {
                     // Alert.alert('Modal has been closed.');
                 }}>
 
-                <View style={styles.modalFlex}>
-                    <View style={styles.modalSearchBarStyle}>
+                <View style={styles.flex}>
+                    <View style={styles.searchBar}>
                         <TouchableOpacity
                             // style={{ marginTop: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT / 3 - 3 : Header.HEIGHT / 3 - 3, marginRight: 22, alignSelf: 'baseline' }}
                             style={{
                                 position: 'absolute',
-                                bottom: 8 + 4, // paddingBottom from searchBarStyle
+                                bottom: 8 + 4, // paddingBottom from searchBar
                                 right: 22,
                                 alignSelf: 'baseline'
                             }}
@@ -226,18 +226,18 @@ export default class SearchModal extends React.Component {
 };
 
 const styles = StyleSheet.create({
-    modalFlex: {
+    flex: {
         flex: 1,
-        // backgroundColor: 'black' // ToDo: RN issue (only in android)
-        backgroundColor: Platform.OS === "ios" ? Theme.color.background : 'rgb(20, 20, 20)' // ToDo: RN issue (only in android)
+        // backgroundColor: 'black' // ToDo: RN issue (in android)
+        backgroundColor: Platform.OS === "ios" ? Theme.color.background : 'rgb(20, 20, 20)' // ToDo: RN issue (in android)
     },
-    modalSearchBarStyle: {
-        // backgroundColor: 'black', // ToDo: RN issue (only in android)
-        // backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black', // ToDo: RN issue (only in android)
+    searchBar: {
+        // backgroundColor: 'black', // ToDo: RN issue (in android)
+        // backgroundColor: Platform.OS === "ios" ? 'rgb(40, 40, 40)' : 'black', // ToDo: RN issue (in android)
         // height: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT : Header.HEIGHT,
         // paddingBottom: 14 + 2,
         height: Platform.OS === "ios" ? Constants.statusBarHeight + 8 + 34 + 8 : 8 + 34 + 8,
-        paddingBottom: 8 + 4, // paddingBottom from searchBarStyle
+        paddingBottom: 8 + 4, // paddingBottom from searchBar
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center'

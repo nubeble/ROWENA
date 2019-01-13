@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, Button, TouchableOpacity, Dimensions } f
 
 export default class Welcome extends React.Component {
     state = {
-        bottomLocation: Dimensions.get('window').height
+        bottomPosition: Dimensions.get('window').height
     };
 
     render() {
@@ -25,7 +25,7 @@ export default class Welcome extends React.Component {
                 />
 
 
-                <View style={{ position: 'absolute', top: this.state.bottomLocation - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <View style={{ position: 'absolute', top: this.state.bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('mainBottomTabNavigator')} style={styles.signUpButton}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Get Started</Text>
                     </TouchableOpacity>

@@ -163,8 +163,6 @@ export default class Firebase {
     }
 
     static async deleteFeed(placeId, feedId) {
-        // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).delete();
-
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
@@ -380,18 +378,33 @@ export default class Firebase {
 
     //// database ////
 
-    static async createChatRoom(uid, users) {
-        const id = Util.uid(); // chat room id
+    static async createChatRoom(uid, users, placeId, feedId) {
+        const id = Util.uid(); // create chat room id
 
         const data = {
             id: id,
-            // timestamp: 1111111111111,
-            timestamp: Firebase.timestamp(),
-            contents: '', // last message
-            users: users
+            timestamp: Firebase.timestamp(), // lastest timestamp
+            contents: '', // lastest message
+            users: users,
+            placeId: placeId,
+            feedId: feedId
         };
 
         await Firebase.database.ref('chat').child(uid).child(id).set(data);
+
+        // --
+        // add a system message
+        const text = "Well you've come this far, might as well say something to her.";
+        const timestamp = Firebase.timestamp();
+
+        const message = {
+            text,
+            timestamp: timestamp,
+            _system: true
+        };
+
+        await Firebase.database.ref('contents').child(id).push(message);
+        // --
 
         return data;
     }
@@ -431,19 +444,30 @@ export default class Firebase {
     //// receive
 
     static parseChild = snapshot => {
-        const { timestamp: numberStamp, text, user } = snapshot.val();
+        const { timestamp: numberStamp, text, user, _system } = snapshot.val();
         const { key: _id } = snapshot;
+        const createdAt = new Date(numberStamp);
+        const system = _system !== undefined;
 
-        const timestamp = new Date(numberStamp);
-
-        const message = {
-            _id,
-            timestamp,
-            text,
-            user
-        };
-
-        return message;
+        if (system) {
+            const message = {
+                _id,
+                text,
+                createdAt,
+                system
+            };
+    
+            return message;
+        } else {
+            const message = {
+                _id,
+                text,
+                createdAt,
+                user
+            };
+    
+            return message;
+        }
     };
 
     static parseValue = (snapshot, id) => {
@@ -454,15 +478,17 @@ export default class Firebase {
             const value = item.val();
 
             if (key !== id) {
-                const { timestamp: numberStamp, text, user } = value;
+                const { timestamp: numberStamp, text, user, _system } = value;
                 const _id = key;
-                const timestamp = new Date(numberStamp);
+                const createdAt = new Date(numberStamp);
+                const system = _system !== undefined;
 
                 const message = {
                     _id,
-                    timestamp,
                     text,
-                    user
+                    createdAt,
+                    user,
+                    system
                 };
 
                 array.push(message);
@@ -530,7 +556,7 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static async sendMessage(id, messages, uid) {
+    static async sendMessages(id, messages, uid) {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
             const timestamp = Firebase.timestamp();
@@ -541,7 +567,6 @@ export default class Firebase {
                 timestamp: timestamp
             };
 
-            // Firebase.database.ref('chat' + '/' + id + '/contents').push(data);
             await Firebase.database.ref('contents').child(id).push(pushData);
 
             // update timestamp, contents to chat
@@ -602,6 +627,10 @@ export default class Firebase {
         });
 
         return room;
+    }
+
+    static async deleteChatRoom(myUid, postId) {
+        // ToDo
     }
 
 

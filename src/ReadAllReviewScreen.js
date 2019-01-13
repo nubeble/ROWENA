@@ -21,7 +21,7 @@ type FlatListItem<T> = {
     item: T
 };
 
-const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew that you were there for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
 
 export default class ReadAllReviewScreen extends React.Component {
@@ -33,7 +33,7 @@ export default class ReadAllReviewScreen extends React.Component {
         // reviewLength: 0,
         isOwner: false,
         showKeyboard: false,
-        bottomLocation: Dimensions.get('window').height,
+        bottomPosition: Dimensions.get('window').height,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -128,11 +128,11 @@ export default class ReadAllReviewScreen extends React.Component {
                     </TouchableOpacity>
                 </Animated.View>
 
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             left: 22,
                             alignSelf: 'baseline'
                         }}
@@ -195,7 +195,7 @@ export default class ReadAllReviewScreen extends React.Component {
                     this.state.showKeyboard && (
                         <View style={{
                             position: 'absolute',
-                            top: this.state.bottomLocation - this.replyViewHeight,
+                            top: this.state.bottomPosition - this.replyViewHeight,
                             height: this.replyViewHeight,
                             width: '100%',
                             flexDirection: 'row',
@@ -442,7 +442,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+        this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
 
         // from _keyboardWillShow
@@ -504,7 +504,7 @@ export default class ReadAllReviewScreen extends React.Component {
         }
 
 
-        this.setState({ bottomLocation: Dimensions.get('window').height });
+        this.setState({ bottomPosition: Dimensions.get('window').height });
     }
 
     @autobind
@@ -676,12 +676,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Theme.color.background
     },
-    searchBarStyle: {
+    searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
         justifyContent: 'flex-end',
-        alignItems: 'center',
-        // backgroundColor: 'red'
+        alignItems: 'center'
     },
     contentContainer: {
         flexGrow: 1,
@@ -735,8 +734,8 @@ const styles = StyleSheet.create({
         lineHeight: 15,
 
         fontFamily: "SFProText-Regular",
-        // paddingTop: Theme.spacing.xSmall
-        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
+        paddingTop: Theme.spacing.xSmall
+        // paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     replyOwner: {
         // color: "rgb(170, 170, 170)",

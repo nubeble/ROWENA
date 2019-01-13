@@ -113,7 +113,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
                 */}
 
 
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
                     {/*
                     <View style={{ width: '70%', height: 32, backgroundColor: 'rgb(36, 36, 36)', borderColor: 'rgb(36, 36, 36)', borderRadius: 25, borderWidth: 1 }} >
                         <TouchableOpacity
@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
             marginRight: StyleGuide.spacing.small,
         marginTop: StyleGuide.spacing.small
     },
-    searchBarStyle: {
+    searchBar: {
         height: Constants.statusBarHeight + Header.HEIGHT,
         paddingBottom: 14,
         justifyContent: 'flex-end',

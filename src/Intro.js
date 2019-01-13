@@ -14,7 +14,7 @@ import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
-import SearchModal from "./SearchModal";
+// import SearchModal from "./SearchModal";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
@@ -101,14 +101,6 @@ export default class Intro extends React.Component {
         refreshing: false,
 
     };
-
-
-    /*
-    @autobind
-    profile() {
-        this.props.navigation.navigate("Profile");
-    }
-    */
 
     componentDidMount() {
         // console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
@@ -226,9 +218,11 @@ export default class Intro extends React.Component {
 
         return (
             <View style={styles.flex}>
+                {/*
                 <SearchModal ref='searchModal'></SearchModal>
+                */}
 
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,
                         backgroundColor: Theme.color.component,
@@ -237,7 +231,8 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 12, top: 8, alignSelf: 'baseline' }}
                             onPress={() => {
-                                this.refs.searchModal.showModal();
+                                // this.refs.searchModal.showModal();
+                                this.props.navigation.navigate("introSearchModal");
                             }}
                         >
                             <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
@@ -246,7 +241,8 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                this.refs.searchModal.showModal();
+                                // this.refs.searchModal.showModal();
+                                this.props.navigation.navigate("introSearchModal");
                             }}
                         >
                             <TextInput
@@ -280,8 +276,9 @@ export default class Intro extends React.Component {
                     keyExtractor={item => item.place_id}
                     renderItem={({ item, index }) => {
                         return (
-                            <TouchableOpacity onPress={() =>
-                                this.props.navigation.navigate("homeStackNavigator", { place: item, length: this.state.places[index].length })}>
+                            <TouchableOpacity
+                                onPress={() => this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length })}
+                            >
                                 <View style={styles.pictureContainer}>
                                     <Image
                                         style={styles.picture}
@@ -481,9 +478,7 @@ const styles = StyleSheet.create({
     },
 
     //// SEARCH BAR ////
-    searchBarStyle: {
-        // height: Constants.statusBarHeight + Header.HEIGHT,
-        // paddingBottom: 14 + 2,
+    searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
         justifyContent: 'flex-end',

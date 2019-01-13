@@ -17,7 +17,7 @@ export default class WriteReviewScreen extends React.Component {
         rating: 5,
         invalid: false,
         signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)',
-        bottomLocation: Dimensions.get('window').height,
+        bottomPosition: Dimensions.get('window').height,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -25,7 +25,7 @@ export default class WriteReviewScreen extends React.Component {
     };
 
     componentDidMount() {
-        const { post, profile, rating } = this.props.navigation.state.params;
+        const { post, rating } = this.props.navigation.state.params;
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -58,12 +58,12 @@ export default class WriteReviewScreen extends React.Component {
         }); 
         */
 
-        this.setState({ bottomLocation: Dimensions.get('window').height - e.endCoordinates.height });
+        this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
     }
 
     @autobind
     _keyboardDidHide() {
-        this.setState({ bottomLocation: Dimensions.get('window').height });
+        this.setState({ bottomPosition: Dimensions.get('window').height });
     }
 
     @autobind
@@ -79,7 +79,7 @@ export default class WriteReviewScreen extends React.Component {
             return;
         }
 
-        const { post, profile, rating } = this.props.navigation.state.params;
+        const { post, rating } = this.props.navigation.state.params;
         if (post.uid === Firebase.uid()) {
 
             this.refs.toast.show('Sorry, You can not write a self-recommendation.', 500, () => {
@@ -103,7 +103,7 @@ export default class WriteReviewScreen extends React.Component {
     }
 
     render() {
-        const { post, profile } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -130,11 +130,11 @@ export default class WriteReviewScreen extends React.Component {
                     </TouchableOpacity>
                 </Animated.View>
 
-                <View style={styles.searchBarStyle}>
+                <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4, // paddingBottom from searchBar
                             left: 22,
                             alignSelf: 'baseline'
                         }}
@@ -152,7 +152,7 @@ export default class WriteReviewScreen extends React.Component {
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
-                            bottom: 8 + 4 + 1, // paddingBottom from searchBarStyle
+                            bottom: 8 + 4 + 1, // paddingBottom from searchBar
                             right: 22,
                             alignSelf: 'baseline'
                         }}
@@ -213,7 +213,7 @@ export default class WriteReviewScreen extends React.Component {
                     />
                 </View>
 
-                <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomLocation - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomPosition - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => this.post()} style={styles.signUpButton} disabled={this.state.invalid} >
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Post</Text>
                     </TouchableOpacity>
@@ -343,7 +343,7 @@ export default class WriteReviewScreen extends React.Component {
     */
 
     async addReview(comment) {
-        const { post, profile } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
 
         // test
         // let placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E'; // 호치민
@@ -393,7 +393,7 @@ const styles = StyleSheet.create({
         // bottom: 0,
         // alignSelf: 'baseline'
     },
-    searchBarStyle: {
+    searchBar: {
         /*
         position: 'absolute',
         top: 0,
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     },
     distance: {
         position: 'absolute',
-        bottom: 8 + 4 + 3, // paddingBottom from searchBarStyle
+        bottom: 8 + 4 + 3, // paddingBottom from searchBar
         alignSelf: 'center',
         fontSize: 16,
         fontFamily: "SFProText-Semibold",
