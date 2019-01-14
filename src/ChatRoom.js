@@ -14,6 +14,7 @@ import SmartImage from "./rnff/src/components/SmartImage";
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
+const alertHeight = Dimensions.get('window').height * 0.25;
 
 
 export default class ChatRoom extends React.Component {
@@ -23,7 +24,8 @@ export default class ChatRoom extends React.Component {
         messages: [],
         showAlert: false,
         onKeyboard: false,
-        bottomPosition: Dimensions.get('window').height
+        bottomPosition: Dimensions.get('window').height,
+        renderPost: false
     };
 
     constructor(props) {
@@ -48,6 +50,10 @@ export default class ChatRoom extends React.Component {
                 messages: GiftedChat.append(previousState.messages, message)
             }));
         });
+
+        setTimeout(() => {
+            !this.isClosed && this.setState({ renderPost: true });
+        }, 500);
     }
 
     componentWillUnmount() {
@@ -81,20 +87,21 @@ export default class ChatRoom extends React.Component {
     get user() {
         // Return our name and our UID for GiftedChat to parse
         return {
-            // name: this.props.navigation.state.params.name, // ToDo
+            // name: this.props.navigation.state.params.name,
             // uid: Firebase.uid()
             _id: Firebase.uid()
         };
     }
 
     render() {
-        const renderPost = this.state.messages.length > 1 ? false : true;
+        const postAvailable = this.state.messages.length > 1 ? false : true;
 
         const top1 = (Dimensions.get('window').height - postHeight) / 2;
         const top2 = (this.state.bottomPosition - postHeight) / 2;
         const postTop = this.state.onKeyboard ? top2 : top1;
 
         const item = this.props.navigation.state.params.item;
+        const index = this.props.navigation.state.params.index;
         const imageUri = item.users[1].picture;
         const imageWidth = postHeight * 0.7;
         const name = item.users[1].name;
@@ -168,7 +175,8 @@ export default class ChatRoom extends React.Component {
                 />
 
                 {
-                    renderPost &&
+                    // ToDo: apply animation
+                    this.state.renderPost && postAvailable &&
                     <View style={[styles.post, { top: postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
@@ -206,21 +214,39 @@ export default class ChatRoom extends React.Component {
                 <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
-                    title="Want to leave your chatroom?"
+                    title={"Want to leave " + name + "?"}
                     // message="I have a message for you!"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={true}
                     showConfirmButton={true}
-                    cancelText="No"
-                    confirmText="Yes"
+                    cancelText="YES"
+                    confirmText="NO"
                     confirmButtonColor="#DD6B55"
-                    onCancelPressed={() => {
+                    onCancelPressed={async () => {
                         this.setState({ showAlert: false });
+
+                        // pressed YES
+                        console.log('YES');
+
+                        await Firebase.deleteChatRoom(Firebase.uid(), item.id);
+
+                        this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); }); // ToDo!!!
+                        // this.props.navigation.goBack();
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
                     }}
+
+                    contentContainerStyle={{ width: '80%', height: alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)" }}
+
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
+
+                    cancelButtonStyle={{ marginTop: '25%', width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+
+                    confirmButtonStyle={{ marginLeft: 20, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
                 {/*
@@ -238,12 +264,13 @@ export default class ChatRoom extends React.Component {
     loadMore() {
         console.log('ChatRoom::loadMore()');
 
-        const timestamp = this.state.messages[this.state.messages.length - 1].timestamp;
-        const date = new Date(timestamp);
-        const lastMessageTimestamp = date.getTime();
-        const lastMessageId = this.state.messages[this.state.messages.length - 1]._id;
+        const lastMessage = this.state.messages[this.state.messages.length - 1];
+        const time = lastMessage.createdAt;
+        const date = new Date(time);
+        const timestamp = date.getTime();
+        const id = lastMessage._id;
 
-        Firebase.loadMoreMessage(this.state.id, lastMessageTimestamp, lastMessageId, message => {
+        Firebase.loadMoreMessage(this.state.id, timestamp, id, message => {
             if (message) {
                 console.log('message list', message);
 

@@ -114,7 +114,14 @@ const ExploreStackNavigator = createStackNavigator(
     },
     {
         mode: 'card',
-        headerMode: 'none'
+        headerMode: 'none',
+
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
     }
 );
 
@@ -156,14 +163,14 @@ const HomeStackNavigator = createStackNavigator(
     {
         mode: 'card',
         headerMode: 'none',
-        /*
+
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
             screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
-        */
+
     }
 );
 
@@ -194,7 +201,14 @@ const IntroStackNavigator = createStackNavigator(
     },
     {
         mode: 'card',
-        headerMode: 'none'
+        headerMode: 'none',
+
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
     }
 );
 
@@ -335,14 +349,14 @@ const ChatStackNavigator = createStackNavigator(
     {
         mode: 'card',
         headerMode: 'none',
-        /*
+
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
             screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
-        */
+
     }
 );
 
@@ -380,14 +394,14 @@ const PostModalNavigator = createStackNavigator(
     {
         mode: 'card',
         headerMode: 'none',
-        /*
+
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
             screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
-        */
+
     }
 );
 
@@ -615,14 +629,14 @@ const AuthStackNavigator = createStackNavigator(
     {
         mode: 'card',
         headerMode: 'none',
-        /*
+
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
             screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
-        */
+
     }
 );
 

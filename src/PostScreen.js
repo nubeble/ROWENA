@@ -35,7 +35,6 @@ export default class PostScreen extends React.Component {
 
     state = {
         rating: 0,
-        isNavigating: false,
         renderList: false,
         isOwner: false,
 
@@ -106,146 +105,148 @@ export default class PostScreen extends React.Component {
                 </View>
 
                 {
-                    this.state.renderList &&
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-                        }}
-                    >
-                        <FlatList
-                            ref={(fl) => this._flatList = fl}
-                            contentContainerStyle={styles.container}
-                            showsVerticalScrollIndicator={true}
-                            ListHeaderComponent={(
-                                <View>
+                    !this.state.renderList ?
+                        <ActivityIndicator
+                            style={{
+                                position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
+                            }}
+                            animating={true}
+                            size="large"
+                            color='grey'
+                        />
+                        :
+                        <TouchableWithoutFeedback
+                            onPress={() => {
+                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                            }}
+                        >
+                            <FlatList
+                                ref={(fl) => this._flatList = fl}
+                                contentContainerStyle={styles.container}
+                                showsVerticalScrollIndicator={true}
+                                ListHeaderComponent={(
+                                    <View>
 
-                                    {/* profile pictures */}
-                                    {this.renderSwiper(post)}
+                                        {/* profile pictures */}
+                                        {this.renderSwiper(post)}
 
-                                    <View style={styles.infoContainer}>
-                                        <TouchableWithoutFeedback
-                                        // onPress={this.profile}
-                                        >
-                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                                <View style={styles.circle}></View>
-                                                <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                        <View style={styles.infoContainer}>
+                                            <TouchableWithoutFeedback
+                                            // onPress={this.profile}
+                                            >
+                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                                    <View style={styles.circle}></View>
+                                                    <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                                </View>
+                                            </TouchableWithoutFeedback>
+
+                                            <Text style={styles.name}>{post.name}</Text>
+                                            <Text style={styles.size}>
+                                                {post.age} yr {post.height} cm {post.weight} kg
+                                                        </Text>
+
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                                    <AirbnbRating
+                                                        count={5}
+                                                        readOnly={true}
+                                                        showRating={false}
+                                                        defaultRating={4}
+                                                        size={16}
+                                                        margin={1}
+                                                    />
+                                                </View>
+
+                                                {/* ToDo: draw stars based on averge rating & get review count
+                                                            {post.averageRating}
+                                                        */}
+                                                <Text style={styles.rating}>4.4</Text>
+
+                                                <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                                <Text style={styles.reviewCount}>12</Text>
                                             </View>
-                                        </TouchableWithoutFeedback>
 
-                                        <Text style={styles.name}>{post.name}</Text>
-                                        <Text style={styles.size}>
-                                            {post.age} yr {post.height} cm {post.weight} kg
-                                                    </Text>
+                                            <Text style={styles.note}>{post.note}</Text>
+                                        </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                        {/* map */}
+                                        <View style={styles.mapContainer}>
+                                            <TouchableOpacity activeOpacity={0.5}
+                                                onPress={() => this.props.navigation.navigate("mapModal", { post: post })}
+                                            >
+                                                <View style={styles.mapView}>
+                                                    <MapView
+                                                        ref={map => { this.map = map }}
+                                                        style={styles.map}
+                                                        mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                                        initialRegion={{
+                                                            longitude: post.location.longitude,
+                                                            latitude: post.location.latitude,
+                                                            latitudeDelta: 0.001,
+                                                            longitudeDelta: 0.001
+                                                        }}
+                                                        scrollEnabled={false}
+                                                        zoomEnabled={false}
+                                                        rotateEnabled={false}
+                                                        pitchEnabled={false}
+                                                    >
+                                                        <MapView.Marker
+                                                            coordinate={{
+                                                                longitude: post.location.longitude,
+                                                                latitude: post.location.latitude
+                                                            }}
+                                                        // title={'title'}
+                                                        // description={'description'}
+                                                        />
+                                                    </MapView>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                        <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
+                                            {/* ToDo: show review chart */}
+                                            <Image
+                                                style={{ width: '100%', height: 140, marginBottom: 10 }}
+                                                resizeMode={'cover'}
+                                                source={require('../assets/sample1.jpg')}
+                                            />
+
+                                            {
+                                                this.renderReviews(this.reviewStore.reviews)
+                                            }
+                                        </View>
+
+                                        <View style={styles.writeReviewContainer}>
+                                            <Text style={styles.ratingText}>Share your experience to help others</Text>
+                                            <View style={{ marginBottom: 10 }}>
                                                 <AirbnbRating
-                                                    count={5}
-                                                    readOnly={true}
+                                                    ref='rating'
+                                                    onFinishRating={this.ratingCompleted}
                                                     showRating={false}
-                                                    defaultRating={4}
-                                                    size={16}
-                                                    margin={1}
+                                                    count={5}
+                                                    defaultRating={this.state.rating}
+                                                    size={32}
+                                                    margin={3}
                                                 />
                                             </View>
-
-                                            {/* ToDo: draw stars based on averge rating & get review count
-                                                        {post.averageRating}
-                                                    */}
-                                            <Text style={styles.rating}>4.4</Text>
-
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
-                                            <Text style={styles.reviewCount}>12</Text>
                                         </View>
 
-                                        <Text style={styles.note}>{post.note}</Text>
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                        {/*
+                                            <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
+                                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
+                                            </TouchableOpacity>
+                                            */}
+
                                     </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    {/* map */}
-                                    <View style={styles.mapContainer}>
-                                        <TouchableOpacity activeOpacity={0.5}
-                                            onPress={() => this.props.navigation.navigate("mapModal", { post: post })}
-                                        >
-                                            <View style={styles.mapView}>
-                                                <MapView
-                                                    ref={map => { this.map = map }}
-                                                    style={styles.map}
-                                                    mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                                    initialRegion={{
-                                                        longitude: post.location.longitude,
-                                                        latitude: post.location.latitude,
-                                                        latitudeDelta: 0.001,
-                                                        longitudeDelta: 0.001
-                                                    }}
-                                                    scrollEnabled={false}
-                                                    zoomEnabled={false}
-                                                    rotateEnabled={false}
-                                                    pitchEnabled={false}
-                                                >
-                                                    <MapView.Marker
-                                                        coordinate={{
-                                                            longitude: post.location.longitude,
-                                                            latitude: post.location.latitude
-                                                        }}
-                                                    // title={'title'}
-                                                    // description={'description'}
-                                                    />
-                                                </MapView>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                        {/* ToDo: show review chart */}
-                                        <Image
-                                            style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                            resizeMode={'cover'}
-                                            source={require('../assets/sample1.jpg')}
-                                        />
-
-                                        {
-                                            this.renderReviews(this.reviewStore.reviews)
-                                        }
-                                    </View>
-
-                                    <View style={styles.writeReviewContainer}>
-                                        <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                        <View style={{ marginBottom: 10 }}>
-                                            <AirbnbRating
-                                                ref='rating'
-                                                onFinishRating={this.ratingCompleted}
-                                                showRating={false}
-                                                count={5}
-                                                defaultRating={this.state.rating}
-                                                size={32}
-                                                margin={3}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    {/*
-                                        <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
-                                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
-                                        </TouchableOpacity>
-                                        */}
-
-                                </View>
-                            )}
-
-                            ListFooterComponent={
-                                this.state.isNavigating && (
-                                    <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
-                                    />
-                                )
-                            }
-                        />
-                    </TouchableWithoutFeedback>
+                                )}
+                            />
+                        </TouchableWithoutFeedback>
                 }
 
                 {
@@ -338,8 +339,6 @@ export default class PostScreen extends React.Component {
     }
 
     renderSwiper(post) {
-        if (!this.isFocused) return;
-
         let pictures = [];
 
         let value = post.pictures.one.uri;
@@ -432,8 +431,6 @@ export default class PostScreen extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post } = this.props.navigation.state.params;
         this.init(post);
@@ -448,19 +445,7 @@ export default class PostScreen extends React.Component {
 
         setTimeout(() => {
             !this.isClosed && this.setState({ renderList: true });
-        }, 0);
-    }
-
-    @autobind
-    onFocus() {
-        if (this.state.isNavigating) this.setState({ isNavigating: false });
-
-        this.isFocused = true;
-    }
-
-    @autobind
-    onBlur() {
-        this.isFocused = false;
+        }, 500);
     }
 
     isOwner(uid1, uid2) {
@@ -476,16 +461,12 @@ export default class PostScreen extends React.Component {
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
 
         this.isClosed = true;
     }
 
     renderReviews(reviews) { // draw items up to 4
         console.log('PostModal::renderReviews');
-
-        if (!this.isFocused) return;
 
         const reviewArray = [];
 
@@ -633,8 +614,8 @@ export default class PostScreen extends React.Component {
                             {
                                 reviewStore: this.reviewStore,
                                 isOwner: this.state.isOwner,
-                                placeId: this.state.post.placeId,
-                                feedId: this.state.post.id
+                                placeId: post.placeId,
+                                feedId: post.id
                             });
                     }}
                 >
@@ -672,8 +653,6 @@ export default class PostScreen extends React.Component {
     @autobind
     ratingCompleted(rating) {
         const { post } = this.props.navigation.state.params;
-
-        this.setState({ isNavigating: true });
 
         setTimeout(() => {
             this.props.navigation.navigate("writeReviewModal", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });

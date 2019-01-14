@@ -92,21 +92,21 @@ export default class Detail extends React.Component {
 
         setTimeout(() => {
             !this.isClosed && this.setState({ renderList: true });
-        }, 0);
+        }, 500);
     }
 
     @autobind
     onFocus() {
-        // console.log('Detail::onFocus');
+        console.log('Detail::onFocus');
 
         if (this.state.isNavigating) this.setState({ isNavigating: false });
 
-        this.isFocused = true;
+        // this.isFocused = true;
     }
 
     @autobind
     onBlur() {
-        this.isFocused = false;
+        // this.isFocused = false;
     }
 
     componentWillUnmount() {
@@ -199,7 +199,6 @@ export default class Detail extends React.Component {
                 </View>
 
                 {
-/*
                     !this.state.renderList ?
                         <ActivityIndicator
                             style={{
@@ -210,8 +209,7 @@ export default class Detail extends React.Component {
                             color='grey'
                         />
                         :
-*/
-                    this.state.renderList &&
+//                     this.state.renderList &&
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -239,7 +237,7 @@ export default class Detail extends React.Component {
 
                                             <Text style={styles.name}>{post.name}</Text>
                                             <Text style={styles.size}>
-                                                {post.age} yr {post.height} cm {post.weight} kg
+                                                {post.age}yrs  {post.height}cm  {post.weight}kg
                                             </Text>
 
                                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
@@ -274,12 +272,11 @@ export default class Detail extends React.Component {
                                         {/* map */}
                                         <View style={styles.mapContainer}>
                                             <TouchableOpacity activeOpacity={0.5}
-                                                /*
                                                 onPress={() => {
-                                                    this.props.navigation.navigate("map", { post: post, profile: profile, onGoBack: () => this.onGoBack() });
+                                                    this.setState({ isNavigating: true });
+
+                                                    this.props.navigation.navigate("map", { post: post });
                                                 }}
-                                                */
-                                                onPress={() => this.props.navigation.navigate("map", { post: post })}
                                             >
                                                 <View style={styles.mapView}>
                                                     <MapView
@@ -453,7 +450,7 @@ export default class Detail extends React.Component {
     }
 
     renderSwiper(post) {
-        if (!this.isFocused) return;
+        // if (!this.isFocused) return;
 
         let pictures = [];
 
@@ -531,7 +528,7 @@ export default class Detail extends React.Component {
     renderReviews(reviews) { // draw items up to 4
         console.log('Detail::renderReviews');
 
-        if (!this.isFocused) return;
+        // if (!this.isFocused) return;
 
         const reviewArray = [];
 
@@ -741,11 +738,10 @@ export default class Detail extends React.Component {
     ratingCompleted(rating) {
         // console.log("Rating is: " + rating);
 
-        const { post, profile } = this.props.navigation.state.params;
-
-        this.setState({ isNavigating: true });
-
         setTimeout(() => {
+            this.setState({ isNavigating: true });
+
+            const { post, profile } = this.props.navigation.state.params;
             this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
         }, 500); // 0.5 sec
     }

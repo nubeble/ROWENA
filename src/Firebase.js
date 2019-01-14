@@ -456,7 +456,7 @@ export default class Firebase {
                 createdAt,
                 system
             };
-    
+
             return message;
         } else {
             const message = {
@@ -465,7 +465,7 @@ export default class Firebase {
                 createdAt,
                 user
             };
-    
+
             return message;
         }
     };
@@ -514,6 +514,8 @@ export default class Firebase {
 
     static loadMoreMessage(id, lastMessageTimestamp, lastMessageId, callback) {
         // console.log('timestamp', lastMessageTimestamp);
+
+        console.log('loadMoreMessage', id, lastMessageTimestamp, lastMessageId);
 
         Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(20 + 1).once('value', snapshot => {
             if (snapshot.exists()) {
@@ -630,7 +632,18 @@ export default class Firebase {
     }
 
     static async deleteChatRoom(myUid, postId) {
-        // ToDo
+        // 1. delete room
+        await Firebase.database.ref('chat').child(myUid).child(postId).remove();
+
+        // 2. delete chat contents
+        // await Firebase.database.ref('contents').child(postId).remove();
+
+        // ToDo: add message (000님이 방을 나갔습니다.)
+
+
+
+        // 3. send notification
+
     }
 
 

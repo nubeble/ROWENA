@@ -65,28 +65,10 @@ export default class ChatMain extends React.Component {
         this.isClosed = true;
     }
 
-    moveToRoom() {
-        this.props.navigation.navigate('room', { name: this.state.name }); // ToDo: name
-    }
-
     render(): React.Node {
         const { navigation } = this.props;
 
         return (
-            /*
-            <View style={styles.container}>
-                <Text style={styles.title}>Enter your name:</Text>
-                <TextInput
-                    onChangeText={this.onChangeText}
-                    style={styles.nameInput}
-                    placeHolder="John Cena"
-                    value={this.state.name}
-                />
-                <TouchableOpacity onPress={this.onPress}>
-                    <Text style={styles.buttonText}>Next</Text>
-                </TouchableOpacity>
-            </View>
-            */
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
 
@@ -99,81 +81,6 @@ export default class ChatMain extends React.Component {
                         }}
                     >Messages</Text>
                     
-                    {/*
-                    <TouchableOpacity
-                        style={{
-                            position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 50,
-                            alignSelf: 'baseline'
-                        }}
-                        onPress={async () => { // test
-                            const uid = Firebase.uid(); // user uid
-
-                            const user1 = {
-                                // name: 'me',
-                                name: Firebase.user().name ? Firebase.user().name : 'name',
-                                uid: uid,
-                                // picture: 'uri' // thumbnail image uri
-                                picture: Firebase.user().photoUrl ? Firebase.user().photoUrl : 'uri',
-                            };
-
-                            const user2 = { // ToDo: get uid, name, picture from Post
-                                name: 'name',
-                                uid: 'uid',
-                                // picture: 'uri' // thumbnail image uri
-                                picture: 'http://dn.joongdo.co.kr/mnt/images/file/2018y/09m/22d/20180922001540074_1.jpg'
-                            };
-
-                            let users = [];
-                            users.push(user1);
-                            users.push(user2);
-
-                            await Firebase.createChatRoom(uid, users);
-                        }}
-                    >
-                        <Ionicons name='ios-checkbox-outline' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{
-                            position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 100,
-                            alignSelf: 'baseline'
-                        }}
-                        onPress={() => {
-                            // test sendMessage
-
-                            const id = '292f38d5-e82c-c788-bbb3-4e44f675c17a';
-                            const text = 'hi';
-                            const user = {
-                                name: 'name',
-                                uid: Firebase.uid(),
-                                avatar: 'https://cdn.clien.net/web/api/file/F01/7312159/186817e6270a98.jpg' // ToDo: get it from Post
-                            };
-
-                            Firebase.send(id, user, text);
-                        }}
-                    >
-                        <Ionicons name='ios-chatbubbles' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{
-                            position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 150,
-                            alignSelf: 'baseline'
-                        }}
-                        onPress={() => {
-                            // go to chat room
-                            this.moveToRoom();
-                        }}
-                    >
-                        <Ionicons name='ios-call' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-*/}
                 </View>
 
                 {
@@ -235,14 +142,6 @@ export default class ChatMain extends React.Component {
         );
     }
 
-    /*
-    onChangeText = name => this.setState({ name });
-
-    onPress = () => {
-        this.props.navigation.navigate('room', { name: this.state.name });
-    }
-    */
-
     @autobind
     keyExtractor(item) {
         return item.id;
@@ -266,7 +165,7 @@ export default class ChatMain extends React.Component {
         const avatarHeight = viewHeight;
 
         return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('room', { item: item, index: index })}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('room', { item: item, index: index, onGoBack: (result) => this.onGoBack(result) })}>
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,
@@ -300,6 +199,14 @@ export default class ChatMain extends React.Component {
                 </View>
             </TouchableHighlight>
         );
+    }
+
+    onGoBack(index, callback) { // back from deleting
+        console.log('index', index);
+
+        var array = [...this.state.chatRoomList];
+        array.splice(index, 1);
+        this.setState({chatRoomList: array}, () => callback());
     }
 
     @autobind
@@ -384,30 +291,6 @@ export default class ChatMain extends React.Component {
 const offset = 24;
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        justifyContent: 'center'
-    },
-    nameInput: { // 3. <- Add a style for the input
-        height: offset * 2,
-        margin: offset,
-        paddingHorizontal: offset,
-        borderColor: '#111111',
-        borderWidth: 1,
-    },
-    title: { // 4.
-        marginTop: offset,
-        marginLeft: offset,
-        fontSize: offset,
-    },
-    buttonText: { // 5.
-        marginLeft: offset,
-        fontSize: offset,
-    },
-
-
-
     flex: {
         flex: 1,
         backgroundColor: Theme.color.background
