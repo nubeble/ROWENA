@@ -1,10 +1,7 @@
 // @flow
-import autobind from "autobind-decorator";
 import * as React from "react";
-import moment from "moment";
 import {
-    StyleSheet, View, Animated, SafeAreaView, TouchableHighlight, TouchableWithoutFeedback,
-    Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image, ScrollView
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Constants } from "expo";
@@ -14,7 +11,6 @@ import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
-// import SearchModal from "./SearchModal";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
@@ -245,6 +241,8 @@ export default class Intro extends React.Component {
                                 this.props.navigation.navigate("introSearchModal");
                             }}
                         >
+
+                            {/*
                             <TextInput
                                 // ref='searchInput'
                                 pointerEvents="none"
@@ -256,6 +254,11 @@ export default class Intro extends React.Component {
                                 // onEndEditing={() => this.leaveEditing()}
                                 value={this.state.searchText}
                             />
+                            */}
+                            <Text
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '4%', fontFamily: "SFProText-Semibold",
+                                color: "rgb(160, 160, 160)", textAlign: 'center' }}
+                            >{'Where to?'}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -314,7 +317,7 @@ export default class Intro extends React.Component {
 
                             <Carousel>
                                 <View style={styles.view_front}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -323,7 +326,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -332,7 +335,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -341,7 +344,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -350,7 +353,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -359,7 +362,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('6')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -368,7 +371,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('7')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -377,7 +380,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_rear}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('onPress')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('8')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -393,7 +396,7 @@ export default class Intro extends React.Component {
 
                             <Carousel>
                                 <View style={styles.view_front}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('0')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -402,7 +405,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -411,7 +414,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -420,7 +423,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -429,7 +432,7 @@ export default class Intro extends React.Component {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_rear}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}

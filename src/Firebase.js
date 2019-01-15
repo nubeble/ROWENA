@@ -252,7 +252,7 @@ export default class Firebase {
 
             // reviewCount
             let reviewCount = feedDoc.data().reviewCount;
-            console.log('reviewCount', reviewCount);
+            console.log('reviewCount will be', reviewCount + 1);
             transaction.update(feedRef, { reviewCount: Number(reviewCount + 1) });
         });
     };
@@ -294,7 +294,7 @@ export default class Firebase {
 
             // reviewCount
             let reviewCount = feedDoc.data().reviewCount;
-            console.log('reviewCount', reviewCount);
+            console.log('reviewCount will be', reviewCount - 1);
             transaction.update(feedRef, { reviewCount: Number(reviewCount - 1) });
         });
 

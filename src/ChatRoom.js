@@ -10,12 +10,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
+import GLOBALS from './Globals';
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
-const alertHeight = Dimensions.get('window').height * 0.25;
-const buttonMarginTop = alertHeight * 0.3;
-const buttonMarginLeft = Dimensions.get('window').width * 0.1;
+const avatarHeight = (Constants.statusBarHeight + 8 + 34 + 8) * 0.5; // searchBar height
 
 
 export default class ChatRoom extends React.Component {
@@ -74,6 +73,7 @@ export default class ChatRoom extends React.Component {
         this.setState({
             onKeyboard: true,
             bottomPosition: Dimensions.get('window').height - e.endCoordinates.height
+            // bottomPosition: Dimensions.get('window').height - e.endCoordinates.height - (Dimensions.get('window').height * 0.06) // margin bottom
         });
     }
 
@@ -126,14 +126,27 @@ export default class ChatRoom extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    <Text
-                        style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 18,
-                            fontFamily: "SFProText-Semibold",
-                            alignSelf: 'center'
-                        }}
-                    >{this.state.name}</Text>
+                    <TouchableOpacity onPress={async () => await this.openPost()}>
+                        <SmartImage
+                            style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
+                            showSpinner={false}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={imageUri}
+                        />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={async () => await this.openPost()}>
+                        <Text
+                            style={{
+                                color: 'rgba(255, 255, 255, 0.8)',
+                                fontSize: 18,
+                                fontFamily: "SFProText-Semibold",
+                                // alignSelf: 'center',
+                                marginLeft: 10,
+                                paddingBottom: 4
+                            }}
+                        >{this.state.name}</Text>
+                    </TouchableOpacity>
 
                     <TouchableOpacity
                         style={{
@@ -149,9 +162,10 @@ export default class ChatRoom extends React.Component {
                 </View>
 
                 <GiftedChat
+                    user={this.user}
                     messages={this.state.messages}
                     onSend={async (messages) => await Firebase.sendMessages(this.state.id, messages, Firebase.uid())}
-                    user={this.user}
+                    onPressAvatar={async () => await this.openPost()}
                     listViewProps={{
                         scrollEventThrottle: 400,
                         onScroll: ({ nativeEvent }) => {
@@ -185,17 +199,7 @@ export default class ChatRoom extends React.Component {
                             <Text style={styles.text1}>{'!'}</Text>
                         </Text>
 
-                        <TouchableOpacity onPress={async () => {
-                            const item = this.props.navigation.state.params.item;
-                            const placeId = item.placeId;
-                            const feedId = item.feedId;
-                            const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-                            const post = reviewDoc.data();
-
-                            // console.log('post', post);
-
-                            this.props.navigation.navigate('post', { post: post });
-                        }}>
+                        <TouchableOpacity onPress={async () => await this.openPost()}>
                             <SmartImage
                                 showSpinner={false}
                                 style={{ width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2, marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
@@ -230,9 +234,7 @@ export default class ChatRoom extends React.Component {
 
                         await Firebase.deleteChatRoom(Firebase.uid(), item.id);
 
-                        // this.props.navigation.goBack();
-
-                        // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); }); // ToDo!!!
+                        // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
 
                         this.props.navigation.navigate('chatMain', { roomId: item.id });
                     }}
@@ -240,14 +242,11 @@ export default class ChatRoom extends React.Component {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)" }}
-
+                    contentContainerStyle={{ width: '80%', height: GLOBALS.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-
-                    cancelButtonStyle={{ marginTop: buttonMarginTop, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonStyle={{ width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-
-                    confirmButtonStyle={{ marginLeft: buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
             </View>
@@ -280,6 +279,18 @@ export default class ChatRoom extends React.Component {
             }
         });
     }
+
+    async openPost() {
+        const item = this.props.navigation.state.params.item;
+        const placeId = item.placeId;
+        const feedId = item.feedId;
+        const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        const post = reviewDoc.data();
+
+        // console.log('post', post);
+
+        this.props.navigation.navigate('post', { post: post });
+    }
 }
 
 const styles = StyleSheet.create({
@@ -290,15 +301,14 @@ const styles = StyleSheet.create({
     searchBar: {
         height: Constants.statusBarHeight + 8 + 34 + 8,
         paddingBottom: 8,
-        flexDirection: 'column',
-        justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-end'
     },
     post: {
         width: postWidth,
         height: postHeight,
-        // backgroundColor: 'green',
         position: 'absolute',
-
         justifyContent: 'center',
         alignItems: 'center'
     },

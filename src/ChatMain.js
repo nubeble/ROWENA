@@ -64,9 +64,11 @@ export default class ChatMain extends React.Component {
             const result = this.findChatRoom(roomId);
             if (result) { // found
 
-                // doing nothing
+                // means already removed. doing nothing here.
 
             } else { // not found
+                // means need to remove here.
+
                 // put it on the list
                 this.deletedChatRoomList.push(roomId);
 
@@ -74,10 +76,13 @@ export default class ChatMain extends React.Component {
                 var array = [...this.state.chatRoomList];
                 const index = this.findIndex(array, roomId);
                 console.log('index', index);
-                if (index !== -1) {
+                if (index !== -1) { // if the item inside of 10 is removed then automatically updated in database, state array and index = -1
                     array.splice(index, 1);
                     this.setState({ chatRoomList: array });
                 }
+
+                // move scroll on top
+                this._flatList.scrollToOffset({ animated: true, offset: 0 });
             }
         }
     }
@@ -291,34 +296,13 @@ export default class ChatMain extends React.Component {
                 }))
                 */
 
-                // this.setState({ chatRoomList: this.state.chatRoomList.concat(list) });
-
-                // ------------------------------
-
-                /*
-                let newList = this.state.chatRoomList;
-
-                for (var key in list) {
-                    if (key === 'length' || !list.hasOwnProperty(key)) continue;
-
-                    var value = list[key];
-
-                    newList[key] = value;
+                // check duplication
+                const result = this.hasItem(list);
+                if (result) {
+                    this.allChatRoomsLoaded = true;
+                } else {
+                    this.addItem(list);
                 }
-
-                this.setState({ newList });
-                */
-
-
-                let newList = [...this.state.chatRoomList]; // create the copy of state array
-                for (var i = 0; i < list.length; i++) {
-                    newList.push(list[i]);
-                }
-                newList.sort(this.compare);
-
-                // console.log('newList', newList);
-
-                this.setState({ chatRoomList: newList });
             }
 
             this.setState({ isLoadingChat: false });
@@ -331,6 +315,36 @@ export default class ChatMain extends React.Component {
         if (a.timestamp > b.timestamp)
             return -1;
         return 0;
+    }
+
+    hasItem(list) {
+        const array = this.state.chatRoomList;
+
+        for (var i = 0; i < list.length; i++) {
+            const item1 = list[i];
+
+            for (var j = 0; j < array.length; j++) {
+                const item2 = array[j];
+
+                if (item1.timestamp === item2.timestamp) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    addItem(list) {
+        let newList = [...this.state.chatRoomList]; // create the copy of state array
+        for (var i = 0; i < list.length; i++) {
+            newList.push(list[i]);
+        }
+        newList.sort(this.compare);
+
+        // console.log('newList', newList);
+
+        this.setState({ chatRoomList: newList });
     }
 
     @autobind

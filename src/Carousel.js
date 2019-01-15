@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { ScrollView, Dimensions, Platform, View } from 'react-native';
+import {
+    ScrollView, Dimensions, Platform, View,
+    // Vibration
+} from 'react-native';
 import { Theme } from "./rnff/src/components";
 
 const _itemWidth = Dimensions.get('window').width - 40;
@@ -7,7 +10,6 @@ const _itemWidth = Dimensions.get('window').width - 40;
 
 
 export default class extends Component {
-
     constructor(props) {
         super(props);
 
@@ -53,7 +55,7 @@ export default class extends Component {
                     bounces={false}
 
                     decelerationRate={0.2} // works fine in android!
-                    
+
                     // scrollEventThrottle={16} // works fine in android
                     scrollEventThrottle={1} // for ios, tango
 
@@ -62,6 +64,8 @@ export default class extends Component {
                     onScrollBeginDrag={this._onScrollBegin}
                     contentInset={{ top: 0 }}
                     automaticallyAdjustContentInsets={false}
+
+                // onMomentumScrollEnd={this._onMomentumScrollEnd}
                 >
                     {this.props.children}
                 </ScrollView>
@@ -239,4 +243,10 @@ export default class extends Component {
         let d = (a + b + c) / 3;
         return d;
     }
+
+    /*
+    _onMomentumScrollEnd = (event) => {
+        Vibration.vibrate(1);
+    }
+    */
 }

@@ -20,6 +20,8 @@ import autobind from "autobind-decorator";
 import { observer } from "mobx-react/native";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
+import AwesomeAlert from 'react-native-awesome-alerts';
+import GLOBALS from './Globals';
 import Toast, { DURATION } from 'react-native-easy-toast';
 
 
@@ -32,6 +34,8 @@ export default class Detail extends React.Component {
 
     replyViewHeight = Dimensions.get('window').height / 9;
 
+    alertCallback = null;
+
     state = {
         rating: 0,
         isNavigating: false,
@@ -43,7 +47,10 @@ export default class Detail extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0)
+        offset: new Animated.Value(0),
+
+        showAlert: false,
+        alertMessage: ''
     };
 
     constructor(props) {
@@ -55,7 +62,7 @@ export default class Detail extends React.Component {
     onGoBack(result) { // back from rating
         console.log('Detail::onGoBack', result);
 
-        // this.setState({ isNavigating: false }); // ToDo: move to onFocus
+        // this.setState({ isNavigating: false }); // Consider: move to onFocus
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -209,7 +216,7 @@ export default class Detail extends React.Component {
                             color='grey'
                         />
                         :
-//                     this.state.renderList &&
+                        //                     this.state.renderList &&
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -227,7 +234,7 @@ export default class Detail extends React.Component {
 
                                         <View style={styles.infoContainer}>
                                             <TouchableWithoutFeedback
-                                                // onPress={this.profile}
+                                            // onPress={this.profile}
                                             >
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                                     <View style={styles.circle}></View>
@@ -310,7 +317,7 @@ export default class Detail extends React.Component {
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                         <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                            {/* ToDo: show review chart */}
+                                            {/* Consider: show review chart */}
                                             <Image
                                                 style={{ width: '100%', height: 140, marginBottom: 10 }}
                                                 resizeMode={'cover'}
@@ -413,7 +420,7 @@ export default class Detail extends React.Component {
                                 placeholderTextColor='rgb(160, 160, 160)'
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'} // Todo: what about android??
+                                keyboardAppearance={'dark'} // Consider: what about android??
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
@@ -439,6 +446,43 @@ export default class Detail extends React.Component {
                     )
                 }
 
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="YES"
+                    confirmText="NO"
+                    confirmButtonColor="#DD6B55"
+                    // title={"Want to leave " + name + "?"}
+                    title={this.state.alertMessage}
+                    // message="I have a message for you!"
+                    onCancelPressed={async () => {
+                        this.setState({ showAlert: false });
+
+                        // pressed YES
+                        console.log('YES');
+
+                        if (this.alertCallback) {
+                            this.alertCallback();
+                            this.alertCallback = null;
+                        }
+                    }}
+                    onConfirmPressed={() => {
+                        this.setState({ showAlert: false });
+
+                    }}
+
+                    contentContainerStyle={{ width: '80%', height: GLOBALS.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
+                    cancelButtonStyle={{ width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                    confirmButtonStyle={{ marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                />
+
                 <Toast
                     ref="toast"
                     position='top'
@@ -459,7 +503,7 @@ export default class Detail extends React.Component {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
                     <SmartImage
-                        showSpinner={true}
+                        showSpinner={false}
                         style={styles.item}
                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={value}
@@ -606,7 +650,7 @@ export default class Detail extends React.Component {
                         <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
                             <ReadMore
                                 numberOfLines={2}
-                                // onReady={() => this.readingCompleted()}
+                            // onReady={() => this.readingCompleted()}
                             >
                                 {/*
                                 <Text style={styles.reviewText}>{tmp}</Text>
@@ -978,7 +1022,7 @@ export default class Detail extends React.Component {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
-                // ToDo: reload only the added review!
+                // Consider: reload only the added review!
                 const { post, profile } = this.props.navigation.state.params;
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                 this.reviewStore.init(query);
@@ -994,50 +1038,61 @@ export default class Detail extends React.Component {
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
         const userUid = Firebase.uid(); // 리뷰를 쓴 사람
 
-        // await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
-        await Firebase.addReply(placeId, feedId, reviewId, userUid, message); // ToDo
+        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
 
-    async removeReview(index) {
-        // ToDo: show dialog
+    removeReview(index) {
+        // show dialog
+        this.showAlert('Are you sure you want to delete this review?', async () => {
+            const { post, profile } = this.props.navigation.state.params;
 
-        const { post, profile } = this.props.navigation.state.params;
+            const placeId = post.placeId;
+            const feedId = post.id;
+            const reviewId = this.reviewStore.reviews[index].review.id;
+            const userUid = Firebase.uid();
 
-        const placeId = post.placeId;
-        const feedId = post.id;
-        const reviewId = this.reviewStore.reviews[index].review.id;
-        const userUid = Firebase.uid();
+            await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
-        await Firebase.removeReview(placeId, feedId, reviewId, userUid);
-
-        this.refs.toast.show('Your review has successfully been removed.', 500, () => {
-            if (!this.isClosed) {
-                // refresh UI
-                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                this.reviewStore.init(query);
-            }
+            this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+                if (!this.isClosed) {
+                    // refresh UI
+                    const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                    this.reviewStore.init(query);
+                }
+            });
         });
     }
 
-    async removeReply(index) {
-        // ToDo: show dialog
+    showAlert(message, callback) {
+        this.setAlertCallback(callback);
 
-        const { post, profile } = this.props.navigation.state.params;
+        this.setState({ alertMessage: message, showAlert: true });
+    }
 
-        const placeId = post.placeId;
-        const feedId = post.id;
-        const reviewId = this.reviewStore.reviews[index].review.id;
-        const replyId = this.reviewStore.reviews[index].review.reply.id;
-        const userUid = Firebase.uid();
+    setAlertCallback(callback) {
+        this.alertCallback = callback;
+    }
 
-        await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
+    removeReply(index) {
+        // show dialog
+        this.showAlert('Are you sure you want to delete this reply?', async () => {
+            const { post, profile } = this.props.navigation.state.params;
 
-        this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
-            if (!this.isClosed) {
-                // refresh UI
-                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                this.reviewStore.init(query);
-            }
+            const placeId = post.placeId;
+            const feedId = post.id;
+            const reviewId = this.reviewStore.reviews[index].review.id;
+            const replyId = this.reviewStore.reviews[index].review.reply.id;
+            const userUid = Firebase.uid();
+
+            await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
+
+            this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+                if (!this.isClosed) {
+                    // refresh UI
+                    const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                    this.reviewStore.init(query);
+                }
+            });
         });
     }
 }
@@ -1065,9 +1120,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     item: {
-        // flex: 1,
         width: Dimensions.get('window').width,
-        // height: Dimensions.get('window').width / 16 * 9,
         height: Dimensions.get('window').width
     },
     infoContainer: {
@@ -1087,14 +1140,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        backgroundColor: 'rgb(70, 154, 32)',
-
+        // backgroundColor: 'rgb(70, 154, 32)',
+        height: 14,
+        // marginTop: '2%',
 
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,
         fontFamily: "SFProText-Light",
-        color: "grey"
+        color: Theme.color.text2
     },
     name: {
         color: 'white',
@@ -1132,7 +1186,7 @@ const styles = StyleSheet.create({
         paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     note: {
-        color: 'silver',
+        color: Theme.color.text2,
         fontSize: 16,
         lineHeight: 24,
         fontFamily: "SFProText-Regular",

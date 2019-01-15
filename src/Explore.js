@@ -148,7 +148,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 this.props.screenProps.rootNavigation.navigate('intro'); // ToDo: maybe goback
                             }}
                         >
-                            <FontAwesome name='chevron-left' color="white" size={16} />
+                            <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -158,6 +158,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 this.props.navigation.navigate("exploreSearchModal");
                             }}
                         >
+                            {/*
                             <TextInput
                                 // ref='searchInput'
                                 pointerEvents="none"
@@ -169,6 +170,12 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 // onEndEditing={() => this.leaveEditing()}
                                 value={this.state.searchText}
                             />
+                            */}
+
+                            <Text
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '4%', fontFamily: "SFProText-Semibold",
+                                color: Theme.color.text2, textAlign: 'center' }}
+                            >{this.state.searchText}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

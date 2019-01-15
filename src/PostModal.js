@@ -363,7 +363,7 @@ export default class PostModal extends React.Component {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
                     <SmartImage
-                        showSpinner={true}
+                        showSpinner={false}
                         style={styles.item}
                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={value}

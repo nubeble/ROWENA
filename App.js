@@ -113,15 +113,8 @@ const ExploreStackNavigator = createStackNavigator(
         }
     },
     {
-        mode: 'card',
-        headerMode: 'none',
-
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
+        mode: 'modal',
+        headerMode: 'none'
     }
 );
 
@@ -200,15 +193,8 @@ const IntroStackNavigator = createStackNavigator(
         }
     },
     {
-        mode: 'card',
-        headerMode: 'none',
-
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
+        mode: 'modal',
+        headerMode: 'none'
     }
 );
 

@@ -346,7 +346,7 @@ export default class PostScreen extends React.Component {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
                     <SmartImage
-                        showSpinner={true}
+                        showSpinner={false}
                         style={styles.item}
                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={value}
@@ -899,12 +899,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        backgroundColor: 'rgb(70, 154, 32)',
+        height: 14,
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,
         fontFamily: "SFProText-Light",
-        color: "grey"
+        color: Theme.color.text2
     },
     name: {
         color: 'white',
