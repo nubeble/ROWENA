@@ -22,6 +22,12 @@ export default class ChatMain extends React.Component {
         showAlert: false
     }
 
+    constructor(props) {
+        super(props);
+
+        this.deletedChatRoomList = [];
+    }
+
     componentDidMount() {
         console.log('ChatMain::componentDidMount');
 
@@ -32,7 +38,7 @@ export default class ChatMain extends React.Component {
 
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
-            console.log('list', list);
+            console.log('ChatMain, loadChatRoom, updating list', list);
 
             this.setState({ chatRoomList: list });
 
@@ -48,7 +54,62 @@ export default class ChatMain extends React.Component {
     onFocus() {
         console.log('ChatMain::onFocus');
         this.isFocused = true;
+
+        const params = this.props.navigation.state.params;
+        if (params) {
+            const roomId = params.roomId;
+            console.log('roomId', roomId);
+
+            // search it from the list
+            const result = this.findChatRoom(roomId);
+            if (result) { // found
+
+                // doing nothing
+
+            } else { // not found
+                // put it on the list
+                this.deletedChatRoomList.push(roomId);
+
+                // update state
+                var array = [...this.state.chatRoomList];
+                const index = this.findIndex(array, roomId);
+                console.log('index', index);
+                if (index !== -1) {
+                    array.splice(index, 1);
+                    this.setState({ chatRoomList: array });
+                }
+            }
+        }
     }
+
+    findChatRoom(id) {
+        for (var i = 0; i < this.deletedChatRoomList.length; i++) {
+            const item = this.deletedChatRoomList[i];
+            if (item === id) return true;
+        }
+
+        return false;
+    }
+
+    findIndex(array, id) {
+        for (var i = 0; i < array.length; i++) {
+            const item = array[i];
+            console.log('id', item);
+            if (item.id === id) return i;
+        }
+
+        return -1;
+    }
+
+    /*
+    onGoBack(index, callback) { // back from deleting
+        console.log('index', index);
+
+        var array = [...this.state.chatRoomList];
+        array.splice(index, 1);
+        this.setState({chatRoomList: array}, () => callback());
+    }
+    */
 
     @autobind
     onBlur() {
@@ -80,7 +141,7 @@ export default class ChatMain extends React.Component {
                             alignSelf: 'center'
                         }}
                     >Messages</Text>
-                    
+
                 </View>
 
                 {
@@ -165,7 +226,7 @@ export default class ChatMain extends React.Component {
         const avatarHeight = viewHeight;
 
         return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('room', { item: item, index: index, onGoBack: (result) => this.onGoBack(result) })}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('room', { item: item })}>
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,
@@ -199,14 +260,6 @@ export default class ChatMain extends React.Component {
                 </View>
             </TouchableHighlight>
         );
-    }
-
-    onGoBack(index, callback) { // back from deleting
-        console.log('index', index);
-
-        var array = [...this.state.chatRoomList];
-        array.splice(index, 1);
-        this.setState({chatRoomList: array}, () => callback());
     }
 
     @autobind

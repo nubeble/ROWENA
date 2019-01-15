@@ -10,11 +10,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
-// import PostModal from './PostModal';
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
 const alertHeight = Dimensions.get('window').height * 0.25;
+const buttonMarginTop = alertHeight * 0.3;
+const buttonMarginLeft = Dimensions.get('window').width * 0.1;
 
 
 export default class ChatRoom extends React.Component {
@@ -193,8 +194,6 @@ export default class ChatRoom extends React.Component {
 
                             // console.log('post', post);
 
-                            // if (post !== undefined) this.refs.modal.showModal(post);
-
                             this.props.navigation.navigate('post', { post: post });
                         }}>
                             <SmartImage
@@ -231,8 +230,11 @@ export default class ChatRoom extends React.Component {
 
                         await Firebase.deleteChatRoom(Firebase.uid(), item.id);
 
-                        this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); }); // ToDo!!!
                         // this.props.navigation.goBack();
+
+                        // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); }); // ToDo!!!
+
+                        this.props.navigation.navigate('chatMain', { roomId: item.id });
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
@@ -242,16 +244,12 @@ export default class ChatRoom extends React.Component {
 
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
 
-                    cancelButtonStyle={{ marginTop: '25%', width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonStyle={{ marginTop: buttonMarginTop, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
 
-                    confirmButtonStyle={{ marginLeft: 20, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginLeft: buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
-
-                {/*
-                <PostModal ref='modal' navigation={this.props.navigation}></PostModal>
-                */}
             </View>
         );
     } // end of render
