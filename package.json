@@ -15,7 +15,8 @@
     "d3-ease": "^1.0.5",
     "exenv": "^1.2.2",
     "expo": "^31.0.0",
-    "firebase": "^5.5.7",
+    "expokit": "^32.0.3",
+    "firebase": "^5.7.3",
     "flow": "^0.2.3",
     "lodash.isequal": "^4.5.0",
     "mobx": "^5.6.0",
@@ -33,6 +34,7 @@
     "react-native-gifted-chat": "^0.6.0",
     "react-native-image-crop-picker": "^0.21.3",
     "react-native-keyboard-spacer": "^0.4.1",
+    "react-native-push-notification": "^3.1.2",
     "react-navigation": "^2.18.2",
     "symbol-observable": "^1.2.0"
   },
