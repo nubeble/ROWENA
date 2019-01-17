@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu Jan 17 01:10:46 KST 2019
+#Thu Jan 17 22:44:42 KST 2019
 5.base=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/transforms/dexMerger/devMinSdkDevKernel/debug/15
 42.base=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/transforms/stripDebugSymbol/devMinSdkDevKernel/debug/0
 22.path=lib/armeabi-v7a/libstatic-webp.so

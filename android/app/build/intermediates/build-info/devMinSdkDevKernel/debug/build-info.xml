@@ -6,7 +6,7 @@
     density="560dpi"
     format="10"
     plugin-version="3.1.4"
-    timestamp="1547655021543"
+    timestamp="1547732643125"
     token="-4174137645981834219"
     verifier="FULL_BUILD_REQUESTED" >
 
@@ -18,13 +18,19 @@
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="374" />
+        duration="217" />
     <task
         name="verifier"
-        duration="252" />
+        duration="397" />
 
     <artifact
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/dep/dependencies.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_2.apk"
+        type="SPLIT" />
+    <artifact
+        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_4.apk"
         type="SPLIT" />
     <artifact
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_0.apk"
@@ -33,19 +39,13 @@
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_1.apk"
         type="SPLIT" />
     <artifact
-        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_2.apk"
+        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_5.apk"
         type="SPLIT" />
     <artifact
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_3.apk"
         type="SPLIT" />
     <artifact
-        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_5.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_4.apk"
-        type="SPLIT" />
-    <artifact
-        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_6.apk"
+        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_9.apk"
         type="SPLIT" />
     <artifact
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_7.apk"
@@ -54,7 +54,7 @@
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_8.apk"
         type="SPLIT" />
     <artifact
-        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_9.apk"
+        location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_6.apk"
         type="SPLIT" />
     <artifact
         location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/instant-run-apk/devMinSdkDevKernel/debug/app-devMinSdk-devKernel-debug.apk"
@@ -62,10 +62,16 @@
 
     <build
         build-mode="FULL"
-        timestamp="1547655021543"
+        timestamp="1547732643125"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/dep/dependencies.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_2.apk"
+            type="SPLIT" />
+        <artifact
+            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_4.apk"
             type="SPLIT" />
         <artifact
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_0.apk"
@@ -74,19 +80,13 @@
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_1.apk"
             type="SPLIT" />
         <artifact
-            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_2.apk"
+            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_5.apk"
             type="SPLIT" />
         <artifact
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_3.apk"
             type="SPLIT" />
         <artifact
-            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_5.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_4.apk"
-            type="SPLIT" />
-        <artifact
-            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_6.apk"
+            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_9.apk"
             type="SPLIT" />
         <artifact
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_7.apk"
@@ -95,7 +95,7 @@
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_8.apk"
             type="SPLIT" />
         <artifact
-            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_9.apk"
+            location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/split-apk/devMinSdkDevKernel/debug/slices/slice_6.apk"
             type="SPLIT" />
         <artifact
             location="/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/instant-run-apk/devMinSdkDevKernel/debug/app-devMinSdk-devKernel-debug.apk"

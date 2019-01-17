@@ -1,5 +1,5 @@
 #Internal package file, do not edit.
-#Thu Jan 17 01:10:27 KST 2019
+#Thu Jan 17 22:44:10 KST 2019
 1.base=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/assets/devMinSdkDevKernel/debug
 2.path=fonts/EmojiOne.ttf
 0.baseType=DIRECTORY

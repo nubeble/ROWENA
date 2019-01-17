@@ -173,7 +173,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             */}
 
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '4%', fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '3%', fontFamily: "SFProText-Semibold",
                                 color: Theme.color.text2, textAlign: 'center' }}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>

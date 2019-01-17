@@ -14,6 +14,7 @@ import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
+import GLOBALS from './Globals';
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -256,7 +257,7 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '4%', fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '3%', fontFamily: "SFProText-Semibold",
                                 color: "rgb(160, 160, 160)", textAlign: 'center' }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
@@ -280,7 +281,11 @@ export default class Intro extends React.Component {
                     renderItem={({ item, index }) => {
                         return (
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length })}
+                                onPress={() => {
+                                    setTimeout(() => {
+                                        this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length });
+                                    }, GLOBALS.buttonTimeout);
+                                }}
                             >
                                 <View style={styles.pictureContainer}>
                                     <Image
