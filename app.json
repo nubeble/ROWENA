@@ -1,55 +1,58 @@
 {
-  "expo": {
-    "name": "Rowena",
-    "description": "This project is really great.",
-    "slug": "rowena",
-    "privacy": "public",
-    "sdkVersion": "31.0.0",
-    "platforms": [
-      "ios",
-      "android"
-    ],
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/logo.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+    "expo": {
+        "name": "Rowena",
+        "description": "This project is really great.",
+        "slug": "rowena",
+        "privacy": "public",
+        "sdkVersion": "31.0.0",
+        "platforms": [
+            "ios",
+            "android"
+        ],
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/logo.png",
+        "splash": {
+            "image": "./assets/splash.png",
+            "resizeMode": "cover",
+            "backgroundColor": "#ffffff"
+        },
+        "androidStatusBar": {
+            "barStyle": "light-content",
+            "backgroundColor": "#404040"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "ios": {
+            "bundleIdentifier": "com.nubeble.rowena",
+            "supportsTablet": true,
+            "infoPlist": {
+                "NSAppTransportSecurity": "",
+                "NSCameraUsageDescription": "Privacy - Camera Usage Description",
+                "NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
+                "NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
+                "NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
+            },
+            "publishBundlePath": "ios/rowena/Supporting/shell-app.bundle",
+            "publishManifestPath": "ios/rowena/Supporting/shell-app-manifest.json"
+        },
+        "android": {
+            "package": "com.nubeble.rowena",
+            "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
+            "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
+        },
+        "isDetached": true,
+        "detach": {
+            "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.9.0-sdk31.0.0-250a3991-b623-4f9c-b07f-0b9ed7e8c4c9.tar.gz",
+            "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.9.2-sdk31.0.0-d1776f37-d524-4fee-872d-6807b0fd83ff.tar.gz"
+        },
+        "scheme": "exp5c83590e7ab54dba80e3195176d4df5e"
     },
-    "androidStatusBar": {
-      "barStyle": "light-content",
-      "backgroundColor": "#000000"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "bundleIdentifier": "com.nubeble.rowena",
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSAppTransportSecurity": "",
-        "NSCameraUsageDescription": "Privacy - Camera Usage Description",
-        "NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
-        "NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
-        "NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
-      },
-      "publishBundlePath": "ios/rowena/Supporting/shell-app.bundle",
-      "publishManifestPath": "ios/rowena/Supporting/shell-app-manifest.json"
-    },
-    "android": {
-      "package": "com.nubeble.rowena",
-      "publishBundlePath": "android/app/src/main/assets/shell-app.bundle",
-      "publishManifestPath": "android/app/src/main/assets/shell-app-manifest.json"
-    },
-    "isDetached": true,
-    "detach": {
-      "iosExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/ios-v2.9.0-sdk31.0.0-250a3991-b623-4f9c-b07f-0b9ed7e8c4c9.tar.gz",
-      "androidExpoViewUrl": "https://s3.amazonaws.com/exp-exponent-view-code/android-v2.9.2-sdk31.0.0-d1776f37-d524-4fee-872d-6807b0fd83ff.tar.gz"
-    },
-    "scheme": "exp5c83590e7ab54dba80e3195176d4df5e"
-  }
+    "facebookScheme": "fb367256380681542",
+    "facebookAppId": "367256380681542",
+    "facebookDisplayName": "Rowena"
 }

@@ -29,7 +29,10 @@ export default class AuthMain extends React.Component {
             expires,
             permissions,
             declinedPermissions,
-        } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542', { permissions: ['public_profile'] });
+        } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542',
+            {
+                permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'web'
+            });
 
         if (type === 'success') {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
@@ -56,6 +59,23 @@ export default class AuthMain extends React.Component {
             // close indicator
             !this.isClosed && this.setState({ showIndicator: false });
         }
+    }
+
+    isStandaloneApp = () => {
+        if (Expo.Constants.appOwnership === 'expo') {
+            console.log('Expo ownership app');
+
+            if (Platform.OS === 'android') return true;
+            
+            return false;
+
+        } else { // standalone
+            console.log('standalone app');
+
+            return true;
+        }
+
+        // return !(Platform.OS === 'ios' && Expo.Constants.appOwnership === 'expo');
     }
 
     signUpWithEmail() {
