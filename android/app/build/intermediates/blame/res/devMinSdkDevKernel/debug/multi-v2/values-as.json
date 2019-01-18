@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/merged.dir/values-as/values-as.xml",
+            "outputFile": "C:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\incremental\\mergeDevMinSdkDevKernelDebugResources\\merged.dir\\values-as\\values-as.xml",
             "map": [
                 {
-                    "source": "/home/jay/.gradle/caches/transforms-1/files-1.1/firebase-messaging-17.1.0.aar/1167c4dc14be9b684ea37a98f1079c39/res/values-as/values.xml",
+                    "source": "C:\\Users\\jay\\.gradle\\caches\\transforms-1\\files-1.1\\firebase-messaging-17.1.0.aar\\b6957ac5cb2f5e4eddae5643dda53249\\res\\values-as\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",

@@ -1,13 +1,13 @@
-#Thu Jan 17 22:44:36 KST 2019
-path.3=classes.dex
-path.2=classes.dex
+#Fri Jan 18 16:33:55 KST 2019
+path.3=classes3.dex
+path.2=classes2.dex
 path.1=classes.dex
 path.0=classes.dex
 renamed.3=classes4.dex
 renamed.2=classes3.dex
 renamed.1=classes2.dex
 renamed.0=classes.dex
-base.3=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/transforms/dexMerger/devMinSdkDevKernel/debug/16
-base.2=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/transforms/dexMerger/devMinSdkDevKernel/debug/13
-base.1=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/transforms/dexMerger/devMinSdkDevKernel/debug/14
-base.0=/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/transforms/dexMerger/devMinSdkDevKernel/debug/15
+base.3=C\:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\transforms\\dexMerger\\devMinSdkDevKernel\\debug\\1
+base.2=C\:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\transforms\\dexMerger\\devMinSdkDevKernel\\debug\\1
+base.1=C\:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\transforms\\dexMerger\\devMinSdkDevKernel\\debug\\0
+base.0=C\:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\transforms\\dexMerger\\devMinSdkDevKernel\\debug\\1

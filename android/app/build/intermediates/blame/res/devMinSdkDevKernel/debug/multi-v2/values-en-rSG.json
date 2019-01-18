@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/merged.dir/values-en-rSG/values-en-rSG.xml",
+            "outputFile": "C:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\incremental\\mergeDevMinSdkDevKernelDebugResources\\merged.dir\\values-en-rSG\\values-en-rSG.xml",
             "map": [
                 {
-                    "source": "/home/jay/.gradle/caches/transforms-1/files-1.1/play-services-wallet-15.0.1.aar/89852b5a07440d3891d58207409eeaf9/res/values-en-rSG/values.xml",
+                    "source": "C:\\Users\\jay\\.gradle\\caches\\transforms-1\\files-1.1\\play-services-wallet-15.0.1.aar\\0990afb4beb8a31705587dfe88199cae\\res\\values-en-rSG\\values.xml",
                     "from": {
                         "startLines": "4",
                         "startColumns": "0",
