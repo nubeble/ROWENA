@@ -279,10 +279,19 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const age = 20;
         const height = 163;
         const weight = 48;
-        const image1Uri = 'http://file3.instiz.net/data/cached_img/upload/2018/06/16/12/8d64da3fc9915a9e47774268498d6c67.jpg'; // ToDo: use image picker
+
+        // ToDo: use image picker
+        const image1Uri = 'http://file3.instiz.net/data/cached_img/upload/2018/06/16/12/8d64da3fc9915a9e47774268498d6c67.jpg';
         const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
         const image3Uri = 'https://3.bp.blogspot.com/-IlmY1gyVmQI/W3doZ9X9oAI/AAAAAAAAERQ/avgNK2r8A4Ms710A4s1Vew-8Zwz7eU4ZQCLcBGAs/s1600/ep10-1.gif';
         const image4Uri = 'http://image.xportsnews.com/contents/images/upload/article/2018/0927/1538028901244827.jpg';
+        /*
+        const image1Uri = 'http://image.xportsnews.com/contents/images/upload/article/2018/0927/1538028901244827.jpg';
+        image2Uri = null;
+        image3Uri = null;
+        image4Uri = null;
+        */
+
         const note = 'note';
         
         await Firebase.createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note);

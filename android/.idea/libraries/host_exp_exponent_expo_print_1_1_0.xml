@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="host.exp.exponent:expo-print-1.1.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/expo-print-1.1.0.aar/a87ccc223537e02c4bbd6099936539ce/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/expo-print-1.1.0.aar/a87ccc223537e02c4bbd6099936539ce/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

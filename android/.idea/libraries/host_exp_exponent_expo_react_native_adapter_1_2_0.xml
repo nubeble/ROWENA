@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="host.exp.exponent:expo-react-native-adapter-1.2.0">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/expo-react-native-adapter-1.2.0.aar/c59400aad7476a885f16e972d77f67eb/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/expo-react-native-adapter-1.2.0.aar/c59400aad7476a885f16e972d77f67eb/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

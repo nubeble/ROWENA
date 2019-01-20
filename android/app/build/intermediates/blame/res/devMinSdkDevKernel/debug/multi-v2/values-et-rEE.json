@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\incremental\\mergeDevMinSdkDevKernelDebugResources\\merged.dir\\values-et-rEE\\values-et-rEE.xml",
+            "outputFile": "/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/merged.dir/values-et-rEE/values-et-rEE.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\jay\\.gradle\\caches\\transforms-1\\files-1.1\\exoplayer-ui-2.6.1.aar\\f190b38f36a3c17ddc762ffb7feebde2\\res\\values-et-rEE\\values-et-rEE.xml",
+                    "source": "/home/jay/.gradle/caches/transforms-1/files-1.1/exoplayer-ui-2.6.1.aar/808d0f592a0712c882fa1911c977f019/res/values-et-rEE/values-et-rEE.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,11,12",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4,4",

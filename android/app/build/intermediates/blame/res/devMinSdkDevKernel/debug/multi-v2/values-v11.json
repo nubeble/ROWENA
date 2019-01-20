@@ -1,10 +1,10 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\ExpoProjects\\ROWENA\\android\\app\\build\\intermediates\\incremental\\mergeDevMinSdkDevKernelDebugResources\\merged.dir\\values-v11\\values-v11.xml",
+            "outputFile": "/home/jay/ExpoProjects/Rowena/android/app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/merged.dir/values-v11/values-v11.xml",
             "map": [
                 {
-                    "source": "C:\\Users\\jay\\.gradle\\caches\\transforms-1\\files-1.1\\CreditCardEntry-1.4.8.10.aar\\353e25a332f69c5e697ee23f7e0a06de\\res\\values-v11\\values-v11.xml",
+                    "source": "/home/jay/.gradle/caches/transforms-1/files-1.1/CreditCardEntry-1.4.8.10.aar/87324043a6281e8182d4627192e5c222/res/values-v11/values-v11.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",
