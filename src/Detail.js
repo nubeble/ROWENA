@@ -216,7 +216,7 @@ export default class Detail extends React.Component {
                             color='grey'
                         />
                         :
-                        //                     this.state.renderList &&
+                        // this.state.renderList &&
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -280,9 +280,9 @@ export default class Detail extends React.Component {
                                         <View style={styles.mapContainer}>
                                             <TouchableOpacity activeOpacity={0.5}
                                                 onPress={() => {
-                                                    this.setState({ isNavigating: true });
-
-                                                    this.props.navigation.navigate("map", { post: post });
+                                                    this.setState({ isNavigating: true }, () => {
+                                                        this.props.navigation.navigate("map", { post: post });
+                                                    });
                                                 }}
                                             >
                                                 <View style={styles.mapView}>
@@ -783,10 +783,10 @@ export default class Detail extends React.Component {
         // console.log("Rating is: " + rating);
 
         setTimeout(() => {
-            this.setState({ isNavigating: true });
-
-            const { post, profile } = this.props.navigation.state.params;
-            this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
+            this.setState({ isNavigating: true }, () => {
+                const { post, profile } = this.props.navigation.state.params;
+                this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
+            });
         }, 500); // 0.5 sec
     }
 
@@ -971,9 +971,9 @@ export default class Detail extends React.Component {
         const room = await Firebase.findChatRoom(Firebase.uid(), post.id);
 
         if (room) {
-            this.setState({ isNavigating: true });
-
-            this.props.navigation.navigate('room', { item: room });
+            this.setState({ isNavigating: true }, () => {
+                this.props.navigation.navigate('room', { item: room });
+            });
         } else {
             // create new chat room
             // --
@@ -999,9 +999,9 @@ export default class Detail extends React.Component {
             const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id);
             // --
 
-            this.setState({ isNavigating: true });
-
-            this.props.navigation.navigate('room', { item: item });
+            this.setState({ isNavigating: true }, () => {
+                this.props.navigation.navigate('room', { item: item });
+            });
         }
     }
 

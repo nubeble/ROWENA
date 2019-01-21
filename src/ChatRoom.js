@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard
+    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform
 } from 'react-native';
 import { Constants } from "expo";
 import { Theme } from "./rnff/src/components";
@@ -161,6 +161,7 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
                 </View>
 
+                <View style={{flex: 1}}>
                 <GiftedChat
                     user={this.user}
                     messages={this.state.messages}
@@ -188,6 +189,8 @@ export default class ChatRoom extends React.Component {
                         */
                     }}
                 />
+                <KeyboardAvoidingView behavior={ Platform.OS ==='android' ? 'padding' : null } keyboardVerticalOffset={80}/>
+                </View>
 
                 {
                     // ToDo: apply animation

@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView,
-    Keyboard, Dimensions, Platform, StatusBar } from 'react-native';
+import {
+    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView,
+    Keyboard, Dimensions, Platform, StatusBar
+} from 'react-native';
 import { Header } from 'react-navigation';
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
@@ -21,7 +23,8 @@ export default class SignUpWithEmail extends React.Component {
         emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
         pwIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
-        showIndicator: false,
+        // showIndicator: false,
+        showSignUpLoader: false,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -309,7 +312,8 @@ export default class SignUpWithEmail extends React.Component {
 
     async processSignUp() {
         // show indicator
-        this.setState({ showIndicator: true });
+        // this.setState({ showIndicator: true });
+        this.setState({ showSignUpLoader: true });
 
         try {
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
@@ -324,12 +328,13 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         // close indicator
-        !this.isClosed && this.setState({ showIndicator: false });
+        // !this.isClosed && this.setState({ showIndicator: false });
+        !this.isClosed && this.setState({ showSignUpLoader: false });
     }
 
     render() {
         // const { goBack } = this.props.navigation;
-        const showIndicator = this.state.showIndicator;
+        // const showIndicator = this.state.showIndicator;
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
         const notificationStyle = {
@@ -364,19 +369,21 @@ export default class SignUpWithEmail extends React.Component {
                         >
                             <Text style={styles.notificationText}>{this.state.notification}</Text>
                             <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
-                    >
+                                style={styles.notificationButton}
+                                onPress={() => this.hideNotification()}
+                            >
                                 <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                             </TouchableOpacity>
                         </Animated.View>
 
+                        {/*
                         <ActivityIndicator
                             style={styles.activityIndicator}
                             animating={showIndicator}
                             size="large"
                             color='grey'
                         />
+                        */}
 
                         {/*
                         <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }} />
@@ -457,6 +464,17 @@ export default class SignUpWithEmail extends React.Component {
                         <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomPosition - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                             <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
+
+
+                                {
+                                    this.state.showSignUpLoader &&
+                                    <ActivityIndicator
+                                        style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                        animating={true}
+                                        size="small"
+                                        color='rgba(0, 0, 0, 0.6)'
+                                    />
+                                }
                             </TouchableOpacity>
                         </KeyboardAvoidingView>
 
