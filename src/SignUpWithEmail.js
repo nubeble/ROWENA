@@ -425,7 +425,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
-                                    keyboardAppearance={'dark'}
+                                    // keyboardAppearance={'dark'}
                                 />
                                 {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -449,7 +449,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
-                                    keyboardAppearance={'dark'}
+                                    // keyboardAppearance={'dark'}
                                 />
                                 {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}

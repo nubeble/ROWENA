@@ -16,6 +16,11 @@ type Theme = {
         text1: Color,
         text2: Color,
         // ToDo: add here
+        textInput: Color,
+        selection: Color,
+        placeholder: Color,
+
+        
     },
     palette: {
         primary: Color,
@@ -62,7 +67,11 @@ const theme: Theme = {
         line: "rgb(62, 62, 62)",
         text1: "rgb(255, 255, 255)",
         text2: "rgb(178, 178, 178)",
-        // ToDo: add here
+        textInput: "rgb(208, 211, 218)",
+        selection: "rgb(62, 165, 255)",
+        placeholder: "rgb(160, 160, 160)",
+
+
     },
     palette: {
         primary: "#00AAFF",

@@ -178,6 +178,7 @@ PODS:
   - GTMSessionFetcher/Core (1.2.1)
   - JKBigInteger2 (0.0.5)
   - lottie-ios (2.5.2)
+  - QBImagePickerController (3.4.0)
   - React (0.57.1):
     - React/Core (= 0.57.1)
   - React/ART (0.57.1):
@@ -226,6 +227,11 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - RNImageCropPicker (0.21.3):
+    - QBImagePickerController
+    - React/Core
+    - RSKImageCropper
+  - RSKImageCropper (2.2.1)
   - yoga (0.57.1.React)
 
 DEPENDENCIES:
@@ -275,6 +281,7 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -300,6 +307,8 @@ SPEC REPOS:
     - GTMSessionFetcher
     - JKBigInteger2
     - lottie-ios
+    - QBImagePickerController
+    - RSKImageCropper
 
 EXTERNAL SOURCES:
   DoubleConversion:
@@ -371,6 +380,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
   React:
     :path: "../node_modules/react-native"
+  RNImageCropPicker:
+    :path: "../node_modules/react-native-image-crop-picker"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -434,9 +445,12 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 32aeca0aa144acea523e1c8e053089dec2cb98ca
   JKBigInteger2: e91672035c42328c48b7dd015b66812ddf40ca9b
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
+  QBImagePickerController: d54cf93db6decf26baf6ed3472f336ef35cae022
   React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
+  RNImageCropPicker: 32ca4b9fef4e1b7b85ba69494242122948117e06
+  RSKImageCropper: 98296ad26b41753f796b6898d015509598f13d97
   yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
 
-PODFILE CHECKSUM: 00e1002aab308e2f70a538d92f7665efe67605a0
+PODFILE CHECKSUM: c58d99e132fb696144716a0e48fb4aaa74ac12d0
 
 COCOAPODS: 1.5.3

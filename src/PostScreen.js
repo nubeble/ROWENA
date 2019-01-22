@@ -4,7 +4,7 @@
 
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, Platform, Dimensions, FlatList,
+    StyleSheet, View, TouchableOpacity, Platform, Dimensions, FlatList, SafeAreaView,
     TouchableWithoutFeedback, ActivityIndicator, Animated, Image, Keyboard, TextInput, StatusBar
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -125,7 +125,7 @@ export default class PostScreen extends React.Component {
                                 contentContainerStyle={styles.container}
                                 showsVerticalScrollIndicator={true}
                                 ListHeaderComponent={(
-                                    <View>
+                                    <SafeAreaView>
 
                                         {/* profile pictures */}
                                         {this.renderSwiper(post)}
@@ -243,7 +243,7 @@ export default class PostScreen extends React.Component {
                                             </TouchableOpacity>
                                             */}
 
-                                    </View>
+                                    </SafeAreaView>
                                 )}
                             />
                         </TouchableWithoutFeedback>
@@ -299,10 +299,10 @@ export default class PostScreen extends React.Component {
                                     backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
-                                placeholderTextColor='rgb(160, 160, 160)'
+                                placeholderTextColor={Theme.color.placeholder}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'} // Todo: what about android??
+                                keyboardAppearance={'dark'}
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
@@ -322,7 +322,7 @@ export default class PostScreen extends React.Component {
                                 }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color="rgb(62, 165, 255)" size={24} />
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
                             </TouchableOpacity>
                         </View>
                     )

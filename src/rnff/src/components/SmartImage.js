@@ -5,7 +5,6 @@ import { Image as RNImage, Animated, StyleSheet, View, Platform } from "react-na
 import { BlurView } from "expo";
 import type { ____ViewStyleProp_Internal as Style } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 import type { ImageSourcePropType } from "react-native/Libraries/Image/ImageSourcePropType";
-
 import CacheManager from "./CacheManager";
 
 type ImageProps = {

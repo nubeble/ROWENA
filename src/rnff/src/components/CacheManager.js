@@ -1,6 +1,6 @@
 // @flow
 import * as _ from "lodash";
-import {FileSystem} from "expo";
+import { FileSystem } from "expo";
 import SHA1 from "crypto-js/sha1";
 
 const BASE_DIR = `${FileSystem.cacheDirectory}expo-image-cache/`;
@@ -16,13 +16,20 @@ export class CacheEntry {
     }
 
     async getPath(): Promise<?string> {
-        const {uri} = this;
-        const {path, exists, tmpPath} = await getCacheEntry(uri);
+        const { uri } = this;
+        const { path, exists, tmpPath } = await getCacheEntry(uri);
         if (exists) {
             return path;
         }
+
+        console.log('path', path)
+        console.log('exists', exists)
+        console.log('tmpPath', tmpPath)
+
+
+
         this.canceled = false;
-        await FileSystem.downloadAsync(uri, tmpPath);
+        await FileSystem.downloadAsync(uri, tmpPath); // error
         await FileSystem.moveAsync({ from: tmpPath, to: path });
         if (!this.canceled) {
             return path;
@@ -64,6 +71,6 @@ const getCacheEntry = async (uri: string): Promise<{ exists: boolean, path: stri
         // do nothing
     }
     const info = await FileSystem.getInfoAsync(path);
-    const {exists} = info;
+    const { exists } = info;
     return { exists, path, tmpPath };
 };

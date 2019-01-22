@@ -232,10 +232,10 @@ export default class ReadAllReviewScreen extends React.Component {
                                     backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
-                                placeholderTextColor='rgb(160, 160, 160)'
+                                placeholderTextColor={Theme.color.placeholder}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'} // Todo: what about android??
+                                keyboardAppearance={'dark'}
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity style={{
@@ -245,7 +245,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color="rgb(62, 165, 255)" size={24} />
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
                             </TouchableOpacity>
 
                         </View>

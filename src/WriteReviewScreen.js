@@ -205,10 +205,11 @@ export default class WriteReviewScreen extends React.Component {
                             color: "white", textAlign: 'justify', textAlignVertical: 'top', backgroundColor: '#212121'
                         }}
                         placeholder='Share details of your own experience'
-                        placeholderTextColor='rgb(160, 160, 160)'
+                        placeholderTextColor={Theme.color.placeholder}
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
-                        keyboardAppearance={'dark'} // Todo: what about android??
+                        keyboardAppearance={'dark'}
+                        selectionColor={Theme.color.selection}
                         onChangeText={(text) => this.onChangeText(text)}
                     />
                 </View>

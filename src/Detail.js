@@ -280,9 +280,11 @@ export default class Detail extends React.Component {
                                         <View style={styles.mapContainer}>
                                             <TouchableOpacity activeOpacity={0.5}
                                                 onPress={() => {
-                                                    this.setState({ isNavigating: true }, () => {
-                                                        this.props.navigation.navigate("map", { post: post });
-                                                    });
+                                                    setTimeout(() => {
+                                                        this.setState({ isNavigating: true }, () => {
+                                                            this.props.navigation.navigate("map", { post: post });
+                                                        });
+                                                    }, 300);
                                                 }}
                                             >
                                                 <View style={styles.mapView}>
@@ -417,10 +419,11 @@ export default class Detail extends React.Component {
                                     backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
-                                placeholderTextColor='rgb(160, 160, 160)'
+                                placeholderTextColor={Theme.color.placeholder}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'} // Consider: what about android??
+                                keyboardAppearance={'dark'}
+                                selectionColor={Theme.color.selection}
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
@@ -440,7 +443,7 @@ export default class Detail extends React.Component {
                                 }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color="rgb(62, 165, 255)" size={24} />
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
                             </TouchableOpacity>
                         </View>
                     )
@@ -472,14 +475,13 @@ export default class Detail extends React.Component {
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
-
                     }}
 
                     contentContainerStyle={{ width: '80%', height: GLOBALS.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-                    cancelButtonStyle={{ width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
@@ -981,8 +983,8 @@ export default class Detail extends React.Component {
 
             const user1 = {
                 uid: uid,
-                // name: Firebase.user().name ? Firebase.user().name : 'name',
-                // picture: Firebase.user().photoUrl ? Firebase.user().photoUrl : 'uri',
+                name: Firebase.user().name,
+                picture: Firebase.user().photoUrl,
             };
 
             const user2 = {

@@ -33,6 +33,9 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
+const _paddingTop = parseInt(Dimensions.get('window').height / 200); // Galaxy S7: 640, Tango: 731, iphone X: 812
+
+
 
 @inject("feedStore", "profileStore") @observer
 // export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
@@ -173,7 +176,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             */}
 
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '3%', fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: _paddingTop, fontFamily: "SFProText-Semibold",
                                 color: Theme.color.text2, textAlign: 'center' }}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
