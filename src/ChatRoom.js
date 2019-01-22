@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import { Constants } from "expo";
 import { Theme } from "./rnff/src/components";
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, Send } from 'react-native-gifted-chat';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -15,6 +15,7 @@ import GLOBALS from './Globals';
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
 const avatarHeight = (Constants.statusBarHeight + 8 + 34 + 8) * 0.5; // searchBar height
+const sendButtonWidth = Dimensions.get('window').width * 0.8;
 
 
 export default class ChatRoom extends React.Component {
@@ -88,9 +89,9 @@ export default class ChatRoom extends React.Component {
     get user() {
         // Return our name and our UID for GiftedChat to parse
         return {
-            // name: this.props.navigation.state.params.name,
-            // uid: Firebase.uid()
-            _id: Firebase.uid()
+            name: this.props.navigation.state.params.name,
+            _id: Firebase.uid(),
+            // avatar
         };
     }
 
@@ -161,35 +162,62 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{flex: 1}}>
-                <GiftedChat
-                    user={this.user}
-                    messages={this.state.messages}
-                    onSend={async (messages) => await Firebase.sendMessages(this.state.id, messages, Firebase.uid())}
-                    onPressAvatar={async () => await this.openPost()}
-                    listViewProps={{
-                        scrollEventThrottle: 400,
-                        onScroll: ({ nativeEvent }) => {
-                            // console.log('nativeEvent', nativeEvent);
-                            if (this.isCloseToTop(nativeEvent)) {
-                                console.log('close to top');
+                <View style={{ flex: 1 }}>
+                    <GiftedChat
+                        alwaysShowSend={true}
+                        bottomOffset={100} // ToDo: !!
+                        // isAnimated={true}
 
-                                if (!this.onLoading) {
-                                    this.onLoading = true;
+                        messages={this.state.messages}
+                        placeholder={'Write a message'}
+                        user={this.user}
+                        onSend={async (messages) => await Firebase.sendMessages(this.state.id, messages, Firebase.uid())}
+                        onPressAvatar={async () => await this.openPost()}
+                        
 
-                                    this.loadMore();
+                        textInputProps={{
+                            style: {
+                                width: '85%',
+                                fontSize: 14,
+                                fontFamily: "SFProText-Regular",
+                                color: "white",
+
+                                backgroundColor: Theme.color.background,
+                                paddingTop: 10,
+                                paddingBottom: 10,
+                                paddingLeft: 10,
+                                paddingRight: 10
+                            },
+
+                            keyboardAppearance: 'dark', // ToDo
+                            underlineColorAndroid: "transparent",
+                            autoCorrect: false
+                        }}
+                        renderSend={this.renderSend}
+
+                        listViewProps={{
+                            scrollEventThrottle: 400,
+                            onScroll: ({ nativeEvent }) => {
+                                // console.log('nativeEvent', nativeEvent);
+                                if (this.isCloseToTop(nativeEvent)) {
+                                    console.log('close to top');
+
+                                    if (!this.onLoading) {
+                                        this.onLoading = true;
+
+                                        this.loadMore();
+                                    }
                                 }
                             }
-                        }
 
-                        /*
-                        onEndReached: this.onEndReached,
-                        onEndReachedThreshold: 100
-                        // onMomentumScrollBegin: this.onMomentumScrollBegin
-                        */
-                    }}
-                />
-                <KeyboardAvoidingView behavior={ Platform.OS ==='android' ? 'padding' : null } keyboardVerticalOffset={80}/>
+                            /*
+                            onEndReached: this.onEndReached,
+                            onEndReachedThreshold: 100
+                            // onMomentumScrollBegin: this.onMomentumScrollBegin
+                            */
+                        }}
+                    />
+                    <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80} />
                 </View>
 
                 {
@@ -293,6 +321,23 @@ export default class ChatRoom extends React.Component {
         // console.log('post', post);
 
         this.props.navigation.navigate('post', { post: post });
+    }
+
+    renderSend(props) {
+        return (
+            <Send
+                {...props}
+            >
+                <View style={{ backgroundColor: Theme.color.background,
+                    alignItems: 'center', justifyContent: 'center' }}>
+                    
+                    <Ionicons name='ios-send' color="rgb(62, 165, 255)" size={24} />
+                    {/*
+                    <Image source={require('../../assets/send.png')} resizeMode={'center'} />
+                    */}
+                </View>
+            </Send>
+        );
     }
 }
 

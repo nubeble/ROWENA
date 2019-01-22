@@ -229,8 +229,7 @@ export default class ReadAllReviewScreen extends React.Component {
                                     fontSize: 14,
                                     fontFamily: "SFProText-Regular",
                                     color: "white", textAlign: 'justify', textAlignVertical: 'top',
-                                    backgroundColor: '#212121',
-
+                                    backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
                                 placeholderTextColor='rgb(160, 160, 160)'
