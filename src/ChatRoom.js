@@ -14,7 +14,7 @@ import { Globals } from "./Globals";
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
-const avatarHeight = Globals.searchBarHeight * 0.5; // searchBar height
+const avatarHeight = Globals.searchBarHeight * 0.5;
 
 
 export default class ChatRoom extends React.Component {
@@ -248,7 +248,7 @@ export default class ChatRoom extends React.Component {
 
                 {
                     // ToDo: apply animation
-                    this.state.renderPost && postAvailable && false &&
+                    this.state.renderPost && postAvailable &&
                     <View style={[styles.post, { top: postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
@@ -292,7 +292,6 @@ export default class ChatRoom extends React.Component {
                         await Firebase.deleteChatRoom(Firebase.uid(), item.id);
 
                         // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
-
                         this.props.navigation.navigate('chatMain', { roomId: item.id });
                     }}
                     onConfirmPressed={() => {

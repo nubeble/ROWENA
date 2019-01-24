@@ -6,7 +6,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../node_modules/expokit/maven/host/exp/exponent/expo-barcode-scanner-interface/1.1.0/expo-barcode-scanner-interface-1.1.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../node_modules/expokit/maven/host/exp/exponent/expo-barcode-scanner-interface/1.1.0/expo-barcode-scanner-interface-1.1.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>
