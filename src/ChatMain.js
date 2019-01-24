@@ -11,6 +11,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { Globals } from "./Globals";
 
 
 export default class ChatMain extends React.Component {
@@ -355,15 +356,13 @@ export default class ChatMain extends React.Component {
     }
 }
 
-const offset = 24;
-
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'

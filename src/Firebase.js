@@ -24,7 +24,7 @@ export default class Firebase {
 
         Firebase.auth = firebase.auth();
         Firebase.firestore = firebase.firestore();
-        Firebase.firestore.settings({ timestampsInSnapshots: true });
+        // Firebase.firestore.settings({ timestampsInSnapshots: true });
         Firebase.storage = firebase.storage();
         Firebase.database = firebase.database();
     }
@@ -568,6 +568,9 @@ export default class Firebase {
     static async sendMessages(id, messages, uid) {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
+
+            if (!text || text.length === 0) continue;
+
             const timestamp = Firebase.timestamp();
 
             const pushData = {

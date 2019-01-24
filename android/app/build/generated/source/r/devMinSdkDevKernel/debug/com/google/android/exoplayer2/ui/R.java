@@ -34,9 +34,9 @@ public final class R {
         public static final int shutter_background_color = 0x7f0401b2;
         public static final int surface_type = 0x7f0401c7;
         public static final int touch_target_height = 0x7f040206;
-        public static final int unplayed_color = 0x7f040211;
-        public static final int use_artwork = 0x7f040214;
-        public static final int use_controller = 0x7f040215;
+        public static final int unplayed_color = 0x7f040221;
+        public static final int use_artwork = 0x7f040224;
+        public static final int use_controller = 0x7f040225;
     }
     public static final class color {
         public static final int exo_edit_mode_background_color = 0x7f060071;
@@ -81,9 +81,9 @@ public final class R {
         public static final int fit = 0x7f0900c6;
         public static final int fixed_height = 0x7f0900cd;
         public static final int fixed_width = 0x7f0900ce;
-        public static final int none = 0x7f090116;
-        public static final int surface_view = 0x7f09018a;
-        public static final int texture_view = 0x7f090198;
+        public static final int none = 0x7f090120;
+        public static final int surface_view = 0x7f090199;
+        public static final int texture_view = 0x7f0901a9;
     }
     public static final class layout {
         public static final int exo_playback_control_view = 0x7f0b0044;
@@ -115,7 +115,7 @@ public final class R {
     public static final class styleable {
         public static final int[] AspectRatioFrameLayout = { 0x7f040188 };
         public static final int AspectRatioFrameLayout_resize_mode = 0;
-        public static final int[] DefaultTimeBar = { 0x7f040028, 0x7f040029, 0x7f040046, 0x7f040050, 0x7f040173, 0x7f040174, 0x7f0401a0, 0x7f0401a1, 0x7f0401a2, 0x7f0401a3, 0x7f0401a4, 0x7f040206, 0x7f040211 };
+        public static final int[] DefaultTimeBar = { 0x7f040028, 0x7f040029, 0x7f040046, 0x7f040050, 0x7f040173, 0x7f040174, 0x7f0401a0, 0x7f0401a1, 0x7f0401a2, 0x7f0401a3, 0x7f0401a4, 0x7f040206, 0x7f040221 };
         public static final int DefaultTimeBar_ad_marker_color = 0;
         public static final int DefaultTimeBar_ad_marker_width = 1;
         public static final int DefaultTimeBar_bar_height = 2;
@@ -136,7 +136,7 @@ public final class R {
         public static final int PlaybackControlView_rewind_increment = 3;
         public static final int PlaybackControlView_show_shuffle_button = 4;
         public static final int PlaybackControlView_show_timeout = 5;
-        public static final int[] SimpleExoPlayerView = { 0x7f04003e, 0x7f0400a3, 0x7f0400cd, 0x7f0400f5, 0x7f04010a, 0x7f04010b, 0x7f040175, 0x7f040187, 0x7f040188, 0x7f04018c, 0x7f0401b0, 0x7f0401b1, 0x7f0401b2, 0x7f0401c7, 0x7f040214, 0x7f040215 };
+        public static final int[] SimpleExoPlayerView = { 0x7f04003e, 0x7f0400a3, 0x7f0400cd, 0x7f0400f5, 0x7f04010a, 0x7f04010b, 0x7f040175, 0x7f040187, 0x7f040188, 0x7f04018c, 0x7f0401b0, 0x7f0401b1, 0x7f0401b2, 0x7f0401c7, 0x7f040224, 0x7f040225 };
         public static final int SimpleExoPlayerView_auto_show = 0;
         public static final int SimpleExoPlayerView_controller_layout_id = 1;
         public static final int SimpleExoPlayerView_default_artwork = 2;

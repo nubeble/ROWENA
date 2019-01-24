@@ -14,7 +14,7 @@ import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
-import GLOBALS from './Globals';
+import { Globals } from "./Globals";
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -286,7 +286,7 @@ export default class Intro extends React.Component {
                                 onPress={() => {
                                     setTimeout(() => {
                                         this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length });
-                                    }, GLOBALS.buttonTimeout);
+                                    }, Globals.buttonTimeout);
                                 }}
                             >
                                 <View style={styles.pictureContainer}>
@@ -492,7 +492,7 @@ const styles = StyleSheet.create({
 
     //// SEARCH BAR ////
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

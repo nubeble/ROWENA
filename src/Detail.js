@@ -21,7 +21,7 @@ import { observer } from "mobx-react/native";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
 import AwesomeAlert from 'react-native-awesome-alerts';
-import GLOBALS from './Globals';
+import { Globals } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 
 
@@ -477,11 +477,11 @@ export default class Detail extends React.Component {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: GLOBALS.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
                     cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
@@ -811,7 +811,7 @@ export default class Detail extends React.Component {
             const chartHeight = Theme.spacing.tiny + 140 + 10;
             const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
 
-            const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+            const searchBarHeight = Globals.searchBarHeight;
 
             const borderWidth = 1;
 
@@ -835,7 +835,7 @@ export default class Detail extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex]; // OK
         const keyboardHeight = e.endCoordinates.height; // OK
-        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8); // OK
+        const searchBarHeight = Globals.searchBarHeight; // OK
 
         const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
 
@@ -854,7 +854,7 @@ export default class Detail extends React.Component {
             const chartHeight = Theme.spacing.tiny + 140 + 10;
             const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
 
-            const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+            const searchBarHeight = Globals.searchBarHeight;
 
             const borderWidth = 1;
 
@@ -1105,7 +1105,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'

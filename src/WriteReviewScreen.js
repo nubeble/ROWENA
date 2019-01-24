@@ -10,6 +10,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import autobind from "autobind-decorator";
 import Firebase from "./Firebase";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import { Globals } from "./Globals";
 
 
 export default class WriteReviewScreen extends React.Component {
@@ -402,7 +403,7 @@ const styles = StyleSheet.create({
         // zIndex: 10000,
         */
         width: '100%',
-        height: Constants.statusBarHeight + 8 + 34 + 8
+        height: Globals.searchBarHeight
     },
     distance: {
         position: 'absolute',

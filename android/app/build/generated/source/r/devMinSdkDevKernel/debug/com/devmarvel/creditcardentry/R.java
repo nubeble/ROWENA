@@ -50,7 +50,7 @@ public final class R {
         public static final int cc_form_layout = 0x7f09004f;
         public static final int cc_four_digits = 0x7f090050;
         public static final int cc_zip = 0x7f090051;
-        public static final int text_helper = 0x7f090194;
+        public static final int text_helper = 0x7f0901a3;
     }
     public static final class string {
         public static final int CreditCardFormCardNumberHint = 0x7f0f0000;

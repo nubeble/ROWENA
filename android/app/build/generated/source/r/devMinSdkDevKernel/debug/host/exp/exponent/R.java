@@ -33,6 +33,8 @@ public final class R {
     public static final int design_snackbar_in=0x7f010015;
     public static final int design_snackbar_out=0x7f010016;
     public static final int shake=0x7f010017;
+    public static final int ucrop_loader_circle_path=0x7f010018;
+    public static final int ucrop_loader_circle_scale=0x7f010019;
   }
   public static final class animator {
     public static final int card_flip_left_in=0x7f020000;
@@ -4042,97 +4044,180 @@ public final class R {
      */
     public static final int trackTintMode=0x7f040209;
     /**
-     * <p>May be a boolean value, such as "<code>true</code>" or
-     * "<code>false</code>".
+     * <p>May be a string value, using '\\;' to escape characters such as
+     * '\\n' or '\\uxxxx' for a unicode character;
      */
-    public static final int uiCompass=0x7f04020a;
+    public static final int ucrop_artv_ratio_title=0x7f04020a;
+    /**
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     */
+    public static final int ucrop_artv_ratio_x=0x7f04020b;
+    /**
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     */
+    public static final int ucrop_artv_ratio_y=0x7f04020c;
+    /**
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     */
+    public static final int ucrop_aspect_ratio_x=0x7f04020d;
+    /**
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     */
+    public static final int ucrop_aspect_ratio_y=0x7f04020e;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int uiMapToolbar=0x7f04020b;
-    /**
-     * <p>May be a boolean value, such as "<code>true</code>" or
-     * "<code>false</code>".
-     */
-    public static final int uiRotateGestures=0x7f04020c;
-    /**
-     * <p>May be a boolean value, such as "<code>true</code>" or
-     * "<code>false</code>".
-     */
-    public static final int uiScrollGestures=0x7f04020d;
-    /**
-     * <p>May be a boolean value, such as "<code>true</code>" or
-     * "<code>false</code>".
-     */
-    public static final int uiTiltGestures=0x7f04020e;
-    /**
-     * <p>May be a boolean value, such as "<code>true</code>" or
-     * "<code>false</code>".
-     */
-    public static final int uiZoomControls=0x7f04020f;
-    /**
-     * <p>May be a boolean value, such as "<code>true</code>" or
-     * "<code>false</code>".
-     */
-    public static final int uiZoomGestures=0x7f040210;
+    public static final int ucrop_circle_dimmed_layer=0x7f04020f;
     /**
      * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
      * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
      * "<code>#<i>aarrggbb</i></code>".
      */
-    public static final int unplayed_color=0x7f040211;
+    public static final int ucrop_dimmed_color=0x7f040210;
+    /**
+     * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
+     * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
+     * "<code>#<i>aarrggbb</i></code>".
+     */
+    public static final int ucrop_frame_color=0x7f040211;
+    /**
+     * <p>May be a dimension value, which is a floating point number appended with a
+     * unit such as "<code>14.5sp</code>".
+     * Available units are: px (pixels), dp (density-independent pixels),
+     * sp (scaled pixels based on preferred font size), in (inches), and
+     * mm (millimeters).
+     */
+    public static final int ucrop_frame_stroke_size=0x7f040212;
+    /**
+     * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
+     * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
+     * "<code>#<i>aarrggbb</i></code>".
+     */
+    public static final int ucrop_grid_color=0x7f040213;
+    /**
+     * <p>May be an integer value, such as "<code>100</code>".
+     */
+    public static final int ucrop_grid_column_count=0x7f040214;
+    /**
+     * <p>May be an integer value, such as "<code>100</code>".
+     */
+    public static final int ucrop_grid_row_count=0x7f040215;
+    /**
+     * <p>May be a dimension value, which is a floating point number appended with a
+     * unit such as "<code>14.5sp</code>".
+     * Available units are: px (pixels), dp (density-independent pixels),
+     * sp (scaled pixels based on preferred font size), in (inches), and
+     * mm (millimeters).
+     */
+    public static final int ucrop_grid_stroke_size=0x7f040216;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int useCompatPadding=0x7f040212;
+    public static final int ucrop_show_frame=0x7f040217;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int useViewLifecycle=0x7f040213;
+    public static final int ucrop_show_grid=0x7f040218;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int use_artwork=0x7f040214;
+    public static final int ucrop_show_oval_crop_frame=0x7f040219;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int use_controller=0x7f040215;
+    public static final int uiCompass=0x7f04021a;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int uiMapToolbar=0x7f04021b;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int uiRotateGestures=0x7f04021c;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int uiScrollGestures=0x7f04021d;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int uiTiltGestures=0x7f04021e;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int uiZoomControls=0x7f04021f;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int uiZoomGestures=0x7f040220;
+    /**
+     * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
+     * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
+     * "<code>#<i>aarrggbb</i></code>".
+     */
+    public static final int unplayed_color=0x7f040221;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int useCompatPadding=0x7f040222;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int useViewLifecycle=0x7f040223;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int use_artwork=0x7f040224;
+    /**
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     */
+    public static final int use_controller=0x7f040225;
     /**
      * <p>May be a floating point value, such as "<code>1.2</code>".
      */
-    public static final int viewAspectRatio=0x7f040216;
+    public static final int viewAspectRatio=0x7f040226;
     /**
      * <p>May be a string value, using '\\;' to escape characters such as
      * '\\n' or '\\uxxxx' for a unicode character;
      */
-    public static final int viewInflaterClass=0x7f040217;
+    public static final int viewInflaterClass=0x7f040227;
     /**
      * <p>May be a reference to another resource, in the form
      * "<code>@[+][<i>package</i>:]<i>type</i>/<i>name</i></code>" or a theme
      * attribute in the form
      * "<code>?[<i>package</i>:]<i>type</i>/<i>name</i></code>".
      */
-    public static final int voiceIcon=0x7f040218;
+    public static final int voiceIcon=0x7f040228;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int windowActionBar=0x7f040219;
+    public static final int windowActionBar=0x7f040229;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int windowActionBarOverlay=0x7f04021a;
+    public static final int windowActionBarOverlay=0x7f04022a;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int windowActionModeOverlay=0x7f04021b;
+    public static final int windowActionModeOverlay=0x7f04022b;
     /**
      * <p>May be a dimension value, which is a floating point number appended with a
      * unit such as "<code>14.5sp</code>".
@@ -4144,7 +4229,7 @@ public final class R {
      * The % suffix always means a percentage of the base size;
      * the optional %p suffix provides a size relative to some parent container.
      */
-    public static final int windowFixedHeightMajor=0x7f04021c;
+    public static final int windowFixedHeightMajor=0x7f04022c;
     /**
      * <p>May be a dimension value, which is a floating point number appended with a
      * unit such as "<code>14.5sp</code>".
@@ -4156,7 +4241,7 @@ public final class R {
      * The % suffix always means a percentage of the base size;
      * the optional %p suffix provides a size relative to some parent container.
      */
-    public static final int windowFixedHeightMinor=0x7f04021d;
+    public static final int windowFixedHeightMinor=0x7f04022d;
     /**
      * <p>May be a dimension value, which is a floating point number appended with a
      * unit such as "<code>14.5sp</code>".
@@ -4168,7 +4253,7 @@ public final class R {
      * The % suffix always means a percentage of the base size;
      * the optional %p suffix provides a size relative to some parent container.
      */
-    public static final int windowFixedWidthMajor=0x7f04021e;
+    public static final int windowFixedWidthMajor=0x7f04022e;
     /**
      * <p>May be a dimension value, which is a floating point number appended with a
      * unit such as "<code>14.5sp</code>".
@@ -4180,7 +4265,7 @@ public final class R {
      * The % suffix always means a percentage of the base size;
      * the optional %p suffix provides a size relative to some parent container.
      */
-    public static final int windowFixedWidthMinor=0x7f04021f;
+    public static final int windowFixedWidthMinor=0x7f04022f;
     /**
      * <p>May be a dimension value, which is a floating point number appended with a
      * unit such as "<code>14.5sp</code>".
@@ -4192,7 +4277,7 @@ public final class R {
      * The % suffix always means a percentage of the base size;
      * the optional %p suffix provides a size relative to some parent container.
      */
-    public static final int windowMinWidthMajor=0x7f040220;
+    public static final int windowMinWidthMajor=0x7f040230;
     /**
      * <p>May be a dimension value, which is a floating point number appended with a
      * unit such as "<code>14.5sp</code>".
@@ -4204,12 +4289,12 @@ public final class R {
      * The % suffix always means a percentage of the base size;
      * the optional %p suffix provides a size relative to some parent container.
      */
-    public static final int windowMinWidthMinor=0x7f040221;
+    public static final int windowMinWidthMinor=0x7f040231;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int windowNoTitle=0x7f040222;
+    public static final int windowNoTitle=0x7f040232;
     /**
      * <p>Must be one of the following constant values.</p>
      * <table>
@@ -4221,12 +4306,12 @@ public final class R {
      * <tr><td>slide</td><td>1</td><td></td></tr>
      * </table>
      */
-    public static final int windowTransitionStyle=0x7f040223;
+    public static final int windowTransitionStyle=0x7f040233;
     /**
      * <p>May be a boolean value, such as "<code>true</code>" or
      * "<code>false</code>".
      */
-    public static final int zOrderOnTop=0x7f040224;
+    public static final int zOrderOnTop=0x7f040234;
   }
   public static final class bool {
     public static final int abc_action_bar_embed_tabs=0x7f050000;
@@ -4399,21 +4484,35 @@ public final class R {
     public static final int tooltip_background_dark=0x7f0600a1;
     public static final int tooltip_background_light=0x7f0600a2;
     public static final int transparent_background=0x7f0600a3;
-    public static final int wallet_bright_foreground_disabled_holo_light=0x7f0600a4;
-    public static final int wallet_bright_foreground_holo_dark=0x7f0600a5;
-    public static final int wallet_bright_foreground_holo_light=0x7f0600a6;
-    public static final int wallet_dim_foreground_disabled_holo_dark=0x7f0600a7;
-    public static final int wallet_dim_foreground_holo_dark=0x7f0600a8;
-    public static final int wallet_highlighted_text_holo_dark=0x7f0600a9;
-    public static final int wallet_highlighted_text_holo_light=0x7f0600aa;
-    public static final int wallet_hint_foreground_holo_dark=0x7f0600ab;
-    public static final int wallet_hint_foreground_holo_light=0x7f0600ac;
-    public static final int wallet_holo_blue_light=0x7f0600ad;
-    public static final int wallet_link_text_light=0x7f0600ae;
-    public static final int wallet_primary_text_holo_light=0x7f0600af;
-    public static final int wallet_secondary_text_holo_dark=0x7f0600b0;
-    public static final int white=0x7f0600b1;
-    public static final int white_background=0x7f0600b2;
+    public static final int ucrop_color_crop_background=0x7f0600a4;
+    public static final int ucrop_color_default_crop_frame=0x7f0600a5;
+    public static final int ucrop_color_default_crop_grid=0x7f0600a6;
+    public static final int ucrop_color_default_dimmed=0x7f0600a7;
+    public static final int ucrop_color_default_logo=0x7f0600a8;
+    public static final int ucrop_color_progress_wheel_line=0x7f0600a9;
+    public static final int ucrop_color_statusbar=0x7f0600aa;
+    public static final int ucrop_color_toolbar=0x7f0600ab;
+    public static final int ucrop_color_toolbar_widget=0x7f0600ac;
+    public static final int ucrop_color_widget=0x7f0600ad;
+    public static final int ucrop_color_widget_active=0x7f0600ae;
+    public static final int ucrop_color_widget_background=0x7f0600af;
+    public static final int ucrop_color_widget_text=0x7f0600b0;
+    public static final int ucrop_scale_text_view_selector=0x7f0600b1;
+    public static final int wallet_bright_foreground_disabled_holo_light=0x7f0600b2;
+    public static final int wallet_bright_foreground_holo_dark=0x7f0600b3;
+    public static final int wallet_bright_foreground_holo_light=0x7f0600b4;
+    public static final int wallet_dim_foreground_disabled_holo_dark=0x7f0600b5;
+    public static final int wallet_dim_foreground_holo_dark=0x7f0600b6;
+    public static final int wallet_highlighted_text_holo_dark=0x7f0600b7;
+    public static final int wallet_highlighted_text_holo_light=0x7f0600b8;
+    public static final int wallet_hint_foreground_holo_dark=0x7f0600b9;
+    public static final int wallet_hint_foreground_holo_light=0x7f0600ba;
+    public static final int wallet_holo_blue_light=0x7f0600bb;
+    public static final int wallet_link_text_light=0x7f0600bc;
+    public static final int wallet_primary_text_holo_light=0x7f0600bd;
+    public static final int wallet_secondary_text_holo_dark=0x7f0600be;
+    public static final int white=0x7f0600bf;
+    public static final int white_background=0x7f0600c0;
   }
   public static final class dimen {
     public static final int abc_action_bar_content_inset_material=0x7f070000;
@@ -4626,6 +4725,25 @@ public final class R {
     public static final int tooltip_vertical_padding=0x7f0700cf;
     public static final int tooltip_y_offset_non_touch=0x7f0700d0;
     public static final int tooltip_y_offset_touch=0x7f0700d1;
+    public static final int ucrop_default_crop_frame_stoke_width=0x7f0700d2;
+    public static final int ucrop_default_crop_grid_stoke_width=0x7f0700d3;
+    public static final int ucrop_default_crop_logo_size=0x7f0700d4;
+    public static final int ucrop_default_crop_rect_corner_touch_area_line_length=0x7f0700d5;
+    public static final int ucrop_default_crop_rect_corner_touch_threshold=0x7f0700d6;
+    public static final int ucrop_default_crop_rect_min_size=0x7f0700d7;
+    public static final int ucrop_height_crop_aspect_ratio_text=0x7f0700d8;
+    public static final int ucrop_height_divider_shadow=0x7f0700d9;
+    public static final int ucrop_height_horizontal_wheel_progress_line=0x7f0700da;
+    public static final int ucrop_height_wrapper_controls=0x7f0700db;
+    public static final int ucrop_height_wrapper_states=0x7f0700dc;
+    public static final int ucrop_margin_horizontal_wheel_progress_line=0x7f0700dd;
+    public static final int ucrop_margit_top_widget_text=0x7f0700de;
+    public static final int ucrop_padding_crop_frame=0x7f0700df;
+    public static final int ucrop_progress_size=0x7f0700e0;
+    public static final int ucrop_size_dot_scale_text_view=0x7f0700e1;
+    public static final int ucrop_size_wrapper_rotate_button=0x7f0700e2;
+    public static final int ucrop_text_size_widget_text=0x7f0700e3;
+    public static final int ucrop_width_horizontal_wheel_progress_line=0x7f0700e4;
   }
   public static final class drawable {
     public static final int abc_ab_share_pack_mtrl_alpha=0x7f080006;
@@ -4879,6 +4997,18 @@ public final class R {
     public static final int textfield_disabled_holo_dark=0x7f0800fe;
     public static final int tooltip_frame_dark=0x7f0800ff;
     public static final int tooltip_frame_light=0x7f080100;
+    public static final int ucrop_ic_angle=0x7f080101;
+    public static final int ucrop_ic_crop=0x7f080102;
+    public static final int ucrop_ic_cross=0x7f080103;
+    public static final int ucrop_ic_done=0x7f080104;
+    public static final int ucrop_ic_next=0x7f080105;
+    public static final int ucrop_ic_reset=0x7f080106;
+    public static final int ucrop_ic_rotate=0x7f080107;
+    public static final int ucrop_ic_scale=0x7f080108;
+    public static final int ucrop_shadow_upside=0x7f080109;
+    public static final int ucrop_vector_ic_crop=0x7f08010a;
+    public static final int ucrop_vector_loader=0x7f08010b;
+    public static final int ucrop_vector_loader_animated=0x7f08010c;
   }
   public static final class id {
     public static final int ALT=0x7f090000;
@@ -5116,228 +5246,254 @@ public final class R {
     public static final int imageFlippedCard=0x7f0900e8;
     public static final int imageFlippedCardBack=0x7f0900e9;
     public static final int image_view=0x7f0900ea;
-    public static final int info=0x7f0900eb;
-    public static final int inline=0x7f0900ec;
-    public static final int is_verified=0x7f0900ed;
-    public static final int italic=0x7f0900ee;
-    public static final int item_touch_helper_previous_elevation=0x7f0900ef;
-    public static final int iv_card_icon=0x7f0900f0;
-    public static final int iv_selected_icon=0x7f0900f1;
-    public static final int large=0x7f0900f2;
-    public static final int largeLabel=0x7f0900f3;
-    public static final int left=0x7f0900f4;
-    public static final int leftBottom=0x7f0900f5;
-    public static final int leftBottomCrop=0x7f0900f6;
-    public static final int leftCenter=0x7f0900f7;
-    public static final int leftCenterCrop=0x7f0900f8;
-    public static final int leftTop=0x7f0900f9;
-    public static final int leftTopCrop=0x7f0900fa;
-    public static final int light=0x7f0900fb;
-    public static final int line1=0x7f0900fc;
-    public static final int line3=0x7f0900fd;
-    public static final int linearLayout=0x7f0900fe;
-    public static final int listMode=0x7f0900ff;
-    public static final int list_item=0x7f090100;
-    public static final int list_view=0x7f090101;
-    public static final int logo_only=0x7f090102;
-    public static final int lottie_layer_name=0x7f090103;
-    public static final int manifest=0x7f090104;
-    public static final int masked=0x7f090105;
-    public static final int masked_card_info_view=0x7f090106;
-    public static final int masked_card_item=0x7f090107;
-    public static final int masked_check_icon=0x7f090108;
-    public static final int masked_icon_view=0x7f090109;
-    public static final int match_parent=0x7f09010a;
-    public static final int material=0x7f09010b;
-    public static final int media_actions=0x7f09010c;
-    public static final int message=0x7f09010d;
-    public static final int messenger_send_button=0x7f09010e;
-    public static final int middle=0x7f09010f;
-    public static final int mini=0x7f090110;
-    public static final int monochrome=0x7f090111;
-    public static final int multiply=0x7f090112;
-    public static final int navigation_header_container=0x7f090113;
-    public static final int never=0x7f090114;
-    public static final int never_display=0x7f090115;
-    public static final int none=0x7f090116;
-    public static final int normal=0x7f090117;
-    public static final int notification_background=0x7f090118;
-    public static final int notification_main_column=0x7f090119;
-    public static final int notification_main_column_container=0x7f09011a;
-    public static final int number=0x7f09011b;
-    public static final int off=0x7f09011c;
-    public static final int on=0x7f09011d;
-    public static final int onTouch=0x7f09011e;
-    public static final int one=0x7f09011f;
-    public static final int open_graph=0x7f090120;
-    public static final int oval=0x7f090121;
-    public static final int page=0x7f090122;
-    public static final int parallax=0x7f090123;
-    public static final int parentPanel=0x7f090124;
-    public static final int parent_matrix=0x7f090125;
-    public static final int payment_methods_add_payment_container=0x7f090126;
-    public static final int payment_methods_progress_bar=0x7f090127;
-    public static final int payment_methods_recycler=0x7f090128;
-    public static final int payment_methods_toolbar=0x7f090129;
-    public static final int percentage_text_view=0x7f09012a;
-    public static final int pin=0x7f09012b;
-    public static final int play_button=0x7f09012c;
-    public static final int production=0x7f09012d;
-    public static final int progress_bar=0x7f09012e;
-    public static final int progress_bar_as=0x7f09012f;
-    public static final int progress_circular=0x7f090130;
-    public static final int progress_horizontal=0x7f090131;
-    public static final int published_time=0x7f090132;
-    public static final int radio=0x7f090133;
-    public static final int react_test_id=0x7f090134;
-    public static final int rectangle=0x7f090135;
-    public static final int redEye=0x7f090136;
-    public static final int reload_button=0x7f090137;
-    public static final int restart=0x7f090138;
-    public static final int reverse=0x7f090139;
-    public static final int rewind_button=0x7f09013a;
-    public static final int right=0x7f09013b;
-    public static final int rightBottom=0x7f09013c;
-    public static final int rightBottomCrop=0x7f09013d;
-    public static final int rightCenter=0x7f09013e;
-    public static final int rightCenterCrop=0x7f09013f;
-    public static final int rightTop=0x7f090140;
-    public static final int rightTopCrop=0x7f090141;
-    public static final int right_icon=0x7f090142;
-    public static final int right_side=0x7f090143;
-    public static final int rn_frame_file=0x7f090144;
-    public static final int rn_frame_method=0x7f090145;
-    public static final int rn_redbox_copy_button=0x7f090146;
-    public static final int rn_redbox_dismiss_button=0x7f090147;
-    public static final int rn_redbox_line_separator=0x7f090148;
-    public static final int rn_redbox_loading_indicator=0x7f090149;
-    public static final int rn_redbox_reload_button=0x7f09014a;
-    public static final int rn_redbox_report_button=0x7f09014b;
-    public static final int rn_redbox_report_label=0x7f09014c;
-    public static final int rn_redbox_stack=0x7f09014d;
-    public static final int rv_shipping_methods_ssmw=0x7f09014e;
-    public static final int sandbox=0x7f09014f;
-    public static final int satellite=0x7f090150;
-    public static final int save=0x7f090151;
-    public static final int save_button=0x7f090152;
-    public static final int save_image_matrix=0x7f090153;
-    public static final int save_non_transition_alpha=0x7f090154;
-    public static final int save_scale_type=0x7f090155;
-    public static final int screen=0x7f090156;
-    public static final int scroll=0x7f090157;
-    public static final int scrollIndicatorDown=0x7f090158;
-    public static final int scrollIndicatorUp=0x7f090159;
-    public static final int scrollView=0x7f09015a;
-    public static final int scrollable=0x7f09015b;
-    public static final int sdk_version=0x7f09015c;
-    public static final int search_badge=0x7f09015d;
-    public static final int search_bar=0x7f09015e;
-    public static final int search_button=0x7f09015f;
-    public static final int search_close_btn=0x7f090160;
-    public static final int search_edit_frame=0x7f090161;
-    public static final int search_go_btn=0x7f090162;
-    public static final int search_mag_icon=0x7f090163;
-    public static final int search_plate=0x7f090164;
-    public static final int search_src_text=0x7f090165;
-    public static final int search_voice_btn=0x7f090166;
-    public static final int second_row_layout=0x7f090167;
-    public static final int seek_bar=0x7f090168;
-    public static final int select_dialog_listview=0x7f090169;
-    public static final int select_shipping_method_widget=0x7f09016a;
-    public static final int selectionDetails=0x7f09016b;
-    public static final int share_button=0x7f09016c;
-    public static final int shipping_flow_viewpager=0x7f09016d;
-    public static final int shipping_info_widget=0x7f09016e;
-    public static final int shortcut=0x7f09016f;
-    public static final int showCustom=0x7f090170;
-    public static final int showHome=0x7f090171;
-    public static final int showTitle=0x7f090172;
-    public static final int skip_next_button=0x7f090173;
-    public static final int skip_previous_button=0x7f090174;
-    public static final int slide=0x7f090175;
-    public static final int small=0x7f090176;
-    public static final int smallLabel=0x7f090177;
-    public static final int snackbar_action=0x7f090178;
-    public static final int snackbar_text=0x7f090179;
-    public static final int snap=0x7f09017a;
-    public static final int spacer=0x7f09017b;
-    public static final int split_action_bar=0x7f09017c;
-    public static final int src_atop=0x7f09017d;
-    public static final int src_in=0x7f09017e;
-    public static final int src_over=0x7f09017f;
-    public static final int standard=0x7f090180;
-    public static final int start=0x7f090181;
-    public static final int startInside=0x7f090182;
-    public static final int status_bar=0x7f090183;
-    public static final int status_bar_latest_event_content=0x7f090184;
-    public static final int status_text_view=0x7f090185;
-    public static final int strict_sandbox=0x7f090186;
-    public static final int strong=0x7f090187;
-    public static final int submenuarrow=0x7f090188;
-    public static final int submit_area=0x7f090189;
-    public static final int surface_view=0x7f09018a;
-    public static final int tabMode=0x7f09018b;
-    public static final int tag_transition_group=0x7f09018c;
-    public static final int terrain=0x7f09018d;
-    public static final int test=0x7f09018e;
-    public static final int text=0x7f09018f;
-    public static final int text2=0x7f090190;
-    public static final int textSpacerNoButtons=0x7f090191;
-    public static final int textSpacerNoTitle=0x7f090192;
-    public static final int textView=0x7f090193;
-    public static final int text_helper=0x7f090194;
-    public static final int text_input_password_toggle=0x7f090195;
-    public static final int textinput_counter=0x7f090196;
-    public static final int textinput_error=0x7f090197;
-    public static final int texture_view=0x7f090198;
-    public static final int time=0x7f090199;
-    public static final int title=0x7f09019a;
-    public static final int titleDividerNoCustom=0x7f09019b;
-    public static final int title_template=0x7f09019c;
-    public static final int tl_add_source_card_number_ml=0x7f09019d;
-    public static final int tl_add_source_cvc_ml=0x7f09019e;
-    public static final int tl_add_source_expiry_ml=0x7f09019f;
-    public static final int tl_add_source_postal_ml=0x7f0901a0;
-    public static final int tl_address_line1_aaw=0x7f0901a1;
-    public static final int tl_address_line2_aaw=0x7f0901a2;
-    public static final int tl_city_aaw=0x7f0901a3;
-    public static final int tl_country_cat=0x7f0901a4;
-    public static final int tl_name_aaw=0x7f0901a5;
-    public static final int tl_phone_number_aaw=0x7f0901a6;
-    public static final int tl_postal_code_aaw=0x7f0901a7;
-    public static final int tl_state_aaw=0x7f0901a8;
-    public static final int toggle_manifest=0x7f0901a9;
-    public static final int toolbar=0x7f0901aa;
-    public static final int toolbar_as=0x7f0901ab;
-    public static final int top=0x7f0901ac;
-    public static final int topPanel=0x7f0901ad;
-    public static final int torch=0x7f0901ae;
-    public static final int touch_outside=0x7f0901af;
-    public static final int transition_current_scene=0x7f0901b0;
-    public static final int transition_layout_save=0x7f0901b1;
-    public static final int transition_position=0x7f0901b2;
-    public static final int transition_scene_layoutid_cache=0x7f0901b3;
-    public static final int transition_transform=0x7f0901b4;
-    public static final int tv_add_source_error=0x7f0901b5;
-    public static final int tv_amount_smv=0x7f0901b6;
-    public static final int tv_detail_smv=0x7f0901b7;
-    public static final int tv_label_smv=0x7f0901b8;
-    public static final int uniform=0x7f0901b9;
-    public static final int unknown=0x7f0901ba;
-    public static final int up=0x7f0901bb;
-    public static final int useLogo=0x7f0901bc;
-    public static final int view_error_log=0x7f0901bd;
-    public static final int view_offset_helper=0x7f0901be;
-    public static final int view_tag_instance_handle=0x7f0901bf;
-    public static final int view_tag_native_id=0x7f0901c0;
-    public static final int visible=0x7f0901c1;
-    public static final int weak=0x7f0901c2;
-    public static final int webview=0x7f0901c3;
-    public static final int wide=0x7f0901c4;
-    public static final int widget_viewstub_as=0x7f0901c5;
-    public static final int window=0x7f0901c6;
-    public static final int withText=0x7f0901c7;
-    public static final int wrap_content=0x7f0901c8;
+    public static final int image_view_crop=0x7f0900eb;
+    public static final int image_view_logo=0x7f0900ec;
+    public static final int image_view_state_aspect_ratio=0x7f0900ed;
+    public static final int image_view_state_rotate=0x7f0900ee;
+    public static final int image_view_state_scale=0x7f0900ef;
+    public static final int info=0x7f0900f0;
+    public static final int inline=0x7f0900f1;
+    public static final int is_verified=0x7f0900f2;
+    public static final int italic=0x7f0900f3;
+    public static final int item_touch_helper_previous_elevation=0x7f0900f4;
+    public static final int iv_card_icon=0x7f0900f5;
+    public static final int iv_selected_icon=0x7f0900f6;
+    public static final int large=0x7f0900f7;
+    public static final int largeLabel=0x7f0900f8;
+    public static final int layout_aspect_ratio=0x7f0900f9;
+    public static final int layout_rotate_wheel=0x7f0900fa;
+    public static final int layout_scale_wheel=0x7f0900fb;
+    public static final int left=0x7f0900fc;
+    public static final int leftBottom=0x7f0900fd;
+    public static final int leftBottomCrop=0x7f0900fe;
+    public static final int leftCenter=0x7f0900ff;
+    public static final int leftCenterCrop=0x7f090100;
+    public static final int leftTop=0x7f090101;
+    public static final int leftTopCrop=0x7f090102;
+    public static final int light=0x7f090103;
+    public static final int line1=0x7f090104;
+    public static final int line3=0x7f090105;
+    public static final int linearLayout=0x7f090106;
+    public static final int listMode=0x7f090107;
+    public static final int list_item=0x7f090108;
+    public static final int list_view=0x7f090109;
+    public static final int logo_only=0x7f09010a;
+    public static final int lottie_layer_name=0x7f09010b;
+    public static final int manifest=0x7f09010c;
+    public static final int masked=0x7f09010d;
+    public static final int masked_card_info_view=0x7f09010e;
+    public static final int masked_card_item=0x7f09010f;
+    public static final int masked_check_icon=0x7f090110;
+    public static final int masked_icon_view=0x7f090111;
+    public static final int match_parent=0x7f090112;
+    public static final int material=0x7f090113;
+    public static final int media_actions=0x7f090114;
+    public static final int menu_crop=0x7f090115;
+    public static final int menu_loader=0x7f090116;
+    public static final int message=0x7f090117;
+    public static final int messenger_send_button=0x7f090118;
+    public static final int middle=0x7f090119;
+    public static final int mini=0x7f09011a;
+    public static final int monochrome=0x7f09011b;
+    public static final int multiply=0x7f09011c;
+    public static final int navigation_header_container=0x7f09011d;
+    public static final int never=0x7f09011e;
+    public static final int never_display=0x7f09011f;
+    public static final int none=0x7f090120;
+    public static final int normal=0x7f090121;
+    public static final int notification_background=0x7f090122;
+    public static final int notification_main_column=0x7f090123;
+    public static final int notification_main_column_container=0x7f090124;
+    public static final int number=0x7f090125;
+    public static final int off=0x7f090126;
+    public static final int on=0x7f090127;
+    public static final int onTouch=0x7f090128;
+    public static final int one=0x7f090129;
+    public static final int open_graph=0x7f09012a;
+    public static final int oval=0x7f09012b;
+    public static final int page=0x7f09012c;
+    public static final int parallax=0x7f09012d;
+    public static final int parentPanel=0x7f09012e;
+    public static final int parent_matrix=0x7f09012f;
+    public static final int payment_methods_add_payment_container=0x7f090130;
+    public static final int payment_methods_progress_bar=0x7f090131;
+    public static final int payment_methods_recycler=0x7f090132;
+    public static final int payment_methods_toolbar=0x7f090133;
+    public static final int percentage_text_view=0x7f090134;
+    public static final int pin=0x7f090135;
+    public static final int play_button=0x7f090136;
+    public static final int production=0x7f090137;
+    public static final int progress_bar=0x7f090138;
+    public static final int progress_bar_as=0x7f090139;
+    public static final int progress_circular=0x7f09013a;
+    public static final int progress_horizontal=0x7f09013b;
+    public static final int published_time=0x7f09013c;
+    public static final int radio=0x7f09013d;
+    public static final int react_test_id=0x7f09013e;
+    public static final int rectangle=0x7f09013f;
+    public static final int redEye=0x7f090140;
+    public static final int reload_button=0x7f090141;
+    public static final int restart=0x7f090142;
+    public static final int reverse=0x7f090143;
+    public static final int rewind_button=0x7f090144;
+    public static final int right=0x7f090145;
+    public static final int rightBottom=0x7f090146;
+    public static final int rightBottomCrop=0x7f090147;
+    public static final int rightCenter=0x7f090148;
+    public static final int rightCenterCrop=0x7f090149;
+    public static final int rightTop=0x7f09014a;
+    public static final int rightTopCrop=0x7f09014b;
+    public static final int right_icon=0x7f09014c;
+    public static final int right_side=0x7f09014d;
+    public static final int rn_frame_file=0x7f09014e;
+    public static final int rn_frame_method=0x7f09014f;
+    public static final int rn_redbox_copy_button=0x7f090150;
+    public static final int rn_redbox_dismiss_button=0x7f090151;
+    public static final int rn_redbox_line_separator=0x7f090152;
+    public static final int rn_redbox_loading_indicator=0x7f090153;
+    public static final int rn_redbox_reload_button=0x7f090154;
+    public static final int rn_redbox_report_button=0x7f090155;
+    public static final int rn_redbox_report_label=0x7f090156;
+    public static final int rn_redbox_stack=0x7f090157;
+    public static final int rotate_scroll_wheel=0x7f090158;
+    public static final int rv_shipping_methods_ssmw=0x7f090159;
+    public static final int sandbox=0x7f09015a;
+    public static final int satellite=0x7f09015b;
+    public static final int save=0x7f09015c;
+    public static final int save_button=0x7f09015d;
+    public static final int save_image_matrix=0x7f09015e;
+    public static final int save_non_transition_alpha=0x7f09015f;
+    public static final int save_scale_type=0x7f090160;
+    public static final int scale_scroll_wheel=0x7f090161;
+    public static final int screen=0x7f090162;
+    public static final int scroll=0x7f090163;
+    public static final int scrollIndicatorDown=0x7f090164;
+    public static final int scrollIndicatorUp=0x7f090165;
+    public static final int scrollView=0x7f090166;
+    public static final int scrollable=0x7f090167;
+    public static final int sdk_version=0x7f090168;
+    public static final int search_badge=0x7f090169;
+    public static final int search_bar=0x7f09016a;
+    public static final int search_button=0x7f09016b;
+    public static final int search_close_btn=0x7f09016c;
+    public static final int search_edit_frame=0x7f09016d;
+    public static final int search_go_btn=0x7f09016e;
+    public static final int search_mag_icon=0x7f09016f;
+    public static final int search_plate=0x7f090170;
+    public static final int search_src_text=0x7f090171;
+    public static final int search_voice_btn=0x7f090172;
+    public static final int second_row_layout=0x7f090173;
+    public static final int seek_bar=0x7f090174;
+    public static final int select_dialog_listview=0x7f090175;
+    public static final int select_shipping_method_widget=0x7f090176;
+    public static final int selectionDetails=0x7f090177;
+    public static final int share_button=0x7f090178;
+    public static final int shipping_flow_viewpager=0x7f090179;
+    public static final int shipping_info_widget=0x7f09017a;
+    public static final int shortcut=0x7f09017b;
+    public static final int showCustom=0x7f09017c;
+    public static final int showHome=0x7f09017d;
+    public static final int showTitle=0x7f09017e;
+    public static final int skip_next_button=0x7f09017f;
+    public static final int skip_previous_button=0x7f090180;
+    public static final int slide=0x7f090181;
+    public static final int small=0x7f090182;
+    public static final int smallLabel=0x7f090183;
+    public static final int snackbar_action=0x7f090184;
+    public static final int snackbar_text=0x7f090185;
+    public static final int snap=0x7f090186;
+    public static final int spacer=0x7f090187;
+    public static final int split_action_bar=0x7f090188;
+    public static final int src_atop=0x7f090189;
+    public static final int src_in=0x7f09018a;
+    public static final int src_over=0x7f09018b;
+    public static final int standard=0x7f09018c;
+    public static final int start=0x7f09018d;
+    public static final int startInside=0x7f09018e;
+    public static final int state_aspect_ratio=0x7f09018f;
+    public static final int state_rotate=0x7f090190;
+    public static final int state_scale=0x7f090191;
+    public static final int status_bar=0x7f090192;
+    public static final int status_bar_latest_event_content=0x7f090193;
+    public static final int status_text_view=0x7f090194;
+    public static final int strict_sandbox=0x7f090195;
+    public static final int strong=0x7f090196;
+    public static final int submenuarrow=0x7f090197;
+    public static final int submit_area=0x7f090198;
+    public static final int surface_view=0x7f090199;
+    public static final int tabMode=0x7f09019a;
+    public static final int tag_transition_group=0x7f09019b;
+    public static final int terrain=0x7f09019c;
+    public static final int test=0x7f09019d;
+    public static final int text=0x7f09019e;
+    public static final int text2=0x7f09019f;
+    public static final int textSpacerNoButtons=0x7f0901a0;
+    public static final int textSpacerNoTitle=0x7f0901a1;
+    public static final int textView=0x7f0901a2;
+    public static final int text_helper=0x7f0901a3;
+    public static final int text_input_password_toggle=0x7f0901a4;
+    public static final int text_view_rotate=0x7f0901a5;
+    public static final int text_view_scale=0x7f0901a6;
+    public static final int textinput_counter=0x7f0901a7;
+    public static final int textinput_error=0x7f0901a8;
+    public static final int texture_view=0x7f0901a9;
+    public static final int time=0x7f0901aa;
+    public static final int title=0x7f0901ab;
+    public static final int titleDividerNoCustom=0x7f0901ac;
+    public static final int title_template=0x7f0901ad;
+    public static final int tl_add_source_card_number_ml=0x7f0901ae;
+    public static final int tl_add_source_cvc_ml=0x7f0901af;
+    public static final int tl_add_source_expiry_ml=0x7f0901b0;
+    public static final int tl_add_source_postal_ml=0x7f0901b1;
+    public static final int tl_address_line1_aaw=0x7f0901b2;
+    public static final int tl_address_line2_aaw=0x7f0901b3;
+    public static final int tl_city_aaw=0x7f0901b4;
+    public static final int tl_country_cat=0x7f0901b5;
+    public static final int tl_name_aaw=0x7f0901b6;
+    public static final int tl_phone_number_aaw=0x7f0901b7;
+    public static final int tl_postal_code_aaw=0x7f0901b8;
+    public static final int tl_state_aaw=0x7f0901b9;
+    public static final int toggle_manifest=0x7f0901ba;
+    public static final int toolbar=0x7f0901bb;
+    public static final int toolbar_as=0x7f0901bc;
+    public static final int toolbar_title=0x7f0901bd;
+    public static final int top=0x7f0901be;
+    public static final int topPanel=0x7f0901bf;
+    public static final int torch=0x7f0901c0;
+    public static final int touch_outside=0x7f0901c1;
+    public static final int transition_current_scene=0x7f0901c2;
+    public static final int transition_layout_save=0x7f0901c3;
+    public static final int transition_position=0x7f0901c4;
+    public static final int transition_scene_layoutid_cache=0x7f0901c5;
+    public static final int transition_transform=0x7f0901c6;
+    public static final int tv_add_source_error=0x7f0901c7;
+    public static final int tv_amount_smv=0x7f0901c8;
+    public static final int tv_detail_smv=0x7f0901c9;
+    public static final int tv_label_smv=0x7f0901ca;
+    public static final int ucrop=0x7f0901cb;
+    public static final int ucrop_frame=0x7f0901cc;
+    public static final int ucrop_photobox=0x7f0901cd;
+    public static final int uniform=0x7f0901ce;
+    public static final int unknown=0x7f0901cf;
+    public static final int up=0x7f0901d0;
+    public static final int useLogo=0x7f0901d1;
+    public static final int view_error_log=0x7f0901d2;
+    public static final int view_offset_helper=0x7f0901d3;
+    public static final int view_overlay=0x7f0901d4;
+    public static final int view_tag_instance_handle=0x7f0901d5;
+    public static final int view_tag_native_id=0x7f0901d6;
+    public static final int visible=0x7f0901d7;
+    public static final int weak=0x7f0901d8;
+    public static final int webview=0x7f0901d9;
+    public static final int wide=0x7f0901da;
+    public static final int widget_viewstub_as=0x7f0901db;
+    public static final int window=0x7f0901dc;
+    public static final int withText=0x7f0901dd;
+    public static final int wrap_content=0x7f0901de;
+    public static final int wrapper_controls=0x7f0901df;
+    public static final int wrapper_reset_rotate=0x7f0901e0;
+    public static final int wrapper_rotate_by_angle=0x7f0901e1;
+    public static final int wrapper_states=0x7f0901e2;
   }
   public static final class integer {
     public static final int abc_config_activityDefaultDur=0x7f0a0000;
@@ -5355,6 +5511,7 @@ public final class R {
     public static final int light_text_alpha_hex=0x7f0a000c;
     public static final int show_password_duration=0x7f0a000d;
     public static final int status_bar_notification_info_maxnum=0x7f0a000e;
+    public static final int ucrop_progress_loading_anim_time=0x7f0a000f;
   }
   public static final class layout {
     public static final int abc_action_bar_title_item=0x7f0b0000;
@@ -5474,11 +5631,19 @@ public final class R {
     public static final int support_simple_spinner_dropdown_item=0x7f0b0072;
     public static final int surface_view=0x7f0b0073;
     public static final int texture_view=0x7f0b0074;
-    public static final int wallet_test_layout=0x7f0b0075;
+    public static final int ucrop_activity_photobox=0x7f0b0075;
+    public static final int ucrop_aspect_ratio=0x7f0b0076;
+    public static final int ucrop_controls=0x7f0b0077;
+    public static final int ucrop_fragment_photobox=0x7f0b0078;
+    public static final int ucrop_layout_rotate_wheel=0x7f0b0079;
+    public static final int ucrop_layout_scale_wheel=0x7f0b007a;
+    public static final int ucrop_view=0x7f0b007b;
+    public static final int wallet_test_layout=0x7f0b007c;
   }
   public static final class menu {
     public static final int add_source_menu=0x7f0c0000;
     public static final int crop_image_menu=0x7f0c0001;
+    public static final int ucrop_menu_activity=0x7f0c0002;
   }
   public static final class mipmap {
     public static final int dev_icon=0x7f0d0000;
@@ -5781,11 +5946,16 @@ public final class R {
     public static final int title_add_an_address=0x7f0f010f;
     public static final int title_payment_method=0x7f0f0110;
     public static final int title_select_shipping_method=0x7f0f0111;
-    public static final int user_cancel_dialog=0x7f0f0112;
-    public static final int valid_digits=0x7f0f0113;
-    public static final int view_error_log=0x7f0f0114;
-    public static final int wallet_buy_button_place_holder=0x7f0f0115;
-    public static final int zip_helper=0x7f0f0116;
+    public static final int ucrop_error_input_data_is_absent=0x7f0f0112;
+    public static final int ucrop_label_edit_photo=0x7f0f0113;
+    public static final int ucrop_label_original=0x7f0f0114;
+    public static final int ucrop_menu_crop=0x7f0f0115;
+    public static final int ucrop_mutate_exception_hint=0x7f0f0116;
+    public static final int user_cancel_dialog=0x7f0f0117;
+    public static final int valid_digits=0x7f0f0118;
+    public static final int view_error_log=0x7f0f0119;
+    public static final int wallet_buy_button_place_holder=0x7f0f011a;
+    public static final int zip_helper=0x7f0f011b;
   }
   public static final class style {
     public static final int AlertDialog_AppCompat=0x7f100000;
@@ -6255,6 +6425,11 @@ public final class R {
     public static final int com_facebook_loginview_silver_style=0x7f1001d0;
     public static final int redboxButton=0x7f1001d1;
     public static final int tooltip_bubble_text=0x7f1001d2;
+    public static final int ucrop_ImageViewWidgetIcon=0x7f1001d3;
+    public static final int ucrop_TextViewCropAspectRatio=0x7f1001d4;
+    public static final int ucrop_TextViewWidgetText=0x7f1001d5;
+    public static final int ucrop_WrapperIconState=0x7f1001d6;
+    public static final int ucrop_WrapperRotateButton=0x7f1001d7;
   }
   public static final class styleable {
     /**
@@ -7950,9 +8125,9 @@ public final class R {
         0x7f0401de, 0x7f0401df, 0x7f0401e0, 0x7f0401e1, 
         0x7f0401e2, 0x7f0401e3, 0x7f0401e4, 0x7f0401e5, 
         0x7f0401e7, 0x7f040200, 0x7f040201, 0x7f040203, 
-        0x7f040204, 0x7f040217, 0x7f040219, 0x7f04021a, 
-        0x7f04021b, 0x7f04021c, 0x7f04021d, 0x7f04021e, 
-        0x7f04021f, 0x7f040220, 0x7f040221, 0x7f040222
+        0x7f040204, 0x7f040227, 0x7f040229, 0x7f04022a, 
+        0x7f04022b, 0x7f04022c, 0x7f04022d, 0x7f04022e, 
+        0x7f04022f, 0x7f040230, 0x7f040231, 0x7f040232
       };
     /**
      * <p>This symbol is the offset where the {@link android.R.attr#windowIsFloating}
@@ -11264,7 +11439,7 @@ public final class R {
      * @see #CustomWalletTheme_windowTransitionStyle
      */
     public static final int[] CustomWalletTheme={
-        0x7f0400cb, 0x7f040202, 0x7f040223
+        0x7f0400cb, 0x7f040202, 0x7f040233
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#customThemeStyle}
@@ -11356,7 +11531,7 @@ public final class R {
         0x7f040028, 0x7f040029, 0x7f040046, 0x7f040050, 
         0x7f040173, 0x7f040174, 0x7f0401a0, 0x7f0401a1, 
         0x7f0401a2, 0x7f0401a3, 0x7f0401a4, 0x7f040206, 
-        0x7f040211
+        0x7f040221
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ad_marker_color}
@@ -11729,7 +11904,7 @@ public final class R {
     public static final int[] FloatingActionButton={
         0x7f040043, 0x7f040044, 0x7f04004c, 0x7f0400dd, 
         0x7f0400ea, 0x7f0400eb, 0x7f04017b, 0x7f04018d, 
-        0x7f040212
+        0x7f040222
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#backgroundTint}
@@ -12225,7 +12400,7 @@ public final class R {
         0x7f040190, 0x7f040191, 0x7f040192, 0x7f040193, 
         0x7f040194, 0x7f040195, 0x7f040196, 0x7f040197, 
         0x7f040198, 0x7f040199, 0x7f04019a, 0x7f04019b, 
-        0x7f040216
+        0x7f040226
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#actualImageScaleType}
@@ -13207,9 +13382,9 @@ public final class R {
         0x7f040031, 0x7f040062, 0x7f040063, 0x7f040064, 
         0x7f040065, 0x7f040066, 0x7f040067, 0x7f040068, 
         0x7f040128, 0x7f040129, 0x7f04012a, 0x7f04012b, 
-        0x7f040143, 0x7f040152, 0x7f04020a, 0x7f04020b, 
-        0x7f04020c, 0x7f04020d, 0x7f04020e, 0x7f04020f, 
-        0x7f040210, 0x7f040213, 0x7f040224
+        0x7f040143, 0x7f040152, 0x7f04021a, 0x7f04021b, 
+        0x7f04021c, 0x7f04021d, 0x7f04021e, 0x7f04021f, 
+        0x7f040220, 0x7f040223, 0x7f040234
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ambientEnabled}
@@ -14675,7 +14850,7 @@ public final class R {
         0x7f040076, 0x7f040094, 0x7f0400cc, 0x7f040105, 
         0x7f040115, 0x7f04012c, 0x7f040181, 0x7f040182, 
         0x7f0401a5, 0x7f0401a6, 0x7f0401c1, 0x7f0401c6, 
-        0x7f040218
+        0x7f040228
       };
     /**
      * <p>This symbol is the offset where the {@link android.R.attr#focusable}
@@ -15092,7 +15267,7 @@ public final class R {
         0x7f04018e, 0x7f04018f, 0x7f040190, 0x7f040191, 
         0x7f040192, 0x7f040193, 0x7f040194, 0x7f040195, 
         0x7f040196, 0x7f040197, 0x7f040198, 0x7f040199, 
-        0x7f04019a, 0x7f04019b, 0x7f040216
+        0x7f04019a, 0x7f04019b, 0x7f040226
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#actualImageResource}
@@ -15548,7 +15723,7 @@ public final class R {
         0x7f04003e, 0x7f0400a3, 0x7f0400cd, 0x7f0400f5, 
         0x7f04010a, 0x7f04010b, 0x7f040175, 0x7f040187, 
         0x7f040188, 0x7f04018c, 0x7f0401b0, 0x7f0401b1, 
-        0x7f0401b2, 0x7f0401c7, 0x7f040214, 0x7f040215
+        0x7f0401b2, 0x7f0401c7, 0x7f040224, 0x7f040225
       };
     /**
      * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#auto_show}
@@ -18114,6 +18289,228 @@ public final class R {
      * @attr name com.nubeble.rowena:scalableType
      */
     public static final int scaleStyle_scalableType=0;
+    /**
+     * Attributes that can be used with a ucrop_AspectRatioTextView.
+     * <p>Includes the following attributes:</p>
+     * <table>
+     * <colgroup align="left" />
+     * <colgroup align="left" />
+     * <tr><th>Attribute</th><th>Description</th></tr>
+     * <tr><td><code>{@link #ucrop_AspectRatioTextView_ucrop_artv_ratio_title com.nubeble.rowena:ucrop_artv_ratio_title}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_AspectRatioTextView_ucrop_artv_ratio_x com.nubeble.rowena:ucrop_artv_ratio_x}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_AspectRatioTextView_ucrop_artv_ratio_y com.nubeble.rowena:ucrop_artv_ratio_y}</code></td><td></td></tr>
+     * </table>
+     * @see #ucrop_AspectRatioTextView_ucrop_artv_ratio_title
+     * @see #ucrop_AspectRatioTextView_ucrop_artv_ratio_x
+     * @see #ucrop_AspectRatioTextView_ucrop_artv_ratio_y
+     */
+    public static final int[] ucrop_AspectRatioTextView={
+        0x7f04020a, 0x7f04020b, 0x7f04020c
+      };
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_artv_ratio_title}
+     * attribute's value can be found in the {@link #ucrop_AspectRatioTextView} array.
+     *
+     * <p>May be a string value, using '\\;' to escape characters such as
+     * '\\n' or '\\uxxxx' for a unicode character;
+     *
+     * @attr name com.nubeble.rowena:ucrop_artv_ratio_title
+     */
+    public static final int ucrop_AspectRatioTextView_ucrop_artv_ratio_title=0;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_artv_ratio_x}
+     * attribute's value can be found in the {@link #ucrop_AspectRatioTextView} array.
+     *
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_artv_ratio_x
+     */
+    public static final int ucrop_AspectRatioTextView_ucrop_artv_ratio_x=1;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_artv_ratio_y}
+     * attribute's value can be found in the {@link #ucrop_AspectRatioTextView} array.
+     *
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_artv_ratio_y
+     */
+    public static final int ucrop_AspectRatioTextView_ucrop_artv_ratio_y=2;
+    /**
+     * Attributes that can be used with a ucrop_UCropView.
+     * <p>Includes the following attributes:</p>
+     * <table>
+     * <colgroup align="left" />
+     * <colgroup align="left" />
+     * <tr><th>Attribute</th><th>Description</th></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_aspect_ratio_x com.nubeble.rowena:ucrop_aspect_ratio_x}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_aspect_ratio_y com.nubeble.rowena:ucrop_aspect_ratio_y}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_circle_dimmed_layer com.nubeble.rowena:ucrop_circle_dimmed_layer}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_dimmed_color com.nubeble.rowena:ucrop_dimmed_color}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_frame_color com.nubeble.rowena:ucrop_frame_color}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_frame_stroke_size com.nubeble.rowena:ucrop_frame_stroke_size}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_grid_color com.nubeble.rowena:ucrop_grid_color}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_grid_column_count com.nubeble.rowena:ucrop_grid_column_count}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_grid_row_count com.nubeble.rowena:ucrop_grid_row_count}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_grid_stroke_size com.nubeble.rowena:ucrop_grid_stroke_size}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_show_frame com.nubeble.rowena:ucrop_show_frame}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_show_grid com.nubeble.rowena:ucrop_show_grid}</code></td><td></td></tr>
+     * <tr><td><code>{@link #ucrop_UCropView_ucrop_show_oval_crop_frame com.nubeble.rowena:ucrop_show_oval_crop_frame}</code></td><td></td></tr>
+     * </table>
+     * @see #ucrop_UCropView_ucrop_aspect_ratio_x
+     * @see #ucrop_UCropView_ucrop_aspect_ratio_y
+     * @see #ucrop_UCropView_ucrop_circle_dimmed_layer
+     * @see #ucrop_UCropView_ucrop_dimmed_color
+     * @see #ucrop_UCropView_ucrop_frame_color
+     * @see #ucrop_UCropView_ucrop_frame_stroke_size
+     * @see #ucrop_UCropView_ucrop_grid_color
+     * @see #ucrop_UCropView_ucrop_grid_column_count
+     * @see #ucrop_UCropView_ucrop_grid_row_count
+     * @see #ucrop_UCropView_ucrop_grid_stroke_size
+     * @see #ucrop_UCropView_ucrop_show_frame
+     * @see #ucrop_UCropView_ucrop_show_grid
+     * @see #ucrop_UCropView_ucrop_show_oval_crop_frame
+     */
+    public static final int[] ucrop_UCropView={
+        0x7f04020d, 0x7f04020e, 0x7f04020f, 0x7f040210, 
+        0x7f040211, 0x7f040212, 0x7f040213, 0x7f040214, 
+        0x7f040215, 0x7f040216, 0x7f040217, 0x7f040218, 
+        0x7f040219
+      };
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_aspect_ratio_x}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_aspect_ratio_x
+     */
+    public static final int ucrop_UCropView_ucrop_aspect_ratio_x=0;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_aspect_ratio_y}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a floating point value, such as "<code>1.2</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_aspect_ratio_y
+     */
+    public static final int ucrop_UCropView_ucrop_aspect_ratio_y=1;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_circle_dimmed_layer}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_circle_dimmed_layer
+     */
+    public static final int ucrop_UCropView_ucrop_circle_dimmed_layer=2;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_dimmed_color}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
+     * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
+     * "<code>#<i>aarrggbb</i></code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_dimmed_color
+     */
+    public static final int ucrop_UCropView_ucrop_dimmed_color=3;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_frame_color}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
+     * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
+     * "<code>#<i>aarrggbb</i></code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_frame_color
+     */
+    public static final int ucrop_UCropView_ucrop_frame_color=4;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_frame_stroke_size}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a dimension value, which is a floating point number appended with a
+     * unit such as "<code>14.5sp</code>".
+     * Available units are: px (pixels), dp (density-independent pixels),
+     * sp (scaled pixels based on preferred font size), in (inches), and
+     * mm (millimeters).
+     *
+     * @attr name com.nubeble.rowena:ucrop_frame_stroke_size
+     */
+    public static final int ucrop_UCropView_ucrop_frame_stroke_size=5;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_grid_color}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a color value, in the form of "<code>#<i>rgb</i></code>",
+     * "<code>#<i>argb</i></code>", "<code>#<i>rrggbb</i></code>", or
+     * "<code>#<i>aarrggbb</i></code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_grid_color
+     */
+    public static final int ucrop_UCropView_ucrop_grid_color=6;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_grid_column_count}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be an integer value, such as "<code>100</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_grid_column_count
+     */
+    public static final int ucrop_UCropView_ucrop_grid_column_count=7;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_grid_row_count}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be an integer value, such as "<code>100</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_grid_row_count
+     */
+    public static final int ucrop_UCropView_ucrop_grid_row_count=8;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_grid_stroke_size}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a dimension value, which is a floating point number appended with a
+     * unit such as "<code>14.5sp</code>".
+     * Available units are: px (pixels), dp (density-independent pixels),
+     * sp (scaled pixels based on preferred font size), in (inches), and
+     * mm (millimeters).
+     *
+     * @attr name com.nubeble.rowena:ucrop_grid_stroke_size
+     */
+    public static final int ucrop_UCropView_ucrop_grid_stroke_size=9;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_show_frame}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_show_frame
+     */
+    public static final int ucrop_UCropView_ucrop_show_frame=10;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_show_grid}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_show_grid
+     */
+    public static final int ucrop_UCropView_ucrop_show_grid=11;
+    /**
+     * <p>This symbol is the offset where the {@link com.nubeble.rowena.R.attr#ucrop_show_oval_crop_frame}
+     * attribute's value can be found in the {@link #ucrop_UCropView} array.
+     *
+     * <p>May be a boolean value, such as "<code>true</code>" or
+     * "<code>false</code>".
+     *
+     * @attr name com.nubeble.rowena:ucrop_show_oval_crop_frame
+     */
+    public static final int ucrop_UCropView_ucrop_show_oval_crop_frame=12;
   }
   public static final class xml {
     public static final int global_tracker=0x7f120000;

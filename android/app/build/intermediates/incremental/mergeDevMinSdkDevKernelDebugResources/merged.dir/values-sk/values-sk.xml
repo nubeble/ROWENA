@@ -80,5 +80,8 @@
     <string msgid="7163549807207034258" name="s7">"Testovacia reklama"</string>
     <string msgid="146198913615257606" name="search_menu_title">"Vyhľadávanie"</string>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
+    <string name="ucrop_label_edit_photo">Upraviť fotografiu</string>
+    <string name="ucrop_label_original">Pôvodná</string>
+    <string name="ucrop_menu_crop">Orezať</string>
     <string msgid="363496807345461806" name="wallet_buy_button_place_holder">"Kúpiť cez Google"</string>
 </resources>

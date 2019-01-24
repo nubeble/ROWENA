@@ -14,6 +14,7 @@ import Util from "./Util";
 import type { FeedEntry } from "./rnff/src/components/Model";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import { Theme } from "./rnff/src/components";
+import { Globals } from "./Globals";
 
 type InjectedProps = {
     // feedStore: FeedStore,
@@ -465,7 +466,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

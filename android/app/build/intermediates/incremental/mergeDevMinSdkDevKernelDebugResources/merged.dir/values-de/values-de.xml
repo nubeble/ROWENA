@@ -144,5 +144,8 @@
     <string name="title_add_an_address">Adresse hinzufügen</string>
     <string name="title_payment_method">Zahlungsmethode</string>
     <string name="title_select_shipping_method">Versandmethode auswählen</string>
+    <string name="ucrop_label_edit_photo">Foto editieren</string>
+    <string name="ucrop_label_original">Original</string>
+    <string name="ucrop_menu_crop">Zuschneiden</string>
     <string msgid="363496807345461806" name="wallet_buy_button_place_holder">"Über Google kaufen"</string>
 </resources>

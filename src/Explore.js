@@ -17,7 +17,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 // import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
-import Swiper from './Swiper'
+import Swiper from './Swiper';
+import { Globals } from "./Globals";
 
 /*
 const AnimatedText = Animated.createAnimatedComponent(Text);
@@ -393,7 +394,7 @@ const styles = StyleSheet.create({
         top: 0
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

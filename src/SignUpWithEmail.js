@@ -12,6 +12,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Firebase from './Firebase'
 import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
+import { Globals } from "./Globals";
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -491,7 +492,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         // paddingBottom: 8 + 4, // paddingBottom from searchBar
         paddingBottom: 8, // paddingBottom from searchBar
         justifyContent: 'flex-end',

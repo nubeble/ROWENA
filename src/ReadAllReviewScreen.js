@@ -16,6 +16,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 // import ReadMore from "./ReadMore";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import { Globals } from "./Globals";
 
 type FlatListItem<T> = {
     item: T
@@ -457,7 +458,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex];
         const keyboardHeight = e.endCoordinates.height;
-        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+        const searchBarHeight = Globals.searchBarHeight;
 
         const y = totalHeights;
 
@@ -480,7 +481,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex];
         const keyboardHeight = e.endCoordinates.height;
-        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+        const searchBarHeight = Globals.searchBarHeight;
 
         const y = totalHeights;
 
@@ -676,7 +677,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

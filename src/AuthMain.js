@@ -7,7 +7,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Firebase from './Firebase';
 import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
-import GLOBALS from './Globals';
+import { Globals } from "./Globals";
 
 
 export default class AuthMain extends React.Component {
@@ -128,7 +128,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.continueWithFacebook();
-                                }, GLOBALS.buttonTimeout);
+                                }, Globals.buttonTimeout);
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
@@ -150,7 +150,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithEmail();
-                                }, GLOBALS.buttonTimeout);
+                                }, Globals.buttonTimeout);
                             }}
                             style={styles.signUpWithEmailButton}
                         >
@@ -162,7 +162,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithMobile();
-                                }, GLOBALS.buttonTimeout);
+                                }, Globals.buttonTimeout);
                             }}
                             style={styles.signUpWithMobileButton}
                         >

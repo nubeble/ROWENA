@@ -4,6 +4,7 @@ import { MapView, Constants } from 'expo';
 import { Header } from 'react-navigation';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
+import { Globals } from "./Globals";
 
 
 export default class MapScreen extends React.Component {
@@ -179,7 +180,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         width: '100%',
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         // backgroundColor: 'red',
         zIndex: 10000
     },

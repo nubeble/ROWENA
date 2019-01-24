@@ -22,7 +22,8 @@ import autobind from "autobind-decorator";
 import { observer } from "mobx-react/native";
 import ReadMore from "./ReadMore";
 import Toast, { DURATION } from 'react-native-easy-toast';
-import { NavigationActions } from 'react-navigation'
+import { NavigationActions } from 'react-navigation';
+import { Globals } from "./Globals";
 
 // const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
@@ -678,7 +679,7 @@ export default class PostScreen extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex]; // OK
         const keyboardHeight = e.endCoordinates.height; // OK
-        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8); // OK
+        const searchBarHeight = Globals.searchBarHeight; // OK
 
         const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
 
@@ -852,7 +853,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'
