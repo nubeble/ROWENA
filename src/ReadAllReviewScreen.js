@@ -16,6 +16,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 // import ReadMore from "./ReadMore";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import AwesomeAlert from 'react-native-awesome-alerts';
 import { Globals } from "./Globals";
 
 type FlatListItem<T> = {
@@ -40,7 +41,10 @@ export default class ReadAllReviewScreen extends React.Component {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(0),
 
-        refreshing: false
+        refreshing: false,
+
+        showAlert: false,
+        alertMessage: ''
     };
 
     constructor(props) {
@@ -252,6 +256,42 @@ export default class ReadAllReviewScreen extends React.Component {
                         </View>
                     )
                 }
+
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="YES"
+                    confirmText="NO"
+                    confirmButtonColor="#DD6B55"
+                    // title={"Want to leave " + name + "?"}
+                    title={this.state.alertMessage}
+                    // message="I have a message for you!"
+                    onCancelPressed={async () => {
+                        this.setState({ showAlert: false });
+
+                        // pressed YES
+                        console.log('YES');
+
+                        if (this.alertCallback) {
+                            this.alertCallback();
+                            this.alertCallback = null;
+                        }
+                    }}
+                    onConfirmPressed={() => {
+                        this.setState({ showAlert: false });
+                    }}
+
+                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
+                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                />
 
                 <Toast
                     ref="toast"
@@ -629,45 +669,57 @@ export default class ReadAllReviewScreen extends React.Component {
 
     async removeReview(index) {
         // ToDo: show dialog
+        this.showAlert('Are you sure you want to delete this review?', async () => {
+            const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
-        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+            const reviewId = reviewStore.reviews[index].review.id;
+            const userUid = Firebase.uid();
 
-        const reviewId = reviewStore.reviews[index].review.id;
-        const userUid = Firebase.uid();
+            const count = reviewStore.reviews.length;
 
-        const count = reviewStore.reviews.length;
+            await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
-        await Firebase.removeReview(placeId, feedId, reviewId, userUid);
-
-        this.refs.toast.show('Your review has successfully been removed.', 500, () => {
-            if (!this.isClosed) {
-                // refresh UI
-                const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
-                reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
-            }
+            this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+                if (!this.isClosed) {
+                    // refresh UI
+                    const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+                    reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
+                }
+            });
         });
     }
 
     async removeReply(index) {
         // ToDo: show dialog
+        this.showAlert('Are you sure you want to delete this reply?', async () => {
+            const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
-        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+            const reviewId = reviewStore.reviews[index].review.id;
+            const replyId = reviewStore.reviews[index].review.reply.id;
+            const userUid = Firebase.uid();
 
-        const reviewId = reviewStore.reviews[index].review.id;
-        const replyId = reviewStore.reviews[index].review.reply.id;
-        const userUid = Firebase.uid();
+            const count = reviewStore.reviews.length;
 
-        const count = reviewStore.reviews.length;
+            await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-        await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
-
-        this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
-            if (!this.isClosed) {
-                // refresh UI
-                const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
-                reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
-            }
+            this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+                if (!this.isClosed) {
+                    // refresh UI
+                    const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+                    reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
+                }
+            });
         });
+    }
+
+    showAlert(message, callback) {
+        this.setAlertCallback(callback);
+
+        this.setState({ alertMessage: message, showAlert: true });
+    }
+
+    setAlertCallback(callback) {
+        this.alertCallback = callback;
     }
 }
 

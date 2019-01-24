@@ -1075,7 +1075,7 @@ export default class Detail extends React.Component {
         this.alertCallback = callback;
     }
 
-    removeReply(index) {
+    async removeReply(index) {
         // show dialog
         this.showAlert('Are you sure you want to delete this reply?', async () => {
             const { post, profile } = this.props.navigation.state.params;
