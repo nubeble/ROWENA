@@ -2,7 +2,6 @@ import React from 'react';
 import {
     StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView
 } from 'react-native';
-import { Constants } from "expo";
 import { Theme } from "./rnff/src/components";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -70,14 +69,11 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        // this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
-
         if (!this.state.onKeyboard) this.setState({ onKeyboard: true });
     }
 
     @autobind
     _keyboardDidHide(e) {
-
         if (this.state.onKeyboard) this.setState({ onKeyboard: false });
     }
 
@@ -94,7 +90,7 @@ export default class ChatRoom extends React.Component {
         const postAvailable = this.state.messages.length > 1 ? false : true;
 
         const top1 = (Dimensions.get('window').height - postHeight) / 2;
-        const top2 = Globals.searchBarHeight; // searchBar height
+        const top2 = Globals.searchBarHeight;
         const postTop = this.state.onKeyboard ? top2 : top1;
 
         const item = this.props.navigation.state.params.item;
@@ -109,7 +105,7 @@ export default class ChatRoom extends React.Component {
         const imageWidth = postHeight * 0.7;
 
         const name = item.users[1].name;
-        const text2 = 'Send a message before your battery dies.';
+        // const text2 = 'Send a message before your battery dies.';
 
 
         return (
@@ -164,16 +160,12 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <SafeAreaView style={{ flex: 1 }}
-                    forceInsert={{
-                        bottom: 'always'
-                    }}
-                >
+                <View style={{ flex: 1 }} >
                     <GiftedChat
-                        // bottomOffset={50}
+                        // bottomOffset={56}
                         minInputToolbarHeight={56}
-                        // minComposerHeight={80}
-                        // maxComposerHeight={80}
+                        // minComposerHeight={56}
+                        // maxComposerHeight={56}
 
                         alwaysShowSend={true}
                         // isAnimated={true}
@@ -188,6 +180,7 @@ export default class ChatRoom extends React.Component {
                         onPressAvatar={async () => await this.openPost()}
 
                         textInputProps={{
+                            // multiline: false,
                             style: {
                                 width: '86%',
                                 height: 56,
@@ -196,7 +189,7 @@ export default class ChatRoom extends React.Component {
                                 color: "white",
 
                                 backgroundColor: Theme.color.background,
-                                paddingTop: 6,
+                                paddingTop: 6, // ToDo: not working in ios
                                 // paddingBottom: 20,
                                 paddingLeft: 16,
                                 paddingRight: 16
@@ -246,24 +239,16 @@ export default class ChatRoom extends React.Component {
                         // Platform.OS === 'android' ? <KeyboardSpacer /> : null
                         <KeyboardSpacer />
                     }
-                </SafeAreaView>
+                </View>
 
                 {
                     !this.state.onKeyboard &&
-                    <View style={{ width: '100%', height: 30, backgroundColor: Theme.color.background }} />
+                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: Theme.color.background }} />
                 }
-
-
-                {/*
-                <View style={{ width: '100%', height: 60, backgroundColor: Theme.color.textInput }} />
-                */}
-                {/*
-                    <View style={{ width: '100%', height: 0, backgroundColor: 'red' }} />
-                */}
 
                 {
                     // ToDo: apply animation
-                    this.state.renderPost && postAvailable &&
+                    this.state.renderPost && postAvailable && false &&
                     <View style={[styles.post, { top: postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
@@ -366,14 +351,11 @@ export default class ChatRoom extends React.Component {
 
     renderSend(props) {
         return (
-            <Send
-                {...props}
-            >
+            <Send {...props} >
                 <View style={{
                     backgroundColor: Theme.color.background,
                     marginBottom: Globals.sendButtonMarginBottom
                 }}>
-
                     <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
                     {/*
                     <Image source={require('../../assets/send.png')} resizeMode={'center'} />
@@ -392,8 +374,7 @@ export default class ChatRoom extends React.Component {
     }
 
     renderFooter(props) {
-        return <View style={{ height: 20, backgroundColor: 'red' }}
-        />
+        return <View style={{ height: 20, backgroundColor: 'red' }} />
     }
 }
 

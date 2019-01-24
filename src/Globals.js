@@ -23,7 +23,7 @@ export var Globals = {
     // iPhone X: 4
     // Tango: ?
     // S7: 6
-    searchBarPaddingTop: 12 - parseInt(Dimensions.get('window').height / 100) * -1, // Galaxy S7: 640, Tango: 731, iphone X: 812
+    searchBarPaddingTop: 12 - parseInt(Dimensions.get('window').height / 100) // Galaxy S7: 640, Tango: 731, iphone X: 812
 
     
 
