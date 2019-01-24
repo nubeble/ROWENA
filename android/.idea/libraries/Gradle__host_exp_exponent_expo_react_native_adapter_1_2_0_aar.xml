@@ -6,7 +6,7 @@
     </CLASSES>
     <JAVADOC />
     <SOURCES>
-      <root url="jar://$PROJECT_DIR$/../../node_modules/expokit/maven/host/exp/exponent/expo-react-native-adapter/1.2.0/expo-react-native-adapter-1.2.0-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../node_modules/expokit/maven/host/exp/exponent/expo-react-native-adapter/1.2.0/expo-react-native-adapter-1.2.0-sources.jar!/" />
     </SOURCES>
   </library>
 </component>

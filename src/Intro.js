@@ -33,7 +33,6 @@ type InjectedProps = {
 const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
 
-const _paddingTop = parseInt(Dimensions.get('window').height / 200); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
 
 
@@ -259,7 +258,7 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: _paddingTop, fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop, fontFamily: "SFProText-Semibold",
                                 color: "rgb(160, 160, 160)", textAlign: 'center' }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>

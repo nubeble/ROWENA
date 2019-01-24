@@ -443,7 +443,5 @@
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-tasks:16.0.1@aar" level="project" />
     <orderEntry type="module" module-name="react-native-push-notification" />
     <orderEntry type="module" module-name="react-native-image-crop-picker" />
-    <orderEntry type="module" module-name="react-native-push-notification" />
-    <orderEntry type="module" module-name="react-native-image-crop-picker" />
   </component>
 </module>

@@ -289,7 +289,7 @@ export default class ReadAllReviewScreen extends React.Component {
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
                     cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
@@ -652,8 +652,8 @@ export default class ReadAllReviewScreen extends React.Component {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
-                const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
-                reviewStore.init(query, count + 1); // refresh all // ToDo: reload only the changed review
+                // refresh all
+                this.refreshReviews(placeId, feedId, count + 1);
             }
         });
     }
@@ -668,7 +668,7 @@ export default class ReadAllReviewScreen extends React.Component {
     };
 
     async removeReview(index) {
-        // ToDo: show dialog
+        // show dialog
         this.showAlert('Are you sure you want to delete this review?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
@@ -681,9 +681,8 @@ export default class ReadAllReviewScreen extends React.Component {
 
             this.refs.toast.show('Your review has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
-                    // refresh UI
-                    const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
-                    reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
+                    // refresh all
+                    this.refreshReviews(placeId, feedId, count - 1);
                 }
             });
         });
@@ -705,11 +704,16 @@ export default class ReadAllReviewScreen extends React.Component {
             this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh UI
-                    const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
-                    reviewStore.init(query, count - 1); // refresh all // ToDo: reload only the changed review
+                    this.refreshReviews(placeId, feedId, count - 1);
                 }
             });
         });
+    }
+
+    refreshReviews(placeId, feedId, count) {
+        // ToDo: reload only the changed review
+        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+        reviewStore.init(query, count);
     }
 
     showAlert(message, callback) {

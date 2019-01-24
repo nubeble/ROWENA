@@ -243,7 +243,8 @@ export default class ChatRoom extends React.Component {
                     */}
 
                     {
-                        Platform.OS === 'android' ? <KeyboardSpacer /> : null
+                        // Platform.OS === 'android' ? <KeyboardSpacer /> : null
+                        <KeyboardSpacer />
                     }
                 </SafeAreaView>
 
@@ -317,7 +318,7 @@ export default class ChatRoom extends React.Component {
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
                     cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
             </View>

@@ -1,61 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d3692b89-a187-4d23-8309-b4559621147a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../.gradle/4.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../.gradle/4.4/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gradle/4.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../.gradle/4.4/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gradle/4.4/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../.gradle/4.4/javaCompile/javaCompile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gradle/4.4/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/../.gradle/4.4/taskHistory/taskHistory.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gradle/4.4/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../.gradle/4.4/taskHistory/taskHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/caches/build_file_checksums.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/caches/gradle_models.ser" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_facebook_infer_annotation_infer_annotation_0_11_2_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_facebook_infer_annotation_infer_annotation_0_11_2_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_3_6_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_3_6_0_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_urlconnection_3_6_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_urlconnection_3_6_0_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_squareup_okio_okio_1_13_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__expolib_v1_com_squareup_okio_okio_1_13_0_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_ads_admob_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_ads_admob_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_analytics_segment_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_analytics_segment_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_camera_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_camera_1_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_camera_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_camera_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_constants_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_constants_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_constants_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_constants_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_contacts_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_contacts_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_core_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_core_1_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_file_system_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_file_system_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_file_system_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_file_system_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_font_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_font_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_font_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_font_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_gl_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_gl_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_gl_cpp_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_gl_cpp_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_image_loader_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_image_loader_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_local_authentication_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_local_authentication_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_localization_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_localization_1_0_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_location_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_location_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_media_library_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_media_library_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_permissions_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_permissions_1_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_permissions_interface_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_permissions_interface_1_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_print_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_print_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_react_native_adapter_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_react_native_adapter_1_2_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_sensors_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_sensors_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_sensors_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_sensors_interface_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_sms_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/libraries/Gradle__host_exp_exponent_expo_sms_1_1_0_aar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../app/app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/compile-file-map.properties" beforeDir="false" afterPath="$PROJECT_DIR$/../app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/compile-file-map.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../assets/logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/../../assets/logo.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/Detail.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/Detail.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/Firebase.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/Firebase.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/ReadAllReviewScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/ReadAllReviewScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/ReviewStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/ReviewStore.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/rnff/src/components/FeedStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/rnff/src/components/FeedStore.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../src/rnff/src/home/ProfileStore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../../src/rnff/src/home/ProfileStore.js" afterDir="false" />
+    <list default="true" id="97ce86a2-7111-4913-9203-7c377ac5d6c5" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.4/fileHashes/fileHashes.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/javaCompile/javaCompile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.4/javaCompile/javaCompile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/4.4/taskHistory/taskHistory.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/build_file_checksums.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/gradle_models.ser" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_facebook_infer_annotation_infer_annotation_0_11_2_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_facebook_infer_annotation_infer_annotation_0_11_2_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_3_6_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_3_6_0_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_urlconnection_3_6_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_squareup_okhttp3_okhttp_urlconnection_3_6_0_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_squareup_okio_okio_1_13_0_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__expolib_v1_com_squareup_okio_okio_1_13_0_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_ads_admob_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_ads_admob_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_analytics_segment_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_analytics_segment_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_barcode_scanner_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_camera_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_camera_1_2_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_camera_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_camera_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_constants_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_constants_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_constants_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_constants_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_contacts_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_contacts_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_core_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_core_1_2_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_face_detector_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_file_system_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_file_system_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_file_system_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_file_system_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_font_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_font_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_font_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_font_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_gl_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_gl_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_gl_cpp_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_gl_cpp_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_image_loader_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_image_loader_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_local_authentication_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_local_authentication_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_localization_1_0_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_localization_1_0_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_location_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_location_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_media_library_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_media_library_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_permissions_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_permissions_1_2_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_permissions_interface_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_permissions_interface_1_2_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_print_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_print_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_react_native_adapter_1_2_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_react_native_adapter_1_2_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_sensors_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_sensors_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_sensors_interface_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_sensors_interface_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_sms_1_1_0_aar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Gradle__host_exp_exponent_expo_sms_1_1_0_aar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/app/app.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/compile-file-map.properties" beforeDir="false" afterPath="$PROJECT_DIR$/app/build/intermediates/incremental/mergeDevMinSdkDevKernelDebugResources/compile-file-map.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/ChatRoom.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/ChatRoom.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Detail.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/Detail.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Explore.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/Explore.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Globals.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/Globals.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/Intro.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/Intro.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../src/ReadAllReviewScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../src/ReadAllReviewScreen.js" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -74,71 +75,30 @@
     <session id="367585461">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="1" />
           <entry key="project.open.time.0" value="1" />
           <entry key="project.opened" value="1" />
         </counts>
       </usages-collector>
-      <usages-collector id="statistics.file.extensions.open">
-        <counts>
-          <entry key="properties" value="1" />
-        </counts>
-      </usages-collector>
-      <usages-collector id="statistics.file.types.open">
-        <counts>
-          <entry key="Properties" value="1" />
-        </counts>
-      </usages-collector>
     </session>
-    <session id="-1860053409">
-      <usages-collector id="statistics.lifecycle.project">
-        <counts>
-          <entry key="project.closed" value="1" />
-          <entry key="project.open.time.3" value="1" />
-          <entry key="project.open.time.4" value="1" />
-          <entry key="project.opened" value="2" />
-        </counts>
-      </usages-collector>
-    </session>
-  </component>
-  <component name="FileEditorManager">
-    <leaf />
-  </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>10.112.1.184</find>
-    </findStrings>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="292" />
     <option name="y" value="24" />
     <option name="width" value="1400" />
     <option name="height" value="1028" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
+    <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="AndroidView">
-        <subPane>
-          <expand>
-            <path>
-              <item name="android" type="1abcf292:AndroidViewProjectNode" />
-              <item name="Gradle Scripts" type="ae0cef3a:AndroidBuildScriptsGroupNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
       <pane id="ProjectPane" />
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -146,8 +106,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="device.picker.selection" value="ce051605a5fa140903" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
-    <property name="show.do.not.ask.upgrade.gradle.plugin" value="3.1.4" />
+    <property name="sync.plugin.last.upgrade.timestamp" value="1548321279619" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -227,57 +186,42 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="d3692b89-a187-4d23-8309-b4559621147a" name="Default Changelist" comment="" />
-      <created>1548217460872</created>
+      <changelist id="97ce86a2-7111-4913-9203-7c377ac5d6c5" name="Default Changelist" comment="" />
+      <created>1548321242541</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1548217460872</updated>
+      <updated>1548321242541</updated>
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="64" y="-11" width="1857" height="1092" extended-state="6" />
+    <frame x="65" y="-4" width="1855" height="1084" extended-state="7" />
     <layout>
+      <window_info active="true" content_ui="combo" id="Project" visible="true" weight="0.32946378" />
+      <window_info id="Structure" side_tool="true" />
+      <window_info id="Build Variants" side_tool="true" />
+      <window_info id="Image Layers" />
+      <window_info id="Designer" />
+      <window_info id="Capture Tool" />
+      <window_info id="Favorites" side_tool="true" />
       <window_info id="Captures" order="0" side_tool="true" weight="0.25" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.32946378" />
-      <window_info id="Structure" order="2" side_tool="true" />
-      <window_info id="Favorites" order="3" side_tool="true" />
-      <window_info id="Build Variants" order="4" side_tool="true" />
-      <window_info id="Image Layers" order="5" />
-      <window_info id="Designer" order="6" />
-      <window_info id="Capture Tool" order="7" />
-      <window_info anchor="bottom" id="Run" order="0" />
-      <window_info anchor="bottom" id="Logcat" order="1" />
-      <window_info anchor="bottom" id="TODO" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" />
-      <window_info anchor="bottom" id="Terminal" order="4" />
-      <window_info anchor="bottom" id="Event Log" order="5" sideWeight="0.50082916" side_tool="true" visible="true" weight="0.33054394" />
-      <window_info anchor="bottom" id="Version Control" order="6" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Build" order="7" sideWeight="0.4991708" visible="true" weight="0.33054394" />
-      <window_info anchor="bottom" id="Find" order="8" />
-      <window_info anchor="bottom" id="Android Profiler" order="9" show_stripe_button="false" />
-      <window_info anchor="right" id="Device File Explorer" order="0" side_tool="true" />
-      <window_info anchor="right" id="Capture Analysis" order="1" />
-      <window_info anchor="right" id="Gradle" order="2" />
-      <window_info anchor="right" id="Theme Preview" order="3" />
-      <window_info anchor="right" id="Palette&#9;" order="4" />
+      <window_info anchor="bottom" id="Run" />
+      <window_info anchor="bottom" id="Logcat" />
+      <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
+      <window_info anchor="bottom" id="TODO" />
+      <window_info anchor="bottom" id="Android Profiler" />
+      <window_info anchor="bottom" id="Debug" />
+      <window_info anchor="bottom" id="Terminal" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Build" visible="true" weight="0.33054394" />
+      <window_info anchor="right" id="Device File Explorer" side_tool="true" />
+      <window_info anchor="right" id="Capture Analysis" />
+      <window_info anchor="right" id="Gradle" />
+      <window_info anchor="right" id="Theme Preview" />
+      <window_info anchor="right" id="Palette&#9;" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <ignored-roots>
-      <path value="$PROJECT_DIR$/.." />
-    </ignored-roots>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../gradle.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="22" lean-forward="true" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
   </component>
 </project>
