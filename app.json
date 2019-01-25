@@ -39,7 +39,8 @@
 			}
 		},
 		"android": {
-			"package": "com.nubeble.rowena"
+			"package": "com.nubeble.rowena",
+			"googleServicesFile": "./google-services.json"
 		}
 	}
 }

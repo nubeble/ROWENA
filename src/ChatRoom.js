@@ -232,12 +232,13 @@ export default class ChatRoom extends React.Component {
                         }}
                     />
                     {/*
-                    <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80} />
+                        <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80} />
                     */}
 
                     {
+                        // EJECT
                         // Platform.OS === 'android' ? <KeyboardSpacer /> : null
-                        <KeyboardSpacer />
+                        // <KeyboardSpacer />
                     }
                 </View>
 

@@ -20,10 +20,24 @@ export var Globals = {
     sendButtonMarginBottom: 14,
 
     // search bar text padding
-    // iPhone X: 4
-    // Tango: ?
-    // S7: 6
-    searchBarPaddingTop: 12 - parseInt(Dimensions.get('window').height / 100) // Galaxy S7: 640, Tango: 731, iphone X: 812
+    // iPhone X: 4, Tango: ?, S7: 8
+    searchBarPaddingTop:() => {
+        const height = Dimensions.get('window').height;
+
+        const param = height / 100;
+
+        switch (param) {
+            case 5: return 10;
+            case 6: return 8; // Galaxy S7: 640
+            case 7: return 6; // Tango: 731
+            case 8: return 4; // iphone X: 812
+            case 9: return 2;
+        }
+
+        if (param < 5) return 10;
+        if (param > 9) return 2;
+    },
+    
 
     
 

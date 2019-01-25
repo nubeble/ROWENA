@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "457192015889",
+    "firebase_url": "https://rowena-88cfd.firebaseio.com",
+    "project_id": "rowena-88cfd",
+    "storage_bucket": "rowena-88cfd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457192015889:android:f6b0efcfa2cede7a",
+        "android_client_info": {
+          "package_name": "com.nubeble.rowena"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "457192015889-q1vsv4v2aul7l4su3efonfejjgrq37h2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3eJ50NMKkz7kTVQJxZChQmrgQPXQ7vcM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

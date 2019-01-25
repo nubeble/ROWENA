@@ -258,7 +258,7 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop, fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop(), fontFamily: "SFProText-Semibold",
                                 color: "rgb(160, 160, 160)", textAlign: 'center' }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>

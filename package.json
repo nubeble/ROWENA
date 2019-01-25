@@ -11,6 +11,7 @@
   "dependencies": {
     "@google-cloud/storage": "^2.3.0",
     "autobind-decorator": "^2.2.1",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "crypto-js": "^3.1.9-1",
     "d3-ease": "^1.0.5",
     "exenv": "^1.2.2",
