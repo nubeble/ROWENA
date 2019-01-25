@@ -1,20 +1,20 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard
+    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView
 } from 'react-native';
-import { Constants } from "expo";
 import { Theme } from "./rnff/src/components";
-import { GiftedChat } from 'react-native-gifted-chat';
+import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
-import GLOBALS from './Globals';
+import { Globals } from "./Globals";
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
-const avatarHeight = (Constants.statusBarHeight + 8 + 34 + 8) * 0.5; // searchBar height
+const avatarHeight = Globals.searchBarHeight * 0.5;
 
 
 export default class ChatRoom extends React.Component {
@@ -24,7 +24,6 @@ export default class ChatRoom extends React.Component {
         messages: [],
         showAlert: false,
         onKeyboard: false,
-        bottomPosition: Dimensions.get('window').height,
         renderPost: false
     };
 
@@ -70,27 +69,20 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        this.setState({
-            onKeyboard: true,
-            bottomPosition: Dimensions.get('window').height - e.endCoordinates.height
-            // bottomPosition: Dimensions.get('window').height - e.endCoordinates.height - (Dimensions.get('window').height * 0.06) // margin bottom
-        });
+        if (!this.state.onKeyboard) this.setState({ onKeyboard: true });
     }
 
     @autobind
-    _keyboardDidHide() {
-        this.setState({
-            onKeyboard: false,
-            bottomPosition: Dimensions.get('window').height
-        });
+    _keyboardDidHide(e) {
+        if (this.state.onKeyboard) this.setState({ onKeyboard: false });
     }
 
     get user() {
         // Return our name and our UID for GiftedChat to parse
         return {
-            // name: this.props.navigation.state.params.name,
-            // uid: Firebase.uid()
-            _id: Firebase.uid()
+            _id: Firebase.uid(),
+            name: Firebase.user().name,
+            avatar: Firebase.user().photoUrl
         };
     }
 
@@ -98,15 +90,22 @@ export default class ChatRoom extends React.Component {
         const postAvailable = this.state.messages.length > 1 ? false : true;
 
         const top1 = (Dimensions.get('window').height - postHeight) / 2;
-        const top2 = (this.state.bottomPosition - postHeight) / 2;
+        const top2 = Globals.searchBarHeight;
         const postTop = this.state.onKeyboard ? top2 : top1;
 
         const item = this.props.navigation.state.params.item;
-        const index = this.props.navigation.state.params.index;
+        // const index = this.props.navigation.state.params.index;
         const imageUri = item.users[1].picture;
+
+        /*
+        const imageWidth1 = postHeight * 0.7;
+        const imageWidth2 = postHeight * 0.5;
+        const imageWidth = this.state.onKeyboard ? imageWidth2 : imageWidth1;
+        */
         const imageWidth = postHeight * 0.7;
+
         const name = item.users[1].name;
-        const text2 = 'Send a message before your battery dies.';
+        // const text2 = 'Send a message before your battery dies.';
 
 
         return (
@@ -161,33 +160,91 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <GiftedChat
-                    user={this.user}
-                    messages={this.state.messages}
-                    onSend={async (messages) => await Firebase.sendMessages(this.state.id, messages, Firebase.uid())}
-                    onPressAvatar={async () => await this.openPost()}
-                    listViewProps={{
-                        scrollEventThrottle: 400,
-                        onScroll: ({ nativeEvent }) => {
-                            // console.log('nativeEvent', nativeEvent);
-                            if (this.isCloseToTop(nativeEvent)) {
-                                console.log('close to top');
+                <View style={{ flex: 1 }} >
+                    <GiftedChat
+                        // bottomOffset={56}
+                        minInputToolbarHeight={56}
+                        // minComposerHeight={56}
+                        // maxComposerHeight={56}
 
-                                if (!this.onLoading) {
-                                    this.onLoading = true;
+                        alwaysShowSend={true}
+                        // isAnimated={true}
 
-                                    this.loadMore();
+                        // forceGetKeyboardHeight={Platform.OS === 'android' && Platform.Version < 21}
+
+                        messages={this.state.messages}
+                        placeholder={'Write a message'}
+                        placeholderTextColor={Theme.color.placeholder}
+                        user={this.user}
+                        onSend={async (messages) => await Firebase.sendMessages(this.state.id, messages, Firebase.uid())}
+                        onPressAvatar={async () => await this.openPost()}
+
+                        textInputProps={{
+                            // multiline: false,
+                            style: {
+                                width: '86%',
+                                height: 56,
+                                fontSize: 16,
+                                fontFamily: "SFProText-Regular",
+                                color: "white",
+
+                                backgroundColor: Theme.color.background,
+                                paddingTop: 6, // ToDo: not working in ios
+                                // paddingBottom: 20,
+                                paddingLeft: 16,
+                                paddingRight: 16
+                            },
+                            selectionColor: Theme.color.selection,
+                            keyboardAppearance: 'dark',
+                            underlineColorAndroid: "transparent",
+                            autoCorrect: false,
+                            onFocus: () => {
+                                this.setState({ onKeyboard: true });
+                            },
+                            onBlur: () => {
+                                this.setState({ onKeyboard: false });
+                            }
+                        }}
+                        renderSend={this.renderSend}
+                        renderInputToolbar={this.renderInputToolbar}
+                        // renderFooter={this.renderFooter}
+
+                        listViewProps={{
+                            scrollEventThrottle: 400,
+                            onScroll: ({ nativeEvent }) => {
+                                // console.log('nativeEvent', nativeEvent);
+                                if (this.isCloseToTop(nativeEvent)) {
+                                    console.log('close to top');
+
+                                    if (!this.onLoading) {
+                                        this.onLoading = true;
+
+                                        this.loadMore();
+                                    }
                                 }
                             }
-                        }
 
-                        /*
-                        onEndReached: this.onEndReached,
-                        onEndReachedThreshold: 100
-                        // onMomentumScrollBegin: this.onMomentumScrollBegin
-                        */
-                    }}
-                />
+                            /*
+                            onEndReached: this.onEndReached,
+                            onEndReachedThreshold: 100
+                            // onMomentumScrollBegin: this.onMomentumScrollBegin
+                            */
+                        }}
+                    />
+                    {/*
+                    <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80} />
+                    */}
+
+                    {
+                        // Platform.OS === 'android' ? <KeyboardSpacer /> : null
+                        <KeyboardSpacer />
+                    }
+                </View>
+
+                {
+                    !this.state.onKeyboard &&
+                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: Theme.color.background }} />
+                }
 
                 {
                     // ToDo: apply animation
@@ -235,18 +292,17 @@ export default class ChatRoom extends React.Component {
                         await Firebase.deleteChatRoom(Firebase.uid(), item.id);
 
                         // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
-
                         this.props.navigation.navigate('chatMain', { roomId: item.id });
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: GLOBALS.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-                    cancelButtonStyle={{ width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
             </View>
@@ -291,6 +347,34 @@ export default class ChatRoom extends React.Component {
 
         this.props.navigation.navigate('post', { post: post });
     }
+
+    renderSend(props) {
+        return (
+            <Send {...props} >
+                <View style={{
+                    backgroundColor: Theme.color.background,
+                    marginBottom: Globals.sendButtonMarginBottom
+                }}>
+                    <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
+                    {/*
+                    <Image source={require('../../assets/send.png')} resizeMode={'center'} />
+                    */}
+                </View>
+            </Send>
+        );
+    }
+
+    renderInputToolbar(props) {
+        return <InputToolbar {...props} containerStyle={{
+            backgroundColor: Theme.color.background,
+            borderTopColor: Theme.color.textInput
+            // borderTopWidth: 0
+        }} />
+    }
+
+    renderFooter(props) {
+        return <View style={{ height: 20, backgroundColor: 'red' }} />
+    }
 }
 
 const styles = StyleSheet.create({
@@ -299,7 +383,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'row',
         justifyContent: 'center',
@@ -309,7 +393,7 @@ const styles = StyleSheet.create({
         width: postWidth,
         height: postHeight,
         position: 'absolute',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center'
     },
     text1: {

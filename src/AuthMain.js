@@ -7,10 +7,12 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Firebase from './Firebase';
 import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
+import { Globals } from "./Globals";
+
 
 export default class AuthMain extends React.Component {
     state = {
-        showIndicator: false,
+        showFacebookLoader: false,
 
         /*
         email: '',
@@ -23,21 +25,24 @@ export default class AuthMain extends React.Component {
     }
 
     async continueWithFacebook() {
+        // ToDo: disable buttons
+
+        // show indicator
+        this.setState({ showFacebookLoader: true });
+
         const {
             type,
             token,
             expires,
             permissions,
             declinedPermissions,
-        } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542', { permissions: ['public_profile'] });
+        } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542',
+            {
+                permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'web'
+            });
 
         if (type === 'success') {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
-
-            // show indicator
-            this.setState({ showIndicator: true });
-
-            // ToDo: disable buttons
 
             try {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
@@ -50,12 +55,29 @@ export default class AuthMain extends React.Component {
 
                 // ToDo: error handling - messagebox (please try again)
             }
-
-            // ToDo: enable buttons
-
-            // close indicator
-            !this.isClosed && this.setState({ showIndicator: false });
         }
+
+        // close indicator
+        !this.isClosed && this.setState({ showFacebookLoader: false });
+
+        // ToDo: enable buttons
+    }
+
+    isStandaloneApp = () => {
+        if (Expo.Constants.appOwnership === 'expo') {
+            console.log('Expo ownership app');
+
+            if (Platform.OS === 'android') return true;
+
+            return false;
+
+        } else { // standalone
+            console.log('standalone app');
+
+            return true;
+        }
+
+        // return !(Platform.OS === 'ios' && Expo.Constants.appOwnership === 'expo');
     }
 
     signUpWithEmail() {
@@ -84,44 +106,52 @@ export default class AuthMain extends React.Component {
                 blurRadius={Platform.OS === "ios" ? 20 : 2}
             >
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
-                    <ActivityIndicator
-                        style={styles.activityIndicator}
-                        animating={this.state.showIndicator}
-                        size="large"
-                        color='grey'
-                    />
-
                     <View style={styles.logo}>
-
                         <Text style={{
                             // marginTop: 100,
                             // backgroundColor: 'rgba(0,0,0,0)',
                             padding: 50,
-                            fontFamily: "FriendlySchoolmatesRegular",
+                            fontFamily: "FriendlySchoolmates-Regular",
                             // fontFamily: "SansSerif",
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 42,
                             fontWeight: 'bold',
                             textAlign: 'center'
                         }}>ROWENA</Text>
-
                     </View>
 
                     <View style={styles.empty}>
                     </View>
 
                     <View style={styles.contents}>
-
                         <TouchableOpacity
-                            onPress={() => this.continueWithFacebook()}
+                            onPress={() => {
+                                setTimeout(() => {
+                                    this.continueWithFacebook();
+                                }, Globals.buttonTimeout);
+                            }}
                             style={styles.signUpWithFacebookButton}
                         >
                             <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
+
+                            {
+                                this.state.showFacebookLoader &&
+                                <ActivityIndicator
+                                    style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                    animating={true}
+                                    size="small"
+                                    color='rgba(0, 0, 0, 0.6)'
+                                />
+                            }
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => this.signUpWithEmail()}
+                            onPress={() => {
+                                setTimeout(() => {
+                                    this.signUpWithEmail();
+                                }, Globals.buttonTimeout);
+                            }}
                             style={styles.signUpWithEmailButton}
                         >
                             <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
@@ -129,7 +159,11 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            onPress={() => this.signUpWithMobile()}
+                            onPress={() => {
+                                setTimeout(() => {
+                                    this.signUpWithMobile();
+                                }, Globals.buttonTimeout);
+                            }}
                             style={styles.signUpWithMobileButton}
                         >
                             <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -321,10 +355,6 @@ const styles = StyleSheet.create({
 
         color: 'rgba(255, 255, 255, 0.8)',
         fontWeight: '100'
-    },
-    activityIndicator: {
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0, right: 0
     },
 
 

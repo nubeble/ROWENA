@@ -315,7 +315,7 @@ export default class PostModal extends React.Component {
                                     placeholderTextColor='rgb(160, 160, 160)'
                                     underlineColorAndroid="transparent"
                                     autoCorrect={false}
-                                    keyboardAppearance={'dark'} // Todo: what about android??
+                                    // keyboardAppearance={'dark'}
                                     onChangeText={(text) => this.onChangeText(text)}
                                 />
                                 <TouchableOpacity

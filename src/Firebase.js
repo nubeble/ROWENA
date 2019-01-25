@@ -24,7 +24,7 @@ export default class Firebase {
 
         Firebase.auth = firebase.auth();
         Firebase.firestore = firebase.firestore();
-        Firebase.firestore.settings({ timestampsInSnapshots: true });
+        Firebase.firestore.settings({ timestampsInSnapshots: true }); // Consider: remove
         Firebase.storage = firebase.storage();
         Firebase.database = firebase.database();
     }
@@ -92,6 +92,8 @@ export default class Firebase {
     }
 
     static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
+        const timestamp = Firebase.getTimestamp();
+
         const feed = {
             uid: userUid,
             placeId: placeId,
@@ -127,7 +129,7 @@ export default class Firebase {
             averageRating: 0.0, // 리뷰가 추가될 때마다 다시 계산해서 업데이트
 
             // timestamp: Date.now()
-            timestamp: Firebase.timestamp()
+            timestamp: timestamp
         };
 
         // 1. write feed first
@@ -205,13 +207,14 @@ export default class Firebase {
 
     static async addReview(placeId, feedId, userUid, comment, rating) {
         const id = Util.uid();
+        const timestamp = Firebase.getTimestamp();
 
         const review = {
             id: id,
             uid: userUid,
             rating: rating,
             comment: comment,
-            timestamp: Firebase.timestamp()
+            timestamp: timestamp
         };
 
         // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").add(review);
@@ -314,13 +317,14 @@ export default class Firebase {
 
     static async addReply(placeId, feedId, reviewId, userUid, message) {
         const id = Util.uid(); // reply id
+        const timestamp = Firebase.getTimestamp();
 
         const replyData = {
             reply: {
                 id: id,
                 uid: userUid,
                 comment: message,
-                timestamp: Firebase.timestamp()
+                timestamp: timestamp
             }
         };
 
@@ -380,10 +384,11 @@ export default class Firebase {
 
     static async createChatRoom(uid, users, placeId, feedId) {
         const id = Util.uid(); // create chat room id
+        const timestamp = Firebase.timestamp();
 
         const data = {
             id: id,
-            timestamp: Firebase.timestamp(), // lastest timestamp
+            timestamp: timestamp, // lastest timestamp
             contents: '', // lastest message
             users: users,
             placeId: placeId,
@@ -395,8 +400,6 @@ export default class Firebase {
         // --
         // add a system message
         const text = "Well you've come this far, might as well say something to her.";
-        const timestamp = Firebase.timestamp();
-
         const message = {
             text,
             timestamp: timestamp,
@@ -553,7 +556,11 @@ export default class Firebase {
         return data;
     }
 
-    static timestamp() {
+    static getTimestamp() {
+        return Date.now();
+    }
+
+    static timestamp() { // as a token that you use when inserting data into Realtime Database
         // return Firebase.database.ServerValue.TIMESTAMP;
         return firebase.database.ServerValue.TIMESTAMP;
     }
@@ -561,6 +568,9 @@ export default class Firebase {
     static async sendMessages(id, messages, uid) {
         for (let i = 0; i < messages.length; i++) {
             const { text, user } = messages[i];
+
+            if (!text || text.length === 0) continue;
+
             const timestamp = Firebase.timestamp();
 
             const pushData = {

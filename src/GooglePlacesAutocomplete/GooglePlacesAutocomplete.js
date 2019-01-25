@@ -19,6 +19,7 @@ import Qs from 'qs';
 // import debounce from 'lodash.debounce';
 import { debounce } from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Theme } from '../rnff/src/components';
 
 const WINDOW = Dimensions.get('window');
 
@@ -97,7 +98,8 @@ const defaultStyles = {
 	},
 
 	currentLocationText: {
-		color: 'rgb(234, 150, 24)'
+		// color: 'rgb(234, 150, 24)'
+		color: Theme.color.selection
 	}
 };
 
@@ -778,7 +780,7 @@ export default class GooglePlacesAutocomplete extends Component {
 							keyboardAppearance={'dark'}
 
 
-							selectionColor='rgb(234, 150, 24)'
+							selectionColor={Theme.color.selection}
 							// tintColor='rgb(234, 150, 24)'
 							autoCapitalize="none"
 							autoCorrect={false} // ToDo: NOT work in Android

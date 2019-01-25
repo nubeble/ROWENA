@@ -14,6 +14,7 @@ import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
+import { Globals } from "./Globals";
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -31,6 +32,7 @@ type InjectedProps = {
 
 const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
+
 
 
 
@@ -99,8 +101,8 @@ export default class Intro extends React.Component {
     };
 
     componentDidMount() {
-        // console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
-        // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.getPlaceLength();
     }
@@ -256,7 +258,7 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '4%', fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop, fontFamily: "SFProText-Semibold",
                                 color: "rgb(160, 160, 160)", textAlign: 'center' }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
@@ -280,7 +282,11 @@ export default class Intro extends React.Component {
                     renderItem={({ item, index }) => {
                         return (
                             <TouchableOpacity
-                                onPress={() => this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length })}
+                                onPress={() => {
+                                    setTimeout(() => {
+                                        this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length });
+                                    }, Globals.buttonTimeout);
+                                }}
                             >
                                 <View style={styles.pictureContainer}>
                                     <Image
@@ -352,6 +358,8 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
+
+                                {/*
                                 <View style={styles.view_middle}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
                                         <SmartImage
@@ -379,6 +387,8 @@ export default class Intro extends React.Component {
                                         />
                                     </TouchableOpacity>
                                 </View>
+                                */}
+
                                 <View style={styles.view_rear}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('8')}>
                                         <SmartImage
@@ -400,7 +410,8 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
+                                            uri={'https://www.thedailypost.kr/wp-content/uploads/2017/02/H52Am.jpg'}
+                                            // uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -409,7 +420,7 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://image.cloud.sbs.co.kr/smr/clip/201806/15/Xj56w3N3h7jEMCD5cyJZ4f_640.jpg'}
+                                            uri={'https://i.pinimg.com/originals/57/3a/78/573a78543e84804c94e147d3fda9a9e6.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -418,7 +429,7 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://www.thedailypost.kr/wp-content/uploads/2017/02/H52Am.jpg'}
+                                            uri={'https://i.pinimg.com/originals/15/b6/02/15b602cbde656096134b7dc2c6ba9ef2.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -427,7 +438,7 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://kstatic.inven.co.kr/upload/2017/07/05/bbs/i13856102909.jpg'}
+                                            uri={'https://i.pinimg.com/originals/a3/3f/39/a33f399cfeb64dd122593696f500acfa.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -469,8 +480,6 @@ export default class Intro extends React.Component {
     leaveEditing() {
         // alert('leaveEditing()');
     }
-
-
 }
 
 const styles = StyleSheet.create({
@@ -482,7 +491,7 @@ const styles = StyleSheet.create({
 
     //// SEARCH BAR ////
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

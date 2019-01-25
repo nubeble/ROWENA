@@ -21,7 +21,7 @@ import { observer } from "mobx-react/native";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
 import AwesomeAlert from 'react-native-awesome-alerts';
-import GLOBALS from './Globals';
+import { Globals } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 
 
@@ -216,7 +216,7 @@ export default class Detail extends React.Component {
                             color='grey'
                         />
                         :
-                        //                     this.state.renderList &&
+                        // this.state.renderList &&
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -280,9 +280,11 @@ export default class Detail extends React.Component {
                                         <View style={styles.mapContainer}>
                                             <TouchableOpacity activeOpacity={0.5}
                                                 onPress={() => {
-                                                    this.setState({ isNavigating: true });
-
-                                                    this.props.navigation.navigate("map", { post: post });
+                                                    setTimeout(() => {
+                                                        this.setState({ isNavigating: true }, () => {
+                                                            this.props.navigation.navigate("map", { post: post });
+                                                        });
+                                                    }, 300);
                                                 }}
                                             >
                                                 <View style={styles.mapView}>
@@ -417,10 +419,11 @@ export default class Detail extends React.Component {
                                     backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
-                                placeholderTextColor='rgb(160, 160, 160)'
+                                placeholderTextColor={Theme.color.placeholder}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'} // Consider: what about android??
+                                keyboardAppearance={'dark'}
+                                selectionColor={Theme.color.selection}
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
@@ -440,7 +443,7 @@ export default class Detail extends React.Component {
                                 }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color="rgb(62, 165, 255)" size={24} />
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
                             </TouchableOpacity>
                         </View>
                     )
@@ -472,14 +475,13 @@ export default class Detail extends React.Component {
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
-
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: GLOBALS.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-                    cancelButtonStyle={{ width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginLeft: GLOBALS.buttonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
@@ -783,10 +785,10 @@ export default class Detail extends React.Component {
         // console.log("Rating is: " + rating);
 
         setTimeout(() => {
-            this.setState({ isNavigating: true });
-
-            const { post, profile } = this.props.navigation.state.params;
-            this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
+            this.setState({ isNavigating: true }, () => {
+                const { post, profile } = this.props.navigation.state.params;
+                this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
+            });
         }, 500); // 0.5 sec
     }
 
@@ -809,7 +811,7 @@ export default class Detail extends React.Component {
             const chartHeight = Theme.spacing.tiny + 140 + 10;
             const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
 
-            const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+            const searchBarHeight = Globals.searchBarHeight;
 
             const borderWidth = 1;
 
@@ -833,7 +835,7 @@ export default class Detail extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex]; // OK
         const keyboardHeight = e.endCoordinates.height; // OK
-        const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8); // OK
+        const searchBarHeight = Globals.searchBarHeight; // OK
 
         const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
 
@@ -852,7 +854,7 @@ export default class Detail extends React.Component {
             const chartHeight = Theme.spacing.tiny + 140 + 10;
             const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
 
-            const searchBarHeight = (Constants.statusBarHeight + 8 + 34 + 8);
+            const searchBarHeight = Globals.searchBarHeight;
 
             const borderWidth = 1;
 
@@ -971,9 +973,9 @@ export default class Detail extends React.Component {
         const room = await Firebase.findChatRoom(Firebase.uid(), post.id);
 
         if (room) {
-            this.setState({ isNavigating: true });
-
-            this.props.navigation.navigate('room', { item: room });
+            this.setState({ isNavigating: true }, () => {
+                this.props.navigation.navigate('room', { item: room });
+            });
         } else {
             // create new chat room
             // --
@@ -981,8 +983,8 @@ export default class Detail extends React.Component {
 
             const user1 = {
                 uid: uid,
-                // name: Firebase.user().name ? Firebase.user().name : 'name',
-                // picture: Firebase.user().photoUrl ? Firebase.user().photoUrl : 'uri',
+                name: Firebase.user().name,
+                picture: Firebase.user().photoUrl,
             };
 
             const user2 = {
@@ -999,9 +1001,9 @@ export default class Detail extends React.Component {
             const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id);
             // --
 
-            this.setState({ isNavigating: true });
-
-            this.props.navigation.navigate('room', { item: item });
+            this.setState({ isNavigating: true }, () => {
+                this.props.navigation.navigate('room', { item: item });
+            });
         }
     }
 
@@ -1073,7 +1075,7 @@ export default class Detail extends React.Component {
         this.alertCallback = callback;
     }
 
-    removeReply(index) {
+    async removeReply(index) {
         // show dialog
         this.showAlert('Are you sure you want to delete this reply?', async () => {
             const { post, profile } = this.props.navigation.state.params;
@@ -1103,7 +1105,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'

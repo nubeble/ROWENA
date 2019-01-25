@@ -17,7 +17,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
 // import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
-import Swiper from './Swiper'
+import Swiper from './Swiper';
+import { Globals } from "./Globals";
 
 /*
 const AnimatedText = Animated.createAnimatedComponent(Text);
@@ -173,7 +174,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             */}
 
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: '4%', fontFamily: "SFProText-Semibold",
+                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop, fontFamily: "SFProText-Semibold",
                                 color: Theme.color.text2, textAlign: 'center' }}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
         top: 0
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

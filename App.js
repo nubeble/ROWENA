@@ -247,6 +247,7 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
 	console.log('state', navigation.state);
 	*/
 
+    // EJECT
     if (Platform.OS === "ios") return;
 
     const introStack = navigation.state.routes[0];
@@ -437,6 +438,7 @@ class ChatRootStackNavigatorWrapper extends React.Component {
 ChatRootStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
     // console.log('navigation.state.routes', navigation.state.routes);
 
+    // EJECT
     if (Platform.OS === "ios") return;
 
     const chatStack = navigation.state.routes[0];

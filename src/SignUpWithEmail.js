@@ -1,6 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView,
-    Keyboard, Dimensions, Platform, StatusBar } from 'react-native';
+import {
+    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, KeyboardAvoidingView,
+    Keyboard, Dimensions, Platform, StatusBar
+} from 'react-native';
 import { Header } from 'react-navigation';
 import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
@@ -10,6 +12,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Firebase from './Firebase'
 import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
+import { Globals } from "./Globals";
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -21,7 +24,8 @@ export default class SignUpWithEmail extends React.Component {
         emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
         pwIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
-        showIndicator: false,
+        // showIndicator: false,
+        showSignUpLoader: false,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -155,7 +159,7 @@ export default class SignUpWithEmail extends React.Component {
         let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         if (reg.test(String(text).toLowerCase()) === false) {
-            console.log('Please enter a valid email address.');
+            // console.log('Please enter a valid email address.');
 
             // show icon
             this.setState({ emailIcon: 0 });
@@ -169,7 +173,7 @@ export default class SignUpWithEmail extends React.Component {
 
     moveToPassword(text) {
         if (this.state.emailIcon !== 2) {
-            console.log('Please enter a valid email address.');
+            // console.log('Please enter a valid email address.');
 
             // show message box
             this.showNotification('Please enter a valid email address.');
@@ -273,7 +277,7 @@ export default class SignUpWithEmail extends React.Component {
 
     signUp() {
         if (this.state.emailIcon !== 2) {
-            console.log('Please enter a valid email address.');
+            // console.log('Please enter a valid email address.');
 
             // show message box
             this.showNotification('Please enter a valid email address.');
@@ -309,7 +313,8 @@ export default class SignUpWithEmail extends React.Component {
 
     async processSignUp() {
         // show indicator
-        this.setState({ showIndicator: true });
+        // this.setState({ showIndicator: true });
+        this.setState({ showSignUpLoader: true });
 
         try {
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
@@ -324,12 +329,13 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         // close indicator
-        !this.isClosed && this.setState({ showIndicator: false });
+        // !this.isClosed && this.setState({ showIndicator: false });
+        !this.isClosed && this.setState({ showSignUpLoader: false });
     }
 
     render() {
         // const { goBack } = this.props.navigation;
-        const showIndicator = this.state.showIndicator;
+        // const showIndicator = this.state.showIndicator;
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
         const notificationStyle = {
@@ -364,19 +370,21 @@ export default class SignUpWithEmail extends React.Component {
                         >
                             <Text style={styles.notificationText}>{this.state.notification}</Text>
                             <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
-                    >
+                                style={styles.notificationButton}
+                                onPress={() => this.hideNotification()}
+                            >
                                 <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                             </TouchableOpacity>
                         </Animated.View>
 
+                        {/*
                         <ActivityIndicator
                             style={styles.activityIndicator}
                             animating={showIndicator}
                             size="large"
                             color='grey'
                         />
+                        */}
 
                         {/*
                         <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }} />
@@ -418,7 +426,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
-                                    keyboardAppearance={'dark'}
+                                    // keyboardAppearance={'dark'}
                                 />
                                 {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -442,7 +450,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
-                                    keyboardAppearance={'dark'}
+                                    // keyboardAppearance={'dark'}
                                 />
                                 {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -457,6 +465,17 @@ export default class SignUpWithEmail extends React.Component {
                         <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomPosition - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                             <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
+
+
+                                {
+                                    this.state.showSignUpLoader &&
+                                    <ActivityIndicator
+                                        style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                        animating={true}
+                                        size="small"
+                                        color='rgba(0, 0, 0, 0.6)'
+                                    />
+                                }
                             </TouchableOpacity>
                         </KeyboardAvoidingView>
 
@@ -473,7 +492,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         // paddingBottom: 8 + 4, // paddingBottom from searchBar
         paddingBottom: 8, // paddingBottom from searchBar
         justifyContent: 'flex-end',

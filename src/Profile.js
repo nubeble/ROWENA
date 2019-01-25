@@ -14,6 +14,7 @@ import Util from "./Util";
 import type { FeedEntry } from "./rnff/src/components/Model";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import { Theme } from "./rnff/src/components";
+import { Globals } from "./Globals";
 
 type InjectedProps = {
     // feedStore: FeedStore,
@@ -132,28 +133,28 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                             <TouchableOpacity onPress={() => this.uploadPicture(0)}>
                                 <SmartImage
                                     style={styles.ad}
-                                    uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
                                 />
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => console.log('onPress')}>
                                 <SmartImage
                                     style={styles.ad}
-                                    uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
                                 />
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => console.log('onPress')}>
                                 <SmartImage
                                     style={styles.ad}
-                                    uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
                                 />
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={() => console.log('onPress')}>
                                 <SmartImage
                                     style={styles.ad}
-                                    uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
+                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
                                 />
                             </TouchableOpacity>
 
@@ -279,10 +280,19 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const age = 20;
         const height = 163;
         const weight = 48;
-        const image1Uri = 'http://tenasia.hankyung.com/webwp_kr/wp-content/uploads/2017/02/2017022722084954500-540x360.jpg'; // ToDo: use image picker
-        const image2Uri = null;
-        const image3Uri = null;
-        const image4Uri = null;
+
+        // ToDo: use image picker
+        const image1Uri = 'https://mblogthumb-phinf.pstatic.net/MjAxODA2MjJfMjQx/MDAxNTI5NjM4NTIwMjE2.oAJHnFZfJo4lfoD2_8FBs-dr4_JAWaoWW4BdFi9rEh0g.RwpUpZ4lYgYbvQRKyNVQdU7TGKtLcCnfuOcUbNaPR8Ig.JPEG.thtlaej/DdS1RXJV4AIDyQZ.jpg?type=w800';
+        const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
+        const image3Uri = 'https://3.bp.blogspot.com/-IlmY1gyVmQI/W3doZ9X9oAI/AAAAAAAAERQ/avgNK2r8A4Ms710A4s1Vew-8Zwz7eU4ZQCLcBGAs/s1600/ep10-1.gif';
+        const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';
+        /*
+        const image1Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';
+        image2Uri = null;
+        image3Uri = null;
+        image4Uri = null;
+        */
+
         const note = 'note';
         
         await Firebase.createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note);
@@ -456,7 +466,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Constants.statusBarHeight + 8 + 34 + 8,
+        height: Globals.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'
