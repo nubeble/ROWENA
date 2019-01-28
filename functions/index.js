@@ -10,25 +10,6 @@ const gcs = new Storage({
 */
 const bucketName = 'rowena-88cfd.appspot.com';
 
-const path = require('path');
-const os = require('os');
-const fs = require('fs');
-const spawn = require('child-process-promise').spawn;
-const cors = require("cors");
-const express = require("express");
-const fileUploader = require("./fileUploader");
-const api = express().use(cors({ origin: true }));
-fileUploader("/images", api);
-
-
-// // Create and Deploy Your First Cloud Functions
-// // https://firebase.google.com/docs/functions/write-firebase-functions
-/*
-exports.helloWorld = functions.https.onRequest((request, response) => {
-    response.send("Hello from Firebase!");
-});
-*/
-
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
 var serviceAccount = require("./rowena-88cfd-firebase-adminsdk-nfrft-dbcfc156b6.json");
@@ -41,8 +22,20 @@ admin.initializeApp({
 
 admin.firestore().settings({ timestampsInSnapshots: true });
 
+const Busboy = require('busboy');
+const path = require('path');
+const os = require('os');
+const fs = require('fs');
+const spawn = require('child-process-promise').spawn;
+const cors = require("cors");
+const express = require("express");
+const fileUploader = require("./fileUploader");
+const api = express().use(cors({ origin: true }));
 
-/*
+fileUploader("/images", api);
+
+
+
 // Take the text parameter passed to this HTTP endpoint and insert it into the
 // Realtime Database under the path /messages/:pushId/original
 exports.addMessage = functions.https.onRequest((req, res) => {
@@ -70,39 +63,35 @@ exports.makeUppercase = functions.database.ref('/messages/{pushId}/original').on
     // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
     return snapshot.ref.parent.child('uppercase').set(uppercase);
 });
-*/
-
 
 /*
 {
-  bucket: 'rowena-88cfd.appspot.com',
-  contentDisposition: 'inline; filename*=utf-8\'\'498b702a885c1dd2c0fc435268dd7ffd.jpg',
-  contentType: 'image/jpeg',
-  crc32c: '60HmDg==',
-  etag: 'CPjgz6jRzt4CEAE=',
-  generation: '1542018166943864',
-  id: 'rowena-88cfd.appspot.com/images/498b702a885c1dd2c0fc435268dd7ffd.jpg/1542018166943864',
-  kind: 'storage#object',
-  md5Hash: 'qo/gdEuwwtolW6qRNBKDbA==',
-  mediaLink: 'https://www.googleapis.com/download/storage/v1/b/rowena-88cfd.appspot.com/o/images%2F498b702a885c1dd2c0fc435268dd7ffd.jpg?generation=1542018166943864&alt=media',
-  metadata: { firebaseStorageDownloadTokens: '75f1ea0b-69f6-4789-be7b-b1e08cca7cd4' },
-  metageneration: '1',
-  name: 'images/498b702a885c1dd2c0fc435268dd7ffd.jpg',
-  selfLink: 'https://www.googleapis.com/storage/v1/b/rowena-88cfd.appspot.com/o/images%2F498b702a885c1dd2c0fc435268dd7ffd.jpg',
-  size: '211954',
-  storageClass: 'STANDARD',
-  timeCreated: '2018-11-12T10:22:46.943Z',
-  timeStorageClassUpdated: '2018-11-12T10:22:46.943Z',
-  updated: '2018-11-12T10:22:46.943Z'
+    bucket: 'rowena-88cfd.appspot.com',
+    contentDisposition: 'inline; filename*=utf-8\'\'498b702a885c1dd2c0fc435268dd7ffd.jpg',
+    contentType: 'image/jpeg',
+    crc32c: '60HmDg==',
+    etag: 'CPjgz6jRzt4CEAE=',
+    generation: '1542018166943864',
+    id: 'rowena-88cfd.appspot.com/images/498b702a885c1dd2c0fc435268dd7ffd.jpg/1542018166943864',
+    kind: 'storage#object',
+    md5Hash: 'qo/gdEuwwtolW6qRNBKDbA==',
+    mediaLink: 'https://www.googleapis.com/download/storage/v1/b/rowena-88cfd.appspot.com/o/images%2F498b702a885c1dd2c0fc435268dd7ffd.jpg?generation=1542018166943864&alt=media',
+    metadata: { firebaseStorageDownloadTokens: '75f1ea0b-69f6-4789-be7b-b1e08cca7cd4' },
+    metageneration: '1',
+    name: 'images/498b702a885c1dd2c0fc435268dd7ffd.jpg',
+    selfLink: 'https://www.googleapis.com/storage/v1/b/rowena-88cfd.appspot.com/o/images%2F498b702a885c1dd2c0fc435268dd7ffd.jpg',
+    size: '211954',
+    storageClass: 'STANDARD',
+    timeCreated: '2018-11-12T10:22:46.943Z',
+    timeStorageClassUpdated: '2018-11-12T10:22:46.943Z',
+    updated: '2018-11-12T10:22:46.943Z'
 }
 */
 /*
-exports.onFileCreate = functions.storage.object().onFinalize((event) => {
-    console.log(event);
-
-    const bucket = event.bucket;
-    const contentType = event.contentType;
-    const filePath = event.name; // folder included
+exports.onFileCreate = functions.storage.object().onFinalize((object, context) => {
+    const bucket = object.bucket;
+    const contentType = object.contentType;
+    const filePath = object.name; // folder included
     const fileName = filePath.split('/').pop();
     // const fileDir = path.dirname(filePath); // folder path
 
@@ -144,12 +133,14 @@ exports.onFileCreate = functions.storage.object().onFinalize((event) => {
 */
 
 /*
-exports.onFileDelete = functions.storage.object().onDelete((event) => {
+exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
     console.log(event);
 
     return;
 });
 */
+
+
 
 api.post("/images", function (req, response, next) {
     console.log('Image Upload', req.field);
@@ -161,7 +152,7 @@ api.post("/images", function (req, response, next) {
 
         uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
             console.log('metadata', metadata);
-    
+
             // get download URL
             storage.bucket(bucketName).file(fileDir).getSignedUrl({
                 action: 'read',
@@ -170,7 +161,7 @@ api.post("/images", function (req, response, next) {
             }).then((signedUrl) => {
                 let url = signedUrl[0];
                 // console.log('getSignedUrl', url);
-    
+
                 // update database - write command in realtime database
                 admin.database().ref('/users').push({
                     command: 'addPicture',
@@ -185,7 +176,7 @@ api.post("/images", function (req, response, next) {
                         downloadUrl: url
                     };
                     response.status(200).send(result);
-    
+
                     next();
                 });
             });
@@ -375,7 +366,255 @@ const makeData = (index, url) => {
         case '5': key = 'six'; break;
     }
 
-    let data = { [`pictures.${key}.uri`] : url };
+    let data = { [`pictures.${key}.uri`]: url };
 
     return data;
+}
+
+exports.setToken = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        const fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            // console.log('Field [' + fieldname + ']: value: ' + val);
+
+            fields[fieldname] = val;
+        });
+
+        busboy.on("finish", () => {
+
+            /*
+            const data = {
+                token: fields.token,
+                uid: fields.uid,
+                name: fields.name
+            };
+            */
+
+            console.log('Done parsing form.', fields);
+
+            // Push the token info into the Realtime Database using the Firebase Admin SDK.
+            /*
+            return admin.database().ref('/tokens').push(data).then((snapshot) => {
+                // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
+                return res.redirect(303, snapshot.ref.toString());
+            });
+            */
+
+            /*
+            // return admin.database().ref('tokens').child(data.uid).set(data).then((snapshot) => {
+            return admin.database().ref('/tokens/' + data.uid).set(data).then((snapshot) => {
+                // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
+                return res.redirect(303, snapshot.ref.toString());
+            });
+            */
+
+
+            return admin.firestore().collection('tokens').doc(fields.uid).set(fields).then(() => {
+                console.log('Done saving to database.');
+
+                res.status(200).send(fields);
+            });
+        });
+
+        // req.pipe(busboy); // ToDo: not working!
+        busboy.end(req.rawBody);
+
+
+        /*
+        res.writeHead(303, { Connection: 'close', Location: '/' });
+        res.end();
+        */
+
+        // res.status(200).send(fields);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+        res.status(405).end(error);
+    }
+});
+
+exports.sendPushNotification = functions.https.onRequest((req, res) => {
+    // ToDo:
+    const target;
+
+});
+
+
+const { Expo } = require('expo-server-sdk');
+const async = require('asyncawait/async');
+const await = require('asyncawait/await');
+
+// Create a new Expo SDK client
+let expo = new Expo();
+
+const _sendNotification = (somePushTokens) => {
+
+    // Create the messages that you want to send to clients
+    let messages = [];
+
+    for (let pushToken of somePushTokens) {
+        // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
+
+        // Check that all your push tokens appear to be valid Expo push tokens
+        if (!Expo.isExpoPushToken(pushToken)) {
+            console.error(`Push token ${pushToken} is not a valid Expo push token`);
+            continue;
+        }
+
+        // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
+        messages.push({
+            to: pushToken,
+            sound: 'default',
+            body: 'This is a test notification',
+            data: { withSome: 'data' },
+        })
+    }
+
+
+    // The Expo push notification service accepts batches of notifications so
+    // that you don't need to send 1000 requests to send 1000 notifications. We
+    // recommend you batch your notifications to reduce the number of requests
+    // and to compress them (notifications with similar content will get
+    // compressed).
+    let chunks = expo.chunkPushNotifications(messages);
+
+    let tickets = [];
+
+    /*
+    (async () => {
+        // Send the chunks to the Expo push notification service. There are
+        // different strategies you could use. A simple one is to send one chunk at a
+        // time, which nicely spreads the load out over time:
+        for (let chunk of chunks) {
+            try {
+                let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
+
+                console.log(ticketChunk);
+
+                tickets.push(...ticketChunk);
+
+                // NOTE: If a ticket contains an error code in ticket.details.error, you
+                // must handle it appropriately. The error codes are listed in the Expo
+                // documentation:
+                // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    })();
+    */
+    (async(function _sendNotification() {
+        // Send the chunks to the Expo push notification service. There are
+        // different strategies you could use. A simple one is to send one chunk at a
+        // time, which nicely spreads the load out over time:
+        for (let chunk of chunks) {
+            try {
+                let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
+
+                console.log(ticketChunk);
+
+                tickets.push(...ticketChunk);
+
+                // NOTE: If a ticket contains an error code in ticket.details.error, you
+                // must handle it appropriately. The error codes are listed in the Expo
+                // documentation:
+                // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }))();
+
+
+
+
+    /* ... */
+
+    // Later, after the Expo push notification service has delivered the
+    // notifications to Apple or Google (usually quickly, but allow the the service
+    // up to 30 minutes when under load), a "receipt" for each notification is
+    // created. The receipts will be available for at least a day; stale receipts
+    // are deleted.
+    //
+    // The ID of each receipt is sent back in the response "ticket" for each
+    // notification. In summary, sending a notification produces a ticket, which
+    // contains a receipt ID you later use to get the receipt.
+    //
+    // The receipts may contain error codes to which you must respond. In
+    // particular, Apple or Google may block apps that continue to send
+    // notifications to devices that have blocked notifications or have uninstalled
+    // your app. Expo does not control this policy and sends back the feedback from
+    // Apple and Google so you can handle it appropriately.
+    let receiptIds = [];
+    for (let ticket of tickets) {
+        // NOTE: Not all tickets have IDs; for example, tickets for notifications
+        // that could not be enqueued will have error information and no receipt ID.
+        if (ticket.id) {
+            receiptIds.push(ticket.id);
+        }
+    }
+
+    let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
+    /*
+    (async () => {
+        // Like sending notifications, there are different strategies you could use
+        // to retrieve batches of receipts from the Expo service.
+        for (let chunk of receiptIdChunks) {
+            try {
+                let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
+                console.log(receipts);
+
+                // The receipts specify whether Apple or Google successfully received the
+                // notification and information about an error, if one occurred.
+                for (let receipt of receipts) {
+                    if (receipt.status === 'ok') {
+                        continue;
+                    } else if (receipt.status === 'error') {
+                        console.error(`There was an error sending a notification: ${receipt.message}`);
+                        if (receipt.details && receipt.details.error) {
+                            // The error codes are listed in the Expo documentation:
+                            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+                            // You must handle the errors appropriately.
+                            console.error(`The error code is ${receipt.details.error}`);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    })();
+    */
+    (async(function _getReceipts() {
+        // Like sending notifications, there are different strategies you could use
+        // to retrieve batches of receipts from the Expo service.
+        for (let chunk of receiptIdChunks) {
+            try {
+                let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
+                console.log(receipts);
+
+                // The receipts specify whether Apple or Google successfully received the
+                // notification and information about an error, if one occurred.
+                for (let receipt of receipts) {
+                    if (receipt.status === 'ok') {
+                        continue;
+                    } else if (receipt.status === 'error') {
+                        console.error(`There was an error sending a notification: ${receipt.message}`);
+                        if (receipt.details && receipt.details.error) {
+                            // The error codes are listed in the Expo documentation:
+                            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+                            // You must handle the errors appropriately.
+                            console.error(`The error code is ${receipt.details.error}`);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }))();
+
 }

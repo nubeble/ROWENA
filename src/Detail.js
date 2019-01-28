@@ -38,7 +38,7 @@ export default class Detail extends React.Component {
 
     state = {
         rating: 0,
-        isNavigating: false,
+        // isNavigating: false,
         renderList: false,
         isOwner: false,
 
@@ -80,11 +80,6 @@ export default class Detail extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-        // this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
-        // this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
-
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post } = this.props.navigation.state.params;
         this.init(post);
@@ -102,30 +97,11 @@ export default class Detail extends React.Component {
         }, 500);
     }
 
-    @autobind
-    onFocus() {
-        console.log('Detail::onFocus');
-
-        if (this.state.isNavigating) this.setState({ isNavigating: false });
-
-        // this.isFocused = true;
-    }
-
-    @autobind
-    onBlur() {
-        // this.isFocused = false;
-    }
-
     componentWillUnmount() {
         console.log('Detail::componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-        // this.keyboardDidWillListener.remove();
-        // this.keyboardWillShowListener.remove();
-
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
 
         this.isClosed = true;
     }
@@ -281,9 +257,12 @@ export default class Detail extends React.Component {
                                             <TouchableOpacity activeOpacity={0.5}
                                                 onPress={() => {
                                                     setTimeout(() => {
+                                                        /*
                                                         this.setState({ isNavigating: true }, () => {
                                                             this.props.navigation.navigate("map", { post: post });
                                                         });
+                                                        */
+                                                        this.props.navigation.navigate("map", { post: post });
                                                     }, 300);
                                                 }}
                                             >
@@ -355,12 +334,14 @@ export default class Detail extends React.Component {
                                     </View>
                                 )}
 
-                                ListFooterComponent={
-                                    this.state.isNavigating && (
-                                        <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
-                                        />
-                                    )
-                                }
+                            /*
+                            ListFooterComponent={
+                                this.state.isNavigating && (
+                                    <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
+                                    />
+                                )
+                            }
+                            */
                             // scrollEventThrottle={1}
                             // columnWrapperStyle={undefined}
                             // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
@@ -425,6 +406,11 @@ export default class Detail extends React.Component {
                                 keyboardAppearance={'dark'}
                                 selectionColor={Theme.color.selection}
                                 onChangeText={(text) => this.onChangeText(text)}
+
+                            /*
+                            onFocus={this.onFocus}
+                            onBlur={this.onBlur}
+                            */
                             />
                             <TouchableOpacity
                                 style={{
@@ -716,7 +702,7 @@ export default class Detail extends React.Component {
                         {
                             this.state.isOwner && !reply && (
                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.showKeyboard(ref, index)}>
+                                    <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.openKeyboard(ref, index)}>
                                         <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -785,43 +771,28 @@ export default class Detail extends React.Component {
         // console.log("Rating is: " + rating);
 
         setTimeout(() => {
+            /*
             this.setState({ isNavigating: true }, () => {
                 const { post, profile } = this.props.navigation.state.params;
                 this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
             });
+            */
+            const { post, profile } = this.props.navigation.state.params;
+            this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
         }, 500); // 0.5 sec
     }
 
     @autobind
     _keyboardDidShow(e) {
-        // console.log('_keyboardDidShow');
+        /*
+        if (!this.state.showKeyboard) this.setState({ showKeyboard: true });
 
         this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
+        */
+        this.setState({ showKeyboard: true, bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
-
-        // from _keyboardWillShow
         if (!this.selectedItem) return;
 
-        /*
-        this.refs[this.selectedItem].measure((fx, fy, width, height, px, py) => {
-            console.log(fx, fy, width, height, px, py);
-
-            const keyboardHeight = e.endCoordinates.height;
-
-            const chartHeight = Theme.spacing.tiny + 140 + 10;
-            const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
-
-            const searchBarHeight = Globals.searchBarHeight;
-
-            const borderWidth = 1;
-
-            const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - (height - Theme.spacing.tiny) - searchBarHeight + borderWidth;
-
-            console.log('y', y, 'gap', gap);
-
-            this._flatList.scrollToOffset({ offset: y - gap, animated: true });
-        });
-        */
         let totalHeights = 0;
         for (var i = 0; i < this.selectedItemIndex; i++) {
             var h = this.itemHeights[i];
@@ -843,51 +814,13 @@ export default class Detail extends React.Component {
     }
 
     @autobind
-    _keyboardWillShow(e) {
-        // console.log('_keyboardWillShow');
-
-        if (!this.selectedItem) return;
-
-        this.refs[this.selectedItem].measure((fx, fy, width, height, px, py) => {
-            const keyboardHeight = e.endCoordinates.height;
-
-            const chartHeight = Theme.spacing.tiny + 140 + 10;
-            const y = this.reviewsContainerY + chartHeight + fy; // scroll 0
-
-            const searchBarHeight = Globals.searchBarHeight;
-
-            const borderWidth = 1;
-
-            const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - (height - Theme.spacing.tiny) - searchBarHeight + borderWidth;
-
-            this._flatList.scrollToOffset({ offset: y - gap, animated: true });
-        });
-    }
-
-    @autobind
     _keyboardDidHide() {
-        // from _keyboardWillHide
-        // this.setState({ showKeyboard: false });
-
-        this.selectedItem = undefined;
-        this.selectedItemIndex = undefined;
-
-        if (this._showNotification) {
-            this.hideNotification();
-            this._showNotification = false;
-        }
-
-
-        // console.log('_keyboardDidHide');
+        /*
+        if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
         this.setState({ bottomPosition: Dimensions.get('window').height });
-    }
-
-    @autobind
-    _keyboardWillHide() {
-        // console.log('_keyboardWillHide');
-
-        this.setState({ showKeyboard: false });
+        */
+        this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
@@ -898,7 +831,7 @@ export default class Detail extends React.Component {
         }
     }
 
-    showKeyboard(ref, index) {
+    openKeyboard(ref, index) {
         if (this.state.showKeyboard) return;
 
         this.setState({ showKeyboard: true }, () => {
@@ -966,6 +899,22 @@ export default class Detail extends React.Component {
         }
     }
 
+    /*
+    @autobind
+    onFocus() {
+        // this.setState({ isFocused: true });
+
+        if (!this.state.showKeyboard) this.setState({ showKeyboard: true });
+    }
+
+    @autobind
+    onBlur() {
+        // this.setState({ isFocused: false });
+
+        if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+    }
+    */
+
     async contact() {
         const { post, profile } = this.props.navigation.state.params;
 
@@ -973,9 +922,12 @@ export default class Detail extends React.Component {
         const room = await Firebase.findChatRoom(Firebase.uid(), post.id);
 
         if (room) {
+            /*
             this.setState({ isNavigating: true }, () => {
                 this.props.navigation.navigate('room', { item: room });
             });
+            */
+            this.props.navigation.navigate('chatRoom', { item: room });
         } else {
             // create new chat room
             // --
@@ -1001,9 +953,12 @@ export default class Detail extends React.Component {
             const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id);
             // --
 
+            /*
             this.setState({ isNavigating: true }, () => {
                 this.props.navigation.navigate('room', { item: item });
             });
+            */
+            this.props.navigation.navigate('chatRoom', { item: item });
         }
     }
 
@@ -1022,7 +977,7 @@ export default class Detail extends React.Component {
         this.refs.toast.show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
                 // this._reply.blur();
-                this.setState({ showKeyboard: false });
+                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
                 // Consider: reload only the added review!
                 const { post, profile } = this.props.navigation.state.params;

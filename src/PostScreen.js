@@ -126,7 +126,7 @@ export default class PostScreen extends React.Component {
                                 contentContainerStyle={styles.container}
                                 showsVerticalScrollIndicator={true}
                                 ListHeaderComponent={(
-                                    <SafeAreaView>
+                                    <View>
 
                                         {/* profile pictures */}
                                         {this.renderSwiper(post)}
@@ -244,7 +244,7 @@ export default class PostScreen extends React.Component {
                                             </TouchableOpacity>
                                             */}
 
-                                    </SafeAreaView>
+                                    </View>
                                 )}
                             />
                         </TouchableWithoutFeedback>

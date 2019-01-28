@@ -40,7 +40,7 @@ export default class App extends React.Component {
         console.log('App::componentDidMount');
 
         StatusBar.setBarStyle('light-content');
-        if (Platform.OS === "android") { // ToDo: remove
+        if (Platform.OS === "android") { // Consider: remove
             StatusBar.setBackgroundColor(Theme.color.background);
         }
     }
@@ -81,7 +81,8 @@ import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator }
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import autobind from "autobind-decorator";
-import { BottomTabBar } from 'react-navigation-tabs';
+// import { BottomTabBar } from 'react-navigation-tabs';
+import { TabBarBottom } from 'react-navigation';
 
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
@@ -101,8 +102,7 @@ import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
 
-
-// --
+/*
 const ExploreStackNavigator = createStackNavigator(
     {
         exploreMain: {
@@ -132,7 +132,6 @@ class ExploreStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// --
 
 const HomeStackNavigator = createStackNavigator(
     {
@@ -182,7 +181,6 @@ class HomeStackNavigatorWrapper extends React.Component {
     }
 }
 
-// --
 const IntroStackNavigator = createStackNavigator(
     {
         introMain: {
@@ -212,7 +210,6 @@ class IntroStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// --
 
 const HomeSwitchNavigator = createSwitchNavigator(
     {
@@ -242,13 +239,11 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 
 HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
     // console.log('navigation.state.routes', navigation.state.routes);
-    /*
-	console.log('router', navigation.router);
-	console.log('state', navigation.state);
-	*/
+	// console.log('router', navigation.router);
+	// console.log('state', navigation.state);
 
     // EJECT
-    if (Platform.OS === "ios") return;
+    // if (Platform.OS === "ios") return;
 
     const introStack = navigation.state.routes[0];
     const homeStack = navigation.state.routes[1];
@@ -269,60 +264,6 @@ HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
         tabBarVisible: true
     };
 };
-
-/*
-const ChatStackNavigator = createStackNavigator(
-    {
-        chat: {
-            screen: ChatMain
-        },
-        room: {
-            screen: ChatRoom
-        }
-    },
-    {
-        mode: 'card',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
-    }
-);
-
-class ChatStackNavigatorWrapper extends React.Component {
-    static router = ChatStackNavigator.router;
-
-    render() {
-        return (
-            <ChatStackNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-
-ChatStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    // console.log('navigation.state.routes', navigation.state.routes);
-
-    if (navigation.state.routes[1] && navigation.state.routes[1].routeName === 'room') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    return {
-        tabBarVisible: true
-    };
-};
-*/
-
-// ====
 
 const ChatStackNavigator = createStackNavigator(
     {
@@ -362,7 +303,6 @@ class ChatStackNavigatorWrapper extends React.Component {
     }
 }
 
-// --
 const PostModalNavigator = createStackNavigator(
     {
         postModal: {
@@ -406,7 +346,6 @@ class PostModalNavigatorWrapper extends React.Component {
         );
     }
 }
-// --
 
 const ChatRootStackNavigator = createStackNavigator(
     {
@@ -439,7 +378,7 @@ ChatRootStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
     // console.log('navigation.state.routes', navigation.state.routes);
 
     // EJECT
-    if (Platform.OS === "ios") return;
+    // if (Platform.OS === "ios") return;
 
     const chatStack = navigation.state.routes[0];
     // chatStack.isTransitioning
@@ -455,8 +394,6 @@ ChatRootStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
         tabBarVisible: true
     };
 };
-
-// ====
 
 var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     style: {
@@ -595,7 +532,6 @@ class MainBottomTabNavigatorWrapper extends React.Component {
                     rootNavigation: this.props.navigation
                 }}
             />
-
         );
     }
 }
@@ -642,18 +578,577 @@ class AuthStackNavigatorWrapper extends React.Component {
         );
     }
 }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -- start of AuthStackNavigator
+const AuthStackNavigator = createStackNavigator(
+    {
+        authMain: { screen: AuthMain },
+
+        email: { screen: SignUpWithEmail },
+
+        mobile: { screen: SignUpWithMobile }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class AuthStackNavigatorWrapper extends React.Component {
+    static router = AuthStackNavigator.router;
+
+    render() {
+        return (
+            <AuthStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of AuthStackNavigator
+
+// -- start of ExploreStackNavigator
+const ExploreStackNavigator = createStackNavigator(
+    {
+        exploreMain: { screen: ExploreScreen },
+        exploreSearchModal: { screen: SearchScreen }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+
+class ExploreStackNavigatorWrapper extends React.Component {
+    static router = ExploreStackNavigator.router;
+
+    render() {
+        return (
+            <ExploreStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of ExploreStackNavigator
+
+// -- start of IntroStackNavigator
+const IntroStackNavigator = createStackNavigator(
+    {
+        introMain: { screen: Intro },
+        introSearchModal: { screen: SearchScreen }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+
+class IntroStackNavigatorWrapper extends React.Component {
+    static router = IntroStackNavigator.router;
+
+    render() {
+        return (
+            <IntroStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of IntroStackNavigator
+
+// -- start of HomeStackNavigator
+const HomeStackNavigator = createStackNavigator(
+    {
+        home: { screen: ExploreStackNavigatorWrapper },
+        detail: { screen: Detail },
+        // map: { screen: MapScreen },
+        readReview: { screen: ReadAllReviewScreen },
+        // writeReview: { screen: WriteReviewScreen }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class HomeStackNavigatorWrapper extends React.Component {
+    static router = HomeStackNavigator.router;
+
+    render() {
+        return (
+            <HomeStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of HomeStackNavigator
+
+// -- start of HomeSwitchNavigator
+const HomeSwitchNavigator = createSwitchNavigator(
+    {
+        intro: { screen: IntroStackNavigatorWrapper },
+        homeStackNavigator: { screen: HomeStackNavigatorWrapper }
+    },
+    {
+        // initialRouteName: 'intro'
+    }
+);
+
+class HomeSwitchNavigatorWrapper extends React.Component {
+    static router = HomeSwitchNavigator.router;
+
+    render() {
+        return (
+            <HomeSwitchNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+/*
+HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    // console.log('navigation.state.routes', navigation.state.routes);
+	// console.log('router', navigation.router);
+	// console.log('state', navigation.state);
+
+    const introStack = navigation.state.routes[0];
+    const homeStack = navigation.state.routes[1];
+    const exploreStack = homeStack.routes[0];
+
+
+    // ToDo: !!!
+    if (
+        introStack.routes[1] && introStack.routes[1].routeName === 'introSearchModal' ||
+        exploreStack.routes[1] && exploreStack.routes[1].routeName === 'exploreSearchModal') {
+        // homeStack.routes[homeStack.routes.length - 1].routeName === 'map' ||
+        // homeStack.routes[homeStack.routes.length - 1].routeName === 'writeReview') {
+
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
+*/
+// -- end of HomeSwitchNavigator
+
+
+// -- chat
+const ChatStackNavigator = createStackNavigator(
+    {
+        chatMain: {
+            screen: ChatMain
+        },
+        room: {
+            screen: ChatRoom
+        }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+
+    }
+);
+
+class ChatStackNavigatorWrapper extends React.Component {
+    static router = ChatStackNavigator.router;
+
+    render() {
+        return (
+            <ChatStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+const PostModalNavigator = createStackNavigator(
+    {
+        postModal: {
+            screen: PostScreen
+        },
+        mapModal: {
+            screen: MapScreen
+        },
+        readReviewModal: {
+            screen: ReadAllReviewScreen
+        },
+        writeReviewModal: {
+            screen: WriteReviewScreen
+        }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+
+    }
+);
+
+class PostModalNavigatorWrapper extends React.Component {
+    static router = PostModalNavigator.router;
+
+    render() {
+        return (
+            <PostModalNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+const ChatRootStackNavigator = createStackNavigator(
+    {
+        chatStack: { screen: ChatStackNavigatorWrapper },
+        post: { screen: PostModalNavigatorWrapper }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+
+class ChatRootStackNavigatorWrapper extends React.Component {
+    static router = ChatRootStackNavigator.router;
+
+    render() {
+        return (
+            <ChatRootStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+ChatRootStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    // console.log('navigation.state.routes', navigation.state.routes);
+
+    const chatStack = navigation.state.routes[0];
+    // chatStack.isTransitioning
+
+    const room = chatStack.routes[1];
+    if (room && room.routeName === 'room') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
+// -- chat
+
+// -- start of ChatRoomStackNavigator
+const ChatRoomStackNavigator = createStackNavigator(
+    {
+        room: { screen: ChatRoom },
+        post: { screen: PostModalNavigatorWrapper }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+
+class ChatRoomStackNavigatorWrapper extends React.Component {
+    static router = ChatRoomStackNavigator.router;
+
+    render() {
+        return (
+            <ChatRoomStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of ChatRoomStackNavigator
+
+// -- start of MainBottomTabNavigator
+var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
+    style: {
+        backgroundColor: Theme.color.background,
+        borderTopWidth: 1,
+        borderTopColor: Theme.color.line,
+        paddingTop: Platform.OS === "ios" ? parseInt(Dimensions.get('window').height / 80) : 0
+    },
+    animationEnabled: true,
+    showLabel: false,
+    showIcon: true,
+    activeTintColor: 'rgb(255, 255, 255)',
+    inactiveTintColor: 'rgb(145, 145, 145)',
+    /*
+    tabStyle: {
+        paddingVertical: 10
+    }
+    */
+};
+
+const MainBottomTabNavigator = createBottomTabNavigator(
+    {
+        home: {
+            screen: HomeSwitchNavigatorWrapper,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        likes: {
+            screen: Likes,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        chat: {
+            screen: ChatMain,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        },
+        profile: {
+            screen: ProfileScreen,
+            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+        }
+    },
+    /*
+    {
+        tabBarOptions: _tabBarOptions
+    }
+    */
+    (Platform.OS === "android") ?
+        {
+            tabBarOptions: _tabBarOptions,
+
+            tabBarComponent: props => <TabBarComponent {...props} />,
+            // tabBarPosition: 'bottom'
+        }
+        :
+        {
+            tabBarOptions: _tabBarOptions
+        }
+);
+
+function _navigationOptions(navigation) {
+    return {
+        // title: `${navigation.state.params.name}'s Profile!`,
+        title: 'title',
+        tabBarLabel: navigation.state.routeName,
+        tabBarIcon: ({ tintColor, focused }) => {
+            // let iconName;
+
+            if (navigation.state.routeName === 'home') {
+                return <Ionicons
+                    // name={focused ? 'compass' : 'compass-outline'}
+                    name={'md-compass'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+            } else if (navigation.state.routeName === 'likes') {
+                return <Ionicons
+                    // name={focused ? 'ios-heart' : 'ios-heart-empty'}
+                    name={'ios-heart'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+                // } else if (navigation.state.routeName === 'chats') {
+            } else if (navigation.state.routeName === 'chat') {
+                return <Ionicons
+                    // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+                    name={'ios-chatbubbles'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+            } else if (navigation.state.routeName === 'profile') {
+                return <FontAwesome
+                    name={'user'}
+                    size={30}
+                    style={{ color: tintColor }}
+                />;
+            }
+        }
+    };
+}
+
+class TabBarComponent extends React.Component {
+    state = {
+        visible: true,
+        isFocused: false
+    };
+
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+    }
+
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+    }
+
+    @autobind
+    _keyboardDidShow(e) {
+        console.log('TabBarComponent.keyboardDidShow');
+
+        this.setState({ visible: false });
+    }
+
+    @autobind
+    _keyboardDidHide(e) {
+        console.log('TabBarComponent.keyboardDidHide');
+
+        this.setState({ visible: true });
+    }
+
+    @autobind
+    onFocus() {
+        console.log('TabBarComponent.onFocus');
+
+        this.setState({ isFocused: true });
+    }
+
+    @autobind
+    onBlur() {
+        console.log('TabBarComponent.onBlur');
+
+        this.setState({ isFocused: false });
+    }
+
+    render() {
+        return this.state.focused && this.state.visible ? <TabBarBottom {...this.props} /> : null;
+    }
+}
+
+class MainBottomTabNavigatorWrapper extends React.Component {
+    static router = MainBottomTabNavigator.router;
+
+    render() {
+        return (
+            <MainBottomTabNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of MainBottomTabNavigator
+
+// -- start of MainStackNavigator
+const MainStackNavigator = createStackNavigator(
+    {
+        root: { screen: MainBottomTabNavigatorWrapper },
+        map: { screen: MapScreen },
+        writeReview: { screen: WriteReviewScreen },
+        chatRoom: { screen: ChatRoomStackNavigatorWrapper }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class MainStackNavigatorWrapper extends React.Component {
+    static router = MainStackNavigator.router;
+
+    render() {
+        return (
+            <MainStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of MainStackNavigator
 
 const MainSwitchNavigator = createSwitchNavigator(
     {
         loading: { screen: Loading },
-
-        welcome: { screen: Welcome },
-
-        authStackNavigator: { screen: AuthStackNavigatorWrapper }, // stack navigator
-
-        // ToDo: welcome & guile
-
-        mainBottomTabNavigator: { screen: MainBottomTabNavigatorWrapper } // tab navigator
+        welcome: { screen: Welcome }, // Consider: welcome & guile
+        authStackNavigator: { screen: AuthStackNavigatorWrapper },
+        mainStackNavigator: { screen: MainStackNavigatorWrapper }
     },
     {
         // initialRouteName: 'loading'

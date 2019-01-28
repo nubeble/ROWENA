@@ -8,7 +8,7 @@ export default class Welcome extends React.Component {
     };
 
     render() {
-        const buttonGap = 100;
+        const buttonGap = 80;
 
         return (
             <View style={styles.container}>
@@ -26,7 +26,7 @@ export default class Welcome extends React.Component {
 
 
                 <View style={{ position: 'absolute', top: this.state.bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('mainBottomTabNavigator')} style={styles.signUpButton}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('mainStackNavigator')} style={styles.signUpButton}>
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Get Started</Text>
                     </TouchableOpacity>
                 </View>

@@ -15,10 +15,6 @@ export var Globals = {
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
 
-    // send button
-    // sendButtonMarginBottom: Platform.OS === "ios" ? 12 : 14
-    sendButtonMarginBottom: 14,
-
     // search bar text padding
     // iPhone X: 4, Tango: ?, S7: 8
     searchBarPaddingTop:() => {

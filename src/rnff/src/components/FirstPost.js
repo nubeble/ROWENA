@@ -22,8 +22,14 @@ export default class FirstPost extends React.Component<NavigationProps<>> {
                 <TouchableOpacity onPress={this.share}>
                     <Icon name="plus-circle" color={Theme.palette.primary} size={25} />
                 </TouchableOpacity>
+                {/*
                 <Text style={styles.text}>
                     Looks like you have not shared anything yet.
+                    Now is the time to make your first post!
+                </Text>
+                */}
+                <Text style={styles.text}>
+                    Looks like no one posted anything yet.
                     Now is the time to make your first post!
                 </Text>
             </View>

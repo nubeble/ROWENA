@@ -4,13 +4,26 @@ import {
 } from 'react-native';
 import { Theme } from "./rnff/src/components";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
-import KeyboardSpacer from 'react-native-keyboard-spacer';
+// import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
+import { NavigationActions } from 'react-navigation';
 import { Globals } from "./Globals";
+
+const chatViewHeight = Dimensions.get('window').height - Globals.searchBarHeight;
+const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
+const textInputPaddingLeft = parseInt(Dimensions.get('window').width / 20);
+const textInputPaddingRight = parseInt(Dimensions.get('window').width / 20);
+const textInputMarginBottom = 20;
+const sendButtonMarginBottom = parseInt(Dimensions.get('window').height / 40);
+const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
+
+const minComposerHeight = parseInt(Dimensions.get('window').height / 20);
+const maxComposerHeight = parseInt(Dimensions.get('window').height / 40);
+
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
@@ -119,7 +132,9 @@ export default class ChatRoom extends React.Component {
                             alignSelf: 'baseline'
                         }}
                         onPress={() => {
-                            this.props.navigation.goBack();
+                            // this.props.navigation.goBack();
+                            // this.props.navigation.dispatch(NavigationActions.back());
+                            this.props.navigation.navigate('chat');
                         }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -160,18 +175,17 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <View style={{ flex: 1 }} >
+                <View style={ Platform.OS === 'android' ? styles.androidView : styles.iosView } >
                     <GiftedChat
-                        // bottomOffset={56}
-                        minInputToolbarHeight={56}
-                        // minComposerHeight={56}
-                        // maxComposerHeight={56}
+                        // bottomOffset={100}
+                        minInputToolbarHeight={ inputToolbarHeight + textInputMarginBottom }
+                        minComposerHeight={minComposerHeight}
+                        maxComposerHeight={maxComposerHeight}
 
                         alwaysShowSend={true}
                         // isAnimated={true}
 
                         // forceGetKeyboardHeight={Platform.OS === 'android' && Platform.Version < 21}
-
                         messages={this.state.messages}
                         placeholder={'Write a message'}
                         placeholderTextColor={Theme.color.placeholder}
@@ -180,20 +194,7 @@ export default class ChatRoom extends React.Component {
                         onPressAvatar={async () => await this.openPost()}
 
                         textInputProps={{
-                            // multiline: false,
-                            style: {
-                                width: '86%',
-                                height: 56,
-                                fontSize: 16,
-                                fontFamily: "SFProText-Regular",
-                                color: "white",
-
-                                backgroundColor: Theme.color.background,
-                                paddingTop: 6, // ToDo: not working in ios
-                                // paddingBottom: 20,
-                                paddingLeft: 16,
-                                paddingRight: 16
-                            },
+                            style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
                             selectionColor: Theme.color.selection,
                             keyboardAppearance: 'dark',
                             underlineColorAndroid: "transparent",
@@ -236,15 +237,21 @@ export default class ChatRoom extends React.Component {
                     */}
 
                     {
-                        // EJECT
+
                         // Platform.OS === 'android' ? <KeyboardSpacer /> : null
+                        // <KeyboardSpacer />
+
+                        // (Platform.OS === 'ios') && this.state.onKeyboard &&
                         // <KeyboardSpacer />
                     }
                 </View>
 
                 {
+                    /*
+                    Platform.OS === 'android' &&
                     !this.state.onKeyboard &&
-                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: Theme.color.background }} />
+                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: 'red' }} />
+                    */
                 }
 
                 {
@@ -293,7 +300,7 @@ export default class ChatRoom extends React.Component {
                         await Firebase.deleteChatRoom(Firebase.uid(), item.id);
 
                         // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
-                        this.props.navigation.navigate('chatMain', { roomId: item.id });
+                        this.props.navigation.navigate('chat', { roomId: item.id });
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
@@ -349,14 +356,13 @@ export default class ChatRoom extends React.Component {
         this.props.navigation.navigate('post', { post: post });
     }
 
+    @autobind
     renderSend(props) {
         return (
             <Send {...props} >
-                <View style={{
-                    backgroundColor: Theme.color.background,
-                    marginBottom: Globals.sendButtonMarginBottom
-                }}>
+                <View style={ styles.sendButton } >
                     <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
+
                     {/*
                     <Image source={require('../../assets/send.png')} resizeMode={'center'} />
                     */}
@@ -365,6 +371,7 @@ export default class ChatRoom extends React.Component {
         );
     }
 
+    @autobind
     renderInputToolbar(props) {
         return <InputToolbar {...props} containerStyle={{
             backgroundColor: Theme.color.background,
@@ -373,6 +380,7 @@ export default class ChatRoom extends React.Component {
         }} />
     }
 
+    @autobind
     renderFooter(props) {
         return <View style={{ height: 20, backgroundColor: 'red' }} />
     }
@@ -389,6 +397,47 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-end'
+    },
+    androidView: {
+        flex: 1
+    },
+    iosView: {
+        height: chatViewHeight
+    },
+    androidTextInput: {
+        width: '86%',
+        height: inputToolbarHeight,
+        fontSize: 16,
+        fontFamily: "SFProText-Regular",
+        color: "white",
+        backgroundColor: Theme.color.background,
+        marginBottom: textInputMarginBottom,
+
+        paddingLeft: textInputPaddingLeft,
+        paddingRight: textInputPaddingRight
+    },
+    iosTextInput: {
+        width: '86%',
+        height: inputToolbarHeight,
+        fontSize: 16,
+        fontFamily: "SFProText-Regular",
+        color: "white",
+        backgroundColor: Theme.color.background,
+        marginBottom: textInputMarginBottom,
+
+        paddingLeft: textInputPaddingLeft,
+        paddingRight: textInputPaddingRight,
+
+        paddingTop: textInputPaddingTop
+    },
+    sendButton: {
+        backgroundColor: Theme.color.background,
+        width: parseInt(Dimensions.get('window').width / 10),
+        height: parseInt(Dimensions.get('window').width / 10),
+        alignItems: 'center',
+        justifyContent: 'center',
+
+        marginBottom: textInputMarginBottom + sendButtonMarginBottom
     },
     post: {
         width: postWidth,

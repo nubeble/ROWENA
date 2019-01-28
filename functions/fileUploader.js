@@ -29,9 +29,7 @@ module.exports = (path, app) => {
 
     app.use((req, res, next) => {
         if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
-            const busboy = new Busboy({
-                headers: req.headers
-            });
+            const busboy = new Busboy({ headers: req.headers });
 
             let fileBuffer = new Buffer("");
 

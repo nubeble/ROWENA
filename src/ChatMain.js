@@ -232,7 +232,7 @@ export default class ChatMain extends React.Component {
         const avatarHeight = viewHeight;
 
         return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('room', { item: item })}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate('chatRoom', { item: item })}>
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,

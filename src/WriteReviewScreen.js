@@ -19,6 +19,7 @@ export default class WriteReviewScreen extends React.Component {
         invalid: false,
         signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)',
         bottomPosition: Dimensions.get('window').height,
+        postButtonTop: Dimensions.get('window').height - 80 - 50, // 80: bottom gap, 50: button height
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -59,12 +60,18 @@ export default class WriteReviewScreen extends React.Component {
         }); 
         */
 
-        this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
+       const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
+       const postButtonTop = bottomPosition - 10 - 50; // 10: bottom gap, 50: button height
+
+       !this.isClosed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
 
     @autobind
     _keyboardDidHide() {
-        this.setState({ bottomPosition: Dimensions.get('window').height });
+        const bottomPosition = Dimensions.get('window').height;
+        const postButtonTop = bottomPosition - 80 - 50; // 80: bottom gap, 50: button height
+
+        !this.isClosed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
 
     @autobind
@@ -215,11 +222,11 @@ export default class WriteReviewScreen extends React.Component {
                     />
                 </View>
 
-                <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomPosition - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => this.post()} style={styles.signUpButton} disabled={this.state.invalid} >
                         <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Post</Text>
                     </TouchableOpacity>
-                </KeyboardAvoidingView>
+                </View>
 
                 <Toast
                     ref="toast"

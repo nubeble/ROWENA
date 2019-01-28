@@ -99,7 +99,7 @@ export default class Loading extends React.Component<ScreenProps<>> {
                     await Firebase.updateProfile(uid, profile);
 
                     console.log('move to main');
-                    navigation.navigate('mainBottomTabNavigator');
+                    navigation.navigate('mainStackNavigator');
                 } else {
                     console.log('move to welcome');
                     navigation.navigate('welcome');

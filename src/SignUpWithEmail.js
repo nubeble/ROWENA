@@ -36,7 +36,8 @@ export default class SignUpWithEmail extends React.Component {
 
         securePwInput: true,
         secureText: 'Show',
-        bottomPosition: Dimensions.get('window').height
+        bottomPosition: Dimensions.get('window').height,
+        signUpButtonTop: Dimensions.get('window').height - 80 - 50 // 80: bottom gap, 50: button height
     };
 
     componentDidMount() {
@@ -60,12 +61,18 @@ export default class SignUpWithEmail extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        !this.isClosed && this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
+        const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
+        const signUpButtonTop = bottomPosition - 10 - 50; // 10: bottom gap, 50: button height
+
+        !this.isClosed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
 
     @autobind
     _keyboardDidHide() {
-        !this.isClosed && this.setState({ bottomPosition: Dimensions.get('window').height });
+        const bottomPosition = Dimensions.get('window').height;
+        const signUpButtonTop = bottomPosition - 80 - 50; // 80: bottom gap, 50: button height
+
+        !this.isClosed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
 
     showNotification = (msg) => {
@@ -426,7 +433,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
-                                    // keyboardAppearance={'dark'}
+                                // keyboardAppearance={'dark'}
                                 />
                                 {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -450,7 +457,7 @@ export default class SignUpWithEmail extends React.Component {
                                     selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
-                                    // keyboardAppearance={'dark'}
+                                // keyboardAppearance={'dark'}
                                 />
                                 {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
                                 {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -462,11 +469,9 @@ export default class SignUpWithEmail extends React.Component {
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                         </TouchableOpacity>
                         */}
-                        <KeyboardAvoidingView style={{ position: 'absolute', top: this.state.bottomPosition - 10 - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                        <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                             <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
                                 <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
-
-
                                 {
                                     this.state.showSignUpLoader &&
                                     <ActivityIndicator
@@ -477,7 +482,7 @@ export default class SignUpWithEmail extends React.Component {
                                     />
                                 }
                             </TouchableOpacity>
-                        </KeyboardAvoidingView>
+                        </View>
 
 
                     </View>

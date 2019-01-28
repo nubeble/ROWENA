@@ -15,6 +15,9 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
 import { Globals } from "./Globals";
+import { registerExpoPushToken } from './PushNotifications';
+import { Notifications } from 'expo';
+import autobind from "autobind-decorator";
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -101,10 +104,28 @@ export default class Intro extends React.Component {
     };
 
     componentDidMount() {
+
+
+        registerExpoPushToken();
+
+        // Handle notifications that are received or selected while the app
+        // is open. If the app was closed and then opened by tapping the
+        // notification (rather than just tapping the app icon to open it),
+        // this function will fire on the next tick after the app starts
+        // with the notification data.
+        this.notificationListener = Notifications.addListener(this.handleNotification);
+
+
         console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.getPlaceLength();
+    }
+
+    @autobind
+    handleNotification(e) {
+        console.log(e);
+        // this.setState({notification: e});
     }
 
     /*
