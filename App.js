@@ -81,8 +81,8 @@ import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator }
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import autobind from "autobind-decorator";
-// import { BottomTabBar } from 'react-navigation-tabs';
-import { TabBarBottom } from 'react-navigation';
+import { BottomTabBar } from 'react-navigation-tabs';
+// import { TabBarBottom } from 'react-navigation'; // not working in S7
 
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
@@ -101,6 +101,11 @@ import Detail from './src/Detail';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
+
+
+
+
+
 
 /*
 const ExploreStackNavigator = createStackNavigator(
@@ -578,7 +583,23 @@ class AuthStackNavigatorWrapper extends React.Component {
         );
     }
 }
+
+const MainSwitchNavigator = createSwitchNavigator(
+    {
+        loading: { screen: Loading },
+        welcome: { screen: Welcome }, // Consider: welcome & guile
+        authStackNavigator: { screen: AuthStackNavigatorWrapper },
+        mainStackNavigator: { screen: MainBottomTabNavigatorWrapper }
+    },
+    {
+        // initialRouteName: 'loading'
+    }
+);
 */
+
+
+
+
 
 
 
@@ -695,9 +716,7 @@ const HomeStackNavigator = createStackNavigator(
     {
         home: { screen: ExploreStackNavigatorWrapper },
         detail: { screen: Detail },
-        // map: { screen: MapScreen },
-        readReview: { screen: ReadAllReviewScreen },
-        // writeReview: { screen: WriteReviewScreen }
+        readReview: { screen: ReadAllReviewScreen }
     },
     {
         mode: 'card',
@@ -752,35 +771,6 @@ class HomeSwitchNavigatorWrapper extends React.Component {
         );
     }
 }
-
-/*
-HomeSwitchNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    // console.log('navigation.state.routes', navigation.state.routes);
-	// console.log('router', navigation.router);
-	// console.log('state', navigation.state);
-
-    const introStack = navigation.state.routes[0];
-    const homeStack = navigation.state.routes[1];
-    const exploreStack = homeStack.routes[0];
-
-
-    // ToDo: !!!
-    if (
-        introStack.routes[1] && introStack.routes[1].routeName === 'introSearchModal' ||
-        exploreStack.routes[1] && exploreStack.routes[1].routeName === 'exploreSearchModal') {
-        // homeStack.routes[homeStack.routes.length - 1].routeName === 'map' ||
-        // homeStack.routes[homeStack.routes.length - 1].routeName === 'writeReview') {
-
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    return {
-        tabBarVisible: true
-    };
-};
-*/
 // -- end of HomeSwitchNavigator
 
 
@@ -953,11 +943,11 @@ var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     showIcon: true,
     activeTintColor: 'rgb(255, 255, 255)',
     inactiveTintColor: 'rgb(145, 145, 145)',
-    /*
-    tabStyle: {
-        paddingVertical: 10
-    }
-    */
+
+    //    tabStyle: {
+    //        paddingVertical: 10
+    //    }
+
 };
 
 const MainBottomTabNavigator = createBottomTabNavigator(
@@ -979,22 +969,19 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         }
     },
-    /*
-    {
-        tabBarOptions: _tabBarOptions
-    }
-    */
-    (Platform.OS === "android") ?
-        {
-            tabBarOptions: _tabBarOptions,
 
-            tabBarComponent: props => <TabBarComponent {...props} />,
-            // tabBarPosition: 'bottom'
-        }
-        :
-        {
+    //    {
+    //        tabBarOptions: _tabBarOptions
+    //    }
+
+    (Platform.OS === "android") ? {
+        tabBarOptions: _tabBarOptions,
+
+        tabBarComponent: props => <TabBarComponent {...props} />,
+        // tabBarPosition: 'bottom'
+    } : {
             tabBarOptions: _tabBarOptions
-        }
+    }
 );
 
 function _navigationOptions(navigation) {
@@ -1041,7 +1028,7 @@ function _navigationOptions(navigation) {
 class TabBarComponent extends React.Component {
     state = {
         visible: true,
-        isFocused: false
+        focused: false
     };
 
     componentDidMount() {
@@ -1076,18 +1063,32 @@ class TabBarComponent extends React.Component {
     onFocus() {
         console.log('TabBarComponent.onFocus');
 
-        this.setState({ isFocused: true });
+        this.setState({ focused: true });
+        // this.focused = true;
     }
 
     @autobind
     onBlur() {
         console.log('TabBarComponent.onBlur');
 
-        this.setState({ isFocused: false });
+        this.setState({ focused: false });
+        // this.focused = false;
     }
 
     render() {
-        return this.state.focused && this.state.visible ? <TabBarBottom {...this.props} /> : null;
+        // return this.state.focused && this.state.visible ? <BottomTabBar {...this.props} /> : null; // ToDo
+        // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props} /> : null; // not working in S7
+
+
+        if (!this.state.focused) {
+            return <BottomTabBar {...this.props} />;
+        }
+
+        if (this.state.visible) {
+            return <BottomTabBar {...this.props} />;
+        }
+
+        return null;
     }
 }
 
@@ -1154,3 +1155,4 @@ const MainSwitchNavigator = createSwitchNavigator(
         // initialRouteName: 'loading'
     }
 );
+

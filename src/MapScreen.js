@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { StyleSheet, Dimensions, View, TouchableOpacity, ActivityIndicator, BackHandler } from 'react-native';
 import { MapView, Constants } from 'expo';
 import { Header } from 'react-navigation';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
 import { Globals } from "./Globals";
+import autobind from "autobind-decorator";
 
 
 export default class MapScreen extends React.Component {
@@ -20,6 +21,8 @@ export default class MapScreen extends React.Component {
     };
 
     componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
         // const place = this.props.screenProps.params.place;
         // console.log('HomeStackNavigator', this.props.screenProps.rootNavigation.router); // HomeStackNavigator
 
@@ -30,7 +33,16 @@ export default class MapScreen extends React.Component {
         }, 0);
     }
 
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.goBack();
+
+        return true;
+    }
+
     componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+
         this.isClosed = true;
     }
 

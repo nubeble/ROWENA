@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, KeyboardAvoidingView, Platform, SafeAreaView
+    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, SafeAreaView
 } from 'react-native';
 import { Theme } from "./rnff/src/components";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
@@ -21,8 +21,10 @@ const textInputMarginBottom = 20;
 const sendButtonMarginBottom = parseInt(Dimensions.get('window').height / 40);
 const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
 
-const minComposerHeight = parseInt(Dimensions.get('window').height / 20);
-const maxComposerHeight = parseInt(Dimensions.get('window').height / 40);
+// const minComposerHeight = parseInt(Dimensions.get('window').height / 20); // Do not use this for android
+
+const maxComposerHeight = parseInt(Dimensions.get('window').height / 40); // ToDo
+// const maxComposerHeight = 40; // ToDo
 
 
 const postWidth = Dimensions.get('window').width;
@@ -51,6 +53,7 @@ export default class ChatRoom extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const item = this.props.navigation.state.params.item;
         this.setState({ name: item.users[1].name, id: item.id });
@@ -73,11 +76,20 @@ export default class ChatRoom extends React.Component {
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
 
         const item = this.props.navigation.state.params.item;
         Firebase.chatOff(item.id);
 
         this.isClosed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        // this.goBack(); // works best when the goBack is async
+        this.props.navigation.navigate('chat');
+
+        return true;
     }
 
     @autobind
@@ -115,7 +127,16 @@ export default class ChatRoom extends React.Component {
         const imageWidth2 = postHeight * 0.5;
         const imageWidth = this.state.onKeyboard ? imageWidth2 : imageWidth1;
         */
-        const imageWidth = postHeight * 0.7;
+        // const imageWidth = postHeight * 0.7;
+
+        const bigImageWidth = postHeight * 0.7;
+
+        let small = postHeight * 0.7;
+        if (Dimensions.get('window').height <= 640) small = postHeight * 0.56;
+
+        const smallImageWidth = small;
+
+        const imageWidth = this.state.onKeyboard ? smallImageWidth : bigImageWidth;
 
         const name = item.users[1].name;
         // const text2 = 'Send a message before your battery dies.';
@@ -175,11 +196,11 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <View style={ Platform.OS === 'android' ? styles.androidView : styles.iosView } >
+                <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView} >
                     <GiftedChat
                         // bottomOffset={100}
-                        minInputToolbarHeight={ inputToolbarHeight + textInputMarginBottom }
-                        minComposerHeight={minComposerHeight}
+                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
+                        // minComposerHeight={minComposerHeight}
                         maxComposerHeight={maxComposerHeight}
 
                         alwaysShowSend={true}
@@ -360,7 +381,7 @@ export default class ChatRoom extends React.Component {
     renderSend(props) {
         return (
             <Send {...props} >
-                <View style={ styles.sendButton } >
+                <View style={styles.sendButton} >
                     <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
 
                     {/*

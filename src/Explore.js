@@ -3,7 +3,7 @@ import autobind from "autobind-decorator";
 import * as React from "react";
 import moment from "moment";
 import {
-    StyleSheet, View, Animated, SafeAreaView, TouchableWithoutFeedback,
+    StyleSheet, View, Animated, SafeAreaView, TouchableWithoutFeedback, BackHandler,
     Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image, ActivityIndicator
 } from "react-native";
 import { Header, NavigationActions, StackActions } from 'react-navigation';
@@ -48,6 +48,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     };
 
     componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
         // console.log('Explore::componentDidMount', this.props);
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
@@ -67,21 +69,12 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         }, 0);
     }
 
-    componentWillUnmount() {
-        this.isClosed = true;
-    }
-
-    moveToIntro() {
-        this.props.screenProps.rootNavigation.navigate('intro');
-
+    @autobind
+    handleHardwareBackPress() {
+        // this.props.navigation.goBack();
         // this.props.navigation.goBack(this.props.screenProps.params.key);
         // this.props.navigation.dispatch(NavigationActions.back());
-
-        /*
-        this.props.navigation.dispatch(NavigationActions.popToTop());
-        this.props.navigation.dispatch(NavigationActions.popToTop());
-        this.props.navigation.dispatch(NavigationActions.back());
-        */
+        // this.props.navigation.dispatch(NavigationActions.popToTop());
         /*
         return this.props.navigation.dispatch(StackActions.reset(
             {
@@ -90,6 +83,16 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
             }
         ));
         */
+
+        this.props.screenProps.rootNavigation.navigate('intro');
+
+        return true;
+    }
+
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+
+        this.isClosed = true;
     }
 
     render(): React.Node {
@@ -146,7 +149,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             onPress={() => {
                                 console.log('move to Intro');
-                                this.props.screenProps.rootNavigation.navigate('intro'); // ToDo: maybe goback
+                                this.props.screenProps.rootNavigation.navigate('intro');
                             }}
                         >
                             <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />

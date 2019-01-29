@@ -2,7 +2,7 @@ import * as React from "react";
 import autobind from "autobind-decorator";
 import moment from "moment";
 import {
-    StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList,
+    StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList, BackHandler,
     ActivityIndicator, TouchableOpacity, Keyboard, TextInput, TouchableWithoutFeedback
 } from "react-native";
 import { Header, NavigationActions, StackActions } from 'react-navigation';
@@ -51,15 +51,15 @@ export default class ReadAllReviewScreen extends React.Component {
         super(props);
 
         this.itemHeights = [];
+        this.lastItemIndex = 0;
     }
 
     componentDidMount() {
-        console.log('ReadAllReviewScreen::componentDidMount');
+        // console.log('ReadAllReviewScreen::componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-        // this.keyboardDidWillListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
-        // this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const { reviewStore, isOwner } = this.props.navigation.state.params;
         // console.log('reviews', reviewStore.reviews);
@@ -76,21 +76,23 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     @autobind
-    onAddToReviewFinished(result) {
-        console.log('onAddToReviewFinished', result);
-
-        if (!result) {
-            this.allReviewsLoaded = true; // don't call loadReview() again!
-        }
+    onAddToReviewFinished() {
+        console.log('onAddToReviewFinished');
 
         !this.isClosed && this.setState({ isLoadingReview: false, refreshing: false });
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.goBack();
+
+        return true;
     }
 
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
-        // this.keyboardDidWillListener.remove();
-        // this.keyboardWillShowListener.remove();
+        this.hardwareBackPressListener.remove();
 
         this.isClosed = true;
     }
@@ -181,7 +183,7 @@ export default class ReadAllReviewScreen extends React.Component {
                                     this.state.isLoadingReview && (
                                         <ActivityIndicator
                                             style={styles.bottomIndicator}
-                                            animating={this.state.isLoadingReview}
+                                            animating={true}
                                             size="small"
                                             color='grey'
                                         />
@@ -310,7 +312,6 @@ export default class ReadAllReviewScreen extends React.Component {
             },
             () => {
                 // this.loadMore();
-                this.allReviewsLoaded = false;
                 this.loadReviewFromTheStart();
             }
         );
@@ -448,19 +449,24 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     loadMore() {
+        console.log('ReadAllReviewScreen.loadMore');
+
         if (this.state.isLoadingReview) {
-            this.setState({ refreshing: false });
+            // this.setState({ refreshing: false });
             return;
         }
 
-        if (this.allReviewsLoaded) {
+        const { reviewStore } = this.props.navigation.state.params;
+        if (reviewStore.allReviewsLoaded) {
+            console.log('reviewStore.allReviewsLoaded');
+
             this.setState({ refreshing: false });
+
             return;
         }
 
         this.setState({ isLoadingReview: true });
 
-        const { reviewStore } = this.props.navigation.state.params;
         reviewStore.loadReview();
     }
 
@@ -478,44 +484,20 @@ export default class ReadAllReviewScreen extends React.Component {
         // console.log(index, height);
 
         this.itemHeights[index] = height;
+        this.lastItemIndex = index;
     }
 
     @autobind
     _keyboardDidShow(e) {
         this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
-
-        // from _keyboardWillShow
         if (!this.selectedItem) return;
 
         let totalHeights = 0;
         for (var i = 0; i < this.selectedItemIndex; i++) {
             var h = this.itemHeights[i];
             if (h) {
-                totalHeights += h + 1;
-            }
-        }
-
-        const height = this.itemHeights[this.selectedItemIndex];
-        const keyboardHeight = e.endCoordinates.height;
-        const searchBarHeight = Globals.searchBarHeight;
-
-        const y = totalHeights;
-
-        const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
-
-        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
-    }
-
-    @autobind
-    _keyboardWillShow(e) {
-        if (!this.selectedItem) return;
-
-        let totalHeights = 0;
-        for (var i = 0; i < this.selectedItemIndex; i++) {
-            var h = this.itemHeights[i];
-            if (h) {
-                totalHeights += h + 1;
+                totalHeights += h + 1; // separator width
             }
         }
 
@@ -532,7 +514,6 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     _keyboardDidHide() {
-        // from _keyboardWillHide
         this.setState({ showKeyboard: false });
 
         this.selectedItem = undefined;
@@ -545,19 +526,6 @@ export default class ReadAllReviewScreen extends React.Component {
 
 
         this.setState({ bottomPosition: Dimensions.get('window').height });
-    }
-
-    @autobind
-    _keyboardWillHide() {
-        this.setState({ showKeyboard: false });
-
-        this.selectedItem = undefined;
-        this.selectedItemIndex = undefined;
-
-        if (this._showNotification) {
-            this.hideNotification();
-            this._showNotification = false;
-        }
     }
 
     showKeyboard(ref, index) {
@@ -689,7 +657,7 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     async removeReply(index) {
-        // ToDo: show dialog
+        // show dialog
         this.showAlert('Are you sure you want to delete this reply?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
@@ -713,6 +681,7 @@ export default class ReadAllReviewScreen extends React.Component {
     refreshReviews(placeId, feedId, count) {
         // ToDo: reload only the changed review
         const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+        const { reviewStore } = this.props.navigation.state.params;
         reviewStore.init(query, count);
     }
 

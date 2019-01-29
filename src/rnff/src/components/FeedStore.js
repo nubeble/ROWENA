@@ -45,6 +45,8 @@ export default class FeedStore {
     @computed get feed(): Feed { return this._feed; }
     set feed(feed: Feed) { this._feed = feed; }
 
+    allFeedsLoaded = false;
+
 
     setAddToFeedFinishedCallback(cb) {
         this.addToFeedFinishedCallback = cb;
@@ -61,6 +63,7 @@ export default class FeedStore {
         this.query = undefined;
         this.profiles = {};
         this.feed = undefined;
+        this.allFeedsLoaded = false;
 
         this.query = query;
         this.loadFeed();
@@ -81,14 +84,14 @@ export default class FeedStore {
                 this.feed = [];
             }
 
-            if (this.addToFeedFinishedCallback !== undefined && this.addToFeedFinishedCallback) this.addToFeedFinishedCallback(false);
+            this.allFeedsLoaded = true;
+            if (this.addToFeedFinishedCallback) this.addToFeedFinishedCallback();
 
             return;
         }
 
         const posts: Post[] = [];
         snap.forEach(postDoc => {
-            // print
             // console.log('loadFeed() id', postDoc.id, 'data', postDoc.data());
 
             posts.push(postDoc.data());
@@ -109,7 +112,8 @@ export default class FeedStore {
         let allFeedsLoaded = false;
         if (posts.length < DEFAULT_PAGE_SIZE) allFeedsLoaded = true;
 
-        if (this.addToFeedFinishedCallback !== undefined && this.addToFeedFinishedCallback) this.addToFeedFinishedCallback(!allFeedsLoaded);
+        this.allFeedsLoaded = allFeedsLoaded;
+        if (this.addToFeedFinishedCallback) this.addToFeedFinishedCallback();
     }
 
     addToFeed(entries: FeedEntry[]) {
@@ -208,8 +212,7 @@ export default class FeedStore {
         return posts.map(post => {
             const profile = this.profiles[post.uid];
 
-            // print
-            console.log('joinProfiles profile', profile, 'post', post);
+            // console.log('joinProfiles profile', profile, 'post', post);
 
             return { profile, post };
         });

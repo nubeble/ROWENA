@@ -282,7 +282,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const weight = 48;
 
         // ToDo: use image picker
-        const image1Uri = 'https://mblogthumb-phinf.pstatic.net/MjAxODA2MjJfMjQx/MDAxNTI5NjM4NTIwMjE2.oAJHnFZfJo4lfoD2_8FBs-dr4_JAWaoWW4BdFi9rEh0g.RwpUpZ4lYgYbvQRKyNVQdU7TGKtLcCnfuOcUbNaPR8Ig.JPEG.thtlaej/DdS1RXJV4AIDyQZ.jpg?type=w800';
+        const image1Uri = 'https://i.pinimg.com/originals/56/ac/4b/56ac4b66ae869303f1f259fd6d550d85.jpg';
         const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
         const image3Uri = 'https://3.bp.blogspot.com/-IlmY1gyVmQI/W3doZ9X9oAI/AAAAAAAAERQ/avgNK2r8A4Ms710A4s1Vew-8Zwz7eU4ZQCLcBGAs/s1600/ep10-1.gif';
         const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';

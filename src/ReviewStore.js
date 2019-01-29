@@ -39,8 +39,12 @@ export default class ReviewStore {
 
     profiles: { [uid: string]: Profile } = {};
 
+    allReviewsLoaded = false;
+
+
+    // To block keeping calling loadReview() while scrolling
     setAddToReviewFinishedCallback(cb) {
-        this.addToReviewFinishedCallback = cb; // to block keeping calling loadReview() while scrolling 
+        this.addToReviewFinishedCallback = cb;
     }
 
     loadReviewFromTheStart() {
@@ -53,6 +57,7 @@ export default class ReviewStore {
         this.query = undefined;
         this.profiles = {};
         this.reviews = undefined;
+        this.allReviewsLoaded = false;
 
         this.query = query;
         this.loadReview(count);
@@ -71,7 +76,8 @@ export default class ReviewStore {
                 this.reviews = [];
             }
 
-            if (this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(false);
+            this.allReviewsLoaded = true;
+            if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
 
             return;
         }
@@ -93,8 +99,8 @@ export default class ReviewStore {
         let allReviewsLoaded = false;
         if (reviews.length < DEFAULT_PAGE_SIZE) allReviewsLoaded = true;
 
-        if (this.addToReviewFinishedCallback !== undefined && this.addToReviewFinishedCallback) this.addToReviewFinishedCallback(!allReviewsLoaded);
-
+        this.allReviewsLoaded = allReviewsLoaded;
+        if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
     }
 
     async joinProfiles(reviews: Review[]): Promise<ReviewEntry[]> { // mapping review and review writer
@@ -114,7 +120,7 @@ export default class ReviewStore {
         return reviews.map(review => {
             const profile = this.profiles[review.uid];
 
-            console.log('joinProfiles profile', profile, 'review', review);
+            // console.log('joinProfiles profile', profile, 'review', review);
 
             return { profile, review };
         });

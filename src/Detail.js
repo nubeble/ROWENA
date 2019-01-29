@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
-    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar
+    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
 } from 'react-native';
 import { Header } from 'react-navigation';
 import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
@@ -62,8 +62,6 @@ export default class Detail extends React.Component {
     onGoBack(result) { // back from rating
         console.log('Detail::onGoBack', result);
 
-        // this.setState({ isNavigating: false }); // Consider: move to onFocus
-
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
@@ -80,9 +78,30 @@ export default class Detail extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post } = this.props.navigation.state.params;
         this.init(post);
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        // this.goBack(); // works best when the goBack is async
+        this.props.navigation.goBack();
+
+        return true;
+    }
+
+    @autobind
+    onFocus() {
+        this.focused = true;
+    }
+
+    @autobind
+    onBlur() {
+        this.focused = false;
     }
 
     init(post) {
@@ -102,6 +121,10 @@ export default class Detail extends React.Component {
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         this.isClosed = true;
     }
@@ -181,174 +204,161 @@ export default class Detail extends React.Component {
                     */}
                 </View>
 
-                {
-                    !this.state.renderList ?
-                        <ActivityIndicator
-                            style={{
-                                position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
-                            }}
-                            animating={true}
-                            size="large"
-                            color='grey'
-                        />
-                        :
-                        // this.state.renderList &&
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-                            }}
-                        >
-                            <FlatList
-                                ref={(fl) => this._flatList = fl}
-                                contentContainerStyle={styles.container}
-                                showsVerticalScrollIndicator={true}
-                                ListHeaderComponent={(
-                                    <View>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                    }}
+                >
+                    <FlatList
+                        ref={(fl) => this._flatList = fl}
+                        contentContainerStyle={styles.container}
+                        showsVerticalScrollIndicator={true}
+                        ListHeaderComponent={(
+                            <View>
 
-                                        {/* profile pictures */}
-                                        {this.renderSwiper(post)}
+                                {/* profile pictures */}
+                                {this.renderSwiper(post)}
 
-                                        <View style={styles.infoContainer}>
-                                            <TouchableWithoutFeedback
-                                            // onPress={this.profile}
-                                            >
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                                    <View style={styles.circle}></View>
-                                                    <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
-                                                </View>
-                                            </TouchableWithoutFeedback>
+                                <View style={styles.infoContainer}>
+                                    <TouchableWithoutFeedback
+                                    // onPress={this.profile}
+                                    >
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                            <View style={styles.circle}></View>
+                                            <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                        </View>
+                                    </TouchableWithoutFeedback>
 
-                                            <Text style={styles.name}>{post.name}</Text>
-                                            <Text style={styles.size}>
-                                                {post.age}yrs  {post.height}cm  {post.weight}kg
+                                    <Text style={styles.name}>{post.name}</Text>
+                                    <Text style={styles.size}>
+                                        {post.age}yrs  {post.height}cm  {post.weight}kg
                                             </Text>
 
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                    <AirbnbRating
-                                                        count={5}
-                                                        readOnly={true}
-                                                        showRating={false}
-                                                        defaultRating={4}
-                                                        size={16}
-                                                        margin={1}
-                                                    />
-                                                </View>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                            <AirbnbRating
+                                                count={5}
+                                                readOnly={true}
+                                                showRating={false}
+                                                defaultRating={4}
+                                                size={16}
+                                                margin={1}
+                                            />
+                                        </View>
 
-                                                {/* ToDo: draw stars based on averge rating & get review count
+                                        {/* ToDo: draw stars based on averge rating & get review count
                                                     {post.averageRating}
                                                 */}
-                                                <Text style={styles.rating}>4.4</Text>
+                                        <Text style={styles.rating}>4.4</Text>
 
-                                                <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
-                                                <Text style={styles.reviewCount}>12</Text>
-                                            </View>
+                                        <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                        <Text style={styles.reviewCount}>12</Text>
+                                    </View>
 
-                                            {/*
+                                    {/*
                                                 <Text style={styles.note}>{tmp}</Text>
                                             */}
-                                            <Text style={styles.note}>{post.note}</Text>
-                                        </View>
+                                    <Text style={styles.note}>{post.note}</Text>
+                                </View>
 
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                        {/* map */}
-                                        <View style={styles.mapContainer}>
-                                            <TouchableOpacity activeOpacity={0.5}
-                                                onPress={() => {
-                                                    setTimeout(() => {
-                                                        /*
-                                                        this.setState({ isNavigating: true }, () => {
-                                                            this.props.navigation.navigate("map", { post: post });
-                                                        });
-                                                        */
-                                                        this.props.navigation.navigate("map", { post: post });
-                                                    }, 300);
+                                {/* map */}
+                                <View style={styles.mapContainer}>
+                                    <TouchableOpacity activeOpacity={0.5}
+                                        onPress={() => {
+                                            setTimeout(() => {
+                                                /*
+                                                this.setState({ isNavigating: true }, () => {
+                                                    this.props.navigation.navigate("map", { post: post });
+                                                });
+                                                */
+                                                this.props.navigation.navigate("map", { post: post });
+                                            }, 300);
+                                        }}
+                                    >
+                                        <View style={styles.mapView}>
+                                            <MapView
+                                                ref={map => { this.map = map }}
+                                                style={styles.map}
+                                                mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                                initialRegion={{
+                                                    longitude: post.location.longitude,
+                                                    latitude: post.location.latitude,
+                                                    latitudeDelta: 0.001,
+                                                    longitudeDelta: 0.001
                                                 }}
+                                                scrollEnabled={false}
+                                                zoomEnabled={false}
+                                                rotateEnabled={false}
+                                                pitchEnabled={false}
                                             >
-                                                <View style={styles.mapView}>
-                                                    <MapView
-                                                        ref={map => { this.map = map }}
-                                                        style={styles.map}
-                                                        mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                                        initialRegion={{
-                                                            longitude: post.location.longitude,
-                                                            latitude: post.location.latitude,
-                                                            latitudeDelta: 0.001,
-                                                            longitudeDelta: 0.001
-                                                        }}
-                                                        scrollEnabled={false}
-                                                        zoomEnabled={false}
-                                                        rotateEnabled={false}
-                                                        pitchEnabled={false}
-                                                    >
-                                                        <MapView.Marker
-                                                            coordinate={{
-                                                                longitude: post.location.longitude,
-                                                                latitude: post.location.latitude
-                                                            }}
-                                                        // title={'title'}
-                                                        // description={'description'}
-                                                        />
-                                                    </MapView>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </View>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                        <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                            {/* Consider: show review chart */}
-                                            <Image
-                                                style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                                resizeMode={'cover'}
-                                                source={require('../assets/sample1.jpg')}
-                                            />
-
-                                            {
-                                                this.renderReviews(this.reviewStore.reviews)
-                                            }
-                                        </View>
-
-                                        <View style={styles.writeReviewContainer}>
-                                            <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                            <View style={{ marginBottom: 10 }}>
-                                                <AirbnbRating
-                                                    ref='rating'
-                                                    onFinishRating={this.ratingCompleted}
-                                                    showRating={false}
-                                                    count={5}
-                                                    defaultRating={this.state.rating}
-                                                    size={32}
-                                                    margin={3}
+                                                <MapView.Marker
+                                                    coordinate={{
+                                                        longitude: post.location.longitude,
+                                                        latitude: post.location.latitude
+                                                    }}
+                                                // title={'title'}
+                                                // description={'description'}
                                                 />
-                                            </View>
+                                            </MapView>
                                         </View>
+                                    </TouchableOpacity>
+                                </View>
 
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
-                                        <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
-                                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
-                                        </TouchableOpacity>
-
-                                    </View>
-                                )}
-
-                            /*
-                            ListFooterComponent={
-                                this.state.isNavigating && (
-                                    <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
+                                <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
+                                    {/* Consider: show review chart */}
+                                    <Image
+                                        style={{ width: '100%', height: 140, marginBottom: 10 }}
+                                        resizeMode={'cover'}
+                                        source={require('../assets/sample1.jpg')}
                                     />
-                                )
-                            }
-                            */
-                            // scrollEventThrottle={1}
-                            // columnWrapperStyle={undefined}
-                            // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
-                            // {...{ onScroll }}
+
+                                    {
+                                        this.renderReviews(this.reviewStore.reviews)
+                                    }
+                                </View>
+
+                                <View style={styles.writeReviewContainer}>
+                                    <Text style={styles.ratingText}>Share your experience to help others</Text>
+                                    <View style={{ marginBottom: 10 }}>
+                                        <AirbnbRating
+                                            ref='rating'
+                                            onFinishRating={this.ratingCompleted}
+                                            showRating={false}
+                                            count={5}
+                                            defaultRating={this.state.rating}
+                                            size={32}
+                                            margin={3}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
+                                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
+                                </TouchableOpacity>
+
+                            </View>
+                        )}
+
+                    /*
+                    ListFooterComponent={
+                        this.state.isNavigating && (
+                            <View style={{ width: '100%', height: 100 }} // 100: (enough) height of tab bar
                             />
-                        </TouchableWithoutFeedback>
-                }
+                        )
+                    }
+                    */
+                    // scrollEventThrottle={1}
+                    // columnWrapperStyle={undefined}
+                    // {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}
+                    // {...{ onScroll }}
+                    />
+                </TouchableWithoutFeedback>
 
                 {
                     this.state.showKeyboard && (
@@ -406,11 +416,6 @@ export default class Detail extends React.Component {
                                 keyboardAppearance={'dark'}
                                 selectionColor={Theme.color.selection}
                                 onChangeText={(text) => this.onChangeText(text)}
-
-                            /*
-                            onFocus={this.onFocus}
-                            onBlur={this.onBlur}
-                            */
                             />
                             <TouchableOpacity
                                 style={{
@@ -482,8 +487,6 @@ export default class Detail extends React.Component {
     }
 
     renderSwiper(post) {
-        // if (!this.isFocused) return;
-
         let pictures = [];
 
         let value = post.pictures.one.uri;
@@ -559,8 +562,6 @@ export default class Detail extends React.Component {
 
     renderReviews(reviews) { // draw items up to 4
         console.log('Detail::renderReviews');
-
-        // if (!this.isFocused) return;
 
         const reviewArray = [];
 
@@ -784,6 +785,10 @@ export default class Detail extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
+        if (!this.focused) return;
+
+        console.log('Detail._keyboardDidShow');
+
         /*
         if (!this.state.showKeyboard) this.setState({ showKeyboard: true });
 
@@ -815,6 +820,9 @@ export default class Detail extends React.Component {
 
     @autobind
     _keyboardDidHide() {
+        if (!this.focused) return;
+
+        console.log('Detail._keyboardDidHide');
         /*
         if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
@@ -898,22 +906,6 @@ export default class Detail extends React.Component {
             this._showNotification = false;
         }
     }
-
-    /*
-    @autobind
-    onFocus() {
-        // this.setState({ isFocused: true });
-
-        if (!this.state.showKeyboard) this.setState({ showKeyboard: true });
-    }
-
-    @autobind
-    onBlur() {
-        // this.setState({ isFocused: false });
-
-        if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-    }
-    */
 
     async contact() {
         const { post, profile } = this.props.navigation.state.params;

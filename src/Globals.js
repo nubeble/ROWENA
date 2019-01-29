@@ -19,8 +19,7 @@ export var Globals = {
     // iPhone X: 4, Tango: ?, S7: 8
     searchBarPaddingTop:() => {
         const height = Dimensions.get('window').height;
-
-        const param = height / 100;
+        const param = parseInt(height / 100);
 
         switch (param) {
             case 5: return 10;

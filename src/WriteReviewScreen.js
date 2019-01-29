@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard,
-    KeyboardAvoidingView, Animated, StatusBar
+    KeyboardAvoidingView, Animated, StatusBar, BackHandler
 } from 'react-native';
 import { Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -31,6 +31,7 @@ export default class WriteReviewScreen extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         this.setState({ rating });
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
@@ -46,8 +47,17 @@ export default class WriteReviewScreen extends React.Component {
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
 
         this.isClosed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.state.params.onGoBack(false);
+        this.props.navigation.goBack();
+
+        return true;
     }
 
     @autobind

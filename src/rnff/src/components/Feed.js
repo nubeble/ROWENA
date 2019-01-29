@@ -36,13 +36,16 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     @autobind
-    onAddToFeedFinished(result) {
-        console.log('onAddToFeedFinished', result);
+    onAddToFeedFinished() {
+        // console.log('onAddToFeedFinished', result);
+        console.log('onAddToFeedFinished');
 
+        /*
         if (!result) {
             // don't call loadFeed() again.
             this.allFeedsLoaded = true;
         }
+        */
 
         !this.isClosed && this.setState({ isLoadingFeed: false, refreshing: false });
     }
@@ -62,12 +65,15 @@ export default class Feed extends React.Component<FeedProps> {
         console.log('Feed::loadMore');
 
         if (this.state.isLoadingFeed) {
-            this.setState({ refreshing: false });
+            // this.setState({ refreshing: false });
             return;
         }
 
-        if (this.allFeedsLoaded) {
+        if (this.props.store.allFeedsLoaded) {
+            console.log('feedStore.allFeedsLoaded');
+
             this.setState({ refreshing: false });
+
             return;
         }
 
