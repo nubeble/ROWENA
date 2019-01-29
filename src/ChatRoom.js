@@ -12,6 +12,7 @@ import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { NavigationActions } from 'react-navigation';
 import { Globals } from "./Globals";
+import { sendPushNotification } from './PushNotifications';
 
 const chatViewHeight = Dimensions.get('window').height - Globals.searchBarHeight;
 const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
@@ -22,10 +23,7 @@ const sendButtonMarginBottom = parseInt(Dimensions.get('window').height / 40);
 const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
 
 // const minComposerHeight = parseInt(Dimensions.get('window').height / 20); // Do not use this for android
-
 const maxComposerHeight = parseInt(Dimensions.get('window').height / 40); // ToDo
-// const maxComposerHeight = 40; // ToDo
-
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
@@ -211,7 +209,7 @@ export default class ChatRoom extends React.Component {
                         placeholder={'Write a message'}
                         placeholderTextColor={Theme.color.placeholder}
                         user={this.user}
-                        onSend={async (messages) => await Firebase.sendMessages(this.state.id, messages, Firebase.uid())}
+                        onSend={async (messages) => await this.sendMessage(messages[0])}
                         onPressAvatar={async () => await this.openPost()}
 
                         textInputProps={{
@@ -363,6 +361,21 @@ export default class ChatRoom extends React.Component {
                 this.onLoading = false;
             }
         });
+    }
+
+    async sendMessage(message) {
+        await Firebase.sendMessage(this.state.id, message, Firebase.uid());
+
+        // send push notification
+
+        const item = this.props.navigation.state.params.item;
+        const ownerUid = item.users[1].uid; // owner(boss)'s uid or the opponent
+
+        const sender = Firebase.uid();
+        const receiver = ownerUid;
+        // const timestamp
+
+        sendPushNotification(sender, receiver, message);
     }
 
     async openPost() {

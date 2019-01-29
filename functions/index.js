@@ -419,7 +419,7 @@ exports.setToken = functions.https.onRequest((req, res) => {
             });
         });
 
-        // req.pipe(busboy); // ToDo: not working!
+        // req.pipe(busboy); // not working!
         busboy.end(req.rawBody);
 
 
@@ -437,9 +437,98 @@ exports.setToken = functions.https.onRequest((req, res) => {
 });
 
 exports.sendPushNotification = functions.https.onRequest((req, res) => {
-    // ToDo:
-    const target;
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
 
+        const fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            fields[fieldname] = val;
+        });
+
+        busboy.on("finish", () => {
+            console.log('Done parsing form.', fields);
+
+            const sender = fields.sender;
+            const targetUid = fields.receiver; // uid
+            const msg = fields.message;
+
+            let targetToken = null;
+
+            await(Firebase.firestore.collection("tokens").doc(targetUid).get().then(doc => {
+                if (doc.exists) {
+                    const token = doc.data().token;
+                    if (token) targetToken = token;
+                }
+            }));
+
+            if (!targetToken) {
+                const error = `Push token is null.`;
+                console.error(error);
+
+                res.status(500).send(error);
+
+                return;
+            }
+
+            if (!Expo.isExpoPushToken(targetToken)) {
+                const error = `Push token ${targetToken} is not a valid Expo push token.`;
+                console.error(error);
+
+                res.status(500).send(error);
+
+                return;
+            }
+
+            let messages = [];
+            messages.push({
+                to: targetToken,
+                sound: 'default',
+                // body: 'This is a test notification',
+                body: msg,
+                // data: { withSome: 'data' }, // ToDo: check the spec.!
+                data: {
+                    sender: sender
+                }
+            });
+
+            let chunks = expo.chunkPushNotifications(messages);
+
+            let tickets = [];
+
+            (async(function _sendNotification() {
+                for (let chunk of chunks) {
+                    try {
+                        let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
+
+                        console.log(ticketChunk);
+
+                        tickets.push(...ticketChunk);
+                    } catch (error) {
+                        // NOTE: If a ticket contains an error code in ticket.details.error, you
+                        // must handle it appropriately. The error codes are listed in the Expo
+                        // documentation:
+                        // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+                        console.error(error);
+                    }
+                }
+
+                // ToDo: save tickets to database
+
+                // ToDo: make api to get receipts
+            }))();
+
+
+
+            res.status(200).send(fields);
+        });
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+        res.status(405).end(error);
+    }
 });
 
 
@@ -460,7 +549,7 @@ const _sendNotification = (somePushTokens) => {
 
         // Check that all your push tokens appear to be valid Expo push tokens
         if (!Expo.isExpoPushToken(pushToken)) {
-            console.error(`Push token ${pushToken} is not a valid Expo push token`);
+            console.error(`Push token ${pushToken} is not a valid Expo push token.`);
             continue;
         }
 

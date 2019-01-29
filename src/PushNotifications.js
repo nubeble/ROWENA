@@ -2,7 +2,8 @@ import { Permissions, Notifications } from 'expo';
 import Firebase from './Firebase';
 
 // const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
-const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/setToken";
+// const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/setToken";
+const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
 
 export async function registerExpoPushToken() {
@@ -42,7 +43,7 @@ export async function registerExpoPushToken() {
     formData.append("name", user.name);
 
     // POST the token to your backend server from where you can retrieve it to send push notifications.
-    return fetch(PUSH_ENDPOINT, {
+    return fetch(PUSH_ENDPOINT + "setToken", {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -60,6 +61,22 @@ export async function registerExpoPushToken() {
             }
         })
         */
+        body: formData
+    });
+}
+
+export function sendPushNotification(sender, receiver, message) {
+    const formData = new FormData();
+    formData.append("sender", sender);
+    formData.append("receiver", receiver);
+    formData.append("message", message);
+
+    return fetch(PUSH_ENDPOINT + "sendPushNotification", {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "multipart/form-data"
+        },
         body: formData
     });
 }

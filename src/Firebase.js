@@ -565,11 +565,13 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static async sendMessages(id, messages, uid) {
-        for (let i = 0; i < messages.length; i++) {
-            const { text, user } = messages[i];
+    static async sendMessage(id, message, uid) {
+        // for (let i = 0; i < messages.length; i++) {
+            // const { text, user } = messages[i];
+            const { text, user } = message;
 
-            if (!text || text.length === 0) continue;
+            // if (!text || text.length === 0) continue;
+            if (!text || text.length === 0) return;
 
             const timestamp = Firebase.timestamp();
 
@@ -589,7 +591,7 @@ export default class Firebase {
             };
 
             await Firebase.database.ref('chat').child(uid).child(id).update(updateData);
-        }
+        // }
     };
 
     // tmp
