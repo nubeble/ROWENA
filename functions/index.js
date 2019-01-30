@@ -424,10 +424,6 @@ const sendPushNotification = async(function (chunks) {
         }
     }
 
-    // ToDo: save tickets to database
-
-    // ToDo: make api to get receipts
-
     return result;
 });
 
@@ -497,12 +493,16 @@ const processPushNotification = async(function () {
     let tickets = [];
 
 
-    // tickets = await(sendPushNotification(chunks));
-    tickets = sendPushNotification(chunks);
+    tickets = await(sendPushNotification(chunks)); // Consider
+    // tickets = sendPushNotification(chunks);
+
+    // ToDo: save tickets to database
+
+    // ToDo: make api to get receipts
+
+    console.log('tickets', tickets);
 
     res.status(200).send(fields);
-
-
 });
 
 exports.sendPushNotification = functions.https.onRequest((req, res) => {
@@ -517,7 +517,7 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
             // console.log(fieldname, val);
         });
 
-        busboy.on("finish", processPushNotification.bind(fields));
+        busboy.on("finish", processPushNotification.bind(fields)); // ToDo: pass res!!!
 
         busboy.end(req.rawBody);
     } else {
@@ -527,32 +527,12 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     }
 });
 
-function _AAA() {
-    var chunks = this;
 
-    var result = [];
-    for (let chunk of chunks) {
-        try {
-            let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
-            // let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 
-            console.log(ticketChunk);
 
-            result.push(...ticketChunk);
-        } catch (error) {
-            // NOTE: If a ticket contains an error code in ticket.details.error, you
-            // must handle it appropriately. The error codes are listed in the Expo
-            // documentation:
-            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-            console.error(error);
-        }
-    }
 
-    // ToDo: save tickets to database
 
-    // ToDo: make api to get receipts
-    return result;
-}
+
 
 
 
