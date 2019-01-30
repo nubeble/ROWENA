@@ -66,6 +66,8 @@ export async function registerExpoPushToken() {
 }
 
 export function sendPushNotification(sender, receiver, message) {
+    console.log(sender, receiver, message);
+
     const formData = new FormData();
     formData.append("sender", sender);
     formData.append("receiver", receiver);

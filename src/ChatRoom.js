@@ -375,7 +375,7 @@ export default class ChatRoom extends React.Component {
         const receiver = ownerUid;
         // const timestamp
 
-        sendPushNotification(sender, receiver, message);
+        sendPushNotification(sender, receiver, message.text);
     }
 
     async openPost() {

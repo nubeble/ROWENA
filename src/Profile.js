@@ -378,12 +378,12 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const fileName = uri.split('/').pop();
         var ext = fileName.split('.').pop();
 
-        if (!this.isImage(ext)) {
+        if (!Util.isImage(ext)) {
             alert('invalid image file!');
             return;
         }
 
-        var type = this.getImageType(ext);
+        var type = Util.getImageType(ext);
         // console.log('file type:', type);
 
         const formData = new FormData();
@@ -398,7 +398,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         formData.append("pictureIndex", index);
 
         try {
-            let response = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/api/images",
+            let response = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/uploadFile/images",
                 {
                     method: "POST",
                     headers: {

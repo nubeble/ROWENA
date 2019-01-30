@@ -29,10 +29,23 @@ const fs = require('fs');
 const spawn = require('child-process-promise').spawn;
 const cors = require("cors");
 const express = require("express");
-const fileUploader = require("./fileUploader");
-const api = express().use(cors({ origin: true }));
+const app = express();
+app.use(cors({ origin: true }));
 
-fileUploader("/images", api);
+const fileUploader = require("./fileUploader");
+fileUploader("/images", app); // ToDo: what is the "/images"??
+
+const { Expo } = require('expo-server-sdk');
+const async = require('asyncawait').async;
+const await = require('asyncawait').await;
+
+// Create a new Expo SDK client
+let expo = new Expo();
+
+
+
+
+
 
 
 
@@ -130,9 +143,7 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
         return fs.unlinkSync(tmpFilePath);
     });
 });
-*/
 
-/*
 exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
     console.log(event);
 
@@ -142,7 +153,7 @@ exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
 
 
 
-api.post("/images", function (req, response, next) {
+app.post("/images", function (req, response, next) {
     console.log('Image Upload', req.field);
 
     const storage = admin.storage();
@@ -192,12 +203,11 @@ api.post("/images", function (req, response, next) {
     });
 });
 
-// exports.api = functions.https.onRequest(api);
 const runtimeOpts = {
     timeoutSeconds: 30
 };
-
-exports.api = functions.runWith(runtimeOpts).https.onRequest(api);
+// exports.uploadFile = functions.https.onRequest(app);
+exports.uploadFile = functions.runWith(runtimeOpts).https.onRequest(app);
 
 const uploadImageToStorage = (file, fileDir) => {
     const storage = admin.storage();
@@ -293,69 +303,8 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
 
     });
 });
-/*
+
 const makeData = (index, url) => {
-    switch (index) {
-        case '0': return {
-            // 'pictures.one.preview': admin.firestore.FieldValue.delete(),
-            'pictures.one.uri': url
-        };
-
-        case '1': return {
-            'pictures.two.uri': url
-        };
-
-        case '2': return {
-            'pictures.three.uri': url
-        };
-
-        case '3': return {
-            'pictures.four.uri': url
-        };
-
-        case '4': return {
-            'pictures.five.uri': url
-        };
-
-        case '5': return {
-            'pictures.six.uri': url
-        };
-    }
-
-    return null;
-}
-*/
-const makeData = (index, url) => {
-    /*
-    switch (index) {
-        case '0': return {
-            // 'pictures.one.preview': admin.firestore.FieldValue.delete(),
-            'pictures.one.uri': url
-        };
-
-        case '1': return {
-            'pictures.two.uri': url
-        };
-
-        case '2': return {
-            'pictures.three.uri': url
-        };
-
-        case '3': return {
-            'pictures.four.uri': url
-        };
-
-        case '4': return {
-            'pictures.five.uri': url
-        };
-
-        case '5': return {
-            'pictures.six.uri': url
-        };
-    }
-
-    return null;
-    */
     let key;
     switch (index) {
         case '0': key = 'one'; break;
@@ -436,6 +385,126 @@ exports.setToken = functions.https.onRequest((req, res) => {
     }
 });
 
+
+
+
+
+
+
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+const getToken = async(function (uid) {
+    let targetToken = null;
+
+    const doc = await(admin.firestore().collection("tokens").doc(uid).get());
+    if (doc.exists) {
+        const token = doc.data().token;
+        if (token) targetToken = token;
+    }
+
+    return targetToken;
+});
+
+const sendPushNotification = async(function (chunks) {
+    var result = [];
+    for (let chunk of chunks) {
+        try {
+            let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
+            console.log(ticketChunk);
+
+            result.push(...ticketChunk);
+        } catch (error) {
+            // NOTE: If a ticket contains an error code in ticket.details.error, you
+            // must handle it appropriately. The error codes are listed in the Expo
+            // documentation:
+            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+            console.error(error);
+        }
+    }
+
+    // ToDo: save tickets to database
+
+    // ToDo: make api to get receipts
+
+    return result;
+});
+
+const processPushNotification = async(function () {
+    const fields = this;
+    
+    console.log('Done parsing form.', fields);
+
+    const sender = fields.sender;
+    const targetUid = fields.receiver; // uid
+    const msg = fields.message;
+
+    // let targetToken = null;
+
+    /*
+    const doc = await(admin.firestore().collection("tokens").doc(targetUid).get());
+    if (doc.exists) {
+        const token = doc.data().token;
+        if (token) targetToken = token;
+    }
+    */
+
+    /*
+     await(admin.firestore().collection("tokens").doc(targetUid).get().then(doc => {
+         if (doc.exists) {
+             const token = doc.data().token;
+             if (token) targetToken = token;
+         }
+     }));
+     */
+
+    const targetToken = await(getToken(targetUid));
+    console.log('targetToken', targetToken);
+
+    if (!targetToken) {
+        const error = `Push token is null.`;
+        console.error(error);
+
+        res.status(500).send(error);
+
+        return;
+    }
+
+    if (!Expo.isExpoPushToken(targetToken)) {
+        const error = `Push token ${targetToken} is not a valid Expo push token.`;
+        console.error(error);
+
+        res.status(500).send(error);
+
+        return;
+    }
+
+    let messages = [];
+    messages.push({
+        to: targetToken,
+        sound: 'default',
+        // body: 'This is a test notification',
+        body: msg,
+        // data: { withSome: 'data' }, // ToDo: check the spec.!
+        data: {
+            sender: sender
+        }
+    });
+
+    let chunks = expo.chunkPushNotifications(messages);
+
+    let tickets = [];
+
+
+    // tickets = await(sendPushNotification(chunks));
+    tickets = sendPushNotification(chunks);
+
+    res.status(200).send(fields);
+
+
+});
+
 exports.sendPushNotification = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
@@ -444,84 +513,11 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
 
         busboy.on("field", (fieldname, val) => {
             fields[fieldname] = val;
+
+            // console.log(fieldname, val);
         });
 
-        busboy.on("finish", () => {
-            console.log('Done parsing form.', fields);
-
-            const sender = fields.sender;
-            const targetUid = fields.receiver; // uid
-            const msg = fields.message;
-
-            let targetToken = null;
-
-            await(Firebase.firestore.collection("tokens").doc(targetUid).get().then(doc => {
-                if (doc.exists) {
-                    const token = doc.data().token;
-                    if (token) targetToken = token;
-                }
-            }));
-
-            if (!targetToken) {
-                const error = `Push token is null.`;
-                console.error(error);
-
-                res.status(500).send(error);
-
-                return;
-            }
-
-            if (!Expo.isExpoPushToken(targetToken)) {
-                const error = `Push token ${targetToken} is not a valid Expo push token.`;
-                console.error(error);
-
-                res.status(500).send(error);
-
-                return;
-            }
-
-            let messages = [];
-            messages.push({
-                to: targetToken,
-                sound: 'default',
-                // body: 'This is a test notification',
-                body: msg,
-                // data: { withSome: 'data' }, // ToDo: check the spec.!
-                data: {
-                    sender: sender
-                }
-            });
-
-            let chunks = expo.chunkPushNotifications(messages);
-
-            let tickets = [];
-
-            (async(function _sendNotification() {
-                for (let chunk of chunks) {
-                    try {
-                        let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
-
-                        console.log(ticketChunk);
-
-                        tickets.push(...ticketChunk);
-                    } catch (error) {
-                        // NOTE: If a ticket contains an error code in ticket.details.error, you
-                        // must handle it appropriately. The error codes are listed in the Expo
-                        // documentation:
-                        // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-                        console.error(error);
-                    }
-                }
-
-                // ToDo: save tickets to database
-
-                // ToDo: make api to get receipts
-            }))();
-
-
-
-            res.status(200).send(fields);
-        });
+        busboy.on("finish", processPushNotification.bind(fields));
 
         busboy.end(req.rawBody);
     } else {
@@ -531,13 +527,34 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     }
 });
 
+function _AAA() {
+    var chunks = this;
 
-const { Expo } = require('expo-server-sdk');
-const async = require('asyncawait/async');
-const await = require('asyncawait/await');
+    var result = [];
+    for (let chunk of chunks) {
+        try {
+            let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
+            // let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
 
-// Create a new Expo SDK client
-let expo = new Expo();
+            console.log(ticketChunk);
+
+            result.push(...ticketChunk);
+        } catch (error) {
+            // NOTE: If a ticket contains an error code in ticket.details.error, you
+            // must handle it appropriately. The error codes are listed in the Expo
+            // documentation:
+            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+            console.error(error);
+        }
+    }
+
+    // ToDo: save tickets to database
+
+    // ToDo: make api to get receipts
+    return result;
+}
+
+
 
 const _sendNotification = (somePushTokens) => {
 
