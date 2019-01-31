@@ -385,16 +385,6 @@ exports.setToken = functions.https.onRequest((req, res) => {
     }
 });
 
-
-
-
-
-
-
-
-
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 const getToken = async(function (uid) {
     let targetToken = null;
 
@@ -428,32 +418,15 @@ const sendPushNotification = async(function (chunks) {
 });
 
 const processPushNotification = async(function () {
-    const fields = this;
-    
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+
     console.log('Done parsing form.', fields);
 
     const sender = fields.sender;
     const targetUid = fields.receiver; // uid
     const msg = fields.message;
-
-    // let targetToken = null;
-
-    /*
-    const doc = await(admin.firestore().collection("tokens").doc(targetUid).get());
-    if (doc.exists) {
-        const token = doc.data().token;
-        if (token) targetToken = token;
-    }
-    */
-
-    /*
-     await(admin.firestore().collection("tokens").doc(targetUid).get().then(doc => {
-         if (doc.exists) {
-             const token = doc.data().token;
-             if (token) targetToken = token;
-         }
-     }));
-     */
 
     const targetToken = await(getToken(targetUid));
     console.log('targetToken', targetToken);
@@ -479,30 +452,74 @@ const processPushNotification = async(function () {
     let messages = [];
     messages.push({
         to: targetToken,
-        sound: 'default',
-        // body: 'This is a test notification',
+
+        /**
+         * The title to display in the notification. Devices often display this in
+         * bold above the notification body. Only the title might be displayed on
+         * devices with smaller screens like Apple Watch.
+         */
+        title: 'title',
+
+        /**
+         * The message to display in the notification
+         */
         body: msg,
-        // data: { withSome: 'data' }, // ToDo: check the spec.!
+        /**
+         * A JSON object delivered to your app. It may be up to about 4KiB; the total
+         * notification payload sent to Apple and Google must be at most 4KiB or else
+         * you will get a "Message Too Big" error.
+         */
         data: {
             sender: sender
-        }
+        },
+
+        //// iOS-specific fields ////
+
+        /**
+         * A sound to play when the recipient receives this notification. Specify
+         * "default" to play the device's default notification sound, or omit this
+         * field to play no sound.
+         *
+         * Note that on apps that target Android 8.0+ (if using `expo build`, built
+         * in June 2018 or later), this setting will have no effect on Android.
+         * Instead, use `channelId` and a channel with the desired setting.
+         */
+        sound: 'default' | null,
+
+        /**
+         * Number to display in the badge on the app icon. Specify zero to clear the
+         * badge.
+         */
+        // badge?: number,
+
+        //// Android-specific fields ////
+
+        /**
+         * ID of the Notification Channel through which to display this notification
+         * on Android devices. If an ID is specified but the corresponding channel
+         * does not exist on the device (i.e. has not yet been created by your app),
+         * the notification will not be displayed to the user.
+         *
+         * If left null, a "Default" channel will be used, and Expo will create the
+         * channel on the device if it does not yet exist. However, use caution, as
+         * the "Default" channel is user-facing and you may not be able to fully
+         * delete it.
+         */
+        // channelId?: string
     });
 
     let chunks = expo.chunkPushNotifications(messages);
 
     let tickets = [];
 
+    tickets = await(sendPushNotification(chunks));
 
-    tickets = await(sendPushNotification(chunks)); // Consider
-    // tickets = sendPushNotification(chunks);
-
-    // ToDo: save tickets to database
-
-    // ToDo: make api to get receipts
+    // ToDo: save tickets to database & make api to get receipts
+    // await(getReceipts(receiptIdChunks));
 
     console.log('tickets', tickets);
 
-    res.status(200).send(fields);
+    res.status(200).send(tickets);
 });
 
 exports.sendPushNotification = functions.https.onRequest((req, res) => {
@@ -517,7 +534,11 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
             // console.log(fieldname, val);
         });
 
-        busboy.on("finish", processPushNotification.bind(fields)); // ToDo: pass res!!!
+        const params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", processPushNotification.bind(params));
 
         busboy.end(req.rawBody);
     } else {
@@ -527,180 +548,29 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     }
 });
 
+const getReceipts = async(function (receiptIdChunks) {
+    for (let chunk of receiptIdChunks) {
+        try {
+            let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
+            console.log(receipts);
 
-
-
-
-
-
-
-
-
-const _sendNotification = (somePushTokens) => {
-
-    // Create the messages that you want to send to clients
-    let messages = [];
-
-    for (let pushToken of somePushTokens) {
-        // Each push token looks like ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]
-
-        // Check that all your push tokens appear to be valid Expo push tokens
-        if (!Expo.isExpoPushToken(pushToken)) {
-            console.error(`Push token ${pushToken} is not a valid Expo push token.`);
-            continue;
-        }
-
-        // Construct a message (see https://docs.expo.io/versions/latest/guides/push-notifications.html)
-        messages.push({
-            to: pushToken,
-            sound: 'default',
-            body: 'This is a test notification',
-            data: { withSome: 'data' },
-        })
-    }
-
-
-    // The Expo push notification service accepts batches of notifications so
-    // that you don't need to send 1000 requests to send 1000 notifications. We
-    // recommend you batch your notifications to reduce the number of requests
-    // and to compress them (notifications with similar content will get
-    // compressed).
-    let chunks = expo.chunkPushNotifications(messages);
-
-    let tickets = [];
-
-    /*
-    (async () => {
-        // Send the chunks to the Expo push notification service. There are
-        // different strategies you could use. A simple one is to send one chunk at a
-        // time, which nicely spreads the load out over time:
-        for (let chunk of chunks) {
-            try {
-                let ticketChunk = await expo.sendPushNotificationsAsync(chunk);
-
-                console.log(ticketChunk);
-
-                tickets.push(...ticketChunk);
-
-                // NOTE: If a ticket contains an error code in ticket.details.error, you
-                // must handle it appropriately. The error codes are listed in the Expo
-                // documentation:
-                // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    })();
-    */
-    (async(function _sendNotification() {
-        // Send the chunks to the Expo push notification service. There are
-        // different strategies you could use. A simple one is to send one chunk at a
-        // time, which nicely spreads the load out over time:
-        for (let chunk of chunks) {
-            try {
-                let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
-
-                console.log(ticketChunk);
-
-                tickets.push(...ticketChunk);
-
-                // NOTE: If a ticket contains an error code in ticket.details.error, you
-                // must handle it appropriately. The error codes are listed in the Expo
-                // documentation:
-                // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    }))();
-
-
-
-
-    /* ... */
-
-    // Later, after the Expo push notification service has delivered the
-    // notifications to Apple or Google (usually quickly, but allow the the service
-    // up to 30 minutes when under load), a "receipt" for each notification is
-    // created. The receipts will be available for at least a day; stale receipts
-    // are deleted.
-    //
-    // The ID of each receipt is sent back in the response "ticket" for each
-    // notification. In summary, sending a notification produces a ticket, which
-    // contains a receipt ID you later use to get the receipt.
-    //
-    // The receipts may contain error codes to which you must respond. In
-    // particular, Apple or Google may block apps that continue to send
-    // notifications to devices that have blocked notifications or have uninstalled
-    // your app. Expo does not control this policy and sends back the feedback from
-    // Apple and Google so you can handle it appropriately.
-    let receiptIds = [];
-    for (let ticket of tickets) {
-        // NOTE: Not all tickets have IDs; for example, tickets for notifications
-        // that could not be enqueued will have error information and no receipt ID.
-        if (ticket.id) {
-            receiptIds.push(ticket.id);
-        }
-    }
-
-    let receiptIdChunks = expo.chunkPushNotificationReceiptIds(receiptIds);
-    /*
-    (async () => {
-        // Like sending notifications, there are different strategies you could use
-        // to retrieve batches of receipts from the Expo service.
-        for (let chunk of receiptIdChunks) {
-            try {
-                let receipts = await expo.getPushNotificationReceiptsAsync(chunk);
-                console.log(receipts);
-
-                // The receipts specify whether Apple or Google successfully received the
-                // notification and information about an error, if one occurred.
-                for (let receipt of receipts) {
-                    if (receipt.status === 'ok') {
-                        continue;
-                    } else if (receipt.status === 'error') {
-                        console.error(`There was an error sending a notification: ${receipt.message}`);
-                        if (receipt.details && receipt.details.error) {
-                            // The error codes are listed in the Expo documentation:
-                            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-                            // You must handle the errors appropriately.
-                            console.error(`The error code is ${receipt.details.error}`);
-                        }
+            // The receipts specify whether Apple or Google successfully received the
+            // notification and information about an error, if one occurred.
+            for (let receipt of receipts) {
+                if (receipt.status === 'ok') {
+                    continue;
+                } else if (receipt.status === 'error') {
+                    console.error(`There was an error sending a notification: ${receipt.message}`);
+                    if (receipt.details && receipt.details.error) {
+                        // The error codes are listed in the Expo documentation:
+                        // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
+                        // You must handle the errors appropriately.
+                        console.error(`The error code is ${receipt.details.error}`);
                     }
                 }
-            } catch (error) {
-                console.error(error);
             }
+        } catch (error) {
+            console.error(error);
         }
-    })();
-    */
-    (async(function _getReceipts() {
-        // Like sending notifications, there are different strategies you could use
-        // to retrieve batches of receipts from the Expo service.
-        for (let chunk of receiptIdChunks) {
-            try {
-                let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
-                console.log(receipts);
-
-                // The receipts specify whether Apple or Google successfully received the
-                // notification and information about an error, if one occurred.
-                for (let receipt of receipts) {
-                    if (receipt.status === 'ok') {
-                        continue;
-                    } else if (receipt.status === 'error') {
-                        console.error(`There was an error sending a notification: ${receipt.message}`);
-                        if (receipt.details && receipt.details.error) {
-                            // The error codes are listed in the Expo documentation:
-                            // https://docs.expo.io/versions/latest/guides/push-notifications#response-format
-                            // You must handle the errors appropriately.
-                            console.error(`The error code is ${receipt.details.error}`);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    }))();
-
-}
+    }
+});

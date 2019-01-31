@@ -101,6 +101,7 @@ export default class Intro extends React.Component {
 
         refreshing: false,
 
+        notificationMessage: {}
     };
 
     componentDidMount() {
@@ -124,8 +125,9 @@ export default class Intro extends React.Component {
 
     @autobind
     handleNotification(e) {
-        console.log(e);
-        // this.setState({notification: e});
+        console.log('handleNotification', e);
+
+        this.setState({ notificationMessage: e });
     }
 
     /*
@@ -279,8 +281,10 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop(), fontFamily: "SFProText-Semibold",
-                                color: "rgb(160, 160, 160)", textAlign: 'center' }}
+                                style={{
+                                    width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop(), fontFamily: "SFProText-Semibold",
+                                    color: "rgb(160, 160, 160)", textAlign: 'center'
+                                }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -432,7 +436,7 @@ export default class Intro extends React.Component {
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://www.thedailypost.kr/wp-content/uploads/2017/02/H52Am.jpg'}
-                                            // uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
+                                        // uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
