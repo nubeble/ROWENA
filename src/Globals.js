@@ -32,6 +32,25 @@ export var Globals = {
         if (param < 5) return 10;
         if (param > 9) return 2;
     },
+
+    // posting date text padding top
+    lastLogInDatePaddingTop:() => {
+        const height = Dimensions.get('window').height;
+        const param = parseInt(height / 100);
+
+        // console.log('param', param);
+
+        switch (param) {
+            case 5: return 1;
+            case 6: return 1; // Galaxy S7: 640
+            case 7: return 1; // Tango: 731
+            case 8: return 2; // iphone X: 812
+            case 9: return 2;
+        }
+
+        if (param < 5) return 1;
+        if (param > 9) return 2;
+    },
     
 
     

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions,
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
 } from 'react-native';
 import { Header } from 'react-navigation';
@@ -23,9 +23,15 @@ import ReadMore from "./ReadMore";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Globals } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import PreloadImage from './PreloadImage';
 
 
-// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
+const bodyInfoContainerPaddingVertical = Theme.spacing.small;
+const bodyInfoItemWidth = Dimensions.get('window').width / 5;
+// const bodyInfoItemHeight = bodyInfoItemWidth;
+const bodyInfoItemHeight = Dimensions.get('window').height / 12;
 
 
 @observer
@@ -39,7 +45,7 @@ export default class Detail extends React.Component {
     state = {
         rating: 0,
         // isNavigating: false,
-        renderList: false,
+        // renderList: false,
         isOwner: false,
 
         showKeyboard: false,
@@ -111,9 +117,11 @@ export default class Detail extends React.Component {
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query);
 
+        /*
         setTimeout(() => {
             !this.isClosed && this.setState({ renderList: true });
         }, 500);
+        */
     }
 
     componentWillUnmount() {
@@ -220,21 +228,140 @@ export default class Detail extends React.Component {
                                 {this.renderSwiper(post)}
 
                                 <View style={styles.infoContainer}>
-                                    <TouchableWithoutFeedback
-                                    // onPress={this.profile}
-                                    >
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                            <View style={styles.circle}></View>
-                                            <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
-                                        </View>
-                                    </TouchableWithoutFeedback>
 
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        <View style={styles.circle}></View>
+                                        <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                    </View>
+
+
+                                    {/*
                                     <Text style={styles.name}>{post.name}</Text>
                                     <Text style={styles.size}>
                                         {post.age}yrs  {post.height}cm  {post.weight}kg
-                                            </Text>
+                                    </Text>
+                                    */}
+                                    <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
+                                    {/*
+                                    <View style={{
+                                        // backgroundColor: 'green',
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        paddingVertical: bodyInfoContainerPaddingVertical,
+                                        paddingHorizontal: bodyInfoContainerPaddingHorizontal
+                                    }}
+                                    >
+                                        <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center' }} >
+                                            <Text style={styles.bodyInfoTitle}>Age</Text>
+                                            <Text style={styles.bodyInfoContent}>20</Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                borderLeftWidth: 5,
+                                                borderLeftColor: Theme.color.line,
+                                                //height: bodyInfoItemHeight * 0.5
+                                            }}
+                                        />
+                                        <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center' }} >
+                                            <Text style={styles.bodyInfoTitle}>Height</Text>
+                                            <Text style={styles.bodyInfoContent}>164</Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                borderLeftWidth: 5,
+                                                borderLeftColor: Theme.color.line,
+                                                //height: bodyInfoItemHeight * 0.5
+                                            }}
+                                        />
+                                        <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center' }} >
+                                            <Text style={styles.bodyInfoTitle}>Weight</Text>
+                                            <Text style={styles.bodyInfoContent}>48</Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                borderLeftWidth: 5,
+                                                borderLeftColor: Theme.color.line,
+                                                //height: bodyInfoItemHeight * 0.5
+                                            }}
+                                        />
+                                        <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center' }} >
+                                            <Text style={styles.bodyInfoTitle}>Bust Size</Text>
+                                            <Text style={styles.bodyInfoContent}>C</Text>
+                                        </View>
+                                    </View>
+                                    */}
+                                    <View style={{
+                                        // backgroundColor: 'green',
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        paddingVertical: bodyInfoContainerPaddingVertical,
+                                        paddingHorizontal: bodyInfoContainerPaddingHorizontal
+                                    }}
+                                    >
 
-                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{
+                                            width: '50%', height: bodyInfoItemHeight,
+                                            alignItems: 'flex-start', justifyContent: 'space-between'
+                                        }} >
+
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20 }}
+                                                    source={PreloadImage.birth}
+                                                    tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>20 years old</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20, marginTop: 2 }}
+                                                    source={PreloadImage.scale}
+                                                    tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>48 kg</Text>
+                                            </View>
+
+                                        </View>
+                                        <View style={{
+                                            width: '50%', height: bodyInfoItemHeight,
+                                            alignItems: 'flex-start', justifyContent: 'space-between'
+                                        }} >
+
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20 }}
+                                                    source={PreloadImage.ruler}
+                                                    tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>164 cm</Text>
+                                            </View>
+
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20 }}
+                                                    source={PreloadImage.bra}
+                                                    tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>C</Text>
+                                            </View>
+
+                                        </View>
+
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', paddingBottom: Theme.spacing.tiny }}>
+                                        <MaterialIcons name='location-on' color={'white'} size={20} />
+                                        <Text style={styles.distance}>12 km away</Text>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                             <AirbnbRating
                                                 count={5}
@@ -258,7 +385,7 @@ export default class Detail extends React.Component {
                                     {/*
                                                 <Text style={styles.note}>{tmp}</Text>
                                             */}
-                                    <Text style={styles.note}>{post.note}</Text>
+                                    <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                 </View>
 
                                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
@@ -1091,8 +1218,7 @@ const styles = StyleSheet.create({
     date: {
         // backgroundColor: 'rgb(70, 154, 32)',
         height: 14,
-        // marginTop: '2%',
-
+        paddingTop: Globals.lastLogInDatePaddingTop(),
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,
@@ -1104,7 +1230,7 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontFamily: "SFProText-Semibold",
         paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
+        // paddingBottom: Theme.spacing.xSmall
     },
     size: {
         color: "white",
@@ -1113,6 +1239,33 @@ const styles = StyleSheet.create({
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.xSmall
     },
+
+    bodyInfoTitle: {
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        paddingTop: Theme.spacing.tiny,
+        paddingLeft: Theme.spacing.tiny,
+        // backgroundColor: 'green'
+    },
+    bodyInfoContent: {
+        color: 'white',
+        fontSize: 18,
+        fontFamily: "SFProText-Bold",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
+    },
+    distance: {
+        paddingLeft: 5,
+
+        color: 'white',
+        fontSize: 18,
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular",
+        // paddingTop: Theme.spacing.xSmall
+        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
+    },
+
     rating: {
         marginLeft: 5,
 
@@ -1122,7 +1275,6 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular",
         // paddingTop: Theme.spacing.xSmall
         paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
-
     },
     reviewCount: {
         marginLeft: 5,
@@ -1135,12 +1287,21 @@ const styles = StyleSheet.create({
         paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     note: {
+        marginTop: 5,
+
         color: Theme.color.text2,
         fontSize: 16,
         lineHeight: 24,
         fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny
+        paddingTop: Theme.spacing.small,
+        paddingBottom: Theme.spacing.small,
+        paddingLeft: Theme.spacing.small,
+        paddingRight: Theme.spacing.small,
+
+        backgroundColor: 'rgb(34, 34, 34)',
+        borderRadius: 5,
+        // borderColor: "transparent",
+        borderWidth: 0,
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,

@@ -38,7 +38,7 @@ export default class AuthMain extends React.Component {
             declinedPermissions,
         } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542',
             {
-                permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'web'
+                permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
             });
 
         if (type === 'success') {

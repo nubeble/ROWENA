@@ -36,7 +36,7 @@ export default class PostScreen extends React.Component {
 
     state = {
         rating: 0,
-        renderList: false,
+        // renderList: false,
         isOwner: false,
 
         showKeyboard: false,
@@ -104,7 +104,7 @@ export default class PostScreen extends React.Component {
                         }}
                     >{post.name}</Text>
                 </View>
-
+{/*
                 {
                     !this.state.renderList ?
                         <ActivityIndicator
@@ -116,6 +116,7 @@ export default class PostScreen extends React.Component {
                             color='grey'
                         />
                         :
+*/}
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -248,7 +249,9 @@ export default class PostScreen extends React.Component {
                                 )}
                             />
                         </TouchableWithoutFeedback>
+{/*
                 }
+*/}
 
                 {
                     this.state.showKeyboard && (
@@ -444,9 +447,11 @@ export default class PostScreen extends React.Component {
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query);
 
+        /*
         setTimeout(() => {
             !this.isClosed && this.setState({ renderList: true });
         }, 500);
+        */
     }
 
     isOwner(uid1, uid2) {

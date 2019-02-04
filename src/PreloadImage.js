@@ -9,6 +9,11 @@ const Vientiane = require('../assets/place/Vientiane.jpg');
 const PhnomPenh = require('../assets/place/PhnomPenh.jpg');
 const Jakarta = require('../assets/place/Jakarta.jpg');
 
+const birth = require('../assets/icon/birth.png');
+const bra = require('../assets/icon/bra.png');
+const ruler = require('../assets/icon/ruler.png');
+const scale = require('../assets/icon/scale.png');
+
 
 export default class PreloadImage {
     static Splash = Splash;
@@ -18,6 +23,11 @@ export default class PreloadImage {
     static Vientiane = Vientiane;
     static PhnomPenh = PhnomPenh;
     static Jakarta = Jakarta;
+
+    static bra = bra;
+    static birth = birth;
+    static ruler = ruler;
+    static scale = scale;
 
     static downloadAsync(): Promise<*>[] {
         return [
@@ -29,7 +39,15 @@ export default class PreloadImage {
                 PreloadImage.HoChiMinh,
                 PreloadImage.Vientiane,
                 PreloadImage.PhnomPenh,
-                PreloadImage.Jakarta
+                PreloadImage.Jakarta,
+
+                PreloadImage.bra,
+                PreloadImage.birth,
+                PreloadImage.ruler,
+                PreloadImage.scale,
+
+
+
             ])
         ];
     }

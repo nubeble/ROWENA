@@ -393,7 +393,7 @@ export default class ChatRoom extends React.Component {
     @autobind
     renderSend(props) {
         return (
-            <Send {...props} >
+            <Send {...props} containerStyle={{ marginBottom: textInputMarginBottom + sendButtonMarginBottom }} >
                 <View style={styles.sendButton} >
                     <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
 
@@ -466,12 +466,13 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         backgroundColor: Theme.color.background,
+        // backgroundColor: 'green',
         width: parseInt(Dimensions.get('window').width / 10),
         height: parseInt(Dimensions.get('window').width / 10),
         alignItems: 'center',
         justifyContent: 'center',
 
-        marginBottom: textInputMarginBottom + sendButtonMarginBottom
+        // marginBottom: textInputMarginBottom + sendButtonMarginBottom
     },
     post: {
         width: postWidth,
