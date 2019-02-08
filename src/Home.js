@@ -196,7 +196,7 @@ export default class Home extends React.Component<NavigationProps<>> {
                             users.push(user);
                         }
                         */
-                        if (doc.id != uid) { // except me
+                        if (doc.id == uid) { // except me
                             let user = doc.data();
                             users.push(user);
                         }

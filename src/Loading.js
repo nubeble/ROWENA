@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, StatusBar } from 'react-native';
 import { Font, AppLoading, Asset } from 'expo';
-import { Images, loadIcons } from "./rne/src/components";
+// import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
 import { inject } from "mobx-react/native";
 import type { ScreenProps } from "./src/rnff/components/Types";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
+import { registerExpoPushToken } from './PushNotifications';
+
 
 // $FlowFixMe
 /*
@@ -25,9 +27,7 @@ const SFProTextLight = require("../fonts/SuisseIntl/SuisseIntl-Light.otf");
 // const SuisseIntlUltraLightItalic = require("../fonts/SuisseIntl/SuisseIntl-UltraLightItalic.otf");
 const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // Logo
-const SansSerif = require("../fonts/Sans-Serif.ttf");
-
-
+// const SansSerif = require("../fonts/Sans-Serif.ttf");
 
 
 // @inject("feedStore", "profileStore", "userFeedStore")
@@ -53,7 +53,7 @@ export default class Loading extends React.Component<ScreenProps<>> {
             // "SuisseIntl-UltraLightItalic": SuisseIntlUltraLightItalic,
             "SuisseIntl-ThinItalic": SuisseIntlThinItalic,
             "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,
-            "SansSerif": SansSerif
+            // "SansSerif": SansSerif
         });
 
         // const images = Images.downloadAsync(); // logo
@@ -67,6 +67,8 @@ export default class Loading extends React.Component<ScreenProps<>> {
 
 
         Firebase.init();
+
+        registerExpoPushToken();
 
         Firebase.auth.onAuthStateChanged(async (user) => {
             console.log('onAuthStateChanged', user);
@@ -95,7 +97,8 @@ export default class Loading extends React.Component<ScreenProps<>> {
                     };
 
                     // await Firebase.firestore.collection('users').doc(uid).update(profile);
-                    const { uid } = Firebase.auth.currentUser;
+                    // const { uid } = Firebase.auth.currentUser;
+                    const uid = Firebase.uid();
                     await Firebase.updateProfile(uid, profile);
 
                     console.log('move to main');
@@ -105,31 +108,36 @@ export default class Loading extends React.Component<ScreenProps<>> {
                     navigation.navigate('welcome');
                 }
             } else {
-                this.setState( { isUserAutoAuthenticated: false } );
+                this.setState({ isUserAutoAuthenticated: false });
 
                 console.log('move to auth');
                 navigation.navigate("authStackNavigator");
             }
         });
-
-
-
-
-        // database watch
-		/*
-		const ref = firebase.database().ref().child('users');
-		ref.on('value', function(snapshot) {
-			console.log('database watch', snapshot.val());
-		});
-		*/
-
-		/*
-		var userRatingRef = firebase.database().ref('users/' + userId + '/totalReviewsCount');
-		userRatingRef.on('value', function(snapshot) {
-			// updateReviewsCount(postElement, snapshot.val());
-		});
-		*/
     }
+
+    render() {
+        const statusBar = (
+            <StatusBar
+                translucent
+                backgroundColor="transparent"
+                barStyle="light-content"
+            />
+        );
+
+        return (
+            <React.Fragment>
+                {statusBar}
+                <AppLoading />
+            </React.Fragment>
+        );
+    }
+
+
+
+
+
+
 
     addUser(uid, name, email, phoneNumber) { // set
         const user = {
@@ -278,23 +286,6 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 reject(error);
             });
         });
-    }
-
-    render() {
-        const statusBar = (
-            <StatusBar
-                translucent
-                backgroundColor="transparent"
-                barStyle="light-content"
-            />
-        );
-
-        return (
-            <React.Fragment>
-                {statusBar}
-                <AppLoading />
-            </React.Fragment>
-        );
     }
 }
 

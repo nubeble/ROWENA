@@ -5,6 +5,13 @@ import { Constants } from "expo";
 
 
 export var Globals = {
+    // push notification type
+    pushNotification: {
+        chat: 1,
+        review: 2,
+        reply: 3
+    },
+
     // button press timeout
     buttonTimeout: 300,
 

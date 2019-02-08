@@ -414,14 +414,13 @@ export default class SignUpWithEmail extends React.Component {
                         <Text style={{
                             // marginTop: 2,
                             marginLeft: 22,
-
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontFamily: "SansSerif",
+                            // fontFamily: "SansSerif",
                             fontSize: 28,
-                            fontWeight: 'bold',
+                            // fontWeight: 'bold',
+                            fontFamily: "SFProText-Semibold",
                             // textAlign: 'center'
                         }}>What's your email?</Text>
-
 
                         <Form style={{ marginTop: 18, marginLeft: 4, marginRight: 16 }} >
                             <Label style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontWeight: 'bold', marginLeft: 18 }} >EMAIL ADDRESS</Label>

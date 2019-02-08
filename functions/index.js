@@ -20,7 +20,7 @@ admin.initializeApp({
     databaseURL: "https://rowena-88cfd.firebaseio.com"
 });
 
-admin.firestore().settings({ timestampsInSnapshots: true });
+admin.firestore().settings({ timestampsInSnapshots: true }); // Consider: remove
 
 const Busboy = require('busboy');
 const path = require('path');
@@ -421,12 +421,9 @@ const processPushNotification = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-
     console.log('Done parsing form.', fields);
 
-    const sender = fields.sender;
     const targetUid = fields.receiver; // uid
-    const msg = fields.message;
 
     const targetToken = await(getToken(targetUid));
     console.log('targetToken', targetToken);
@@ -447,6 +444,39 @@ const processPushNotification = async(function () {
         res.status(500).send(error);
 
         return;
+    }
+
+    // const sender = fields.sender;
+    let msg = null;
+    let userData = {};
+    if (fields.type === '1') { // chat
+        userData['message'] = fields.message;
+        userData['chatRoomId'] = fields.chatRoomId;
+        userData['placeId'] = fields.placeId;
+        userData['feedId'] = fields.feedId;
+
+        let users = [];
+
+        let user1 = {
+            name: fields.user1Name,
+            thumbnail: fields.user1Thumbnail
+        }
+
+        let user2 = {
+            name: fields.user2Name,
+            thumbnail: fields.user2Thumbnail
+        }
+
+        users.push(user1);
+        users.push(user2);
+
+        userData['users'] = users;
+
+        msg = fields.message; // Don't forget!
+    } else if (fields.type === '2') { // review
+
+    } else if (fields.type === '3') { // reply
+
     }
 
     let messages = [];
@@ -470,7 +500,11 @@ const processPushNotification = async(function () {
          * you will get a "Message Too Big" error.
          */
         data: {
-            sender: sender
+            sender: fields.sender,
+            receiver: fields.receiver,
+            type: fields.type,
+            // message: fields.message,
+            userData: userData
         },
 
         //// iOS-specific fields ////
@@ -484,13 +518,15 @@ const processPushNotification = async(function () {
          * in June 2018 or later), this setting will have no effect on Android.
          * Instead, use `channelId` and a channel with the desired setting.
          */
-        sound: 'default' | null,
+        // sound: 'default' | null,
+        sound: 'default',
 
         /**
          * Number to display in the badge on the app icon. Specify zero to clear the
          * badge.
          */
         // badge?: number,
+
 
         //// Android-specific fields ////
 

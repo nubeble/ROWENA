@@ -1,5 +1,6 @@
 import { Permissions, Notifications } from 'expo';
 import Firebase from './Firebase';
+import { Globals } from './Globals';
 
 // const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
 // const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/setToken";
@@ -12,7 +13,7 @@ export async function registerExpoPushToken() {
     );
     let finalStatus = existingStatus;
 
-    console.log("existingStatus", existingStatus);
+    // console.log("existingStatus", existingStatus);
 
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
@@ -23,7 +24,7 @@ export async function registerExpoPushToken() {
         finalStatus = status;
     }
 
-    console.log("finalStatus", finalStatus);
+    // console.log("finalStatus", finalStatus);
 
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
@@ -65,13 +66,35 @@ export async function registerExpoPushToken() {
     });
 }
 
-export function sendPushNotification(sender, receiver, message) {
-    console.log(sender, receiver, message);
+export function sendPushNotification(sender, receiver, type, data) {
+    console.log(sender, receiver, data);
 
     const formData = new FormData();
     formData.append("sender", sender);
     formData.append("receiver", receiver);
-    formData.append("message", message);
+    formData.append("type", type);
+
+    if (type === Globals.pushNotification.chat) {
+        formData.append("message", data.message);
+        formData.append("chatRoomId", data.chatRoomId);
+        formData.append("placeId", data.placeId);
+        formData.append("feedId", data.feedId);
+
+        const users = data.users;
+        const user1 = users[0];
+        const user2 = users[1];
+
+        // formData.append("user1Uid", user1.uid);
+        if (user1.name) formData.append("user1Name", user1.name);
+        if (user1.thumbnail) formData.append("user1Thumbnail", user1.thumbnail);
+        // formData.append("user2Uid", user2.uid);
+        if (user2.name) formData.append("user2Name", user2.name);
+        if (user2.thumbnail) formData.append("user2Thumbnail", user2.thumbnail);
+    } else if (type === Globals.pushNotification.review) {
+        // ToDo: ...
+    } else if (type === Globals.pushNotification.reply) {
+        // ToDo: ...
+    }
 
     return fetch(PUSH_ENDPOINT + "sendPushNotification", {
         method: "POST",

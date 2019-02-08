@@ -233,8 +233,6 @@ export default class Detail extends React.Component {
                                         <View style={styles.circle}></View>
                                         <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
                                     </View>
-
-
                                     {/*
                                     <Text style={styles.name}>{post.name}</Text>
                                     <Text style={styles.size}>
@@ -304,61 +302,53 @@ export default class Detail extends React.Component {
                                         paddingHorizontal: bodyInfoContainerPaddingHorizontal
                                     }}
                                     >
-
                                         <View style={{
                                             width: '50%', height: bodyInfoItemHeight,
                                             alignItems: 'flex-start', justifyContent: 'space-between'
                                         }} >
-
                                             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                 <Image
-                                                    style={{ width: 20, height: 20 }}
+                                                    style={{ width: 20, height: 20, tintColor: 'white' }}
                                                     source={PreloadImage.birth}
-                                                    tintColor={'white'}
+                                                    // tintColor={'white'} // not working in ios
                                                 />
                                                 <Text style={styles.bodyInfoTitle}>20 years old</Text>
                                             </View>
-
                                             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                 <Image
-                                                    style={{ width: 20, height: 20, marginTop: 2 }}
+                                                    style={{ width: 20, height: 20, marginTop: 2, tintColor: 'white' }}
                                                     source={PreloadImage.scale}
-                                                    tintColor={'white'}
+                                                    // tintColor={'white'}
                                                 />
                                                 <Text style={styles.bodyInfoTitle}>48 kg</Text>
                                             </View>
-
                                         </View>
                                         <View style={{
                                             width: '50%', height: bodyInfoItemHeight,
                                             alignItems: 'flex-start', justifyContent: 'space-between'
                                         }} >
-
                                             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                 <Image
-                                                    style={{ width: 20, height: 20 }}
+                                                    style={{ width: 20, height: 20, tintColor: 'white' }}
                                                     source={PreloadImage.ruler}
-                                                    tintColor={'white'}
+                                                    // tintColor={'white'}
                                                 />
                                                 <Text style={styles.bodyInfoTitle}>164 cm</Text>
                                             </View>
-
                                             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                 <Image
-                                                    style={{ width: 20, height: 20 }}
+                                                    style={{ width: 20, height: 20, tintColor: 'white' }}
                                                     source={PreloadImage.bra}
-                                                    tintColor={'white'}
+                                                    // tintColor={'white'}
                                                 />
                                                 <Text style={styles.bodyInfoTitle}>C</Text>
                                             </View>
-
                                         </View>
-
                                     </View>
 
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', paddingBottom: Theme.spacing.tiny }}>
-                                        <MaterialIcons name='location-on' color={'white'} size={20} />
-                                        <Text style={styles.distance}>12 km away</Text>
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16} />
+                                        <Text style={styles.distance}>24 km away</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
@@ -1038,7 +1028,7 @@ export default class Detail extends React.Component {
         const { post, profile } = this.props.navigation.state.params;
 
         // 1. find existing chat room (by uid)
-        const room = await Firebase.findChatRoom(Firebase.uid(), post.id);
+        const room = await Firebase.findChatRoomByPostId(Firebase.uid(), post.id);
 
         if (room) {
             /*
@@ -1051,6 +1041,7 @@ export default class Detail extends React.Component {
             // create new chat room
             // --
             const uid = Firebase.uid();
+            const chatRoomId = Util.uid(); // create chat room id
 
             const user1 = {
                 uid: uid,
@@ -1059,7 +1050,7 @@ export default class Detail extends React.Component {
             };
 
             const user2 = {
-                pid: post.id, // post id
+                // pid: post.id, // post id
                 uid: post.uid, // boss
                 name: post.name,
                 picture: post.pictures.one.uri
@@ -1069,7 +1060,7 @@ export default class Detail extends React.Component {
             users.push(user1);
             users.push(user2);
 
-            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id);
+            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId);
             // --
 
             /*
@@ -1093,7 +1084,7 @@ export default class Detail extends React.Component {
 
         this.addReply(message);
 
-        this.refs.toast.show('Your reply has been submitted!', 500, () => {
+        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
                 // this._reply.blur();
                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -1129,7 +1120,7 @@ export default class Detail extends React.Component {
 
             await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
-            this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
@@ -1162,7 +1153,7 @@ export default class Detail extends React.Component {
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-            this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");

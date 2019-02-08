@@ -236,7 +236,7 @@ export default class ChatMain extends React.Component {
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,
-                        // backgroundColor: '#00BCD4',
+                        // backgroundColor: 'green',
                         justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
                     }} >
                         <SmartImage
@@ -249,8 +249,8 @@ export default class ChatMain extends React.Component {
 
                     <View style={{
                         width: '46%', height: viewHeight,
-                        // backgroundColor: 'yellow',
-                        justifyContent: 'space-between', alignItems: 'flex-start'
+                        // backgroundColor: 'green',
+                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.tiny
                     }} >
                         <Text style={styles.name}>{user.name}</Text>
                         <Text style={styles.contents}>{contents}</Text>

@@ -364,18 +364,44 @@ export default class ChatRoom extends React.Component {
     }
 
     async sendMessage(message) {
+        // save the message to database & update UI
         await Firebase.sendMessage(this.state.id, message, Firebase.uid());
 
         // send push notification
-
+        const notificationType = Globals.pushNotification.chat;
         const item = this.props.navigation.state.params.item;
-        const ownerUid = item.users[1].uid; // owner(boss)'s uid or the opponent
+        const ownerUid = item.users[1].uid; // owner(boss)'s uid
 
         const sender = Firebase.uid();
         const receiver = ownerUid;
         // const timestamp
 
-        sendPushNotification(sender, receiver, message.text);
+        let users = [];
+
+        const user1 = { // My info
+            // uid: sender,
+            name: Firebase.user().name,
+            thumbnail: Firebase.user().photoUrl
+        };
+
+        const user2 = { // Your info (Post info)
+            // uid: receiver,
+            name: item.users[1].name,
+            thumbnail: item.users[1].picture
+        };
+
+        users.push(user1);
+        users.push(user2);
+
+        const data = {
+            message: message.text,
+            placeId: item.placeId,
+            feedId: item.feedId,
+            chatRoomId: this.state.id,
+            users: users
+        };
+
+        sendPushNotification(sender, receiver, notificationType, data);
     }
 
     async openPost() {

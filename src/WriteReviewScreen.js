@@ -100,7 +100,7 @@ export default class WriteReviewScreen extends React.Component {
         const { post, rating } = this.props.navigation.state.params;
         if (post.uid === Firebase.uid()) {
 
-            this.refs.toast.show('Sorry, You can not write a self-recommendation.', 500, () => {
+            this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.isClosed) {
                     this.props.navigation.state.params.onGoBack(false);
                     this.props.navigation.goBack();
@@ -112,7 +112,7 @@ export default class WriteReviewScreen extends React.Component {
 
         this.addReview(comment);
 
-        this.refs.toast.show('Your review has been submitted!', 500, () => {
+        this.refs["toast"].show('Your review has been submitted!', 500, () => {
             if (!this.isClosed) {
                 this.props.navigation.state.params.onGoBack(true);
                 this.props.navigation.goBack();

@@ -15,9 +15,6 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
 import { Globals } from "./Globals";
-import { registerExpoPushToken } from './PushNotifications';
-import { Notifications } from 'expo';
-import autobind from "autobind-decorator";
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -35,7 +32,6 @@ type InjectedProps = {
 
 const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
-
 
 
 
@@ -101,33 +97,16 @@ export default class Intro extends React.Component {
 
         refreshing: false,
 
-        notificationMessage: {}
+        notificationMessageData: {}
     };
 
     componentDidMount() {
-
-
-        registerExpoPushToken();
-
-        // Handle notifications that are received or selected while the app
-        // is open. If the app was closed and then opened by tapping the
-        // notification (rather than just tapping the app icon to open it),
-        // this function will fire on the next tick after the app starts
-        // with the notification data.
-        this.notificationListener = Notifications.addListener(this.handleNotification);
-
+        // console.log('Intro::componentDidMount');
 
         console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.getPlaceLength();
-    }
-
-    @autobind
-    handleNotification(e) {
-        console.log('handleNotification', e);
-
-        this.setState({ notificationMessage: e });
     }
 
     /*
@@ -207,29 +186,36 @@ export default class Intro extends React.Component {
     }
     */
     async getPlaceLength() { // load feed length of each cities
-        let places = this.state.places;
+        let __places = this.state.places;
 
-        for (var i = 0; i < places.length; i++) {
-            let placeId = places[i].place_id;
-
-            let count = 0;
+        for (var i = 0; i < __places.length; i++) {
+            let placeId = __places[i].place_id;
 
             // ToDo: read multiple documents with transaction
-            await Firebase.firestore.collection("place").doc(placeId).get().then(doc => {
-                if (doc.exists) {
-                    const field = doc.data().count;
+            await Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
+                let count = 0;
+
+                if (snap.exists) {
+                    const field = snap.data().count;
                     if (field) count = field;
                 }
 
-                console.log('getPlaceLength', i, count);
-                places[i].length = count;
+                let places = [...this.state.places];
+                let index = places.findIndex(el => el.place_id === placeId); // snap.id
+                if (index !== -1) {
+                    places[index] = { ...places[index], length: count };
+                    console.log('getPlaceLength', index, count);
+                    !this.isClosed && this.setState({ places });
+                }
             });
 
-            !this.isClosed && this.setState({ places, refreshing: false });
+            if (this.state.refreshing) !this.isClosed && this.setState({ refreshing: false });
         }
     }
 
     componentWillUnmount() {
+        // console.log('Intro::componentWillUnmount');
+
         this.isClosed = true;
     }
 
@@ -482,7 +468,6 @@ export default class Intro extends React.Component {
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
                 />
-
             </View>
         );
     } // end of render()

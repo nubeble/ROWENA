@@ -163,7 +163,7 @@ export default class FeedStore {
         */
 
         // return Firebase.firestore.collection("place").doc(placeId).collection("feed").where("id", "==", id).onSnapshot(async snap => {
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(async snap => {
+        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
             // const post = snap.docs[0].data();
             const post = snap.data();
             console.log('feed changed.', post);
@@ -180,7 +180,7 @@ export default class FeedStore {
     subscribeToProfile(id: string, callback: Profile => void): Subscription {
         console.log('FeedStore::subscribeToProfile');
 
-        return Firebase.firestore.collection("users").doc(id).onSnapshot(async snap => {
+        return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
             const profile = snap.exists ? snap.data() : DEFAULT_PROFILE;
             console.log('profile changed.', profile);
             callback(profile);

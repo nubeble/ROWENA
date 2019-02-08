@@ -109,10 +109,8 @@ export default class AuthMain extends React.Component {
                     <View style={styles.logo}>
                         <Text style={{
                             // marginTop: 100,
-                            // backgroundColor: 'rgba(0,0,0,0)',
                             padding: 50,
                             fontFamily: "FriendlySchoolmates-Regular",
-                            // fontFamily: "SansSerif",
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 42,
                             fontWeight: 'bold',

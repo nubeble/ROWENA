@@ -784,7 +784,7 @@ export default class PostScreen extends React.Component {
 
         this.addReply(message);
 
-        this.refs.toast.show('Your reply has been submitted!', 500, () => {
+        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
@@ -820,7 +820,7 @@ export default class PostScreen extends React.Component {
 
         await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
-        this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+        this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
             if (!this.isClosed) {
                 // refresh UI
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
@@ -842,7 +842,7 @@ export default class PostScreen extends React.Component {
 
         await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-        this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+        this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
             if (!this.isClosed) {
                 // refresh UI
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");

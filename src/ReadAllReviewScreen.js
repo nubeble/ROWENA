@@ -615,7 +615,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this.addReply(message);
 
-        this.refs.toast.show('Your reply has been submitted!', 500, () => {
+        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
@@ -647,7 +647,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
             await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
-            this.refs.toast.show('Your review has successfully been removed.', 500, () => {
+            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh all
                     this.refreshReviews(placeId, feedId, count - 1);
@@ -669,7 +669,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-            this.refs.toast.show('Your reply has successfully been removed.', 500, () => {
+            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh UI
                     this.refreshReviews(placeId, feedId, count - 1);
