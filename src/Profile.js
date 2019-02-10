@@ -21,10 +21,11 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const MAX_FEED_COUNT = 6; // 3 x 2
+const MAX_FEED_COUNT = 12; // 3 x 4
 
 
-@inject("feedStore", "profileStore") @observer
+// @inject("feedStore", "profileStore") @observer
+@inject("profileStore") @observer
 export default class Profile extends React.Component<ScreenProps<> & InjectedProps> {
     state = {
         showIndicator: false,
@@ -261,7 +262,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
     async addFeed() {
         const feedId = Util.uid(); // create uuid
 
-        const userUid = Firebase.uid();
+        const userUid = Firebase.user().uid;
         /*
         let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         const location = {
@@ -350,7 +351,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                         }
                     };
 
-                    this.updateUser(Firebase.uid(), data);
+                    this.updateUser(Firebase.user().uid, data);
                     */
                 });
 
@@ -393,8 +394,8 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             name: fileName,
             type: type
         });
-        formData.append("userUid", Firebase.uid());
-        // formData.append("feedId", Firebase.uid());
+        formData.append("userUid", Firebase.user().uid);
+        // formData.append("feedId", Firebase.user().uid);
         formData.append("pictureIndex", index);
 
         try {

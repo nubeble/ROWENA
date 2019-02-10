@@ -10,7 +10,6 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
-import { NavigationActions } from 'react-navigation';
 import { Globals } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 
@@ -18,12 +17,9 @@ const chatViewHeight = Dimensions.get('window').height - Globals.searchBarHeight
 const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
 const textInputPaddingLeft = parseInt(Dimensions.get('window').width / 20);
 const textInputPaddingRight = parseInt(Dimensions.get('window').width / 20);
-const textInputMarginBottom = 20;
+const textInputMarginBottom = (Platform.OS === 'ios') ? 20 : 12;
 const sendButtonMarginBottom = parseInt(Dimensions.get('window').height / 40);
 const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
-
-// const minComposerHeight = parseInt(Dimensions.get('window').height / 20); // Do not use this for android
-const maxComposerHeight = parseInt(Dimensions.get('window').height / 40); // ToDo
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
@@ -43,7 +39,7 @@ export default class ChatRoom extends React.Component {
     constructor(props) {
         super(props);
 
-        this.onLoading = undefined;
+        this.onLoading = false;
     }
 
     componentDidMount() {
@@ -58,6 +54,20 @@ export default class ChatRoom extends React.Component {
 
         Firebase.chatOn(item.id, message => {
             console.log('on message', message);
+
+            // fill name, avatar in user
+            if (message.user) {
+                for (var i = 0; i < item.users.length; i++) {
+                    const user = item.users[i];
+
+                    if (message.user._id === user.uid) {
+                        message.user.name = user.name;
+                        message.user.avatar = user.picture;
+
+                        break;
+                    }
+                }
+            }
 
             !this.isClosed && this.setState(previousState => ({
                 messages: GiftedChat.append(previousState.messages, message)
@@ -103,14 +113,14 @@ export default class ChatRoom extends React.Component {
     get user() {
         // Return our name and our UID for GiftedChat to parse
         return {
-            _id: Firebase.uid(),
+            _id: Firebase.user().uid,
             name: Firebase.user().name,
             avatar: Firebase.user().photoUrl
         };
     }
 
     render() {
-        const postAvailable = this.state.messages.length > 1 ? false : true;
+        const showPost = this.state.messages.length > 1 ? false : true;
 
         const top1 = (Dimensions.get('window').height - postHeight) / 2;
         const top2 = Globals.searchBarHeight;
@@ -118,7 +128,21 @@ export default class ChatRoom extends React.Component {
 
         const item = this.props.navigation.state.params.item;
         // const index = this.props.navigation.state.params.index;
-        const imageUri = item.users[1].picture;
+
+        // const imageUri = item.users[1].picture;
+
+        let imageUri = null;
+
+        const users = item.users;
+        for (var i = 0; i < users.length; i++) { // find the owner of this post
+            const user = users[i];
+
+            if (item.owner === user.uid) {
+                imageUri = user.picture;
+
+                break;
+            }
+        }
 
         /*
         const imageWidth1 = postHeight * 0.7;
@@ -151,8 +175,6 @@ export default class ChatRoom extends React.Component {
                             alignSelf: 'baseline'
                         }}
                         onPress={() => {
-                            // this.props.navigation.goBack();
-                            // this.props.navigation.dispatch(NavigationActions.back());
                             this.props.navigation.navigate('chat');
                         }}
                     >
@@ -196,10 +218,9 @@ export default class ChatRoom extends React.Component {
 
                 <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView} >
                     <GiftedChat
-                        // bottomOffset={100}
                         minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
-                        // minComposerHeight={minComposerHeight}
-                        maxComposerHeight={maxComposerHeight}
+                        minComposerHeight={0}
+                        maxComposerHeight={0}
 
                         alwaysShowSend={true}
                         // isAnimated={true}
@@ -210,7 +231,7 @@ export default class ChatRoom extends React.Component {
                         placeholderTextColor={Theme.color.placeholder}
                         user={this.user}
                         onSend={async (messages) => await this.sendMessage(messages[0])}
-                        onPressAvatar={async () => await this.openPost()}
+                        onPressAvatar={async () => await this.openAvatar()}
 
                         textInputProps={{
                             style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
@@ -227,7 +248,6 @@ export default class ChatRoom extends React.Component {
                         }}
                         renderSend={this.renderSend}
                         renderInputToolbar={this.renderInputToolbar}
-                        // renderFooter={this.renderFooter}
 
                         listViewProps={{
                             scrollEventThrottle: 400,
@@ -275,7 +295,7 @@ export default class ChatRoom extends React.Component {
 
                 {
                     // ToDo: apply animation
-                    this.state.renderPost && postAvailable &&
+                    this.state.renderPost && showPost &&
                     <View style={[styles.post, { top: postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
@@ -316,7 +336,7 @@ export default class ChatRoom extends React.Component {
                         // pressed YES
                         console.log('YES');
 
-                        await Firebase.deleteChatRoom(Firebase.uid(), item.id);
+                        await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
 
                         // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
                         this.props.navigation.navigate('chat', { roomId: item.id });
@@ -365,15 +385,13 @@ export default class ChatRoom extends React.Component {
 
     async sendMessage(message) {
         // save the message to database & update UI
-        await Firebase.sendMessage(this.state.id, message, Firebase.uid());
+        await Firebase.sendMessage(this.state.id, message, Firebase.user().uid);
 
         // send push notification
         const notificationType = Globals.pushNotification.chat;
         const item = this.props.navigation.state.params.item;
-        const ownerUid = item.users[1].uid; // owner(boss)'s uid
-
-        const sender = Firebase.uid();
-        const receiver = ownerUid;
+        const sender = item.users[0].uid;
+        const receiver = item.users[1].uid; // owner(boss)'s uid
         // const timestamp
 
         let users = [];
@@ -381,13 +399,13 @@ export default class ChatRoom extends React.Component {
         const user1 = { // My info
             // uid: sender,
             name: Firebase.user().name,
-            thumbnail: Firebase.user().photoUrl
+            picture: Firebase.user().photoUrl
         };
 
         const user2 = { // Your info (Post info)
             // uid: receiver,
             name: item.users[1].name,
-            thumbnail: item.users[1].picture
+            picture: item.users[1].picture
         };
 
         users.push(user1);
@@ -406,14 +424,32 @@ export default class ChatRoom extends React.Component {
 
     async openPost() {
         const item = this.props.navigation.state.params.item;
+
         const placeId = item.placeId;
         const feedId = item.feedId;
-        const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        const post = reviewDoc.data();
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        const post = feedDoc.data();
 
         // console.log('post', post);
 
         this.props.navigation.navigate('post', { post: post });
+    }
+
+    async openAvatar() {
+        const item = this.props.navigation.state.params.item;
+
+        if (item.owner === item.users[1].uid) {
+            // --
+            const placeId = item.placeId;
+            const feedId = item.feedId;
+            const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+            const post = feedDoc.data();
+
+            this.props.navigation.navigate('post', { post: post });
+            // --
+        } else {
+            this.props.navigation.navigate('user');
+        }
     }
 
     @autobind
@@ -438,11 +474,6 @@ export default class ChatRoom extends React.Component {
             borderTopColor: Theme.color.textInput
             // borderTopWidth: 0
         }} />
-    }
-
-    @autobind
-    renderFooter(props) {
-        return <View style={{ height: 20, backgroundColor: 'red' }} />
     }
 }
 

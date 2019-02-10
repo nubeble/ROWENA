@@ -35,7 +35,7 @@ export default class ChatMain extends React.Component {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        const uid = Firebase.uid(); // user uid
+        const uid = Firebase.user().uid;
 
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
@@ -280,7 +280,7 @@ export default class ChatMain extends React.Component {
 
         this.setState({ isLoadingChat: true });
 
-        const uid = Firebase.uid(); // user uid
+        const uid = Firebase.user().uid;
 
         const timestamp = this.state.chatRoomList[this.state.chatRoomList.length - 1].timestamp;
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;

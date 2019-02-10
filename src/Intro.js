@@ -39,8 +39,8 @@ const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
     state = {
-        // ToDo: 일단은 고정값으로 간다.
-        // 추후 고정값이 아니라 query를 통해 가져와야 한다. place - feed length가 가장 많은 6개 (database indexes를 써서 미리 내림차순정렬로 가지고 있자.)
+        // ToDo: 일단은 고정.
+        // 추후 query를 통해 가져와야 한다. place - feed length가 가장 많은 6개 (database indexes를 써서 미리 내림차순정렬로 가지고 있자.)
         // 이 때 thumbnail은 어떻게 가져올 지 고민!!
         places: [
             {
@@ -394,14 +394,14 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://file2.instiz.net/data/file2/2017/04/25/c/8/e/c8e389c7dc8d8ee4bde9523ff398b54d.gif'}
+                                            uri={'http://www.city.kr/files/attach/images/238/795/978/010/00616702b6cfe1f570fb4c11730fa0cc.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
                                 */}
 
                                 <View style={styles.view_rear}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('8')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -421,7 +421,7 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://www.thedailypost.kr/wp-content/uploads/2017/02/H52Am.jpg'}
+                                            uri={'https://ncache.ilbe.com/files/attach/new/20150710/377678/2901603725/6167124321/0c0e48771650a5ea45b0ec6ef4620faf.jpg'}
                                         // uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
                                         />
                                     </TouchableOpacity>
@@ -431,7 +431,7 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://i.pinimg.com/originals/57/3a/78/573a78543e84804c94e147d3fda9a9e6.jpg'}
+                                            uri={'https://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -440,7 +440,7 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://i.pinimg.com/originals/15/b6/02/15b602cbde656096134b7dc2c6ba9ef2.jpg'}
+                                            uri={'https://fimg4.pann.com/new/download.jsp?FileID=47449859'}
                                         />
                                     </TouchableOpacity>
                                 </View>
@@ -449,12 +449,21 @@ export default class Intro extends React.Component {
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://i.pinimg.com/originals/a3/3f/39/a33f399cfeb64dd122593696f500acfa.jpg'}
+                                            uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile22.uf.tistory.com%2Fimage%2F99F75D335997CD46295649'}
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.view_middle}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
+                                        <SmartImage
+                                            style={styles.item}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={'http://www.city.kr/files/attach/images/238/795/978/010/00616702b6cfe1f570fb4c11730fa0cc.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.view_rear}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
+                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('6')}>
                                         <SmartImage
                                             style={styles.item}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}

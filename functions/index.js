@@ -182,10 +182,13 @@ app.post("/images", function (req, response, next) {
                 }).then((snapshot) => {
                     resolve();
 
+                    // ToDo: working after resolve() or reject()??
+
                     // return response
                     let result = {
                         downloadUrl: url
                     };
+
                     response.status(200).send(result);
 
                     next();
@@ -196,18 +199,15 @@ app.post("/images", function (req, response, next) {
 
             reject();
 
+            // ToDo: working after resolve() or reject()??
+
             response.status(500).send(error);
+
             next();
         });
 
     });
 });
-
-const runtimeOpts = {
-    timeoutSeconds: 30
-};
-// exports.uploadFile = functions.https.onRequest(app);
-exports.uploadFile = functions.runWith(runtimeOpts).https.onRequest(app);
 
 const uploadImageToStorage = (file, fileDir) => {
     const storage = admin.storage();
@@ -236,6 +236,12 @@ const uploadImageToStorage = (file, fileDir) => {
 
     return prom;
 }
+
+const runtimeOpts = {
+    timeoutSeconds: 30
+};
+// exports.uploadFile = functions.https.onRequest(app);
+exports.uploadFile = functions.runWith(runtimeOpts).https.onRequest(app);
 
 exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCreate((snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
@@ -320,6 +326,46 @@ const makeData = (index, url) => {
     return data;
 }
 
+const saveToken = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+    // console.log('Done parsing form.', fields);
+
+    /*
+            const data = {
+                token: fields.token,
+                uid: fields.uid,
+                name: fields.name
+            };
+            */
+
+    console.log('Done parsing form.', fields);
+
+    // Push the token info into the Realtime Database using the Firebase Admin SDK.
+    /*
+    return admin.database().ref('/tokens').push(data).then((snapshot) => {
+        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
+        return res.redirect(303, snapshot.ref.toString());
+    });
+    */
+
+    /*
+    // return admin.database().ref('tokens').child(data.uid).set(data).then((snapshot) => {
+    return admin.database().ref('/tokens/' + data.uid).set(data).then((snapshot) => {
+        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
+        return res.redirect(303, snapshot.ref.toString());
+    });
+    */
+
+
+    await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
+
+    console.log('Done saving to database.');
+
+    res.status(200).send(fields);
+});
+
 exports.setToken = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
@@ -332,45 +378,14 @@ exports.setToken = functions.https.onRequest((req, res) => {
             fields[fieldname] = val;
         });
 
-        busboy.on("finish", () => {
+        const params = {};
+        params.fields = fields;
+        params.res = res;
 
-            /*
-            const data = {
-                token: fields.token,
-                uid: fields.uid,
-                name: fields.name
-            };
-            */
-
-            console.log('Done parsing form.', fields);
-
-            // Push the token info into the Realtime Database using the Firebase Admin SDK.
-            /*
-            return admin.database().ref('/tokens').push(data).then((snapshot) => {
-                // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-                return res.redirect(303, snapshot.ref.toString());
-            });
-            */
-
-            /*
-            // return admin.database().ref('tokens').child(data.uid).set(data).then((snapshot) => {
-            return admin.database().ref('/tokens/' + data.uid).set(data).then((snapshot) => {
-                // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-                return res.redirect(303, snapshot.ref.toString());
-            });
-            */
-
-
-            return admin.firestore().collection('tokens').doc(fields.uid).set(fields).then(() => {
-                console.log('Done saving to database.');
-
-                res.status(200).send(fields);
-            });
-        });
+        busboy.on("finish", saveToken.bind(params));
 
         // req.pipe(busboy); // not working!
         busboy.end(req.rawBody);
-
 
         /*
         res.writeHead(303, { Connection: 'close', Location: '/' });
@@ -381,8 +396,11 @@ exports.setToken = functions.https.onRequest((req, res) => {
     } else {
         // Return a "method not allowed" error
         const error = 'only POST message acceptable.';
+
         res.status(405).end(error);
     }
+
+    // ToDo: fine without return anything?
 });
 
 const getToken = async(function (uid) {
@@ -421,7 +439,7 @@ const processPushNotification = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    console.log('Done parsing form.', fields);
+    // console.log('Done parsing form.', fields);
 
     const targetUid = fields.receiver; // uid
 
@@ -431,10 +449,8 @@ const processPushNotification = async(function () {
     if (!targetToken) {
         const error = `Push token is null.`;
         console.error(error);
-
+        
         res.status(500).send(error);
-
-        return;
     }
 
     if (!Expo.isExpoPushToken(targetToken)) {
@@ -442,8 +458,6 @@ const processPushNotification = async(function () {
         console.error(error);
 
         res.status(500).send(error);
-
-        return;
     }
 
     // const sender = fields.sender;
@@ -459,12 +473,12 @@ const processPushNotification = async(function () {
 
         let user1 = {
             name: fields.user1Name,
-            thumbnail: fields.user1Thumbnail
+            picture: fields.user1Picture
         }
 
         let user2 = {
             name: fields.user2Name,
-            thumbnail: fields.user2Thumbnail
+            picture: fields.user2Picture
         }
 
         users.push(user1);
@@ -580,8 +594,11 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
     } else {
         // Return a "method not allowed" error
         const error = 'only POST message acceptable.';
+
         res.status(405).end(error);
     }
+
+    // ToDo: fine without return anything?
 });
 
 const getReceipts = async(function (receiptIdChunks) {

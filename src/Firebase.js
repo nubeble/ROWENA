@@ -382,8 +382,9 @@ export default class Firebase {
 
     //// database ////
 
-    static async createChatRoom(uid, users, placeId, feedId, id) {
+    static async createChatRoom(uid, users, placeId, feedId, id, owner, addSystemMessage) {
         // const id = Util.uid(); // create chat room id
+
         const timestamp = Firebase.timestamp();
 
         const data = {
@@ -392,21 +393,24 @@ export default class Firebase {
             contents: '', // lastest message
             users: users,
             placeId: placeId,
-            feedId: feedId
+            feedId: feedId,
+            owner
         };
 
         await Firebase.database.ref('chat').child(uid).child(id).set(data);
 
         // --
         // add a system message
-        const text = "Well you've come this far, might as well say something to her.";
-        const message = {
-            text,
-            timestamp: timestamp,
-            _system: true
-        };
+        if (addSystemMessage) {
+            const text = "Well you've come this far, might as well say something to her.";
+            const message = {
+                text,
+                timestamp: timestamp,
+                _system: true
+            };
 
-        await Firebase.database.ref('contents').child(id).push(message);
+            await Firebase.database.ref('contents').child(id).push(message);
+        }
         // --
 
         return data;
@@ -466,7 +470,8 @@ export default class Firebase {
                 _id,
                 text,
                 createdAt,
-                user
+                user,
+                // image, video
             };
 
             return message;
@@ -528,10 +533,11 @@ export default class Firebase {
     }
 
     //// send
-
+    /*
     static uid() {
         return (Firebase.auth.currentUser || {}).uid;
     }
+    */
 
     static user() {
         var user = Firebase.auth.currentUser;
@@ -539,8 +545,10 @@ export default class Firebase {
 
         if (user !== null) {
             name = user.displayName;
+            if (!name) name = 'Firebase Name'; // ToDo: test
             email = user.email;
             photoUrl = user.photoURL;
+            if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // ToDo: test
             emailVerified = user.emailVerified;
             uid = user.uid;
         }
@@ -570,6 +578,9 @@ export default class Firebase {
         // const { text, user } = messages[i];
         const { text, user } = message;
 
+        let _user = {};
+        _user._id = user._id; // save only _id
+
         // if (!text || text.length === 0) continue;
         if (!text || text.length === 0) return;
 
@@ -577,7 +588,8 @@ export default class Firebase {
 
         const pushData = {
             text,
-            user,
+            // user,
+            user: _user,
             timestamp: timestamp
         };
 
@@ -615,66 +627,73 @@ export default class Firebase {
             timestamp: timestamp
         };
 
-        const uid = Firebase.uid();
+        const uid = Firebase.user().uid;
 
         Firebase.database.ref('chat').child(uid).child(id).update(updateData);
     }
     */
 
     static async findChatRoomByPostId(myUid, postId) {
-        // let room = null;
+        let room = null;
 
         await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
-        // await Firebase.database.ref('chat').child(myUid).then(snapshot => {
-            // const data = snapshot.val();
-            // console.log('data', data);
+            var BreakException = {};
 
-            snapshot.forEach(item => {
-                // console.log(item.key, item.val());
-                // const key = item.key;
-                const value = item.val();
-                /*
-                const users = value.users;
+            try {
+                snapshot.forEach(item => {
+                    // console.log(item.key, item.val());
 
-                if (users[1].pid === postId) {
-                    room = value;
-                }
-                */
-                if (value.feedId === postId) {
-                    return value;
-                }
-            });
+                    // const key = item.key;
+                    const value = item.val();
 
-            return null;
+                    /*
+                    const users = value.users;
+
+                    if (users[1].pid === postId) {
+                        room = value;
+                    }
+                    */
+                    if (value.feedId === postId) {
+                        // console.log('!!!!!!!!!!!', value);
+
+                        room = value;
+
+                        throw BreakException;
+                    }
+                });
+            } catch (e) {
+                if (e !== BreakException) throw e;
+            }
         });
 
-        // return room;
-        // return null;
+        return room;
     }
 
     static async findChatRoomById(myUid, chatRoomId) {
-        // let room = null;
+        let room = null;
 
         await Firebase.database.ref('chat').child(myUid).child(chatRoomId).once('value').then(snapshot => {
             const data = snapshot.val();
             console.log('room data', data);
 
-            return data;
-/*
-            snapshot.forEach(item => {
-                // console.log(item.key, item.val());
-                // const key = item.key;
-                const value = item.val();
+            room = data;
 
-                if (value.feedId === postId) {
-                    return value;
-                }
-            });
-*/
+            // return data;
+
+            /*
+                        snapshot.forEach(item => {
+                            // console.log(item.key, item.val());
+                            // const key = item.key;
+                            const value = item.val();
+            
+                            if (value.feedId === postId) {
+                                return value;
+                            }
+                        });
+            */
         });
 
-        // return room;
-        // return null;
+        return room;
     }
 
     static async deleteChatRoom(myUid, postId) {

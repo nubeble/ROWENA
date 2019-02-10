@@ -336,10 +336,10 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const reply = _review.reply;
 
-        const isMyReview = this.isOwner(_review.uid, Firebase.uid());
+        const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
 
         let isMyReply = undefined;
-        if (reply) isMyReply = this.isOwner(reply.uid, Firebase.uid());
+        if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
 
         return (
@@ -630,7 +630,7 @@ export default class ReadAllReviewScreen extends React.Component {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
         const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.uid(); // 리뷰를 쓴 사람
+        const userUid = Firebase.user().uid; // 리뷰를 쓴 사람
 
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
@@ -641,7 +641,7 @@ export default class ReadAllReviewScreen extends React.Component {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             const reviewId = reviewStore.reviews[index].review.id;
-            const userUid = Firebase.uid();
+            const userUid = Firebase.user().uid;
 
             const count = reviewStore.reviews.length;
 
@@ -663,7 +663,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
             const reviewId = reviewStore.reviews[index].review.id;
             const replyId = reviewStore.reviews[index].review.reply.id;
-            const userUid = Firebase.uid();
+            const userUid = Firebase.user().uid;
 
             const count = reviewStore.reviews.length;
 

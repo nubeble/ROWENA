@@ -98,7 +98,7 @@ export default class WriteReviewScreen extends React.Component {
         }
 
         const { post, rating } = this.props.navigation.state.params;
-        if (post.uid === Firebase.uid()) {
+        if (post.uid === Firebase.user().uid) {
 
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.isClosed) {
@@ -370,7 +370,7 @@ export default class WriteReviewScreen extends React.Component {
         // let feedId = 'b0247934-f097-2094-dbfc-3a63da957de7'; // 제니
         let feedId = post.id;
 
-        let userUid = Firebase.uid(); // 리뷰를 쓴 사람
+        let userUid = Firebase.user().uid; // 리뷰를 쓴 사람
         console.log('user uid', userUid);
 
         let rating = this.state.rating;

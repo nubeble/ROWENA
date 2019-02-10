@@ -111,7 +111,7 @@ export default class Detail extends React.Component {
     }
 
     init(post) {
-        const isOwner = this.isOwner(post.uid, Firebase.uid());
+        const isOwner = this.isOwner(post.uid, Firebase.user().uid);
         this.setState({ isOwner });
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
@@ -223,12 +223,10 @@ export default class Detail extends React.Component {
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={(
                             <View>
-
                                 {/* profile pictures */}
                                 {this.renderSwiper(post)}
 
                                 <View style={styles.infoContainer}>
-
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                         <View style={styles.circle}></View>
                                         <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
@@ -458,7 +456,6 @@ export default class Detail extends React.Component {
                                 <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
                                     <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
                                 </TouchableOpacity>
-
                             </View>
                         )}
 
@@ -723,10 +720,10 @@ export default class Detail extends React.Component {
 
                 const reply = _review.reply;
 
-                const isMyReview = this.isOwner(_review.uid, Firebase.uid());
+                const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
 
                 let isMyReply = undefined;
-                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.uid());
+                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
 
                 reviewArray.push(
@@ -1027,8 +1024,10 @@ export default class Detail extends React.Component {
     async contact() {
         const { post, profile } = this.props.navigation.state.params;
 
-        // 1. find existing chat room (by uid)
-        const room = await Firebase.findChatRoomByPostId(Firebase.uid(), post.id);
+        // find existing chat room (by uid)
+        const room = await Firebase.findChatRoomByPostId(Firebase.user().uid, post.id);
+
+        // console.log('@@@@@@', room);
 
         if (room) {
             /*
@@ -1040,7 +1039,7 @@ export default class Detail extends React.Component {
         } else {
             // create new chat room
             // --
-            const uid = Firebase.uid();
+            const uid = Firebase.user().uid;
             const chatRoomId = Util.uid(); // create chat room id
 
             const user1 = {
@@ -1060,7 +1059,7 @@ export default class Detail extends React.Component {
             users.push(user1);
             users.push(user2);
 
-            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId);
+            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.uid, true);
             // --
 
             /*
@@ -1103,7 +1102,7 @@ export default class Detail extends React.Component {
         const placeId = post.placeId;
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.uid(); // 리뷰를 쓴 사람
+        const userUid = Firebase.user().uid; // 리뷰를 쓴 사람
 
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
@@ -1116,7 +1115,7 @@ export default class Detail extends React.Component {
             const placeId = post.placeId;
             const feedId = post.id;
             const reviewId = this.reviewStore.reviews[index].review.id;
-            const userUid = Firebase.uid();
+            const userUid = Firebase.user().uid;
 
             await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
@@ -1149,7 +1148,7 @@ export default class Detail extends React.Component {
             const feedId = post.id;
             const reviewId = this.reviewStore.reviews[index].review.id;
             const replyId = this.reviewStore.reviews[index].review.reply.id;
-            const userUid = Firebase.uid();
+            const userUid = Firebase.user().uid;
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
@@ -1223,6 +1222,7 @@ const styles = StyleSheet.create({
         paddingTop: Theme.spacing.xSmall,
         // paddingBottom: Theme.spacing.xSmall
     },
+    /*
     size: {
         color: "white",
         fontSize: 18,
@@ -1230,7 +1230,7 @@ const styles = StyleSheet.create({
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.xSmall
     },
-
+    */
     bodyInfoTitle: {
         color: 'white',
         fontSize: 14,

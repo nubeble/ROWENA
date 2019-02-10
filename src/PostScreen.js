@@ -1,5 +1,5 @@
 /*
- * Copied from detail.js
+ * Copied from Detail.js
 */
 
 import React from 'react';
@@ -10,6 +10,7 @@ import {
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Constants, MapView } from 'expo';
 import { Text, Theme } from "./rnff/src/components";
 import moment from 'moment';
@@ -21,11 +22,17 @@ import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
 import { observer } from "mobx-react/native";
 import ReadMore from "./ReadMore";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import { NavigationActions } from 'react-navigation';
 import { Globals } from "./Globals";
+import Toast, { DURATION } from 'react-native-easy-toast';
+import PreloadImage from './PreloadImage';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
-// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
+const bodyInfoContainerPaddingVertical = Theme.spacing.small;
+const bodyInfoItemHeight = Dimensions.get('window').height / 12;
 
 
 @observer
@@ -33,6 +40,8 @@ export default class PostScreen extends React.Component {
     reviewStore: ReviewStore = new ReviewStore();
 
     replyViewHeight = Dimensions.get('window').height / 9;
+
+    alertCallback = null;
 
     state = {
         rating: 0,
@@ -44,7 +53,10 @@ export default class PostScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0)
+        offset: new Animated.Value(0),
+
+        showAlert: false,
+        alertMessage: ''
     };
 
     constructor(props) {
@@ -94,6 +106,7 @@ export default class PostScreen extends React.Component {
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
+                    {/*
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
@@ -103,6 +116,7 @@ export default class PostScreen extends React.Component {
                             paddingBottom: 4
                         }}
                     >{post.name}</Text>
+                    */}
                 </View>
 {/*
                 {
@@ -117,141 +131,194 @@ export default class PostScreen extends React.Component {
                         />
                         :
 */}
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-                            }}
-                        >
-                            <FlatList
-                                ref={(fl) => this._flatList = fl}
-                                contentContainerStyle={styles.container}
-                                showsVerticalScrollIndicator={true}
-                                ListHeaderComponent={(
-                                    <View>
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                    }}
+                >
+                    <FlatList
+                        ref={(fl) => this._flatList = fl}
+                        contentContainerStyle={styles.container}
+                        showsVerticalScrollIndicator={true}
+                        ListHeaderComponent={(
+                            <View>
+                                {/* profile pictures */}
+                                {this.renderSwiper(post)}
 
-                                        {/* profile pictures */}
-                                        {this.renderSwiper(post)}
-
-                                        <View style={styles.infoContainer}>
-                                            <TouchableWithoutFeedback
-                                            // onPress={this.profile}
-                                            >
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                                    <View style={styles.circle}></View>
-                                                    <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
-                                                </View>
-                                            </TouchableWithoutFeedback>
-
-                                            <Text style={styles.name}>{post.name}</Text>
-                                            <Text style={styles.size}>
-                                                {post.age} yr {post.height} cm {post.weight} kg
-                                                        </Text>
-
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny }}>
-                                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                    <AirbnbRating
-                                                        count={5}
-                                                        readOnly={true}
-                                                        showRating={false}
-                                                        defaultRating={4}
-                                                        size={16}
-                                                        margin={1}
-                                                    />
-                                                </View>
-
-                                                {/* ToDo: draw stars based on averge rating & get review count
-                                                            {post.averageRating}
-                                                        */}
-                                                <Text style={styles.rating}>4.4</Text>
-
-                                                <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
-                                                <Text style={styles.reviewCount}>12</Text>
-                                            </View>
-
-                                            <Text style={styles.note}>{post.note}</Text>
-                                        </View>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                        {/* map */}
-                                        <View style={styles.mapContainer}>
-                                            <TouchableOpacity activeOpacity={0.5}
-                                                onPress={() => this.props.navigation.navigate("mapModal", { post: post })}
-                                            >
-                                                <View style={styles.mapView}>
-                                                    <MapView
-                                                        ref={map => { this.map = map }}
-                                                        style={styles.map}
-                                                        mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                                        initialRegion={{
-                                                            longitude: post.location.longitude,
-                                                            latitude: post.location.latitude,
-                                                            latitudeDelta: 0.001,
-                                                            longitudeDelta: 0.001
-                                                        }}
-                                                        scrollEnabled={false}
-                                                        zoomEnabled={false}
-                                                        rotateEnabled={false}
-                                                        pitchEnabled={false}
-                                                    >
-                                                        <MapView.Marker
-                                                            coordinate={{
-                                                                longitude: post.location.longitude,
-                                                                latitude: post.location.latitude
-                                                            }}
-                                                        // title={'title'}
-                                                        // description={'description'}
-                                                        />
-                                                    </MapView>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </View>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                        <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                            {/* ToDo: show review chart */}
-                                            <Image
-                                                style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                                resizeMode={'cover'}
-                                                source={require('../assets/sample1.jpg')}
-                                            />
-
-                                            {
-                                                this.renderReviews(this.reviewStore.reviews)
-                                            }
-                                        </View>
-
-                                        <View style={styles.writeReviewContainer}>
-                                            <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                            <View style={{ marginBottom: 10 }}>
-                                                <AirbnbRating
-                                                    ref='rating'
-                                                    onFinishRating={this.ratingCompleted}
-                                                    showRating={false}
-                                                    count={5}
-                                                    defaultRating={this.state.rating}
-                                                    size={32}
-                                                    margin={3}
-                                                />
-                                            </View>
-                                        </View>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                        {/*
-                                            <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
-                                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
-                                            </TouchableOpacity>
-                                            */}
-
+                                <View style={styles.infoContainer}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        <View style={styles.circle}></View>
+                                        <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
                                     </View>
-                                )}
-                            />
-                        </TouchableWithoutFeedback>
-{/*
-                }
-*/}
+
+                                    <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
+
+                                    <View style={{
+                                        // backgroundColor: 'green',
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        paddingVertical: bodyInfoContainerPaddingVertical,
+                                        paddingHorizontal: bodyInfoContainerPaddingHorizontal
+                                    }}
+                                    >
+                                        <View style={{
+                                            width: '50%', height: bodyInfoItemHeight,
+                                            alignItems: 'flex-start', justifyContent: 'space-between'
+                                        }} >
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20, tintColor: 'white' }}
+                                                    source={PreloadImage.birth}
+                                                // tintColor={'white'} // not working in ios
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>20 years old</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20, marginTop: 2, tintColor: 'white' }}
+                                                    source={PreloadImage.scale}
+                                                // tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>48 kg</Text>
+                                            </View>
+                                        </View>
+                                        <View style={{
+                                            width: '50%', height: bodyInfoItemHeight,
+                                            alignItems: 'flex-start', justifyContent: 'space-between'
+                                        }} >
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20, tintColor: 'white' }}
+                                                    source={PreloadImage.ruler}
+                                                // tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>164 cm</Text>
+                                            </View>
+                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <Image
+                                                    style={{ width: 20, height: 20, tintColor: 'white' }}
+                                                    source={PreloadImage.bra}
+                                                // tintColor={'white'}
+                                                />
+                                                <Text style={styles.bodyInfoTitle}>C</Text>
+                                            </View>
+                                        </View>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16} />
+                                        <Text style={styles.distance}>24 km away</Text>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                            <AirbnbRating
+                                                count={5}
+                                                readOnly={true}
+                                                showRating={false}
+                                                defaultRating={4}
+                                                size={16}
+                                                margin={1}
+                                            />
+                                        </View>
+
+                                        {/* ToDo: draw stars based on averge rating & get review count
+                                                    {post.averageRating}
+                                                */}
+                                        <Text style={styles.rating}>4.4</Text>
+
+                                        <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                        <Text style={styles.reviewCount}>12</Text>
+                                    </View>
+
+                                    {/*
+                                                <Text style={styles.note}>{tmp}</Text>
+                                            */}
+                                    <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
+                                </View>
+
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                {/* map */}
+                                <View style={styles.mapContainer}>
+                                    <TouchableOpacity activeOpacity={0.5}
+                                        onPress={() => {
+                                            setTimeout(() => {
+                                                /*
+                                                this.setState({ isNavigating: true }, () => {
+                                                    this.props.navigation.navigate("map", { post: post });
+                                                });
+                                                */
+                                                this.props.navigation.navigate("map", { post: post });
+                                            }, 300);
+                                        }}
+                                    >
+                                        <View style={styles.mapView}>
+                                            <MapView
+                                                ref={map => { this.map = map }}
+                                                style={styles.map}
+                                                mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                                initialRegion={{
+                                                    longitude: post.location.longitude,
+                                                    latitude: post.location.latitude,
+                                                    latitudeDelta: 0.001,
+                                                    longitudeDelta: 0.001
+                                                }}
+                                                scrollEnabled={false}
+                                                zoomEnabled={false}
+                                                rotateEnabled={false}
+                                                pitchEnabled={false}
+                                            >
+                                                <MapView.Marker
+                                                    coordinate={{
+                                                        longitude: post.location.longitude,
+                                                        latitude: post.location.latitude
+                                                    }}
+                                                // title={'title'}
+                                                // description={'description'}
+                                                />
+                                            </MapView>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
+                                    {/* Consider: show review chart */}
+                                    <Image
+                                        style={{ width: '100%', height: 140, marginBottom: 10 }}
+                                        resizeMode={'cover'}
+                                        source={require('../assets/sample1.jpg')}
+                                    />
+
+                                    {
+                                        this.renderReviews(this.reviewStore.reviews)
+                                    }
+                                </View>
+
+                                <View style={styles.writeReviewContainer}>
+                                    <Text style={styles.ratingText}>Share your experience to help others</Text>
+                                    <View style={{ marginBottom: 10 }}>
+                                        <AirbnbRating
+                                            ref='rating'
+                                            onFinishRating={this.ratingCompleted}
+                                            showRating={false}
+                                            count={5}
+                                            defaultRating={this.state.rating}
+                                            size={32}
+                                            margin={3}
+                                        />
+                                    </View>
+                                </View>
+
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                            </View>
+                        )}
+                    />
+                </TouchableWithoutFeedback>
 
                 {
                     this.state.showKeyboard && (
@@ -307,6 +374,7 @@ export default class PostScreen extends React.Component {
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
                                 keyboardAppearance={'dark'}
+                                selectionColor={Theme.color.selection}
                                 onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
@@ -331,6 +399,42 @@ export default class PostScreen extends React.Component {
                         </View>
                     )
                 }
+
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="YES"
+                    confirmText="NO"
+                    confirmButtonColor="#DD6B55"
+                    // title={"Want to leave " + name + "?"}
+                    title={this.state.alertMessage}
+                    // message="I have a message for you!"
+                    onCancelPressed={async () => {
+                        this.setState({ showAlert: false });
+
+                        // pressed YES
+                        console.log('YES');
+
+                        if (this.alertCallback) {
+                            this.alertCallback();
+                            this.alertCallback = null;
+                        }
+                    }}
+                    onConfirmPressed={() => {
+                        this.setState({ showAlert: false });
+                    }}
+
+                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
+                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
+                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                />
 
                 <Toast
                     ref="toast"
@@ -441,7 +545,7 @@ export default class PostScreen extends React.Component {
     }
 
     init(post) {
-        const isOwner = this.isOwner(post.uid, Firebase.uid());
+        const isOwner = this.isOwner(post.uid, Firebase.user().uid);
         this.setState({ isOwner });
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
@@ -505,9 +609,9 @@ export default class PostScreen extends React.Component {
                 const ref = _review.id;
                 const index = i;
                 const reply = _review.reply;
-                const isMyReview = this.isOwner(_review.uid, Firebase.uid());
+                const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
                 let isMyReply = undefined;
-                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.uid());
+                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
 
                 reviewArray.push(
@@ -803,7 +907,7 @@ export default class PostScreen extends React.Component {
         const placeId = post.placeId;
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.uid(); // 리뷰를 쓴 사람
+        const userUid = Firebase.user().uid; // 리뷰를 쓴 사람
 
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
@@ -816,7 +920,7 @@ export default class PostScreen extends React.Component {
         const placeId = post.placeId;
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[index].review.id;
-        const userUid = Firebase.uid();
+        const userUid = Firebase.user().uid;
 
         await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
@@ -829,6 +933,16 @@ export default class PostScreen extends React.Component {
         });
     }
 
+    showAlert(message, callback) {
+        this.setAlertCallback(callback);
+
+        this.setState({ alertMessage: message, showAlert: true });
+    }
+
+    setAlertCallback(callback) {
+        this.alertCallback = callback;
+    }
+
     async removeReply(index) {
         // ToDo: show dialog
 
@@ -838,7 +952,7 @@ export default class PostScreen extends React.Component {
         const feedId = post.id;
         const reviewId = this.reviewStore.reviews[index].review.id;
         const replyId = this.reviewStore.reviews[index].review.reply.id;
-        const userUid = Firebase.uid();
+        const userUid = Firebase.user().uid;
 
         await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
@@ -863,36 +977,26 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
-    notification: {
-        position: "absolute",
-        width: '100%',
-        height: Constants.statusBarHeight + 10,
-        top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
-        zIndex: 10000,
-        flexDirection: 'column',
-        justifyContent: 'flex-end'
-    },
-    notificationText: {
-        position: 'absolute',
-        // bottom: 0,
-        alignSelf: 'center',
-        fontSize: 14,
-        fontFamily: "SFProText-Semibold",
-        color: "#FFF"
-    },
-    notificationButton: {
-        position: 'absolute',
-        right: 18,
-        // bottom: 0,
-        // alignSelf: 'baseline'
-    },
     container: {
         flexGrow: 1,
         // paddingBottom: Theme.spacing.small
     },
+    wrapper: {
+    },
+    slide: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    item: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').width
+    },
     infoContainer: {
         flex: 1,
+        //justifyContent: 'center',
+        //alignItems: 'center',
+        // padding: Theme.spacing.small,
         paddingTop: Theme.spacing.tiny,
         paddingBottom: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.small,
@@ -905,7 +1009,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
+        // backgroundColor: 'rgb(70, 154, 32)',
         height: 14,
+        paddingTop: Globals.lastLogInDatePaddingTop(),
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,
@@ -917,14 +1023,41 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontFamily: "SFProText-Semibold",
         paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
+        // paddingBottom: Theme.spacing.xSmall
     },
+    /*
     size: {
         color: "white",
         fontSize: 18,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.xSmall
+    },
+    */
+    bodyInfoTitle: {
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        paddingTop: Theme.spacing.tiny,
+        paddingLeft: Theme.spacing.tiny,
+        // backgroundColor: 'green'
+    },
+    bodyInfoContent: {
+        color: 'white',
+        fontSize: 18,
+        fontFamily: "SFProText-Bold",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.xSmall
+    },
+    distance: {
+        paddingLeft: 5,
+
+        color: 'white',
+        fontSize: 18,
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular",
+        // paddingTop: Theme.spacing.xSmall
+        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     rating: {
         marginLeft: 5,
@@ -946,23 +1079,21 @@ const styles = StyleSheet.create({
         paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     note: {
-        color: 'silver',
+        marginTop: 5,
+
+        color: Theme.color.text2,
         fontSize: 16,
-        lineHeight: 32,
+        lineHeight: 24,
         fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny
-    },
-    wrapper: {
-    },
-    slide: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    item: {
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width
+        paddingTop: Theme.spacing.small,
+        paddingBottom: Theme.spacing.small,
+        paddingLeft: Theme.spacing.small,
+        paddingRight: Theme.spacing.small,
+
+        backgroundColor: 'rgb(34, 34, 34)',
+        borderRadius: 5,
+        // borderColor: "transparent",
+        borderWidth: 0,
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
@@ -1043,5 +1174,29 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 18,
         fontFamily: "SuisseIntl-ThinItalic"
+    },
+    notification: {
+        position: "absolute",
+        width: '100%',
+        height: Constants.statusBarHeight + 10,
+        top: 0,
+        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        zIndex: 10000,
+        flexDirection: 'column',
+        justifyContent: 'flex-end'
+    },
+    notificationText: {
+        position: 'absolute',
+        // bottom: 0,
+        alignSelf: 'center',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        color: "#FFF"
+    },
+    notificationButton: {
+        position: 'absolute',
+        right: 18,
+        // bottom: 0,
+        // alignSelf: 'baseline'
     }
 });

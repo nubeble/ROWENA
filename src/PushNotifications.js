@@ -86,10 +86,10 @@ export function sendPushNotification(sender, receiver, type, data) {
 
         // formData.append("user1Uid", user1.uid);
         if (user1.name) formData.append("user1Name", user1.name);
-        if (user1.thumbnail) formData.append("user1Thumbnail", user1.thumbnail);
+        if (user1.picture) formData.append("user1Picture", user1.picture);
         // formData.append("user2Uid", user2.uid);
         if (user2.name) formData.append("user2Name", user2.name);
-        if (user2.thumbnail) formData.append("user2Thumbnail", user2.thumbnail);
+        if (user2.picture) formData.append("user2Picture", user2.picture);
     } else if (type === Globals.pushNotification.review) {
         // ToDo: ...
     } else if (type === Globals.pushNotification.reply) {

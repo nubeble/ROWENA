@@ -98,7 +98,7 @@ export default class Loading extends React.Component<ScreenProps<>> {
 
                     // await Firebase.firestore.collection('users').doc(uid).update(profile);
                     // const { uid } = Firebase.auth.currentUser;
-                    const uid = Firebase.uid();
+                    const uid = Firebase.user().uid;
                     await Firebase.updateProfile(uid, profile);
 
                     console.log('move to main');

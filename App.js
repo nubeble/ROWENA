@@ -44,9 +44,6 @@ export default class App extends React.Component {
     componentDidMount() {
         console.log('App::componentDidMount');
 
-        // this.props.navigation.navigate('chatRoom', { item: null });
-        // NavigationService.navigate('chatRoom', { item: null });
-
         StatusBar.setBarStyle('light-content');
         if (Platform.OS === "android") { // Consider: remove
             StatusBar.setBackgroundColor(Theme.color.background);
@@ -132,59 +129,33 @@ export default class App extends React.Component {
                     const feedId = data.userData.feedId;
 
                     if (origin === 'selected') { // android
-                        // ToDo: go to chatroom & load message
+                        // go to chatroom & load message
 
-                        console.log('1111')
-
-                        const room = await Firebase.findChatRoomById(Firebase.uid(), chatRoomId);
+                        const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
                         if (room) {
-                            console.log('2222')
-
-                            // this.props.navigation.navigate('chatRoom', { item: room });
                             NavigationService.navigate('chatRoom', { item: room });
                         } else {
-                            console.log('3333')
-
                             // create new chat room
                             // --
-                            const uid = Firebase.uid();
+                            const uid = Firebase.user().uid;
 
                             let users = [];
 
-                            /*
-                            const user1 = { // me
-                                // uid: uid,
-                                uid: data.receiver,
-                                name: (data.userData.users[1].name) ? data.userData.users[1].name : 'sample name',
-                                picture: (data.userData.users[1].thumbnail) ? data.userData.users[1].thumbnail : 'no picture'
-                            };
-
-                            const user2 = { // opponent
-                                // uid: user.uid,
-                                uid: data.sender,
-                                name: (data.userData.users[0].name) ? data.userData.users[0].name : 'sample name',
-                                picture: (data.userData.users[0].thumbnail) ? data.userData.users[0].thumbnail : 'no picture'
-                            };
-
-                            users.push(user1);
-                            users.push(user2);
-                            */
-                            let user1 = {};
+                            let user1 = {}; // Me (owner)
                             user1.uid = data.receiver;
-                            if (data.userData.users[1].name) user1.name = data.userData.users[1].name;
-                            if (data.userData.users[1].thumbnail) user1.thumbnail = data.userData.users[1].thumbnail;
+                            user1.name = data.userData.users[1].name;
+                            user1.picture = data.userData.users[1].picture;
                             users.push(user1);
 
-                            let user2 = {};
+                            let user2 = {}; // You (customer)
                             user2.uid = data.sender;
-                            if (data.userData.users[0].name) user2.name = data.userData.users[0].name;
-                            if (data.userData.users[0].thumbnail) user2.thumbnail = data.userData.users[0].thumbnail;
+                            user2.name = data.userData.users[0].name;
+                            user2.picture = data.userData.users[0].picture;
                             users.push(user2);
                             
-                            const item = await Firebase.createChatRoom(uid, users, placeId, feedId, chatRoomId);
+                            const item = await Firebase.createChatRoom(uid, users, placeId, feedId, chatRoomId, data.receiver, false);
                             // --
 
-                            // this.props.navigation.navigate('chatRoom', { item: item });
                             NavigationService.navigate('chatRoom', { item: item });
                         }
                     } // end of selected
@@ -254,6 +225,7 @@ import SignUpWithMobile from './src/SignUpWithMobile';
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import PostScreen from './src/PostScreen';
+import UserMain from  './src/UserMain';
 import Likes from './src/Likes';
 import ProfileScreen from './src/Profile';
 import Intro from './src/Intro';
@@ -442,7 +414,6 @@ const ChatStackNavigator = createStackNavigator(
         transitionConfig: () => ({
             screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
-
     }
 );
 
@@ -460,6 +431,21 @@ class ChatStackNavigatorWrapper extends React.Component {
         );
     }
 }
+
+ChatStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    const room = navigation.state.routes[1];
+    // room.isTransitioning
+
+    if (room && room.routeName === 'room') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
 
 const PostModalNavigator = createStackNavigator(
     {
@@ -486,7 +472,6 @@ const PostModalNavigator = createStackNavigator(
         transitionConfig: () => ({
             screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
-
     }
 );
 
@@ -505,23 +490,42 @@ class PostModalNavigatorWrapper extends React.Component {
     }
 }
 
-const ChatRootStackNavigator = createStackNavigator(
+const UserModalNavigator = createStackNavigator(
     {
-        chatStack: { screen: ChatStackNavigatorWrapper },
-        post: { screen: PostModalNavigatorWrapper }
+        userMain: {
+            screen: UserMain
+        },
+        /*
+        mapModal: {
+            screen: MapScreen
+        },
+        readReviewModal: {
+            screen: ReadAllReviewScreen
+        },
+        writeReviewModal: {
+            screen: WriteReviewScreen
+        }
+        */
     },
     {
-        mode: 'modal',
-        headerMode: 'none'
+        mode: 'card',
+        headerMode: 'none',
+
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
     }
 );
 
-class ChatRootStackNavigatorWrapper extends React.Component {
-    static router = ChatRootStackNavigator.router;
+class UserModalNavigatorWrapper extends React.Component {
+    static router = UserModalNavigator.router;
 
     render() {
         return (
-            <ChatRootStackNavigator navigation={this.props.navigation}
+            <UserModalNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -530,31 +534,14 @@ class ChatRootStackNavigatorWrapper extends React.Component {
         );
     }
 }
-
-ChatRootStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    // console.log('navigation.state.routes', navigation.state.routes);
-
-    const chatStack = navigation.state.routes[0];
-    // chatStack.isTransitioning
-
-    const room = chatStack.routes[1];
-    if (room && room.routeName === 'room') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    return {
-        tabBarVisible: true
-    };
-};
 // -- chat
 
 // -- start of ChatRoomStackNavigator
 const ChatRoomStackNavigator = createStackNavigator(
     {
         room: { screen: ChatRoom },
-        post: { screen: PostModalNavigatorWrapper }
+        post: { screen: PostModalNavigatorWrapper },
+        user: { screen: UserModalNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -676,7 +663,7 @@ function _navigationOptions(navigation) {
 class TabBarComponent extends React.Component {
     state = {
         visible: true,
-        focused: false
+        // focused: false
     };
 
     componentDidMount() {
@@ -711,16 +698,16 @@ class TabBarComponent extends React.Component {
     onFocus() {
         console.log('TabBarComponent.onFocus');
 
-        this.setState({ focused: true });
-        // this.focused = true;
+        // this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
         console.log('TabBarComponent.onBlur');
 
-        this.setState({ focused: false });
-        // this.focused = false;
+        // this.setState({ focused: false });
+        this.focused = false;
     }
 
     render() {
@@ -728,7 +715,8 @@ class TabBarComponent extends React.Component {
         // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props} /> : null; // not working in S7
 
 
-        if (!this.state.focused) {
+        // if (!this.state.focused) {
+        if (!this.focused) {
             return <BottomTabBar {...this.props} />;
         }
 
@@ -803,21 +791,5 @@ const MainSwitchNavigator = createSwitchNavigator(
         // initialRouteName: 'loading'
     }
 );
-/*
-class MainSwitchNavigatorWrapper extends React.Component {
-    static router = MainSwitchNavigator.router;
-
-    render() {
-        return (
-            <MainSwitchNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-*/
 
 // const AppContainer = createAppContainer(MainSwitchNavigator);
