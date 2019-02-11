@@ -67,7 +67,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
     async getUserFeeds() {
         if (this.state.isLoadingFeeds) {
-            this.setState({refreshing: false});
+            this.setState({ refreshing: false });
             return;
         }
 
@@ -103,8 +103,10 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             // console.log('count', count);
         }
 
-        this.setState({ isLoadingFeeds: false, currentFeedIndex: currentFeedIndex + count, renderFeeds: [...this.state.renderFeeds, ...newRecords],
-            refreshing: false });
+        this.setState({
+            isLoadingFeeds: false, currentFeedIndex: currentFeedIndex + count, renderFeeds: [...this.state.renderFeeds, ...newRecords],
+            refreshing: false
+        });
     }
 
     render() {
@@ -191,7 +193,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                     renderItem={({ item, index }) => {
                         return (
                             <TouchableOpacity
-                                // onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}
+                            // onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}
                             >
                                 <View style={styles.pictureContainer}>
                                     <SmartImage
@@ -219,13 +221,13 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
                     onEndReached={this.onScrollHandler}
                     ListFooterComponent={
                         this.state.isLoadingFeeds && (
-                        <ActivityIndicator
-                            style={styles.bottomIndicator}
-                            animating={true}
-                            size="small"
-                            color='grey'
-                        />
-                    )}
+                            <ActivityIndicator
+                                style={styles.bottomIndicator}
+                                animating={true}
+                                size="small"
+                                color='grey'
+                            />
+                        )}
 
                     /*
                     ListEmptyComponent={(
@@ -295,7 +297,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         */
 
         const note = 'note';
-        
+
         await Firebase.createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note);
     }
 
@@ -486,7 +488,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
-    
+
 
     bottomButton: {
         //position: 'absolute',
@@ -538,7 +540,7 @@ const styles = StyleSheet.create({
     picture: {
         width: '100%',
         height: '100%',
-        
+
         borderRadius: 2
     },
     content: {

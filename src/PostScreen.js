@@ -118,7 +118,7 @@ export default class PostScreen extends React.Component {
                     >{post.name}</Text>
                     */}
                 </View>
-{/*
+                {/*
                 {
                     !this.state.renderList ?
                         <ActivityIndicator
@@ -130,7 +130,7 @@ export default class PostScreen extends React.Component {
                             color='grey'
                         />
                         :
-*/}
+                */}
                 <TouchableWithoutFeedback
                     onPress={() => {
                         if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -223,18 +223,14 @@ export default class PostScreen extends React.Component {
                                             />
                                         </View>
 
-                                        {/* ToDo: draw stars based on averge rating & get review count
-                                                    {post.averageRating}
-                                                */}
+                                        {/* ToDo: draw stars based on averge rating & get review count {post.averageRating} */}
                                         <Text style={styles.rating}>4.4</Text>
 
                                         <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
                                         <Text style={styles.reviewCount}>12</Text>
                                     </View>
 
-                                    {/*
-                                                <Text style={styles.note}>{tmp}</Text>
-                                            */}
+                                    {/* <Text style={styles.note}>{tmp}</Text> */}
                                     <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                 </View>
 
@@ -275,8 +271,8 @@ export default class PostScreen extends React.Component {
                                                         longitude: post.location.longitude,
                                                         latitude: post.location.latitude
                                                     }}
-                                                // title={'title'}
-                                                // description={'description'}
+                                                    // title={'title'}
+                                                    // description={'description'}
                                                 />
                                             </MapView>
                                         </View>

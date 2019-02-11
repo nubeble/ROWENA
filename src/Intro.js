@@ -106,32 +106,11 @@ export default class Intro extends React.Component {
         console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
-        this.getPlaceLength();
+        this.getPlacesSize();
     }
 
     /*
-    async getPlaceLength() {
-        let places = this.state.places;
-
-        for (var i = 0; i < places.length; i++) {
-            let placeId = places[i].place_id;
-
-            let size = 0;
-
-            // get documents length of collection
-            await Firebase.firestore.collection("place").doc(placeId).collection("feed").get().then(snapshot => {
-                size = snapshot.size;
-                console.log('getPlaceLength()', size);
-            });
-
-            places[i].length = size;
-        }
-
-        this.setState({ places, refreshing: false });
-    }
-    */
-    /*
-    async getPlaceLength() {
+    async getPlacesSize() {
         let places = this.state.places;
 
         const ref1 = Firebase.firestore.collection("place").doc(places[0].place_id);
@@ -185,13 +164,13 @@ export default class Intro extends React.Component {
         this.setState({ places, refreshing: false });
     }
     */
-    async getPlaceLength() { // load feed length of each cities
+    getPlacesSize() { // load feed length of each cities
         let __places = this.state.places;
 
         for (var i = 0; i < __places.length; i++) {
             let placeId = __places[i].place_id;
 
-            // ToDo: read multiple documents with transaction
+            /*
             await Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
                 let count = 0;
 
@@ -208,6 +187,18 @@ export default class Intro extends React.Component {
                     !this.isClosed && this.setState({ places });
                 }
             });
+            */
+            this.unsubscribeToPlaceSize = Firebase.subscribeToPlaceSize(placeId, (count) => {
+                let places = [...this.state.places];
+                let index = places.findIndex(el => el.place_id === placeId); // snap.id
+                if (index !== -1) {
+                    places[index] = { ...places[index], length: count };
+
+                    console.log('watchPlaceSize', index, count);
+
+                    !this.isClosed && this.setState({ places });
+                }
+            });
 
             if (this.state.refreshing) !this.isClosed && this.setState({ refreshing: false });
         }
@@ -215,6 +206,8 @@ export default class Intro extends React.Component {
 
     componentWillUnmount() {
         // console.log('Intro::componentWillUnmount');
+
+        if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
 
         this.isClosed = true;
     }

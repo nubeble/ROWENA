@@ -91,6 +91,21 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).delete();
     }
 
+    // static async subscribeToPlaceSize(placeId, callback) {
+    static subscribeToPlaceSize(placeId, callback) {
+        // return await Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
+        return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
+            let count = 0;
+
+            if (snap.exists) {
+                const field = snap.data().count;
+                if (field) count = field;
+            }
+
+            callback(count);
+        });
+    }
+
     static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
         const timestamp = Firebase.getTimestamp();
 
