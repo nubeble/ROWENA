@@ -11,6 +11,7 @@ import autobind from "autobind-decorator";
 import Firebase from "./Firebase";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { Globals } from "./Globals";
+import { sendPushNotification } from './PushNotifications';
 
 
 export default class WriteReviewScreen extends React.Component {
@@ -98,8 +99,7 @@ export default class WriteReviewScreen extends React.Component {
         }
 
         const { post, rating } = this.props.navigation.state.params;
-        if (post.uid === Firebase.user().uid) {
-
+        if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.isClosed) {
                     this.props.navigation.state.params.onGoBack(false);
@@ -112,12 +112,27 @@ export default class WriteReviewScreen extends React.Component {
 
         this.addReview(comment);
 
+        this.sendPushNotification(comment);
+
         this.refs["toast"].show('Your review has been submitted!', 500, () => {
             if (!this.isClosed) {
                 this.props.navigation.state.params.onGoBack(true);
                 this.props.navigation.goBack();
             }
         });
+    }
+
+    sendPushNotification(message) {
+        const { post } = this.props.navigation.state.params;
+
+        const sender = Firebase.user().uid;
+        const receiver = post.uid; // owner
+
+        const data = {
+            message: message
+        };
+
+        sendPushNotification(sender, receiver, Globals.pushNotification.review, data);
     }
 
     render() {

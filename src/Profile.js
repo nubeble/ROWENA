@@ -179,7 +179,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         const post = feedDoc.data();
 
-        this.props.navigation.navigate("postPreview", { post: post });
+        this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
     }
 
     render() {

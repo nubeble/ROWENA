@@ -37,7 +37,7 @@ export default class ProfileStore {
         Firebase.firestore.collection("users").doc(uid).onSnapshot(async snap => {
             if (snap.exists) {
                 this.profile = snap.data();
-                console.log('profile changed.', this.profile);
+                console.log('ProfileStore, profile changed.');
             } else {
                 console.log('this should not happen!');
 

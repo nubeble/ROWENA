@@ -166,7 +166,7 @@ export default class FeedStore {
         return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
             // const post = snap.docs[0].data();
             const post = snap.data();
-            console.log('feed changed.', post);
+            console.log('FeedStore, feed changed.');
             callback(post);
 
             this.feed.forEach((entry, index) => {
@@ -182,7 +182,7 @@ export default class FeedStore {
 
         return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
             const profile = snap.exists ? snap.data() : DEFAULT_PROFILE;
-            console.log('profile changed.', profile);
+            console.log('FeedStore, profile changed.');
             callback(profile);
 
             this.feed.forEach((entry, index) => {

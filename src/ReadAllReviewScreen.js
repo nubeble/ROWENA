@@ -18,6 +18,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Globals } from "./Globals";
+import { sendPushNotification } from './PushNotifications';
 
 type FlatListItem<T> = {
     item: T
@@ -429,7 +430,7 @@ export default class ReadAllReviewScreen extends React.Component {
                     this.state.isOwner && !reply ?
                         (
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingBottom: Theme.spacing.base }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.showKeyboard(ref, index)}>
+                                <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.openKeyboard(ref, index, _profile.uid)}>
                                     <Text style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
@@ -518,25 +519,20 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     _keyboardDidHide() {
-        this.setState({ showKeyboard: false });
+        this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
+        this.owner = undefined;
 
         if (this._showNotification) {
             this.hideNotification();
             this._showNotification = false;
         }
-
-
-        this.setState({ bottomPosition: Dimensions.get('window').height });
     }
 
-    showKeyboard(ref, index) {
+    openKeyboard(ref, index, owner) {
         if (this.state.showKeyboard) return;
-
-        // console.log('ref', ref);
-        // console.log('index', index);
 
         this.setState({ showKeyboard: true }, () => {
             this._reply.focus();
@@ -544,6 +540,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this.selectedItem = ref;
         this.selectedItemIndex = index;
+        this.owner = owner;
     }
 
     showNotification = (msg) => {
@@ -604,12 +601,8 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     sendReply() {
-        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-
-        const count = reviewStore.reviews.length;
-
         const message = this._reply._lastNativeText;
-        console.log('message', message);
+        console.log('sendReply', message);
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
@@ -619,12 +612,16 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this.addReply(message);
 
+        this.sendPushNotification(message);
+
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
                 // refresh all
+                const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+                const count = reviewStore.reviews.length;
                 this.refreshReviews(placeId, feedId, count + 1);
             }
         });
@@ -697,6 +694,19 @@ export default class ReadAllReviewScreen extends React.Component {
 
     setAlertCallback(callback) {
         this.alertCallback = callback;
+    }
+
+    sendPushNotification(message) {
+        const { post } = this.props.navigation.state.params;
+
+        const sender = Firebase.user().uid;
+        // const receiver = post.uid; // owner
+        const receiver = this.owner;
+        const data = {
+            message: message
+        };
+
+        sendPushNotification(sender, receiver, Globals.pushNotification.reply, data);
     }
 }
 

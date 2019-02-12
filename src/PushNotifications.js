@@ -67,7 +67,7 @@ export async function registerExpoPushToken() {
 }
 
 export function sendPushNotification(sender, receiver, type, data) {
-    console.log(sender, receiver, data);
+    console.log('sendPushNotification', sender, receiver, data);
 
     const formData = new FormData();
     formData.append("sender", sender);
@@ -91,9 +91,9 @@ export function sendPushNotification(sender, receiver, type, data) {
         if (user2.name) formData.append("user2Name", user2.name);
         if (user2.picture) formData.append("user2Picture", user2.picture);
     } else if (type === Globals.pushNotification.review) {
-        // ToDo: ...
+        formData.append("message", data.message);
     } else if (type === Globals.pushNotification.reply) {
-        // ToDo: ...
+        formData.append("message", data.message);
     }
 
     return fetch(PUSH_ENDPOINT + "sendPushNotification", {

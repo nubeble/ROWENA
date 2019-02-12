@@ -97,10 +97,10 @@ export default class App extends React.Component {
         }
         */
 
-        /*
         Alert.alert(
-            'Alert Title',
+            // 'Alert Title',
             e.data.type,
+            e.data.userData.message,
             [
                 // { text: 'Ask me later', onPress: () => console.log('Ask me later pressed') },
                 {
@@ -115,63 +115,46 @@ export default class App extends React.Component {
             ],
             { cancelable: false },
         );
-        */
 
         const origin = e.origin;
         const data = e.data;
-        if (data) {
-            switch (Number(data.type)) {
-                case Globals.pushNotification.chat: {
-                    const message = data.userData.message;
-                    const chatRoomId = data.userData.chatRoomId;
-                    // const placeId = data.userData.placeId;
-                    // const feedId = data.userData.feedId;
 
-                    if (origin === 'selected') { // android
-                        // go to chatroom & load message
-                        /*
-                        const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
-                        if (room) {
-                            NavigationService.navigate("chatRoom", { item: room });
-                        } else {
-                            // create new chat room
-                            // --
-                            const uid = Firebase.user().uid;
+        if (origin === 'received') { // android
+            if (data) {
+                switch (Number(data.type)) {
+                    case Globals.pushNotification.chat: {
+                        const message = data.userData.message;
+                        const chatRoomId = data.userData.chatRoomId;
 
-                            let users = [];
+                        // ToDo: red mark on chat icon
 
-                            let user1 = {}; // Me (owner)
-                            user1.uid = data.receiver;
-                            user1.name = data.userData.users[1].name;
-                            user1.picture = data.userData.users[1].picture;
-                            users.push(user1);
 
-                            let user2 = {}; // You (customer)
-                            user2.uid = data.sender;
-                            user2.name = data.userData.users[0].name;
-                            user2.picture = data.userData.users[0].picture;
-                            users.push(user2);
+                    } break;
 
-                            const item = await Firebase.createChatRoom(uid, users, placeId, feedId, chatRoomId, data.receiver, false);
-                            // --
+                    case Globals.pushNotification.review: {
+                    } break;
 
-                            NavigationService.navigate("chatRoom", { item: item });
-                        }
-                        */
+                    case Globals.pushNotification.reply: {
+                    } break;
+                }
+            }
+        } else if (origin === 'selected') {
+            if (data) {
+                switch (Number(data.type)) {
+                    case Globals.pushNotification.chat: {
+                        const message = data.userData.message;
+                        const chatRoomId = data.userData.chatRoomId;
+
                         const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
                         if (room) NavigationService.navigate("chatRoom", { item: room });
-                    } else if (origin === 'received') {
-                        // ToDo: red mark on chat icon
-                    }
-                } break;
+                    } break;
 
-                case Globals.pushNotification.review: {
+                    case Globals.pushNotification.review: {
+                    } break;
 
-                } break;
-
-                case Globals.pushNotification.reply: {
-
-                } break;
+                    case Globals.pushNotification.reply: {
+                    } break;
+                }
             }
         }
     }

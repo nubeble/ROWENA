@@ -394,7 +394,7 @@ export default class ChatRoom extends React.Component {
         // send push notification
         const notificationType = Globals.pushNotification.chat;
         const sender = item.users[0].uid;
-        const receiver = item.users[1].uid; // owner(boss)'s uid
+        const receiver = item.users[1].uid; // owner
         // const timestamp
 
         let users = [];
@@ -435,7 +435,7 @@ export default class ChatRoom extends React.Component {
 
         // console.log('post', post);
 
-        this.props.navigation.navigate("post", { post: post });
+        this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
     }
 
     async openAvatar() {
@@ -448,7 +448,7 @@ export default class ChatRoom extends React.Component {
             const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
             const post = feedDoc.data();
 
-            this.props.navigation.navigate("post", { post: post });
+            this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
             // --
         } else {
             this.props.navigation.navigate("user");

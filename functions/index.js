@@ -456,7 +456,8 @@ const processPushNotification = async(function () {
     }
 
     // const sender = fields.sender;
-    let msg = null;
+    const msg = fields.message;
+
     let userData = {};
     if (fields.type === '1') { // chat
         userData['message'] = fields.message;
@@ -480,12 +481,10 @@ const processPushNotification = async(function () {
         users.push(user2);
 
         userData['users'] = users;
-
-        msg = fields.message; // Don't forget!
     } else if (fields.type === '2') { // review
-
+        userData['message'] = fields.message;
     } else if (fields.type === '3') { // reply
-
+        userData['message'] = fields.message;
     }
 
     let messages = [];
