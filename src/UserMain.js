@@ -1,14 +1,36 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Image, Button, TouchableOpacity, BackHandler } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Globals } from "./Globals";
+import autobind from "autobind-decorator";
 
 
 export default class UserMain extends React.Component {
     state = {
         // bottomPosition: Dimensions.get('window').height
     };
+
+    componentDidMount() {
+        console.log('UserMain::componentDidMount');
+
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+    }
+
+    componentWillUnmount() {
+        console.log('UserMain::componentWillUnmount');
+
+        this.hardwareBackPressListener.remove();
+
+        this.isClosed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
 
     render() {
 

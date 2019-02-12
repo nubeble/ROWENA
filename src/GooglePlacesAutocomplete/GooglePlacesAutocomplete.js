@@ -29,12 +29,12 @@ const defaultStyles = {
 	},
 	textInputContainer: {
 		backgroundColor: '#C9C9CE',
-		height: 44,
+		height: 52,
 		borderTopColor: '#7e7e7e',
 		borderBottomColor: '#b5b5b5',
 		borderTopWidth: 1 / PixelRatio.get(),
 		borderBottomWidth: 1 / PixelRatio.get(),
-		flexDirection: 'row',
+		flexDirection: 'row'
 	},
 	textInput: {
 		/*
@@ -53,23 +53,20 @@ const defaultStyles = {
 		*/
 
 		flex: 1,
-		borderRadius: 5,
-		marginTop: 9,
+		// borderRadius: 5,
+		marginTop: 8,
 		marginLeft: 8,
-		marginRight: 8,
-
+		marginRight: 42,
 		paddingLeft: 8,
 		paddingRight: 8,
 
+		backgroundColor: 'transparent',
+		// backgroundColor: 'green',
 
-
-		backgroundColor: "rgb(61, 61, 61)",
 		height: 40,
-		fontSize: 22,
+		fontSize: 24,
 		color: "white",
-		fontFamily: "SFProText-Regular",
-
-
+		fontFamily: "SFProText-Regular"
 	},
 	poweredContainer: {
 		justifyContent: 'flex-end',
@@ -718,7 +715,7 @@ export default class GooglePlacesAutocomplete extends Component {
 		if (this.state.clearButtonDisplayed) {
 			return (
 				<TouchableOpacity
-					style={{ position: 'absolute', right: 30, top: 18, alignSelf: 'baseline' }}
+					style={{ position: 'absolute', right: 30, top: 16, alignSelf: 'baseline' }}
 					onPress={() => {
 						if (this.refs.textInput) {
 							!this.isClosed && this.setState({text: ''});
@@ -750,7 +747,7 @@ export default class GooglePlacesAutocomplete extends Component {
 					extraData={[this.state.dataSource, this.props]}
 					ItemSeparatorComponent={this._renderSeparator}
 					renderItem={({ item }) => this._renderRow(item)}
-					ListFooterComponent={this._renderPoweredLogo}
+					// ListFooterComponent={this._renderPoweredLogo}
 					{...this.props}
 				/>
 			);
@@ -777,15 +774,14 @@ export default class GooglePlacesAutocomplete extends Component {
 						<TextInput
 							multiline={false}
 							ref="textInput"
-							keyboardAppearance={'dark'}
-
-
-							selectionColor={Theme.color.selection}
 							// tintColor='rgb(234, 150, 24)'
-							autoCapitalize="none"
-							autoCorrect={false} // ToDo: NOT work in Android
 							keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
 
+							selectionColor={Theme.color.selection}
+							keyboardAppearance={'dark'}
+							underlineColorAndroid={this.props.underlineColorAndroid}
+							autoCorrect={false} // ToDo: NOT work in Android
+							// autoCapitalize="none"
 
 							editable={this.props.editable}
 							returnKeyType={this.props.returnKeyType}
@@ -797,7 +793,6 @@ export default class GooglePlacesAutocomplete extends Component {
 							placeholderTextColor={this.props.placeholderTextColor}
 							onFocus={onFocus ? () => { this._onFocus(); onFocus() } : this._onFocus}
 							onBlur={this._onBlur}
-							underlineColorAndroid={this.props.underlineColorAndroid}
 							/*
 							clearButtonMode={
 							  clearButtonMode ? clearButtonMode : "while-editing"

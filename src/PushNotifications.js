@@ -77,8 +77,8 @@ export function sendPushNotification(sender, receiver, type, data) {
     if (type === Globals.pushNotification.chat) {
         formData.append("message", data.message);
         formData.append("chatRoomId", data.chatRoomId);
-        formData.append("placeId", data.placeId);
-        formData.append("feedId", data.feedId);
+        // formData.append("placeId", data.placeId);
+        // formData.append("feedId", data.feedId);
 
         const users = data.users;
         const user1 = users[0];

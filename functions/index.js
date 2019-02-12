@@ -153,7 +153,8 @@ exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
 
 
 
-app.post("/images", function (req, response, next) {
+// app.post("/images", function (req, res, next) {
+    app.post("/images", function (req, res) {
     console.log('Image Upload', req.field);
 
     const storage = admin.storage();
@@ -180,30 +181,26 @@ app.post("/images", function (req, response, next) {
                     pictureIndex: req.field.pictureIndex,
                     uri: url
                 }).then((snapshot) => {
-                    resolve();
-
-                    // ToDo: working after resolve() or reject()??
+                    resolve(); // then
 
                     // return response
                     let result = {
                         downloadUrl: url
                     };
 
-                    response.status(200).send(result);
+                    res.status(200).send(result);
 
-                    next();
+                    // next();
                 });
             });
         }).catch(error => {
             console.error('uploadImageToStorage error', error);
 
-            reject();
+            reject(); // catch
 
-            // ToDo: working after resolve() or reject()??
+            res.status(500).send(error);
 
-            response.status(500).send(error);
-
-            next();
+            // next();
         });
 
     });
@@ -399,8 +396,6 @@ exports.setToken = functions.https.onRequest((req, res) => {
 
         res.status(405).end(error);
     }
-
-    // ToDo: fine without return anything?
 });
 
 const getToken = async(function (uid) {
@@ -466,8 +461,8 @@ const processPushNotification = async(function () {
     if (fields.type === '1') { // chat
         userData['message'] = fields.message;
         userData['chatRoomId'] = fields.chatRoomId;
-        userData['placeId'] = fields.placeId;
-        userData['feedId'] = fields.feedId;
+        // userData['placeId'] = fields.placeId;
+        // userData['feedId'] = fields.feedId;
 
         let users = [];
 
@@ -597,8 +592,6 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
 
         res.status(405).end(error);
     }
-
-    // ToDo: fine without return anything?
 });
 
 const getReceipts = async(function (receiptIdChunks) {

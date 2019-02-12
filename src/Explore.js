@@ -84,7 +84,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         ));
         */
 
-        this.props.screenProps.rootNavigation.navigate('intro');
+        this.props.screenProps.rootNavigation.navigate("intro");
 
         return true;
     }
@@ -149,7 +149,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             onPress={() => {
                                 console.log('move to Intro');
-                                this.props.screenProps.rootNavigation.navigate('intro');
+                                this.props.screenProps.rootNavigation.navigate("intro");
                             }}
                         >
                             <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
@@ -175,10 +175,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 value={this.state.searchText}
                             />
                             */}
-
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop(), fontFamily: "SFProText-Semibold",
-                                color: Theme.color.text2, textAlign: 'center' }}
+                                style={{ width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
+                                    color: Theme.color.text2, textAlign: 'center' }}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
                     </View>

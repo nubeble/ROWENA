@@ -45,7 +45,7 @@ export default class App extends React.Component {
         console.log('App::componentDidMount');
 
         StatusBar.setBarStyle('light-content');
-        if (Platform.OS === "android") { // Consider: remove
+        if (Platform.OS === "android") {
             StatusBar.setBackgroundColor(Theme.color.background);
         }
 
@@ -97,9 +97,7 @@ export default class App extends React.Component {
         }
         */
 
-        this.setState({ notificationMessageData: e });
-
-
+        /*
         Alert.alert(
             'Alert Title',
             e.data.type,
@@ -117,6 +115,7 @@ export default class App extends React.Component {
             ],
             { cancelable: false },
         );
+        */
 
         const origin = e.origin;
         const data = e.data;
@@ -125,15 +124,15 @@ export default class App extends React.Component {
                 case Globals.pushNotification.chat: {
                     const message = data.userData.message;
                     const chatRoomId = data.userData.chatRoomId;
-                    const placeId = data.userData.placeId;
-                    const feedId = data.userData.feedId;
+                    // const placeId = data.userData.placeId;
+                    // const feedId = data.userData.feedId;
 
                     if (origin === 'selected') { // android
                         // go to chatroom & load message
-
+                        /*
                         const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
                         if (room) {
-                            NavigationService.navigate('chatRoom', { item: room });
+                            NavigationService.navigate("chatRoom", { item: room });
                         } else {
                             // create new chat room
                             // --
@@ -152,13 +151,18 @@ export default class App extends React.Component {
                             user2.name = data.userData.users[0].name;
                             user2.picture = data.userData.users[0].picture;
                             users.push(user2);
-                            
+
                             const item = await Firebase.createChatRoom(uid, users, placeId, feedId, chatRoomId, data.receiver, false);
                             // --
 
-                            NavigationService.navigate('chatRoom', { item: item });
+                            NavigationService.navigate("chatRoom", { item: item });
                         }
-                    } // end of selected
+                        */
+                        const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
+                        if (room) NavigationService.navigate("chatRoom", { item: room });
+                    } else if (origin === 'received') {
+                        // ToDo: red mark on chat icon
+                    }
                 } break;
 
                 case Globals.pushNotification.review: {
@@ -225,7 +229,7 @@ import SignUpWithMobile from './src/SignUpWithMobile';
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import PostScreen from './src/PostScreen';
-import UserMain from  './src/UserMain';
+import UserMain from './src/UserMain';
 import Likes from './src/Likes';
 import ProfileScreen from './src/Profile';
 import Intro from './src/Intro';
@@ -585,6 +589,34 @@ var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
 
 };
 
+// -- start of ProfileModalNavigator
+const ProfileModalNavigator = createStackNavigator(
+    {
+        profileMain: { screen: ProfileScreen },
+        postPreview: { screen: PostModalNavigatorWrapper }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+
+class ProfileModalNavigatorWrapper extends React.Component {
+    static router = ProfileModalNavigator.router;
+
+    render() {
+        return (
+            <ProfileModalNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of ProfileModalNavigator
+
 const MainBottomTabNavigator = createBottomTabNavigator(
     {
         home: {
@@ -600,7 +632,8 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         },
         profile: {
-            screen: ProfileScreen,
+            // screen: ProfileScreen,
+            screen: ProfileModalNavigatorWrapper,
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         }
     },

@@ -53,18 +53,18 @@ export default class Firebase {
 
             feeds: [], // 내가 등록한 feed. ToDo: 삭제 시 배열을 전체 검색
             /*
-            {
-                'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-                'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-            },
-            {
-                'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-                'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-            },
-            ...
+                {
+                    'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
+                    'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
+                },
+                {
+                    'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
+                    'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
+                },
+                ...
             */
 
-            reviews: [], // 내가 남긴 리뷰.
+            reviews: [], // 내가 남긴 리뷰. (collection)
             replies: []
         };
 
@@ -74,7 +74,7 @@ export default class Firebase {
     static async updateProfile(uid, profile) {
         await Firebase.firestore.collection('users').doc(uid).update(profile);
 
-        // ToDo: update info to firebase auth
+        // ToDo: update firebase auth
         /*
         Firebase.auth.currentUser.updateProfile({
             displayName: "Jane Q. User",
@@ -91,9 +91,7 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).delete();
     }
 
-    // static async subscribeToPlaceSize(placeId, callback) {
     static subscribeToPlaceSize(placeId, callback) {
-        // return await Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
         return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
             let count = 0;
 
@@ -137,13 +135,9 @@ export default class Firebase {
                 }
             },
             note: note,
-
             // reviews: [], // collection
             reviewCount: 0, // 총 리뷰 개수
-
             averageRating: 0.0, // 리뷰가 추가될 때마다 다시 계산해서 업데이트
-
-            // timestamp: Date.now()
             timestamp: timestamp
         };
 
@@ -154,7 +148,6 @@ export default class Firebase {
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
-            // 1. get
             const placeDoc = await transaction.get(placeRef);
             let count = 0;
             if (placeDoc.data()) {
@@ -164,7 +157,7 @@ export default class Firebase {
 
             console.log('count', count);
 
-            // 2. update
+            // 2. update the count
             // transaction.update(placeRef, { count: Number(count + 1) });
             transaction.set(placeRef, { count: Number(count + 1) });
 
@@ -172,9 +165,12 @@ export default class Firebase {
             let data = {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: placeId,
-                    feedId: feedId
+                    feedId: feedId,
+                    imageUri: image1Uri, // ToDo: update this after chaging
+                    valid: true // ToDo: update this after removing
                 })
             };
+
             transaction.update(userRef, data);
         });
     }
@@ -184,10 +180,11 @@ export default class Firebase {
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
-            // update count first!
+            // update the count first!
             const placeDoc = await transaction.get(placeRef);
             let count = placeDoc.data().count;
             console.log('count', count);
+
             transaction.update(placeRef, { count: Number(count - 1) });
 
             transaction.delete(feedRef);
@@ -414,6 +411,8 @@ export default class Firebase {
 
         await Firebase.database.ref('chat').child(uid).child(id).set(data);
 
+        // await Firebase.database.ref('chat').child(owner).child(id).set(data);
+
         // --
         // add a system message
         if (addSystemMessage) {
@@ -560,10 +559,10 @@ export default class Firebase {
 
         if (user !== null) {
             name = user.displayName;
-            if (!name) name = 'Firebase Name'; // ToDo: test
+            if (!name) name = 'Firebase Name'; // test
             email = user.email;
             photoUrl = user.photoURL;
-            if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // ToDo: test
+            if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // test
             emailVerified = user.emailVerified;
             uid = user.uid;
         }
@@ -588,7 +587,8 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static async sendMessage(id, message, uid) {
+    static async sendMessage(id, message, post) {
+        //// save contents ////
         // for (let i = 0; i < messages.length; i++) {
         // const { text, user } = messages[i];
         const { text, user } = message;
@@ -610,14 +610,35 @@ export default class Firebase {
 
         await Firebase.database.ref('contents').child(id).push(pushData);
 
-        // update timestamp, contents to chat
+        
+        //// update timestamp, contents to chat of sender ////
+        const senderUid = post.users[0].uid;
 
         const updateData = {
             contents: text,
             timestamp: timestamp
         };
 
-        await Firebase.database.ref('chat').child(uid).child(id).update(updateData);
+        await Firebase.database.ref('chat').child(senderUid).child(id).update(updateData);
+
+        
+        //// update timestamp, contents to chat of receiver ////
+        const receiverUid = post.users[1].uid;
+
+        const room = await Firebase.findChatRoomById(receiverUid, id);
+        if (!room) {
+            // create new chat room
+            // --
+            let users = []; // name, picture, uid
+            users.push(post.users[1]);
+            users.push(post.users[0]);
+
+            await Firebase.createChatRoom(receiverUid, users, post.placeId, post.feedId, id, senderUid, false);
+            // --
+        }
+
+        await Firebase.database.ref('chat').child(receiverUid).child(id).update(updateData);
+
         // }
     };
 

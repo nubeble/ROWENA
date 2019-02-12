@@ -39,15 +39,13 @@ const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
     state = {
-        // ToDo: 일단은 고정.
-        // 추후 query를 통해 가져와야 한다. place - feed length가 가장 많은 6개 (database indexes를 써서 미리 내림차순정렬로 가지고 있자.)
-        // 이 때 thumbnail은 어떻게 가져올 지 고민!!
+        // ToDo: Place는 일단 고정. 추후 등록된 Post 개수가 가장 많은 상위 6곳을 가져와야 한다. (database indexes를 써서 미리 내림차순정렬로 가지고 있자!)
+        // 이 때 image는 어떻게 가져올 지 고민!!
         places: [
             {
                 place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
                 description: 'Bangkok, Thailand',
                 city: 'Bangkok',
-                // uri: require('../assets/place/Bangkok.jpg'),
                 uri: PreloadImage.Bangkok,
                 length: 0
             },
@@ -55,7 +53,6 @@ export default class Intro extends React.Component {
                 place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
                 description: 'Manila, Philippines',
                 city: 'Manila',
-                // uri: require('../assets/place/Manila.jpg'),
                 uri: PreloadImage.Manila,
                 length: 0
             },
@@ -63,7 +60,6 @@ export default class Intro extends React.Component {
                 place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
                 description: 'Ho Chi Minh, Vietnam',
                 city: 'Ho Chi Minh',
-                // uri: require('../assets/place/HoChiMinh.jpg'),
                 uri: PreloadImage.HoChiMinh,
                 length: 0
             },
@@ -71,7 +67,6 @@ export default class Intro extends React.Component {
                 place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
                 description: 'Vientiane, Laos',
                 city: 'Vientiane',
-                // uri: require('../assets/place/Vientiane.jpg'),
                 uri: PreloadImage.Vientiane,
                 length: 0
             },
@@ -79,7 +74,6 @@ export default class Intro extends React.Component {
                 place_id: 'ChIJ42tqxz1RCTERuyW1WugOAZw',
                 description: 'Phnom Penh, Cambodia',
                 city: 'Phnom Penh',
-                // uri: require('../assets/place/PhnomPenh.jpg'),
                 uri: PreloadImage.PhnomPenh,
                 length: 0
             },
@@ -87,17 +81,12 @@ export default class Intro extends React.Component {
                 place_id: 'ChIJnUvjRenzaS4RoobX2g-_cVM',
                 description: 'Jakarta, Indonesia',
                 city: 'Jakarta',
-                // uri: require('../assets/place/Macau.jpg'),
                 uri: PreloadImage.Jakarta,
                 length: 0
             }
         ],
-
         searchText: '',
-
-        refreshing: false,
-
-        notificationMessageData: {}
+        refreshing: false
     };
 
     componentDidMount() {
@@ -170,37 +159,18 @@ export default class Intro extends React.Component {
         for (var i = 0; i < __places.length; i++) {
             let placeId = __places[i].place_id;
 
-            /*
-            await Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
-                let count = 0;
-
-                if (snap.exists) {
-                    const field = snap.data().count;
-                    if (field) count = field;
-                }
-
-                let places = [...this.state.places];
-                let index = places.findIndex(el => el.place_id === placeId); // snap.id
-                if (index !== -1) {
-                    places[index] = { ...places[index], length: count };
-                    console.log('getPlaceLength', index, count);
-                    !this.isClosed && this.setState({ places });
-                }
-            });
-            */
             this.unsubscribeToPlaceSize = Firebase.subscribeToPlaceSize(placeId, (count) => {
                 let places = [...this.state.places];
                 let index = places.findIndex(el => el.place_id === placeId); // snap.id
                 if (index !== -1) {
-                    places[index] = { ...places[index], length: count };
-
                     console.log('watchPlaceSize', index, count);
 
+                    places[index] = { ...places[index], length: count };
                     !this.isClosed && this.setState({ places });
                 }
             });
 
-            if (this.state.refreshing) !this.isClosed && this.setState({ refreshing: false });
+            // if (this.state.refreshing) !this.isClosed && this.setState({ refreshing: false });
         }
     }
 
@@ -260,10 +230,8 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{
-                                    width: '100%', height: '100%', fontSize: 16, paddingTop: Globals.searchBarPaddingTop(), fontFamily: "SFProText-Semibold",
-                                    color: "rgb(160, 160, 160)", textAlign: 'center'
-                                }}
+                                style={{ width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
+                                    color: "rgb(160, 160, 160)", textAlign: 'center' }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -475,14 +443,17 @@ export default class Intro extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
+        /*
         this.setState(
             {
                 refreshing: true
             },
             () => {
-                this.getPlaceLength();
+                // this.getPlacesSize();
+                // ToDo: refresh the latest feed of 6 places & show pictures
             }
         );
+        */
     };
 
     startEditing() {

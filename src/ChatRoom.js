@@ -95,7 +95,7 @@ export default class ChatRoom extends React.Component {
     @autobind
     handleHardwareBackPress() {
         // this.goBack(); // works best when the goBack is async
-        this.props.navigation.navigate('chat');
+        this.props.navigation.navigate("chat");
 
         return true;
     }
@@ -175,7 +175,7 @@ export default class ChatRoom extends React.Component {
                             alignSelf: 'baseline'
                         }}
                         onPress={() => {
-                            this.props.navigation.navigate('chat');
+                            this.props.navigation.navigate("chat");
                         }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -235,10 +235,12 @@ export default class ChatRoom extends React.Component {
 
                         textInputProps={{
                             style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
+
                             selectionColor: Theme.color.selection,
                             keyboardAppearance: 'dark',
                             underlineColorAndroid: "transparent",
                             autoCorrect: false,
+                            
                             onFocus: () => {
                                 this.setState({ onKeyboard: true });
                             },
@@ -339,7 +341,7 @@ export default class ChatRoom extends React.Component {
                         await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
 
                         // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
-                        this.props.navigation.navigate('chat', { roomId: item.id });
+                        this.props.navigation.navigate("chat", { roomId: item.id });
                     }}
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
@@ -384,12 +386,13 @@ export default class ChatRoom extends React.Component {
     }
 
     async sendMessage(message) {
+        const item = this.props.navigation.state.params.item;
+
         // save the message to database & update UI
-        await Firebase.sendMessage(this.state.id, message, Firebase.user().uid);
+        await Firebase.sendMessage(this.state.id, message, item);
 
         // send push notification
         const notificationType = Globals.pushNotification.chat;
-        const item = this.props.navigation.state.params.item;
         const sender = item.users[0].uid;
         const receiver = item.users[1].uid; // owner(boss)'s uid
         // const timestamp
@@ -432,7 +435,7 @@ export default class ChatRoom extends React.Component {
 
         // console.log('post', post);
 
-        this.props.navigation.navigate('post', { post: post });
+        this.props.navigation.navigate("post", { post: post });
     }
 
     async openAvatar() {
@@ -445,10 +448,10 @@ export default class ChatRoom extends React.Component {
             const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
             const post = feedDoc.data();
 
-            this.props.navigation.navigate('post', { post: post });
+            this.props.navigation.navigate("post", { post: post });
             // --
         } else {
-            this.props.navigation.navigate('user');
+            this.props.navigation.navigate("user");
         }
     }
 

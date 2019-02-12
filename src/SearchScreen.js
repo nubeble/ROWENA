@@ -109,8 +109,7 @@ export default class SearchScreen extends React.Component {
                             // position: 'absolute',
                             // left: 60,
                             // right: 60,
-                            // backgroundColor: 'green',
-                            //borderRadius: 25,
+                            // borderRadius: 25,
 
                             // textAlignVertical: 'top',
                             // alignSelf: 'center',
@@ -121,12 +120,15 @@ export default class SearchScreen extends React.Component {
                             height: 60,
                             */
 
-                            backgroundColor: 'transparent',
-                            // backgroundColor: "rgb(61, 61, 61)",
+                            // flex: 1,
+                            // backgroundColor: 'transparent',
+                            // backgroundColor: "green",
+                            /*
                             height: 40,
                             fontSize: 24,
                             color: "white",
-                            fontFamily: "SFProText-Regular"
+                            fontFamily: "SFProText-Regular",
+                            */
                         },
 
                         listView: {
@@ -144,7 +146,6 @@ export default class SearchScreen extends React.Component {
                             fontSize: 16,
                             lineHeight: 20,
                             height: 30,
-                            // fontWeight: '500',
                             color: "white",
                             fontFamily: "SFProText-Regular",
                         },

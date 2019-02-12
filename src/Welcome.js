@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
+import { Globals } from "./Globals";
 
 
 export default class Welcome extends React.Component {
@@ -26,8 +27,8 @@ export default class Welcome extends React.Component {
 
 
                 <View style={{ position: 'absolute', top: this.state.bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('mainStackNavigator')} style={styles.signUpButton}>
-                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Get Started</Text>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate("mainStackNavigator")} style={styles.signUpButton}>
+                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'white', paddingTop: Globals.submitButtonPaddingTop() }}>Get Started</Text>
                     </TouchableOpacity>
                 </View>
 

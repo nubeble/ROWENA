@@ -68,14 +68,15 @@ export default class Loading extends React.Component<ScreenProps<>> {
 
         Firebase.init();
 
-        registerExpoPushToken();
-
         Firebase.auth.onAuthStateChanged(async (user) => {
             console.log('onAuthStateChanged', user);
 
             const isUserAuthenticated = !!user;
 
             if (isUserAuthenticated) {
+
+                registerExpoPushToken();
+
                 // const { uid } = Firebase.auth.currentUser;
                 /*
                 const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc"); // 전체 feed
@@ -102,10 +103,10 @@ export default class Loading extends React.Component<ScreenProps<>> {
                     await Firebase.updateProfile(uid, profile);
 
                     console.log('move to main');
-                    navigation.navigate('mainStackNavigator');
+                    navigation.navigate("mainStackNavigator");
                 } else {
                     console.log('move to welcome');
-                    navigation.navigate('welcome');
+                    navigation.navigate("welcome");
                 }
             } else {
                 this.setState({ isUserAutoAuthenticated: false });

@@ -232,7 +232,7 @@ export default class ChatMain extends React.Component {
         const avatarHeight = viewHeight;
 
         return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate('chatRoom', { item: item })}>
+            <TouchableHighlight onPress={() => this.props.navigation.navigate("chatRoom", { item: item })}>
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,
@@ -285,7 +285,7 @@ export default class ChatMain extends React.Component {
         const timestamp = this.state.chatRoomList[this.state.chatRoomList.length - 1].timestamp;
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
-        Firebase.loadMoreChatRoom(uid, timestamp, id, list => {
+        Firebase.loadMoreChatRoom(uid, timestamp, id, list => { // load 10 rooms
             console.log('loadMoreChatRoom', list);
 
             if (list.length === 0) {

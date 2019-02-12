@@ -1,7 +1,6 @@
 import React from 'react';
-import { StyleSheet, Dimensions, View, TouchableOpacity, ActivityIndicator, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
 import { MapView, Constants } from 'expo';
-import { Header } from 'react-navigation';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
 import { Globals } from "./Globals";
@@ -87,14 +86,7 @@ export default class MapScreen extends React.Component {
                 </View>
 
                 {
-                    !this.state.renderMap ?
-                        <ActivityIndicator
-                            style={styles.activityIndicator}
-                            animating={true}
-                            size="large"
-                            color='grey'
-                        />
-                        :
+                    this.state.renderMap &&
                         <MapView
                             ref={map => { this.map = map }}
                             style={styles.map}
@@ -210,9 +202,5 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%'
         */
-    },
-    activityIndicator: {
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0, right: 0
     }
 });

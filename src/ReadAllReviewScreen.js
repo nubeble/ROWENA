@@ -62,13 +62,15 @@ export default class ReadAllReviewScreen extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const { reviewStore, isOwner } = this.props.navigation.state.params;
+
         // console.log('reviews', reviewStore.reviews);
 
         this.setState({ isOwner });
 
-        // reviewStore.checkForNewEntries(); // do not use here!
-
         reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
+
+        // reviewStore.checkForNewEntries(); // do not use here!
+        this.loadReviewFromTheStart();
 
         setTimeout(() => {
             !this.isClosed && this.setState({ renderReview: true });
@@ -95,10 +97,6 @@ export default class ReadAllReviewScreen extends React.Component {
         this.hardwareBackPressListener.remove();
 
         this.isClosed = true;
-    }
-
-    moveToDetail() {
-        this.props.screenProps.rootNavigation.navigate('detail');
     }
 
     render(): React.Node {
@@ -150,7 +148,9 @@ export default class ReadAllReviewScreen extends React.Component {
                 </View>
 
                 {
-                    !this.state.renderReview ?
+                    /*
+                    !this.state.renderReview
+                        ?
                         <ActivityIndicator
                             style={styles.activityIndicator}
                             animating={true}
@@ -158,6 +158,8 @@ export default class ReadAllReviewScreen extends React.Component {
                             color='grey'
                         />
                         :
+                    */
+                    this.state.renderReview &&
                         <TouchableWithoutFeedback
                             onPress={() => {
                                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
@@ -240,10 +242,12 @@ export default class ReadAllReviewScreen extends React.Component {
                                 }}
                                 placeholder='Reply to a review...'
                                 placeholderTextColor={Theme.color.placeholder}
+                                onChangeText={(text) => this.onChangeText(text)}
+
+                                selectionColor={Theme.color.selection}
+                                keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'}
-                                onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity style={{
                                 flex: 0.15,
@@ -786,11 +790,12 @@ const styles = StyleSheet.create({
         marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
         marginBottom: 20
     },
-    // loading indicator
+    /*
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
+    */
     notification: {
         position: "absolute",
         width: '100%',

@@ -33,13 +33,13 @@ export default class ProfileStore {
 
     async init(): Promise<void> {
         // Load Profile
-        const { uid } = Firebase.auth.currentUser;
+        const uid = Firebase.user().uid;
         Firebase.firestore.collection("users").doc(uid).onSnapshot(async snap => {
             if (snap.exists) {
                 this.profile = snap.data();
                 console.log('profile changed.', this.profile);
             } else {
-                console.log('this should not happen!', snap.data());
+                console.log('this should not happen!');
 
                 // create default
                 await Firebase.firestore.collection("users").doc(uid).set(DEFAULT_PROFILE);

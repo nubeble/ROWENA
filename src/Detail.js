@@ -339,7 +339,7 @@ export default class Detail extends React.Component {
                                                     source={PreloadImage.bra}
                                                     // tintColor={'white'}
                                                 />
-                                                <Text style={styles.bodyInfoTitle}>C</Text>
+                                                <Text style={styles.bodyInfoTitle}>C cup</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -454,7 +454,7 @@ export default class Detail extends React.Component {
                                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                 <TouchableOpacity onPress={async () => this.contact()} style={[styles.contactButton, { marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }]} >
-                                    <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'rgba(255, 255, 255, 0.8)' }}>Contact</Text>
+                                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Globals.submitButtonPaddingTop() }}>Contact</Text>
                                 </TouchableOpacity>
                             </View>
                         )}
@@ -525,11 +525,12 @@ export default class Detail extends React.Component {
                                 }}
                                 placeholder='Reply to a review...'
                                 placeholderTextColor={Theme.color.placeholder}
+                                onChangeText={(text) => this.onChangeText(text)}
+
+                                selectionColor={Theme.color.selection}
+                                keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'}
-                                selectionColor={Theme.color.selection}
-                                onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
                                 style={{
@@ -1024,22 +1025,20 @@ export default class Detail extends React.Component {
     async contact() {
         const { post, profile } = this.props.navigation.state.params;
 
+        const uid = Firebase.user().uid;
+
         // find existing chat room (by uid)
-        const room = await Firebase.findChatRoomByPostId(Firebase.user().uid, post.id);
-
-        // console.log('@@@@@@', room);
-
+        const room = await Firebase.findChatRoomByPostId(uid, post.id);
         if (room) {
             /*
             this.setState({ isNavigating: true }, () => {
                 this.props.navigation.navigate('room', { item: room });
             });
             */
-            this.props.navigation.navigate('chatRoom', { item: room });
+            this.props.navigation.navigate("chatRoom", { item: room });
         } else {
             // create new chat room
             // --
-            const uid = Firebase.user().uid;
             const chatRoomId = Util.uid(); // create chat room id
 
             const user1 = {
@@ -1067,7 +1066,7 @@ export default class Detail extends React.Component {
                 this.props.navigation.navigate('room', { item: item });
             });
             */
-            this.props.navigation.navigate('chatRoom', { item: item });
+            this.props.navigation.navigate("chatRoom", { item: item });
         }
     }
 

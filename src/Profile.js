@@ -22,12 +22,14 @@ type InjectedProps = {
 };
 
 const MAX_FEED_COUNT = 12; // 3 x 4
-
+// const MAX_FEED_COUNT = 3;
 
 // @inject("feedStore", "profileStore") @observer
 @inject("profileStore") @observer
 export default class Profile extends React.Component<ScreenProps<> & InjectedProps> {
     state = {
+        renderFeed: false,
+
         showIndicator: false,
 
         uploadingImage: false,
@@ -36,12 +38,19 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
 
-        renderFeeds: [],
+        feeds: [],
         isLoadingFeeds: false,
-        currentFeedIndex: 0,
-
-        refreshing: false,
+        refreshing: false
     };
+
+    constructor(props) {
+        super(props);
+
+        this.lastFeedId = null;
+        this.lastLoadedFeedIndex = -1;
+        this.lastLoadedFeedId = null;
+        this.reload = true;
+    }
 
     componentDidMount() {
         console.log('Profile::componentDidMount');
@@ -52,10 +61,14 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
         // this.props.userFeedStore.checkForNewEntriesInFeed();
 
 
-        const { profile } = this.props.profileStore;
+        // const { profile } = this.props.profileStore;
         // console.log('Profile::componentDidMount() profile', profile);
 
         this.getUserFeeds();
+
+        setTimeout(() => {
+            !this.isClosed && this.setState({ renderFeed: true });
+        }, 0);
     }
 
     @autobind
@@ -73,40 +86,100 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
         this.setState({ isLoadingFeeds: true });
 
+
         const { profile } = this.props.profileStore;
         const feeds = profile.feeds;
         const keys = Object.keys(feeds);
-
-        const currentFeedIndex = this.state.currentFeedIndex;
         const length = keys.length;
 
-        if (currentFeedIndex >= length) {
+        if (length === 0) {
             this.setState({ isLoadingFeeds: false, refreshing: false });
             return;
         }
 
-        let count = 0;
-        const newRecords = [];
+        // get the last feed id
+        const lastFeedId = this.getLastFeedId(feeds);
 
-        for (var i = currentFeedIndex; i < currentFeedIndex + MAX_FEED_COUNT; i++) {
-            if (i >= length) break;
+        // console.log('this.lastFeedId', this.lastFeedId);
+        // console.log('lastFeedId', lastFeedId);
 
-            var num = i;
-            var key = num.toString();
-            var value = feeds.get(key);
-            // console.log(key, value);
-            const feedDoc = await Firebase.firestore.collection("place").doc(value.placeId).collection("feed").doc(value.feedId).get();
-            const _data = feedDoc.data();
-            newRecords.push(_data);
+        if (this.lastFeedId !== lastFeedId) {
+            this.lastFeedId = lastFeedId;
 
-            count++;
-            // console.log('count', count);
+            // reload from the start
+            this.lastLoadedFeedIndex = -1;
+            
+            this.reload = true;
         }
 
-        this.setState({
-            isLoadingFeeds: false, currentFeedIndex: currentFeedIndex + count, renderFeeds: [...this.state.renderFeeds, ...newRecords],
-            refreshing: false
-        });
+        console.log('this.lastLoadedFeedIndex', this.lastLoadedFeedIndex);
+
+        if (this.lastLoadedFeedIndex === 0) {
+            this.setState({ isLoadingFeeds: false, refreshing: false });
+            return;
+        }
+
+        let newFeeds = [];
+
+        let startIndex = 0;
+        if (this.lastLoadedFeedIndex === -1) {
+            startIndex = length - 1;
+        } else {
+            startIndex = this.lastLoadedFeedIndex - 1;
+        }
+
+        let count = 0;
+
+        for (var i = startIndex; i >= 0; i--) {
+            if (count >= MAX_FEED_COUNT) break;
+
+            const num = i;
+            const key = num.toString();
+            const value = feeds.get(key);
+            // console.log(key, value);
+
+            if (!value.valid) continue;
+
+            newFeeds.push(value);
+
+            this.lastLoadedFeedId = value.feedId;
+            this.lastLoadedFeedIndex = i;
+
+            count++;
+        }
+
+
+        if (this.reload) {
+            this.reload = false;
+
+            this.setState({
+                isLoadingFeeds: false, feeds: newFeeds, refreshing: false
+            });
+        } else {
+            this.setState({
+                isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
+            });
+        }
+    }
+
+    getLastFeedId(feeds) {
+        const keys = Object.keys(feeds);
+        const length = keys.length;
+
+        const num = length - 1;
+        const key = num.toString();
+        const value = feeds.get(key);
+
+        return value.feedId;
+    }
+
+    async openPost(item) {
+        const placeId = item.placeId;
+        const feedId = item.feedId;
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        const post = feedDoc.data();
+
+        this.props.navigation.navigate("postPreview", { post: post });
     }
 
     render() {
@@ -128,118 +201,121 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
 
                 </View>
 
-                <FlatList
-                    contentContainerStyle={styles.contentContainer}
-                    showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={(
-                        <View>
-                            <TouchableOpacity onPress={() => this.uploadPicture(0)}>
-                                <SmartImage
-                                    style={styles.ad}
-                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
-                                />
-                            </TouchableOpacity>
+                {
+                    this.state.renderFeed &&
+                        <FlatList
+                            contentContainerStyle={styles.contentContainer}
+                            showsVerticalScrollIndicator={true}
+                            ListHeaderComponent={(
+                                <View>
+                                    <TouchableOpacity onPress={() => this.uploadPicture(0)}>
+                                        <SmartImage
+                                            style={styles.ad}
+                                            uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        />
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => console.log('onPress')}>
-                                <SmartImage
-                                    style={styles.ad}
-                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
-                                />
-                            </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => console.log('onPress')}>
+                                        <SmartImage
+                                            style={styles.ad}
+                                            uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        />
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => console.log('onPress')}>
-                                <SmartImage
-                                    style={styles.ad}
-                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
-                                />
-                            </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => console.log('onPress')}>
+                                        <SmartImage
+                                            style={styles.ad}
+                                            uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        />
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => console.log('onPress')}>
-                                <SmartImage
-                                    style={styles.ad}
-                                    uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
-                                />
-                            </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => console.log('onPress')}>
+                                        <SmartImage
+                                            style={styles.ad}
+                                            uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        />
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity onPress={() => this.addFeed()}
-                                style={[styles.bottomButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Add Feed</Text>
-                            </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => this.addFeed()}
+                                        style={[styles.bottomButton, { marginBottom: 10 }]} >
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'white' }}>Add Feed</Text>
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity
-                                onPress={() => this.removeFeed()}
-                                style={[styles.bottomButton, { marginBottom: 10 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Remove Feed</Text>
-                            </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => this.removeFeed()}
+                                        style={[styles.bottomButton, { marginBottom: 10 }]} >
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'white' }}>Remove Feed</Text>
+                                    </TouchableOpacity>
 
-                            <TouchableOpacity
-                                // onPress={() => this.removeReview()}
-                                style={[styles.bottomButton, { marginBottom: 50 }]} >
-                                <Text style={{ fontWeight: 'bold', fontSize: 16, color: 'white' }}>Test</Text>
-                            </TouchableOpacity>
+                                    <TouchableOpacity
+                                        // onPress={() => this.removeReview()}
+                                        style={[styles.bottomButton, { marginBottom: 50 }]} >
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'white' }}>Test</Text>
+                                    </TouchableOpacity>
 
 
 
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Your post'}</Text>
-                            </View>
-                        </View>
-                    )}
-                    // scrollEventThrottle={1}
-                    columnWrapperStyle={styles.columnWrapperStyle}
-                    numColumns={3}
-                    data={this.state.renderFeeds}
-                    keyExtractor={item => item.id}
-                    renderItem={({ item, index }) => {
-                        return (
-                            <TouchableOpacity
-                            // onPress={() => this.props.navigation.navigate("homeStackNavigator", { place: item })}
-                            >
-                                <View style={styles.pictureContainer}>
-                                    <SmartImage
-                                        preview={item.pictures.one.preview}
-                                        uri={item.pictures.one.uri}
-                                        style={styles.picture}
-                                    />
-
-                                    {/*
-                                    <View style={styles.content}>
-                                        <Text style={{
-                                            textAlign: 'center',
-                                            fontWeight: '500',
-                                            color: "white",
-                                            fontSize: 21,
-                                            // flexWrap: "wrap"
-                                        }}>{item.city}</Text>
+                                    <View style={styles.titleContainer}>
+                                        <Text style={styles.title}>{'Your post'}</Text>
                                     </View>
-                                    */}
                                 </View>
-                            </TouchableOpacity>
-                        );
-                    }}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={this.onScrollHandler}
-                    ListFooterComponent={
-                        this.state.isLoadingFeeds && (
-                            <ActivityIndicator
-                                style={styles.bottomIndicator}
-                                animating={true}
-                                size="small"
-                                color='grey'
-                            />
-                        )}
+                            )}
+                            // scrollEventThrottle={1}
+                            columnWrapperStyle={styles.columnWrapperStyle}
+                            numColumns={3}
+                            data={this.state.feeds}
+                            // keyExtractor={item => item.id}
+                            keyExtractor={item => item.feedId}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <TouchableOpacity onPress={async () => this.openPost(item)} >
+                                        <View style={styles.pictureContainer}>
+                                            <SmartImage
+                                                // preview={item.pictures.one.preview}
+                                                // uri={item.pictures.one.uri}
+                                                uri={item.imageUri}
+                                                style={styles.picture}
+                                            />
 
-                    /*
-                    ListEmptyComponent={(
-                        <View style={styles.post}>
-                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
-                        </View>
-                    )}
-                    */
+                                            {/*
+                                            <View style={styles.content}>
+                                                <Text style={{
+                                                    textAlign: 'center',
+                                                    fontWeight: '500',
+                                                    color: "white",
+                                                    fontSize: 21,
+                                                    // flexWrap: "wrap"
+                                                }}>{item.city}</Text>
+                                            </View>
+                                            */}
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            }}
+                            onEndReachedThreshold={0.5}
+                            onEndReached={this.onScrollHandler}
+                            ListFooterComponent={
+                                this.state.isLoadingFeeds && (
+                                    <ActivityIndicator
+                                        style={styles.bottomIndicator}
+                                        animating={true}
+                                        size="small"
+                                        color='grey'
+                                    />
+                                )}
 
-                    onRefresh={this.handleRefresh}
-                    refreshing={this.state.refreshing}
-                />
+                            /*
+                            ListEmptyComponent={(
+                                <View style={styles.post}>
+                                    {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                                </View>
+                            )}
+                            */
+
+                            onRefresh={this.handleRefresh}
+                            refreshing={this.state.refreshing}
+                        />
+                }
             </View>
 
         );
@@ -255,6 +331,7 @@ export default class Profile extends React.Component<ScreenProps<> & InjectedPro
             }
         );
     };
+
 
 
 

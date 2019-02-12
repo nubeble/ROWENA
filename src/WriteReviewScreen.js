@@ -224,17 +224,18 @@ export default class WriteReviewScreen extends React.Component {
                         }}
                         placeholder='Share details of your own experience'
                         placeholderTextColor={Theme.color.placeholder}
+                        onChangeText={(text) => this.onChangeText(text)}
+
+                        selectionColor={Theme.color.selection}
+                        keyboardAppearance={'dark'}
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
-                        keyboardAppearance={'dark'}
-                        selectionColor={Theme.color.selection}
-                        onChangeText={(text) => this.onChangeText(text)}
                     />
                 </View>
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => this.post()} style={styles.signUpButton} disabled={this.state.invalid} >
-                        <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Post</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Post</Text>
                     </TouchableOpacity>
                 </View>
 

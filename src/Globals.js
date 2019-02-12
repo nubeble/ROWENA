@@ -15,6 +15,22 @@ export var Globals = {
     // button press timeout
     buttonTimeout: 300,
 
+    submitButtonPaddingTop:() => {
+        const height = Dimensions.get('window').height;
+        const param = parseInt(height / 100);
+
+        switch (param) {
+            case 5: return 3;
+            case 6: return 4; // Galaxy S7: 640
+            case 7: return 5; // Tango: 731
+            case 8: return 6; // iphone X: 812
+            case 9: return 7;
+        }
+
+        if (param < 5) return 3;
+        if (param > 9) return 7;
+    },
+
     // alert dialog
     alertHeight: Dimensions.get('window').height * 0.25,
     alertButtonMarginLeft: Dimensions.get('window').width * 0.1,

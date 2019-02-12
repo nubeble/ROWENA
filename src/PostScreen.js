@@ -4,7 +4,7 @@
 
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, Platform, Dimensions, FlatList, SafeAreaView,
+    StyleSheet, View, TouchableOpacity, Platform, Dimensions, FlatList, BackHandler,
     TouchableWithoutFeedback, ActivityIndicator, Animated, Image, Keyboard, TextInput, StatusBar
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -201,7 +201,7 @@ export default class PostScreen extends React.Component {
                                                     source={PreloadImage.bra}
                                                 // tintColor={'white'}
                                                 />
-                                                <Text style={styles.bodyInfoTitle}>C</Text>
+                                                <Text style={styles.bodyInfoTitle}>C cup</Text>
                                             </View>
                                         </View>
                                     </View>
@@ -367,11 +367,12 @@ export default class PostScreen extends React.Component {
                                 }}
                                 placeholder='Reply to a review...'
                                 placeholderTextColor={Theme.color.placeholder}
+                                onChangeText={(text) => this.onChangeText(text)}
+
+                                selectionColor={Theme.color.selection}
+                                keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                keyboardAppearance={'dark'}
-                                selectionColor={Theme.color.selection}
-                                onChangeText={(text) => this.onChangeText(text)}
                             />
                             <TouchableOpacity
                                 style={{
@@ -517,7 +518,7 @@ export default class PostScreen extends React.Component {
     }
 
     onGoBack(result) { // back from rating
-        console.log('PostModal::onGoBack', result);
+        console.log('PostScreen::onGoBack', result);
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -531,10 +532,11 @@ export default class PostScreen extends React.Component {
     }
 
     componentDidMount() {
-        console.log('PostModal::componentDidMount');
+        console.log('PostScreen::componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const { post } = this.props.navigation.state.params;
         this.init(post);
@@ -563,16 +565,17 @@ export default class PostScreen extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('PostModal::componentWillUnmount');
+        console.log('PostScreen::componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
 
         this.isClosed = true;
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('PostModal::renderReviews');
+        console.log('PostScreen::renderReviews');
 
         const reviewArray = [];
 
@@ -802,6 +805,13 @@ export default class PostScreen extends React.Component {
         }
 
         this.setState({ bottomPosition: Dimensions.get('window').height });
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
     }
 
     showKeyboard(ref, index) {
