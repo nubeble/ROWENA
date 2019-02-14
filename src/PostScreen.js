@@ -4,14 +4,14 @@
 
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, Platform, Dimensions, FlatList, BackHandler,
-    TouchableWithoutFeedback, ActivityIndicator, Animated, Image, Keyboard, TextInput, StatusBar
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Platform,
+    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Constants, MapView } from 'expo';
+import { Constants, MapView, Svg } from 'expo';
 import { Text, Theme } from "./rnff/src/components";
 import moment from 'moment';
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -28,6 +28,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { sendPushNotification } from './PushNotifications';
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
@@ -67,7 +68,7 @@ export default class PostScreen extends React.Component {
     }
 
     onGoBack(result) { // back from rating
-        console.log('PostScreen::onGoBack', result);
+        console.log('PostScreen.onGoBack', result);
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -81,11 +82,13 @@ export default class PostScreen extends React.Component {
     }
 
     componentDidMount() {
-        console.log('PostScreen::componentDidMount');
+        console.log('PostScreen.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post } = this.props.navigation.state.params;
         this.init(post);
@@ -94,6 +97,27 @@ export default class PostScreen extends React.Component {
         setTimeout(() => {
             !this.isClosed && this.setState({ renderList: true });
         }, 0);
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        if (this.state.showAlert) {
+            this.setState({ showAlert: false });
+        } else {
+            this.props.navigation.dispatch(NavigationActions.back());
+        }
+
+        return true;
+    }
+
+    @autobind
+    onFocus() {
+        this.focused = true;
+    }
+
+    @autobind
+    onBlur() {
+        this.focused = false;
     }
 
     init(post) {
@@ -113,7 +137,7 @@ export default class PostScreen extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('PostScreen::componentWillUnmount');
+        console.log('PostScreen.componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
@@ -199,7 +223,12 @@ export default class PostScreen extends React.Component {
                                             <View style={styles.circle}></View>
                                             <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
                                         </View>
-
+                                        {/*
+                                        <Text style={styles.name}>{post.name}</Text>
+                                        <Text style={styles.size}>
+                                            {post.age}yrs  {post.height}cm  {post.weight}kg  {post.bust}cup
+                                        </Text>
+                                        */}
                                         <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
 
                                         <View style={{
@@ -296,7 +325,7 @@ export default class PostScreen extends React.Component {
                                                     });
                                                     */
                                                     this.props.navigation.navigate("map", { post: post });
-                                                }, 300);
+                                                }, Globals.buttonTimeoutLong);
                                             }}
                                         >
                                             <View style={styles.mapView}>
@@ -567,14 +596,62 @@ export default class PostScreen extends React.Component {
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('PostScreen::renderReviews');
+        console.log('PostScreen.renderReviews');
 
-        const reviewArray = [];
+        const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
+
+        let reviewArray = [];
 
         const { post } = this.props.navigation.state.params;
-        let reviewLength = post.reviewCount;
+        const reviewLength = post.reviewCount;
 
         if (reviews === undefined) {
+            for (var i = 0; i < 4; i++) {
+                reviewArray.push(
+                    <View key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={width} height={120}>
+                            <Svg.Circle
+                                cx={18 + 2}
+                                cy={18 + 2}
+                                r={18}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 - 12}
+                                width={60}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 + 6}
+                                width={100}
+                                height={6}
+                            />
+
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                width={'80%'}
+                                height={6}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+                );
+            }
+
+            /*
             reviewArray.push(
                 <ActivityIndicator
                     key={'indicator'}
@@ -587,6 +664,7 @@ export default class PostScreen extends React.Component {
                     color='grey'
                 />
             );
+            */
         } else {
             console.log('reviews length', reviews.length);
 
@@ -662,7 +740,7 @@ export default class PostScreen extends React.Component {
                                 }}>
 
                                     <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.xSmall }}>
-                                        <Text style={styles.replyOwner}>Management Response</Text>
+                                        <Text style={styles.replyOwner}>Owner Response</Text>
                                         <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                                     </View>
 
@@ -711,13 +789,15 @@ export default class PostScreen extends React.Component {
                 {/* Read all ??? reviews button */}
                 <TouchableOpacity
                     onPress={() => {
-                        this.props.navigation.navigate("readReviewModal",
-                            {
-                                reviewStore: this.reviewStore,
-                                isOwner: this.state.isOwner,
-                                placeId: post.placeId,
-                                feedId: post.id
-                            });
+                        setTimeout(() => {
+                            this.props.navigation.navigate("readReviewModal",
+                                {
+                                    reviewStore: this.reviewStore,
+                                    isOwner: this.state.isOwner,
+                                    placeId: post.placeId,
+                                    feedId: post.id
+                                });
+                        }, Globals.buttonTimeoutShort);
                     }}
                 >
                     <View style={{
@@ -762,6 +842,10 @@ export default class PostScreen extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
+        if (!this.focused) return;
+
+        console.log('PostScreen._keyboardDidShow');
+
         this.setState({ showKeyboard: true, bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
         if (!this.selectedItem) return;
@@ -788,6 +872,10 @@ export default class PostScreen extends React.Component {
 
     @autobind
     _keyboardDidHide() {
+        if (!this.focused) return;
+
+        console.log('PostScreen._keyboardDidHide');
+
         this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;
@@ -798,13 +886,6 @@ export default class PostScreen extends React.Component {
             this.hideNotification();
             this._showNotification = false;
         }
-    }
-
-    @autobind
-    handleHardwareBackPress() {
-        this.props.navigation.dispatch(NavigationActions.back());
-
-        return true;
     }
 
     openKeyboard(ref, index, owner) {
@@ -971,13 +1052,16 @@ export default class PostScreen extends React.Component {
         const { post } = this.props.navigation.state.params;
 
         const sender = Firebase.user().uid;
+        const senderName = Firebase.user().name;
         // const receiver = post.uid; // owner
         const receiver = this.owner;
         const data = {
-            message: message
+            message: message,
+            placeId: post.placeId,
+            feedId: post.id
         };
 
-        sendPushNotification(sender, receiver, Globals.pushNotification.reply, data);
+        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.reply, data);
     }
 };
 
@@ -1037,6 +1121,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 24,
         fontFamily: "SFProText-Semibold",
+        marginTop: Theme.spacing.xSmall,
         paddingTop: Theme.spacing.xSmall,
         // paddingBottom: Theme.spacing.xSmall
     },

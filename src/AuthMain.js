@@ -124,7 +124,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.continueWithFacebook();
-                                }, Globals.buttonTimeout);
+                                }, Globals.buttonTimeoutLong);
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
@@ -146,7 +146,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithEmail();
-                                }, Globals.buttonTimeout);
+                                }, Globals.buttonTimeoutLong);
                             }}
                             style={styles.signUpWithEmailButton}
                         >
@@ -158,7 +158,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithMobile();
-                                }, Globals.buttonTimeout);
+                                }, Globals.buttonTimeoutLong);
                             }}
                             style={styles.signUpWithMobileButton}
                         >
@@ -167,7 +167,7 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            // onPress={() => this.props.navigation.navigate("logIn")}
+                        // onPress={() => this.props.navigation.navigate("logIn")}
                         >
                             <Text style={{ marginBottom: 150, marginTop: 18, color: 'rgba(255, 255, 255, 0.8)' }} >
                                 <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular" }}>Already a member?  </Text>

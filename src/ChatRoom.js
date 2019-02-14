@@ -24,12 +24,15 @@ const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
 const avatarHeight = Globals.searchBarHeight * 0.5;
+const bigImageWidth = postHeight * 0.7;
+const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
 
 
 export default class ChatRoom extends React.Component {
     state = {
-        name: '',
-        id: '',
+        id: null,
+        titleImageUri: null,
+        titleName: null,
         messages: [],
         showAlert: false,
         onKeyboard: false,
@@ -43,14 +46,30 @@ export default class ChatRoom extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ChatRoom::componentDidMount');
+        console.log('ChatRoom.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const item = this.props.navigation.state.params.item;
-        this.setState({ name: item.users[1].name, id: item.id });
+
+        let titleImageUri = null;
+        let titleName = null;
+
+        const users = item.users;
+        for (var i = 0; i < users.length; i++) { // find the owner of this post
+            const user = users[i];
+
+            if (item.owner === user.uid) {
+                titleImageUri = user.picture;
+                titleName = user.name;
+
+                break;
+            }
+        }
+
+        this.setState({ id: item.id, titleImageUri, titleName });
 
         Firebase.chatOn(item.id, message => {
             console.log('on message', message);
@@ -80,7 +99,7 @@ export default class ChatRoom extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('ChatRoom::componentWillUnmount');
+        console.log('ChatRoom.componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
@@ -95,7 +114,12 @@ export default class ChatRoom extends React.Component {
     @autobind
     handleHardwareBackPress() {
         // this.goBack(); // works best when the goBack is async
-        this.props.navigation.navigate("chat");
+
+        if (this.state.showAlert) {
+            this.setState({ showAlert: false });
+        } else {
+            this.props.navigation.navigate("chat");
+        }
 
         return true;
     }
@@ -129,40 +153,9 @@ export default class ChatRoom extends React.Component {
         const item = this.props.navigation.state.params.item;
         // const index = this.props.navigation.state.params.index;
 
-        // const imageUri = item.users[1].picture;
-
-        let imageUri = null;
-
-        const users = item.users;
-        for (var i = 0; i < users.length; i++) { // find the owner of this post
-            const user = users[i];
-
-            if (item.owner === user.uid) {
-                imageUri = user.picture;
-
-                break;
-            }
-        }
-
-        /*
-        const imageWidth1 = postHeight * 0.7;
-        const imageWidth2 = postHeight * 0.5;
-        const imageWidth = this.state.onKeyboard ? imageWidth2 : imageWidth1;
-        */
-        // const imageWidth = postHeight * 0.7;
-
-        const bigImageWidth = postHeight * 0.7;
-
-        let small = postHeight * 0.7;
-        if (Dimensions.get('window').height <= 640) small = postHeight * 0.56;
-
-        const smallImageWidth = small;
-
         const imageWidth = this.state.onKeyboard ? smallImageWidth : bigImageWidth;
-
-        const name = item.users[1].name;
+        const labelName = item.users[1].name;
         // const text2 = 'Send a message before your battery dies.';
-
 
         return (
             <View style={styles.container}>
@@ -186,7 +179,7 @@ export default class ChatRoom extends React.Component {
                             style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
                             showSpinner={false}
                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={imageUri}
+                            uri={this.state.titleImageUri}
                         />
                     </TouchableOpacity>
 
@@ -200,7 +193,7 @@ export default class ChatRoom extends React.Component {
                                 marginLeft: 10,
                                 paddingBottom: 4
                             }}
-                        >{this.state.name}</Text>
+                        >{this.state.titleName}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -240,7 +233,7 @@ export default class ChatRoom extends React.Component {
                             keyboardAppearance: 'dark',
                             underlineColorAndroid: "transparent",
                             autoCorrect: false,
-                            
+
                             onFocus: () => {
                                 this.setState({ onKeyboard: true });
                             },
@@ -301,7 +294,7 @@ export default class ChatRoom extends React.Component {
                     <View style={[styles.post, { top: postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
-                            <Text style={styles.name}>{name}</Text>
+                            <Text style={styles.name}>{labelName}</Text>
                             <Text style={styles.text1}>{'!'}</Text>
                         </Text>
 
@@ -310,7 +303,7 @@ export default class ChatRoom extends React.Component {
                                 showSpinner={false}
                                 style={{ width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2, marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                uri={imageUri}
+                                uri={this.state.titleImageUri}
                             />
                         </TouchableOpacity>
 
@@ -323,7 +316,7 @@ export default class ChatRoom extends React.Component {
                 <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
-                    title={"Want to leave " + name + "?"}
+                    title={"Want to leave " + labelName + "?"}
                     // message="I have a message for you!"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
@@ -364,7 +357,7 @@ export default class ChatRoom extends React.Component {
     }
 
     loadMore() {
-        console.log('ChatRoom::loadMore()');
+        console.log('ChatRoom.loadMore()');
 
         const lastMessage = this.state.messages[this.state.messages.length - 1];
         const time = lastMessage.createdAt;
@@ -394,6 +387,7 @@ export default class ChatRoom extends React.Component {
         // send push notification
         const notificationType = Globals.pushNotification.chat;
         const sender = item.users[0].uid;
+        const senderName = item.users[0].name;
         const receiver = item.users[1].uid; // owner
         // const timestamp
 
@@ -422,7 +416,7 @@ export default class ChatRoom extends React.Component {
             users: users
         };
 
-        sendPushNotification(sender, receiver, notificationType, data);
+        sendPushNotification(sender, senderName, receiver, notificationType, data);
     }
 
     async openPost() {
@@ -433,8 +427,6 @@ export default class ChatRoom extends React.Component {
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         const post = feedDoc.data();
 
-        // console.log('post', post);
-
         this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
     }
 
@@ -442,14 +434,12 @@ export default class ChatRoom extends React.Component {
         const item = this.props.navigation.state.params.item;
 
         if (item.owner === item.users[1].uid) {
-            // --
             const placeId = item.placeId;
             const feedId = item.feedId;
             const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
             const post = feedDoc.data();
 
             this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
-            // --
         } else {
             this.props.navigation.navigate("user");
         }

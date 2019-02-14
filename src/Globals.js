@@ -12,10 +12,11 @@ export var Globals = {
         reply: 3
     },
 
-    // button press timeout
-    buttonTimeout: 300,
+    // button press short, long timeout
+    buttonTimeoutShort: 100,
+    buttonTimeoutLong: 300,
 
-    submitButtonPaddingTop:() => {
+    submitButtonPaddingTop: () => {
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
 
@@ -40,7 +41,7 @@ export var Globals = {
 
     // search bar text padding
     // iPhone X: 4, Tango: ?, S7: 8
-    searchBarPaddingTop:() => {
+    searchBarPaddingTop: () => {
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
 
@@ -57,11 +58,9 @@ export var Globals = {
     },
 
     // posting date text padding top
-    lastLogInDatePaddingTop:() => {
+    lastLogInDatePaddingTop: () => {
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
-
-        // console.log('param', param);
 
         switch (param) {
             case 5: return 1;
@@ -74,8 +73,8 @@ export var Globals = {
         if (param < 5) return 1;
         if (param > 9) return 2;
     },
-    
 
-    
+
+
 
 };

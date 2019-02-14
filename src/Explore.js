@@ -50,14 +50,14 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        // console.log('Explore::componentDidMount', this.props);
+        // console.log('Explore.componentDidMount', this.props);
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
 
         let place = params.place;
         let length = params.length;
         let city = place.city;
-        console.log('Explore::componentDidMount', 'place', place, 'length', length, 'city', city);
+        console.log('Explore.componentDidMount', 'place', place, 'length', length, 'city', city);
 
         this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
@@ -84,6 +84,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         ));
         */
 
+        // this.props.navigation.dispatch(NavigationActions.back());
+        console.log('move to Intro');
         this.props.screenProps.rootNavigation.navigate("intro");
 
         return true;

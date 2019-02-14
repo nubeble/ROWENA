@@ -1,7 +1,8 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, ActivityIndicator
+    StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, ActivityIndicator, BackHandler
 } from 'react-native';
+import { NavigationActions } from 'react-navigation';
 import autobind from "autobind-decorator";
 import { Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -30,10 +31,11 @@ export default class ChatMain extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ChatMain::componentDidMount');
+        console.log('ChatMain.componentDidMount');
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const uid = Firebase.user().uid;
 
@@ -53,7 +55,7 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onFocus() {
-        console.log('ChatMain::onFocus');
+        console.log('ChatMain.onFocus');
         this.isFocused = true;
 
         const params = this.props.navigation.state.params;
@@ -119,15 +121,27 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onBlur() {
-        console.log('ChatMain::onBlur');
+        console.log('ChatMain.onBlur');
         this.isFocused = false;
     }
 
+    @autobind
+    handleHardwareBackPress() {
+        if (this.state.showAlert) {
+            this.setState({ showAlert: false });
+        } else {
+            this.props.navigation.dispatch(NavigationActions.back()); // move to intro
+        }
+
+        return true;
+    }
+
     componentWillUnmount() {
-        console.log('ChatMain::componentWillUnmount');
+        console.log('ChatMain.componentWillUnmount');
 
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+        this.hardwareBackPressListener.remove();
 
         this.isClosed = true;
     }
@@ -270,7 +284,7 @@ export default class ChatMain extends React.Component {
 
     @autobind
     loadMore() {
-        console.log('ChatMain::loadMore', this.isFocused);
+        console.log('ChatMain.loadMore', this.isFocused);
 
         if (!this.isFocused) return;
 

@@ -148,7 +148,7 @@ export default class FeedStore {
     }
 
     subscribeToPost(placeId: string, id: string, callback: Post => void): Subscription {
-        console.log('FeedStore::subscribeToPost', placeId, id);
+        console.log('FeedStore.subscribeToPost', placeId, id);
 
         /*
         return Firebase.firestore.collection("feed").where("id", "==", id).onSnapshot(async snap => {
@@ -178,7 +178,7 @@ export default class FeedStore {
     }
 
     subscribeToProfile(id: string, callback: Profile => void): Subscription {
-        console.log('FeedStore::subscribeToProfile');
+        console.log('FeedStore.subscribeToProfile');
 
         return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
             const profile = snap.exists ? snap.data() : DEFAULT_PROFILE;
@@ -194,7 +194,7 @@ export default class FeedStore {
     }
 
     async joinProfiles(posts: Post[]): Promise<FeedEntry[]> { // feed와 feed의 owner를 계산
-        console.log('FeedStore::joinProfiles');
+        console.log('FeedStore.joinProfiles');
 
         const uids = posts.map(post => post.uid).filter(uid => this.profiles[uid] === undefined);
 

@@ -1,19 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-	TextInput,
-	View,
-	FlatList,
-	ScrollView,
-	Image,
-	Text,
-	StyleSheet,
-	Dimensions,
-	TouchableHighlight,
-	Platform,
-	ActivityIndicator,
-	PixelRatio,
-	TouchableOpacity
+	TextInput, View, FlatList, ScrollView, Image, Text, StyleSheet, Dimensions,
+	TouchableHighlight, Platform, ActivityIndicator, PixelRatio, TouchableOpacity
 } from 'react-native';
 import Qs from 'qs';
 // import debounce from 'lodash.debounce';
@@ -100,6 +89,7 @@ const defaultStyles = {
 	}
 };
 
+
 export default class GooglePlacesAutocomplete extends Component {
 	_results = [];
 	_requests = [];
@@ -154,7 +144,7 @@ export default class GooglePlacesAutocomplete extends Component {
 		// been rendered
 		this._handleChangeText(this.state.text);
 
-		// console.log('GooglePlacesAutocomplete::componentDidMount');
+		// console.log('GooglePlacesAutocomplete.componentDidMount');
 
 		if (!this.isClosed) {
 			let that = this;
@@ -564,9 +554,9 @@ export default class GooglePlacesAutocomplete extends Component {
 
 
 		if (text.length >= 1) {
-			!this.isClosed && this.setState({clearButtonDisplayed: true});
+			!this.isClosed && this.setState({ clearButtonDisplayed: true });
 		} else {
-			!this.isClosed && this.setState({clearButtonDisplayed: false});
+			!this.isClosed && this.setState({ clearButtonDisplayed: false });
 		}
 	}
 
@@ -587,10 +577,10 @@ export default class GooglePlacesAutocomplete extends Component {
 
 		return (
 			<Text style={[{ flex: 1 },
-				this.props.suppressDefaultStyles ? {} : defaultStyles.description,
-				this.props.styles.description,
-				rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {},
-				rowData.isCurrentLocation ? defaultStyles.currentLocationText : {}
+			this.props.suppressDefaultStyles ? {} : defaultStyles.description,
+			this.props.styles.description,
+			rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {},
+			rowData.isCurrentLocation ? defaultStyles.currentLocationText : {}
 			]}
 
 				numberOfLines={this.props.numberOfLines}
@@ -718,12 +708,12 @@ export default class GooglePlacesAutocomplete extends Component {
 					style={{ position: 'absolute', right: 30, top: 16, alignSelf: 'baseline' }}
 					onPress={() => {
 						if (this.refs.textInput) {
-							!this.isClosed && this.setState({text: ''});
+							!this.isClosed && this.setState({ text: '' });
 							!this.isClosed && this.setState({
 								dataSource: this.buildRowsFromResults([]),
 							});
 
-							!this.isClosed && this.setState({clearButtonDisplayed: false});
+							!this.isClosed && this.setState({ clearButtonDisplayed: false });
 						}
 					}}
 				>
@@ -856,7 +846,8 @@ GooglePlacesAutocomplete.propTypes = {
 	numberOfLines: PropTypes.number,
 	onSubmitEditing: PropTypes.func,
 	editable: PropTypes.bool
-}
+};
+
 GooglePlacesAutocomplete.defaultProps = {
 	placeholder: 'Search',
 	placeholderTextColor: '#A8A8A8',
@@ -902,7 +893,9 @@ GooglePlacesAutocomplete.defaultProps = {
 	numberOfLines: 1,
 	onSubmitEditing: () => { },
 	editable: true
-}
+};
+
+
 
 /*
 // this function is still present in the library to be retrocompatible with version < 1.1.0

@@ -42,7 +42,7 @@ export default class App extends React.Component {
     };
 
     componentDidMount() {
-        console.log('App::componentDidMount');
+        console.log('App.componentDidMount');
 
         StatusBar.setBarStyle('light-content');
         if (Platform.OS === "android") {
@@ -63,7 +63,7 @@ export default class App extends React.Component {
 
             Alert.alert(
                 'props.exp.notification',
-                this.props.exp.notification, // ToDo: error will be occurred.
+                'check out this.props.exp.notification', // ToDo: this.props.exp.notification
                 [
                     {
                         text: 'Cancel',
@@ -143,6 +143,7 @@ export default class App extends React.Component {
                 switch (Number(data.type)) {
                     case Globals.pushNotification.chat: {
                         const message = data.userData.message;
+
                         const chatRoomId = data.userData.chatRoomId;
 
                         const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
@@ -150,9 +151,29 @@ export default class App extends React.Component {
                     } break;
 
                     case Globals.pushNotification.review: {
+                        const message = data.userData.message;
+
+                        // move to detail
+                        const placeId = data.userData.placeId;
+                        const feedId = data.userData.feedId;
+                        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+                        const post = feedDoc.data();
+
+                        NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
+
                     } break;
 
                     case Globals.pushNotification.reply: {
+                        const message = data.userData.message;
+
+                        // move to detail
+                        const placeId = data.userData.placeId;
+                        const feedId = data.userData.feedId;
+                        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+                        const post = feedDoc.data();
+
+                        NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
+
                     } break;
                 }
             }
@@ -214,7 +235,7 @@ import ChatRoom from './src/ChatRoom';
 import PostScreen from './src/PostScreen';
 import UserMain from './src/UserMain';
 import Likes from './src/Likes';
-import ProfileScreen from './src/Profile';
+import ProfileMain from './src/ProfileMain';
 import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
 import ExploreScreen from './src/Explore';
@@ -382,6 +403,7 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 
 
 // -- chat
+/*
 const ChatStackNavigator = createStackNavigator(
     {
         chatMain: {
@@ -433,6 +455,8 @@ ChatStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
         tabBarVisible: true
     };
 };
+*/
+
 
 const PostModalNavigator = createStackNavigator(
     {
@@ -575,7 +599,7 @@ var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
 // -- start of ProfileModalNavigator
 const ProfileModalNavigator = createStackNavigator(
     {
-        profileMain: { screen: ProfileScreen },
+        profileMain: { screen: ProfileMain },
         postPreview: { screen: PostModalNavigatorWrapper }
     },
     {
@@ -598,6 +622,21 @@ class ProfileModalNavigatorWrapper extends React.Component {
         );
     }
 }
+
+ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    const post = navigation.state.routes[1];
+    // post.isTransitioning
+
+    if (post && post.routeName === 'postPreview') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
 // -- end of ProfileModalNavigator
 
 const MainBottomTabNavigator = createBottomTabNavigator(
@@ -615,7 +654,6 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         },
         profile: {
-            // screen: ProfileScreen,
             screen: ProfileModalNavigatorWrapper,
             navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
         }

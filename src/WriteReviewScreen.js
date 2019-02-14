@@ -126,13 +126,16 @@ export default class WriteReviewScreen extends React.Component {
         const { post } = this.props.navigation.state.params;
 
         const sender = Firebase.user().uid;
+        const senderName = Firebase.user().name;
         const receiver = post.uid; // owner
 
         const data = {
-            message: message
+            message: message,
+            placeId: post.placeId,
+            feedId: post.id
         };
 
-        sendPushNotification(sender, receiver, Globals.pushNotification.review, data);
+        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.review, data);
     }
 
     render() {

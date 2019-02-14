@@ -42,7 +42,7 @@ export default class SignUpWithEmail extends React.Component {
     };
 
     componentDidMount() {
-        console.log('SignUpWithEmail::componentDidMount');
+        console.log('SignUpWithEmail.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -421,7 +421,7 @@ export default class SignUpWithEmail extends React.Component {
                             // textAlign: 'center'
                         }}>What's your email?</Text>
 
-                        <Form style={{ marginTop: 2, marginLeft: 4, marginRight: 16 }} >
+                        <Form style={{ marginLeft: 4, marginRight: 16 }} >
                             <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }} >EMAIL ADDRESS</Label>
                             <Item>
                                 <Input ref='emailInput' style={{ height: 38, fontSize: 22, lineHeight: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}

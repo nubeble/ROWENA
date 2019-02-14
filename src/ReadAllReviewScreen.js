@@ -6,7 +6,7 @@ import {
     ActivityIndicator, TouchableOpacity, Keyboard, TextInput, TouchableWithoutFeedback
 } from "react-native";
 import { Header, NavigationActions, StackActions } from 'react-navigation';
-import { Constants } from "expo";
+import { Constants, Svg } from "expo";
 import { Text, Theme, Avatar } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -19,6 +19,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { Globals } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
 type FlatListItem<T> = {
     item: T
@@ -56,7 +57,7 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     componentDidMount() {
-        // console.log('ReadAllReviewScreen::componentDidMount');
+        // console.log('ReadAllReviewScreen.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -87,7 +88,11 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        this.props.navigation.goBack();
+        if (this.state.showAlert) {
+            this.setState({ showAlert: false });
+        } else {
+            this.props.navigation.goBack();
+        }
 
         return true;
     }
@@ -102,12 +107,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
     render(): React.Node {
         const { reviewStore } = this.props.navigation.state.params;
-        const { navigation } = this.props;
-
-        // const reviews = reviewStore.reviews;
         const { reviews } = reviewStore;
-
-        const loading = reviews === undefined;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -161,44 +161,40 @@ export default class ReadAllReviewScreen extends React.Component {
                         :
                     */
                     this.state.renderReview &&
-                        <TouchableWithoutFeedback
-                            onPress={() => {
-                                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
-                            }}
-                        >
-                            <FlatList
-                                ref={(fl) => this._flatList = fl}
-                                data={reviews}
-                                keyExtractor={this.keyExtractor}
-                                renderItem={this.renderItem}
-                                onEndReachedThreshold={0.5}
-                                onEndReached={this.loadMore}
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                        }}
+                    >
+                        <FlatList
+                            ref={(fl) => this._flatList = fl}
+                            data={reviews}
+                            keyExtractor={this.keyExtractor}
+                            renderItem={this.renderItem}
+                            onEndReachedThreshold={0.5}
+                            onEndReached={this.loadMore}
 
-                                contentContainerStyle={styles.contentContainer}
-                                showsVerticalScrollIndicator
+                            contentContainerStyle={styles.contentContainer}
+                            showsVerticalScrollIndicator
 
-                                ListEmptyComponent={(
-                                    <View style={{ paddingHorizontal: Theme.spacing.small }}>
-                                        {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
-                                    </View>
-                                )}
-                                ListFooterComponent={(
-                                    this.state.isLoadingReview && (
-                                        <ActivityIndicator
-                                            style={styles.bottomIndicator}
-                                            animating={true}
-                                            size="small"
-                                            color='grey'
-                                        />
-                                    )
-                                )}
+                            ListEmptyComponent={this.renderListEmptyComponent}
+                            ListFooterComponent={(
+                                this.state.isLoadingReview && (
+                                    <ActivityIndicator
+                                        style={styles.bottomIndicator}
+                                        animating={true}
+                                        size="small"
+                                        color='grey'
+                                    />
+                                )
+                            )}
 
-                                ItemSeparatorComponent={this.itemSeparatorComponent}
+                            ItemSeparatorComponent={this.itemSeparatorComponent}
 
-                                onRefresh={this.handleRefresh}
-                                refreshing={this.state.refreshing}
-                            />
-                        </TouchableWithoutFeedback>
+                            onRefresh={this.handleRefresh}
+                            refreshing={this.state.refreshing}
+                        />
+                    </TouchableWithoutFeedback>
                 }
 
                 {
@@ -221,7 +217,6 @@ export default class ReadAllReviewScreen extends React.Component {
                             borderTopColor: Theme.color.line,
                             backgroundColor: Theme.color.background
                         }}>
-
                             <TextInput
                                 // ref='reply'
                                 ref={(c) => { this._reply = c; }}
@@ -402,7 +397,7 @@ export default class ReadAllReviewScreen extends React.Component {
                         }}>
 
                             <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.small }}>
-                                <Text style={styles.replyOwner}>Management Response</Text>
+                                <Text style={styles.replyOwner}>Owner Response</Text>
                                 <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                             </View>
 
@@ -486,10 +481,91 @@ export default class ReadAllReviewScreen extends React.Component {
     onItemLayout(event, index) {
         const { x, y, width, height } = event.nativeEvent.layout;
         // console.log(x, y, width, height);
-        // console.log(index, height);
+        console.log(index, height);
 
         this.itemHeights[index] = height;
         this.lastItemIndex = index;
+    }
+
+    @autobind
+    renderListEmptyComponent() {
+
+        // block the bottom indicator rendering
+        // if (this.state.isLoadingReview) this.setState({ isLoadingReview: false });
+
+        const { navigation } = this.props;
+
+        const { reviewStore } = this.props.navigation.state.params;
+        const { reviews } = reviewStore;
+
+        const loading = reviews === undefined;
+
+        const width = Dimensions.get('window').width - Theme.spacing.base * 2;
+
+
+        let reviewArray = [];
+
+        for (var i = 0; i < 4; i++) {
+            reviewArray.push(
+                <View key={i}>
+                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={width} height={160}>
+                        <Svg.Circle
+                            cx={18 + 2}
+                            cy={18 + 2}
+                            r={18}
+                        />
+                        <Svg.Rect
+                            x={2 + 18 * 2 + 10}
+                            y={2 + 18 - 12}
+                            width={60}
+                            height={6}
+                        />
+                        <Svg.Rect
+                            x={2 + 18 * 2 + 10}
+                            y={2 + 18 + 6}
+                            width={100}
+                            height={6}
+                        />
+
+                        <Svg.Rect
+                            x={0}
+                            y={2 + 18 * 2 + 14}
+                            width={'100%'}
+                            height={6}
+                        />
+                        <Svg.Rect
+                            x={0}
+                            y={2 + 18 * 2 + 14 + 14}
+                            width={'100%'}
+                            height={6}
+                        />
+                        <Svg.Rect
+                            x={0}
+                            y={2 + 18 * 2 + 14 + 14 + 14}
+                            width={'80%'}
+                            height={6}
+                        />
+                    </SvgAnimatedLinearGradient>
+                </View>
+            );
+        }
+
+        return (
+            /*
+            <View style={{ paddingHorizontal: Theme.spacing.small }}>
+                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+            </View>
+            */
+
+            loading ?
+                <View style={{ paddingVertical: Theme.spacing.small }}>
+                    {reviewArray}
+                </View>
+                :
+                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
+                    <FirstPost {...{ navigation }} />
+                </View>
+        );
     }
 
     @autobind
@@ -622,7 +698,8 @@ export default class ReadAllReviewScreen extends React.Component {
                 // refresh all
                 const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
                 const count = reviewStore.reviews.length;
-                this.refreshReviews(placeId, feedId, count + 1);
+                // this.refreshReviews(placeId, feedId, count + 1);
+                this.refreshReviews(placeId, feedId, 5);
             }
         });
     }
@@ -651,7 +728,8 @@ export default class ReadAllReviewScreen extends React.Component {
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh all
-                    this.refreshReviews(placeId, feedId, count - 1);
+                    // this.refreshReviews(placeId, feedId, count - 1);
+                    this.refreshReviews(placeId, feedId, 5);
                 }
             });
         });
@@ -673,7 +751,8 @@ export default class ReadAllReviewScreen extends React.Component {
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.isClosed) {
                     // refresh UI
-                    this.refreshReviews(placeId, feedId, count - 1);
+                    // this.refreshReviews(placeId, feedId, count - 1);
+                    this.refreshReviews(placeId, feedId, 5);
                 }
             });
         });
@@ -700,13 +779,16 @@ export default class ReadAllReviewScreen extends React.Component {
         const { post } = this.props.navigation.state.params;
 
         const sender = Firebase.user().uid;
+        const senderName = Firebase.user().name;
         // const receiver = post.uid; // owner
         const receiver = this.owner;
         const data = {
-            message: message
+            message: message,
+            placeId: post.placeId,
+            feedId: post.id
         };
 
-        sendPushNotification(sender, receiver, Globals.pushNotification.reply, data);
+        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.reply, data);
     }
 }
 

@@ -30,7 +30,7 @@ export default class Feed extends React.Component<FeedProps> {
 
     componentDidMount() {
         const { feed } = this.props.store; // FeedStore
-        // console.log('Feed::componentDidMount', feed);
+        // console.log('Feed.componentDidMount', feed);
 
         this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
     }
@@ -62,7 +62,7 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     loadMore() {
-        console.log('Feed::loadMore');
+        console.log('Feed.loadMore');
 
         if (this.state.isLoadingFeed) {
             // this.setState({ refreshing: false });

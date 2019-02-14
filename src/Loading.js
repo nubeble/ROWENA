@@ -38,7 +38,7 @@ export default class Loading extends React.Component<ScreenProps<>> {
     };
 
     async componentDidMount(): Promise<void> {
-        console.log('Loading::componentDidMount');
+        console.log('Loading.componentDidMount');
 
         // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
         const { navigation, feedStore, profileStore } = this.props;

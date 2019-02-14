@@ -21,7 +21,7 @@ type InjectedProps = {
 export default class ProfileComp extends React.Component<ScreenProps<> & InjectedProps> {
 
     componentDidMount() {
-        console.log('ProfileComp::componentDidMount');
+        console.log('ProfileComp.componentDidMount');
 
         this.props.userFeedStore.checkForNewEntriesInFeed();
     }

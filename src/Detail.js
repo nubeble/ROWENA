@@ -3,8 +3,7 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
 } from 'react-native';
-import { Header } from 'react-navigation';
-import { Constants, Permissions, ImagePicker, Linking, MapView } from "expo";
+import { Constants, Permissions, ImagePicker, Linking, MapView, Svg } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -25,6 +24,7 @@ import { Globals } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { sendPushNotification } from './PushNotifications';
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
@@ -67,21 +67,26 @@ export default class Detail extends React.Component {
     }
 
     onGoBack(result) { // back from rating
-        console.log('Detail::onGoBack', result);
+        console.log('Detail.onGoBack', result);
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
         // reload reviews
         if (result) {
-            const { post, profile } = this.props.navigation.state.params;
+            const { post } = this.props.navigation.state.params;
             const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
             this.reviewStore.init(query);
+
+
+
+            // ToDo: check!
+            this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
         }
     }
 
     componentDidMount() {
-        console.log('Detail::componentDidMount');
+        console.log('Detail.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -100,7 +105,12 @@ export default class Detail extends React.Component {
     @autobind
     handleHardwareBackPress() {
         // this.goBack(); // works best when the goBack is async
-        this.props.navigation.goBack();
+
+        if (this.state.showAlert) {
+            this.setState({ showAlert: false });
+        } else {
+            this.props.navigation.goBack();
+        }
 
         return true;
     }
@@ -124,7 +134,7 @@ export default class Detail extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('Detail::componentWillUnmount');
+        console.log('Detail.componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
@@ -145,7 +155,7 @@ export default class Detail extends React.Component {
     }
 
     render() {
-        const { post, profile } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -235,7 +245,7 @@ export default class Detail extends React.Component {
                                         {/*
                                         <Text style={styles.name}>{post.name}</Text>
                                         <Text style={styles.size}>
-                                            {post.age}yrs  {post.height}cm  {post.weight}kg
+                                            {post.age}yrs  {post.height}cm  {post.weight}kg  {post.bust}cup
                                         </Text>
                                         */}
                                         <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
@@ -309,7 +319,7 @@ export default class Detail extends React.Component {
                                                     <Image
                                                         style={{ width: 20, height: 20, tintColor: 'white' }}
                                                         source={PreloadImage.birth}
-                                                        // tintColor={'white'} // not working in ios
+                                                    // tintColor={'white'} // not working in ios
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>20 years old</Text>
                                                 </View>
@@ -317,7 +327,7 @@ export default class Detail extends React.Component {
                                                     <Image
                                                         style={{ width: 20, height: 20, marginTop: 2, tintColor: 'white' }}
                                                         source={PreloadImage.scale}
-                                                        // tintColor={'white'}
+                                                    // tintColor={'white'}
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>48 kg</Text>
                                                 </View>
@@ -330,7 +340,7 @@ export default class Detail extends React.Component {
                                                     <Image
                                                         style={{ width: 20, height: 20, tintColor: 'white' }}
                                                         source={PreloadImage.ruler}
-                                                        // tintColor={'white'}
+                                                    // tintColor={'white'}
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>164 cm</Text>
                                                 </View>
@@ -338,7 +348,7 @@ export default class Detail extends React.Component {
                                                     <Image
                                                         style={{ width: 20, height: 20, tintColor: 'white' }}
                                                         source={PreloadImage.bra}
-                                                        // tintColor={'white'}
+                                                    // tintColor={'white'}
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>C cup</Text>
                                                 </View>
@@ -390,7 +400,7 @@ export default class Detail extends React.Component {
                                                     });
                                                     */
                                                     this.props.navigation.navigate("map", { post: post });
-                                                }, 300);
+                                                }, Globals.buttonTimeoutLong);
                                             }}
                                         >
                                             <View style={styles.mapView}>
@@ -683,24 +693,66 @@ export default class Detail extends React.Component {
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('Detail::renderReviews');
+        console.log('Detail.renderReviews');
 
-        const reviewArray = [];
+        const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
 
-        // let reviewLength = 0;
-        const { post, profile } = this.props.navigation.state.params;
-        let reviewLength = post.reviewCount;
+        let reviewArray = [];
+
+        const { post } = this.props.navigation.state.params;
+        const reviewLength = post.reviewCount;
 
         if (reviews === undefined) {
-            // console.log('reviews is undefined');
+            for (var i = 0; i < 4; i++) {
+                reviewArray.push(
+                    <View key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={width} height={120}>
+                            <Svg.Circle
+                                cx={18 + 2}
+                                cy={18 + 2}
+                                r={18}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 - 12}
+                                width={60}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 + 6}
+                                width={100}
+                                height={6}
+                            />
+
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                width={'80%'}
+                                height={6}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+                );
+            }
+
+            /*
             reviewArray.push(
                 <ActivityIndicator
                     key={'indicator'}
                     style={{
-                        /*
-                        position: 'absolute',
-                        top: 0, bottom: 0, left: 0, right: 0
-                        */
                         marginTop: 20,
                         marginBottom: 20
                     }}
@@ -709,10 +761,9 @@ export default class Detail extends React.Component {
                     color='grey'
                 />
             );
+            */
         } else {
             console.log('reviews length', reviews.length);
-
-            // reviewLength = reviews.length;
 
             for (var i = 0; i < reviews.length; i++) {
                 if (i > 3) break;
@@ -721,15 +772,11 @@ export default class Detail extends React.Component {
 
                 const _profile = review.profile;
                 const _review = review.review;
-
                 // const _ref = 'review' + i;
                 const ref = _review.id;
                 const index = i;
-
                 const reply = _review.reply;
-
                 const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
-
                 let isMyReply = undefined;
                 if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
@@ -793,7 +840,7 @@ export default class Detail extends React.Component {
                             }}>
 
                                 <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.xSmall }}>
-                                    <Text style={styles.replyOwner}>Management Response</Text>
+                                    <Text style={styles.replyOwner}>Owner Response</Text>
                                     <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                                 </View>
 
@@ -843,13 +890,15 @@ export default class Detail extends React.Component {
                 {/* Read all ??? reviews button */}
                 <TouchableOpacity
                     onPress={() => {
-                        this.props.navigation.navigate("readReview",
-                            {
-                                reviewStore: this.reviewStore,
-                                isOwner: this.state.isOwner,
-                                placeId: this.props.navigation.state.params.post.placeId,
-                                feedId: this.props.navigation.state.params.post.id
-                            });
+                        setTimeout(() => {
+                            this.props.navigation.navigate("readReview",
+                                {
+                                    reviewStore: this.reviewStore,
+                                    isOwner: this.state.isOwner,
+                                    placeId: this.props.navigation.state.params.post.placeId,
+                                    feedId: this.props.navigation.state.params.post.id
+                                });
+                        }, Globals.buttonTimeoutShort);
                     }}
                 >
                     <View style={{
@@ -874,7 +923,6 @@ export default class Detail extends React.Component {
 
     onLayoutReviewsContainer = (event) => {
         // console.log('onLayoutReviewsContainer', event.nativeEvent.layout);
-
         const { y } = event.nativeEvent.layout;
         this.reviewsContainerY = y;
     }
@@ -882,6 +930,7 @@ export default class Detail extends React.Component {
     @autobind
     onItemLayout(event, index) {
         const { x, y, width, height } = event.nativeEvent.layout;
+        console.log(index, height);
 
         this.itemHeights[index] = height;
     }
@@ -897,7 +946,7 @@ export default class Detail extends React.Component {
                 this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
             });
             */
-            const { post, profile } = this.props.navigation.state.params;
+            const { post } = this.props.navigation.state.params;
             this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
         }, 500); // 0.5 sec
     }
@@ -1020,7 +1069,7 @@ export default class Detail extends React.Component {
     }
 
     async contact() {
-        const { post, profile } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
 
         const uid = Firebase.user().uid;
 
@@ -1087,7 +1136,7 @@ export default class Detail extends React.Component {
                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
                 // Consider: reload only the added review!
-                const { post, profile } = this.props.navigation.state.params;
+                const { post } = this.props.navigation.state.params;
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                 this.reviewStore.init(query);
             }
@@ -1095,7 +1144,7 @@ export default class Detail extends React.Component {
     }
 
     async addReply(message) {
-        const { post, profile } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
 
         const placeId = post.placeId;
         const feedId = post.id;
@@ -1108,7 +1157,7 @@ export default class Detail extends React.Component {
     removeReview(index) {
         // show dialog
         this.showAlert('Are you sure you want to delete this review?', async () => {
-            const { post, profile } = this.props.navigation.state.params;
+            const { post } = this.props.navigation.state.params;
 
             const placeId = post.placeId;
             const feedId = post.id;
@@ -1140,7 +1189,7 @@ export default class Detail extends React.Component {
     async removeReply(index) {
         // show dialog
         this.showAlert('Are you sure you want to delete this reply?', async () => {
-            const { post, profile } = this.props.navigation.state.params;
+            const { post } = this.props.navigation.state.params;
 
             const placeId = post.placeId;
             const feedId = post.id;
@@ -1164,13 +1213,16 @@ export default class Detail extends React.Component {
         const { post } = this.props.navigation.state.params;
 
         const sender = Firebase.user().uid;
+        const senderName = Firebase.user().name;
         // const receiver = post.uid; // owner
         const receiver = this.owner;
         const data = {
-            message: message
+            message: message,
+            placeId: post.placeId,
+            feedId: post.id
         };
 
-        sendPushNotification(sender, receiver, Globals.pushNotification.reply, data);
+        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.reply, data);
     }
 }
 
@@ -1230,6 +1282,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 24,
         fontFamily: "SFProText-Semibold",
+        marginTop: Theme.spacing.xSmall,
         paddingTop: Theme.spacing.xSmall,
         // paddingBottom: Theme.spacing.xSmall
     },

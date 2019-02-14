@@ -12,13 +12,13 @@ export default class UserMain extends React.Component {
     };
 
     componentDidMount() {
-        console.log('UserMain::componentDidMount');
+        console.log('UserMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
     }
 
     componentWillUnmount() {
-        console.log('UserMain::componentWillUnmount');
+        console.log('UserMain.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
 

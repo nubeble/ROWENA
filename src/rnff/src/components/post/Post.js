@@ -78,13 +78,8 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
                 <View style={styles.container}>
                     {
-                        // post.picture && (
                         post.pictures.one.uri && (
                             <SmartImage
-                                /*
-                                preview={post.picture.preview}
-                                uri={post.picture.uri}
-                                */
                                 // ToDo: use image list (one, two, ...)
                                 preview={post.pictures.one.preview}
                                 uri={post.pictures.one.uri}

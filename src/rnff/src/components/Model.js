@@ -64,6 +64,7 @@ export type Post = {
     age: number,
     height: number,
     weight: number,
+    bust: string,
     timestamp: number
 };
 

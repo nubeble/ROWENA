@@ -16,6 +16,16 @@ const Vientiane = { description: 'Vientiane, Laos', place_id: 'ChIJIXvtBoZoJDER3
 
 
 export default class SearchScreen extends React.Component {
+    state = {
+        renderScreen: false
+    };
+
+    componentDidMount() {
+        setTimeout(() => {
+            !this.isClosed && this.setState({ renderScreen: true });
+        }, 0);
+    }
+
     componentWillUnmount() {
         this.isClosed = true;
     }
@@ -38,164 +48,167 @@ export default class SearchScreen extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                <GooglePlacesAutocomplete
-                    enablePoweredByContainer={false}
-                    placeholder='Where to?'
-                    minLength={2} // minimum length of text to search
-                    autoFocus={false}
-                    returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
-                    listViewDisplayed='auto'    // true/false/undefined
-                    // listViewDisplayed={this.state.showPlaceSearchListView}
-                    fetchDetails={true}
-                    // fetchDetails={false}
-                    renderDescription={row => row.description} // custom description render
-                    onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                        console.log('data', data);
-                        console.log('details', details);
-                        console.log('data.place_id', data.place_id);
-                        console.log('data.description', data.description);
+                {
+                    this.state.renderScreen &&
+                    <GooglePlacesAutocomplete
+                        enablePoweredByContainer={false}
+                        placeholder='Where to?'
+                        minLength={2} // minimum length of text to search
+                        autoFocus={false}
+                        returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
+                        listViewDisplayed='auto'    // true/false/undefined
+                        // listViewDisplayed={this.state.showPlaceSearchListView}
+                        fetchDetails={true}
+                        // fetchDetails={false}
+                        renderDescription={row => row.description} // custom description render
+                        onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
+                            console.log('data', data);
+                            console.log('details', details);
+                            console.log('data.place_id', data.place_id);
+                            console.log('data.description', data.description);
 
-                        // console.log('details', details.geometry.location);
-                        // const location = details.geometry.location;
-                        // location.lat;
-                        // location.lng;
+                            // console.log('details', details.geometry.location);
+                            // const location = details.geometry.location;
+                            // location.lat;
+                            // location.lng;
 
-                        // close the modal in 0.3 sec
-                        setTimeout(() => {
-                            !this.isClosed && this.props.navigation.goBack();
-                        }, 300);
-                    }}
-
-                    getDefaultValue={() => ''}
-
-                    query={{
-                        // available options: https://developers.google.com/places/web-service/autocomplete
-                        key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
-                        language: 'en', // language of the results
-                        types: '(cities)' // default: 'geocode'
-                    }}
-
-                    styles={{
-                        container: {
-                            // position: 'absolute',
-                            // left: 0, right: 0,
-                            // bottom: 0,
-
-                            // width: '100%',
-
-                            // height: 32,
-                            // height: Dimensions.get('window').height - (Constants.statusBarHeight + 2), // - bottom tab height
-
-                            // top: Constants.statusBarHeight + 2,
-                            // backgroundColor: 'transparent',
-                            backgroundColor: 'transparent',
-                        },
-                        textInputContainer: {
-                            /*
-                            position: 'absolute',
-                            left: 40,
-                            right: 40,
-                            alignSelf: 'baseline',
-                            borderRadius: 25,
-                            */
-                            // height: 50,
-                            // backgroundColor: 'grey',
-                            backgroundColor: 'transparent',
-                            borderTopColor: 'transparent',
-                            borderBottomColor: 'transparent'
-                        },
-                        textInput: {
-                            // width: '70%',
-                            // position: 'absolute',
-                            // left: 60,
-                            // right: 60,
-                            // borderRadius: 25,
-
-                            // textAlignVertical: 'top',
-                            // alignSelf: 'center',
-                            /*
-                            position: 'absolute',
-                            left: 0,
-                            right: 60,
-                            height: 60,
-                            */
-
-                            // flex: 1,
-                            // backgroundColor: 'transparent',
-                            // backgroundColor: "green",
-                            /*
-                            height: 40,
-                            fontSize: 24,
-                            color: "white",
-                            fontFamily: "SFProText-Regular",
-                            */
-                        },
-
-                        listView: {
-                            marginTop: 20,
-                            // position: 'absolute',
-                            // width: '100%',
-                            // left: 0, right: 0,
-                            height: '100%',
-                            backgroundColor: 'transparent'
-                        },
-                        separator: {
-                            backgroundColor: 'transparent'
-                        },
-                        description: {
-                            fontSize: 16,
-                            lineHeight: 20,
-                            height: 30,
-                            color: "white",
-                            fontFamily: "SFProText-Regular",
-                        },
-                        predefinedPlacesDescription: {
-                            // color: 'rgb(234, 150, 24)'
-                            color: 'white'
-                        },
-                        poweredContainer: {
-                            backgroundColor: 'transparent',
-                            width: 0,
-                            height: 0
-                        },
-                        powered: {
-                            backgroundColor: 'transparent',
-                            width: 0,
-                            height: 0
-                        }
-                    }}
-
-                    currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
-                    currentLocationLabel="Current location"
-                    nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
-                    GoogleReverseGeocodingQuery={{
-                        // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
-                    }}
-                    GooglePlacesSearchQuery={{
-                        // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-                        rankby: 'distance',
-                        types: 'food'
-                    }}
-
-                    filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-                    predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
-
-                    debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
-                // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
-                /*
-                renderLeftButton={() =>
-                    <TouchableOpacity
-                        style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
-                        onPress={() => {
-                            // this.startEditing();
+                            // close the modal in 0.3 sec
+                            setTimeout(() => {
+                                !this.isClosed && this.props.navigation.goBack();
+                            }, 300);
                         }}
-                    >
-                        <FontAwesome name='search' color="grey" size={20} />
-                    </TouchableOpacity>
+
+                        getDefaultValue={() => ''}
+
+                        query={{
+                            // available options: https://developers.google.com/places/web-service/autocomplete
+                            key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
+                            language: 'en', // language of the results
+                            types: '(cities)' // default: 'geocode'
+                        }}
+
+                        styles={{
+                            container: {
+                                // position: 'absolute',
+                                // left: 0, right: 0,
+                                // bottom: 0,
+
+                                // width: '100%',
+
+                                // height: 32,
+                                // height: Dimensions.get('window').height - (Constants.statusBarHeight + 2), // - bottom tab height
+
+                                // top: Constants.statusBarHeight + 2,
+                                // backgroundColor: 'transparent',
+                                backgroundColor: 'transparent',
+                            },
+                            textInputContainer: {
+                                /*
+                                position: 'absolute',
+                                left: 40,
+                                right: 40,
+                                alignSelf: 'baseline',
+                                borderRadius: 25,
+                                */
+                                // height: 50,
+                                // backgroundColor: 'grey',
+                                backgroundColor: 'transparent',
+                                borderTopColor: 'transparent',
+                                borderBottomColor: 'transparent'
+                            },
+                            textInput: {
+                                // width: '70%',
+                                // position: 'absolute',
+                                // left: 60,
+                                // right: 60,
+                                // borderRadius: 25,
+
+                                // textAlignVertical: 'top',
+                                // alignSelf: 'center',
+                                /*
+                                position: 'absolute',
+                                left: 0,
+                                right: 60,
+                                height: 60,
+                                */
+
+                                // flex: 1,
+                                // backgroundColor: 'transparent',
+                                // backgroundColor: "green",
+                                /*
+                                height: 40,
+                                fontSize: 24,
+                                color: "white",
+                                fontFamily: "SFProText-Regular",
+                                */
+                            },
+
+                            listView: {
+                                marginTop: 20,
+                                // position: 'absolute',
+                                // width: '100%',
+                                // left: 0, right: 0,
+                                height: '100%',
+                                backgroundColor: 'transparent'
+                            },
+                            separator: {
+                                backgroundColor: 'transparent'
+                            },
+                            description: {
+                                fontSize: 16,
+                                lineHeight: 20,
+                                height: 30,
+                                color: "white",
+                                fontFamily: "SFProText-Regular",
+                            },
+                            predefinedPlacesDescription: {
+                                // color: 'rgb(234, 150, 24)'
+                                color: 'white'
+                            },
+                            poweredContainer: {
+                                backgroundColor: 'transparent',
+                                width: 0,
+                                height: 0
+                            },
+                            powered: {
+                                backgroundColor: 'transparent',
+                                width: 0,
+                                height: 0
+                            }
+                        }}
+
+                        currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
+                        currentLocationLabel="Current location"
+                        nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                        GoogleReverseGeocodingQuery={{
+                            // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+                        }}
+                        GooglePlacesSearchQuery={{
+                            // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
+                            rankby: 'distance',
+                            types: 'food'
+                        }}
+
+                        filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
+                        predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
+
+                        debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
+                    // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
+                    /*
+                    renderLeftButton={() =>
+                        <TouchableOpacity
+                            style={{ position: 'absolute', left: 30, top: 10, alignSelf: 'baseline' }}
+                            onPress={() => {
+                                // this.startEditing();
+                            }}
+                        >
+                            <FontAwesome name='search' color="grey" size={20} />
+                        </TouchableOpacity>
+                    }
+                    */
+                    // renderRightButton={() => <Text>Custom text after the input</Text>}
+                    />
                 }
-                */
-                // renderRightButton={() => <Text>Custom text after the input</Text>}
-                />
             </View>
         );
     }

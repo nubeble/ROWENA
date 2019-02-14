@@ -104,9 +104,13 @@ export default class Firebase {
         });
     }
 
-    static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
-        const timestamp = Firebase.getTimestamp();
+    // static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
+    static async createFeed(feed) {
+        feed.reviewCount = 0;
+        feed.averageRating = 0.0;
+        feed.timestamp = Firebase.getTimestamp();
 
+        /*
         const feed = {
             uid: userUid,
             placeId: placeId,
@@ -140,12 +144,13 @@ export default class Firebase {
             averageRating: 0.0, // 리뷰가 추가될 때마다 다시 계산해서 업데이트
             timestamp: timestamp
         };
+        */
 
         // 1. write feed first
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).set(feed);
+        await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
 
-        const userRef = Firebase.firestore.collection("users").doc(userUid);
-        const placeRef = Firebase.firestore.collection("place").doc(placeId);
+        const userRef = Firebase.firestore.collection("users").doc(feed.uid);
+        const placeRef = Firebase.firestore.collection("place").doc(feed.placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
             const placeDoc = await transaction.get(placeRef);
@@ -162,11 +167,11 @@ export default class Firebase {
             transaction.set(placeRef, { count: Number(count + 1) });
 
             // 3. update (add fields to feeds in user profile)
-            let data = {
+            const data = {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
-                    placeId: placeId,
-                    feedId: feedId,
-                    imageUri: image1Uri, // ToDo: update this after chaging
+                    placeId: feed.placeId,
+                    feedId: feed.id,
+                    imageUri: feed.pictures.one.uri, // ToDo: update this after chaging
                     valid: true // ToDo: update this after removing
                 })
             };
@@ -610,7 +615,7 @@ export default class Firebase {
 
         await Firebase.database.ref('contents').child(id).push(pushData);
 
-        
+
         //// update timestamp, contents to chat of sender ////
         const senderUid = post.users[0].uid;
 
@@ -621,7 +626,7 @@ export default class Firebase {
 
         await Firebase.database.ref('chat').child(senderUid).child(id).update(updateData);
 
-        
+
         //// update timestamp, contents to chat of receiver ////
         const receiverUid = post.users[1].uid;
 
@@ -633,7 +638,7 @@ export default class Firebase {
             users.push(post.users[1]);
             users.push(post.users[0]);
 
-            await Firebase.createChatRoom(receiverUid, users, post.placeId, post.feedId, id, senderUid, false);
+            await Firebase.createChatRoom(receiverUid, users, post.placeId, post.feedId, id, post.owner, false);
             // --
         }
 
@@ -743,8 +748,9 @@ export default class Firebase {
 
 
 
-        // 3. send notification
 
+
+        
     }
 
 

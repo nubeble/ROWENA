@@ -456,9 +456,12 @@ const processPushNotification = async(function () {
     }
 
     // const sender = fields.sender;
+    const senderName = fields.senderName;
     const msg = fields.message;
 
     let userData = {};
+
+    let nameFooter = '';
     if (fields.type === '1') { // chat
         userData['message'] = fields.message;
         userData['chatRoomId'] = fields.chatRoomId;
@@ -483,8 +486,18 @@ const processPushNotification = async(function () {
         userData['users'] = users;
     } else if (fields.type === '2') { // review
         userData['message'] = fields.message;
+        userData['placeId'] = fields.placeId;
+        userData['feedId'] = fields.feedId;
+
+        // nameFooter = '님이 댓글을 남겼습니다.';
+        nameFooter = ' wrote a review of your post.';
     } else if (fields.type === '3') { // reply
         userData['message'] = fields.message;
+        userData['placeId'] = fields.placeId;
+        userData['feedId'] = fields.feedId;
+
+        // nameFooter = '님이 댓글의 답장을 달았습니다.';
+        nameFooter = ' replied to your review.';
     }
 
     let messages = [];
@@ -496,7 +509,8 @@ const processPushNotification = async(function () {
          * bold above the notification body. Only the title might be displayed on
          * devices with smaller screens like Apple Watch.
          */
-        title: 'title',
+        // title: 'title',
+        title: senderName + nameFooter,
 
         /**
          * The message to display in the notification

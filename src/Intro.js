@@ -90,7 +90,7 @@ export default class Intro extends React.Component {
     };
 
     componentDidMount() {
-        // console.log('Intro::componentDidMount');
+        // console.log('Intro.componentDidMount');
 
         console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
@@ -175,7 +175,7 @@ export default class Intro extends React.Component {
     }
 
     componentWillUnmount() {
-        // console.log('Intro::componentWillUnmount');
+        // console.log('Intro.componentWillUnmount');
 
         if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
 
@@ -230,8 +230,10 @@ export default class Intro extends React.Component {
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
-                                    color: "rgb(160, 160, 160)", textAlign: 'center' }}
+                                style={{
+                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
+                                    color: "rgb(160, 160, 160)", textAlign: 'center'
+                                }}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -257,7 +259,7 @@ export default class Intro extends React.Component {
                                 onPress={() => {
                                     setTimeout(() => {
                                         this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length });
-                                    }, Globals.buttonTimeout);
+                                    }, Globals.buttonTimeoutLong);
                                 }}
                             >
                                 <View style={styles.pictureContainer}>
@@ -451,6 +453,8 @@ export default class Intro extends React.Component {
             () => {
                 // this.getPlacesSize();
                 // ToDo: refresh the latest feed of 6 places & show pictures
+
+                // get a random picture among each place
             }
         );
         */
@@ -471,8 +475,6 @@ const styles = StyleSheet.create({
         // backgroundColor: 'black'
         backgroundColor: Theme.color.background
     },
-
-    //// SEARCH BAR ////
     searchBar: {
         height: Globals.searchBarHeight,
         paddingBottom: 8,
@@ -493,8 +495,6 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
-
-    //// FlatList ////
     contentContainer: {
         flexGrow: 1,
         // backgroundColor: 'black',
@@ -508,8 +508,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center'
     },
-
-    //// picture ////
     pictureContainer: {
         // width: parseInt(Dimensions.get('window').width) / 2 - 12,
         // height: parseInt(Dimensions.get('window').width) / 2 - 12,
@@ -540,8 +538,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
         // justifyContent: 'flex-end'
     },
-
-    //// ScrollView item ////
     view_front: {
         backgroundColor: 'black',
         width: _itemWidth,

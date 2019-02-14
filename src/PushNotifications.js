@@ -66,11 +66,12 @@ export async function registerExpoPushToken() {
     });
 }
 
-export function sendPushNotification(sender, receiver, type, data) {
+export function sendPushNotification(sender, senderName, receiver, type, data) {
     console.log('sendPushNotification', sender, receiver, data);
 
     const formData = new FormData();
     formData.append("sender", sender);
+    formData.append("senderName", senderName);
     formData.append("receiver", receiver);
     formData.append("type", type);
 
@@ -92,8 +93,12 @@ export function sendPushNotification(sender, receiver, type, data) {
         if (user2.picture) formData.append("user2Picture", user2.picture);
     } else if (type === Globals.pushNotification.review) {
         formData.append("message", data.message);
+        formData.append("placeId", data.placeId);
+        formData.append("feedId", data.feedId);
     } else if (type === Globals.pushNotification.reply) {
         formData.append("message", data.message);
+        formData.append("placeId", data.placeId);
+        formData.append("feedId", data.feedId);
     }
 
     return fetch(PUSH_ENDPOINT + "sendPushNotification", {
