@@ -2,6 +2,7 @@ import React from 'react';
 import {
     StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, ActivityIndicator, BackHandler
 } from 'react-native';
+import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import { NavigationActions } from 'react-navigation';
 import autobind from "autobind-decorator";
 import { Theme } from "./rnff/src/components";
@@ -179,12 +180,17 @@ export default class ChatMain extends React.Component {
 
                         ListFooterComponent={(
                             this.state.isLoadingChat && (
+                                /*
                                 <ActivityIndicator
-                                    style={styles.bottomIndicator}
-                                    animating={this.state.isLoadingChat}
+                                    style={{ marginTop: 20, marginBottom: 20 }}
+                                    animating={true}
                                     size="small"
                                     color='grey'
                                 />
+                                */
+                                <View style={{ paddingHorizontal: Theme.spacing.small, marginTop: 20 + 40, marginBottom: 20 }}>
+                                    <RefreshIndicator />
+                                </View>
                             )
                         )}
 
@@ -402,9 +408,5 @@ const styles = StyleSheet.create({
         color: 'grey',
         fontSize: 12,
         fontFamily: "SFProText-Light"
-    },
-    bottomIndicator: {
-        marginTop: 20,
-        marginBottom: 20
-    },
+    }
 });

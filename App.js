@@ -1,6 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert } from 'react-native';
-// import ModalHost from 'expo/src/modal/ModalHost';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, View } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -39,6 +38,20 @@ export default class App extends React.Component {
     // userFeedStore = new FeedStore();
 
     state = {
+        showBadgeOnHome: false,
+        badgeOnHomeCount: -1,
+
+        showBadgeOnLikes: false,
+        badgeOnLikesCount: -1,
+
+        // showBadgeOnChat: false,
+        // badgeOnChatCount: -1,
+
+        showBadgeOnChat: true,
+        badgeOnChatCount: 0,
+        
+        showBadgeOnProfile: false,
+        badgeOnProfileCount: -1
     };
 
     componentDidMount() {
@@ -123,15 +136,20 @@ export default class App extends React.Component {
             if (data) {
                 switch (Number(data.type)) {
                     case Globals.pushNotification.chat: {
+                        /*
                         const message = data.userData.message;
                         const chatRoomId = data.userData.chatRoomId;
+                        */
 
-                        // ToDo: red mark on chat icon
-
-
+                        // show badge
+                        // this.setState({ badgeOnChatCount: this.state.badgeOnChatCount + 1, showBadgeOnChat: true });
+                        this.setState({ showBadgeOnChat: true, badgeOnChatCount: 0 });
                     } break;
 
                     case Globals.pushNotification.review: {
+
+                        // show badge
+                        this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                     } break;
 
                     case Globals.pushNotification.reply: {
@@ -203,12 +221,25 @@ export default class App extends React.Component {
                     </Provider>
                     */}
                     <Provider {...{ feedStore, profileStore }}>
-                        {/*
-                        <MainSwitchNavigator />
-                        */}
                         <MainSwitchNavigator
                             ref={navigatorRef => {
                                 NavigationService.setTopLevelNavigator(navigatorRef);
+                            }}
+
+                            screenProps={{
+                                // setState: this.setState,
+
+                                showBadgeOnHome: this.state.showBadgeOnHome,
+                                badgeOnHomeCount: this.state.badgeOnHomeCount,
+
+                                showBadgeOnLikes: this.state.showBadgeOnLikes,
+                                badgeOnLikesCount: this.state.badgeOnLikesCount,
+
+                                showBadgeOnChat: this.state.showBadgeOnChat,
+                                badgeOnChatCount: this.state.badgeOnChatCount,
+
+                                showBadgeOnProfile: this.state.showBadgeOnProfile,
+                                badgeOnProfileCount: this.state.badgeOnProfileCount
                             }}
                         />
                     </Provider>
@@ -224,6 +255,7 @@ import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackV
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { BottomTabBar } from 'react-navigation-tabs';
 // import { TabBarBottom } from 'react-navigation'; // not working in S7
+import IconWithBadge from './src/IconWithBadge';
 import NavigationService from './src/NavigationService';
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
@@ -401,63 +433,7 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 }
 // -- end of HomeSwitchNavigator
 
-
 // -- chat
-/*
-const ChatStackNavigator = createStackNavigator(
-    {
-        chatMain: {
-            screen: ChatMain
-        },
-        room: {
-            screen: ChatRoom
-        }
-    },
-    {
-        mode: 'card',
-        headerMode: 'none',
-
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
-    }
-);
-
-class ChatStackNavigatorWrapper extends React.Component {
-    static router = ChatStackNavigator.router;
-
-    render() {
-        return (
-            <ChatStackNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-
-ChatStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    const room = navigation.state.routes[1];
-    // room.isTransitioning
-
-    if (room && room.routeName === 'room') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    return {
-        tabBarVisible: true
-    };
-};
-*/
-
-
 const PostModalNavigator = createStackNavigator(
     {
         postModal: {
@@ -577,23 +553,21 @@ class ChatRoomStackNavigatorWrapper extends React.Component {
 // -- end of ChatRoomStackNavigator
 
 // -- start of MainBottomTabNavigator
-var _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
+const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     style: {
         backgroundColor: Theme.color.background,
         borderTopWidth: 1,
         borderTopColor: Theme.color.line,
-        paddingTop: Platform.OS === "ios" ? parseInt(Dimensions.get('window').height / 80) : 0
+        // paddingTop: Platform.OS === "ios" ? parseInt(Dimensions.get('window').height / 80) : 0
     },
     animationEnabled: true,
     showLabel: false,
     showIcon: true,
     activeTintColor: 'rgb(255, 255, 255)',
     inactiveTintColor: 'rgb(145, 145, 145)',
-
     //    tabStyle: {
     //        paddingVertical: 10
     //    }
-
 };
 
 // -- start of ProfileModalNavigator
@@ -643,73 +617,121 @@ const MainBottomTabNavigator = createBottomTabNavigator(
     {
         home: {
             screen: HomeSwitchNavigatorWrapper,
-            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+            navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         likes: {
             screen: Likes,
-            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+            navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         chat: {
             screen: ChatMain,
-            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+            navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         profile: {
             screen: ProfileModalNavigatorWrapper,
-            navigationOptions: ({ navigation }) => (_navigationOptions(navigation))
+            navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         }
     },
 
-    //    {
-    //        tabBarOptions: _tabBarOptions
-    //    }
-
-    (Platform.OS === "android") ? {
-        tabBarOptions: _tabBarOptions,
-
-        tabBarComponent: props => <TabBarComponent {...props} />,
-        // tabBarPosition: 'bottom'
-    } : {
+    (Platform.OS === "android") ?
+        {
+            tabBarOptions: _tabBarOptions,
+            tabBarComponent: props => <TabBarComponent {...props} />,
+            // tabBarPosition: 'bottom'
+        }
+        :
+        {
             tabBarOptions: _tabBarOptions
         }
 );
 
-function _navigationOptions(navigation) {
+const TabBarIconWithBadge = (props) => {
+    return <IconWithBadge {...props} />;
+}
+
+function _navigationOptions(navigation, screenProps) {
+    console.log('_navigationOptions, data', screenProps.data);
+
     return {
         // title: `${navigation.state.params.name}'s Profile!`,
         title: 'title',
         tabBarLabel: navigation.state.routeName,
         tabBarIcon: ({ tintColor, focused }) => {
-            // let iconName;
+            const data = screenProps.data;
 
             if (navigation.state.routeName === 'home') {
-                return <Ionicons
-                    // name={focused ? 'compass' : 'compass-outline'}
-                    name={'md-compass'}
-                    size={30}
-                    style={{ color: tintColor }}
-                />;
+                return (
+                    /*
+                    <Ionicons
+                        // name={focused ? 'compass' : 'compass-outline'}
+                        name={'md-compass'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />
+                    */
+                    <TabBarIconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome} />
+                );
             } else if (navigation.state.routeName === 'likes') {
-                return <Ionicons
-                    // name={focused ? 'ios-heart' : 'ios-heart-empty'}
-                    name={'ios-heart'}
-                    size={30}
-                    style={{ color: tintColor }}
-                />;
-                // } else if (navigation.state.routeName === 'chats') {
+                return (
+                    /*
+                    <Ionicons
+                        // name={focused ? 'ios-heart' : 'ios-heart-empty'}
+                        name={'ios-heart'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />
+                    */
+                    <TabBarIconWithBadge type={'Ionicons'} name={'ios-heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes} />
+                );
             } else if (navigation.state.routeName === 'chat') {
-                return <Ionicons
-                    // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-                    name={'ios-chatbubbles'}
-                    size={30}
-                    style={{ color: tintColor }}
-                />;
+                return (
+                    /*
+                    <Ionicons
+                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+                        name={'ios-chatbubbles'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />
+                    */
+                    <TabBarIconWithBadge type={'Ionicons'} name={'ios-chatbubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat} />
+                );
             } else if (navigation.state.routeName === 'profile') {
-                return <FontAwesome
-                    name={'user'}
-                    size={30}
-                    style={{ color: tintColor }}
-                />;
+                return (
+                    /*
+                    <FontAwesome
+                        name={'user'}
+                        size={30}
+                        style={{ color: tintColor }}
+                    />
+                    */
+                    <TabBarIconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile} />
+                );
             }
+        },
+        tabBarOnPress: ({ defaultHandler, navigation }) => {
+            const data = screenProps.data;
+
+            if (navigation.state.routeName === 'home') {
+                console.log('home');
+            } else if (navigation.state.routeName === 'likes') {
+                console.log('likes');
+            } else if (navigation.state.routeName === 'chat') {
+                console.log('chat');
+
+
+                /*
+                if (data.showBadgeOnChat) {
+                    data.setState({ showBadgeOnChat: false, badgeOnChatCount: -1});
+                }
+                */
+
+
+
+            } else if (navigation.state.routeName === 'profile') {
+                console.log('profile');
+            }
+
+            defaultHandler();
         }
     };
 }
@@ -786,11 +808,14 @@ class MainBottomTabNavigatorWrapper extends React.Component {
     static router = MainBottomTabNavigator.router;
 
     render() {
+
         return (
             <MainBottomTabNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -821,12 +846,16 @@ const MainStackNavigator = createStackNavigator(
 class MainStackNavigatorWrapper extends React.Component {
     static router = MainStackNavigator.router;
 
+
     render() {
+
         return (
             <MainStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+
+                    data: this.props.screenProps
                 }}
             />
         );

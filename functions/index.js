@@ -525,7 +525,6 @@ const processPushNotification = async(function () {
             sender: fields.sender,
             receiver: fields.receiver,
             type: fields.type,
-            // message: fields.message,
             userData: userData
         },
 

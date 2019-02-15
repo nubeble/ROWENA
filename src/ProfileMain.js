@@ -85,7 +85,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
     @autobind
     onScrollHandler() {
-        console.log('ProfileMain.onScrollHandler');
+        // console.log('ProfileMain.onScrollHandler');
 
         this.getUserFeeds();
     }
@@ -132,7 +132,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
             this.reload = true;
         }
 
-        console.log('this.lastLoadedFeedIndex', this.lastLoadedFeedIndex);
+        // console.log('this.lastLoadedFeedIndex', this.lastLoadedFeedIndex);
 
         if (this.lastLoadedFeedIndex === 0) {
             this.setState({ isLoadingFeeds: false, refreshing: false });
@@ -933,7 +933,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
             );
 
             let responseJson = await response.json();
-            console.log('responseJson', responseJson);
+            console.log('uploadImage, responseJson', responseJson);
 
             // console.log('responseJson', await response.json());
 
