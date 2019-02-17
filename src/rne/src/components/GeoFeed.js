@@ -69,7 +69,7 @@ class GeoFeed<T: Marker> extends React.Component<GeoFeedProps<T>, GeoState> {
         const titleStyle = { transform: [{ translateY: textTranslation }]};
         return (
             <View style={styles.root}>
-                <NavigationBar {...{ navigation, title, titleStyle, back}} />
+                <NavigationBar {...{ navigation, title, titleStyle, back}}/>
                 <AnimatedScrollView
                     style={styles.list}
                     contentContainerStyle={styles.container}

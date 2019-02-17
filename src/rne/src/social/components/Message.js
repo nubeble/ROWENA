@@ -23,7 +23,7 @@ export default class Message extends React.PureComponent<MessageProps> {
         const user = SocialAPI.user(this.props.user);
         return (
             <BaseCard onPress={() => navigation && navigation.navigate("Message", { id })}>
-                <Header {...{user, timestamp}} />
+                <Header {...{user, timestamp}}/>
                 <Text style={styles.text}>{message}</Text>
             </BaseCard>
         );

@@ -11,7 +11,7 @@ export default class Restaurants extends React.Component<NavigationProps<>> {
 
     renderItem = (restaurant: Restaurant): React.Node => {
         const {navigation} = this.props;
-        return <Activity {...restaurant} onPress={() => navigation.navigate("Restaurant", { restaurant })} />;
+        return <Activity {...restaurant} onPress={() => navigation.navigate("Restaurant", { restaurant })}/>;
     }
 
     render(): React.Node {
@@ -19,7 +19,7 @@ export default class Restaurants extends React.Component<NavigationProps<>> {
         const {navigation} = this.props;
         const markers = FoodAPI.restaurants;
         return (
-            <GeoFeed title="Restaurants" {...{markers, navigation, renderItem}} />
+            <GeoFeed title="Restaurants" {...{markers, navigation, renderItem}}/>
         );
     }
 }

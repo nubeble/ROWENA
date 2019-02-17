@@ -3,7 +3,7 @@ import { StyleSheet, StatusBar } from 'react-native';
 import { Font, AppLoading, Asset } from 'expo';
 // import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
-import { inject } from "mobx-react/native";
+import { inject, observer } from "mobx-react/native";
 import type { ScreenProps } from "./src/rnff/components/Types";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
@@ -29,10 +29,16 @@ const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // Logo
 // const SansSerif = require("../fonts/Sans-Serif.ttf");
 
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
+
 
 // @inject("feedStore", "profileStore", "userFeedStore")
 @inject("feedStore", "profileStore")
-export default class Loading extends React.Component<ScreenProps<>> {
+@observer
+export default class Loading extends React.Component<ScreenProps<> & InjectedProps> {
     state = {
         isUserAutoAuthenticated: true
     };
@@ -89,6 +95,23 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 */
                 profileStore.init();
 
+
+
+                // ToDo: check updates (chat first.. post, likes, review, reply later)
+                const result = await this.checkUpdateOnChat();
+                if (result) {
+                    // show badge
+                    setTimeout(() => {
+                        const screenProps = this.props.screenProps;
+                        screenProps.changeBadgeOnChat(true, 0);
+                    }, 2000); // 2 sec
+                    
+                }
+
+                
+
+
+
                 if (this.state.isUserAutoAuthenticated) {
                     // update user info to database
                     const profile = {
@@ -115,6 +138,30 @@ export default class Loading extends React.Component<ScreenProps<>> {
                 navigation.navigate("authStackNavigator");
             }
         });
+    }
+
+    async checkUpdateOnChat() {
+        const uid = Firebase.user().uid;
+        const room = await Firebase.getLastChatRoom(uid);
+
+        if (!room) return false;
+
+        const mid = room.mid;
+        const lastReadMessageId = room.lastReadMessageId;
+
+        if (!mid) { // no contents (will never happen)
+            return false;
+        }
+
+        if (!lastReadMessageId) { // user never read
+            return true;
+        }
+
+        if (mid === lastReadMessageId) {
+            return false;
+        }
+
+        return true;
     }
 
     render() {

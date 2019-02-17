@@ -23,8 +23,10 @@ type InjectedProps = {
 const MAX_FEED_COUNT = 12; // 3 x 4
 // const MAX_FEED_COUNT = 3;
 
+
 // @inject("feedStore", "profileStore") @observer
-@inject("profileStore") @observer
+@inject("profileStore")
+@observer
 export default class ProfileMain extends React.Component<ScreenProps<> & InjectedProps> {
     state = {
         renderFeed: false,
@@ -32,7 +34,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         showAlert: false,
 
         uploadingImage: false,
-        uploadImage1: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+        uploadImage1: 'http://imgnews.naver.net/image/001/2017/05/20/PYH2017052019870001300_P2_20170520101607447.jpg',
         uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
@@ -77,7 +79,9 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
-            this.props.navigation.dispatch(NavigationActions.back()); // move to intro
+            // this.props.navigation.dispatch(NavigationActions.back()); // move to intro
+            // this.props.screenProps.rootNavigation.navigate("intro");
+            this.props.navigation.navigate("intro");
         }
 
         return true;
@@ -206,7 +210,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         const showIndicator = this.state.showIndicator;
 
         return (
-            <View style={styles.flex} >
+            <View style={styles.flex}>
 
                 <ActivityIndicator
                     style={styles.activityIndicator}
@@ -292,7 +296,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableOpacity onPress={async () => this.openPost(item)} >
+                                <TouchableOpacity onPress={async () => this.openPost(item)}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             // preview={item.pictures.one.preview}
@@ -331,7 +335,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                         /*
                         ListEmptyComponent={(
                             <View style={styles.post}>
-                                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
                             </View>
                         )}
                         */
@@ -357,10 +361,19 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
     };
 
     async makeDummyData() {
-        // 1. Bangkok, Thailand (ChIJ82ENKDJgHTERIEjiXbIAAQE)
+        for (var i = 0; i < 10; i++) {
+            this.makeBKK();
+            this.makeHCM();
+            this.makeManila();
+            this.makeVientiane();
+            this.makePP();
+            this.makeJakarta();
+        }
+        /*
+        // 1. Bangkok, Thailand
         for (var i = 0; i < 10; i++) await this.makeBKK();
 
-        // 2. Ho Chi Minh, Vietnam (ChIJ0T2NLikpdTERKxE8d61aX_E)
+        // 2. Ho Chi Minh, Vietnam
         for (var i = 0; i < 10; i++) await this.makeHCM();
 
         // 3. Manila
@@ -374,6 +387,102 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         // 6. Jakarta
         for (var i = 0; i < 10; i++) await this.makeJakarta();
+        */
+    }
+
+    getRandomImage(number) { // 0 ~ 5
+        let images = []; // random item
+
+        let uri1, uri2, uri3, uri4;
+
+        switch (number) {
+            case 0: {
+                // --
+                uri1 = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
+                uri2 = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
+                uri3 = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
+                uri4 = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+                // --
+            } break;
+
+            case 1: {
+                uri1 = 'https://post-phinf.pstatic.net/MjAxNzA4MzFfMTI5/MDAxNTA0MTYwODU4MzQ3.HxB3nEhj4uv-3XWu2Z2zAr4iSPas3aOokdPh1AgY5F4g.egcEId7lF7bFsE5s14XRTNnVGiqxUOYL4SJ4-7p95kQg.JPEG/AOA_%EC%84%A4%ED%98%84_%EB%8D%B0%EC%8B%B1%EB%94%94%EB%B0%94_%282%29.jpg?type=w1200';
+                uri2 = 'https://t1.daumcdn.net/cfile/tistory/263CCB345769E5A308';
+                uri3 = 'https://img.huffingtonpost.com/asset/5aaf1a5b1e000057107af0b7.jpeg?cache=HNh7gSVWkr&ops=scalefit_630_noupscale';
+                uri4 = 'https://ncache.ilbe.com/files/attach/new/20160313/377678/4736545360/7694389062/740d8fa77c6988296440860eb1f42589.gif';
+            } break;
+
+            case 2: {
+                uri1 = 'https://i1.daumcdn.net/thumb/R750x0/?fname=http%3A%2F%2Fcfile27.uf.tistory.com%2Fimage%2F99115C3359D104EA04DB67';
+                uri2 = 'https://i.ytimg.com/vi/dW0mXvpPRJ8/maxresdefault.jpg';
+                uri3 = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';
+                uri4 = 'https://pbs.twimg.com/profile_images/744128499904978944/eIN4yA3y_400x400.jpg';
+            } break;
+
+            case 3: {
+                uri1 = 'https://t1.daumcdn.net/cfile/tistory/232DB142593A2F160B';
+                uri2 = 'https://t1.daumcdn.net/cfile/tistory/235BE942593A2F1813';
+                uri3 = 'https://t1.daumcdn.net/cfile/tistory/24439342593A2F1A09';
+                uri4 = 'https://t1.daumcdn.net/cfile/tistory/264CFB42593A2F1C07';
+            } break;
+
+            case 4: {
+                uri1 = 'https://postfiles.pstatic.net/20160804_151/ykm3571_1470312644585B2lPV_GIF/%BA%ED%B7%A2%C7%CE%C5%A9_%C1%F6%BC%F6_03.gif?type=w966';
+                uri2 = 'https://t1.daumcdn.net/cfile/tistory/241FE94E58F9E0911C';
+                uri3 = 'https://t1.daumcdn.net/cfile/tistory/2379514F58F806902F';
+                uri4 = 'https://img1.daumcdn.net/thumb/R1920x0/?fname=http%3A%2F%2Fcfile21.uf.tistory.com%2Fimage%2F9969BD415C472ACB1DF0F5';
+            } break;
+
+            case 5: {
+                uri1 = 'https://t1.daumcdn.net/news/201808/09/10asia/20180809101854646ppyw.jpg';
+                uri2 = 'https://t1.daumcdn.net/news/201808/16/moneytoday/20180816131509218odci.jpg';
+                uri3 = 'https://t1.daumcdn.net/cfile/tistory/99B9D8375A9E4FE30B';
+                uri4 = 'https://t1.daumcdn.net/cfile/tistory/991B0F4F5BCEC5FC19';
+            } break;
+        }
+
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+
+        let num = parseInt(Math.random() * 10 % 4); // 0 ~ 3
+        switch (num) {
+            case 0: {
+                image1Uri = uri1;
+                image2Uri = uri2;
+                image3Uri = uri3;
+                image4Uri = uri4;
+            } break;
+
+            case 1: {
+                image4Uri = uri1;
+                image1Uri = uri2;
+                image2Uri = uri3;
+                image3Uri = uri4;
+            } break;
+
+            case 2: {
+                image3Uri = uri1;
+                image4Uri = uri2;
+                image1Uri = uri3;
+                image2Uri = uri4;
+            } break;
+
+            case 3: {
+                image2Uri = uri1;
+                image3Uri = uri2;
+                image4Uri = uri3;
+                image1Uri = uri4;
+            } break;
+        }
+
+        images[0] = image1Uri;
+        images[1] = image2Uri;
+        images[2] = image3Uri;
+        images[3] = image4Uri;
+
+        return images;
     }
 
     async makeBKK() {
@@ -389,10 +498,14 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
-        const image1Uri = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-        const image2Uri = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-        const image3Uri = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-        const image4Uri = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
 
         const name = 'Bae Soo-bin';
         const age = 24;
@@ -450,15 +563,19 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
-        const image1Uri = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-        const image2Uri = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-        const image3Uri = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-        const image4Uri = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Kim Seol-hyun';
         const age = 24;
         const height = 167;
-        const weight = 48;
+        const weight = 49;
         const bust = 'B+';
 
         // set
@@ -511,10 +628,14 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
-        const image1Uri = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-        const image2Uri = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-        const image3Uri = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-        const image4Uri = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
 
         const name = 'Bae Soo-bin';
         const age = 24;
@@ -572,12 +693,16 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
-        const image1Uri = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-        const image2Uri = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-        const image3Uri = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-        const image4Uri = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Angelina Danilova';
         const age = 24;
         const height = 167;
         const weight = 48;
@@ -633,10 +758,14 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
-        const image1Uri = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-        const image2Uri = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-        const image3Uri = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-        const image4Uri = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
 
         const name = 'Bae Soo-bin';
         const age = 24;
@@ -694,10 +823,14 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
-        const image1Uri = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-        const image2Uri = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-        const image3Uri = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-        const image4Uri = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
 
         const name = 'Bae Soo-bin';
         const age = 24;
@@ -1028,40 +1161,26 @@ const styles = StyleSheet.create({
     },
 
 
-    //// FlatList ////
     contentContainer: {
-        flexGrow: 1,
-        // backgroundColor: 'black',
-        // paddingBottom: Theme.spacing.base
+        flexGrow: 1
     },
     columnWrapperStyle: {
-        /*
-        marginRight: Theme.spacing.small,
-        marginTop: Theme.spacing.small
-        */
         flex: 1,
         // justifyContent: 'center'
         justifyContent: 'flex-start'
     },
-    //// picture ////
     pictureContainer: {
         // width: (parseInt(Dimensions.get('window').width) - 2) / 3,
         // height: (parseInt(Dimensions.get('window').width) - 2) / 3,
         width: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
         height: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
-        /*
-        marginVertical: Theme.spacing.tiny,
-        marginHorizontal: Theme.spacing.tiny,
-        */
         marginVertical: 2,
         marginHorizontal: 2,
-
         borderRadius: 2
     },
     picture: {
         width: '100%',
         height: '100%',
-
         borderRadius: 2
     },
     content: {
@@ -1077,7 +1196,6 @@ const styles = StyleSheet.create({
 
         borderRadius: 2,
     },
-
     titleContainer: {
         padding: Theme.spacing.small
     },
@@ -1090,8 +1208,5 @@ const styles = StyleSheet.create({
     bottomIndicator: {
         marginTop: 20,
         marginBottom: 20
-        //position: 'absolute',
-        //top: 0, bottom: 0, left: 0, right: 0
-    },
-
+    }
 });

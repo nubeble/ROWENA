@@ -20,7 +20,7 @@ export default class Header extends React.PureComponent<HeaderProps> {
         const {user, timestamp} = this.props;
         return (
             <View style={styles.header}>
-                <Handle {...{user}} />
+                <Handle {...{user}}/>
                 <Text type="footnote">{moment(timestamp, "X").fromNow()}</Text>
             </View>
         );

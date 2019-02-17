@@ -24,7 +24,7 @@ export default class ChatMessage extends React.PureComponent<ChatMessageProps> {
         return (
             <View style={{ flexDirection, marginBottom: StyleGuide.spacing.small }}>
                 <View style={styles.user}>
-                    {showAvatar && <Avatar size={48} uri={user.picture} />}
+                    {showAvatar && <Avatar size={48} uri={user.picture}/>}
                 </View>
                 <BaseCard style={styles.baseCard}>
                     <Text>{message.message}</Text>

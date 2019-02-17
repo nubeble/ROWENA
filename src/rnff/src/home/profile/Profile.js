@@ -56,7 +56,7 @@ export default class ProfileComp extends React.Component<ScreenProps<> & Injecte
                     bounce={false}
                     ListHeaderComponent={(
                         <View style={styles.header}>
-                            <Image style={styles.cover} source={Images.cover} />
+                            <Image style={styles.cover} source={Images.cover}/>
                             <TouchableOpacity onPress={this.settings} style={styles.settings}>
                                 <View>
                                     <Icon name="settings" size={25} color="white" />
@@ -69,7 +69,7 @@ export default class ProfileComp extends React.Component<ScreenProps<> & Injecte
 
                                 <Text type="header2" style={styles.name}>{profile.name}</Text>
                             </View>
-                            <Avatar size={avatarSize} style={styles.avatar} {...profile.picture} />
+                            <Avatar size={avatarSize} style={styles.avatar} {...profile.picture}/>
                         </View>
                     )}
                     store={userFeedStore}

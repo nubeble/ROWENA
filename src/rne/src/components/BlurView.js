@@ -20,11 +20,11 @@ export default class BlurView extends React.PureComponent<BlurViewProps> {
         });
         if (Platform.OS === "ios") {
             return (
-                <AnimatedBlurView tint="dark" {...{intensity, style}} />
+                <AnimatedBlurView tint="dark" {...{intensity, style}}/>
             );
         }
         return (
-            <Animated.View style={[style, { backgroundColor: StyleGuide.palette.black, opacity }]} />
+            <Animated.View style={[style, { backgroundColor: StyleGuide.palette.black, opacity }]}/>
         );
     }
 }

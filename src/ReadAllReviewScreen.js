@@ -130,7 +130,7 @@ export default class ReadAllReviewScreen extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -144,7 +144,7 @@ export default class ReadAllReviewScreen extends React.Component {
                         }}
                         onPress={() => this.props.navigation.goBack()}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
                 </View>
 
@@ -252,7 +252,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24}/>
                             </TouchableOpacity>
 
                         </View>
@@ -432,7 +432,7 @@ export default class ReadAllReviewScreen extends React.Component {
                         )
                         :
                         (
-                            <View style={{ paddingTop: Theme.spacing.base - Theme.spacing.tiny }} />
+                            <View style={{ paddingTop: Theme.spacing.base - Theme.spacing.tiny }}/>
                         )
                 }
             </View>
@@ -473,7 +473,7 @@ export default class ReadAllReviewScreen extends React.Component {
     @autobind
     itemSeparatorComponent() {
         return (
-            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }} />
+            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }}/>
         );
     }
 
@@ -553,7 +553,7 @@ export default class ReadAllReviewScreen extends React.Component {
         return (
             /*
             <View style={{ paddingHorizontal: Theme.spacing.small }}>
-                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
             </View>
             */
 
@@ -563,7 +563,7 @@ export default class ReadAllReviewScreen extends React.Component {
                 </View>
                 :
                 <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    <FirstPost {...{ navigation }} />
+                    <FirstPost {...{ navigation }}/>
                 </View>
         );
     }
@@ -878,8 +878,8 @@ const styles = StyleSheet.create({
         fontFamily: "SuisseIntl-ThinItalic"
     },
     bottomIndicator: {
-        // marginTop: 20,
-        marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
+        marginTop: 20,
+        // marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
         marginBottom: 20
     },
     /*

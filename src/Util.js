@@ -77,6 +77,10 @@ export default class Util extends React.Component {
         return time;
     }
 
+    static getRandomNumber() {
+        const max = Number.MIN_SAFE_INTEGER;
+        const min = Number.MAX_SAFE_INTEGER;
 
-
+        return Math.floor(Math.random() * (max - min + 1) + min);
+    }
 }

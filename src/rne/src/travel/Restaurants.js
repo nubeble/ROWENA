@@ -21,4 +21,4 @@ export default class Restaurants extends React.PureComponent<NavigationProps<{ c
     }
 }
 
-const renderItem = (restaurant: Restaurant): React.Node => <Activity {...restaurant} onPress={notImplementedYet} />;
+const renderItem = (restaurant: Restaurant): React.Node => <Activity {...restaurant} onPress={notImplementedYet}/>;

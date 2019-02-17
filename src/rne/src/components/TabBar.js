@@ -42,7 +42,7 @@ export default class TabBar extends React.Component<TabBarProps> {
                         tabs.map(tab => (
                             <TouchableWithoutFeedback key={tab.key} onPress={() => this.navigate(tab.key)}>
                                 <View style={styles.tab}>
-                                    <Icon name={tab.icon} primary={activeKey === tab.key} />
+                                    <Icon name={tab.icon} primary={activeKey === tab.key}/>
                                 </View>
                             </TouchableWithoutFeedback>
                         ))

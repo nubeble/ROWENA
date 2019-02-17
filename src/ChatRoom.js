@@ -12,6 +12,13 @@ import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Globals } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
+import { inject, observer } from "mobx-react/native";
+
+/*
+type InjectedProps = {
+    profileStore: ProfileStore
+};
+*/
 
 const chatViewHeight = Dimensions.get('window').height - Globals.searchBarHeight;
 const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
@@ -27,8 +34,11 @@ const avatarHeight = Globals.searchBarHeight * 0.5;
 const bigImageWidth = postHeight * 0.7;
 const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
 
-
-export default class ChatRoom extends React.Component {
+/*
+@inject("profileStore")
+@observer
+*/
+export default class ChatRoom extends React.Component<InjectedProps> {
     state = {
         id: null,
         titleImageUri: null,
@@ -118,6 +128,14 @@ export default class ChatRoom extends React.Component {
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
+            // save the last message to chat main
+            if (this.state.messages.length > 1) {
+                const lastMessage = this.state.messages[0];
+                const mid = lastMessage._id;
+
+                Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+            }
+
             this.props.navigation.navigate("chat");
         }
 
@@ -168,10 +186,18 @@ export default class ChatRoom extends React.Component {
                             alignSelf: 'baseline'
                         }}
                         onPress={() => {
+                            // save the last message to chat main
+                            if (this.state.messages.length > 1) {
+                                const lastMessage = this.state.messages[0];
+                                const mid = lastMessage._id;
+
+                                Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+                            }
+                            
                             this.props.navigation.navigate("chat");
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={async () => await this.openPost()}>
@@ -205,11 +231,11 @@ export default class ChatRoom extends React.Component {
                         }}
                         onPress={() => this.setState({ showAlert: true })}
                     >
-                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
                 </View>
 
-                <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView} >
+                <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView}>
                     <GiftedChat
                         minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
                         minComposerHeight={0}
@@ -223,7 +249,10 @@ export default class ChatRoom extends React.Component {
                         placeholder={'Write a message'}
                         placeholderTextColor={Theme.color.placeholder}
                         user={this.user}
-                        onSend={async (messages) => await this.sendMessage(messages[0])}
+                        onSend={async (messages) => {
+                            await this.sendMessage(messages[0]);
+                            // await this.saveUnreadChatRoomId();
+                        }}
                         onPressAvatar={async () => await this.openAvatar()}
 
                         textInputProps={{
@@ -267,7 +296,7 @@ export default class ChatRoom extends React.Component {
                         }}
                     />
                     {/*
-                        <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80} />
+                        <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80}/>
                     */}
 
                     {
@@ -284,7 +313,7 @@ export default class ChatRoom extends React.Component {
                     /*
                     Platform.OS === 'android' &&
                     !this.state.onKeyboard &&
-                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: 'red' }} />
+                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: 'red' }}/>
                     */
                 }
 
@@ -325,11 +354,8 @@ export default class ChatRoom extends React.Component {
                     cancelText="YES"
                     confirmText="NO"
                     confirmButtonColor="#DD6B55"
-                    onCancelPressed={async () => {
+                    onCancelPressed={async () => { // YES pressed
                         this.setState({ showAlert: false });
-
-                        // pressed YES
-                        console.log('YES');
 
                         await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
 
@@ -419,6 +445,36 @@ export default class ChatRoom extends React.Component {
         sendPushNotification(sender, senderName, receiver, notificationType, data);
     }
 
+    /*
+    async saveUnreadChatRoomId() {
+        const { item } = this.props.navigation.state.params;
+        const users = item.users;
+        const opponent = users[1].uid;
+
+        // check profile
+        const { profileStore } = this.props;
+        const profile = profileStore.profile;
+        const unreadChatRoom = profile.unreadChatRoom;
+
+        let found = false;
+
+        for (var i = 0; i < unreadChatRoom.length; i++) {
+            const room = unreadChatRoom[i];
+            const id = room.id;
+
+            if (this.state.id === id) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            // save
+            await Firebase.saveUnreadChatRoomId(this.state.id);
+        }
+    }
+    */
+
     async openPost() {
         const item = this.props.navigation.state.params.item;
 
@@ -448,12 +504,12 @@ export default class ChatRoom extends React.Component {
     @autobind
     renderSend(props) {
         return (
-            <Send {...props} containerStyle={{ marginBottom: textInputMarginBottom + sendButtonMarginBottom }} >
-                <View style={styles.sendButton} >
-                    <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
+            <Send {...props} containerStyle={{ marginBottom: textInputMarginBottom + sendButtonMarginBottom }}>
+                <View style={styles.sendButton}>
+                    <Ionicons name='ios-send' color={Theme.color.selection} size={28}/>
 
                     {/*
-                    <Image source={require('../../assets/send.png')} resizeMode={'center'} />
+                    <Image source={require('../../assets/send.png')} resizeMode={'center'}/>
                     */}
                 </View>
             </Send>
@@ -466,7 +522,7 @@ export default class ChatRoom extends React.Component {
             backgroundColor: Theme.color.background,
             borderTopColor: Theme.color.textInput
             // borderTopWidth: 0
-        }} />
+        }}/>
     }
 }
 

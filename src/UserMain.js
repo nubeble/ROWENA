@@ -47,7 +47,7 @@ export default class UserMain extends React.Component {
                         }}
                         onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
 
                     {/*

@@ -175,18 +175,18 @@ class Crop extends React.PureComponent<CropProps> {
                     {children}
                 </View>
                 <View ref={this.setCrop} style={RNStyleSheet.absoluteFill}>
-                    <View style={styles.crop} />
+                    <View style={styles.crop}/>
                     <View style={styles.topLeftResponder} {...this.topLeftResponder.panHandlers}>
-                        <View style={styles.topLeft} />
+                        <View style={styles.topLeft}/>
                     </View>
                     <View style={styles.topRightResponder} {...this.topRightResponder.panHandlers}>
-                        <View style={styles.topRight} />
+                        <View style={styles.topRight}/>
                     </View>
                     <View style={styles.bottomLeftResponder} {...this.bottomLeftResponder.panHandlers}>
-                        <View style={styles.bottomLeft} />
+                        <View style={styles.bottomLeft}/>
                     </View>
                     <View style={styles.bottomRightResponder} {...this.bottomRightResponder.panHandlers}>
-                        <View style={styles.bottomRight} />
+                        <View style={styles.bottomRight}/>
                     </View>
                 </View>
             </View>

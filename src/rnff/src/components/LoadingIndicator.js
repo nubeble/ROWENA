@@ -12,7 +12,7 @@ export default class LoadingIndicator extends React.PureComponent<BaseProps> {
         const {style} = this.props;
         return (
             <View style={[style, styles.container]}>
-                <Spinner color={Theme.palette.primary} />
+                <Spinner color={Theme.palette.primary}/>
             </View>
         );
     }

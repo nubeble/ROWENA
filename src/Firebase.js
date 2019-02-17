@@ -52,18 +52,6 @@ export default class Firebase {
             about: null,
 
             feeds: [], // 내가 등록한 feed. ToDo: 삭제 시 배열을 전체 검색
-            /*
-                {
-                    'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-                    'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-                },
-                {
-                    'placeId': 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-                    'feedId': '965b0af6-d189-3190-bf6c-9d2e4535deb5'
-                },
-                ...
-            */
-
             reviews: [], // 내가 남긴 리뷰. (collection)
             replies: []
         };
@@ -91,6 +79,37 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).delete();
     }
 
+    static async getPlaceRandomFeedImage(placeId) {
+        let uri = null;
+
+        const random = Util.getRandomNumber();
+        // console.log('random', random);
+
+        const postsRef = Firebase.firestore.collection("place").doc(placeId).collection("feed");
+        const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
+        if (snap1.docs.length === 0) {
+
+            const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
+            if (snap2.docs.length === 0) {
+            } else {
+                snap2.forEach((doc) => {
+                    // console.log(doc.id, '=>', doc.data());
+                    uri = doc.data().pictures.one.uri;
+                    // console.log('< uri', uri);
+                });
+            }
+
+        } else {
+            snap1.forEach((doc) => {
+                // console.log(doc.id, '=>', doc.data());
+                uri = doc.data().pictures.one.uri;
+                // console.log('> uri', uri);
+            });
+        }
+
+        return uri;
+    }
+
     static subscribeToPlaceSize(placeId, callback) {
         return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
             let count = 0;
@@ -109,6 +128,7 @@ export default class Firebase {
         feed.reviewCount = 0;
         feed.averageRating = 0.0;
         feed.timestamp = Firebase.getTimestamp();
+        feed.rn = Util.getRandomNumber();
 
         /*
         const feed = {
@@ -400,14 +420,14 @@ export default class Firebase {
     //// database ////
 
     static async createChatRoom(uid, users, placeId, feedId, id, owner, addSystemMessage) {
-        // const id = Util.uid(); // create chat room id
-
         const timestamp = Firebase.timestamp();
 
         const data = {
             id: id,
             timestamp: timestamp, // lastest timestamp
-            contents: '', // lastest message
+            contents: '', // lastest message text
+            // mid: null, // lastest message id
+            // lastReadMessageId: null, // last read message id
             users: users,
             placeId: placeId,
             feedId: feedId,
@@ -416,9 +436,6 @@ export default class Firebase {
 
         await Firebase.database.ref('chat').child(uid).child(id).set(data);
 
-        // await Firebase.database.ref('chat').child(owner).child(id).set(data);
-
-        // --
         // add a system message
         if (addSystemMessage) {
             const text = "Well you've come this far, might as well say something to her.";
@@ -430,7 +447,6 @@ export default class Firebase {
 
             await Firebase.database.ref('contents').child(id).push(message);
         }
-        // --
 
         return data;
     }
@@ -596,6 +612,7 @@ export default class Firebase {
         //// save contents ////
         // for (let i = 0; i < messages.length; i++) {
         // const { text, user } = messages[i];
+
         const { text, user } = message;
 
         let _user = {};
@@ -613,15 +630,19 @@ export default class Firebase {
             timestamp: timestamp
         };
 
-        await Firebase.database.ref('contents').child(id).push(pushData);
+        const snap = await Firebase.database.ref('contents').child(id).push(pushData);
+        // "https://rowena-88cfd.firebaseio.com/contents/e1cee3fe-21e6-1ba0-4db2-59b38b615c6b/-LYoaoDio_CJ_WwOC4mX"
 
+        // console.log('type', snap.key);
+        const mid = snap.key;
 
-        //// update timestamp, contents to chat of sender ////
+        //// update the latest message info (timestamp, contents, message id) to chat of sender ////
         const senderUid = post.users[0].uid;
 
         const updateData = {
             contents: text,
-            timestamp: timestamp
+            timestamp: timestamp,
+            mid: mid
         };
 
         await Firebase.database.ref('chat').child(senderUid).child(id).update(updateData);
@@ -646,6 +667,49 @@ export default class Firebase {
 
         // }
     };
+
+    static async saveLastReadMessageId(uid, id, mid) {
+        const updateData = {
+            lastReadMessageId: mid
+        };
+
+        await Firebase.database.ref('chat').child(uid).child(id).update(updateData);
+    }
+
+    static async getLastChatRoom(uid) {
+        let result = null;
+
+        const snapshot = await Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(1).once('value');
+        if (snapshot.exists()) {
+
+            snapshot.forEach(item => {
+                // console.log(item.key, item.val());
+                const key = item.key;
+                const value = item.val();
+
+                console.log('value', value);
+
+                result = value;
+            });
+        }
+
+        return result;
+    }
+
+    /*
+    static async saveUnreadChatRoomId(uid, chatRoomId) {
+
+        const item = {
+            id: chatRoomId
+        }
+
+        let userData = {
+            unreadChatRooms: firebase.firestore.FieldValue.arrayUnion(item)
+        };
+
+        await Firebase.firestore.collection('users').doc(uid).update(userData);
+    }
+    */
 
     // tmp
     /*
@@ -747,10 +811,6 @@ export default class Firebase {
         // ToDo: add message (000님이 방을 나갔습니다.)
 
 
-
-
-
-        
     }
 
 

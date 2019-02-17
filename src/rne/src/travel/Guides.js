@@ -54,7 +54,7 @@ export default class Guides extends React.Component<NavigationProps<>> {
             onPress
         };
         return (
-            <Feed {...{data, renderItem, title, navigation, rightAction}} />
+            <Feed {...{data, renderItem, title, navigation, rightAction}}/>
         );
     }
 }

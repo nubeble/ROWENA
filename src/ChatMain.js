@@ -131,7 +131,9 @@ export default class ChatMain extends React.Component {
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
-            this.props.navigation.dispatch(NavigationActions.back()); // move to intro
+            // this.props.navigation.dispatch(NavigationActions.back()); // move to intro
+            // this.props.screenProps.rootNavigation.navigate("intro");
+            this.props.navigation.navigate("intro");
         }
 
         return true;
@@ -180,17 +182,17 @@ export default class ChatMain extends React.Component {
 
                         ListFooterComponent={(
                             this.state.isLoadingChat && (
-                                /*
                                 <ActivityIndicator
                                     style={{ marginTop: 20, marginBottom: 20 }}
                                     animating={true}
                                     size="small"
                                     color='grey'
                                 />
-                                */
+                                /*
                                 <View style={{ paddingHorizontal: Theme.spacing.small, marginTop: 20 + 40, marginBottom: 20 }}>
                                     <RefreshIndicator />
                                 </View>
+                                */
                             )
                         )}
 
@@ -244,12 +246,12 @@ export default class ChatMain extends React.Component {
         const user = users[1]; // opponent
         const timestamp = item.timestamp;
         const time = Util.getTime(timestamp);
-
         const contents = item.contents; // last message
-
-        const viewHeight = Dimensions.get('window').height / 10;
-
+        const update = this.checkUpdate(item.lastReadMessageId, item.mid);
+        // const viewHeight = Dimensions.get('window').height / 10;
+        const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
+        const badgeWidth = parseInt(Dimensions.get('window').height / 100) + 1;
 
         return (
             <TouchableHighlight onPress={() => this.props.navigation.navigate("chatRoom", { item: item })}>
@@ -257,35 +259,65 @@ export default class ChatMain extends React.Component {
                     <View style={{
                         width: '24%', height: viewHeight,
                         // backgroundColor: 'green',
-                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
-                    }} >
+                        // justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
                         <SmartImage
                             style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
                             showSpinner={false}
                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={user.picture}
                         />
+                        {
+                            update &&
+                            <View style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: viewHeight - badgeWidth,
+
+                                backgroundColor: 'red',
+                                borderRadius: badgeWidth / 2,
+                                width: badgeWidth,
+                                height: badgeWidth
+                            }}/>
+                        }
                     </View>
 
                     <View style={{
                         width: '46%', height: viewHeight,
                         // backgroundColor: 'green',
                         justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.tiny
-                    }} >
+                    }}>
                         <Text style={styles.name}>{user.name}</Text>
                         <Text style={styles.contents}>{contents}</Text>
                     </View>
 
                     <View style={{
                         width: '30%', height: viewHeight,
-                        // backgroundColor: '#4CAF50',
+                        // backgroundColor: 'green',
                         justifyContent: 'flex-start', alignItems: 'flex-end', paddingRight: Theme.spacing.xSmall
-                    }} >
+                    }}>
                         <Text style={styles.time}>{time}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
         );
+    }
+
+    checkUpdate(lastReadMessageId, mid) {
+        if (!mid) { // no contents (will never happen)
+            return false;
+        }
+
+        if (!lastReadMessageId) { // user never read
+            return true;
+        }
+
+        if (mid === lastReadMessageId) {
+            return false;
+        }
+
+        return true;
     }
 
     @autobind
@@ -371,7 +403,7 @@ export default class ChatMain extends React.Component {
     @autobind
     itemSeparatorComponent() {
         return (
-            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }} />
+            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }}/>
         );
     }
 }

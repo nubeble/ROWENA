@@ -44,12 +44,9 @@ export default class App extends React.Component {
         showBadgeOnLikes: false,
         badgeOnLikesCount: -1,
 
-        // showBadgeOnChat: false,
-        // badgeOnChatCount: -1,
+        showBadgeOnChat: false,
+        badgeOnChatCount: -1,
 
-        showBadgeOnChat: true,
-        badgeOnChatCount: 0,
-        
         showBadgeOnProfile: false,
         badgeOnProfileCount: -1
     };
@@ -110,6 +107,7 @@ export default class App extends React.Component {
         }
         */
 
+        /*
         Alert.alert(
             // 'Alert Title',
             e.data.type,
@@ -128,6 +126,7 @@ export default class App extends React.Component {
             ],
             { cancelable: false },
         );
+        */
 
         const origin = e.origin;
         const data = e.data;
@@ -160,6 +159,9 @@ export default class App extends React.Component {
             if (data) {
                 switch (Number(data.type)) {
                     case Globals.pushNotification.chat: {
+                        // hide badge
+                        this.setState({ showBadgeOnChat: false, badgeOnChatCount: -1 });
+
                         const message = data.userData.message;
 
                         const chatRoomId = data.userData.chatRoomId;
@@ -169,6 +171,9 @@ export default class App extends React.Component {
                     } break;
 
                     case Globals.pushNotification.review: {
+                        // hide badge
+                        this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
+
                         const message = data.userData.message;
 
                         // move to detail
@@ -178,10 +183,10 @@ export default class App extends React.Component {
                         const post = feedDoc.data();
 
                         NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
-
                     } break;
 
                     case Globals.pushNotification.reply: {
+                        /*
                         const message = data.userData.message;
 
                         // move to detail
@@ -191,7 +196,7 @@ export default class App extends React.Component {
                         const post = feedDoc.data();
 
                         NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
-
+                        */
                     } break;
                 }
             }
@@ -217,7 +222,7 @@ export default class App extends React.Component {
                 <StyleProvider style={getTheme(variables)}>
                     {/*
                     <Provider {...{ feedStore, profileStore, userFeedStore }}>
-                        <MainSwitchNavigator onNavigationStateChange={() => undefined} />
+                        <MainSwitchNavigator onNavigationStateChange={() => undefined}/>
                     </Provider>
                     */}
                     <Provider {...{ feedStore, profileStore }}>
@@ -227,8 +232,6 @@ export default class App extends React.Component {
                             }}
 
                             screenProps={{
-                                // setState: this.setState,
-
                                 showBadgeOnHome: this.state.showBadgeOnHome,
                                 badgeOnHomeCount: this.state.badgeOnHomeCount,
 
@@ -239,13 +242,38 @@ export default class App extends React.Component {
                                 badgeOnChatCount: this.state.badgeOnChatCount,
 
                                 showBadgeOnProfile: this.state.showBadgeOnProfile,
-                                badgeOnProfileCount: this.state.badgeOnProfileCount
+                                badgeOnProfileCount: this.state.badgeOnProfileCount,
+
+                                changeBadgeOnHome: this.changeBadgeOnHome,
+                                changeBadgeOnLikes: this.changeBadgeOnLikes,
+                                changeBadgeOnChat: this.changeBadgeOnChat,
+                                changeBadgeOnProfile: this.changeBadgeOnProfile
                             }}
                         />
                     </Provider>
                 </StyleProvider>
             </React.Fragment>
         );
+    }
+
+    @autobind
+    changeBadgeOnHome(show, count) {
+        this.setState({ showBadgeOnHome: show, badgeOnHomeCount: count });
+    }
+
+    @autobind
+    changeBadgeOnLikes(show, count) {
+        this.setState({ showBadgeOnLikes: show, badgeOnLikesCount: count });
+    }
+
+    @autobind
+    changeBadgeOnChat(show, count) {
+        this.setState({ showBadgeOnChat: show, badgeOnChatCount: count });
+    }
+
+    @autobind
+    changeBadgeOnProfile(show, count) {
+        this.setState({ showBadgeOnProfile: show, badgeOnProfileCount: count });
     }
 }
 
@@ -636,7 +664,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
     (Platform.OS === "android") ?
         {
             tabBarOptions: _tabBarOptions,
-            tabBarComponent: props => <TabBarComponent {...props} />,
+            tabBarComponent: props => <TabBarComponent {...props}/>,
             // tabBarPosition: 'bottom'
         }
         :
@@ -645,12 +673,16 @@ const MainBottomTabNavigator = createBottomTabNavigator(
         }
 );
 
+/*
 const TabBarIconWithBadge = (props) => {
-    return <IconWithBadge {...props} />;
+    return (
+        <IconWithBadge {...props}/>
+    );
 }
+*/
 
 function _navigationOptions(navigation, screenProps) {
-    console.log('_navigationOptions, data', screenProps.data);
+    // console.log('_navigationOptions, data', screenProps.data);
 
     return {
         // title: `${navigation.state.params.name}'s Profile!`,
@@ -669,7 +701,7 @@ function _navigationOptions(navigation, screenProps) {
                         style={{ color: tintColor }}
                     />
                     */
-                    <TabBarIconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome} />
+                    <IconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome}/>
                 );
             } else if (navigation.state.routeName === 'likes') {
                 return (
@@ -681,7 +713,7 @@ function _navigationOptions(navigation, screenProps) {
                         style={{ color: tintColor }}
                     />
                     */
-                    <TabBarIconWithBadge type={'Ionicons'} name={'ios-heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes} />
+                    <IconWithBadge type={'Ionicons'} name={'ios-heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes}/>
                 );
             } else if (navigation.state.routeName === 'chat') {
                 return (
@@ -693,7 +725,7 @@ function _navigationOptions(navigation, screenProps) {
                         style={{ color: tintColor }}
                     />
                     */
-                    <TabBarIconWithBadge type={'Ionicons'} name={'ios-chatbubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat} />
+                    <IconWithBadge type={'Ionicons'} name={'ios-chatbubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat}/>
                 );
             } else if (navigation.state.routeName === 'profile') {
                 return (
@@ -704,7 +736,7 @@ function _navigationOptions(navigation, screenProps) {
                         style={{ color: tintColor }}
                     />
                     */
-                    <TabBarIconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile} />
+                    <IconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile}/>
                 );
             }
         },
@@ -713,22 +745,32 @@ function _navigationOptions(navigation, screenProps) {
 
             if (navigation.state.routeName === 'home') {
                 console.log('home');
+
+                if (data.showBadgeOnHome) {
+                    // hide badge
+                    data.changeBadgeOnHome(false, -1);
+                }
             } else if (navigation.state.routeName === 'likes') {
                 console.log('likes');
+
+                if (data.showBadgeOnLikes) {
+                    // hide badge
+                    data.changeBadgeOnLikes(false, -1);
+                }
             } else if (navigation.state.routeName === 'chat') {
                 console.log('chat');
 
-
-                /*
                 if (data.showBadgeOnChat) {
-                    data.setState({ showBadgeOnChat: false, badgeOnChatCount: -1});
+                    // hide badge
+                    data.changeBadgeOnChat(false, -1);
                 }
-                */
-
-
-
             } else if (navigation.state.routeName === 'profile') {
                 console.log('profile');
+
+                if (data.showBadgeOnProfile) {
+                    // hide badge
+                    data.changeBadgeOnProfile(false, -1);
+                }
             }
 
             defaultHandler();
@@ -787,17 +829,17 @@ class TabBarComponent extends React.Component {
     }
 
     render() {
-        // return this.state.focused && this.state.visible ? <BottomTabBar {...this.props} /> : null;
-        // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props} /> : null; // not working in S7
+        // return this.state.focused && this.state.visible ? <BottomTabBar {...this.props}/> : null;
+        // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props}/> : null; // not working in S7
 
 
         // if (!this.state.focused) {
         if (!this.focused) {
-            return <BottomTabBar {...this.props} />;
+            return <BottomTabBar {...this.props}/>;
         }
 
         if (this.state.visible) {
-            return <BottomTabBar {...this.props} />;
+            return <BottomTabBar {...this.props}/>;
         }
 
         return null;

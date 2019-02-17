@@ -34,5 +34,5 @@ const renderItem = (hotel: Hotel): React.Node => {
             />
         );
     }
-    return <Activity {...hotel} onPress={notImplementedYet} />;
+    return <Activity {...hotel} onPress={notImplementedYet}/>;
 };

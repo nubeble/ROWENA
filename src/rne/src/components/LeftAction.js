@@ -18,7 +18,7 @@ export default class LeftAction extends React.PureComponent<LeftActionProps> {
         return (
             <TouchableHighlight activeOpacity={0.5} underlayColor="transparent" {...{onPress}}>
                 <View style={styles.backBtn}>
-                    <Icon color="white" {...{name}} />
+                    <Icon color="white" {...{name}}/>
                     <Text color="white">{label}</Text>
                 </View>
             </TouchableHighlight>

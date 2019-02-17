@@ -35,7 +35,8 @@ type InjectedProps = {
 };
 
 
-@inject("feedStore", "profileStore") @observer
+@inject("feedStore", "profileStore")
+@observer
 // export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Explore extends React.Component<ScreenProps<> & InjectedProps> {
     state = {
@@ -57,7 +58,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         let place = params.place;
         let length = params.length;
         let city = place.city;
-        console.log('Explore.componentDidMount', 'place', place, 'length', length, 'city', city);
+        // console.log('Explore.componentDidMount', 'place', place, 'length', length, 'city', city);
 
         this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
@@ -86,7 +87,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
         // this.props.navigation.dispatch(NavigationActions.back());
         console.log('move to Intro');
-        this.props.screenProps.rootNavigation.navigate("intro");
+        // this.props.screenProps.rootNavigation.navigate("intro");
+        this.props.navigation.navigate("intro");
 
         return true;
     }
@@ -146,15 +148,16 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                         width: '70%', height: 34,
                         backgroundColor: Theme.color.component,
                         borderRadius: 25
-                    }} >
+                    }}>
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             onPress={() => {
                                 console.log('move to Intro');
-                                this.props.screenProps.rootNavigation.navigate("intro");
+                                // this.props.screenProps.rootNavigation.navigate("intro");
+                                this.props.navigation.navigate("intro");
                             }}
                         >
-                            <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
+                            <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16}/>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -178,8 +181,10 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             />
                             */}
                             <Text
-                                style={{ width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
-                                    color: Theme.color.text2, textAlign: 'center' }}
+                                style={{
+                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
+                                    color: Theme.color.text2, textAlign: 'center'
+                                }}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
                     </View>
@@ -205,7 +210,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             profile && (
                                 <TouchableWithoutFeedback onPress={this.profile}>
                                     <View>
-                                        <Avatar {...profile.pictures.one} />
+                                        <Avatar {...profile.pictures.one}/>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -214,65 +219,65 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                 </AnimatedSafeAreaView> */}
 
                 {
-/*
-                    !this.state.renderFeed ?
-                        <ActivityIndicator
-                            style={styles.activityIndicator}
-                            animating={true}
-                            size="large"
-                            color='grey'
-                        />
-                        :
-*/
+                    /*
+                                        !this.state.renderFeed ?
+                                            <ActivityIndicator
+                                                style={styles.activityIndicator}
+                                                animating={true}
+                                                size="large"
+                                                color='grey'
+                                            />
+                                            :
+                    */
                     this.state.renderFeed &&
-                        <Feed
-                            store={feedStore}
-                            /*
-                            onScroll={Animated.event([{
-                                nativeEvent: {
-                                    contentOffset: {
-                                        y: scrollAnimation
-                                    }
+                    <Feed
+                        store={feedStore}
+                        /*
+                        onScroll={Animated.event([{
+                            nativeEvent: {
+                                contentOffset: {
+                                    y: scrollAnimation
                                 }
-                            }])}
-                            */
-                            ListHeaderComponent={(
-                                <Animated.View>
+                            }
+                        }])}
+                        */
+                        ListHeaderComponent={(
+                            <Animated.View>
 
-                                    {/* advertising banner */}
-                                    <TouchableWithoutFeedback onPress={() => {
-                                        let index;
-                                        if (this.currentSwiperIndex === undefined) {
-                                            index = 0;
-                                        } else {
-                                            index = this.currentSwiperIndex;
-                                        }
+                                {/* advertising banner */}
+                                <TouchableWithoutFeedback onPress={() => {
+                                    let index;
+                                    if (this.currentSwiperIndex === undefined) {
+                                        index = 0;
+                                    } else {
+                                        index = this.currentSwiperIndex;
+                                    }
 
-                                        console.log('TouchableWithoutFeedback onPress', index);
+                                    console.log('TouchableWithoutFeedback onPress', index);
 
-                                        // ToDo: use index
-                                    }}>
-                                        <Swiper
-                                            style={styles.wrapper}
-                                            containerStyle={{ marginBottom: 20 }}
-                                            width={Dimensions.get('window').width}
-                                            height={Dimensions.get('window').width / 21 * 9}
-                                            loop={false}
-                                            autoplay={true}
-                                            autoplayTimeout={3}
-                                            paginationStyle={{ bottom: 4 }}
-                                            onIndexChanged={(index) => {
-                                                // console.log('onIndexChanged', index);
-                                                this.currentSwiperIndex = index;
-                                            }}
-                                        >
-                                            <View style={styles.slide}>
-                                                <SmartImage
-                                                    style={styles.item}
-                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://aydencreative.com/files/2018/10/180221-AYD-Website-Header_Mockup-1.jpg'}
-                                                />
-                                                {/*
+                                    // ToDo: use index
+                                }}>
+                                    <Swiper
+                                        style={styles.wrapper}
+                                        containerStyle={{ marginBottom: 20 }}
+                                        width={Dimensions.get('window').width}
+                                        height={Dimensions.get('window').width / 21 * 9}
+                                        loop={false}
+                                        autoplay={true}
+                                        autoplayTimeout={3}
+                                        paginationStyle={{ bottom: 4 }}
+                                        onIndexChanged={(index) => {
+                                            // console.log('onIndexChanged', index);
+                                            this.currentSwiperIndex = index;
+                                        }}
+                                    >
+                                        <View style={styles.slide}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://aydencreative.com/files/2018/10/180221-AYD-Website-Header_Mockup-1.jpg'}
+                                            />
+                                            {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -284,14 +289,14 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     </Text>
                                                 </View>
                                                 */}
-                                            </View>
-                                            <View style={styles.slide}>
-                                                <SmartImage
-                                                    style={styles.item}
-                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://www.esentra.com.tw/wp-content/uploads/2013/02/f2c70a681b8679277edc6d5e77ee5477.jpg'}
-                                                />
-                                                {/*
+                                        </View>
+                                        <View style={styles.slide}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://www.esentra.com.tw/wp-content/uploads/2013/02/f2c70a681b8679277edc6d5e77ee5477.jpg'}
+                                            />
+                                            {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -303,14 +308,14 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     </Text>
                                                 </View>
                                                 */}
-                                            </View>
-                                            <View style={styles.slide}>
-                                                <SmartImage
-                                                    style={styles.item}
-                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://www.thefriaryguildford.com/wp-content/uploads/2018/04/7640-365-Creative-Web-Banners-AW6.jpg'}
-                                                />
-                                                {/*
+                                        </View>
+                                        <View style={styles.slide}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://www.thefriaryguildford.com/wp-content/uploads/2018/04/7640-365-Creative-Web-Banners-AW6.jpg'}
+                                            />
+                                            {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -322,14 +327,14 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     </Text>
                                                 </View>
                                                 */}
-                                            </View>
-                                            <View style={styles.slide}>
-                                                <SmartImage
-                                                    style={styles.item}
-                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={'https://www.designer-daily.com/wp-content/uploads/2015/02/wifi.jpg'}
-                                                />
-                                                {/*
+                                        </View>
+                                        <View style={styles.slide}>
+                                            <SmartImage
+                                                style={styles.item}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={'https://www.designer-daily.com/wp-content/uploads/2015/02/wifi.jpg'}
+                                            />
+                                            {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -341,19 +346,19 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                                     </Text>
                                                 </View>
                                                 */}
-                                            </View>
-                                        </Swiper>
-                                    </TouchableWithoutFeedback>
+                                        </View>
+                                    </Swiper>
+                                </TouchableWithoutFeedback>
 
-                                    <View style={styles.titleContainer}>
-                                        <Text style={styles.title}>
-                                            {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.cityName}
-                                        </Text>
-                                    </View>
-                                </Animated.View>
-                            )}
-                            {...{ navigation }}
-                        />
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>
+                                        {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.cityName}
+                                    </Text>
+                                </View>
+                            </Animated.View>
+                        )}
+                        {...{ navigation }}
+                    />
                 }
             </View>
         );
@@ -429,6 +434,7 @@ const styles = StyleSheet.create({
 
 
     // test: advertising area
+    /*
     content: {
         position: 'absolute',
         left: 0,
@@ -438,6 +444,7 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small,
         flex: 1
     }
+    */
 
 
 

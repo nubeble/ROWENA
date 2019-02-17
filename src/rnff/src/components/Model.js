@@ -53,10 +53,10 @@ type Pictures = {
 export type Post = {
     uid: string,
     id: string,
+    placeId: string,
     location: Location,
     note: string,
     pictures: Pictures,
-    placeId: string,
     // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼)
     reviewCount: number,
     averageRating: number,
@@ -65,7 +65,8 @@ export type Post = {
     height: number,
     weight: number,
     bust: string,
-    timestamp: number
+    timestamp: number,
+    rn: number // random number
 };
 
 type Reply = {

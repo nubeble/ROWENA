@@ -11,7 +11,7 @@ import {Post, Stories, NewMessage} from "./components";
 import type {Post as PostModel} from "./api";
 import type {NavigationProps} from "../components";
 
-const renderItem = (post: PostModel): React.Node => <Post {...{post}} />;
+const renderItem = (post: PostModel): React.Node => <Post {...{post}}/>;
 
 export default class Timeline extends React.Component<NavigationProps<>> {
 
@@ -42,7 +42,7 @@ export default class Timeline extends React.Component<NavigationProps<>> {
         return (
             <View style={styles.container}>
                 <Feed
-                    header={<Stories {...{navigation}} />}
+                    header={<Stories {...{navigation}}/>}
                     {...{data, renderItem, title, navigation, rightAction}}
                 />
                 <ActionSheet title="New Post" ref={this.newPostRef} rightAction={postAction}>

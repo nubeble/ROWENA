@@ -17,6 +17,7 @@ const scale = require('../assets/icon/scale.png');
 
 export default class PreloadImage {
     static Splash = Splash;
+
     static Bangkok = Bangkok;
     static Manila = Manila;
     static HoChiMinh = HoChiMinh;
@@ -34,6 +35,7 @@ export default class PreloadImage {
             // Asset.loadAsync(Images.logo)
             Asset.loadAsync([
                 PreloadImage.Splash,
+
                 PreloadImage.Bangkok,
                 PreloadImage.Manila,
                 PreloadImage.HoChiMinh,
@@ -44,10 +46,7 @@ export default class PreloadImage {
                 PreloadImage.bra,
                 PreloadImage.birth,
                 PreloadImage.ruler,
-                PreloadImage.scale,
-
-
-
+                PreloadImage.scale
             ])
         ];
     }

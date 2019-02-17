@@ -36,7 +36,7 @@ export default class EnableCameraPermission extends React.Component<{}, EnableCa
                 </Text>
                 {
                     canOpen === true && (
-                        <Button label="Enable Camera Access" primary {...{onPress}} />
+                        <Button label="Enable Camera Access" primary {...{onPress}}/>
                     )
                 }
                 {

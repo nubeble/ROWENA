@@ -641,7 +641,7 @@ export default class GooglePlacesAutocomplete extends Component {
 		return (
 			<View
 				key={`${sectionID}-${rowID}`}
-				style={[this.props.suppressDefaultStyles ? {} : defaultStyles.separator, this.props.styles.separator]} />
+				style={[this.props.suppressDefaultStyles ? {} : defaultStyles.separator, this.props.styles.separator]}/>
 		);
 	}
 
@@ -717,7 +717,7 @@ export default class GooglePlacesAutocomplete extends Component {
 						}
 					}}
 				>
-					<Ionicons name='ios-close-circle' color="grey" size={20} />
+					<Ionicons name='ios-close-circle' color="grey" size={20}/>
 				</TouchableOpacity>
 			);
 		}

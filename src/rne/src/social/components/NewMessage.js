@@ -38,8 +38,8 @@ export default class NewMessage extends React.Component<NewMessageProps, NewMess
                     multiline
                     autoFocus
                 />
-                <SegmentedControl values={["Text", "Photo"]} {...{selectedIndex, onChange}} />
-                <KeyboardSpacer {...{enableOnAndroid}} />
+                <SegmentedControl values={["Text", "Photo"]} {...{selectedIndex, onChange}}/>
+                <KeyboardSpacer {...{enableOnAndroid}}/>
             </View>
         );
     }

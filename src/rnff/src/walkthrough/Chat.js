@@ -18,10 +18,10 @@ class Bubble extends React.PureComponent<BubbleProps> {
                 delay={right ? 300 : 0}
                 style={[styles.bubble, right ? styles.rightBubble : styles.leftBubble]}
             >
-                <View style={styles.circle} />
+                <View style={styles.circle}/>
                 <View style={styles.lines}>
-                    <View style={styles.smallLine} />
-                    <View style={styles.bigLine} />
+                    <View style={styles.smallLine}/>
+                    <View style={styles.bigLine}/>
                 </View>
             </AnimatedView>
         );

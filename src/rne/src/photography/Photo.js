@@ -109,8 +109,8 @@ export default class PhotoScreen extends React.Component<PhotoScreenProps, Photo
          return (
              <View style={styles.container}>
                  <StatusBar hidden />
-                 <Image preview={photo.urls.preview} uri={photo.urls.regular} style={styles.image} />
-                 <BlurView style={StyleSheet.absoluteFill} {...{intensity}} />
+                 <Image preview={photo.urls.preview} uri={photo.urls.regular} style={styles.image}/>
+                 <BlurView style={StyleSheet.absoluteFill} {...{intensity}}/>
                  {
                      <Animated.View style={{ opacity, ...StyleSheet.absoluteFillObject, transform: [{ rotate }] }}>
                          <Crop style={styles.filter}>
@@ -140,10 +140,10 @@ export default class PhotoScreen extends React.Component<PhotoScreenProps, Photo
                  {
                      <Footer>
                          {
-                             areFiltersReady && <IconButton name="filters" onPress={toggleFilters} />
+                             areFiltersReady && <IconButton name="filters" onPress={toggleFilters}/>
                          }
                          {
-                             areFiltersReady && <IconButton name="crop" onPress={toggleCrop} />
+                             areFiltersReady && <IconButton name="crop" onPress={toggleCrop}/>
                          }
                          {
                              !areFiltersReady && <ActivityIndicator color="white" />
@@ -151,10 +151,10 @@ export default class PhotoScreen extends React.Component<PhotoScreenProps, Photo
                      </Footer>
                  }
                  <PhotoActionSheet ref={this.setFiltersRef} title="Filters" onClose={onCloseActionSheet}>
-                     <Filters {...{uri: photo.urls.regular, switchFilter}} />
+                     <Filters {...{uri: photo.urls.regular, switchFilter}}/>
                  </PhotoActionSheet>
                  <PhotoActionSheet ref={this.setCropRef} title="Edit" onClose={onCloseActionSheet}>
-                     <Rotation {...{rotation}} />
+                     <Rotation {...{rotation}}/>
                  </PhotoActionSheet>
              </View>
          );

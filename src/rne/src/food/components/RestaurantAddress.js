@@ -18,7 +18,7 @@ export default class RestaurantAddress extends React.PureComponent<{ restaurant:
                     <Text type="footnote">{address}</Text>
                     <Text type="footnote">{`${city}, ${country}`}</Text>
                 </View>
-                <Image style={styles.picture} {...picture} />
+                <Image style={styles.picture} {...picture}/>
             </View>
         );
     }

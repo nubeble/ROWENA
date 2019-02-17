@@ -28,7 +28,7 @@ export default class Cities extends React.Component<NavigationProps<>> {
         const data = TravelAPI.cities;
         const title = "Cities";
         return (
-            <Feed {...{data, renderItem, title, navigation}} />
+            <Feed {...{data, renderItem, title, navigation}}/>
         );
     }
 }

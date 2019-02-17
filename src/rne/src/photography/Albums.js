@@ -33,7 +33,7 @@ export default class Albums extends React.PureComponent<NavigationProps<>> {
                 <View style={styles.thumbnail}>
                     {
                         group.photos.slice(0, 3).map(photo => (
-                            <PhotoThumbnail key={photo.id} from={photo.album} {...{photo, navigation}} />
+                            <PhotoThumbnail key={photo.id} from={photo.album} {...{photo, navigation}}/>
                         ))
                     }
                 </View>
@@ -50,7 +50,7 @@ export default class Albums extends React.PureComponent<NavigationProps<>> {
             onPress: () => navigation.navigate("Camera")
         };
         return (
-            <Feed title="Albums" {...{navigation, data, rightAction, renderItem}} />
+            <Feed title="Albums" {...{navigation, data, rightAction, renderItem}}/>
         );
     }
 }

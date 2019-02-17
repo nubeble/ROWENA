@@ -43,8 +43,8 @@ export default class PlayerActionSheet extends React.Component<PlayerActionSheet
         const subtitle = `${album.artist} - ${album.name}`;
         return (
             <ActionSheet ref={this.actionSheet} {...{title, subtitle}} noSafeArea>
-                <Image style={styles.image} {...album.picture} />
-                <ExpandedPlayerControls {...{playlist, track, switchTrack}} />
+                <Image style={styles.image} {...album.picture}/>
+                <ExpandedPlayerControls {...{playlist, track, switchTrack}}/>
             </ActionSheet>
         );
     }

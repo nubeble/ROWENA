@@ -39,7 +39,7 @@ export default class EnableCameraPermission extends React.Component<Props, State
                 </Text>
                 {
                     canOpen === true && (
-                        <Button label="Enable Camera Access" primary full {...{onPress}} />
+                        <Button label="Enable Camera Access" primary full {...{onPress}}/>
                     )
                 }
                 {

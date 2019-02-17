@@ -14,7 +14,7 @@ export default class MusicTabBar extends React.PureComponent<TabBarProps> {
         return (
             <View>
                 <PlayerControls />
-                <TabBar {...{navigation, tabs}} />
+                <TabBar {...{navigation, tabs}}/>
             </View>
         );
     }

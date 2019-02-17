@@ -53,17 +53,17 @@ export default class SignUp extends React.Component {
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('userName', value)} placeholder='User Name' />
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('password', value)} placeholder='Password'
-					secureTextEntry={true} />
+					secureTextEntry={true}/>
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('phoneNumber', value)} placeholder='Phone Number' />
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('email', value)} placeholder='Email' />
 
-				<Button title='Sign Up' onPress={this.signUp.bind(this)} />
+				<Button title='Sign Up' onPress={this.signUp.bind(this)}/>
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('confirmationCode', value)} placeholder='Confirmation Code' />
 
-				<Button title='Confirm Sign Up' onPress={this.confirmSignUp.bind(this)} />
+				<Button title='Confirm Sign Up' onPress={this.confirmSignUp.bind(this)}/>
 
 			</View>
 		);

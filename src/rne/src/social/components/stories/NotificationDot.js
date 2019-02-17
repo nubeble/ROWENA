@@ -14,7 +14,7 @@ class NotificationDot extends React.PureComponent<NotificationDotProps> {
         const {style, theme} = this.props;
         const backgroundColor = theme.palette.primary;
         return (
-            <View style={[styles.dot, { backgroundColor }, style]} />
+            <View style={[styles.dot, { backgroundColor }, style]}/>
         );
     }
 }

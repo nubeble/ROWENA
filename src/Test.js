@@ -185,16 +185,16 @@ export default class Test extends React.Component {
                 <View style={styles.title}><Text>title</Text></View>
                 <View style={styles.content}><Text>content</Text>
 
-                    <JayButton text="Save Forum" onPress={this.saveForum.bind(this)} style={styles.button} />
+                    <JayButton text="Save Forum" onPress={this.saveForum.bind(this)} style={styles.button}/>
 
-                    <JayButton text="Get Forum" onPress={this.getForum.bind(this)} />
+                    <JayButton text="Get Forum" onPress={this.getForum.bind(this)}/>
 
-                    <JayButton text="Delete Forum" onPress={this.deleteForum.bind(this)} />
+                    <JayButton text="Delete Forum" onPress={this.deleteForum.bind(this)}/>
 
-                    <JayButton text="Upload Picture" onPress={this.saveImage.bind(this)} />
+                    <JayButton text="Upload Picture" onPress={this.saveImage.bind(this)}/>
 
                     <Text style={{ color: 'white' }}>ForumID: </Text>
-                    <TextInput style={styles.textInput} autoCapitalize='none' onChangeText={this.handleChangeForumId} />
+                    <TextInput style={styles.textInput} autoCapitalize='none' onChangeText={this.handleChangeForumId}/>
 
                     <Text style={{ color: 'white' }}>Response: {this.state.apiResponse && JSON.stringify(this.state.apiResponse)}</Text>
 

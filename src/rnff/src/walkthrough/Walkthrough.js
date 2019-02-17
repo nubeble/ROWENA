@@ -51,7 +51,7 @@ export default class Walkthrough extends React.Component<ScreenProps<>, Walkthro
         const next = () => (isLast ? this.home() : context.scrollBy(1));
         return (
             <SafeAreaView style={styles.footer}>
-                <Button label="Back" onPress={back} disabled={isFirst} />
+                <Button label="Back" onPress={back} disabled={isFirst}/>
                 <Button label={isLast ? "Start" : "Next"} onPress={next} primary transparent />
             </SafeAreaView>
         );
@@ -64,7 +64,7 @@ export default class Walkthrough extends React.Component<ScreenProps<>, Walkthro
                 {
                     slides.map(slide => (
                         <View key={slide.title}>
-                            <Slide {...slide} />
+                            <Slide {...slide}/>
                         </View>
                     ))
                 }
@@ -87,21 +87,21 @@ const slides = [
     {
         title: "Connect",
         description: "Bring your friends closer by building a network of the people you love.",
-        icon: <Connect ref={ref => (ref ? connect = ref : undefined)} />,
+        icon: <Connect ref={ref => (ref ? connect = ref : undefined)}/>,
         show: () => connect.show(),
         hide: () => connect.hide()
     },
     {
         title: "Chat",
         description: "Send messages and stay up to date with friends whenever you need to.",
-        icon: <Chat ref={ref => (ref ? chat = ref : undefined)} />,
+        icon: <Chat ref={ref => (ref ? chat = ref : undefined)}/>,
         show: () => chat.show(),
         hide: () => chat.hide()
     },
     {
         title: "Share",
         description: "Send your best selfies and show friends what you’re up to.",
-        icon: <Share ref={ref => (ref ? share = ref : undefined)} />,
+        icon: <Share ref={ref => (ref ? share = ref : undefined)}/>,
         show: () => share.show(),
         hide: () => share.hide()
     }

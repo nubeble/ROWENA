@@ -46,17 +46,18 @@ export default class IconWithBadge extends React.Component {
         const { type, name, badgeCount, color, size, animate } = this.props;
 
         if (animate) {
-            if (this.animating) return;
+            if (!this.animating) {
+                this.animating = true;
 
-            this.animating = true;
+                this.springValue.setValue(2);
 
-            this.springValue.setValue(2);
-
-            Animated.spring(this.springValue, {
-                toValue: 1,
-                friction: 2,
-                tension: 1
-            }).start(() => this.animating = undefined);
+                Animated.spring(this.springValue, {
+                    toValue: 1,
+                    friction: 2,
+                    tension: 1
+                // }).start(() => this.animating = undefined); // play repeatedly
+                }).start(); // play only one time
+            }
         }
 
 
@@ -64,11 +65,11 @@ export default class IconWithBadge extends React.Component {
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 {
                     (type === 'Ionicons') &&
-                    <Ionicons name={name} size={size} color={color} />
+                    <Ionicons name={name} size={size} color={color}/>
                 }
                 {
                     (type === 'FontAwesome') &&
-                    <FontAwesome name={name} size={size} color={color} />
+                    <FontAwesome name={name} size={size} color={color}/>
                 }
 
                 {
@@ -82,7 +83,7 @@ export default class IconWithBadge extends React.Component {
                         width: 8,
                         height: 8,
                         transform: [{ scale: this.springValue }]
-                    }} />
+                    }}/>
                 }
                 {
                     badgeCount > 0 && badgeCount <= 9 &&

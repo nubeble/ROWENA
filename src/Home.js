@@ -306,9 +306,9 @@ export default class Home extends React.Component<NavigationProps<>> {
 
         return (
             /*
-            <Feed {...{ data, renderItem, title, navigation, rightAction }} />
+            <Feed {...{ data, renderItem, title, navigation, rightAction }}/>
             */
-           <Feed {...{ data, renderItem, title1, title2, title3 }} />
+           <Feed {...{ data, renderItem, title1, title2, title3 }}/>
         );
     }
 }

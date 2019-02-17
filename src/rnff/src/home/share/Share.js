@@ -91,24 +91,24 @@ export default class Share extends React.Component<ScreenProps<>, ShareState> {
         }
         return (
             <View style={styles.container}>
-                <NavHeader title="Share" {...{navigation}} />
+                <NavHeader title="Share" {...{navigation}}/>
                 <Camera ref={this.setCamera} style={styles.camera} {...{type, flashMode}}>
                     <View style={styles.cameraBtns}>
                         <TouchableWithoutFeedback onPress={this.toggleCamera}>
                             <View>
-                                <Icon name="rotate-ccw" style={styles.rotate} size={25} />
+                                <Icon name="rotate-ccw" style={styles.rotate} size={25}/>
                             </View>
                         </TouchableWithoutFeedback>
                         <TouchableWithoutFeedback onPress={this.toggleFlash}>
                             <View>
-                                <FlashIcon on={flashMode === Camera.Constants.FlashMode.on} />
+                                <FlashIcon on={flashMode === Camera.Constants.FlashMode.on}/>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
                 </Camera>
                 <View style={styles.footer}>
                     <TouchableOpacity onPress={this.snap}>
-                        <View style={styles.btn} />
+                        <View style={styles.btn}/>
                     </TouchableOpacity>
                 </View>
                 <Modal transparent visible={loading} onRequestClose={this.toggle}>

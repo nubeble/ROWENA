@@ -32,15 +32,15 @@ export default class AlbumScreen extends React.PureComponent<NavigationProps<{ a
         const playlist = MusicAPI.transformAlbumToPlaylist(album);
         return (
             <Container>
-                <NavigationBar {...{navigation, back}} />
-                <PlaylistHeader {...{playlist}} />
+                <NavigationBar {...{navigation, back}}/>
+                <PlaylistHeader {...{playlist}}/>
                 <Content style={styles.gutter}>
                     <List
                         rows={tracks}
-                        renderRow={(track, i) => <Track index={i + 1} onPress={this.toggle} {...{playlist, track}} />}
+                        renderRow={(track, i) => <Track index={i + 1} onPress={this.toggle} {...{playlist, track}}/>}
                     />
                 </Content>
-                <PlayerActionSheet ref={this.setPlayerActionSheet} {...{playlist}} />
+                <PlayerActionSheet ref={this.setPlayerActionSheet} {...{playlist}}/>
             </Container>
         );
     }

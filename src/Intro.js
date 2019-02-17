@@ -34,54 +34,61 @@ const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
 
 
-
 // @inject("feedStore", "profileStore") @observer
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
+    // Next: Place는 일단 고정. 추후 등록된 Post 개수가 가장 많은 상위 6곳을 가져와야 한다. (database indexes를 써서 미리 내림차순정렬로 가지고 있자!)
+    static images = [
+        PreloadImage.Bangkok,
+        PreloadImage.Manila,
+        PreloadImage.HoChiMinh,
+        PreloadImage.Vientiane,
+        PreloadImage.PhnomPenh,
+        PreloadImage.Jakarta
+    ];
+
     state = {
-        // ToDo: Place는 일단 고정. 추후 등록된 Post 개수가 가장 많은 상위 6곳을 가져와야 한다. (database indexes를 써서 미리 내림차순정렬로 가지고 있자!)
-        // 이 때 image는 어떻게 가져올 지 고민!!
         places: [
             {
                 place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
                 description: 'Bangkok, Thailand',
                 city: 'Bangkok',
-                uri: PreloadImage.Bangkok,
+                uri: null,
                 length: 0
             },
             {
                 place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
                 description: 'Manila, Philippines',
                 city: 'Manila',
-                uri: PreloadImage.Manila,
+                uri: null,
                 length: 0
             },
             {
                 place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
                 description: 'Ho Chi Minh, Vietnam',
                 city: 'Ho Chi Minh',
-                uri: PreloadImage.HoChiMinh,
+                uri: null,
                 length: 0
             },
             {
                 place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
                 description: 'Vientiane, Laos',
                 city: 'Vientiane',
-                uri: PreloadImage.Vientiane,
+                uri: null,
                 length: 0
             },
             {
                 place_id: 'ChIJ42tqxz1RCTERuyW1WugOAZw',
                 description: 'Phnom Penh, Cambodia',
                 city: 'Phnom Penh',
-                uri: PreloadImage.PhnomPenh,
+                uri: null,
                 length: 0
             },
             {
                 place_id: 'ChIJnUvjRenzaS4RoobX2g-_cVM',
                 description: 'Jakarta, Indonesia',
                 city: 'Jakarta',
-                uri: PreloadImage.Jakarta,
+                uri: null,
                 length: 0
             }
         ],
@@ -89,13 +96,41 @@ export default class Intro extends React.Component {
         refreshing: false
     };
 
-    componentDidMount() {
-        // console.log('Intro.componentDidMount');
+    async componentDidMount() {
+        console.log('Intro.componentDidMount');
+        // console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
-        console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
-        console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
-
+        await this.getPlacesImage();
         this.getPlacesSize();
+    }
+
+    async getPlacesImage() {
+        const _places = this.state.places;
+
+        let places = [...this.state.places];
+
+        for (var i = 0; i < _places.length; i++) {
+            let placeId = _places[i].place_id;
+            const uri = await Firebase.getPlaceRandomFeedImage(placeId);
+            const _uri = { "uri": uri };
+
+            /*
+            let index = places.findIndex(el => el.place_id === placeId);
+            if (index !== -1) {
+                places[index] = { ...places[index], uri: _uri };
+                Intro.images[i] = _uri;
+
+                // load one by one
+                // !this.isClosed && this.setState({ places }, () => { Intro.images[i] = _uri });
+            }
+            */
+            places[i] = { ...places[i], uri: _uri };
+            Intro.images[i] = _uri;
+        }
+
+        // load all at once
+        !this.isClosed && this.setState({ places, refreshing: false });
     }
 
     /*
@@ -197,7 +232,7 @@ export default class Intro extends React.Component {
                         width: '70%', height: 34,
                         backgroundColor: Theme.color.component,
                         borderRadius: 25
-                    }} >
+                    }}>
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 12, top: 8, alignSelf: 'baseline' }}
                             onPress={() => {
@@ -254,19 +289,39 @@ export default class Intro extends React.Component {
                     data={this.state.places}
                     keyExtractor={item => item.place_id}
                     renderItem={({ item, index }) => {
+                        /*
+                        let uri = Intro.images[index];
+                        if (!uri) {
+                            uri = item.uri;
+                        }
+                        */
+                        let uri = item.uri;
+                        if (!uri) {
+                            uri = Intro.images[index];
+                        }
+
+
                         return (
                             <TouchableOpacity
                                 onPress={() => {
                                     setTimeout(() => {
-                                        this.props.navigation.navigate("exploreMain", { place: item, length: this.state.places[index].length });
+                                        this.props.navigation.navigate("exploreMain", { place: item, length: item.length });
                                     }, Globals.buttonTimeoutLong);
                                 }}
                             >
                                 <View style={styles.pictureContainer}>
                                     <Image
                                         style={styles.picture}
-                                        source={item.uri}
+                                        source={uri}
                                     />
+                                    {/*
+                                    <SmartImage
+                                        style={styles.picture}
+                                        // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        preview={item.preview}
+                                        uri={item.uri}
+                                    />
+                                    */}
 
                                     <View style={styles.content}>
                                         <Text style={{
@@ -445,19 +500,15 @@ export default class Intro extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
-        /*
         this.setState(
             {
                 refreshing: true
             },
-            () => {
-                // this.getPlacesSize();
-                // ToDo: refresh the latest feed of 6 places & show pictures
-
-                // get a random picture among each place
+            async () => {
+                await this.getPlacesImage();
+                this.getPlacesSize();
             }
         );
-        */
     };
 
     startEditing() {

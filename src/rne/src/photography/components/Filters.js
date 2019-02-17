@@ -26,7 +26,7 @@ export default class Filters extends React.PureComponent<FiltersProps> {
                     filters.map(name => (
                         <TouchableOpacity key={name} onPress={() => switchFilter(name)}>
                             <View>
-                                <Filter style={styles.filter} {...{name, uri}} />
+                                <Filter style={styles.filter} {...{name, uri}}/>
                             </View>
                         </TouchableOpacity>
                     ))

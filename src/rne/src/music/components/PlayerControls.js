@@ -51,7 +51,7 @@ class PlayerControls extends React.Component<PlayerControlsProps> {
                     <View style={styles.controls}>
                         {
                             !isLoaded && (
-                                <ActivityIndicator color={theme.palette.primary} />
+                                <ActivityIndicator color={theme.palette.primary}/>
                             )
                         }
                         {
@@ -75,14 +75,14 @@ class PlayerControls extends React.Component<PlayerControlsProps> {
                         }
                         {
                             playlistEntry && (
-                                <Image style={styles.cover} {...playlistEntry.album.picture} />
+                                <Image style={styles.cover} {...playlistEntry.album.picture}/>
                             )
                         }
                     </View>
                 </TouchableWithoutFeedback>
                 {
                     playlist && (
-                        <PlayerActionSheet ref={this.setPlayerActionSheet} playlist={playlist} />
+                        <PlayerActionSheet ref={this.setPlayerActionSheet} playlist={playlist}/>
                     )
                 }
             </Animated.View>

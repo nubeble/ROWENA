@@ -33,7 +33,7 @@ export class HomeTab extends React.Component<NavigationProps<*>> {
                                     onPress={() => (i !== cIdx ? this.props.navigation.navigate(info.label) : null)}
                                 >
                                     <View style={styles.tab}>
-                                        <Icon name={info.icon} size={25} {...{ color }} />
+                                        <Icon name={info.icon} size={25} {...{ color }}/>
                                     </View>
                                 </TouchableWithoutFeedback>
                             );

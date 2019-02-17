@@ -10,7 +10,7 @@ export default class Place extends React.PureComponent<NavigationProps<{ photos:
 
     renderItem = (photo: Photo): React.Node => {
         const {navigation} = this.props;
-        return <PhotoThumbnail from="Photos" {...{photo, navigation}} />;
+        return <PhotoThumbnail from="Photos" {...{photo, navigation}}/>;
     }
 
     render(): React.Node {

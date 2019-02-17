@@ -115,7 +115,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
 
                 <View style={styles.searchBar}>
                     {/*
-                    <View style={{ width: '70%', height: 32, backgroundColor: 'rgb(36, 36, 36)', borderColor: 'rgb(36, 36, 36)', borderRadius: 25, borderWidth: 1 }} >
+                    <View style={{ width: '70%', height: 32, backgroundColor: 'rgb(36, 36, 36)', borderColor: 'rgb(36, 36, 36)', borderRadius: 25, borderWidth: 1 }}>
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 10, top: 7, alignSelf: 'baseline' }}
                             onPress={() => {
@@ -123,7 +123,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
                                 this.startEditing();
                             }}
                         >
-                            <FontAwesome name='search' color="grey" size={16} />
+                            <FontAwesome name='search' color="grey" size={16}/>
                         </TouchableOpacity>
 
                         <TextInput

@@ -108,7 +108,7 @@ class ExpandedPlayerControls extends React.Component<ExpandedPlayerControlsProps
                         }
                         {
                             (!player.isLoaded) && (
-                                <ActivityIndicator color={theme.palette.primary} />
+                                <ActivityIndicator color={theme.palette.primary}/>
                             )
                         }
                         <IconButton

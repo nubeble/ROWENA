@@ -46,7 +46,7 @@ export default class IngredientComp extends React.Component<IngredientProps, Ing
                         </View>
                     </View>
                 </TouchableOpacity>
-                <View style={styles.separator} />
+                <View style={styles.separator}/>
             </View>
         );
     }

@@ -73,7 +73,7 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
             <Camera style={styles.camera} {...{type, flashMode}}>
                 <SafeAreaView style={styles.cameraSafeArea} top>
                     <View style={styles.header}>
-                        <IconButton name="grid" onPress={toggleGrid} />
+                        <IconButton name="grid" onPress={toggleGrid}/>
                         <IconButton
                             name="flash"
                             onPress={toggleFlash}
@@ -84,22 +84,22 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
                         showGrid && (
                             <View style={styles.grid}>
                                 <View style={styles.row}>
-                                    <View style={styles.cell} />
-                                    <View style={styles.cell} />
+                                    <View style={styles.cell}/>
+                                    <View style={styles.cell}/>
                                 </View>
                                 <View style={styles.row}>
-                                    <View style={styles.cell} />
-                                    <View style={styles.cell} />
+                                    <View style={styles.cell}/>
+                                    <View style={styles.cell}/>
                                 </View>
                                 <View style={styles.row}>
-                                    <View style={styles.cell} />
-                                    <View style={styles.cell} />
+                                    <View style={styles.cell}/>
+                                    <View style={styles.cell}/>
                                 </View>
                             </View>
                         )
                     }
                     <View style={styles.footer}>
-                        <IconButton name="cross" onPress={goBack} />
+                        <IconButton name="cross" onPress={goBack}/>
                         <TouchableOpacity onPress={notImplementedYet}>
                             <View style={styles.snapButton}>
                                 <View style={[styles.innerSnapButton, { backgroundColor: theme.palette.primary }]}>
@@ -107,7 +107,7 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                        <IconButton name="reverse" onPress={toggleCamera} />
+                        <IconButton name="reverse" onPress={toggleCamera}/>
                     </View>
                 </SafeAreaView>
             </Camera>

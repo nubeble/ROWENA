@@ -17,7 +17,7 @@ export default class CommentComp extends React.PureComponent<CommentProps> {
         const {picture, name} = this.props.profile;
         return (
             <View style={styles.container}>
-                <Avatar {...picture} />
+                <Avatar {...picture}/>
                 <View style={styles.comment}>
                     <Text style={styles.author}>{name}</Text>
                     <Text>{text}</Text>

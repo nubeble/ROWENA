@@ -565,7 +565,7 @@ export default class extends Component {
             marginRight: 3,
             marginTop: 3,
             marginBottom: 3
-        }, this.props.activeDotStyle]} />
+        }, this.props.activeDotStyle]}/>
         const Dot = this.props.dot || <View style={[{
             backgroundColor: this.props.dotColor || 'rgba(0,0,0,.3)',
             // width: 8,
@@ -577,7 +577,7 @@ export default class extends Component {
             marginRight: 3,
             marginTop: 3,
             marginBottom: 3
-        }, this.props.dotStyle]} />
+        }, this.props.dotStyle]}/>
         for (let i = 0; i < this.state.total; i++) {
             dots.push(i === this.state.index
                 ? React.cloneElement(ActiveDot, { key: i })

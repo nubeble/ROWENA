@@ -20,7 +20,7 @@ export default class FirstPost extends React.Component<NavigationProps<>> {
         return (
             <View style={styles.container}>
                 <TouchableOpacity onPress={this.share}>
-                    <Icon name="plus-circle" color={Theme.palette.primary} size={25} />
+                    <Icon name="plus-circle" color={Theme.palette.primary} size={25}/>
                 </TouchableOpacity>
                 {/*
                 <Text style={styles.text}>

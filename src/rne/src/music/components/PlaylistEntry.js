@@ -24,7 +24,7 @@ export default class TrackComp extends React.PureComponent<TrackProps> {
         const {entry} = this.props;
         return (
             <View style={styles.container}>
-                <Image style={styles.image} {...entry.album.picture} />
+                <Image style={styles.image} {...entry.album.picture}/>
                 <View style={styles.metadata}>
                     <Text numberOfLines={1}>{entry.track.name}</Text>
                     <Text type="footnote" numberOfLines={1}>{entry.album.artist}</Text>

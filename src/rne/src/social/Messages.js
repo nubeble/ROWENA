@@ -16,7 +16,7 @@ export default class Messages extends React.Component<NavigationProps<>> {
         const {navigation} = this.props;
         const {user, id} = thread;
         const {timestamp, message} = _.last(thread.messages);
-        return <Message {...{ user, message, timestamp, id, navigation}} />;
+        return <Message {...{ user, message, timestamp, id, navigation}}/>;
     }
 
     render(): React.Node {
@@ -25,7 +25,7 @@ export default class Messages extends React.Component<NavigationProps<>> {
         const data = SocialAPI.messages;
         const title = "Messages";
         return (
-            <Feed {...{data, renderItem, title, navigation}} />
+            <Feed {...{data, renderItem, title, navigation}}/>
         );
     }
 }

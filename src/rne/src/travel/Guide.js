@@ -20,7 +20,7 @@ export default class GuideScreen extends React.PureComponent<NavigationProps<{ g
         return (
             <Container>
                 <Header title={guide.city} picture={guide.picture}>
-                    <NavigationBar type="transparent" back="Back" {...{navigation}} />
+                    <NavigationBar type="transparent" back="Back" {...{navigation}}/>
                 </Header>
                 <DetailsBar
                     details={[
@@ -29,7 +29,7 @@ export default class GuideScreen extends React.PureComponent<NavigationProps<{ g
                     ]}
                 />
                 <Content style={styles.gutter}>
-                    <Button primary label="Book Trip" onPress={this.toggleReservation} />
+                    <Button primary label="Book Trip" onPress={this.toggleReservation}/>
                     <View style={styles.list}>
                         {
                             guide.visits.map((visit, index) => (
@@ -58,7 +58,7 @@ export default class GuideScreen extends React.PureComponent<NavigationProps<{ g
                     }
                     <View style={styles.gutter}>
                         <DatePicker />
-                        <QuantityInput singular="person" plural="people" from={1} to={6} />
+                        <QuantityInput singular="person" plural="people" from={1} to={6}/>
                         <PayButton />
                     </View>
                 </ActionSheet>

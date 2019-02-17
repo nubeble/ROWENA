@@ -26,19 +26,19 @@ export default class RecipeComp extends React.Component<NavigationProps<{ catego
         return (
             <Container>
                 <Header title={recipe.title} picture={recipe.picture}>
-                    <NavigationBar type="transparent" back={category.title} {...{navigation}} />
+                    <NavigationBar type="transparent" back={category.title} {...{navigation}}/>
                 </Header>
-                <DetailsBar details={[{ icon: "restaurant", caption: people }, { icon: "time", caption: minutes }]} />
+                <DetailsBar details={[{ icon: "restaurant", caption: people }, { icon: "time", caption: minutes }]}/>
                 <Content style={styles.gutter}>
-                    <Button primary label="See Ingredients" onPress={this.toggleIngredientList} />
-                    <List rows={recipe.instructions} renderRow={(step, i) => <Step index={i + 1} {...{step}} />} />
+                    <Button primary label="See Ingredients" onPress={this.toggleIngredientList}/>
+                    <List rows={recipe.instructions} renderRow={(step, i) => <Step index={i + 1} {...{step}}/>}/>
                 </Content>
                 <ActionSheet title="Ingredients" ref={this.setIngredientListRef} scrollable>
                     {
-                        recipe.ingredients.map((ingredient, key) => <Ingredient {...{ingredient, key}} />)
+                        recipe.ingredients.map((ingredient, key) => <Ingredient {...{ingredient, key}}/>)
                     }
                     <View style={styles.gutter}>
-                        <Button primary label="Add to Reminder" onPress={notImplementedYet} />
+                        <Button primary label="Add to Reminder" onPress={notImplementedYet}/>
                     </View>
                 </ActionSheet>
             </Container>

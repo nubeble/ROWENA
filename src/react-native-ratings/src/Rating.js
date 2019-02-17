@@ -152,7 +152,7 @@ export default class Rating extends Component {
 
         return times(ratingCount, index => (
             <View key={index} style={styles.starContainer}>
-                <Image source={source} style={{ width: imageSize, height: imageSize }} />
+                <Image source={source} style={{ width: imageSize, height: imageSize }}/>
             </View>
         ));
     }
@@ -240,8 +240,8 @@ export default class Rating extends Component {
                 {showRating && this.displayCurrentRating()}
                 <View style={styles.starsWrapper} {...this.state.panResponder.panHandlers}>
                     <View style={styles.starsInsideWrapper}>
-                        <Animated.View style={this.getPrimaryViewStyle()} />
-                        <Animated.View style={this.getSecondaryViewStyle()} />
+                        <Animated.View style={this.getPrimaryViewStyle()}/>
+                        <Animated.View style={this.getSecondaryViewStyle()}/>
                     </View>
                     {this.renderRatings()}
                 </View>

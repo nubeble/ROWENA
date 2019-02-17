@@ -41,12 +41,12 @@ class RatingComp extends React.PureComponent<RatingCompProps> {
                 <View style={[styles.row, StyleSheet.absoluteFill]}>
                     {
                         repeat(filledStars).map(key => (
-                            <Icon color={white ? "white" : primary} {...{size, key, style, name}} />
+                            <Icon color={white ? "white" : primary} {...{size, key, style, name}}/>
                         ))
                     }
                     {
                         halfStar && name === "star" && (
-                            <Icon name="star-half" color={white ? "white" : primary} {...{size, style}} />
+                            <Icon name="star-half" color={white ? "white" : primary} {...{size, style}}/>
                         )
                     }
                 </View>

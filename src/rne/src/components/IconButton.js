@@ -61,7 +61,7 @@ class IconButton extends React.PureComponent<IconButtonProps> {
         return (
             <Btn {...{onPress}}>
                 <View {...{style}}>
-                    <Icon {...{name, color}} />
+                    <Icon {...{name, color}}/>
                 </View>
             </Btn>
         );

@@ -31,11 +31,11 @@ export default class Activity extends React.PureComponent<ActivityProps> {
                         <Text type="footnote">{subtitle}</Text>
                     </View>
                     <View style={styles.rating}>
-                        <Ratings {...{ratings}} style={styles.stars} />
+                        <Ratings {...{ratings}} style={styles.stars}/>
                         <Text type="footnote">{`${reviews} reviews`}</Text>
                     </View>
                 </View>
-                <Image {...picture} style={styles.picture} />
+                <Image {...picture} style={styles.picture}/>
             </BaseCard>
         );
     }

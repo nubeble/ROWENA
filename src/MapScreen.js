@@ -22,9 +22,7 @@ export default class MapScreen extends React.Component {
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        // const place = this.props.screenProps.params.place;
-        // console.log('HomeStackNavigator', this.props.screenProps.rootNavigation.router); // HomeStackNavigator
-
+        // ToDo
         // this.getCurrentPosition();
 
         setTimeout(() => {
@@ -66,7 +64,7 @@ export default class MapScreen extends React.Component {
                             this.props.navigation.goBack();
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="black" size={24} />
+                        <Ionicons name='md-arrow-back' color="black" size={24}/>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -78,7 +76,7 @@ export default class MapScreen extends React.Component {
                         }}
                         onPress={() => this.getCurrentPosition()}
                     >
-                        <MaterialIcons name='gps-fixed' color="black" size={24} />
+                        <MaterialIcons name='gps-fixed' color="black" size={24}/>
                     </TouchableOpacity>
 
                     {/* ToDo: get geolocation of my location */}

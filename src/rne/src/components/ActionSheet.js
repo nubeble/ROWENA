@@ -90,14 +90,14 @@ export default class ActionSheet extends React.Component<ActionSheetProps, Actio
                                     opacity
                                 }}
                             >
-                                <TouchableOpacity style={styles.exit} onPress={onRequestClose} />
+                                <TouchableOpacity style={styles.exit} onPress={onRequestClose}/>
                             </Animated.View>
                         )
                     }
                     {
                         Platform.OS === "ios" && (
                             <AnimatedBlurView tint="dark" style={StyleSheet.absoluteFill} {...{intensity}}>
-                                <TouchableOpacity style={styles.exit} onPress={onRequestClose} />
+                                <TouchableOpacity style={styles.exit} onPress={onRequestClose}/>
                             </AnimatedBlurView>
                         )
                     }

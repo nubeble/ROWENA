@@ -120,7 +120,7 @@ export function withTheme<Props: {}, Comp: React.ComponentType<Props>>(C: Comp):
             const {props} = this;
             return (
                 <ThemeContext.Consumer>
-                    {theme => <C {...{ theme }} {...props} />}
+                    {theme => <C {...{ theme }} {...props}/>}
                 </ThemeContext.Consumer>
             );
         }
@@ -135,7 +135,7 @@ export function withStyles<StlNames: string, Props: {}, Comp: React.ComponentTyp
             const {props} = this;
             return (
                 <ThemeContext.Consumer>
-                    {theme => <C styles={styles(theme)} {...props} />}
+                    {theme => <C styles={styles(theme)} {...props}/>}
                 </ThemeContext.Consumer>
             );
         }

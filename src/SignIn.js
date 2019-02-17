@@ -55,20 +55,20 @@ export default class SignIn extends React.Component {
 		return (
 			<View style={styles.container}>
 
-				<Button title='Click ads' onPress = { this.onPress } />
+				<Button title='Click ads' onPress = { this.onPress }/>
 
 
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('userName', value)} placeholder='User Name' />
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('password', value)} placeholder='Password'
-					secureTextEntry={true} />
+					secureTextEntry={true}/>
 
-				<Button title='Sign In' onPress={this.signIn.bind(this)} />
+				<Button title='Sign In' onPress={this.signIn.bind(this)}/>
 
 				<TextInput style={styles.input} onChangeText={value => this.onChangeText('confirmationCode', value)} placeholder='Confirmation Code' />
 
-				<Button title='Confirm Sign In' onPress={this.confirmSignIn.bind(this)} />
+				<Button title='Confirm Sign In' onPress={this.confirmSignIn.bind(this)}/>
 
 			</View>
 		);

@@ -25,8 +25,8 @@ class VisitComp extends React.PureComponent<VisitProps> {
         return (
             <View style={[styles.container, style]}>
                 <View style={styles.bullet}>
-                    <View style={[lineStyle, { borderColor: theme.palette.primary }]} />
-                    <View style={[styles.point, { borderColor: theme.palette.primary }]} />
+                    <View style={[lineStyle, { borderColor: theme.palette.primary }]}/>
+                    <View style={[styles.point, { borderColor: theme.palette.primary }]}/>
                 </View>
                 <View style={styles.visit}>
                     <Text numberOfLines={1}>{visit.name}</Text>

@@ -43,7 +43,7 @@ export const MusicNavigator = createBottomTabNavigator({
 }, {
     animationEnabled,
     // eslint-disable-next-line react/display-name
-    tabBarComponent: ({ navigation }: NavigationProps<>) => <MusicTabBar {...{navigation, tabs}} />,
+    tabBarComponent: ({ navigation }: NavigationProps<>) => <MusicTabBar {...{navigation, tabs}}/>,
     tabBarPosition: "bottom",
     swipeEnabled: false
 });

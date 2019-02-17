@@ -42,9 +42,9 @@ class Profile extends React.Component<PlayerProps & NavigationProps<>, ProfileSt
         return (
             <Container>
                 <Header picture={me.cover} heightRatio={1}>
-                    <NavigationBar type="transparent" rightAction={{ icon: "sign-out", onPress }} {...{navigation}} />
+                    <NavigationBar type="transparent" rightAction={{ icon: "sign-out", onPress }} {...{navigation}}/>
                     <View style={styles.container}>
-                        <Avatar uri={me.picture} size={90} style={styles.avatar} />
+                        <Avatar uri={me.picture} size={90} style={styles.avatar}/>
                         <Text color="white" type="title3" style={styles.text}>{me.name}</Text>
                         <Text color="white" type="callout" style={styles.text}>{me.caption}</Text>
                         <SegmentedControl
@@ -58,14 +58,14 @@ class Profile extends React.Component<PlayerProps & NavigationProps<>, ProfileSt
                     {
                         selectedIndex === 0 &&
                             playlists.map(playlist => (
-                                <Playlist key={playlist.id} {...{playlist, navigation, from}} />
+                                <Playlist key={playlist.id} {...{playlist, navigation, from}}/>
                             ))
                     }
                     {
                         selectedIndex === 1 && _.chunk(albums, 2).map((row, index) => (
                             <View style={styles.row} key={index}>
                                 {
-                                    row.map(album => <Album key={album.id} {...{album, navigation, from}} />)
+                                    row.map(album => <Album key={album.id} {...{album, navigation, from}}/>)
                                 }
                             </View>
                         ))

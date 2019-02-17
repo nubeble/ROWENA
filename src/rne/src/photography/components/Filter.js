@@ -28,7 +28,7 @@ export default class Filter extends React.PureComponent<FilterProps> {
                             <Walden on={name === "walden"}>
                                 <Brannan on={name === "brannan"}>
                                     <Valencia on={name === "valencia"}>
-                                        <GLImage {...{source, onDraw}} />
+                                        <GLImage {...{source, onDraw}}/>
                                     </Valencia>
                                 </Brannan>
                             </Walden>

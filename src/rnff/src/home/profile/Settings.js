@@ -108,13 +108,13 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
         }
         return (
             <View style={styles.container}>
-                <NavHeader title="Settings" back {...{navigation}} />
+                <NavHeader title="Settings" back {...{navigation}}/>
                 <Content style={styles.content}>
                     <View style={styles.avatarContainer}>
                         <TouchableWithoutFeedback onPress={this.setPicture}>
                             <View style={styles.avatar}>
-                                <Image style={styles.profilePic} source={{ uri: picture.uri }} />
-                                <Icon name="camera" size={25} color="white" style={styles.editIcon} />
+                                <Image style={styles.profilePic} source={{ uri: picture.uri }}/>
+                                <Icon name="camera" size={25} color="white" style={styles.editIcon}/>
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -127,8 +127,8 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
                         onSubmitEditing={this.save}
                         onChangeText={this.setName}
                     />
-                    <Button label="Save" full primary onPress={this.save} {...{loading}} />
-                    <Button label="Sign-Out" full onPress={logout} />
+                    <Button label="Save" full primary onPress={this.save} {...{loading}}/>
+                    <Button label="Sign-Out" full onPress={logout}/>
                 </Content>
             </View>
         );

@@ -12,7 +12,7 @@ import { Globals } from "./Globals";
 
 export default class AuthMain extends React.Component {
     state = {
-        showFacebookLoader: false,
+        // showFacebookLoader: false,
 
         /*
         email: '',
@@ -28,7 +28,7 @@ export default class AuthMain extends React.Component {
         // ToDo: disable buttons
 
         // show indicator
-        this.setState({ showFacebookLoader: true });
+        // this.setState({ showFacebookLoader: true });
 
         const {
             type,
@@ -58,7 +58,7 @@ export default class AuthMain extends React.Component {
         }
 
         // close indicator
-        !this.isClosed && this.setState({ showFacebookLoader: false });
+        // !this.isClosed && this.setState({ showFacebookLoader: false });
 
         // ToDo: enable buttons
     }
@@ -104,7 +104,7 @@ export default class AuthMain extends React.Component {
                 resizeMode='cover'
                 blurRadius={Platform.OS === "ios" ? 20 : 2}
             >
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}>
                     <View style={styles.logo}>
                         <Text style={{
                             // marginTop: 100,
@@ -128,10 +128,11 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
-                            <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
+                            <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36}/>
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(0, 0, 0, 0.6)', paddingTop: Globals.submitButtonPaddingTop() }}>Continue with Facebook</Text>
 
                             {
+                                /*
                                 this.state.showFacebookLoader &&
                                 <ActivityIndicator
                                     style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
@@ -139,6 +140,7 @@ export default class AuthMain extends React.Component {
                                     size="small"
                                     color='rgba(0, 0, 0, 0.6)'
                                 />
+                                */
                             }
                         </TouchableOpacity>
 
@@ -150,7 +152,7 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithEmailButton}
                         >
-                            <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
+                            <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23}/>
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Globals.submitButtonPaddingTop() }}>Sign up with Email</Text>
                         </TouchableOpacity>
 
@@ -162,14 +164,14 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithMobileButton}
                         >
-                            <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24}/>
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Globals.submitButtonPaddingTop() }}>Sign up with Mobile</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                         // onPress={() => this.props.navigation.navigate("logIn")}
                         >
-                            <Text style={{ marginBottom: 150, marginTop: 18, color: 'rgba(255, 255, 255, 0.8)' }} >
+                            <Text style={{ marginBottom: 150, marginTop: 18, color: 'rgba(255, 255, 255, 0.8)' }}>
                                 <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular" }}>Already a member?  </Text>
                                 <Text style={{ fontSize: 15, fontFamily: "SFProText-Semibold" }}>Log in</Text>
                             </Text>

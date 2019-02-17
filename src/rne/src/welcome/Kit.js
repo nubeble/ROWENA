@@ -19,7 +19,7 @@ export default class Kit extends React.PureComponent<KitProps> {
         return (
             <TouchableWithoutFeedback {...{onPress}}>
                 <View style={[styles.container, { backgroundColor }]}>
-                    <Image style={styles.image} {...{uri, preview}} />
+                    <Image style={styles.image} {...{uri, preview}}/>
                     <Text style={styles.text}>{title}</Text>
                 </View>
             </TouchableWithoutFeedback>

@@ -46,7 +46,7 @@ class Circle extends React.Component<CircleProps, CircleState> {
             outputRange: [1, 1, 2, 1, 1]
         });
         return (
-            <Animated.View style={[styles.circle, { transform: [{ scale }] }]} />
+            <Animated.View style={[styles.circle, { transform: [{ scale }] }]}/>
         );
     }
 }
@@ -61,10 +61,10 @@ export default class RefreshIndicator extends React.PureComponent<RefreshIndicat
         }
         return (
             <View style={[styles.container, style]}>
-                <Circle order={1} total={4} />
-                <Circle order={2} total={4} />
-                <Circle order={3} total={4} />
-                <Circle order={4} total={4} />
+                <Circle order={1} total={4}/>
+                <Circle order={2} total={4}/>
+                <Circle order={3} total={4}/>
+                <Circle order={4} total={4}/>
             </View>
         );
     }

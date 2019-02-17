@@ -23,7 +23,8 @@ const DEFAULT_PROFILE: Profile = {
     },
     about: 'about',
     feeds: [],
-    reviews: []
+    reviews: [],
+    replies: []
 };
 
 

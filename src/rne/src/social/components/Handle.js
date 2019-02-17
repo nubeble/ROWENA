@@ -21,7 +21,7 @@ export default class Handle extends React.PureComponent<HandleProps> {
         const {user, handleColor} = this.props;
         return (
             <View style={styles.user}>
-                <Avatar uri={user.picture} />
+                <Avatar uri={user.picture}/>
                 <View style={styles.username}>
                     <Text type="headline" style={styles.headline} color={handleColor}>{user.name}</Text>
                     <Text

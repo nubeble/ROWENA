@@ -94,9 +94,9 @@ export default class SharePicture extends React.Component<ScreenParams<Picture>,
         }
         return (
             <View style={styles.container}>
-                <NavHeader back title="Share" {...{navigation}} />
+                <NavHeader back title="Share" {...{navigation}}/>
                 <Content>
-                    <Image {...{ source }} style={styles.picture} />
+                    <Image {...{ source }} style={styles.picture}/>
                     <TextInput
                         style={styles.textInput}
                         placeholder="Write Caption"

@@ -41,7 +41,7 @@ export default class Welcome extends React.Component<NavigationProps<>> {
                                 <Text type="footnote">SKETCH ELEMENTS</Text>
                                 <Text type="title1">Apps</Text>
                             </View>
-                            <Image source={Images.logo} style={styles.logo} />
+                            <Image source={Images.logo} style={styles.logo}/>
                         </View>
                     </SafeAreaView>
                     <ScrollView contentContainerStyle={styles.content}>

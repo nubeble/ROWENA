@@ -173,7 +173,7 @@ export default class PostScreen extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -187,7 +187,7 @@ export default class PostScreen extends React.Component {
                         }}
                         onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
 
                     {/*
@@ -243,7 +243,7 @@ export default class PostScreen extends React.Component {
                                             <View style={{
                                                 width: '50%', height: bodyInfoItemHeight,
                                                 alignItems: 'flex-start', justifyContent: 'space-between'
-                                            }} >
+                                            }}>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
                                                         style={{ width: 20, height: 20, tintColor: 'white' }}
@@ -264,7 +264,7 @@ export default class PostScreen extends React.Component {
                                             <View style={{
                                                 width: '50%', height: bodyInfoItemHeight,
                                                 alignItems: 'flex-start', justifyContent: 'space-between'
-                                            }} >
+                                            }}>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
                                                         style={{ width: 20, height: 20, tintColor: 'white' }}
@@ -285,7 +285,7 @@ export default class PostScreen extends React.Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16} />
+                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16}/>
                                             <Text style={styles.distance}>24 km away</Text>
                                         </View>
 
@@ -304,7 +304,7 @@ export default class PostScreen extends React.Component {
                                             {/* ToDo: draw stars based on averge rating & get review count {post.averageRating} */}
                                             <Text style={styles.rating}>4.4</Text>
 
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
+                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16}/>
                                             <Text style={styles.reviewCount}>12</Text>
                                         </View>
 
@@ -312,7 +312,7 @@ export default class PostScreen extends React.Component {
                                         <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}/>
 
                                     {/* map */}
                                     <View style={styles.mapContainer}>
@@ -357,7 +357,7 @@ export default class PostScreen extends React.Component {
                                         </TouchableOpacity>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}/>
 
                                     <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
                                         {/* Consider: show review chart */}
@@ -387,7 +387,7 @@ export default class PostScreen extends React.Component {
                                         </View>
                                     </View>
 
-                                    <View style={{ borderBottomColor: 'transparent', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: marginBottom }} />
+                                    <View style={{ borderBottomColor: 'transparent', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: marginBottom }}/>
                                 </View>
                             )}
                         />
@@ -469,7 +469,7 @@ export default class PostScreen extends React.Component {
                                 }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24}/>
                             </TouchableOpacity>
                         </View>
                     )
@@ -775,7 +775,7 @@ export default class PostScreen extends React.Component {
                             )
                         }
 
-                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}/>
                     </View>
                 );
             } // end of for
@@ -810,12 +810,12 @@ export default class PostScreen extends React.Component {
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
                         <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all {reviewLength}+ reviews</Text>
-                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }}/>
 
                     </View>
                 </TouchableOpacity>
 
-                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}/>
             </View>
         );
     }

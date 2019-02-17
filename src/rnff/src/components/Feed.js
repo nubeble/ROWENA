@@ -89,7 +89,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         return (
             <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }} />
+                <Post {...{ navigation, post, store, profile }}/>
             </View>
         );
     }
@@ -114,7 +114,7 @@ export default class Feed extends React.Component<FeedProps> {
                     onEndReached={this.loadMore}
                     ListEmptyComponent={(
                         <View style={styles.post}>
-                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
                         </View>
                     )}
 
@@ -124,7 +124,6 @@ export default class Feed extends React.Component<FeedProps> {
                                 style={styles.bottomIndicator}
                                 animating={true}
                                 size="small"
-                                // color='rgba(255, 184, 24, 0.8)'
                                 color='grey'
                             />
                         )
@@ -169,8 +168,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: Theme.spacing.small
     },
     bottomIndicator: {
-        // marginTop: 20,
-        marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
+        marginTop: 20,
+        // marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
         marginBottom: 20
     }
 });

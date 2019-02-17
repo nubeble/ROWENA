@@ -31,7 +31,7 @@ export default class AlbumComp extends React.Component<AlbumProps> {
         return (
             <TouchableWithoutFeedback {...{onPress}}>
                 <View style={styles.container}>
-                    <Image style={styles.image} {...album.picture} />
+                    <Image style={styles.image} {...album.picture}/>
                     <View style={styles.metadata}>
                         <Text type="headline">{album.name}</Text>
                         <Text tyle="footnote" numberOfLines={1}>{album.artist}</Text>

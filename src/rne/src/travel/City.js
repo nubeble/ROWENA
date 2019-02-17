@@ -33,7 +33,7 @@ export default class CityScreen extends React.PureComponent<NavigationProps<{ ci
         return (
             <Container>
                 <Header title={city.city} picture={city.picture}>
-                    <NavigationBar type="transparent" back="Cities" {...{navigation, rightAction}} />
+                    <NavigationBar type="transparent" back="Cities" {...{navigation, rightAction}}/>
                 </Header>
                 <Content>
                     <View style={styles.buttons}>

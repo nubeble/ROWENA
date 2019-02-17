@@ -56,7 +56,7 @@ class NavigationBar extends React.Component<NavigationBarProps> {
             <SafeAreaView style={containerStyle} top>
                 <View style={styles.content}>
                     <View style={[styles.leftBlock]}>
-                        {back && <LeftAction onPress={this.goBack} name="arrow-left" label={back} />}
+                        {back && <LeftAction onPress={this.goBack} name="arrow-left" label={back}/>}
                     </View>
                     {
                         (title !== "" && !expanded) && (

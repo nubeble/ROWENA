@@ -46,7 +46,7 @@ export default class Message extends React.Component<NavigationProps<{ id: strin
     renderItem = (message: MessageModel): React.Node => {
         const {navigation} = this.props;
         const {id} = navigation.state.params;
-        return <ChatMessage {...{id, message}} />;
+        return <ChatMessage {...{id, message}}/>;
     }
 
     render(): React.Node {
@@ -60,7 +60,7 @@ export default class Message extends React.Component<NavigationProps<{ id: strin
         const title = user.name;
         return (
             <Container>
-                <Feed data={messages.slice().reverse()} inverted {...{renderItem, back, title, navigation}} />
+                <Feed data={messages.slice().reverse()} inverted {...{renderItem, back, title, navigation}}/>
                 <SafeAreaView style={styles.inputBox}>
                     <View style={styles.innerInputBox}>
                         <TextInput

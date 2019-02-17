@@ -19,7 +19,7 @@ class Rotation extends React.Component<RotationProps> {
         const {theme, rotation} = this.props;
         return (
             <View style={styles.root}>
-                <Degrees {...{rotation}} />
+                <Degrees {...{rotation}}/>
                 <View style={styles.scroll}>
                     <LinearGradient
                         style={{ ...StyleSheet.absoluteFillObject }}
@@ -43,7 +43,7 @@ class Rotation extends React.Component<RotationProps> {
                         horizontal
                     >
                         {
-                            repeat(ticks + 2).map(tick => <View style={styles.tick} key={tick} />)
+                            repeat(ticks + 2).map(tick => <View style={styles.tick} key={tick}/>)
                         }
                     </ScrollView>
                 </View>

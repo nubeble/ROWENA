@@ -11,7 +11,7 @@ class Library extends React.Component<PlayerProps & NavigationProps<>> {
 
     renderItem = (playlist: PlaylistModel): React.Node => {
         const {navigation} = this.props;
-        return <Playlist {...{playlist, navigation}} />;
+        return <Playlist {...{playlist, navigation}}/>;
     }
 
     render(): React.Node {
@@ -20,7 +20,7 @@ class Library extends React.Component<PlayerProps & NavigationProps<>> {
         const data = MusicAPI.playlists;
         const title = "Discovery";
         return (
-            <Feed {...{data, renderItem, title, navigation}} style={styles.content} />
+            <Feed {...{data, renderItem, title, navigation}} style={styles.content}/>
         );
     }
 }

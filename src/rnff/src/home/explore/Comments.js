@@ -58,12 +58,12 @@ export default class CommentsComp extends React.Component<ScreenParams<{ post: s
         const {comments, comment} = commentsStore;
         return (
             <View style={styles.container}>
-                <NavHeader title="Comments" back {...{navigation, backFn}} />
+                <NavHeader title="Comments" back {...{navigation, backFn}}/>
                 <FlatList
                     inverted
                     data={comments}
                     keyExtractor={item => item.comment.id}
-                    renderItem={({ item }) => <CommentComp comment={item.comment} profile={item.profile} />}
+                    renderItem={({ item }) => <CommentComp comment={item.comment} profile={item.profile}/>}
                 />
                 <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
                     <View style={styles.footer}>

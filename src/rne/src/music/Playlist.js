@@ -23,15 +23,15 @@ export default class PlaylistScreen extends React.PureComponent<NavigationProps<
         const {playlist, back} = navigation.state.params;
         return (
             <Container>
-                <NavigationBar {...{navigation, back}} />
-                <PlaylistHeader {...{playlist}} />
+                <NavigationBar {...{navigation, back}}/>
+                <PlaylistHeader {...{playlist}}/>
                 <Content style={styles.gutter}>
                     <List
                         rows={playlist.entries}
-                        renderRow={entry => <PlaylistEntry onPress={this.toggle} {...{playlist, entry}} />}
+                        renderRow={entry => <PlaylistEntry onPress={this.toggle} {...{playlist, entry}}/>}
                     />
                 </Content>
-                <PlayerActionSheet ref={this.playerActionSheet} />
+                <PlayerActionSheet ref={this.playerActionSheet}/>
             </Container>
         );
     }

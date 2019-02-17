@@ -43,12 +43,12 @@ class PlaylistHeader extends React.Component<AlbumHeaderProps> {
                 <View style={styles.header}>
                     {
                         playlist.isAlbum && (
-                            <Image {...playlist.entries[0].album.picture} style={styles.image} />
+                            <Image {...playlist.entries[0].album.picture} style={styles.image}/>
                         )
                     }
                     {
                         !playlist.isAlbum && (
-                            <PlaylistThumbnail size={80} style={styles.cover} {...{playlist}} />
+                            <PlaylistThumbnail size={80} style={styles.cover} {...{playlist}}/>
                         )
                     }
                     <View style={styles.metadata}>
@@ -66,7 +66,7 @@ class PlaylistHeader extends React.Component<AlbumHeaderProps> {
                         />
                     </View>
                     <View style={styles.rightControl}>
-                        <Button icon="shuffle" secondary onPress={this.shuffle} disabled={player.locked} />
+                        <Button icon="shuffle" secondary onPress={this.shuffle} disabled={player.locked}/>
                     </View>
                 </View>
             </View>

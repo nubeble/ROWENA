@@ -28,7 +28,7 @@ export default class RestaurantComp extends React.Component<NavigationProps<{ re
                 caption: `CHF${restaurant.price.from} - ${restaurant.price.to}`
             },
             {
-                comp: <Ratings {...{ratings}} />,
+                comp: <Ratings {...{ratings}}/>,
                 caption: `${restaurant.reviews} reviews`
             },
             {
@@ -39,11 +39,11 @@ export default class RestaurantComp extends React.Component<NavigationProps<{ re
         return (
             <Container>
                 <Header {...{title, picture}}>
-                    <NavigationBar type="transparent" back="Restaurants" {...{navigation}} />
+                    <NavigationBar type="transparent" back="Restaurants" {...{navigation}}/>
                 </Header>
-                <DetailsBar {...{details}} />
+                <DetailsBar {...{details}}/>
                 <Content>
-                    <Map height={250} markers={[restaurant]} {...{coordinate}} />
+                    <Map height={250} markers={[restaurant]} {...{coordinate}}/>
                     <View style={styles.description}>
                         <Button
                             primary
@@ -57,11 +57,11 @@ export default class RestaurantComp extends React.Component<NavigationProps<{ re
                     </View>
                 </Content>
                 <ActionSheet title="Reservation" ref={this.setReservationRef} scrollable>
-                    <RestaurantAddress {...{restaurant}} />
+                    <RestaurantAddress {...{restaurant}}/>
                     <View style={styles.gutter}>
                         <DatePicker />
-                        <QuantityInput singular="person" plural="people" from={1} to={6} />
-                        <RadioGroup options={["19:00", "19:30", "20:00", "20:30"]} />
+                        <QuantityInput singular="person" plural="people" from={1} to={6}/>
+                        <RadioGroup options={["19:00", "19:30", "20:00", "20:30"]}/>
                         <PayButton />
                     </View>
                 </ActionSheet>

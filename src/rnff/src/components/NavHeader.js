@@ -37,13 +37,13 @@ export default class NavHeader extends React.Component<NavHeaderProps> {
                         {back && (
                             <TouchableOpacity {...{onPress}}>
                                 <View style={styles.back}>
-                                    <Icon name="chevron-left" size={25} />
+                                    <Icon name="chevron-left" size={25}/>
                                 </View>
                             </TouchableOpacity>
                         )}
                     </View>
                     <Text type="header3">{title}</Text>
-                    <View style={styles.side} />
+                    <View style={styles.side}/>
                 </View>
             </SafeAreaView>
         );

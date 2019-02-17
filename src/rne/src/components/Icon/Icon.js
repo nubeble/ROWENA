@@ -47,7 +47,7 @@ class IconComp extends React.PureComponent<IconProps> {
             iconColor = color;
         }
         return (
-            <Icon color={iconColor} {...{name, size}} />
+            <Icon color={iconColor} {...{name, size}}/>
         );
     }
 }

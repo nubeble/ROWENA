@@ -165,7 +165,7 @@ export type PlayerProps = {
 export function withPlayer<Props: {}, Comp: React.ComponentType<Props>>(C: Comp): React.ComponentType<$Diff<React.ElementConfig<Comp>, PlayerProps>> {
     return props => (
         <PlayerContext.Consumer>
-            {player => <C {...{ player }} {...props} />}
+            {player => <C {...{ player }} {...props}/>}
         </PlayerContext.Consumer>
     );
 }

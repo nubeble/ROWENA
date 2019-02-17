@@ -31,10 +31,10 @@ export default class LikesAndComments extends React.Component<LikesAndCommentsPr
         return (
             <View style={styles.container}>
                 <View style={styles.content}>
-                    <Likes post={id} {...{color, likes}} />
+                    <Likes post={id} {...{color, likes}}/>
                     <TouchableWithoutFeedback onPress={this.goToComments}>
                         <View style={styles.comments}>
-                            <Icon name="message-circle" size={18} {...{color}} />
+                            <Icon name="message-circle" size={18} {...{color}}/>
                             <Text style={[styles.commentCount, { color }]}>{`${comments}`}</Text>
                         </View>
                     </TouchableWithoutFeedback>

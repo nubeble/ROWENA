@@ -44,9 +44,9 @@ export default class Card extends React.PureComponent<CardProps> {
                 <View style={[styles.card, style]}>
 
                     {/*
-                    {picture && <Image style={[styles.image, { width, height }]} {...picture} />}
+                    {picture && <Image style={[styles.image, { width, height }]} {...picture}/>}
                     */}
-                    {picture && <Image style={[styles.image, { height }]} {...picture} />}
+                    {picture && <Image style={[styles.image, { height }]} {...picture}/>}
                     {children}
 
                     <View style={styles.content}>

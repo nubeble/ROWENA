@@ -16,8 +16,8 @@ export default class PayButton extends React.PureComponent<{}> {
         const color = "white";
         return (
             <Button onPress={notImplementedYet}>
-                <View style={styles.button} >
-                    <Icon {...{name, color}} size={28} style={styles.icon} />
+                <View style={styles.button}>
+                    <Icon {...{name, color}} size={28} style={styles.icon}/>
                     <Text {...{color}}>Pay</Text>
                 </View>
             </Button>

@@ -11,7 +11,7 @@ export default class Photos extends React.Component<NavigationProps<>> {
 
     renderItem = (photo: Photo): React.Node => {
         const {navigation} = this.props;
-        return <PhotoThumbnail from="Photos" {...{photo, navigation}} />;
+        return <PhotoThumbnail from="Photos" {...{photo, navigation}}/>;
     }
 
     onPress = async (): Promise<void> => {

@@ -27,9 +27,9 @@ export default class Story extends React.Component<StoryProps> {
         return (
             <TouchableOpacity {...{onPress}}>
                 <View style={[styles.story, read ? styles.semiTransparent : styles.opaque]}>
-                    <Avatar size={48} {...{uri}} />
+                    <Avatar size={48} {...{uri}}/>
                     {
-                        !read && <NotificationDot style={styles.dot} />
+                        !read && <NotificationDot style={styles.dot}/>
                     }
                 </View>
             </TouchableOpacity>

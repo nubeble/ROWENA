@@ -60,7 +60,7 @@ export default class PhotoMap extends React.Component<PhotoMapProps> {
         const {photo} = dp;
         return (
             <Marker coordinate={dp.location} key={photo.id} onPress={() => this.onPressMarker(photo)}>
-                <PhotoThumbnail size={60} from="" {...{photo, navigation}} />
+                <PhotoThumbnail size={60} from="" {...{photo, navigation}}/>
             </Marker>
         );
     }
@@ -72,7 +72,7 @@ export default class PhotoMap extends React.Component<PhotoMapProps> {
         const photos = clusteredPoints.map(clusterPoint => clusterPoint.properties.item.photo);
         return (
             <Marker coordinate={coordinate} onPress={() => this.onPressCluster(photos)}>
-                <PhotoCluster {...{photos, navigation, count}} />
+                <PhotoCluster {...{photos, navigation, count}}/>
             </Marker>
         );
     }

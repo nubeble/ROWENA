@@ -94,7 +94,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             profile && (
                                 <TouchableWithoutFeedback onPress={this.profile}>
                                     <View>
-                                        <Avatar {...profile.picture} />
+                                        <Avatar {...profile.picture}/>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )

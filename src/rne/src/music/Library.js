@@ -11,7 +11,7 @@ class Library extends React.Component<PlayerProps & NavigationProps<>> {
 
     renderItem = (album: AlbumModel): React.Node => {
         const {navigation} = this.props;
-        return <Album {...{album, navigation}} />;
+        return <Album {...{album, navigation}}/>;
     }
 
     onPress = async (): Promise<void> => {
@@ -33,7 +33,7 @@ class Library extends React.Component<PlayerProps & NavigationProps<>> {
             onPress
         };
         return (
-            <Feed {...{data, renderItem, title, navigation, rightAction}} style={styles.content} numColumns={2} />
+            <Feed {...{data, renderItem, title, navigation, rightAction}} style={styles.content} numColumns={2}/>
         );
     }
 }

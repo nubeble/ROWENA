@@ -31,7 +31,7 @@ export default class PlaylistComp extends React.Component<PlaylistProps> {
         const artists = playlist.entries.map(entry => entry.album.artist).join(", ");
         return (
             <Card title={playlist.name} description={artists} onPress={this.playlist}>
-                <PlaylistThumbnail {...{playlist, size}} />
+                <PlaylistThumbnail {...{playlist, size}}/>
             </Card>
         );
     }

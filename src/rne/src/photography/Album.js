@@ -11,7 +11,7 @@ export default class Album extends React.Component<NavigationProps<{ album: stri
 
     renderItem = (photo: Photo): React.Node => {
         const {navigation} = this.props;
-        return <PhotoThumbnail from="Photos" {...{photo, navigation}} />;
+        return <PhotoThumbnail from="Photos" {...{photo, navigation}}/>;
     }
 
     render(): React.Node {

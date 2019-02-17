@@ -369,7 +369,7 @@ export default class SignUpWithEmail extends React.Component {
                 resizeMode='cover'
                 blurRadius={Platform.OS === "ios" ? 20 : 2}
             >
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }} >
+                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}>
                     <View style={styles.container}>
 
                         <Animated.View
@@ -381,7 +381,7 @@ export default class SignUpWithEmail extends React.Component {
                                 style={styles.notificationButton}
                                 onPress={() => this.hideNotification()}
                             >
-                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
                             </TouchableOpacity>
                         </Animated.View>
 
@@ -395,7 +395,7 @@ export default class SignUpWithEmail extends React.Component {
                         */}
 
                         {/*
-                        <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }} />
+                        <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }}/>
                         */}
 
                         <View style={styles.searchBar}>
@@ -408,7 +408,7 @@ export default class SignUpWithEmail extends React.Component {
                                 }}
                                 onPress={() => this.props.navigation.goBack()}
                             >
-                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
                             </TouchableOpacity>
                         </View>
 
@@ -421,8 +421,8 @@ export default class SignUpWithEmail extends React.Component {
                             // textAlign: 'center'
                         }}>What's your email?</Text>
 
-                        <Form style={{ marginLeft: 4, marginRight: 16 }} >
-                            <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }} >EMAIL ADDRESS</Label>
+                        <Form style={{ marginLeft: 4, marginRight: 16 }}>
+                            <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>EMAIL ADDRESS</Label>
                             <Item>
                                 <Input ref='emailInput' style={{ height: 38, fontSize: 22, lineHeight: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                     keyboardType={'email-address'}
@@ -437,11 +437,11 @@ export default class SignUpWithEmail extends React.Component {
 
                                     autoCapitalize="none"
                                 />
-                                {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
-                                {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                                {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28}/>}
+                                {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28}/>}
                             </Item>
 
-                            <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }} >PASSWORD</Label>
+                            <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>PASSWORD</Label>
                             <TouchableOpacity
                                 style={{ position: 'absolute', top: 88, right: 10, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}
@@ -463,18 +463,18 @@ export default class SignUpWithEmail extends React.Component {
 
                                     autoCapitalize="none"
                                 />
-                                {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
-                                {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                                {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28}/>}
+                                {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28}/>}
                             </Item>
                         </Form>
 
                         {/*
-                        <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={ this.state.invalid } >
+                        <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={ this.state.invalid }>
                             <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
                         </TouchableOpacity>
                         */}
                         <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                            <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid} >
+                            <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid}>
                                 <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Sign up</Text>
                                 {
                                     this.state.showSignUpLoader &&

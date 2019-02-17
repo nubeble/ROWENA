@@ -43,6 +43,6 @@ export default class Sepia extends React.PureComponent<SepiaProps> {
         if (!on) {
             return this.props.children;
         }
-        return <Node shader={shaders.Sepia} uniforms={{ t, sepia }} />;
+        return <Node shader={shaders.Sepia} uniforms={{ t, sepia }}/>;
     }
 }

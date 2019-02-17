@@ -12,7 +12,7 @@ export default class Recipes extends React.Component<NavigationProps<>> {
 
     renderItem = (category: Category): React.Node => {
         const {navigation} = this.props;
-        return <Card {...category} onPress={() => navigation.navigate("Category", { categoryId: category.id })} />;
+        return <Card {...category} onPress={() => navigation.navigate("Category", { categoryId: category.id })}/>;
     }
 
     onPress = () => {
@@ -30,7 +30,7 @@ export default class Recipes extends React.Component<NavigationProps<>> {
             onPress
         };
         return (
-            <Feed {...{data, renderItem, title, navigation, rightAction}} />
+            <Feed {...{data, renderItem, title, navigation, rightAction}}/>
         );
     }
 }

@@ -37,7 +37,7 @@ export default class EnableCameraRollPermission extends React.Component<Props, S
                 </Text>
                 {
                     canOpen === true && (
-                        <Button label="Enable Camera Roll Access" primary full {...{onPress}} />
+                        <Button label="Enable Camera Roll Access" primary full {...{onPress}}/>
                     )
                 }
                 {

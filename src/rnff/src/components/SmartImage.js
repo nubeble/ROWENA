@@ -19,8 +19,8 @@ type ImageState = {
     intensity: Animated.Value
 };
 
-export default class Image extends React.Component<ImageProps, ImageState> {
 
+export default class Image extends React.Component<ImageProps, ImageState> {
     state = {
         uri: undefined,
         intensity: new Animated.Value(100)
@@ -79,6 +79,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                 (result, value, key) => Object.assign(result, { [key]: (value - (style.borderWidth || 0)) })
             )
         ];
+        
         return (
             <View {...{ style }}>
                 {
@@ -114,13 +115,13 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                 {
                     hasPreview && Platform.OS === "ios" && (
                         <AnimatedBlurView tint="dark" style={computedStyle} {...{ intensity }} />
-                        // <AnimatedBlurView tint="dark" style={[computedStyle, { borderWidth: 0, borderColor: 'transparent' }]} {...{ intensity }} />
+                        // <AnimatedBlurView tint="dark" style={[computedStyle, { borderWidth: 0, borderColor: 'transparent' }]} {...{ intensity }}/>
                     )
                 }
                 {
                     hasPreview && Platform.OS === "android" && (
                         <Animated.View style={[computedStyle, { backgroundColor: black, opacity }]} />
-                        // <Animated.View style={[computedStyle, { borderWidth: 0, borderColor: 'transparent', backgroundColor: black, opacity }]} />
+                        // <Animated.View style={[computedStyle, { borderWidth: 0, borderColor: 'transparent', backgroundColor: black, opacity }]}/>
                     )
                 }
             </View>

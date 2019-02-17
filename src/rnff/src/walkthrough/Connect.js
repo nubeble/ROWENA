@@ -15,7 +15,7 @@ type VisibleState = {
 class Phone extends React.Component<BaseProps> {
     render(): React.Node {
         return (
-            <AnimatedView style={styles.phone} />
+            <AnimatedView style={styles.phone}/>
         );
     }
 }
@@ -25,9 +25,9 @@ class Mac extends React.Component<BaseProps> {
     render(): React.Node {
         return (
             <AnimatedView delay={200} style={styles.screenContainer}>
-                <View style={styles.screen} />
-                <View style={styles.foot} />
-                <View style={styles.base} />
+                <View style={styles.screen}/>
+                <View style={styles.foot}/>
+                <View style={styles.base}/>
             </AnimatedView>
         );
     }

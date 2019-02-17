@@ -71,10 +71,10 @@ export default class WriteReviewScreen extends React.Component {
         }); 
         */
 
-       const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
-       const postButtonTop = bottomPosition - 10 - 50; // 10: bottom gap, 50: button height
+        const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
+        const postButtonTop = bottomPosition - 10 - 50; // 10: bottom gap, 50: button height
 
-       !this.isClosed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
+        !this.isClosed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
 
     @autobind
@@ -162,7 +162,7 @@ export default class WriteReviewScreen extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -179,7 +179,7 @@ export default class WriteReviewScreen extends React.Component {
                             this.props.navigation.goBack();
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
 
                     {/* ToDo: get geolocation of my location */}
@@ -252,7 +252,7 @@ export default class WriteReviewScreen extends React.Component {
                 </View>
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                    <TouchableOpacity onPress={() => this.post()} style={styles.signUpButton} disabled={this.state.invalid} >
+                    <TouchableOpacity onPress={() => this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
                         <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Post</Text>
                     </TouchableOpacity>
                 </View>
@@ -383,17 +383,10 @@ export default class WriteReviewScreen extends React.Component {
     async addReview(comment) {
         const { post } = this.props.navigation.state.params;
 
-        // test
-        // let placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E'; // 호치민
-        let placeId = post.placeId;
-        // let feedId = 'b0247934-f097-2094-dbfc-3a63da957de7'; // 제니
-        let feedId = post.id;
-
-        let userUid = Firebase.user().uid; // 리뷰를 쓴 사람
-        console.log('user uid', userUid);
-
-        let rating = this.state.rating;
-        console.log('rating', rating);
+        const placeId = post.placeId;
+        const feedId = post.id;
+        const userUid = Firebase.user().uid;
+        const rating = this.state.rating;
 
         await Firebase.addReview(placeId, feedId, userUid, comment, rating);
     };

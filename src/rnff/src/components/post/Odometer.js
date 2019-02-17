@@ -41,7 +41,7 @@ export default class Odometer extends React.Component<OdometerProps, OdometerSta
         return (
             <View style={styles.row}>
                 {
-                    numbers.map((digit, key) => <Digit {...{ key, digit, color }} />)
+                    numbers.map((digit, key) => <Digit {...{ key, digit, color }}/>)
                 }
             </View>
         );

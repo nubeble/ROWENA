@@ -20,13 +20,13 @@ export default class PostComp extends React.PureComponent<{ post: Post }> {
         const {timestamp, comments} = post;
         return (
             <BaseCard style={styles.card}>
-                <Header {...{user, timestamp}} />
+                <Header {...{user, timestamp}}/>
                 {
-                    post.picture && <Image style={styles.image} {...post.picture} />
+                    post.picture && <Image style={styles.image} {...post.picture}/>
                 }
                 <Text style={styles.caption}>{post.caption}</Text>
                 <View style={styles.footer}>
-                    <Comments {...{ comments }} />
+                    <Comments {...{ comments }}/>
                     <LikeButton />
                 </View>
             </BaseCard>
