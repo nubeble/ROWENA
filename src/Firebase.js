@@ -123,48 +123,12 @@ export default class Firebase {
         });
     }
 
-    // static async createFeed(feedId, userUid, placeId, name, age, height, weight, location, image1Uri, image2Uri, image3Uri, image4Uri, note) {
     static async createFeed(feed) {
+        feed.likes = 0;
         feed.reviewCount = 0;
         feed.averageRating = 0.0;
         feed.timestamp = Firebase.getTimestamp();
         feed.rn = Util.getRandomNumber();
-
-        /*
-        const feed = {
-            uid: userUid,
-            placeId: placeId,
-            name: name,
-            age: age,
-            height: height,
-            weight: weight,
-            location: location,
-            id: feedId,
-            pictures: { // 4
-                one: {
-                    // preview: null,
-                    uri: image1Uri
-                },
-                two: {
-                    // preview: null,
-                    uri: image2Uri
-                },
-                three: {
-                    // preview: null,
-                    uri: image3Uri
-                },
-                four: {
-                    // preview: null,
-                    uri: image4Uri
-                }
-            },
-            note: note,
-            // reviews: [], // collection
-            reviewCount: 0, // 총 리뷰 개수
-            averageRating: 0.0, // 리뷰가 추가될 때마다 다시 계산해서 업데이트
-            timestamp: timestamp
-        };
-        */
 
         // 1. write feed first
         await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);

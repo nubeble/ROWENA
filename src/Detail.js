@@ -1,13 +1,15 @@
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Platform,
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
 } from 'react-native';
 import { Constants, Permissions, ImagePicker, Linking, MapView, Svg } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
+// import { Ionicons as Icon } from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+
 import Firebase from "./Firebase";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import moment from 'moment';
@@ -25,6 +27,8 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
+
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
@@ -57,13 +61,18 @@ export default class Detail extends React.Component {
         offset: new Animated.Value(0),
 
         showAlert: false,
-        alertMessage: ''
+        alertMessage: '',
+
+        // likesButtonAnimation: new Animated.Value(0),
+        liked: false,
     };
 
     constructor(props) {
         super(props);
 
         this.itemHeights = {};
+
+        this.springValue = new Animated.Value(1);
     }
 
     onGoBack(result) { // back from rating
@@ -154,6 +163,73 @@ export default class Detail extends React.Component {
         }
     }
 
+    @autobind
+    toggle() {
+        if (!this.state.liked) {
+            this.setState({ liked: true });
+
+            this.springValue.setValue(2);
+
+            Animated.spring(this.springValue, {
+                toValue: 1,
+                friction: 2,
+                tension: 1
+            }).start();
+        } else {
+            this.setState({ liked: false });
+        }
+
+
+
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        // await Firebase.firestore.runTransaction(async transaction => {
+        Firebase.firestore.runTransaction(async transaction => {
+            // update count
+            const postDoc = await transaction.get(feedRef);
+            const { likes } = postDoc.data();
+
+            const idx = likes.indexOf(uid);
+            if (idx === -1) {
+                likes.push(uid);
+            } else {
+                likes.splice(idx, 1);
+            }
+
+            transaction.update(feedRef, { likes });
+
+
+            // save to user profile
+            const userDoc = await transaction.get(userRef);
+            // const { likes } = userDoc.data();
+            const _likes = userDoc.data().likes;
+
+            let _idx = -1;
+
+            for (var i = 0; i < _likes.length; i++) {
+                const item = _likes[i];
+                if (item.feedId === feedId) {
+                    _idx = i;
+                    break;
+                }
+            }
+
+            if (_idx === -1) { // add
+                const data: LikeRef = {
+                    placeId: placeId,
+                    feedId: feedId,
+                    picture: uri
+                }
+                _likes.push(data);
+            } else { // remove
+                _likes.splice(_idx, 1);
+            }
+
+            transaction.update(userRef, { likes: _likes });
+        });
+    }
+
     render() {
         const { post } = this.props.navigation.state.params;
 
@@ -167,6 +243,7 @@ export default class Detail extends React.Component {
         };
 
 
+
         return (
             <View style={styles.flex}>
                 <Animated.View
@@ -178,7 +255,7 @@ export default class Detail extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -194,8 +271,10 @@ export default class Detail extends React.Component {
                         }}
                         onPress={() => this.props.navigation.goBack()}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+
+                    {/*
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
@@ -207,6 +286,25 @@ export default class Detail extends React.Component {
                     >
                         <Ionicons name='md-heart-empty' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
+                    */}
+                    <TouchableWithoutFeedback onPress={this.toggle}>
+                        <View style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBar
+                            right: 22,
+                            justifyContent: "center", alignItems: "center"
+                        }}>
+                            {
+                                this.state.liked ? // false -> true
+                                    <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
+                                    :
+                                    <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
+                            }
+                        </View>
+                    </TouchableWithoutFeedback>
+
+
+
 
                     {/*
                     <Text
@@ -356,7 +454,7 @@ export default class Detail extends React.Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16}/>
+                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16} />
                                             <Text style={styles.distance}>24 km away</Text>
                                         </View>
 
@@ -377,7 +475,7 @@ export default class Detail extends React.Component {
                                                     */}
                                             <Text style={styles.rating}>4.4</Text>
 
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16}/>
+                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
                                             <Text style={styles.reviewCount}>12</Text>
                                         </View>
 
@@ -387,7 +485,7 @@ export default class Detail extends React.Component {
                                         <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}/>
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                     {/* map */}
                                     <View style={styles.mapContainer}>
@@ -432,7 +530,7 @@ export default class Detail extends React.Component {
                                         </TouchableOpacity>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}/>
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                     <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
                                         {/* Consider: show review chart */}
@@ -462,7 +560,7 @@ export default class Detail extends React.Component {
                                         </View>
                                     </View>
 
-                                    <View style={{ borderBottomColor: this.state.isOwner ? 'transparent' : Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }}/>
+                                    <View style={{ borderBottomColor: this.state.isOwner ? 'transparent' : Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
 
                                     {
                                         !this.state.isOwner &&
@@ -567,7 +665,7 @@ export default class Detail extends React.Component {
                             }}
                             onPress={() => this.sendReply()}
                         >
-                            <Ionicons name='ios-send' color={Theme.color.selection} size={24}/>
+                            <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
                         </TouchableOpacity>
                     </View>
                 }
@@ -876,7 +974,7 @@ export default class Detail extends React.Component {
                             </View>
                         }
 
-                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}/>
+                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                     </View>
                 );
             } // end of for
@@ -911,12 +1009,12 @@ export default class Detail extends React.Component {
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
                         <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all {reviewLength}+ reviews</Text>
-                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }}/>
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                     </View>
                 </TouchableOpacity>
 
-                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}/>
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
             </View>
         );
     }
@@ -1495,5 +1593,10 @@ const styles = StyleSheet.create({
         right: 18,
         // bottom: 0,
         // alignSelf: 'baseline'
-    }
+    },
+
+
+
+
+
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Animated } from 'react-native';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { Ionicons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 
 
 export default class IconWithBadge extends React.Component {
@@ -71,6 +71,10 @@ export default class IconWithBadge extends React.Component {
                     (type === 'FontAwesome') &&
                     <FontAwesome name={name} size={size} color={color}/>
                 }
+                {
+                    (type === 'SimpleLineIcons') &&
+                    <SimpleLineIcons name={name} size={size} color={color}/>
+                }
 
                 {
                     badgeCount === 0 &&
@@ -105,24 +109,23 @@ export default class IconWithBadge extends React.Component {
                     </Animated.View>
                 }
                 {
-                    // ToDo:
-
+                    // ToDo: check
                     badgeCount > 9 &&
                     <Animated.View style={{
                         // If you're using react-native < 0.57 overflow outside of the parent
                         // will not work on Android, see https://git.io/fhLJ8
                         position: 'absolute',
                         top: 4,
-                        right: -10,
+                        right: -10 - 2,
                         backgroundColor: 'red',
                         borderRadius: 6,
-                        width: 12,
+                        width: 12 + 4,
                         height: 12,
                         justifyContent: 'center',
                         alignItems: 'center',
                         transform: [{ scale: this.springValue }]
                     }}>
-                        <Text style={{ color: 'white', fontSize: 9, fontFamily: "SFProText-Semibold", paddingTop: 2.5 }}>{badgeCount}</Text>
+                        <Text style={{ color: 'white', fontSize: 9, fontFamily: "SFProText-Semibold", paddingTop: 2.5 }}>9+</Text>
                     </Animated.View>
                 }
             </View>

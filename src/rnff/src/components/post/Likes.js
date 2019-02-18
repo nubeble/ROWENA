@@ -89,7 +89,7 @@ export default class Likes extends React.Component<LikesProps, LikesState> {
             <TouchableWithoutFeedback onPress={this.toggle}>
                 <View style={styles.container}>
                     <View style={styles.iconContainer}>
-                        <AnimatedIcon name="thumbs-up" color={color} style={computedStyle}/>
+                        <AnimatedIcon name="aa-up" color={color} style={computedStyle}/>
                     </View>
                     <Odometer count={count} {...{ color }}/>
                 </View>

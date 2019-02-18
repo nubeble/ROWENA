@@ -115,22 +115,23 @@ export default class Intro extends React.Component {
             const uri = await Firebase.getPlaceRandomFeedImage(placeId);
             const _uri = { "uri": uri };
 
-            /*
             let index = places.findIndex(el => el.place_id === placeId);
             if (index !== -1) {
                 places[index] = { ...places[index], uri: _uri };
                 Intro.images[i] = _uri;
 
                 // load one by one
-                // !this.isClosed && this.setState({ places }, () => { Intro.images[i] = _uri });
+                !this.isClosed && this.setState({ places });
+                Intro.images[i] = _uri;
             }
-            */
+            /*
             places[i] = { ...places[i], uri: _uri };
             Intro.images[i] = _uri;
+            */
         }
 
         // load all at once
-        !this.isClosed && this.setState({ places, refreshing: false });
+        // !this.isClosed && this.setState({ places, refreshing: false });
     }
 
     /*
@@ -500,13 +501,23 @@ export default class Intro extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
+        if (this.refreshing) return;
+
+        this.refreshing = true;
+
         this.setState(
             {
                 refreshing: true
             },
             async () => {
+                setTimeout(() => {
+                    !this.isClosed && this.setState({ refreshing: false });
+                }, 100);
+
                 await this.getPlacesImage();
                 this.getPlacesSize();
+
+                this.refreshing = false;
             }
         );
     };

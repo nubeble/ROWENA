@@ -88,6 +88,30 @@ export default class App extends React.Component {
                 { cancelable: false },
             );
         }
+
+
+        // check the releaseChannel
+        const channel = this.getApiUrl(Expo.Constants.manifest.releaseChannel);
+        console.log('channel', channel);
+    }
+
+    getApiUrl(releaseChannel) {
+        if (releaseChannel === undefined) { // since releaseChannels are undefined in dev, return your default.
+            // return App.apiUrl.dev;
+            return "dev";
+        }
+
+        if (releaseChannel.indexOf('prod') !== -1) { // this would pick up prod-v1, prod-v2, prod-v3
+            // return App.apiUrl.prod;
+            return releaseChannel.substring(releaseChannel.lastIndexOf('prod') + 1);
+        }
+
+        if (releaseChannel.indexOf('staging') !== -1) { // return staging environment variables
+            // return App.apiUrl.staging;
+            return releaseChannel.substring(releaseChannel.lastIndexOf('staging') + 1);
+        }
+
+        return null;
     }
 
     @autobind
@@ -664,7 +688,7 @@ const MainBottomTabNavigator = createBottomTabNavigator(
     (Platform.OS === "android") ?
         {
             tabBarOptions: _tabBarOptions,
-            tabBarComponent: props => <TabBarComponent {...props}/>,
+            tabBarComponent: props => <TabBarComponent {...props} />,
             // tabBarPosition: 'bottom'
         }
         :
@@ -693,50 +717,31 @@ function _navigationOptions(navigation, screenProps) {
 
             if (navigation.state.routeName === 'home') {
                 return (
+                    <IconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome} />
                     /*
-                    <Ionicons
-                        // name={focused ? 'compass' : 'compass-outline'}
-                        name={'md-compass'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />
+                    <IconWithBadge type={'SimpleLineIcons'} name={'compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome}/>
                     */
-                    <IconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome}/>
                 );
             } else if (navigation.state.routeName === 'likes') {
                 return (
+                    <IconWithBadge type={'Ionicons'} name={'ios-heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes} />
                     /*
-                    <Ionicons
-                        // name={focused ? 'ios-heart' : 'ios-heart-empty'}
-                        name={'ios-heart'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />
+                    <IconWithBadge type={'SimpleLineIcons'} name={'heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes}/>
                     */
-                    <IconWithBadge type={'Ionicons'} name={'ios-heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes}/>
                 );
             } else if (navigation.state.routeName === 'chat') {
                 return (
+                    <IconWithBadge type={'Ionicons'} name={'ios-chatbubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat} />
                     /*
-                    <Ionicons
-                        // name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-                        name={'ios-chatbubbles'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />
+                    <IconWithBadge type={'SimpleLineIcons'} name={'bubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat}/>
                     */
-                    <IconWithBadge type={'Ionicons'} name={'ios-chatbubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat}/>
                 );
             } else if (navigation.state.routeName === 'profile') {
                 return (
+                    <IconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile} />
                     /*
-                    <FontAwesome
-                        name={'user'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />
+                    <IconWithBadge type={'SimpleLineIcons'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile}/>
                     */
-                    <IconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile}/>
                 );
             }
         },
@@ -835,11 +840,11 @@ class TabBarComponent extends React.Component {
 
         // if (!this.state.focused) {
         if (!this.focused) {
-            return <BottomTabBar {...this.props}/>;
+            return <BottomTabBar {...this.props} />;
         }
 
         if (this.state.visible) {
-            return <BottomTabBar {...this.props}/>;
+            return <BottomTabBar {...this.props} />;
         }
 
         return null;

@@ -27,6 +27,12 @@ type ReplyRef = {
     replyId: string
 };
 
+type LikeRef = {
+    placeId: string,
+    feedId: string,
+    picture: string
+};
+
 export type Profile = {
     uid: string,
     name: string,
@@ -39,7 +45,8 @@ export type Profile = {
     about: string,
     feeds: FeedRef[],
     reviews: ReviewRef[],
-    replies: ReplyRef[]
+    replies: ReplyRef[],
+    likes: LikeRef[]
 };
 
 type Pictures = {
@@ -60,6 +67,7 @@ export type Post = {
     // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼)
     reviewCount: number,
     averageRating: number,
+    likes: number, // user uid list
     name: string,
     age: number,
     height: number,

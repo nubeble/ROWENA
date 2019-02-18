@@ -221,7 +221,14 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
                 <View style={styles.searchBar}>
 
-                    {/* add components here.. */}
+                    <Text
+                        style={{
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 18,
+                            fontFamily: "SFProText-Semibold",
+                            alignSelf: 'center'
+                        }}
+                    >Profile</Text>
 
                 </View>
 
@@ -1124,8 +1131,8 @@ const styles = StyleSheet.create({
     searchBar: {
         height: Globals.searchBarHeight,
         paddingBottom: 8,
-        justifyContent: 'flex-end',
-        alignItems: 'center'
+        flexDirection: 'column',
+        justifyContent: 'flex-end'
     },
     container: {
         flexGrow: 1,

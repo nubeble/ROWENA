@@ -150,7 +150,7 @@ export default class ChatMain extends React.Component {
     }
 
     render(): React.Node {
-        const { navigation } = this.props;
+        // const { navigation } = this.props;
 
         return (
             <View style={styles.flex}>
@@ -178,7 +178,7 @@ export default class ChatMain extends React.Component {
                         onEndReached={this.loadMore}
 
                         contentContainerStyle={styles.contentContainer}
-                        showsVerticalScrollIndicator
+                        showsVerticalScrollIndicator={true}
 
                         ListFooterComponent={(
                             this.state.isLoadingChat && (
@@ -279,7 +279,7 @@ export default class ChatMain extends React.Component {
                                 borderRadius: badgeWidth / 2,
                                 width: badgeWidth,
                                 height: badgeWidth
-                            }}/>
+                            }} />
                         }
                     </View>
 
@@ -403,7 +403,7 @@ export default class ChatMain extends React.Component {
     @autobind
     itemSeparatorComponent() {
         return (
-            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }}/>
+            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }} />
         );
     }
 }

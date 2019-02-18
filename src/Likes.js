@@ -1,174 +1,315 @@
+import autobind from "autobind-decorator";
 import React from 'react';
-import {
-    // StyleSheet,
-    Text,
-    View,
-    FlatList,
-    ActivityIndicator,
-    AppRegistry
-} from 'react-native';
-import { List, ListItem } from "react-native-elements";
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList } from 'react-native';
+import { NavigationActions } from 'react-navigation';
+import { Constants, Permissions, Linking, ImagePicker } from "expo";
+// import { StyleGuide } from "./rne/src/components/theme";
+// import Image from "./rne/src/components/Image";
+import SmartImage from "./rnff/src/components/SmartImage";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { inject, observer } from "mobx-react/native";
+import Firebase from "./Firebase";
+import Util from "./Util";
+import type { FeedEntry } from "./rnff/src/components/Model";
+import type { ScreenProps } from "./rnff/src/components/Types";
+import { Theme } from "./rnff/src/components";
+import { Globals } from "./Globals";
 
-var _ = require('lodash');
+/*
+type InjectedProps = {
+    // feedStore: FeedStore,
+    profileStore: ProfileStore
+};
+*/
+
+const MAX_FEED_COUNT = 12; // 3 x 4
+// const MAX_FEED_COUNT = 3;
 
 
-
+// @inject("feedStore", "profileStore") @observer
+/*
+@inject("profileStore")
+@observer
+*/
+// export default class Likes extends React.Component<ScreenProps<> & InjectedProps> {
 export default class Likes extends React.Component {
+    state = {
+        refreshing: false,
+        renderList: false,
+        isLoadingFeeds: false,
+
+
+        showIndicator: false,
+        showAlert: false,
+
+        feeds: [],
+
+
+    };
+
     constructor(props) {
         super(props);
 
-        this.state = {
-            loading: false,
-            data: [],
-            pageToken: '',
-            refreshing: false,
-            siteTitle: ''
-        };
+        this.lastFeedId = null;
+        this.lastLoadedFeedIndex = -1;
+        this.lastLoadedFeedId = null;
+        this.reload = true;
     }
 
     componentDidMount() {
-        this.fetchData();
+        console.log('ProfileMain.componentDidMount');
+
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+
+        // const { profile } = this.props.profileStore;
+
+        // this.getUserFeeds();
+
+        setTimeout(() => {
+            !this.isClosed && this.setState({ renderList: true });
+        }, 0);
     }
 
-    fetchData = () => {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const latitude = Number(position.coords.latitude.toFixed(6));
-                const longitude = Number(position.coords.longitude.toFixed(6));
-                const { pageToken } = this.state;
-                const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A
-    `
-                const urlNext = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A&pagetoken=${pageToken}`;
+    @autobind
+    handleHardwareBackPress() {
+        if (this.state.showAlert) {
+            this.setState({ showAlert: false });
+        } else {
+            // this.props.navigation.navigate("intro");
+        }
 
-                let url = pageToken === '' ? urlFirst : urlNext
-                console.log(url);
-                console.log("url");
-                this.setState({ loading: true });
-                fetch(url)
-                    .then(res => {
-                        return res.json()
-                    })
-                    .then(res => {
+        return true;
+    }
 
-                        const arrayData = _.uniqBy([...this.state.data, ...res.results], 'id')
+    @autobind
+    onScrollHandler() {
+        // console.log('ProfileMain.onScrollHandler');
 
-                        this.setState({
-                            siteTitle: "Resturants Near By",
-                            data: pageToken === '' ? res.results : arrayData,
-                            loading: false,
-                            refreshing: false,
-                            pageToken: res.next_page_token
-                        });
+        // this.getUserFeeds();
+    }
 
-                    })
-                    .catch(error => {
-                        console.log(error);
-                        this.setState({ loading: false });
-                    });
-            })
-    };
+    componentWillUnmount() {
+        console.log('ProfileMain.componentWillUnmount');
 
-    renderSeparator = () => {
-        return (
-            <View
-                style={{
-                    height: 1,
-                    width: "86%",
-                    backgroundColor: "#CED0CE",
-                    marginLeft: "14%"
-                }}
-            />
-        );
-    };
+        this.hardwareBackPressListener.remove();
 
-    renderHeader = () => {
-        return (<Text style={{ alignSelf: "center", fontWeight: "bold", fontSize: 20, marginBottom: 10 }}>{this.state.siteTitle}</Text>)
-    };
-
-    renderFooter = () => {
-        if (this.state.pageToken === undefined) return null;
-
-        return (
-            <View
-                style={{
-                    paddingVertical: 20,
-                    borderTopWidth: 1,
-                    borderColor: "#CED0CE"
-                }}
-            >
-                <ActivityIndicator animating size="large" />
-            </View>
-        );
-    };
-
-    handleRefresh = () => {
-        this.setState(
-            {
-                pageToken: '',
-                refreshing: true
-            },
-            () => {
-                this.fetchData();
-            }
-        );
-    };
-
-    handleLoadMore = () => {
-        this.fetchData();
-    };
+        this.isClosed = true;
+    }
 
     render() {
 
         return (
-            <View>
-                <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-                    <FlatList
-                        data={this.state.data}
-                        keyExtractor={item => item.id}
-                        ListHeaderComponent={this.renderHeader}
-                        ListFooterComponent={this.renderFooter}
-                        renderItem={({ item }) => {
+            <View style={styles.flex}>
 
-                            const rating = item.rating ? item.rating : 'na'
+                <View style={styles.searchBar}>
 
-                            return (
-                                <View>
-                                    <ListItem
-                                        roundAvatar
-                                        title={`${item.name}` + " (" + `${rating}` + ")"}
-                                        subtitle={`${item.vicinity}`}
-                                        avatar={{ uri: item.icon }}
-                                        containerStyle={{ borderBottomWidth: 0 }}
-                                    />
-                                    <View
-                                        style={{
-                                            height: 1,
-                                            width: "86%",
-                                            backgroundColor: "#CED0CE",
-                                            marginLeft: "14%"
-                                        }}
-                                    />
-                                </View>
-                            )
+                    <Text
+                        style={{
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 18,
+                            fontFamily: "SFProText-Semibold",
+                            alignSelf: 'center'
                         }}
+                    >Likes</Text>
+
+                </View>
+
+                {
+                    this.state.renderList &&
+                    <FlatList
+                        ref={(fl) => this._flatList = fl}
+                        contentContainerStyle={styles.contentContainer}
+                        showsVerticalScrollIndicator={true}
+
+                        ListHeaderComponent={
+                            <View>
+                                <TouchableOpacity onPress={() => this.uploadPicture(0)}>
+                                    <SmartImage
+                                        style={styles.ad}
+                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                    />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => console.log('onPress')}>
+                                    <SmartImage
+                                        style={styles.ad}
+                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                    />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => console.log('onPress')}>
+                                    <SmartImage
+                                        style={styles.ad}
+                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                    />
+                                </TouchableOpacity>
+
+                                <TouchableOpacity onPress={() => console.log('onPress')}>
+                                    <SmartImage
+                                        style={styles.ad}
+                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                    />
+                                </TouchableOpacity>
+
+
+                            </View>
+                        }
+                        ListFooterComponent={
+                            this.state.isLoadingFeeds &&
+                            <ActivityIndicator
+                                style={styles.bottomIndicator}
+                                animating={true}
+                                size="small"
+                                color='grey'
+                            />
+                        }
+
+
+                        // scrollEventThrottle={1}
+                        // columnWrapperStyle={styles.columnWrapperStyle}
+                        /*
+                        numColumns={3}
+                        data={this.state.feeds}
+                        keyExtractor={item => item.feedId}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableOpacity onPress={async () => this.openPost(item)}>
+                                    <View style={styles.pictureContainer}>
+                                        <SmartImage
+                                            // preview={item.pictures.one.preview}
+                                            // uri={item.pictures.one.uri}
+                                            uri={item.imageUri}
+                                            style={styles.picture}
+                                        />
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        }}
+                        onEndReachedThreshold={0.5}
+                        onEndReached={this.onScrollHandler}
+                        */
+                        // ItemSeparatorComponent={this.itemSeparatorComponent}
+
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
-                        onEndReached={this.handleLoadMore}
-                        onEndReachedThreshold={50}
                     />
-                </List>
+                }
             </View>
+
         );
     }
+
+    handleRefresh = () => {
+        this.setState(
+            {
+                refreshing: true
+            },
+            () => {
+                // this.getUserFeeds();
+            }
+        );
+    };
+
+
+
+
+
+
 }
 
-/*
 const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: '#fff',
-		// alignItems: 'center',
-		justifyContent: 'center',
-	}
+    flex: {
+        flex: 1,
+        backgroundColor: Theme.color.background
+    },
+    searchBar: {
+        height: Globals.searchBarHeight,
+        paddingBottom: 8,
+        flexDirection: 'column',
+        justifyContent: 'flex-end'
+    },
+    contentContainer: {
+        flexGrow: 1,
+        paddingLeft: Theme.spacing.tiny,
+        paddingRight: Theme.spacing.tiny
+    },
+
+
+
+    ad: {
+        width: parseInt(Dimensions.get('window').width) - 2,
+        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
+        marginBottom: Theme.spacing.small
+    },
+    activityIndicator: {
+        position: 'absolute',
+        top: 0, bottom: 0, left: 0, right: 0
+    },
+
+
+    bottomButton: {
+        width: '85%',
+        height: 45,
+
+        alignSelf: 'center',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: "grey",
+        borderRadius: 5,
+        borderColor: "transparent",
+        borderWidth: 0,
+
+        marginBottom: 10
+    },
+
+
+
+    columnWrapperStyle: {
+        flex: 1,
+        // justifyContent: 'center'
+        justifyContent: 'flex-start'
+    },
+    pictureContainer: {
+        // width: (parseInt(Dimensions.get('window').width) - 2) / 3,
+        // height: (parseInt(Dimensions.get('window').width) - 2) / 3,
+        width: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
+        height: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
+        marginVertical: 2,
+        marginHorizontal: 2,
+        borderRadius: 2
+    },
+    picture: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 2
+    },
+    content: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
+        padding: Theme.spacing.small,
+        flex: 1,
+        justifyContent: 'center',
+
+        borderRadius: 2,
+    },
+    titleContainer: {
+        padding: Theme.spacing.small
+    },
+    title: {
+        color: 'white',
+        fontSize: 18,
+        lineHeight: 20,
+        fontFamily: "SFProText-Semibold"
+    },
+    bottomIndicator: {
+        marginTop: 20,
+        marginBottom: 20
+    }
 });
-*/
