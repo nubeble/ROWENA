@@ -24,7 +24,8 @@ const DEFAULT_PROFILE: Profile = {
     about: 'about',
     feeds: [],
     reviews: [],
-    replies: []
+    replies: [],
+    likes: []
 };
 
 

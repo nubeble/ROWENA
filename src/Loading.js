@@ -39,9 +39,11 @@ type InjectedProps = {
 @inject("feedStore", "profileStore")
 @observer
 export default class Loading extends React.Component<ScreenProps<> & InjectedProps> {
-    state = {
-        isUserAutoAuthenticated: true
-    };
+    constructor(props) {
+        super(props);
+
+        this.isUserAutoAuthenticated = true;
+    }
 
     async componentDidMount(): Promise<void> {
         console.log('Loading.componentDidMount');
@@ -105,23 +107,23 @@ export default class Loading extends React.Component<ScreenProps<> & InjectedPro
                         const screenProps = this.props.screenProps;
                         screenProps.changeBadgeOnChat(true, 0);
                     }, 2000); // 2 sec
-                    
                 }
 
-                
 
 
-
-                if (this.state.isUserAutoAuthenticated) {
+                if (this.isUserAutoAuthenticated) {
                     // update user info to database
+
                     const profile = {
                         name: user.displayName,
                         email: user.email,
-                        phoneNumber: user.phoneNumber
+                        phoneNumber: user.phoneNumber,
+                        picture: {
+                            preview: null,
+                            uri: user.photoURL
+                        }
                     };
 
-                    // await Firebase.firestore.collection('users').doc(uid).update(profile);
-                    // const { uid } = Firebase.auth.currentUser;
                     const uid = Firebase.user().uid;
                     await Firebase.updateProfile(uid, profile);
 
@@ -132,7 +134,7 @@ export default class Loading extends React.Component<ScreenProps<> & InjectedPro
                     navigation.navigate("welcome");
                 }
             } else {
-                this.setState({ isUserAutoAuthenticated: false });
+                this.isUserAutoAuthenticated = false;
 
                 console.log('move to auth');
                 navigation.navigate("authStackNavigator");

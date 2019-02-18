@@ -67,7 +67,7 @@ export type Post = {
     // reviews: Review[], // 저장해 두지 않고, review 창이 뜰 때 동적으로 서버에서 가져온다. (Comments 처럼)
     reviewCount: number,
     averageRating: number,
-    likes: number, // user uid list
+    likes: Array<string>, // user uid list
     name: string,
     age: number,
     height: number,

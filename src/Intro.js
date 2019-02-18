@@ -113,17 +113,31 @@ export default class Intro extends React.Component {
         for (var i = 0; i < _places.length; i++) {
             let placeId = _places[i].place_id;
             const uri = await Firebase.getPlaceRandomFeedImage(placeId);
+            if (!uri) continue;
+            
             const _uri = { "uri": uri };
 
+            /*
             let index = places.findIndex(el => el.place_id === placeId);
             if (index !== -1) {
                 places[index] = { ...places[index], uri: _uri };
-                Intro.images[i] = _uri;
+                // Intro.images[i] = _uri;
 
                 // load one by one
                 !this.isClosed && this.setState({ places });
                 Intro.images[i] = _uri;
             }
+            */
+
+            places[i] = { ...places[i], uri: _uri };
+            Intro.images[i] = _uri;
+
+            // load one by one
+            !this.isClosed && this.setState({ places });
+
+
+
+
             /*
             places[i] = { ...places[i], uri: _uri };
             Intro.images[i] = _uri;

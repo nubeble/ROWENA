@@ -165,6 +165,19 @@ export default class Detail extends React.Component {
 
     @autobind
     toggle() {
+        // check the owner of the post
+        const { post } = this.props.navigation.state.params;
+
+        if (Firebase.user().uid === post.uid) {
+            this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500, () => {
+                if (!this.isClosed) {
+                    // ToDo:
+                }
+            });
+
+            return;
+        }
+
         if (!this.state.liked) {
             this.setState({ liked: true });
 
@@ -178,8 +191,10 @@ export default class Detail extends React.Component {
         } else {
             this.setState({ liked: false });
         }
-
-
+        
+        const placeId = post.placeId;
+        const feedId = post.id;
+        const uid = Firebase.user().uid;
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(uid);

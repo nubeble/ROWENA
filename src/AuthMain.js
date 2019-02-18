@@ -12,7 +12,7 @@ import { Globals } from "./Globals";
 
 export default class AuthMain extends React.Component {
     state = {
-        // showFacebookLoader: false,
+        showFacebookLoader: false,
 
         /*
         email: '',
@@ -28,7 +28,7 @@ export default class AuthMain extends React.Component {
         // ToDo: disable buttons
 
         // show indicator
-        // this.setState({ showFacebookLoader: true });
+        this.setState({ showFacebookLoader: true });
 
         const {
             type,
@@ -48,8 +48,12 @@ export default class AuthMain extends React.Component {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
                 console.log('user', user);
 
-                // save user info to database
-                await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
+                // check existance
+                const profile = await Firebase.getProfile(Firebase.user().uid);
+                if (!profile) {
+                    // save user info to database
+                    await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
+                }
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
 
@@ -58,7 +62,7 @@ export default class AuthMain extends React.Component {
         }
 
         // close indicator
-        // !this.isClosed && this.setState({ showFacebookLoader: false });
+        !this.isClosed && this.setState({ showFacebookLoader: false });
 
         // ToDo: enable buttons
     }
@@ -130,9 +134,7 @@ export default class AuthMain extends React.Component {
                         >
                             <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36}/>
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(0, 0, 0, 0.6)', paddingTop: Globals.submitButtonPaddingTop() }}>Continue with Facebook</Text>
-
                             {
-                                /*
                                 this.state.showFacebookLoader &&
                                 <ActivityIndicator
                                     style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
@@ -140,7 +142,6 @@ export default class AuthMain extends React.Component {
                                     size="small"
                                     color='rgba(0, 0, 0, 0.6)'
                                 />
-                                */
                             }
                         </TouchableOpacity>
 

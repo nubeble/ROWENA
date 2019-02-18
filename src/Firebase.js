@@ -32,6 +32,15 @@ export default class Firebase {
 
     //// firestore ////
 
+    static async getProfile(uid) {
+        const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
+
+        if (userDoc.exists) return userDoc.data();
+
+        return null;
+    }
+
+
     static async createProfile(uid, name, email, phoneNumber) {
         const profile = {
             uid: uid,
@@ -53,7 +62,8 @@ export default class Firebase {
 
             feeds: [], // 내가 등록한 feed. ToDo: 삭제 시 배열을 전체 검색
             reviews: [], // 내가 남긴 리뷰. (collection)
-            replies: []
+            replies: [],
+            likes: []
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);
@@ -61,6 +71,8 @@ export default class Firebase {
 
     static async updateProfile(uid, profile) {
         await Firebase.firestore.collection('users').doc(uid).update(profile);
+
+
 
         // ToDo: update firebase auth
         /*
@@ -91,6 +103,7 @@ export default class Firebase {
 
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
+                // not exist
             } else {
                 snap2.forEach((doc) => {
                     // console.log(doc.id, '=>', doc.data());
@@ -124,7 +137,7 @@ export default class Firebase {
     }
 
     static async createFeed(feed) {
-        feed.likes = 0;
+        feed.likes = [];
         feed.reviewCount = 0;
         feed.averageRating = 0.0;
         feed.timestamp = Firebase.getTimestamp();
