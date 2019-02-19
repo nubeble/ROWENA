@@ -10,7 +10,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AwesomeAlert from 'react-native-awesome-alerts';
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
 
@@ -20,7 +20,7 @@ type InjectedProps = {
 };
 */
 
-const chatViewHeight = Dimensions.get('window').height - Globals.searchBarHeight;
+const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
 const textInputPaddingLeft = parseInt(Dimensions.get('window').width / 20);
 const textInputPaddingRight = parseInt(Dimensions.get('window').width / 20);
@@ -30,7 +30,7 @@ const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
-const avatarHeight = Globals.searchBarHeight * 0.5;
+const avatarHeight = Cons.searchBarHeight * 0.5;
 const bigImageWidth = postHeight * 0.7;
 const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
 
@@ -165,7 +165,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const showPost = this.state.messages.length > 1 ? false : true;
 
         const top1 = (Dimensions.get('window').height - postHeight) / 2;
-        const top2 = Globals.searchBarHeight;
+        const top2 = Cons.searchBarHeight;
         const postTop = this.state.onKeyboard ? top2 : top1;
 
         const item = this.props.navigation.state.params.item;
@@ -366,11 +366,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: '80%', height: Cons.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
                     cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Cons.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
             </View>
@@ -411,7 +411,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         await Firebase.sendMessage(this.state.id, message, item);
 
         // send push notification
-        const notificationType = Globals.pushNotification.chat;
+        const notificationType = Cons.pushNotification.chat;
         const sender = item.users[0].uid;
         const senderName = item.users[0].name;
         const receiver = item.users[1].uid; // owner
@@ -532,7 +532,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'row',
         justifyContent: 'center',

@@ -13,7 +13,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 
 
 export default class ChatMain extends React.Component {
@@ -159,7 +159,7 @@ export default class ChatMain extends React.Component {
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 18,
+                            fontSize: 20,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'center'
                         }}
@@ -180,21 +180,20 @@ export default class ChatMain extends React.Component {
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
 
-                        ListFooterComponent={(
-                            this.state.isLoadingChat && (
-                                <ActivityIndicator
-                                    style={{ marginTop: 20, marginBottom: 20 }}
-                                    animating={true}
-                                    size="small"
-                                    color='grey'
-                                />
-                                /*
-                                <View style={{ paddingHorizontal: Theme.spacing.small, marginTop: 20 + 40, marginBottom: 20 }}>
-                                    <RefreshIndicator />
-                                </View>
-                                */
-                            )
-                        )}
+                        ListFooterComponent={
+                            this.state.isLoadingChat &&
+                            <ActivityIndicator
+                                style={{ marginTop: 20, marginBottom: 20 }}
+                                animating={true}
+                                size="small"
+                                color='grey'
+                            />
+                            /*
+                            <View style={{ paddingHorizontal: Theme.spacing.small, marginTop: 20 + 40, marginBottom: 20 }}>
+                                <RefreshIndicator />
+                            </View>
+                            */
+                        }
 
                     // ItemSeparatorComponent={this.itemSeparatorComponent}
                     />
@@ -414,7 +413,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'

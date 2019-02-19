@@ -18,7 +18,7 @@ import Firebase from './Firebase';
 // import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 
 /*
 const AnimatedText = Animated.createAnimatedComponent(Text);
@@ -182,7 +182,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             */}
                             <Text
                                 style={{
-                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
+                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Cons.searchBarPaddingTop(),
                                     color: Theme.color.text2, textAlign: 'center'
                                 }}
                             >{this.state.searchText}</Text>
@@ -400,7 +400,7 @@ const styles = StyleSheet.create({
         top: 0
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

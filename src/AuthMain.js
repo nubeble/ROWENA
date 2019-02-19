@@ -7,7 +7,7 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Firebase from './Firebase';
 import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 
 
 export default class AuthMain extends React.Component {
@@ -128,12 +128,12 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.continueWithFacebook();
-                                }, Globals.buttonTimeoutLong);
+                                }, Cons.buttonTimeoutLong);
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
                             <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36}/>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(0, 0, 0, 0.6)', paddingTop: Globals.submitButtonPaddingTop() }}>Continue with Facebook</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(0, 0, 0, 0.6)', paddingTop: Cons.submitButtonPaddingTop() }}>Continue with Facebook</Text>
                             {
                                 this.state.showFacebookLoader &&
                                 <ActivityIndicator
@@ -149,24 +149,24 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithEmail();
-                                }, Globals.buttonTimeoutLong);
+                                }, Cons.buttonTimeoutLong);
                             }}
                             style={styles.signUpWithEmailButton}
                         >
                             <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23}/>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Globals.submitButtonPaddingTop() }}>Sign up with Email</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Email</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithMobile();
-                                }, Globals.buttonTimeoutLong);
+                                }, Cons.buttonTimeoutLong);
                             }}
                             style={styles.signUpWithMobileButton}
                         >
                             <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24}/>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Globals.submitButtonPaddingTop() }}>Sign up with Mobile</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Mobile</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity

@@ -1,43 +1,48 @@
 /*
- * Copied from Detail.js
+ * Copied from Post.js
 */
 
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Platform,
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Constants, MapView, Svg } from 'expo';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Constants, MapView, Svg } from 'expo';
 import { Text, Theme } from "./rnff/src/components";
 import moment from 'moment';
 import SmartImage from "./rnff/src/components/SmartImage";
+import Util from "./Util";
 import Swiper from './Swiper';
 import { AirbnbRating } from './react-native-ratings/src';
-import ReviewStore from "./ReviewStore";
 import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
 import { observer } from "mobx-react/native";
+import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
-import { NavigationActions } from 'react-navigation';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
+import AwesomeAlert from 'react-native-awesome-alerts';
+import { NavigationActions } from 'react-navigation';
 
+
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
 const bodyInfoContainerPaddingVertical = Theme.spacing.small;
+const bodyInfoItemWidth = Dimensions.get('window').width / 5;
+// const bodyInfoItemHeight = bodyInfoItemWidth;
 const bodyInfoItemHeight = Dimensions.get('window').height / 12;
 
 
-@observer
+@observer // for reviewStore
 export default class PostScreen extends React.Component {
     reviewStore: ReviewStore = new ReviewStore();
 
@@ -58,13 +63,19 @@ export default class PostScreen extends React.Component {
         offset: new Animated.Value(0),
 
         showAlert: false,
-        alertMessage: ''
+        alertMessage: '',
+
+        liked: false,
+
+        viewMarginBottom: 0
     };
 
     constructor(props) {
         super(props);
 
         this.itemHeights = {};
+
+        this.springValue = new Animated.Value(1);
     }
 
     onGoBack(result) { // back from rating
@@ -78,11 +89,13 @@ export default class PostScreen extends React.Component {
             const { post } = this.props.navigation.state.params;
             const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
             this.reviewStore.init(query);
+
+            this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
         }
     }
 
     componentDidMount() {
-        console.log('PostScreen.componentDidMount');
+        // console.log('PostScreen.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -90,9 +103,18 @@ export default class PostScreen extends React.Component {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        const { post } = this.props.navigation.state.params;
+        const { post, from } = this.props.navigation.state.params;
         this.init(post);
 
+        // margin bottom
+        console.log('PostScreen.componentDidMount', from);
+        if (from === 'ChatRoom' || from === 'LikesMain' && Platform.OS === 'ios') this.setState({ viewMarginBottom: 8 });
+
+        // check liked
+        const liked = this.checkLiked(post.likes);
+        if (liked) {
+            this.setState({ liked: true });
+        }
 
         setTimeout(() => {
             !this.isClosed && this.setState({ renderList: true });
@@ -143,14 +165,77 @@ export default class PostScreen extends React.Component {
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
 
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
         this.isClosed = true;
     }
 
-    render() {
-        const { post, from } = this.props.navigation.state.params;
+    @autobind
+    async toggle() {
+        if (this.toggling) return;
 
-        let marginBottom = 0;
-        if (from === 'ChatRoom' && Platform.OS === "ios") marginBottom = 8;
+        // check the owner of the post
+        const { post } = this.props.navigation.state.params;
+
+        if (Firebase.user().uid === post.uid) {
+            this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
+            return;
+        }
+
+        this.toggling = true;
+
+        if (!this.state.liked) {
+            this.setState({ liked: true });
+
+            this.springValue.setValue(2);
+
+            Animated.spring(this.springValue, {
+                toValue: 1,
+                friction: 2,
+                tension: 1
+            }).start();
+
+            // toast
+            this.refs["toast"].show('Thanks!', 500);
+        } else {
+            this.setState({ liked: false });
+
+            // toast
+            this.refs["toast"].show('Oh...', 500);
+        }
+
+        const placeId = post.placeId;
+        const feedId = post.id;
+        const uid = Firebase.user().uid;
+        const uri = post.pictures.one.uri;
+
+        await Firebase.updateLikes(uid, placeId, feedId, uri);
+
+        
+        Vars.postToggleButtonPressed = true;
+
+        this.toggling = false;
+    }
+
+    checkLiked(likes) {
+        let liked = false;
+
+        const uid = Firebase.user().uid;
+
+        for (var i = 0; i < likes.length; i++) {
+            const _uid = likes[i];
+            if (uid === _uid) {
+                liked = true;
+                break;
+            }
+        }
+
+        return liked;
+    }
+
+    render() {
+        const { post } = this.props.navigation.state.params;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -161,9 +246,9 @@ export default class PostScreen extends React.Component {
             ]
         };
 
+
         return (
             <View style={styles.flex}>
-                {/* alert */}
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -173,11 +258,12 @@ export default class PostScreen extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
                 <View style={styles.searchBar}>
+                    {/*
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
@@ -189,19 +275,37 @@ export default class PostScreen extends React.Component {
                     >
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24}/>
                     </TouchableOpacity>
-
-                    {/*
-                    <Text
-                        style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 20,
-                            fontFamily: "SFProText-Semibold",
-                            alignSelf: 'center',
-                            paddingBottom: 4
-                        }}
-                    >{post.name}</Text>
                     */}
+
+
+                    <TouchableOpacity
+                        style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBar
+                            left: 22,
+                            alignSelf: 'baseline'
+                        }}
+                        onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
+                    >
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+                    <TouchableWithoutFeedback onPress={this.toggle}>
+                        <View style={{
+                            position: 'absolute',
+                            bottom: 8 + 4, // paddingBottom from searchBar
+                            right: 22,
+                            justifyContent: "center", alignItems: "center"
+                        }}>
+                            {
+                                this.state.liked ? // false -> true
+                                    <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
+                                    :
+                                    <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
+                            }
+                        </View>
+                    </TouchableWithoutFeedback>
                 </View>
+
                 {
                     this.state.renderList &&
                     <TouchableWithoutFeedback
@@ -285,7 +389,7 @@ export default class PostScreen extends React.Component {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16}/>
+                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16} />
                                             <Text style={styles.distance}>24 km away</Text>
                                         </View>
 
@@ -301,18 +405,22 @@ export default class PostScreen extends React.Component {
                                                 />
                                             </View>
 
-                                            {/* ToDo: draw stars based on averge rating & get review count {post.averageRating} */}
+                                            {/* ToDo: draw stars based on averge rating & get review count
+                                                        {post.averageRating}
+                                                    */}
                                             <Text style={styles.rating}>4.4</Text>
 
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16}/>
+                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
                                             <Text style={styles.reviewCount}>12</Text>
                                         </View>
 
-                                        {/* <Text style={styles.note}>{tmp}</Text> */}
+                                        {/*
+                                                    <Text style={styles.note}>{tmp}</Text>
+                                                */}
                                         <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}/>
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                     {/* map */}
                                     <View style={styles.mapContainer}>
@@ -325,7 +433,7 @@ export default class PostScreen extends React.Component {
                                                     });
                                                     */
                                                     this.props.navigation.navigate("map", { post: post });
-                                                }, Globals.buttonTimeoutLong);
+                                                }, Cons.buttonTimeoutLong);
                                             }}
                                         >
                                             <View style={styles.mapView}>
@@ -357,7 +465,7 @@ export default class PostScreen extends React.Component {
                                         </TouchableOpacity>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}/>
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                     <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
                                         {/* Consider: show review chart */}
@@ -387,7 +495,7 @@ export default class PostScreen extends React.Component {
                                         </View>
                                     </View>
 
-                                    <View style={{ borderBottomColor: 'transparent', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: marginBottom }}/>
+                                    <View style={{ borderBottomColor: 'transparent', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: this.state.viewMarginBottom }} />
                                 </View>
                             )}
                         />
@@ -395,84 +503,83 @@ export default class PostScreen extends React.Component {
                 }
 
                 {
-                    this.state.showKeyboard && (
-                        <View style={{
-                            position: 'absolute',
-                            top: this.state.bottomPosition - this.replyViewHeight,
-                            height: this.replyViewHeight,
-                            width: '100%',
-                            flexDirection: 'row',
-                            // justifyContent: 'center',
-                            // alignItems:'center',
-                            flex: 1,
+                    this.state.showKeyboard &&
+                    <View style={{
+                        position: 'absolute',
+                        top: this.state.bottomPosition - this.replyViewHeight,
+                        height: this.replyViewHeight,
+                        width: '100%',
+                        flexDirection: 'row',
+                        // justifyContent: 'center',
+                        // alignItems:'center',
+                        flex: 1,
 
-                            paddingTop: 8,
-                            paddingBottom: 8,
-                            paddingLeft: 10,
-                            paddingRight: 0,
+                        paddingTop: 8,
+                        paddingBottom: 8,
+                        paddingLeft: 10,
+                        paddingRight: 0,
 
-                            borderTopWidth: 1,
-                            borderTopColor: Theme.color.line,
-                            backgroundColor: Theme.color.background
-                        }}>
+                        borderTopWidth: 1,
+                        borderTopColor: Theme.color.line,
+                        backgroundColor: Theme.color.background
+                    }}>
 
-                            <TextInput
-                                // ref='reply'
-                                ref={(c) => { this._reply = c; }}
-                                multiline={true}
-                                numberOfLines={2}
-                                style={{
-                                    /*
-                                    width: '80%',
-                                    // width: Dimensions.get('window').width * 0.5,
-                                    height: '90%',
-                                    */
-                                    flex: 0.85,
+                        <TextInput
+                            // ref='reply'
+                            ref={(c) => { this._reply = c; }}
+                            multiline={true}
+                            numberOfLines={2}
+                            style={{
+                                /*
+                                width: '80%',
+                                // width: Dimensions.get('window').width * 0.5,
+                                height: '90%',
+                                */
+                                flex: 0.85,
 
-                                    // padding: 8, // not working in ios
-                                    paddingTop: 10,
-                                    paddingBottom: 10,
-                                    paddingLeft: 10,
-                                    paddingRight: 10,
+                                // padding: 8, // not working in ios
+                                paddingTop: 10,
+                                paddingBottom: 10,
+                                paddingLeft: 10,
+                                paddingRight: 10,
 
-                                    borderRadius: 5,
-                                    fontSize: 14,
-                                    fontFamily: "SFProText-Regular",
-                                    color: "white",
-                                    textAlign: 'justify',
-                                    textAlignVertical: 'top',
-                                    backgroundColor: '#212121'
-                                }}
-                                placeholder='Reply to a review...'
-                                placeholderTextColor={Theme.color.placeholder}
-                                onChangeText={(text) => this.onChangeText(text)}
+                                borderRadius: 5,
+                                fontSize: 14,
+                                fontFamily: "SFProText-Regular",
+                                color: "white",
+                                textAlign: 'justify',
+                                textAlignVertical: 'top',
+                                backgroundColor: '#212121'
+                            }}
+                            placeholder='Reply to a review...'
+                            placeholderTextColor={Theme.color.placeholder}
+                            onChangeText={(text) => this.onChangeText(text)}
 
-                                selectionColor={Theme.color.selection}
-                                keyboardAppearance={'dark'}
-                                underlineColorAndroid="transparent"
-                                autoCorrect={false}
-                            />
-                            <TouchableOpacity
-                                style={{
-                                    // marginLeft: 10,
-                                    // width: Dimensions.get('window').width * 0.2,
-                                    /*
-                                    width: '10%',
-                                    height: '90%',
-                                    */
-                                    flex: 0.15,
-                                    // borderRadius: 5,
-                                    // backgroundColor: 'red',
+                            selectionColor={Theme.color.selection}
+                            keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                        />
+                        <TouchableOpacity
+                            style={{
+                                // marginLeft: 10,
+                                // width: Dimensions.get('window').width * 0.2,
+                                /*
+                                width: '10%',
+                                height: '90%',
+                                */
+                                flex: 0.15,
+                                // borderRadius: 5,
+                                // backgroundColor: 'red',
 
-                                    justifyContent: 'center',
-                                    alignItems: 'center'
-                                }}
-                                onPress={() => this.sendReply()}
-                            >
-                                <Ionicons name='ios-send' color={Theme.color.selection} size={24}/>
-                            </TouchableOpacity>
-                        </View>
-                    )
+                                justifyContent: 'center',
+                                alignItems: 'center'
+                            }}
+                            onPress={() => this.sendReply()}
+                        >
+                            <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
+                        </TouchableOpacity>
+                    </View>
                 }
 
                 <AwesomeAlert
@@ -503,11 +610,11 @@ export default class PostScreen extends React.Component {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: '80%', height: Cons.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
                     cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Cons.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
@@ -717,65 +824,61 @@ export default class PostScreen extends React.Component {
                         </View>
 
                         {
-                            isMyReview && !reply && (
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                        onPress={() => this.removeReview(index)}
-                                    >
-                                        <Text ref='delete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )
+                            isMyReview && !reply &&
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                    onPress={() => this.removeReview(index)}
+                                >
+                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                </TouchableOpacity>
+                            </View>
                         }
 
                         {
                             // comment, id, timestamp, uid
-                            reply && (
-                                <View style={{
-                                    paddingTop: Theme.spacing.tiny,
-                                    paddingBottom: Theme.spacing.tiny,
-                                    paddingLeft: Theme.spacing.tiny,
-                                    paddingRight: Theme.spacing.tiny,
-                                    backgroundColor: Theme.color.highlight, borderRadius: 2
-                                }}>
+                            reply &&
+                            <View style={{
+                                paddingTop: Theme.spacing.tiny,
+                                paddingBottom: Theme.spacing.tiny,
+                                paddingLeft: Theme.spacing.tiny,
+                                paddingRight: Theme.spacing.tiny,
+                                backgroundColor: Theme.color.highlight, borderRadius: 2
+                            }}>
 
-                                    <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.xSmall }}>
-                                        <Text style={styles.replyOwner}>Owner Response</Text>
-                                        <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
-                                    </View>
-
-                                    <ReadMore
-                                        numberOfLines={2}
-                                    >
-                                        <Text style={styles.replyComment}>{reply.comment}</Text>
-                                    </ReadMore>
-
-                                    {
-                                        isMyReply && (
-                                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                                    onPress={() => this.removeReply(index)}
-                                                >
-                                                    <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        )
-                                    }
+                                <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.xSmall }}>
+                                    <Text style={styles.replyOwner}>Owner Response</Text>
+                                    <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                                 </View>
-                            )
+
+                                <ReadMore
+                                    numberOfLines={2}
+                                >
+                                    <Text style={styles.replyComment}>{reply.comment}</Text>
+                                </ReadMore>
+
+                                {
+                                    isMyReply &&
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                            onPress={() => this.removeReply(index)}
+                                        >
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                }
+                            </View>
                         }
 
                         {
-                            this.state.isOwner && !reply && (
-                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.openKeyboard(ref, index, _profile.uid)}>
-                                        <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            )
+                            this.state.isOwner && !reply &&
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.openKeyboard(ref, index, _profile.uid)}>
+                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
+                                </TouchableOpacity>
+                            </View>
                         }
 
-                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}/>
+                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                     </View>
                 );
             } // end of for
@@ -797,7 +900,7 @@ export default class PostScreen extends React.Component {
                                     placeId: post.placeId,
                                     feedId: post.id
                                 });
-                        }, Globals.buttonTimeoutShort);
+                        }, Cons.buttonTimeoutShort);
                     }}
                 >
                     <View style={{
@@ -810,12 +913,12 @@ export default class PostScreen extends React.Component {
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
                         <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all {reviewLength}+ reviews</Text>
-                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }}/>
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                     </View>
                 </TouchableOpacity>
 
-                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}/>
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
             </View>
         );
     }
@@ -833,9 +936,8 @@ export default class PostScreen extends React.Component {
 
     @autobind
     ratingCompleted(rating) {
-        const { post } = this.props.navigation.state.params;
-
         setTimeout(() => {
+            const { post } = this.props.navigation.state.params;
             this.props.navigation.navigate("writeReviewModal", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
         }, 500); // 0.5 sec
     }
@@ -863,7 +965,7 @@ export default class PostScreen extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex]; // OK
         const keyboardHeight = e.endCoordinates.height; // OK
-        const searchBarHeight = Globals.searchBarHeight; // OK
+        const searchBarHeight = Cons.searchBarHeight; // OK
 
         const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
 
@@ -974,9 +1076,9 @@ export default class PostScreen extends React.Component {
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (!this.isClosed) {
                 // this._reply.blur();
-                this.setState({ showKeyboard: false });
+                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
-                // ToDo: reload only the added review!
+                // Consider: reload only the added review!
                 const { post } = this.props.navigation.state.params;
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                 this.reviewStore.init(query);
@@ -996,23 +1098,24 @@ export default class PostScreen extends React.Component {
     };
 
     async removeReview(index) {
-        // ToDo: show dialog
+        // show dialog
+        this.showAlert('Are you sure you want to delete this review?', async () => {
+            const { post } = this.props.navigation.state.params;
 
-        const { post } = this.props.navigation.state.params;
+            const placeId = post.placeId;
+            const feedId = post.id;
+            const reviewId = this.reviewStore.reviews[index].review.id;
+            const userUid = Firebase.user().uid;
 
-        const placeId = post.placeId;
-        const feedId = post.id;
-        const reviewId = this.reviewStore.reviews[index].review.id;
-        const userUid = Firebase.user().uid;
+            await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
-        await Firebase.removeReview(placeId, feedId, reviewId, userUid);
-
-        this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
-            if (!this.isClosed) {
-                // refresh UI
-                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                this.reviewStore.init(query);
-            }
+            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
+                if (!this.isClosed) {
+                    // refresh UI
+                    const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                    this.reviewStore.init(query);
+                }
+            });
         });
     }
 
@@ -1027,24 +1130,25 @@ export default class PostScreen extends React.Component {
     }
 
     async removeReply(index) {
-        // ToDo: show dialog
+        // show dialog
+        this.showAlert('Are you sure you want to delete this reply?', async () => {
+            const { post } = this.props.navigation.state.params;
 
-        const { post } = this.props.navigation.state.params;
+            const placeId = post.placeId;
+            const feedId = post.id;
+            const reviewId = this.reviewStore.reviews[index].review.id;
+            const replyId = this.reviewStore.reviews[index].review.reply.id;
+            const userUid = Firebase.user().uid;
 
-        const placeId = post.placeId;
-        const feedId = post.id;
-        const reviewId = this.reviewStore.reviews[index].review.id;
-        const replyId = this.reviewStore.reviews[index].review.reply.id;
-        const userUid = Firebase.user().uid;
+            await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-        await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
-
-        this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
-            if (!this.isClosed) {
-                // refresh UI
-                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                this.reviewStore.init(query);
-            }
+            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
+                if (!this.isClosed) {
+                    // refresh UI
+                    const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+                    this.reviewStore.init(query);
+                }
+            });
         });
     }
 
@@ -1061,9 +1165,9 @@ export default class PostScreen extends React.Component {
             feedId: post.id
         };
 
-        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.reply, data);
+        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.reply, data);
     }
-};
+}
 
 const styles = StyleSheet.create({
     flex: {
@@ -1071,7 +1175,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'
@@ -1110,7 +1214,7 @@ const styles = StyleSheet.create({
     date: {
         // backgroundColor: 'rgb(70, 154, 32)',
         height: 14,
-        paddingTop: Globals.lastLogInDatePaddingTop(),
+        paddingTop: Cons.lastLogInDatePaddingTop(),
         marginLeft: 8,
         fontSize: 14,
         lineHeight: 14,
@@ -1167,7 +1271,6 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
         paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
-
     },
     reviewCount: {
         marginLeft: 5,

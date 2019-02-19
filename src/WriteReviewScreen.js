@@ -10,7 +10,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import autobind from "autobind-decorator";
 import Firebase from "./Firebase";
 import Toast, { DURATION } from 'react-native-easy-toast';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 
 
@@ -135,7 +135,7 @@ export default class WriteReviewScreen extends React.Component {
             feedId: post.id
         };
 
-        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.review, data);
+        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.review, data);
     }
 
     render() {
@@ -432,7 +432,7 @@ const styles = StyleSheet.create({
         // zIndex: 10000,
         */
         width: '100%',
-        height: Globals.searchBarHeight
+        height: Cons.searchBarHeight
     },
     distance: {
         position: 'absolute',

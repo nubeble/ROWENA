@@ -1,6 +1,6 @@
 import { Permissions, Notifications } from 'expo';
 import Firebase from './Firebase';
-import { Globals } from './Globals';
+import { Cons } from './Globals';
 
 // const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
 // const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/setToken";
@@ -75,7 +75,7 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
     formData.append("receiver", receiver);
     formData.append("type", type);
 
-    if (type === Globals.pushNotification.chat) {
+    if (type === Cons.pushNotification.chat) {
         formData.append("message", data.message);
         formData.append("chatRoomId", data.chatRoomId);
         // formData.append("placeId", data.placeId);
@@ -91,11 +91,11 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
         // formData.append("user2Uid", user2.uid);
         if (user2.name) formData.append("user2Name", user2.name);
         if (user2.picture) formData.append("user2Picture", user2.picture);
-    } else if (type === Globals.pushNotification.review) {
+    } else if (type === Cons.pushNotification.review) {
         formData.append("message", data.message);
         formData.append("placeId", data.placeId);
         formData.append("feedId", data.feedId);
-    } else if (type === Globals.pushNotification.reply) {
+    } else if (type === Cons.pushNotification.reply) {
         formData.append("message", data.message);
         formData.append("placeId", data.placeId);
         formData.append("feedId", data.feedId);

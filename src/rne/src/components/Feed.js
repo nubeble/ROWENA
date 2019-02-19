@@ -141,7 +141,7 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
                 <AnimatedFlatList
                     contentContainerStyle={[styles.container, style]}
                     showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={(
+                    ListHeaderComponent={
                         <Animated.View style={{ backgroundColor: theme.palette.primary }}>
                             {/* key, uri, preview, style */}
                             <Image
@@ -167,21 +167,19 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
                                 <View style={styles.extraHeader}>{header}</View>
                             */}
                         </Animated.View>
-                    )}
-                    ListFooterComponent={(
+                    }
+                    ListFooterComponent={
                         <Animated.View style={{ backgroundColor: theme.palette.primary }}>
                             <View style={styles.header}>
                                 <Text style={styles.headerText}>{'FORUMS'}</Text>
                             </View>
-
                             <Image
                                   style={styles.ad}
                                 // source={{ uri: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg' }}
                                 uri={'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'}
                             />
-
                         </Animated.View>
-                    )}
+                    }
                     scrollEventThrottle={1}
                     columnWrapperStyle={(numColumns && numColumns > 0) ? styles.columnWrapperStyle : undefined}
                     {...{ data, keyExtractor, renderItem, onScroll, numColumns, inverted }}

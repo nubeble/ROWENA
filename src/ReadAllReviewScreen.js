@@ -17,7 +17,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
@@ -178,16 +178,15 @@ export default class ReadAllReviewScreen extends React.Component {
                             showsVerticalScrollIndicator
 
                             ListEmptyComponent={this.renderListEmptyComponent}
-                            ListFooterComponent={(
-                                this.state.isLoadingReview && (
-                                    <ActivityIndicator
-                                        style={styles.bottomIndicator}
-                                        animating={true}
-                                        size="small"
-                                        color='grey'
-                                    />
-                                )
-                            )}
+                            ListFooterComponent={
+                                this.state.isLoadingReview &&
+                                <ActivityIndicator
+                                    style={styles.bottomIndicator}
+                                    animating={true}
+                                    size="small"
+                                    color='grey'
+                                />
+                            }
 
                             ItemSeparatorComponent={this.itemSeparatorComponent}
 
@@ -287,11 +286,11 @@ export default class ReadAllReviewScreen extends React.Component {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: Globals.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: '80%', height: Cons.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
                     cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
                     cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Globals.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
+                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Cons.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
                     confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
                 />
 
@@ -315,7 +314,7 @@ export default class ReadAllReviewScreen extends React.Component {
                 this.loadReviewFromTheStart();
             }
         );
-    };
+    }
 
     loadReviewFromTheStart() {
         const { reviewStore } = this.props.navigation.state.params;
@@ -584,7 +583,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const height = this.itemHeights[this.selectedItemIndex];
         const keyboardHeight = e.endCoordinates.height;
-        const searchBarHeight = Globals.searchBarHeight;
+        const searchBarHeight = Cons.searchBarHeight;
 
         const y = totalHeights;
 
@@ -788,7 +787,7 @@ export default class ReadAllReviewScreen extends React.Component {
             feedId: post.id
         };
 
-        sendPushNotification(sender, senderName, receiver, Globals.pushNotification.reply, data);
+        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.reply, data);
     }
 }
 
@@ -798,7 +797,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

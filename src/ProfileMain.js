@@ -13,18 +13,16 @@ import Util from "./Util";
 import type { FeedEntry } from "./rnff/src/components/Model";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import { Theme } from "./rnff/src/components";
-import { Globals } from "./Globals";
+import { Cons, Vars } from "./Globals";
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 type InjectedProps = {
-    // feedStore: FeedStore,
     profileStore: ProfileStore
 };
 
 const MAX_FEED_COUNT = 12; // 3 x 4
-// const MAX_FEED_COUNT = 3;
 
 
-// @inject("feedStore", "profileStore") @observer
 @inject("profileStore")
 @observer
 export default class ProfileMain extends React.Component<ScreenProps<> & InjectedProps> {
@@ -32,40 +30,31 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         renderFeed: false,
         showIndicator: false,
         showAlert: false,
+        feeds: [],
+        isLoadingFeeds: false,
+        refreshing: false,
+        totalFeedsSize: 0,
 
         uploadingImage: false,
         uploadImage1: 'http://imgnews.naver.net/image/001/2017/05/20/PYH2017052019870001300_P2_20170520101607447.jpg',
         uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-
-        feeds: [],
-        isLoadingFeeds: false,
-        refreshing: false
+        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'
     };
 
     constructor(props) {
         super(props);
 
-        this.lastFeedId = null;
-        this.lastLoadedFeedIndex = -1;
-        this.lastLoadedFeedId = null;
         this.reload = true;
+        this.lastLoadedFeedIndex = -1;
+        this.lastChangedTime = 0;
     }
 
     componentDidMount() {
         console.log('ProfileMain.componentDidMount');
 
-        // console.log('this.props.feedStore', this.props.feedStore);
-        // console.log('this.props.profileStore', this.props.profileStore);
-        // console.log('this.props.userFeedStore', this.props.userFeedStore);
-
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-
-        // this.props.userFeedStore.checkForNewEntriesInFeed();
-
-
-        // const { profile } = this.props.profileStore;
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         this.getUserFeeds();
 
@@ -79,8 +68,6 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
-            // this.props.navigation.dispatch(NavigationActions.back()); // move to intro
-            // this.props.screenProps.rootNavigation.navigate("intro");
             this.props.navigation.navigate("intro");
         }
 
@@ -88,8 +75,19 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
     }
 
     @autobind
+    onFocus() {
+        if (Vars.userFeedsChanged) {
+            Vars.userFeedsChanged = false;
+            this.getUserFeeds();
+        }
+
+
+
+    }
+
+    @autobind
     onScrollHandler() {
-        // console.log('ProfileMain.onScrollHandler');
+        console.log('ProfileMain.onScrollHandler');
 
         this.getUserFeeds();
     }
@@ -98,55 +96,50 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         console.log('ProfileMain.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
 
         this.isClosed = true;
     }
 
-    async getUserFeeds() {
+    getUserFeeds() {
         if (this.state.isLoadingFeeds) {
-            this.setState({ refreshing: false });
+            if (this.state.refreshing) this.setState({ refreshing: false });
+            return;
+        }
+
+        const { profile } = this.props.profileStore;
+        const feeds = profile.feeds;
+        const length = feeds.length;
+
+        this.setState({ totalFeedsSize: length });
+
+        if (length === 0) {
+            if (this.state.refreshing) this.setState({ refreshing: false });
+            return;
+        }
+
+        // check update
+        const lastChangedTime = this.props.profileStore.lastChangedTime;
+        if (this.lastChangedTime !== lastChangedTime) {
+            this.lastChangedTime = lastChangedTime;
+
+            // reload from the start
+            this.reload = true;
+            this.lastLoadedFeedIndex = -1;
+        }
+
+        // load all?
+        if (this.lastLoadedFeedIndex === 0) {
+            if (this.state.refreshing) this.setState({ refreshing: false });
             return;
         }
 
         this.setState({ isLoadingFeeds: true });
 
-
-        const { profile } = this.props.profileStore;
-        const feeds = profile.feeds;
-        const keys = Object.keys(feeds);
-        const length = keys.length;
-
-        if (length === 0) {
-            this.setState({ isLoadingFeeds: false, refreshing: false });
-            return;
-        }
-
-        // get the last feed id
-        const lastFeedId = this.getLastFeedId(feeds);
-
-        // console.log('this.lastFeedId', this.lastFeedId);
-        // console.log('lastFeedId', lastFeedId);
-
-        if (this.lastFeedId !== lastFeedId) {
-            this.lastFeedId = lastFeedId;
-
-            // reload from the start
-            this.lastLoadedFeedIndex = -1;
-
-            this.reload = true;
-        }
-
-        // console.log('this.lastLoadedFeedIndex', this.lastLoadedFeedIndex);
-
-        if (this.lastLoadedFeedIndex === 0) {
-            this.setState({ isLoadingFeeds: false, refreshing: false });
-            return;
-        }
-
         let newFeeds = [];
 
         let startIndex = 0;
-        if (this.lastLoadedFeedIndex === -1) {
+        if (this.reload) {
             startIndex = length - 1;
         } else {
             startIndex = this.lastLoadedFeedIndex - 1;
@@ -157,16 +150,12 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         for (var i = startIndex; i >= 0; i--) {
             if (count >= MAX_FEED_COUNT) break;
 
-            const num = i;
-            const key = num.toString();
-            const value = feeds.get(key);
-            // console.log(key, value);
+            const value = feeds[i];
 
             if (!value.valid) continue;
 
             newFeeds.push(value);
 
-            this.lastLoadedFeedId = value.feedId;
             this.lastLoadedFeedIndex = i;
 
             count++;
@@ -186,35 +175,28 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         }
     }
 
-    getLastFeedId(feeds) {
-        const keys = Object.keys(feeds);
-        const length = keys.length;
-
-        const num = length - 1;
-        const key = num.toString();
-        const value = feeds.get(key);
-
-        return value.feedId;
-    }
-
     async openPost(item) {
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         const post = feedDoc.data();
 
-        this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
+        if (!post) {
+            // post removed
+            this.refs["toast"].show('The post is removed by the owner.', 500);
+        } else {
+            this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
+        }
     }
 
     render() {
-        const showIndicator = this.state.showIndicator;
 
         return (
             <View style={styles.flex}>
 
                 <ActivityIndicator
                     style={styles.activityIndicator}
-                    animating={showIndicator}
+                    animating={this.state.showIndicator}
                     size="large"
                     color='grey'
                 />
@@ -224,7 +206,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 18,
+                            fontSize: 20,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'center'
                         }}
@@ -237,7 +219,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                     <FlatList
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={(
+                        ListHeaderComponent={
                             <View>
                                 <TouchableOpacity onPress={() => this.uploadPicture(0)}>
                                     <SmartImage
@@ -249,21 +231,21 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                                 <TouchableOpacity onPress={() => console.log('onPress')}>
                                     <SmartImage
                                         style={styles.ad}
-                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        uri={'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg'}
                                     />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity onPress={() => console.log('onPress')}>
                                     <SmartImage
                                         style={styles.ad}
-                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        uri={'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg'}
                                     />
                                 </TouchableOpacity>
 
                                 <TouchableOpacity onPress={() => console.log('onPress')}>
                                     <SmartImage
                                         style={styles.ad}
-                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        uri={'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg'}
                                     />
                                 </TouchableOpacity>
 
@@ -291,10 +273,10 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
 
                                 <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>{'Your post'}</Text>
+                                    <Text style={styles.title}>Your post ({this.state.totalFeedsSize})</Text>
                                 </View>
                             </View>
-                        )}
+                        }
                         // scrollEventThrottle={1}
                         columnWrapperStyle={styles.columnWrapperStyle}
                         numColumns={3}
@@ -308,7 +290,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                                         <SmartImage
                                             // preview={item.pictures.one.preview}
                                             // uri={item.pictures.one.uri}
-                                            uri={item.imageUri}
+                                            uri={item.picture}
                                             style={styles.picture}
                                         />
 
@@ -330,27 +312,34 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                         onEndReachedThreshold={0.5}
                         onEndReached={this.onScrollHandler}
                         ListFooterComponent={
-                            this.state.isLoadingFeeds && (
-                                <ActivityIndicator
-                                    style={styles.bottomIndicator}
-                                    animating={true}
-                                    size="small"
-                                    color='grey'
-                                />
-                            )}
+                            this.state.isLoadingFeeds &&
+                            <ActivityIndicator
+                                style={styles.bottomIndicator}
+                                animating={true}
+                                size="small"
+                                color='grey'
+                            />
+                        }
 
                         /*
-                        ListEmptyComponent={(
+                        ListEmptyComponent={
                             <View style={styles.post}>
                                 {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
                             </View>
-                        )}
+                        }
                         */
 
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
                     />
                 }
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2}
+                    opacity={0.6}
+                />
             </View>
 
         );
@@ -365,7 +354,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                 this.getUserFeeds();
             }
         );
-    };
+    }
 
     async makeDummyData() {
         for (var i = 0; i < 10; i++) {
@@ -427,10 +416,10 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
             } break;
 
             case 3: {
-                uri1 = 'https://t1.daumcdn.net/cfile/tistory/232DB142593A2F160B';
-                uri2 = 'https://t1.daumcdn.net/cfile/tistory/235BE942593A2F1813';
-                uri3 = 'https://t1.daumcdn.net/cfile/tistory/24439342593A2F1A09';
-                uri4 = 'https://t1.daumcdn.net/cfile/tistory/264CFB42593A2F1C07';
+                uri1 = 'https://i0.hdslb.com/bfs/archive/14e43191ca970b80912c58acf9987f0b8eadb80e.jpg';
+                uri2 = 'https://i.ytimg.com/vi/aApMHbQR_OI/hqdefault.jpg?v=58dddaf4';
+                uri3 = 'https://pbs.twimg.com/media/DA4zuBYUAAEfNMG.jpg';
+                uri4 = 'https://i1.wp.com/overdope.com/wp-content/uploads/2017/01/2017-01-21_220645.jpg?fit=690%2C460';
             } break;
 
             case 4: {
@@ -910,9 +899,9 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         const note = 'note';
 
         // ToDo: use image picker
-        const image1Uri = 'https://i.pinimg.com/originals/56/ac/4b/56ac4b66ae869303f1f259fd6d550d85.jpg';
+        const image1Uri = 'https://i.ytimg.com/vi/qjrbF907R4E/maxresdefault.jpg';
         const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
-        const image3Uri = 'https://3.bp.blogspot.com/-IlmY1gyVmQI/W3doZ9X9oAI/AAAAAAAAERQ/avgNK2r8A4Ms710A4s1Vew-8Zwz7eU4ZQCLcBGAs/s1600/ep10-1.gif';
+        const image3Uri = 'https://i.ytimg.com/vi/jn2XzSxv4sU/maxresdefault.jpg';
         const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';
 
         const name = 'name';
@@ -956,14 +945,19 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async removeFeed() {
+        const uid = Firebase.user().uid;
+
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
+        const feedId = '26f7ee12-7b68-de8f-1dd1-b971b07421c4';
 
-        const feedId = '6598abb5-6c55-cf4b-5dec-86b8a1bd5f69';
+        await Firebase.removeFeed(uid, placeId, feedId);
 
-        // await Firebase.deleteFeed(placeId, feedId);
+        Vars.userFeedsChanged = true;
     }
 
 
@@ -1129,7 +1123,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'

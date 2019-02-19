@@ -13,7 +13,7 @@ import Firebase from './Firebase'
 import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
 import { Theme } from "./rnff/src/components";
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         // paddingBottom: 8 + 4, // paddingBottom from searchBar
         paddingBottom: 8, // paddingBottom from searchBar
         justifyContent: 'flex-end',

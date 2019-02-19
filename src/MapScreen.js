@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
 import { MapView, Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 import autobind from "autobind-decorator";
 
 
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         width: '100%',
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         // backgroundColor: 'red',
         zIndex: 10000
     },

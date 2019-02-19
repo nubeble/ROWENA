@@ -112,26 +112,22 @@ export default class Feed extends React.Component<FeedProps> {
                     renderItem={this.renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={this.loadMore}
-                    ListEmptyComponent={(
+                    ListEmptyComponent={
                         <View style={styles.post}>
                             {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
                         </View>
-                    )}
-
-                    ListFooterComponent={(
-                        this.state.isLoadingFeed && (
-                            <ActivityIndicator
-                                style={styles.bottomIndicator}
-                                animating={true}
-                                size="small"
-                                color='grey'
-                            />
-                        )
-                    )}
-
+                    }
+                    ListFooterComponent={
+                        this.state.isLoadingFeed &&
+                        <ActivityIndicator
+                            style={styles.bottomIndicator}
+                            animating={true}
+                            size="small"
+                            color='grey'
+                        />
+                    }
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
-
                     {...{ onScroll, bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
@@ -145,11 +141,11 @@ export default class Feed extends React.Component<FeedProps> {
             },
             () => {
                 // this.loadMore();
-                this.allFeedsLoaded = false;
+                // this.allFeedsLoaded = false;
                 this.loadFeedFromTheStart();
             }
         );
-    };
+    }
 
     loadFeedFromTheStart() {
         this.props.store.loadFeedFromTheStart();

@@ -28,6 +28,8 @@ const DEFAULT_PROFILE: Profile = {
 
 
 export default class ProfileStore {
+    lastChangedTime: number;
+
     @observable _profile: Profile = DEFAULT_PROFILE;
 
     @computed get profile(): Profile { return this._profile; }
@@ -40,6 +42,8 @@ export default class ProfileStore {
             if (snap.exists) {
                 this.profile = snap.data();
                 console.log('ProfileStore, profile changed.');
+
+                this.lastChangedTime = Date.now();
             } else {
                 console.log('this should not happen!');
 

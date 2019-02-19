@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, Button, TouchableOpacity, BackHandler } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 import autobind from "autobind-decorator";
 
 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'green'
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'

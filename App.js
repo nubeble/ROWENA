@@ -11,7 +11,7 @@ import { ProfileStore } from "./src/rnff/src/home";
 import autobind from "autobind-decorator";
 import { Notifications } from 'expo';
 import Firebase from './src/Firebase';
-
+import { Cons } from './src/Globals';
 
 configure({ enforceActions: 'observed' })
 
@@ -158,7 +158,7 @@ export default class App extends React.Component {
         if (origin === 'received') { // android
             if (data) {
                 switch (Number(data.type)) {
-                    case Globals.pushNotification.chat: {
+                    case Cons.pushNotification.chat: {
                         /*
                         const message = data.userData.message;
                         const chatRoomId = data.userData.chatRoomId;
@@ -169,20 +169,20 @@ export default class App extends React.Component {
                         this.setState({ showBadgeOnChat: true, badgeOnChatCount: 0 });
                     } break;
 
-                    case Globals.pushNotification.review: {
+                    case Cons.pushNotification.review: {
 
                         // show badge
                         this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                     } break;
 
-                    case Globals.pushNotification.reply: {
+                    case Cons.pushNotification.reply: {
                     } break;
                 }
             }
         } else if (origin === 'selected') {
             if (data) {
                 switch (Number(data.type)) {
-                    case Globals.pushNotification.chat: {
+                    case Cons.pushNotification.chat: {
                         // hide badge
                         this.setState({ showBadgeOnChat: false, badgeOnChatCount: -1 });
 
@@ -194,7 +194,7 @@ export default class App extends React.Component {
                         if (room) NavigationService.navigate("chatRoom", { item: room });
                     } break;
 
-                    case Globals.pushNotification.review: {
+                    case Cons.pushNotification.review: {
                         // hide badge
                         this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
 
@@ -209,7 +209,7 @@ export default class App extends React.Component {
                         NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
                     } break;
 
-                    case Globals.pushNotification.reply: {
+                    case Cons.pushNotification.reply: {
                         /*
                         const message = data.userData.message;
 
@@ -318,16 +318,15 @@ import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import PostScreen from './src/PostScreen';
 import UserMain from './src/UserMain';
-import Likes from './src/Likes';
+import LikesMain from './src/LikesMain';
 import ProfileMain from './src/ProfileMain';
 import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
 import ExploreScreen from './src/Explore';
-import Detail from './src/Detail';
+import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
-import { Globals } from './src/Globals';
 
 
 // -- start of AuthStackNavigator
@@ -427,7 +426,7 @@ class IntroStackNavigatorWrapper extends React.Component {
 const HomeStackNavigator = createStackNavigator(
     {
         home: { screen: ExploreStackNavigatorWrapper },
-        detail: { screen: Detail },
+        detail: { screen: Post },
         readReview: { screen: ReadAllReviewScreen }
     },
     {
@@ -622,6 +621,49 @@ const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     //    }
 };
 
+// -- start of LikesModalNavigator
+const LikesModalNavigator = createStackNavigator(
+    {
+        likesMain: { screen: LikesMain },
+        postPreview: { screen: PostModalNavigatorWrapper }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none'
+    }
+);
+
+class LikesModalNavigatorWrapper extends React.Component {
+    static router = LikesModalNavigator.router;
+
+    render() {
+        return (
+            <LikesModalNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    const post = navigation.state.routes[1];
+    // post.isTransitioning
+
+    if (post && post.routeName === 'postPreview') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
+// -- end of LikesModalNavigator
+
 // -- start of ProfileModalNavigator
 const ProfileModalNavigator = createStackNavigator(
     {
@@ -672,7 +714,8 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         likes: {
-            screen: Likes,
+            // screen: Likes,
+            screen: LikesModalNavigatorWrapper,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         chat: {
@@ -718,30 +761,18 @@ function _navigationOptions(navigation, screenProps) {
             if (navigation.state.routeName === 'home') {
                 return (
                     <IconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome} />
-                    /*
-                    <IconWithBadge type={'SimpleLineIcons'} name={'compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome}/>
-                    */
                 );
             } else if (navigation.state.routeName === 'likes') {
                 return (
                     <IconWithBadge type={'Ionicons'} name={'ios-heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes} />
-                    /*
-                    <IconWithBadge type={'SimpleLineIcons'} name={'heart'} size={30} color={tintColor} badgeCount={data.badgeOnLikesCount} animate={data.showBadgeOnLikes}/>
-                    */
                 );
             } else if (navigation.state.routeName === 'chat') {
                 return (
                     <IconWithBadge type={'Ionicons'} name={'ios-chatbubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat} />
-                    /*
-                    <IconWithBadge type={'SimpleLineIcons'} name={'bubbles'} size={30} color={tintColor} badgeCount={data.badgeOnChatCount} animate={data.showBadgeOnChat}/>
-                    */
                 );
             } else if (navigation.state.routeName === 'profile') {
                 return (
-                    <IconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile} />
-                    /*
-                    <IconWithBadge type={'SimpleLineIcons'} name={'user'} size={30} color={tintColor} badgeCount={data.showBadgeOnProfile} animate={data.showBadgeOnProfile}/>
-                    */
+                    <IconWithBadge type={'FontAwesome'} name={'user'} size={30} color={tintColor} badgeCount={data.badgeOnProfileCount} animate={data.showBadgeOnProfile} />
                 );
             }
         },

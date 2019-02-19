@@ -14,7 +14,7 @@ import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
-import { Globals } from "./Globals";
+import { Cons } from "./Globals";
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -281,7 +281,7 @@ export default class Intro extends React.Component {
                             */}
                             <Text
                                 style={{
-                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Globals.searchBarPaddingTop(),
+                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Cons.searchBarPaddingTop(),
                                     color: "rgb(160, 160, 160)", textAlign: 'center'
                                 }}
                             >{'Where to?'}</Text>
@@ -292,13 +292,13 @@ export default class Intro extends React.Component {
                 <FlatList
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={(
+                    ListHeaderComponent={
                         <View>
                             <View style={styles.titleContainer}>
                                 <Text style={styles.title}>{'Popular destinations'}</Text>
                             </View>
                         </View>
-                    )}
+                    }
                     columnWrapperStyle={styles.columnWrapperStyle}
                     numColumns={2}
                     data={this.state.places}
@@ -321,7 +321,7 @@ export default class Intro extends React.Component {
                                 onPress={() => {
                                     setTimeout(() => {
                                         this.props.navigation.navigate("exploreMain", { place: item, length: item.length });
-                                    }, Globals.buttonTimeoutLong);
+                                    }, Cons.buttonTimeoutLong);
                                 }}
                             >
                                 <View style={styles.pictureContainer}>
@@ -359,7 +359,7 @@ export default class Intro extends React.Component {
                             </TouchableOpacity>
                         );
                     }}
-                    ListFooterComponent={(
+                    ListFooterComponent={
                         <View style={{ marginTop: 20 }}>
                             <View style={styles.titleContainer}>
                                 <Text style={styles.title}>{'Top-rated girls'}</Text>
@@ -506,7 +506,7 @@ export default class Intro extends React.Component {
                                 </View>
                             </Carousel>
                         </View>
-                    )}
+                    }
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
                 />
@@ -534,7 +534,7 @@ export default class Intro extends React.Component {
                 this.refreshing = false;
             }
         );
-    };
+    }
 
     startEditing() {
         // alert('startEditing()');
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        height: Globals.searchBarHeight,
+        height: Cons.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
         alignItems: 'center'

@@ -3,8 +3,14 @@ import {
 } from 'react-native';
 import { Constants } from "expo";
 
+export var Vars = {
+    postToggleButtonPressed: false,
+    userFeedsChanged: false, // added or removed, not updated
 
-export var Globals = {
+
+};
+
+export var Cons = {
     // push notification type
     pushNotification: {
         chat: 1,

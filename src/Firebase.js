@@ -143,7 +143,7 @@ export default class Firebase {
         feed.timestamp = Firebase.getTimestamp();
         feed.rn = Util.getRandomNumber();
 
-        // 1. write feed first
+        // 1. add feed
         await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
 
         const userRef = Firebase.firestore.collection("users").doc(feed.uid);
@@ -163,12 +163,12 @@ export default class Firebase {
             // transaction.update(placeRef, { count: Number(count + 1) });
             transaction.set(placeRef, { count: Number(count + 1) });
 
-            // 3. update (add fields to feeds in user profile)
+            // 3. update profile (add fields to feeds in user profile)
             const data = {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
-                    imageUri: feed.pictures.one.uri, // ToDo: update this after chaging
+                    picture: feed.pictures.one.uri, // ToDo: update this after chaging
                     valid: true // ToDo: update this after removing
                 })
             };
@@ -177,19 +177,45 @@ export default class Firebase {
         });
     }
 
-    static async deleteFeed(placeId, feedId) {
+    static async removeFeed(uid, placeId, feedId) {
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
-            // update the count first!
+            // 1. update the count first!
             const placeDoc = await transaction.get(placeRef);
             let count = placeDoc.data().count;
-            console.log('count', count);
+            console.log('current count', count);
 
             transaction.update(placeRef, { count: Number(count - 1) });
 
+            // 2. remove feed
             transaction.delete(feedRef);
+        });
+
+        // 3. update profile (remove fields to feeds in user profile)
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            const { feeds } = userDoc.data();
+            let _idx = -1;
+
+            for (var i = 0; i < feeds.length; i++) {
+                const item = feeds[i];
+                if (item.placeId === placeId && item.feedId === feedId) {
+                    _idx = i;
+                    break;
+                }
+            }
+
+            if (_idx === -1) { // add
+                // nothing to do
+            } else { // remove
+                feeds.splice(_idx, 1);
+            }
+
+            transaction.update(userRef, { feeds });
         });
     }
 
@@ -218,6 +244,54 @@ export default class Firebase {
         return userFeeds;
     }
     */
+
+    static async updateLikes(uid, placeId, feedId, uri) {
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        // update count
+        await Firebase.firestore.runTransaction(async transaction => {
+            const postDoc = await transaction.get(feedRef);
+            const { likes } = postDoc.data();
+            const idx = likes.indexOf(uid);
+            if (idx === -1) {
+                likes.push(uid);
+            } else {
+                likes.splice(idx, 1);
+            }
+
+            transaction.update(feedRef, { likes });
+        });
+
+        // save to user profile
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            const { likes } = userDoc.data();
+            let _idx = -1;
+
+            for (var i = 0; i < likes.length; i++) {
+                const item = likes[i];
+                if (item.placeId === placeId && item.feedId === feedId) {
+                    _idx = i;
+                    break;
+                }
+            }
+
+            if (_idx === -1) { // add
+                const data: LikeRef = {
+                    placeId: placeId,
+                    feedId: feedId,
+                    picture: uri,
+                    valid: true // ToDo: update this after removing
+                }
+                likes.push(data);
+            } else { // remove
+                likes.splice(_idx, 1);
+            }
+
+            transaction.update(userRef, { likes });
+        });
+    }
 
     static async addReview(placeId, feedId, userUid, comment, rating) {
         const id = Util.uid();
