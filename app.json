@@ -5,28 +5,35 @@
 		"slug": "rowena",
 		"privacy": "public",
 		"sdkVersion": "31.0.0",
+		"version": "1.0.0",
 		"platforms": [
 			"ios",
 			"android"
 		],
-		"version": "1.0.0",
 		"orientation": "portrait",
+		"primaryColor": "#0000FF",
 		"icon": "./assets/logo.png",
+		"assetBundlePatterns": [
+			"**/*"
+		],
+		"androidStatusBar": {
+			"barStyle": "light-content",
+			"backgroundColor": "#404040"
+		},
 		"splash": {
 			"image": "./assets/splash.png",
 			"resizeMode": "cover",
-			"backgroundColor": "#ffffff"
+			"backgroundColor": "#404040"
 		},
-		"androidStatusBar": {
-			"barStyle": "light-content",
-			"backgroundColor": "#000000"
+		"notification": {
+			"icon": "./assets/noti.png",
+			"color": "#00FF00",
+			"androidMode": "collapse",
+			"androidCollapsedTitle": "#{unread_notifications} new interactions"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0
 		},
-		"assetBundlePatterns": [
-			"**/*"
-		],
 		"ios": {
 			"bundleIdentifier": "com.nubeble.rowena",
 			"supportsTablet": true,
@@ -36,11 +43,13 @@
 				"NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
 				"NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
 				"NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
-			}
+			},
+			"buildNumber": "1.1.1"
 		},
 		"android": {
 			"package": "com.nubeble.rowena",
-			"googleServicesFile": "./google-services.json"
+			"googleServicesFile": "./google-services.json",
+			"versionCode": 1
 		}
 	}
 }
