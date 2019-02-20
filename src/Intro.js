@@ -14,7 +14,8 @@ import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
+import autobind from "autobind-decorator";
 
 // const AnimatedText = Animated.createAnimatedComponent(Text);
 // const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -98,8 +99,11 @@ export default class Intro extends React.Component {
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');
+
         // console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
+
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         await this.getPlacesImage();
         this.getPlacesSize();
@@ -114,7 +118,7 @@ export default class Intro extends React.Component {
             let placeId = _places[i].place_id;
             const uri = await Firebase.getPlaceRandomFeedImage(placeId);
             if (!uri) continue;
-            
+
             const _uri = { "uri": uri };
 
             /*
@@ -224,10 +228,18 @@ export default class Intro extends React.Component {
         }
     }
 
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'Intro';
+
+    }
+
     componentWillUnmount() {
         // console.log('Intro.componentWillUnmount');
 
         if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
+
+        this.onFocusListener.remove();
 
         this.isClosed = true;
     }

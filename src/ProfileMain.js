@@ -76,6 +76,8 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
     @autobind
     onFocus() {
+        Vars.currentScreenName = 'ProfileMain';
+
         if (Vars.userFeedsChanged) {
             Vars.userFeedsChanged = false;
             this.getUserFeeds();
@@ -206,9 +208,10 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 20,
+                            fontSize: 18,
                             fontFamily: "SFProText-Semibold",
-                            alignSelf: 'center'
+                            alignSelf: 'flex-start',
+                            paddingLeft: 16
                         }}
                     >Profile</Text>
 
@@ -224,7 +227,8 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                                 <TouchableOpacity onPress={() => this.uploadPicture(0)}>
                                     <SmartImage
                                         style={styles.ad}
-                                        uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        // uri={'https://1.bp.blogspot.com/-Q7b5Vuw_iCA/Wyw8mnZHKzI/AAAAAAAAAOU/9QsgXyOPPXkENuNj9w2W-N_cn02kY9JHwCLcBGAs/s1600/01.gif'}
+                                        uri={'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg'}
                                     />
                                 </TouchableOpacity>
 
@@ -405,7 +409,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                 uri1 = 'https://post-phinf.pstatic.net/MjAxNzA4MzFfMTI5/MDAxNTA0MTYwODU4MzQ3.HxB3nEhj4uv-3XWu2Z2zAr4iSPas3aOokdPh1AgY5F4g.egcEId7lF7bFsE5s14XRTNnVGiqxUOYL4SJ4-7p95kQg.JPEG/AOA_%EC%84%A4%ED%98%84_%EB%8D%B0%EC%8B%B1%EB%94%94%EB%B0%94_%282%29.jpg?type=w1200';
                 uri2 = 'https://t1.daumcdn.net/cfile/tistory/263CCB345769E5A308';
                 uri3 = 'https://img.huffingtonpost.com/asset/5aaf1a5b1e000057107af0b7.jpeg?cache=HNh7gSVWkr&ops=scalefit_630_noupscale';
-                uri4 = 'https://ncache.ilbe.com/files/attach/new/20160313/377678/4736545360/7694389062/740d8fa77c6988296440860eb1f42589.gif';
+                uri4 = 'https://i.pinimg.com/originals/a0/2e/ec/a02eecdae0e3fb79dcbf762cddaa952b.jpg';
             } break;
 
             case 2: {
@@ -423,7 +427,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
             } break;
 
             case 4: {
-                uri1 = 'https://postfiles.pstatic.net/20160804_151/ykm3571_1470312644585B2lPV_GIF/%BA%ED%B7%A2%C7%CE%C5%A9_%C1%F6%BC%F6_03.gif?type=w966';
+                uri1 = 'https://pkpkgirls.files.wordpress.com/2018/08/38751740_651875865193841_3072906610452987904_o.jpg';
                 uri2 = 'https://t1.daumcdn.net/cfile/tistory/241FE94E58F9E0911C';
                 uri3 = 'https://t1.daumcdn.net/cfile/tistory/2379514F58F806902F';
                 uri4 = 'https://img1.daumcdn.net/thumb/R1920x0/?fname=http%3A%2F%2Fcfile21.uf.tistory.com%2Fimage%2F9969BD415C472ACB1DF0F5';
@@ -899,7 +903,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         const note = 'note';
 
         // ToDo: use image picker
-        const image1Uri = 'https://i.ytimg.com/vi/qjrbF907R4E/maxresdefault.jpg';
+        const image1Uri = 'https://i.ytimg.com/vi/FLm-oBqOM24/maxresdefault.jpg';
         const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
         const image3Uri = 'https://i.ytimg.com/vi/jn2XzSxv4sU/maxresdefault.jpg';
         const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';

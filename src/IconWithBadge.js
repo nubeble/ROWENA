@@ -7,39 +7,8 @@ export default class IconWithBadge extends React.Component {
     constructor() {
         super();
 
+        this.animating = false;
         this.springValue = new Animated.Value(1);
-    }
-
-    /*
-    componentDidMount() {
-        // this.spring();
-
-        setTimeout(() => {
-            this.spring();
-        }, 9900);
-    }
-    */
-
-    spring() {
-        const { animate } = this.props;
-
-        if (!animate) return;
-
-        this.springValue.setValue(2);
-
-        /*
-        Animated.spring(this.springValue, {
-            toValue: 1,
-            friction: 2,
-            tension: 1
-        }).start(() => { this.spring() });
-        */
-
-        Animated.spring(this.springValue, {
-            toValue: 1,
-            friction: 2,
-            tension: 1
-        }).start();
     }
 
     render() {
@@ -55,9 +24,11 @@ export default class IconWithBadge extends React.Component {
                     toValue: 1,
                     friction: 2,
                     tension: 1
-                // }).start(() => this.animating = undefined); // play repeatedly
+                    // }).start(() => this.animating = false); // play repeatedly
                 }).start(); // play only one time
             }
+        } else {
+            this.animating = false;
         }
 
 
@@ -65,19 +36,19 @@ export default class IconWithBadge extends React.Component {
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 {
                     (type === 'Ionicons') &&
-                    <Ionicons name={name} size={size} color={color}/>
+                    <Ionicons name={name} size={size} color={color} />
                 }
                 {
                     (type === 'FontAwesome') &&
-                    <FontAwesome name={name} size={size} color={color}/>
+                    <FontAwesome name={name} size={size} color={color} />
                 }
                 {
                     (type === 'SimpleLineIcons') &&
-                    <SimpleLineIcons name={name} size={size} color={color}/>
+                    <SimpleLineIcons name={name} size={size} color={color} />
                 }
 
                 {
-                    badgeCount === 0 &&
+                    animate && badgeCount === 0 &&
                     <Animated.View style={{
                         position: 'absolute',
                         top: 4 + 2,
@@ -87,10 +58,10 @@ export default class IconWithBadge extends React.Component {
                         width: 8,
                         height: 8,
                         transform: [{ scale: this.springValue }]
-                    }}/>
+                    }} />
                 }
                 {
-                    badgeCount > 0 && badgeCount <= 9 &&
+                    animate && badgeCount > 0 && badgeCount <= 9 &&
                     <Animated.View style={{
                         // If you're using react-native < 0.57 overflow outside of the parent
                         // will not work on Android, see https://git.io/fhLJ8
@@ -109,8 +80,7 @@ export default class IconWithBadge extends React.Component {
                     </Animated.View>
                 }
                 {
-                    // ToDo: check
-                    badgeCount > 9 &&
+                    animate && badgeCount > 9 &&
                     <Animated.View style={{
                         // If you're using react-native < 0.57 overflow outside of the parent
                         // will not work on Android, see https://git.io/fhLJ8

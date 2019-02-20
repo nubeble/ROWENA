@@ -67,7 +67,8 @@ export default class PostScreen extends React.Component {
 
         liked: false,
 
-        viewMarginBottom: 0
+        viewMarginBottom: 0,
+        disableContactButton: false
     };
 
     constructor(props) {
@@ -106,9 +107,13 @@ export default class PostScreen extends React.Component {
         const { post, from } = this.props.navigation.state.params;
         this.init(post);
 
-        // margin bottom
+        // view margin bottom
         console.log('PostScreen.componentDidMount', from);
-        if (from === 'ChatRoom' || from === 'LikesMain' && Platform.OS === 'ios') this.setState({ viewMarginBottom: 8 });
+        // if (from === 'ChatRoom' || from === 'LikesMain' && Platform.OS === 'ios') this.setState({ viewMarginBottom: 8 });
+        if (Platform.OS === 'ios') this.setState({ viewMarginBottom: 8 });
+
+        // show contact button
+        if (from === 'ChatRoom') this.setState({ disableContactButton: true });
 
         // check liked
         const liked = this.checkLiked(post.likes);
@@ -127,6 +132,16 @@ export default class PostScreen extends React.Component {
             this.setState({ showAlert: false });
         } else {
             this.props.navigation.dispatch(NavigationActions.back());
+
+            /*
+            const { from } = this.props.navigation.state.params;
+
+            if (from === 'LikesMain') {
+                this.props.navigation.navigate("likesMain");
+            } else {
+                this.props.navigation.dispatch(NavigationActions.back());
+            }
+            */
         }
 
         return true;
@@ -212,7 +227,7 @@ export default class PostScreen extends React.Component {
 
         await Firebase.updateLikes(uid, placeId, feedId, uri);
 
-        
+
         Vars.postToggleButtonPressed = true;
 
         this.toggling = false;
@@ -263,21 +278,6 @@ export default class PostScreen extends React.Component {
                 </Animated.View>
 
                 <View style={styles.searchBar}>
-                    {/*
-                    <TouchableOpacity
-                        style={{
-                            position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            right: 22,
-                            alignSelf: 'baseline'
-                        }}
-                        onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
-                    >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24}/>
-                    </TouchableOpacity>
-                    */}
-
-
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
@@ -317,8 +317,8 @@ export default class PostScreen extends React.Component {
                             ref={(fl) => this._flatList = fl}
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
-                            ListHeaderComponent={(
-                                <View>
+                            ListHeaderComponent={
+                                <View style={{ paddingBottom: this.state.viewMarginBottom }}>
                                     {/* profile pictures */}
                                     {this.renderSwiper(post)}
 
@@ -495,9 +495,17 @@ export default class PostScreen extends React.Component {
                                         </View>
                                     </View>
 
-                                    <View style={{ borderBottomColor: 'transparent', borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: this.state.viewMarginBottom }} />
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
+                                    {
+                                        <TouchableOpacity
+                                            style={[styles.contactButton, { marginTop: Theme.spacing.small + Theme.spacing.small, marginBottom: Theme.spacing.small + Theme.spacing.small }]}
+                                            onPress={async () => this.contact()}
+                                        >
+                                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
+                                        </TouchableOpacity>
+                                    }
                                 </View>
-                            )}
+                            }
                         />
                     </TouchableWithoutFeedback>
                 }
@@ -610,12 +618,12 @@ export default class PostScreen extends React.Component {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: Cons.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
-                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Cons.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
-                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
+                    titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
+                    cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
+                    confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
 
                 <Toast
@@ -1059,6 +1067,64 @@ export default class PostScreen extends React.Component {
         }
     }
 
+    async contact() {
+        if (this.state.isOwner) {
+            this.refs["toast"].show('Sorry, this is your post.', 500);
+            return;
+        }
+
+        if (this.state.disableContactButton) {
+            this.refs["toast"].show('Sorry, You have already opened a chatroom.', 500);
+            return;
+        }
+
+        const { post } = this.props.navigation.state.params;
+
+        const uid = Firebase.user().uid;
+
+        // find existing chat room (by uid)
+        const room = await Firebase.findChatRoomByPostId(uid, post.id);
+        if (room) {
+            /*
+            this.setState({ isNavigating: true }, () => {
+                this.props.navigation.navigate('room', { item: room });
+            });
+            */
+            this.props.navigation.navigate("chatRoom", { item: room });
+        } else {
+            // create new chat room
+            // --
+            const chatRoomId = Util.uid(); // create chat room id
+
+            const user1 = {
+                uid: uid,
+                name: Firebase.user().name,
+                picture: Firebase.user().photoUrl,
+            };
+
+            const user2 = {
+                // pid: post.id, // post id
+                uid: post.uid, // owner
+                name: post.name,
+                picture: post.pictures.one.uri
+            };
+
+            let users = [];
+            users.push(user1);
+            users.push(user2);
+
+            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.uid, true);
+            // --
+
+            /*
+            this.setState({ isNavigating: true }, () => {
+                this.props.navigation.navigate('room', { item: item });
+            });
+            */
+            this.props.navigation.navigate("chatRoom", { item: item });
+        }
+    }
+
     sendReply() {
         const message = this._reply._lastNativeText;
         console.log('sendReply', message);
@@ -1377,6 +1443,15 @@ const styles = StyleSheet.create({
         fontSize: 14,
         lineHeight: 18,
         fontFamily: "SuisseIntl-ThinItalic"
+    },
+    contactButton: {
+        width: '85%',
+        height: 45,
+        alignSelf: 'center',
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     notification: {
         position: "absolute",

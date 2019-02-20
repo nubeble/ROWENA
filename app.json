@@ -11,7 +11,7 @@
 			"android"
 		],
 		"orientation": "portrait",
-		"primaryColor": "#0000FF",
+		"primaryColor": "#FFFFFF",
 		"icon": "./assets/logo.png",
 		"assetBundlePatterns": [
 			"**/*"
@@ -27,9 +27,9 @@
 		},
 		"notification": {
 			"icon": "./assets/noti.png",
-			"color": "#00FF00",
+			"color": "#000000",
 			"androidMode": "collapse",
-			"androidCollapsedTitle": "#{unread_notifications} new interactions"
+			"androidCollapsedTitle": "#{unread_notifications} new messages"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0

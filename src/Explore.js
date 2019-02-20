@@ -18,7 +18,7 @@ import Firebase from './Firebase';
 // import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 
 /*
 const AnimatedText = Animated.createAnimatedComponent(Text);
@@ -49,7 +49,11 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     };
 
     componentDidMount() {
+        console.log('width', Dimensions.get('window').width);
+        console.log('height', Dimensions.get('window').height);
+
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         // console.log('Explore.componentDidMount', this.props);
         // const params = this.props.screenProps.params;
@@ -72,6 +76,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
 
     @autobind
     handleHardwareBackPress() {
+        console.log('move to Intro');
+
         // this.props.navigation.goBack();
         // this.props.navigation.goBack(this.props.screenProps.params.key);
         // this.props.navigation.dispatch(NavigationActions.back());
@@ -86,15 +92,22 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         */
 
         // this.props.navigation.dispatch(NavigationActions.back());
-        console.log('move to Intro');
+
         // this.props.screenProps.rootNavigation.navigate("intro");
         this.props.navigation.navigate("intro");
 
         return true;
     }
 
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'Explore';
+
+    }
+
     componentWillUnmount() {
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
 
         this.isClosed = true;
     }
@@ -157,7 +170,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 this.props.navigation.navigate("intro");
                             }}
                         >
-                            <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16}/>
+                            <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
                         </TouchableOpacity>
 
                         <TouchableOpacity

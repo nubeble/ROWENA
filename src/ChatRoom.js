@@ -193,11 +193,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                                 Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
                             }
-                            
+
                             this.props.navigation.navigate("chat");
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={async () => await this.openPost()}>
@@ -231,7 +231,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         }}
                         onPress={() => this.setState({ showAlert: true })}
                     >
-                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 
@@ -366,12 +366,12 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: Cons.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
-                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Cons.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
-                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
+                    titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
+                    cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
+                    confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
             </View>
         );
@@ -506,7 +506,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         return (
             <Send {...props} containerStyle={{ marginBottom: textInputMarginBottom + sendButtonMarginBottom }}>
                 <View style={styles.sendButton}>
-                    <Ionicons name='ios-send' color={Theme.color.selection} size={28}/>
+                    <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
 
                     {/*
                     <Image source={require('../../assets/send.png')} resizeMode={'center'}/>
@@ -522,7 +522,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             backgroundColor: Theme.color.background,
             borderTopColor: Theme.color.textInput
             // borderTopWidth: 0
-        }}/>
+        }} />
     }
 }
 

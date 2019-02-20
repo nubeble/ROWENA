@@ -6,6 +6,7 @@ import { Constants } from "expo";
 export var Vars = {
     postToggleButtonPressed: false,
     userFeedsChanged: false, // added or removed, not updated
+    currentScreenName: null, // string
 
 
 };
@@ -39,8 +40,12 @@ export var Cons = {
     },
 
     // alert dialog
+    alertWidth: Dimensions.get('window').width * 0.9,
     alertHeight: Dimensions.get('window').height * 0.25,
-    alertButtonMarginLeft: Dimensions.get('window').width * 0.1,
+    alertButtonWidth: Dimensions.get('window').width * 0.32,
+    alertButtonHeight: (Dimensions.get('window').height * 0.25) / 4,
+    alertButtonMarginBetween: Dimensions.get('window').width * 0.03,
+    // alertButtonPaddingTop: parseInt(Dimensions.get('window').height / 80),
 
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,

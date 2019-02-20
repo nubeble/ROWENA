@@ -70,6 +70,8 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
 
     @autobind
     onFocus() {
+        Vars.currentScreenName = 'LikesMain';
+
         if (Vars.postToggleButtonPressed) {
             Vars.postToggleButtonPressed = false;
             this.getSavedFeeds();
@@ -180,7 +182,7 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
             // post removed
             this.refs["toast"].show('The post is removed by the owner.', 500);
         } else {
-            this.props.navigation.navigate("postPreview", { post: post, from: 'LikesMain' });
+            this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
         }
     }
 
@@ -194,9 +196,10 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 20,
+                            fontSize: 18,
                             fontFamily: "SFProText-Semibold",
-                            alignSelf: 'center'
+                            alignSelf: 'flex-start',
+                            paddingLeft: 16
                         }}
                     >Saved ({this.state.totalFeedsSize})</Text>
 

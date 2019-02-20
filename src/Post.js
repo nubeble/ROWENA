@@ -204,7 +204,7 @@ export default class Post extends React.Component {
 
         await Firebase.updateLikes(uid, placeId, feedId, uri);
 
-        
+
         Vars.postToggleButtonPressed = true;
 
         this.toggling = false;
@@ -308,7 +308,7 @@ export default class Post extends React.Component {
                             ref={(fl) => this._flatList = fl}
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
-                            ListHeaderComponent={(
+                            ListHeaderComponent={
                                 <View>
                                     {/* profile pictures */}
                                     {this.renderSwiper(post)}
@@ -538,10 +538,8 @@ export default class Post extends React.Component {
                                         </View>
                                     </View>
 
-                                    <View style={{ borderBottomColor: this.state.isOwner ? 'transparent' : Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
-
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
                                     {
-                                        !this.state.isOwner &&
                                         <TouchableOpacity
                                             style={[styles.contactButton, { marginTop: Theme.spacing.small + Theme.spacing.small, marginBottom: Theme.spacing.small + Theme.spacing.small }]}
                                             onPress={async () => this.contact()}
@@ -550,7 +548,7 @@ export default class Post extends React.Component {
                                         </TouchableOpacity>
                                     }
                                 </View>
-                            )}
+                            }
                         />
                     </TouchableWithoutFeedback>
                 }
@@ -663,12 +661,12 @@ export default class Post extends React.Component {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: '80%', height: Cons.alertHeight, backgroundColor: "rgba(0, 0, 0, 0.7)", justifyContent: "space-between" }}
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Regular", color: '#FFF' }}
-                    cancelButtonStyle={{ marginBottom: 12, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 0, 0, 0.6)" }}
-                    cancelButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
-                    confirmButtonStyle={{ marginBottom: 12, marginLeft: Cons.alertButtonMarginLeft, width: 100, paddingTop: 10, paddingBottom: 8, backgroundColor: "rgba(255, 255, 255, 0.6)" }}
-                    confirmButtonTextStyle={{ textAlign: 'center', fontSize: 16, lineHeight: 16, fontFamily: "SFProText-Regular" }}
+                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
+                    titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
+                    cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
+                    confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
 
                 <Toast
@@ -1113,6 +1111,11 @@ export default class Post extends React.Component {
     }
 
     async contact() {
+        if (this.state.isOwner) {
+            this.refs["toast"].show('Sorry, this is your post.', 500);
+            return;
+        }
+
         const { post } = this.props.navigation.state.params;
 
         const uid = Firebase.user().uid;

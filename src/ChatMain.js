@@ -12,8 +12,7 @@ import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
-import AwesomeAlert from 'react-native-awesome-alerts';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 
 
 export default class ChatMain extends React.Component {
@@ -21,8 +20,7 @@ export default class ChatMain extends React.Component {
         name: '',
         renderChat: false,
         isLoadingChat: false,
-        chatRoomList: [],
-        showAlert: false
+        chatRoomList: []
     }
 
     constructor(props) {
@@ -58,6 +56,8 @@ export default class ChatMain extends React.Component {
     onFocus() {
         console.log('ChatMain.onFocus');
         this.isFocused = true;
+
+        Vars.currentScreenName = 'ChatMain';
 
         const params = this.props.navigation.state.params;
         if (params) {
@@ -128,13 +128,7 @@ export default class ChatMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        if (this.state.showAlert) {
-            this.setState({ showAlert: false });
-        } else {
-            // this.props.navigation.dispatch(NavigationActions.back()); // move to intro
-            // this.props.screenProps.rootNavigation.navigate("intro");
-            this.props.navigation.navigate("intro");
-        }
+        this.props.navigation.navigate("intro");
 
         return true;
     }
@@ -159,9 +153,10 @@ export default class ChatMain extends React.Component {
                     <Text
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 20,
+                            fontSize: 18,
                             fontFamily: "SFProText-Semibold",
-                            alignSelf: 'center'
+                            alignSelf: 'flex-start',
+                            paddingLeft: 16
                         }}
                     >Messages</Text>
 
@@ -205,26 +200,6 @@ export default class ChatMain extends React.Component {
                     position='top'
                     positionValue={Dimensions.get('window').height / 2}
                     opacity={0.6}
-                />
-
-                <AwesomeAlert
-                    show={this.state.showAlert}
-                    showProgress={false}
-                    title="Want to leave your chatroom?"
-                    // message="I have a message for you!"
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-                    cancelText="No, cancel"
-                    confirmText="Yes, delete it"
-                    confirmButtonColor="#DD6B55"
-                    onCancelPressed={() => {
-                        this.setState({ showAlert: false });
-                    }}
-                    onConfirmPressed={() => {
-                        this.setState({ showAlert: false });
-                    }}
                 />
             </View >
         );

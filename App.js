@@ -11,7 +11,7 @@ import { ProfileStore } from "./src/rnff/src/home";
 import autobind from "autobind-decorator";
 import { Notifications } from 'expo';
 import Firebase from './src/Firebase';
-import { Cons } from './src/Globals';
+import { Cons, Vars } from './src/Globals';
 
 configure({ enforceActions: 'observed' })
 
@@ -164,9 +164,13 @@ export default class App extends React.Component {
                         const chatRoomId = data.userData.chatRoomId;
                         */
 
-                        // show badge
-                        // this.setState({ badgeOnChatCount: this.state.badgeOnChatCount + 1, showBadgeOnChat: true });
-                        this.setState({ showBadgeOnChat: true, badgeOnChatCount: 0 });
+                        console.log('Vars.currentScreenName', Vars.currentScreenName);
+
+                        if (Vars.currentScreenName !== 'ChatMain') {
+                            // show badge
+                            // this.setState({ badgeOnChatCount: this.state.badgeOnChatCount + 1, showBadgeOnChat: true });
+                            this.setState({ showBadgeOnChat: true, badgeOnChatCount: 0 });
+                        }
                     } break;
 
                     case Cons.pushNotification.review: {
@@ -625,7 +629,8 @@ const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
 const LikesModalNavigator = createStackNavigator(
     {
         likesMain: { screen: LikesMain },
-        postPreview: { screen: PostModalNavigatorWrapper }
+        // postPreview: { screen: PostModalNavigatorWrapper }
+        likesPost: { screen: PostModalNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -652,7 +657,8 @@ LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const post = navigation.state.routes[1];
     // post.isTransitioning
 
-    if (post && post.routeName === 'postPreview') {
+    // if (post && post.routeName === 'postPreview') {
+    if (post && post.routeName === 'likesPost') {
         return {
             tabBarVisible: false
         };
