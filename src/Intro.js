@@ -128,7 +128,7 @@ export default class Intro extends React.Component {
                 // Intro.images[i] = _uri;
 
                 // load one by one
-                !this.isClosed && this.setState({ places });
+                !this.closed && this.setState({ places });
                 Intro.images[i] = _uri;
             }
             */
@@ -137,7 +137,7 @@ export default class Intro extends React.Component {
             Intro.images[i] = _uri;
 
             // load one by one
-            !this.isClosed && this.setState({ places });
+            !this.closed && this.setState({ places });
 
 
 
@@ -149,7 +149,7 @@ export default class Intro extends React.Component {
         }
 
         // load all at once
-        // !this.isClosed && this.setState({ places, refreshing: false });
+        // !this.closed && this.setState({ places, refreshing: false });
     }
 
     /*
@@ -220,11 +220,11 @@ export default class Intro extends React.Component {
                     console.log('watchPlaceSize', index, count);
 
                     places[index] = { ...places[index], length: count };
-                    !this.isClosed && this.setState({ places });
+                    !this.closed && this.setState({ places });
                 }
             });
 
-            // if (this.state.refreshing) !this.isClosed && this.setState({ refreshing: false });
+            // if (this.state.refreshing) !this.closed && this.setState({ refreshing: false });
         }
     }
 
@@ -241,7 +241,7 @@ export default class Intro extends React.Component {
 
         this.onFocusListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     render(): React.Node {
@@ -250,10 +250,6 @@ export default class Intro extends React.Component {
 
         return (
             <View style={styles.flex}>
-                {/*
-                <SearchModal ref='searchModal'></SearchModal>
-                */}
-
                 <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,
@@ -263,7 +259,6 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 12, top: 8, alignSelf: 'baseline' }}
                             onPress={() => {
-                                // this.refs.searchModal.showModal();
                                 this.props.navigation.navigate("introSearchModal");
                             }}
                         >
@@ -273,7 +268,6 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                // this.refs.searchModal.showModal();
                                 this.props.navigation.navigate("introSearchModal");
                             }}
                         >
@@ -537,7 +531,7 @@ export default class Intro extends React.Component {
             },
             async () => {
                 setTimeout(() => {
-                    !this.isClosed && this.setState({ refreshing: false });
+                    !this.closed && this.setState({ refreshing: false });
                 }, 100);
 
                 await this.getPlacesImage();

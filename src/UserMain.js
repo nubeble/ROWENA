@@ -22,7 +22,7 @@ export default class UserMain extends React.Component {
 
         this.hardwareBackPressListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     @autobind
@@ -40,14 +40,16 @@ export default class UserMain extends React.Component {
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            right: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     {/*

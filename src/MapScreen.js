@@ -26,7 +26,7 @@ export default class MapScreen extends React.Component {
         // this.getCurrentPosition();
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderMap: true });
+            !this.closed && this.setState({ renderMap: true });
         }, 0);
     }
 
@@ -40,7 +40,7 @@ export default class MapScreen extends React.Component {
     componentWillUnmount() {
         this.hardwareBackPressListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     render() {
@@ -52,63 +52,68 @@ export default class MapScreen extends React.Component {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
+                    {/* close button */}
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            // this.props.navigation.state.params.onGoBack();
                             this.props.navigation.goBack();
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="black" size={24}/>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{
-                            position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            right: 22,
-                            alignSelf: 'baseline'
-                        }}
-                        onPress={() => this.getCurrentPosition()}
-                    >
-                        <MaterialIcons name='gps-fixed' color="black" size={24}/>
+                        <Ionicons name='md-arrow-back' color="black" size={24} />
                     </TouchableOpacity>
 
                     {/* ToDo: get geolocation of my location */}
                     <Text style={styles.distance}>? kilometers away</Text>
+
+                    {/* gps button */}
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => this.getCurrentPosition()}
+                    >
+                        <MaterialIcons name='gps-fixed' color="black" size={24} />
+                    </TouchableOpacity>
                 </View>
 
                 {
                     this.state.renderMap &&
-                        <MapView
-                            ref={map => { this.map = map }}
-                            style={styles.map}
-                            initialRegion={{
+                    <MapView
+                        ref={map => { this.map = map }}
+                        style={styles.map}
+                        initialRegion={{
+                            latitude: latitude,
+                            longitude: longitude,
+                            latitudeDelta: 0.03,
+                            longitudeDelta: 0.03
+                        }}
+                        showsUserLocation={true}
+                        // showsMyLocationButton={true}
+                        onMapReady={this.onMapReady}
+                        onRegionChange={this.onRegionChange}
+                        onRegionChangeComplete={this.onRegionChangeComplete}
+                    >
+                        <MapView.Marker
+                            coordinate={{
                                 latitude: latitude,
-                                longitude: longitude,
-                                latitudeDelta: 0.03,
-                                longitudeDelta: 0.03
+                                longitude: longitude
                             }}
-                            showsUserLocation={true}
-                            // showsMyLocationButton={true}
-                            onMapReady={this.onMapReady}
-                            onRegionChange={this.onRegionChange}
-                            onRegionChangeComplete={this.onRegionChangeComplete}
-                        >
-                            <MapView.Marker
-                                coordinate={{
-                                    latitude: latitude,
-                                    longitude: longitude
-                                }}
-                            // title={'title'}
-                            // description={'description'}
-                            />
-                        </MapView>
+                        // title={'title'}
+                        // description={'description'}
+                        />
+                    </MapView>
                 }
             </View>
         );

@@ -47,11 +47,11 @@ export default class Feed extends React.Component<FeedProps> {
         }
         */
 
-        !this.isClosed && this.setState({ isLoadingFeed: false, refreshing: false });
+        !this.closed && this.setState({ isLoadingFeed: false, refreshing: false });
     }
 
     componentWillUnmount() {
-        this.isClosed = true;
+        this.closed = true;
     }
 
     @autobind

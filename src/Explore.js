@@ -70,7 +70,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         this.props.feedStore.init(query);
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderFeed: true });
+            !this.closed && this.setState({ renderFeed: true });
         }, 0);
     }
 
@@ -109,7 +109,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     render(): React.Node {

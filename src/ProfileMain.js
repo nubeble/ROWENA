@@ -59,7 +59,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         this.getUserFeeds();
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderFeed: true });
+            !this.closed && this.setState({ renderFeed: true });
         }, 0);
     }
 
@@ -100,7 +100,7 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     getUserFeeds() {
@@ -207,11 +207,11 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
 
                     <Text
                         style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 18,
+                            color: Theme.color.text1,
+                            fontSize: 20,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'flex-start',
-                            paddingLeft: 16
+                            marginLeft: 16
                         }}
                     >Profile</Text>
 
@@ -1128,7 +1128,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
+        // paddingBottom: 8,
+        paddingBottom: 4,
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },

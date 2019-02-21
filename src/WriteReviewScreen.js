@@ -37,10 +37,10 @@ export default class WriteReviewScreen extends React.Component {
         this.setState({ rating });
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
 
-        if (!this.isClosed) {
+        if (!this.closed) {
             let that = this;
             setTimeout(function () {
-                !that.isClosed && that.refs['comment'] && that.refs['comment'].focus();
+                !that.closed && that.refs['comment'] && that.refs['comment'].focus();
             }, 1500); // 1.5 sec
         }
     }
@@ -50,7 +50,7 @@ export default class WriteReviewScreen extends React.Component {
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     @autobind
@@ -74,7 +74,7 @@ export default class WriteReviewScreen extends React.Component {
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
         const postButtonTop = bottomPosition - 10 - 50; // 10: bottom gap, 50: button height
 
-        !this.isClosed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
+        !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
 
     @autobind
@@ -82,7 +82,7 @@ export default class WriteReviewScreen extends React.Component {
         const bottomPosition = Dimensions.get('window').height;
         const postButtonTop = bottomPosition - 80 - 50; // 80: bottom gap, 50: button height
 
-        !this.isClosed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
+        !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
 
     @autobind
@@ -101,7 +101,7 @@ export default class WriteReviewScreen extends React.Component {
         const { post, rating } = this.props.navigation.state.params;
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
-                if (!this.isClosed) {
+                if (!this.closed) {
                     this.props.navigation.state.params.onGoBack(false);
                     this.props.navigation.goBack();
                 }
@@ -115,7 +115,7 @@ export default class WriteReviewScreen extends React.Component {
         this.sendPushNotification(comment);
 
         this.refs["toast"].show('Your review has been submitted!', 500, () => {
-            if (!this.isClosed) {
+            if (!this.closed) {
                 this.props.navigation.state.params.onGoBack(true);
                 this.props.navigation.goBack();
             }
@@ -162,24 +162,26 @@ export default class WriteReviewScreen extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
                             this.props.navigation.state.params.onGoBack(false);
                             this.props.navigation.goBack();
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     {/* ToDo: get geolocation of my location */}

@@ -7,7 +7,8 @@ export default class IconWithBadge extends React.Component {
     constructor() {
         super();
 
-        this.animating = false;
+        // this.animating = false;
+        this.animationState = 0; // 0: stop, 1: ing, 2: finished
         this.springValue = new Animated.Value(1);
     }
 
@@ -15,8 +16,8 @@ export default class IconWithBadge extends React.Component {
         const { type, name, badgeCount, color, size, animate } = this.props;
 
         if (animate) {
-            if (!this.animating) {
-                this.animating = true;
+            if (this.animationState === 0) {
+                this.animationState = 1;
 
                 this.springValue.setValue(2);
 
@@ -24,11 +25,10 @@ export default class IconWithBadge extends React.Component {
                     toValue: 1,
                     friction: 2,
                     tension: 1
-                    // }).start(() => this.animating = false); // play repeatedly
-                }).start(); // play only one time
+                }).start(() => this.animationState = 2); // finished
             }
         } else {
-            this.animating = false;
+            this.animationState = 0;
         }
 
 

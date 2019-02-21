@@ -49,7 +49,7 @@ export default class SignUpWithEmail extends React.Component {
 
         let that = this;
         setTimeout(function () {
-            !that.isClosed && that.refs['emailInput'] && that.refs['emailInput']._root.focus();
+            !that.closed && that.refs['emailInput'] && that.refs['emailInput']._root.focus();
         }, 750); // 0.75 sec
     }
 
@@ -57,7 +57,7 @@ export default class SignUpWithEmail extends React.Component {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     @autobind
@@ -65,7 +65,7 @@ export default class SignUpWithEmail extends React.Component {
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
         const signUpButtonTop = bottomPosition - 10 - 50; // 10: bottom gap, 50: button height
 
-        !this.isClosed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
+        !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
 
     @autobind
@@ -73,7 +73,7 @@ export default class SignUpWithEmail extends React.Component {
         const bottomPosition = Dimensions.get('window').height;
         const signUpButtonTop = bottomPosition - 80 - 50; // 80: bottom gap, 50: button height
 
-        !this.isClosed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
+        !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
 
     showNotification = (msg) => {
@@ -337,8 +337,8 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         // close indicator
-        // !this.isClosed && this.setState({ showIndicator: false });
-        !this.isClosed && this.setState({ showSignUpLoader: false });
+        // !this.closed && this.setState({ showIndicator: false });
+        !this.closed && this.setState({ showSignUpLoader: false });
     }
 
     render() {
@@ -381,7 +381,7 @@ export default class SignUpWithEmail extends React.Component {
                                 style={styles.notificationButton}
                                 onPress={() => this.hideNotification()}
                             >
-                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                             </TouchableOpacity>
                         </Animated.View>
 
@@ -401,14 +401,16 @@ export default class SignUpWithEmail extends React.Component {
                         <View style={styles.searchBar}>
                             <TouchableOpacity
                                 style={{
+                                    width: 48,
+                                    height: 48,
                                     position: 'absolute',
-                                    bottom: 8 + 4, // paddingBottom from searchBar
-                                    left: 22,
-                                    alignSelf: 'baseline'
+                                    bottom: 2,
+                                    left: 2,
+                                    justifyContent: "center", alignItems: "center"
                                 }}
                                 onPress={() => this.props.navigation.goBack()}
                             >
-                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                             </TouchableOpacity>
                         </View>
 
@@ -428,7 +430,7 @@ export default class SignUpWithEmail extends React.Component {
                                     keyboardType={'email-address'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
-                                    
+
                                     // selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     selectionColor={Theme.color.selection}
                                     keyboardAppearance={'dark'}
@@ -437,8 +439,8 @@ export default class SignUpWithEmail extends React.Component {
 
                                     autoCapitalize="none"
                                 />
-                                {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28}/>}
-                                {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28}/>}
+                                {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                                {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             </Item>
 
                             <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>PASSWORD</Label>
@@ -463,8 +465,8 @@ export default class SignUpWithEmail extends React.Component {
 
                                     autoCapitalize="none"
                                 />
-                                {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28}/>}
-                                {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28}/>}
+                                {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                                {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             </Item>
                         </Form>
 

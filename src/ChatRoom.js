@@ -98,13 +98,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 }
             }
 
-            !this.isClosed && this.setState(previousState => ({
+            !this.closed && this.setState(previousState => ({
                 messages: GiftedChat.append(previousState.messages, message)
             }));
         });
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderPost: true });
+            !this.closed && this.setState({ renderPost: true });
         }, 500);
     }
 
@@ -118,7 +118,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const item = this.props.navigation.state.params.item;
         Firebase.chatOff(item.id);
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     @autobind
@@ -178,12 +178,15 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         return (
             <View style={styles.container}>
                 <View style={styles.searchBar}>
+                    {/* close button */}
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
                             // save the last message to chat main
@@ -208,7 +211,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             uri={this.state.titleImageUri}
                         />
                     </TouchableOpacity>
-
                     <TouchableOpacity onPress={async () => await this.openPost()}>
                         <Text
                             style={{
@@ -222,12 +224,15 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         >{this.state.titleName}</Text>
                     </TouchableOpacity>
 
+                    {/* leave button */}
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            right: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => this.setState({ showAlert: true })}
                     >
@@ -395,7 +400,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             if (message) {
                 console.log('message list', message);
 
-                !this.isClosed && this.setState(previousState => ({
+                !this.closed && this.setState(previousState => ({
                     messages: GiftedChat.prepend(previousState.messages, message)
                 }));
 

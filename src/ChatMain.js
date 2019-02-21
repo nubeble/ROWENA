@@ -48,7 +48,7 @@ export default class ChatMain extends React.Component {
         });
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderChat: true });
+            !this.closed && this.setState({ renderChat: true });
         }, 0);
     }
 
@@ -140,7 +140,7 @@ export default class ChatMain extends React.Component {
         this.onBlurListener.remove();
         this.hardwareBackPressListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     render(): React.Node {
@@ -152,11 +152,11 @@ export default class ChatMain extends React.Component {
 
                     <Text
                         style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 18,
+                            color: Theme.color.text1,
+                            fontSize: 20,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'flex-start',
-                            paddingLeft: 16
+                            marginLeft: 16
                         }}
                     >Messages</Text>
 
@@ -389,7 +389,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
+        // paddingBottom: 8,
+        paddingBottom: 4,
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },

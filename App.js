@@ -507,7 +507,6 @@ const PostModalNavigator = createStackNavigator(
     {
         mode: 'card',
         headerMode: 'none',
-
         navigationOptions: {
             gesturesEnabled: false
         },
@@ -552,7 +551,6 @@ const UserModalNavigator = createStackNavigator(
     {
         mode: 'card',
         headerMode: 'none',
-
         navigationOptions: {
             gesturesEnabled: false
         },

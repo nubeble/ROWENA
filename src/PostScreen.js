@@ -23,7 +23,7 @@ import autobind from "autobind-decorator";
 import { observer } from "mobx-react/native";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { sendPushNotification } from './PushNotifications';
@@ -67,6 +67,7 @@ export default class PostScreen extends React.Component {
 
         liked: false,
 
+        from: null,
         viewMarginBottom: 0,
         disableContactButton: false
     };
@@ -109,7 +110,8 @@ export default class PostScreen extends React.Component {
 
         // view margin bottom
         console.log('PostScreen.componentDidMount', from);
-        // if (from === 'ChatRoom' || from === 'LikesMain' && Platform.OS === 'ios') this.setState({ viewMarginBottom: 8 });
+        this.setState({ from });
+
         if (Platform.OS === 'ios') this.setState({ viewMarginBottom: 8 });
 
         // show contact button
@@ -122,7 +124,7 @@ export default class PostScreen extends React.Component {
         }
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderList: true });
+            !this.closed && this.setState({ renderList: true });
         }, 0);
     }
 
@@ -183,7 +185,11 @@ export default class PostScreen extends React.Component {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
+    }
+
+    @autobind
+    async edit() {
     }
 
     @autobind
@@ -278,32 +284,58 @@ export default class PostScreen extends React.Component {
                 </Animated.View>
 
                 <View style={styles.searchBar}>
+                    {/* close button */}
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
-                        onPress={() => this.props.navigation.dispatch(NavigationActions.back())}
+                        onPress={() => {
+                            this.props.navigation.dispatch(NavigationActions.back());
+                        }}
                     >
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
-                    <TouchableWithoutFeedback onPress={this.toggle}>
-                        <View style={{
-                            position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            right: 22,
-                            justifyContent: "center", alignItems: "center"
-                        }}>
-                            {
-                                this.state.liked ? // false -> true
-                                    <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
-                                    :
-                                    <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
-                            }
-                        </View>
-                    </TouchableWithoutFeedback>
+
+                    {/* like button or edit button */}
+                    {
+                        (this.state.from === 'Profile') ?
+                            <TouchableOpacity
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    right: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={this.edit}
+                            >
+                                <MaterialIcons name="edit" color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+                            :
+                            <TouchableWithoutFeedback onPress={this.toggle}>
+                                <View style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    right: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}>
+                                    {
+                                        this.state.liked ? // false -> true
+                                            <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
+                                            :
+                                            <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
+                                    }
+                                </View>
+                            </TouchableWithoutFeedback>
+                    }
                 </View>
 
                 {
@@ -1140,7 +1172,7 @@ export default class PostScreen extends React.Component {
         this.sendPushNotification(message);
 
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
-            if (!this.isClosed) {
+            if (!this.closed) {
                 // this._reply.blur();
                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
@@ -1176,7 +1208,7 @@ export default class PostScreen extends React.Component {
             await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
-                if (!this.isClosed) {
+                if (!this.closed) {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                     this.reviewStore.init(query);
@@ -1209,7 +1241,7 @@ export default class PostScreen extends React.Component {
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
-                if (!this.isClosed) {
+                if (!this.closed) {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                     this.reviewStore.init(query);

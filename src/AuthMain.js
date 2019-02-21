@@ -21,7 +21,7 @@ export default class AuthMain extends React.Component {
     };
 
     componentWillUnmount() {
-        this.isClosed = true;
+        this.closed = true;
     }
 
     async continueWithFacebook() {
@@ -62,7 +62,7 @@ export default class AuthMain extends React.Component {
         }
 
         // close indicator
-        !this.isClosed && this.setState({ showFacebookLoader: false });
+        !this.closed && this.setState({ showFacebookLoader: false });
 
         // ToDo: enable buttons
     }

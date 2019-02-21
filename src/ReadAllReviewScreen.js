@@ -75,7 +75,7 @@ export default class ReadAllReviewScreen extends React.Component {
         this.loadReviewFromTheStart();
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderReview: true });
+            !this.closed && this.setState({ renderReview: true });
         }, 0);
     }
 
@@ -83,7 +83,7 @@ export default class ReadAllReviewScreen extends React.Component {
     onAddToReviewFinished() {
         console.log('onAddToReviewFinished');
 
-        !this.isClosed && this.setState({ isLoadingReview: false, refreshing: false });
+        !this.closed && this.setState({ isLoadingReview: false, refreshing: false });
     }
 
     @autobind
@@ -102,7 +102,7 @@ export default class ReadAllReviewScreen extends React.Component {
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     render(): React.Node {
@@ -130,36 +130,27 @@ export default class ReadAllReviewScreen extends React.Component {
                         style={styles.notificationButton}
                         onPress={() => this.hideNotification()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20}/>
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            left: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => this.props.navigation.goBack()}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 
                 {
-                    /*
-                    !this.state.renderReview
-                        ?
-                        <ActivityIndicator
-                            style={styles.activityIndicator}
-                            animating={true}
-                            size="large"
-                            color='grey'
-                        />
-                        :
-                    */
                     this.state.renderReview &&
                     <TouchableWithoutFeedback
                         onPress={() => {
@@ -251,7 +242,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             }}
                                 onPress={() => this.sendReply()}
                             >
-                                <Ionicons name='ios-send' color={Theme.color.selection} size={24}/>
+                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
                             </TouchableOpacity>
 
                         </View>
@@ -431,7 +422,7 @@ export default class ReadAllReviewScreen extends React.Component {
                         )
                         :
                         (
-                            <View style={{ paddingTop: Theme.spacing.base - Theme.spacing.tiny }}/>
+                            <View style={{ paddingTop: Theme.spacing.base - Theme.spacing.tiny }} />
                         )
                 }
             </View>
@@ -472,7 +463,7 @@ export default class ReadAllReviewScreen extends React.Component {
     @autobind
     itemSeparatorComponent() {
         return (
-            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }}/>
+            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }} />
         );
     }
 
@@ -562,7 +553,7 @@ export default class ReadAllReviewScreen extends React.Component {
                 </View>
                 :
                 <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    <FirstPost {...{ navigation }}/>
+                    <FirstPost {...{ navigation }} />
                 </View>
         );
     }
@@ -690,7 +681,7 @@ export default class ReadAllReviewScreen extends React.Component {
         this.sendPushNotification(message);
 
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
-            if (!this.isClosed) {
+            if (!this.closed) {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
@@ -725,7 +716,7 @@ export default class ReadAllReviewScreen extends React.Component {
             await Firebase.removeReview(placeId, feedId, reviewId, userUid);
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
-                if (!this.isClosed) {
+                if (!this.closed) {
                     // refresh all
                     // this.refreshReviews(placeId, feedId, count - 1);
                     this.refreshReviews(placeId, feedId, 5);
@@ -748,7 +739,7 @@ export default class ReadAllReviewScreen extends React.Component {
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
-                if (!this.isClosed) {
+                if (!this.closed) {
                     // refresh UI
                     // this.refreshReviews(placeId, feedId, count - 1);
                     this.refreshReviews(placeId, feedId, 5);

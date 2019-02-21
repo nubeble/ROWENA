@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, Modal, View, TouchableOpacity, Platform } from 'react-native';
+import { StyleSheet, BackHandler, View, TouchableOpacity, Platform } from 'react-native';
 import { Header } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
 import { Constants } from 'expo';
 import { Theme } from './rnff/src/components';
 import { Cons } from "./Globals";
+import autobind from "autobind-decorator";
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
@@ -21,13 +22,24 @@ export default class SearchScreen extends React.Component {
     };
 
     componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderScreen: true });
+            !this.closed && this.setState({ renderScreen: true });
         }, 0);
     }
 
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.goBack();
+
+        return true;
+    }
+
     componentWillUnmount() {
-        this.isClosed = true;
+        this.hardwareBackPressListener.remove();
+
+        this.closed = true;
     }
 
     render() {
@@ -35,16 +47,17 @@ export default class SearchScreen extends React.Component {
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
-                        // style={{ marginTop: Platform.OS === "ios" ? Constants.statusBarHeight + Header.HEIGHT / 3 - 3 : Header.HEIGHT / 3 - 3, marginRight: 22, alignSelf: 'baseline' }}
                         style={{
+                            width: 48,
+                            height: 48,
                             position: 'absolute',
-                            bottom: 8 + 4, // paddingBottom from searchBar
-                            right: 22,
-                            alignSelf: 'baseline'
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => this.props.navigation.goBack()}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 
@@ -74,7 +87,7 @@ export default class SearchScreen extends React.Component {
 
                             // close the modal in 0.3 sec
                             setTimeout(() => {
-                                !this.isClosed && this.props.navigation.goBack();
+                                !this.closed && this.props.navigation.goBack();
                             }, 300);
                         }}
 

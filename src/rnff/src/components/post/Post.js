@@ -47,7 +47,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         this.unsubscribeToPost();
         this.unsubscribeToProfile();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     render(): React.Node {

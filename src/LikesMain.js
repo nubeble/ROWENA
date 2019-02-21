@@ -52,7 +52,7 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
         this.getSavedFeeds();
 
         setTimeout(() => {
-            !this.isClosed && this.setState({ renderList: true });
+            !this.closed && this.setState({ renderList: true });
         }, 0);
     }
 
@@ -94,7 +94,7 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
-        this.isClosed = true;
+        this.closed = true;
     }
 
     getSavedFeeds() {
@@ -195,13 +195,13 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
 
                     <Text
                         style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 18,
+                            color: Theme.color.text1,
+                            fontSize: 20,
                             fontFamily: "SFProText-Semibold",
                             alignSelf: 'flex-start',
-                            paddingLeft: 16
+                            marginLeft: 16
                         }}
-                    >Saved ({this.state.totalFeedsSize})</Text>
+                    >Saved</Text>
 
                 </View>
 
@@ -298,7 +298,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
+        // paddingBottom: 8,
+        paddingBottom: 4,
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
