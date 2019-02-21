@@ -1,6 +1,7 @@
 import { Asset } from "expo";
 
 const Splash = require('../assets/splash.png');
+const user = require('../assets/user.png');
 
 const Bangkok = require('../assets/place/Bangkok.jpg');
 const Manila = require('../assets/place/Manila.jpg');
@@ -17,6 +18,7 @@ const scale = require('../assets/icon/scale.png');
 
 export default class PreloadImage {
     static Splash = Splash;
+    static user = user;
 
     static Bangkok = Bangkok;
     static Manila = Manila;
@@ -35,6 +37,7 @@ export default class PreloadImage {
             // Asset.loadAsync(Images.logo)
             Asset.loadAsync([
                 PreloadImage.Splash,
+                PreloadImage.user,
 
                 PreloadImage.Bangkok,
                 PreloadImage.Manila,

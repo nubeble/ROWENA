@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
 // import { StyleGuide } from "./rne/src/components/theme";
@@ -15,6 +15,7 @@ import type { ScreenProps } from "./rnff/src/components/Types";
 import { Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import PreloadImage from './PreloadImage';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -192,6 +193,16 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
     }
 
     render() {
+        const { profile } = this.props.profileStore;
+
+        const baselineTop = 0;
+
+        const avatarName = (profile.name) ? profile.name : 'Max Power';
+        const avatarPicture = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
+        const avatarHeight = 70;
+
+        const bodyInfoItemWidth = Dimensions.get('window').width / 5;
+        const bodyInfoItemHeight = bodyInfoItemWidth;
 
         return (
             <View style={styles.flex}>
@@ -224,6 +235,96 @@ export default class ProfileMain extends React.Component<ScreenProps<> & Injecte
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
                             <View>
+                                <View style={styles.infoContainer}>
+
+                                    <TouchableHighlight
+                                        onPress={() => console.log('12121212')}
+                                    >
+                                        <View style={{ width: '100%', height: 100 }}>
+
+                                            <TouchableOpacity
+                                                style={{ width: avatarHeight, height: avatarHeight, position: "absolute", top: (100 - avatarHeight) / 2, right: 30 }}
+                                                onPress={() => console.log('hi')}
+                                            >
+                                                <Image
+                                                    style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
+                                                    source={avatarPicture}
+                                                />
+                                            </TouchableOpacity>
+                                            <Text style={{ color: Theme.color.text1, fontSize: 24, fontFamily: "SFProText-Semibold", position: "absolute", top: baselineTop + 20, left: 30 }}>{avatarName}</Text>
+                                            <Text style={{ color: Theme.color.text2, fontSize: 16, fontFamily: "SFProText-Light", position: "absolute", top: baselineTop + 56, left: 30 }}>View and edit profile</Text>
+
+                                        </View>
+                                    </TouchableHighlight>
+
+                                    <View style={{
+                                        // backgroundColor: 'green',
+                                        width: '100%',
+                                        flexDirection: 'row',
+                                        alignItems: 'center', justifyContent: 'center',
+                                        /*
+                                        paddingVertical: bodyInfoContainerPaddingVertical,
+                                        paddingHorizontal: bodyInfoContainerPaddingHorizontal
+                                        */
+                                        position: "absolute", top: baselineTop + 120, left: 0
+                                    }}
+                                    >
+                                        <View style={{
+                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Text style={styles.bodyInfoTitle}>Age</Text>
+                                            <Text style={styles.bodyInfoContent}>20</Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                borderLeftWidth: 5,
+                                                borderLeftColor: Theme.color.line,
+                                                //height: bodyInfoItemHeight * 0.5
+                                            }}
+                                        />
+                                        <View style={{
+                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Text style={styles.bodyInfoTitle}>Height</Text>
+                                            <Text style={styles.bodyInfoContent}>164</Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                borderLeftWidth: 5,
+                                                borderLeftColor: Theme.color.line,
+                                                //height: bodyInfoItemHeight * 0.5
+                                            }}
+                                        />
+                                        <View style={{
+                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Text style={styles.bodyInfoTitle}>Weight</Text>
+                                            <Text style={styles.bodyInfoContent}>48</Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                borderLeftWidth: 5,
+                                                borderLeftColor: Theme.color.line,
+                                                //height: bodyInfoItemHeight * 0.5
+                                            }}
+                                        />
+                                        <View style={{
+                                            backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
+                                            alignItems: 'center', justifyContent: 'center'
+                                        }}>
+                                            <Text style={styles.bodyInfoTitle}>Bust Size</Text>
+                                            <Text style={styles.bodyInfoContent}>C</Text>
+                                        </View>
+                                    </View>
+                                </View>
+
+
+
+
+
                                 <TouchableOpacity onPress={() => this.uploadPicture(0)}>
                                     <SmartImage
                                         style={styles.ad}
@@ -1139,34 +1240,15 @@ const styles = StyleSheet.create({
         // backgroundColor: 'black'
     },
     ad: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
-        marginBottom: Theme.spacing.small
+        width: parseInt(Dimensions.get('window').width),
+        height: parseInt(Dimensions.get('window').width) / 21 * 9,
+        marginTop: Theme.spacing.tiny,
+        marginBottom: Theme.spacing.tiny
     },
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
-
-
-    bottomButton: {
-        width: '85%',
-        height: 45,
-
-        alignSelf: 'center',
-
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        backgroundColor: "grey",
-        borderRadius: 5,
-        borderColor: "transparent",
-        borderWidth: 0,
-
-        marginBottom: 10
-    },
-
-
     contentContainer: {
         flexGrow: 1
     },
@@ -1214,5 +1296,51 @@ const styles = StyleSheet.create({
     bottomIndicator: {
         marginTop: 20,
         marginBottom: 20
-    }
+    },
+
+
+    infoContainer: {
+        backgroundColor: '#123456',
+        width: '100%',
+        height: 280,
+        flex: 1,
+        marginBottom: 10
+    },
+    bodyInfoTitle: {
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        paddingTop: Theme.spacing.base
+    },
+    bodyInfoContent: {
+        color: 'white',
+        fontSize: 18,
+        fontFamily: "SFProText-Bold",
+        paddingTop: Theme.spacing.xSmall,
+        paddingBottom: Theme.spacing.base
+    },
+
+
+
+
+    bottomButton: {
+        width: '85%',
+        height: 45,
+
+        alignSelf: 'center',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: "grey",
+        borderRadius: 5,
+        borderColor: "transparent",
+        borderWidth: 0,
+
+        marginBottom: 10
+    },
+
+
+
+
 });
