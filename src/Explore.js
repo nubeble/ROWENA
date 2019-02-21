@@ -163,7 +163,8 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                         borderRadius: 25
                     }}>
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
+                            // style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
+                            style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 console.log('move to Intro');
                                 // this.props.screenProps.rootNavigation.navigate("intro");

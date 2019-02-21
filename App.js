@@ -378,7 +378,13 @@ const ExploreStackNavigator = createStackNavigator(
     },
     {
         mode: 'modal',
-        headerMode: 'none'
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
     }
 );
 
@@ -406,7 +412,13 @@ const IntroStackNavigator = createStackNavigator(
     },
     {
         mode: 'modal',
-        headerMode: 'none'
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
     }
 );
 
@@ -585,7 +597,13 @@ const ChatRoomStackNavigator = createStackNavigator(
     },
     {
         mode: 'modal',
-        headerMode: 'none'
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
     }
 );
 
@@ -632,7 +650,13 @@ const LikesModalNavigator = createStackNavigator(
     },
     {
         mode: 'modal',
-        headerMode: 'none'
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
     }
 );
 
@@ -676,7 +700,13 @@ const ProfileModalNavigator = createStackNavigator(
     },
     {
         mode: 'modal',
-        headerMode: 'none'
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
     }
 );
 
