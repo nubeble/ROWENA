@@ -204,7 +204,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const baselineTop = 0;
 
         const avatarName = (profile.name) ? profile.name : 'Max Power';
-        const avatarPicture = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
+        // const uri = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
+        const hasImage = !!profile.picture.uri;
+        const imageUri = profile.picture.uri;
+
+
         const avatarHeight = 70;
 
         const bodyInfoItemWidth = Dimensions.get('window').width / 5;
@@ -261,10 +265,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     }, Cons.buttonTimeoutShort);
                                                 }}
                                             >
-                                                <Image
-                                                    style={{ backgroundColor: 'black', tintColor: 'white', width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
-                                                    source={avatarPicture}
-                                                />
+                                                {
+                                                    hasImage ?
+                                                        <Image
+                                                            style={{ backgroundColor: 'black', width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
+                                                            source={{ uri: imageUri }}
+                                                        />
+                                                        :
+                                                        <Image
+                                                            style={{ backgroundColor: 'black', tintColor: 'white', width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
+                                                            source={PreloadImage.user}
+                                                        />
+                                                }
+
                                             </TouchableOpacity>
                                             <Text style={{ color: Theme.color.text2, fontSize: 24, fontFamily: "SFProText-Semibold", position: "absolute", top: baselineTop + 20, left: 30 }}>{avatarName}</Text>
                                             <Text style={{ color: Theme.color.text3, fontSize: 16, fontFamily: "SFProText-Light", position: "absolute", top: baselineTop + 56, left: 30 }}>View and edit profile</Text>
