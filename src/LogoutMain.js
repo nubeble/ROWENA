@@ -9,7 +9,7 @@ import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 
 
-export default class Test extends React.Component {
+export default class LogoutMain extends React.Component {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);

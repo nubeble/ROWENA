@@ -1,20 +1,18 @@
-import autobind from "autobind-decorator";
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
-// import { StyleGuide } from "./rne/src/components/theme";
-// import Image from "./rne/src/components/Image";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import Util from "./Util";
-import type { FeedEntry } from "./rnff/src/components/Model";
-import type { ScreenProps } from "./rnff/src/components/Types";
+// import type { FeedEntry } from "./rnff/src/components/Model";
+// import type { ScreenProps } from "./rnff/src/components/Types";
 import { Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import autobind from 'autobind-decorator';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -25,14 +23,15 @@ const MAX_FEED_COUNT = 5;
 
 @inject("profileStore")
 @observer
-export default class LikesMain extends React.Component<ScreenProps<> & InjectedProps> {
+export default class LikesMain extends React.Component<InjectedProps> {
     state = {
         renderList: false,
         showAlert: false,
         feeds: [],
         isLoadingFeeds: false,
         refreshing: false,
-        totalFeedsSize: 0
+        totalFeedsSize: 0,
+        focused: false
     };
 
     constructor(props) {
@@ -47,7 +46,9 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
         console.log('LikesMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         this.getSavedFeeds();
 
@@ -77,8 +78,12 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
             this.getSavedFeeds();
         }
 
+        this.setState({ focused: true });
+    }
 
-
+    @autobind
+    onBlur() {
+        this.setState({ focused: false });
     }
 
     @autobind
@@ -93,6 +98,7 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -183,7 +189,10 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
             // post removed
             this.refs["toast"].show('The post is removed by the owner.', 500);
         } else {
-            this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
+            // this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
+            setTimeout(() => {
+                this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
+            }, Cons.buttonTimeoutShort);
         }
     }
 
@@ -263,6 +272,16 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
                     />
+                }
+
+                {
+                    !this.state.focused &&
+                    <View style={{
+                        width: '100%',
+                        height: 100, // ToDo: get the height of tab bar
+                        // backgroundColor: 'green'
+                    }}>
+                    </View>
                 }
 
                 <Toast

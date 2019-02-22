@@ -1,14 +1,15 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
 import { Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
 import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
+import autobind from 'autobind-decorator';
 
 
-export default class ProfileDetail extends React.Component {
+export default class EditMain extends React.Component {
     state = {
         showIndicator: false,
         showAlert: false,
@@ -20,6 +21,23 @@ export default class ProfileDetail extends React.Component {
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'
     };
+
+    componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
+
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+
+        this.closed = true;
+    }
 
     render() {
         return (

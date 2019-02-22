@@ -7,8 +7,6 @@ import Feather from "react-native-vector-icons/Feather";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
-// import type { FeedEntry } from "./rnff/src/components/Model";
-// import type { ScreenProps } from "./rnff/src/components/Types";
 import { Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
@@ -23,7 +21,6 @@ const MAX_FEED_COUNT = 12; // 3 x 4
 
 @inject("profileStore")
 @observer
-// export default class ProfileMain extends React.Component<ScreenProps<> & InjectedProps> {
 export default class ProfileMain extends React.Component<InjectedProps> {
     state = {
         renderFeed: false,
@@ -33,6 +30,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         isLoadingFeeds: false,
         refreshing: false,
         totalFeedsSize: 0,
+        focused: false,
 
         uploadingImage: false,
         uploadImage1: 'http://imgnews.naver.net/image/001/2017/05/20/PYH2017052019870001300_P2_20170520101607447.jpg',
@@ -53,7 +51,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         console.log('ProfileMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         this.getUserFeeds();
 
@@ -82,8 +82,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.getUserFeeds();
         }
 
+        this.setState({ focused: true });
+    }
 
-
+    @autobind
+    onBlur() {
+        this.setState({ focused: false });
     }
 
     @autobind
@@ -98,6 +102,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -187,7 +192,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             // post removed
             this.refs["toast"].show('The post is removed by the owner.', 500);
         } else {
-            this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
+            setTimeout(() => {
+                this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
+            }, Cons.buttonTimeoutShort);
         }
     }
 
@@ -235,16 +242,24 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         ListHeaderComponent={
                             <View>
                                 <View style={styles.infoContainer}>
-
+                                    {/* avatar view */}
                                     <TouchableHighlight
                                         style={{ marginTop: 20 }}
-                                        onPress={() => this.props.navigation.navigate("profileDetail")}
+                                        onPress={() => {
+                                            setTimeout(() => {
+                                                this.props.navigation.navigate("edit");
+                                            }, Cons.buttonTimeoutShort);
+                                        }}
                                     >
                                         <View style={{ width: '100%', height: 100 }}>
 
                                             <TouchableOpacity
                                                 style={{ width: avatarHeight, height: avatarHeight, position: "absolute", top: (100 - avatarHeight) / 2, right: 30 }}
-                                                onPress={() => console.log('22222222222222')}
+                                                onPress={() => {
+                                                    setTimeout(() => {
+                                                        // ToDo: open picture
+                                                    }, Cons.buttonTimeoutShort);
+                                                }}
                                             >
                                                 <Image
                                                     style={{ backgroundColor: 'black', tintColor: 'white', width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
@@ -264,7 +279,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <TouchableOpacity
                                             onPress={() => {
                                                 setTimeout(() => {
-                                                    // ToDo
+                                                    this.props.navigation.navigate("check");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
                                         >
@@ -304,7 +319,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <TouchableOpacity
                                             onPress={() => {
                                                 setTimeout(() => {
-                                                    // ToDo
+                                                    this.props.navigation.navigate("logout");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
                                         >
@@ -320,10 +335,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                     </View>
-
-
-
-
 
                                     {/*
                                     <View style={{
@@ -386,15 +397,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         </View>
                                     </View>
                                     */}
+
                                 </View>
-
-
-
-
-
-
-
-
                                 {
                                     (this.state.totalFeedsSize > 0) &&
                                     <View style={styles.titleContainer}>
@@ -411,7 +415,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableOpacity onPress={async () => this.openPost(item)}>
+                                <TouchableOpacity
+                                    onPress={async () => {
+                                        setTimeout(() => {
+                                            this.openPost(item);
+                                        }, Cons.buttonTimeoutShort);
+                                    }}
+                                >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             // preview={item.pictures.one.preview}
@@ -458,6 +468,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
                     />
+                }
+
+                {
+                    !this.state.focused &&
+                    <View style={{
+                        width: '100%',
+                        height: 100, // ToDo: get the height of tab bar
+                        // backgroundColor: 'green'
+                    }} />
                 }
 
                 <Toast
@@ -561,16 +580,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 20
     },
-
-
     infoContainer: {
         // backgroundColor: '#123456',
-        borderBottomWidth: 1,
-        borderBottomColor: '#123456',
-        width: '100%',
-        height: 400,
+        // borderBottomWidth: 1,
         flex: 1,
-        marginBottom: 10
+        width: '100%',
+        paddingBottom: Theme.spacing.tiny
     },
     /*
     bodyInfoTitle: {

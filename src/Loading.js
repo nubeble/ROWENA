@@ -4,7 +4,6 @@ import { Font, AppLoading, Asset } from 'expo';
 // import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
 import { inject, observer } from "mobx-react/native";
-import type { ScreenProps } from "./src/rnff/components/Types";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
 import { registerExpoPushToken } from './PushNotifications';
@@ -35,10 +34,9 @@ type InjectedProps = {
 };
 
 
-// @inject("feedStore", "profileStore", "userFeedStore")
 @inject("feedStore", "profileStore")
 @observer
-export default class Loading extends React.Component<ScreenProps<> & InjectedProps> {
+export default class Loading extends React.Component<InjectedProps> {
     constructor(props) {
         super(props);
 

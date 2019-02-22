@@ -164,7 +164,7 @@ export default class App extends React.Component {
                         const chatRoomId = data.userData.chatRoomId;
                         */
 
-                        console.log('Vars.currentScreenName', Vars.currentScreenName);
+                        // console.log('Vars.currentScreenName', Vars.currentScreenName);
 
                         if (Vars.currentScreenName !== 'ChatMain') {
                             // show badge
@@ -324,7 +324,6 @@ import PostScreen from './src/PostScreen';
 import UserMain from './src/UserMain';
 import LikesMain from './src/LikesMain';
 import ProfileMain from './src/ProfileMain';
-import ProfileDetail from './src/ProfileDetail';
 import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
 import ExploreScreen from './src/Explore';
@@ -332,7 +331,11 @@ import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
+
+import EditMain from './src/EditMain';
+import CheckMain from './src/CheckMain';
 import AdvertisementMain from './src/AdvertisementMain';
+import LogoutMain from './src/LogoutMain';
 
 
 // -- start of AuthStackNavigator
@@ -695,9 +698,9 @@ LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
 // -- end of LikesModalNavigator
 
 // -- start of edit profile
-const ProfileDetailStackNavigator = createStackNavigator(
+const EditStackNavigator = createStackNavigator(
     {
-        profileDetailMain: { screen: ProfileDetail },
+        editMain: { screen: EditMain },
         // post: { screen: PostModalNavigatorWrapper },
         // user: { screen: UserModalNavigatorWrapper }
     },
@@ -713,12 +716,12 @@ const ProfileDetailStackNavigator = createStackNavigator(
     }
 );
 
-class ProfileDetailStackNavigatorWrapper extends React.Component {
-    static router = ProfileDetailStackNavigator.router;
+class EditStackNavigatorWrapper extends React.Component {
+    static router = EditStackNavigator.router;
 
     render() {
         return (
-            <ProfileDetailStackNavigator navigation={this.props.navigation}
+            <EditStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -728,6 +731,41 @@ class ProfileDetailStackNavigatorWrapper extends React.Component {
     }
 }
 // -- end of edit profile
+
+// -- start of check
+const CheckStackNavigator = createStackNavigator(
+    {
+        checkMain: { screen: CheckMain },
+        // post: { screen: PostModalNavigatorWrapper },
+        // user: { screen: UserModalNavigatorWrapper }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class CheckStackNavigatorWrapper extends React.Component {
+    static router = CheckStackNavigator.router;
+
+    render() {
+        return (
+            <CheckStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of check
 
 // -- start of advertisement
 const AdvertisementStackNavigator = createStackNavigator(
@@ -764,22 +802,49 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
 }
 // -- end of advertisement
 
+// -- start of logout
+const LogoutStackNavigator = createStackNavigator(
+    {
+        logoutMain: { screen: LogoutMain },
+        // post: { screen: PostModalNavigatorWrapper },
+        // user: { screen: UserModalNavigatorWrapper }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
 
+class LogoutStackNavigatorWrapper extends React.Component {
+    static router = LogoutStackNavigator.router;
 
-
-
-
+    render() {
+        return (
+            <LogoutStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of logout
 
 // -- start of ProfileModalNavigator
 const ProfileModalNavigator = createStackNavigator(
     {
         profileMain: { screen: ProfileMain },
-        profileDetail: { screen: ProfileDetailStackNavigatorWrapper },
-
-        // see: { screen: SeeStackNavigatorWrapper },
+        edit: { screen: EditStackNavigatorWrapper },
+        check: { screen: CheckStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
-        // logout: { screen: LogoutStackNavigatorWrapper },
-        
+        logout: { screen: LogoutStackNavigatorWrapper },
         postPreview: { screen: PostModalNavigatorWrapper }
     },
     {
@@ -810,10 +875,36 @@ class ProfileModalNavigatorWrapper extends React.Component {
 }
 
 ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    const post = navigation.state.routes[1];
-    // post.isTransitioning
+    // console.log('navigation.state.routes', navigation.state.routes);
 
-    if (post && post.routeName === 'postPreview') {
+    const route = navigation.state.routes[1];
+    // route.isTransitioning
+
+    if (route && route.routeName === 'edit') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    if (route && route.routeName === 'check') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    if (route && route.routeName === 'advertisement') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    if (route && route.routeName === 'logout') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    if (route && route.routeName === 'postPreview') {
         return {
             tabBarVisible: false
         };
@@ -954,21 +1045,21 @@ class TabBarComponent extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        console.log('TabBarComponent.keyboardDidShow');
+        // console.log('TabBarComponent.keyboardDidShow');
 
         this.setState({ visible: false });
     }
 
     @autobind
     _keyboardDidHide(e) {
-        console.log('TabBarComponent.keyboardDidHide');
+        // console.log('TabBarComponent.keyboardDidHide');
 
         this.setState({ visible: true });
     }
 
     @autobind
     onFocus() {
-        console.log('TabBarComponent.onFocus');
+        // console.log('TabBarComponent.onFocus');
 
         // this.setState({ focused: true });
         this.focused = true;
@@ -976,7 +1067,7 @@ class TabBarComponent extends React.Component {
 
     @autobind
     onBlur() {
-        console.log('TabBarComponent.onBlur');
+        // console.log('TabBarComponent.onBlur');
 
         // this.setState({ focused: false });
         this.focused = false;

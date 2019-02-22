@@ -11,7 +11,6 @@ import { Constants } from "expo";
 import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
-import type { ScreenProps } from "./rnff/src/components/Types";
 import SmartImage from "./rnff/src/components/SmartImage";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
@@ -19,15 +18,6 @@ import Firebase from './Firebase';
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
 import { Cons, Vars } from "./Globals";
-
-/*
-const AnimatedText = Animated.createAnimatedComponent(Text);
-const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
-
-type ExploreState = {
-    scrollAnimation: Animated.Value
-};
-*/
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -37,8 +27,7 @@ type InjectedProps = {
 
 @inject("feedStore", "profileStore")
 @observer
-// export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
-export default class Explore extends React.Component<ScreenProps<> & InjectedProps> {
+export default class Explore extends React.Component<InjectedProps> {
     state = {
         // scrollAnimation: new Animated.Value(0),
 

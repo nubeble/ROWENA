@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, BackHandler } from 'react-native';
 import { Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,9 +7,27 @@ import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import Util from './Util';
+import autobind from 'autobind-decorator';
 
 
 export default class AdvertisementMain extends React.Component {
+
+    componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
+
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+
+        this.closed = true;
+    }
 
     render() {
         return (
