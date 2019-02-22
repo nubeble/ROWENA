@@ -402,12 +402,12 @@ const styles = StyleSheet.create({
         paddingRight: Theme.spacing.tiny
     },
     name: {
-        color: Theme.color.text1,
+        color: Theme.color.text2,
         fontSize: 17,
         fontFamily: "SFProText-Semibold"
     },
     contents: {
-        color: Theme.color.text2,
+        color: Theme.color.text3,
         fontSize: 15,
         fontFamily: "SFProText-Light"
     },

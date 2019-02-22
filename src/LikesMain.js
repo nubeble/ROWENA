@@ -111,6 +111,7 @@ export default class LikesMain extends React.Component<ScreenProps<> & InjectedP
 
         if (length === 0) {
             if (this.state.refreshing) this.setState({ refreshing: false });
+            if (this.state.feeds.length > 0) this.setState({ feeds: [] });
             return;
         }
 

@@ -347,7 +347,7 @@ export default class Intro extends React.Component {
                                     <View style={styles.content}>
                                         <Text style={{
                                             textAlign: 'center',
-                                            color: Theme.color.text1,
+                                            color: Theme.color.title,
                                             fontSize: 20,
                                             lineHeight: 26,
                                             fontFamily: "SFProText-Bold"
@@ -355,7 +355,7 @@ export default class Intro extends React.Component {
 
                                         <Text style={{
                                             textAlign: 'center',
-                                            color: Theme.color.text2,
+                                            color: Theme.color.subtitle,
                                             fontSize: 14,
                                             lineHeight: 18,
                                             fontFamily: "SFProText-Semibold"
@@ -572,7 +572,7 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: Theme.color.text1,
+        color: Theme.color.text2,
         fontSize: 18,
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
@@ -613,7 +613,8 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         borderRadius: 2,
-        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        // backgroundColor: "rgba(0, 0, 0, 0.3)",
+        backgroundColor: "rgba(0, 0, 0, 0.4)",
         padding: Theme.spacing.small,
         flex: 1,
         alignItems: 'center',

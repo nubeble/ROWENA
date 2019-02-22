@@ -13,15 +13,17 @@ type Theme = {
         component: Color,
         highlight: Color,
         line: Color,
+        title: Color,
+        subtitle: Color,
         text1: Color,
         text2: Color,
-        // ToDo: add here
+        text3: Color,
+        text4: Color,
+        text5: Color,
         textInput: Color,
         selection: Color,
         placeholder: Color,
-        skeleton: Color,
-
-        
+        skeleton: Color
     },
     palette: {
         primary: Color,
@@ -66,14 +68,19 @@ const theme: Theme = {
         component: "rgb(61, 61, 61)",
         highlight: "rgb(33, 33, 33)",
         line: "rgb(62, 62, 62)",
-        text1: "rgb(255, 255, 255)",
-        text2: "rgb(178, 178, 178)",
+        title: "#F0F0F0",
+        subtitle: "#C0C0C0",
+        // text1: "rgb(255, 255, 255)",
+        // text2: "rgb(178, 178, 178)",
+        text1: "#F3F3F3",
+        text2: "#F0F0F0",
+        text3: "#C0C0C0",
+        text4: "#9A9A9A",
+        text5: "#7B7B7B",
         textInput: "rgb(208, 211, 218)",
         selection: "rgb(62, 165, 255)",
         placeholder: "rgb(160, 160, 160)",
-        skeleton: "rgb(80, 80, 80)",
-
-
+        skeleton: "rgb(80, 80, 80)"
     },
     palette: {
         primary: "#00AAFF",

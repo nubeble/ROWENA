@@ -324,6 +324,7 @@ import PostScreen from './src/PostScreen';
 import UserMain from './src/UserMain';
 import LikesMain from './src/LikesMain';
 import ProfileMain from './src/ProfileMain';
+import ProfileDetail from './src/ProfileDetail';
 import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
 import ExploreScreen from './src/Explore';
@@ -331,6 +332,7 @@ import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
+import AdvertisementMain from './src/AdvertisementMain';
 
 
 // -- start of AuthStackNavigator
@@ -692,10 +694,92 @@ LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
 };
 // -- end of LikesModalNavigator
 
+// -- start of edit profile
+const ProfileDetailStackNavigator = createStackNavigator(
+    {
+        profileDetailMain: { screen: ProfileDetail },
+        // post: { screen: PostModalNavigatorWrapper },
+        // user: { screen: UserModalNavigatorWrapper }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class ProfileDetailStackNavigatorWrapper extends React.Component {
+    static router = ProfileDetailStackNavigator.router;
+
+    render() {
+        return (
+            <ProfileDetailStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of edit profile
+
+// -- start of advertisement
+const AdvertisementStackNavigator = createStackNavigator(
+    {
+        advertisementMain: { screen: AdvertisementMain },
+        // post: { screen: PostModalNavigatorWrapper },
+        // user: { screen: UserModalNavigatorWrapper }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class AdvertisementStackNavigatorWrapper extends React.Component {
+    static router = AdvertisementStackNavigator.router;
+
+    render() {
+        return (
+            <AdvertisementStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of advertisement
+
+
+
+
+
+
+
 // -- start of ProfileModalNavigator
 const ProfileModalNavigator = createStackNavigator(
     {
         profileMain: { screen: ProfileMain },
+        profileDetail: { screen: ProfileDetailStackNavigatorWrapper },
+
+        // see: { screen: SeeStackNavigatorWrapper },
+        advertisement: { screen: AdvertisementStackNavigatorWrapper },
+        // logout: { screen: LogoutStackNavigatorWrapper },
+        
         postPreview: { screen: PostModalNavigatorWrapper }
     },
     {

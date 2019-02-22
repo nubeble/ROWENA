@@ -593,17 +593,17 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     text1: {
-        color: Theme.color.text1,
+        color: Theme.color.text2,
         fontSize: 20,
         fontFamily: "SFProText-Regular"
     },
     name: {
-        color: Theme.color.text1,
+        color: Theme.color.text2,
         fontSize: 20,
         fontFamily: "SFProText-Semibold"
     },
     text2: {
-        color: Theme.color.text1,
+        color: Theme.color.text2,
         fontSize: 18,
         fontFamily: "SFProText-Regular",
         paddingHorizontal: Theme.spacing.base,

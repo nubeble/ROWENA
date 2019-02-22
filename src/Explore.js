@@ -436,7 +436,7 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: Theme.color.text1,
+        color: Theme.color.text2,
         fontSize: 18,
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
