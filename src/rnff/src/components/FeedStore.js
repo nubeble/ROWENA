@@ -49,25 +49,29 @@ export default class FeedStore {
 
     allFeedsLoaded = false;
 
+    order; // 'timestamp', 'averageRating', 'age', ... 
+
 
     setAddToFeedFinishedCallback(cb) {
         this.addToFeedFinishedCallback = cb;
     }
 
     loadFeedFromTheStart() {
-        if (this.query) this.init(this.query);
+        if (this.query && this.order) this.init(this.query, this.order);
     }
 
     // eslint-disable-next-line flowtype/no-weak-types
-    init(query: any) {
+    init(query: any, order) {
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
         this.query = undefined;
         this.profiles = {};
         this.feed = undefined;
         this.allFeedsLoaded = false;
+        this.order = undefined;
 
         this.query = query;
+        this.order = order;
         this.loadFeed();
     }
 
@@ -81,6 +85,7 @@ export default class FeedStore {
         }
 
         const snap = await query.limit(DEFAULT_PAGE_SIZE).get();
+
         if (snap.docs.length === 0) {
             if (!this.feed) {
                 this.feed = [];
@@ -121,7 +126,12 @@ export default class FeedStore {
     addToFeed(entries: FeedEntry[]) {
         const feed = _.uniqBy([...this.feed.slice(), ...entries], entry => entry.post.id);
 
-        this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]);
+        // this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]); // !@#$
+
+        if (this.order === 'timestamp') this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]);
+        // else if (this.order === 'age') this.feed = _.orderBy(feed, entry => entry.post.age, ["desc"]);
+        else if (this.order === 'averageRating') this.feed = _.orderBy(feed, entry => entry.post.averageRating, ["desc"]);
+        else if (this.order === 'reviewCount') this.feed = _.orderBy(feed, entry => entry.post.reviewCount, ["desc"])
     }
 
     async checkForNewEntriesInFeed(): Promise<void> {

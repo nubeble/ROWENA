@@ -57,7 +57,7 @@ export default class Explore extends React.Component<InjectedProps> {
         this.setState({ searchText: place.description, cityName: city, feedSize: length });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
-        this.props.feedStore.init(query);
+        this.props.feedStore.init(query, 'timestamp');
 
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
@@ -214,31 +214,6 @@ export default class Explore extends React.Component<InjectedProps> {
                         </TouchableWithoutFeedback>
 
 
-
-                        <View style={{ height: 180, width: '100%', backgroundColor: '#123456', paddingTop: 10, marginTop: 30, position: 'absolute', left: 0, top: 80 }}>
-                            <TouchableOpacity onPress={() => this.orderByRatings()}
-                                style={styles.bottomButton}
-                            >
-                                <Text style={{ fontSize: 16, color: 'white' }}>orderByRatings</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                onPress={() => this.orderByReviews()}
-                                style={styles.bottomButton}
-                            >
-                                <Text style={{ fontSize: 16, color: 'white' }}>orderByReviews</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                onPress={() => this.makeDummyData()}
-                                style={styles.bottomButton}
-                            >
-                                <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
-                            </TouchableOpacity>
-                        </View>
-
-
-
                     </Animated.View>
                 </AnimatedSafeAreaView>
 
@@ -272,7 +247,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
 
                         ListHeaderComponent={(
-                            <Animated.View>
+                            <View>
 
                                 {/* advertising banner */}
                                 <TouchableWithoutFeedback onPress={() => {
@@ -384,7 +359,34 @@ export default class Explore extends React.Component<InjectedProps> {
                                         {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.cityName}
                                     </Text>
                                 </View>
-                            </Animated.View>
+
+
+
+                                <View style={{ width: '100%', backgroundColor: '#123456', paddingTop: 10, marginTop: 30 }}>
+                                    <TouchableOpacity onPress={() => this.orderByRatings()}
+                                        style={styles.bottomButton}
+                                    >
+                                        <Text style={{ fontSize: 16, color: 'white' }}>orderByRatings</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        onPress={() => this.orderByReviews()}
+                                        style={styles.bottomButton}
+                                    >
+                                        <Text style={{ fontSize: 16, color: 'white' }}>orderByReviews</Text>
+                                    </TouchableOpacity>
+
+                                    <TouchableOpacity
+                                        onPress={() => this.orderByTime()}
+                                        style={styles.bottomButton}
+                                    >
+                                        <Text style={{ fontSize: 16, color: 'white' }}>orderByTime</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+
+
+                            </View>
                         )}
                         {...{ navigation }}
                     />
@@ -394,17 +396,30 @@ export default class Explore extends React.Component<InjectedProps> {
     } // end of render()
 
 
-    orderByRatings() {
+    orderByRatings() { // 평점
+        // this.order('age'); // !@#$
+        this.order('averageRating');
+    }
+
+    orderByReviews() { // 리뷰 개수
+        this.order('reviewCount');
+    }
+
+    orderByTime() { // 등록 시간 (최근)
+        this.order('timestamp');
+    }
+
+    orderByDistance() { // 가까운 거리
+        // this.order('averageRating');
+    }
+
+    order(order) {
         const params = this.props.navigation.state.params;
 
         let place = params.place;
 
-        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("age", "desc");
-        this.props.feedStore.init(query);
-    }
-
-    orderByReviews() {
-
+        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy(order, "desc");
+        this.props.feedStore.init(query, order);
     }
 }
 

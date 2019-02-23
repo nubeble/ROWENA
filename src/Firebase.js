@@ -810,8 +810,6 @@ export default class Firebase {
                     }
                     */
                     if (value.feedId === postId) {
-                        // console.log('!!!!!!!!!!!', value);
-
                         room = value;
 
                         throw BreakException;
