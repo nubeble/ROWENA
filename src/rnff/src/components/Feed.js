@@ -25,7 +25,9 @@ type FeedProps = NavigationProps<> & {
 export default class Feed extends React.Component<FeedProps> {
     state = {
         isLoadingFeed: false,
-        refreshing: false
+        refreshing: false,
+
+        stickyHeaderIndices: []
     };
 
     componentDidMount() {
@@ -89,7 +91,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         return (
             <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }}/>
+                <Post {...{ navigation, post, store, profile }} />
             </View>
         );
     }
@@ -112,9 +114,14 @@ export default class Feed extends React.Component<FeedProps> {
                     renderItem={this.renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={this.loadMore}
+
+                    // stickyHeaderIndices={[0]}
+                    stickyHeaderIndices={this.state.stickyHeaderIndices}
+
+
                     ListEmptyComponent={
                         <View style={styles.post}>
-                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
+                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
                         </View>
                     }
                     ListFooterComponent={
