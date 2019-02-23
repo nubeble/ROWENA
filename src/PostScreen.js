@@ -379,7 +379,7 @@ export default class PostScreen extends React.Component {
                                                         source={PreloadImage.birth}
                                                     // tintColor={'white'} // not working in ios
                                                     />
-                                                    <Text style={styles.bodyInfoTitle}>20 years old</Text>
+                                                    <Text style={styles.bodyInfoTitle}>{post.age} years old</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
@@ -387,7 +387,7 @@ export default class PostScreen extends React.Component {
                                                         source={PreloadImage.scale}
                                                     // tintColor={'white'}
                                                     />
-                                                    <Text style={styles.bodyInfoTitle}>48 kg</Text>
+                                                    <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                                                 </View>
                                             </View>
                                             <View style={{
@@ -400,7 +400,7 @@ export default class PostScreen extends React.Component {
                                                         source={PreloadImage.ruler}
                                                     // tintColor={'white'}
                                                     />
-                                                    <Text style={styles.bodyInfoTitle}>164 cm</Text>
+                                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
@@ -408,7 +408,7 @@ export default class PostScreen extends React.Component {
                                                         source={PreloadImage.bra}
                                                     // tintColor={'white'}
                                                     />
-                                                    <Text style={styles.bodyInfoTitle}>C cup</Text>
+                                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
                                                 </View>
                                             </View>
                                         </View>

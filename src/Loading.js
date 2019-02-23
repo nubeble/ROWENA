@@ -23,6 +23,7 @@ const SFProTextSemibold = require("../fonts/SuisseIntl/SuisseIntl-SemiBold.otf")
 const SFProTextRegular = require("../fonts/SuisseIntl/SuisseIntl-Regular.otf");
 const SFProTextMedium = require("../fonts/SuisseIntl/SuisseIntl-Medium.otf");
 const SFProTextLight = require("../fonts/SuisseIntl/SuisseIntl-Light.otf");
+const SFProTextBlack = require("../fonts/SuisseIntl/SuisseIntl-Black.otf");
 // const SuisseIntlUltraLightItalic = require("../fonts/SuisseIntl/SuisseIntl-UltraLightItalic.otf");
 const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // Logo
@@ -54,7 +55,7 @@ export default class Loading extends React.Component<InjectedProps> {
             "SFProText-Semibold": SFProTextSemibold,
             "SFProText-Regular": SFProTextRegular,
             "SFProText-Medium": SFProTextMedium,
-            // "SFProText-Heavy": SFProTextHeavy,
+            "SFProText-Black": SFProTextBlack,
             "SFProText-Light": SFProTextLight,
             // "SuisseIntl-UltraLightItalic": SuisseIntlUltraLightItalic,
             "SuisseIntl-ThinItalic": SuisseIntlThinItalic,

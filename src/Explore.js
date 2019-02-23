@@ -14,7 +14,6 @@ import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Firebase from './Firebase';
-// import SearchModal from "./SearchModal";
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
 import { Cons, Vars } from "./Globals";
@@ -24,12 +23,15 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
+const AnimatedText = Animated.createAnimatedComponent(Text);
+const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
+
 
 @inject("feedStore", "profileStore")
 @observer
 export default class Explore extends React.Component<InjectedProps> {
     state = {
-        // scrollAnimation: new Animated.Value(0),
+        scrollAnimation: new Animated.Value(0),
 
         searchText: '',
         cityName: '',
@@ -44,7 +46,6 @@ export default class Explore extends React.Component<InjectedProps> {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
-        // console.log('Explore.componentDidMount', this.props);
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
 
@@ -103,9 +104,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
-        // const { profile } = profileStore;
+        const { profile } = profileStore;
 
-        /*
         const { scrollAnimation } = this.state;
         const opacity = scrollAnimation.interpolate({
             inputRange: [0, 60],
@@ -137,14 +137,10 @@ export default class Explore extends React.Component<InjectedProps> {
             outputRange: [0, 0.25],
             extrapolate: "clamp"
         });
-        */
+
 
         return (
             <View style={styles.flex}>
-                {/*
-                <SearchModal ref='searchModal'></SearchModal>
-                */}
-
                 <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,
@@ -156,7 +152,6 @@ export default class Explore extends React.Component<InjectedProps> {
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 console.log('move to Intro');
-                                // this.props.screenProps.rootNavigation.navigate("intro");
                                 this.props.navigation.navigate("intro");
                             }}
                         >
@@ -166,7 +161,6 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                // this.refs.searchModal.showModal();
                                 this.props.navigation.navigate("exploreSearchModal");
                             }}
                         >
@@ -193,7 +187,9 @@ export default class Explore extends React.Component<InjectedProps> {
                     </View>
                 </View>
 
-                {/* <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
+
+
+                <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
                     <Animated.View style={[styles.innerHeader, { height }]}>
                         <View>
                             <AnimatedText
@@ -209,17 +205,44 @@ export default class Explore extends React.Component<InjectedProps> {
                                 {moment().format("dddd")}
                             </AnimatedText>
                         </View>
-                        {
-                            profile && (
-                                <TouchableWithoutFeedback onPress={this.profile}>
-                                    <View>
-                                        <Avatar {...profile.pictures.one}/>
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            )
-                        }
+
+
+                        <TouchableWithoutFeedback onPress={this.profile}>
+                            <View>
+                                <Avatar {...profile.picture.uri} />
+                            </View>
+                        </TouchableWithoutFeedback>
+
+
+
+                        <View style={{ height: 180, width: '100%', backgroundColor: '#123456', paddingTop: 10, marginTop: 30, position: 'absolute', left: 0, top: 80 }}>
+                            <TouchableOpacity onPress={() => this.orderByRatings()}
+                                style={styles.bottomButton}
+                            >
+                                <Text style={{ fontSize: 16, color: 'white' }}>orderByRatings</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={() => this.orderByReviews()}
+                                style={styles.bottomButton}
+                            >
+                                <Text style={{ fontSize: 16, color: 'white' }}>orderByReviews</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                onPress={() => this.makeDummyData()}
+                                style={styles.bottomButton}
+                            >
+                                <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
+                            </TouchableOpacity>
+                        </View>
+
+
+
                     </Animated.View>
-                </AnimatedSafeAreaView> */}
+                </AnimatedSafeAreaView>
+
+
 
                 {
                     /*
@@ -235,7 +258,9 @@ export default class Explore extends React.Component<InjectedProps> {
                     this.state.renderFeed &&
                     <Feed
                         store={feedStore}
-                        /*
+
+
+
                         onScroll={Animated.event([{
                             nativeEvent: {
                                 contentOffset: {
@@ -243,7 +268,9 @@ export default class Explore extends React.Component<InjectedProps> {
                                 }
                             }
                         }])}
-                        */
+
+
+
                         ListHeaderComponent={(
                             <Animated.View>
 
@@ -256,9 +283,8 @@ export default class Explore extends React.Component<InjectedProps> {
                                         index = this.currentSwiperIndex;
                                     }
 
-                                    console.log('TouchableWithoutFeedback onPress', index);
-
                                     // ToDo: use index
+                                    console.log('TouchableWithoutFeedback onPress', index);
                                 }}>
                                     <Swiper
                                         style={styles.wrapper}
@@ -367,12 +393,18 @@ export default class Explore extends React.Component<InjectedProps> {
         );
     } // end of render()
 
-    startEditing() {
-        // alert('startEditing()');
+
+    orderByRatings() {
+        const params = this.props.navigation.state.params;
+
+        let place = params.place;
+
+        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("age", "desc");
+        this.props.feedStore.init(query);
     }
 
-    leaveEditing() {
-        // alert('leaveEditing()');
+    orderByReviews() {
+
     }
 }
 
@@ -448,6 +480,23 @@ const styles = StyleSheet.create({
         flex: 1
     }
     */
+
+    bottomButton: {
+        width: '85%',
+        height: 45,
+        alignSelf: 'center',
+
+        justifyContent: 'center',
+        alignItems: 'center',
+
+        backgroundColor: "grey",
+        borderRadius: 5,
+        borderColor: "transparent",
+        borderWidth: 0,
+
+        marginTop: 2,
+        marginBottom: 2
+    },
 
 
 

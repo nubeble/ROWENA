@@ -17,9 +17,6 @@ import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 
-// const AnimatedText = Animated.createAnimatedComponent(Text);
-// const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
-
 /*
 type ExploreState = {
     scrollAnimation: Animated.Value

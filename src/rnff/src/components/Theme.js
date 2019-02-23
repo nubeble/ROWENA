@@ -104,22 +104,26 @@ const theme: Theme = {
         header1: {
             fontSize: 48,
             lineHeight: 58,
-            fontFamily: "SFProText-Heavy"
+            // fontFamily: "SFProText-Heavy"
+            fontFamily: "SFProText-Black"
         },
         header2: {
             fontSize: 36,
             lineHeight: 43,
-            fontFamily: "SFProText-Heavy"
+            // fontFamily: "SFProText-Heavy"
+            fontFamily: "SFProText-Black"
         },
         header3: {
             fontSize: 24,
             lineHeight: 28,
-            fontFamily: "SFProText-Heavy"
+            // fontFamily: "SFProText-Heavy"
+            fontFamily: "SFProText-Black"
         },
         large: {
             fontSize: 14,
             lineHeight: 21,
-            fontFamily: "SFProText-Heavy"
+            // fontFamily: "SFProText-Heavy"
+            fontFamily: "SFProText-Black"
         },
         regular: {
             fontSize: 14,
