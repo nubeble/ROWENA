@@ -29,7 +29,7 @@
 			"icon": "./assets/noti.png",
 			"color": "#000000",
 			"androidMode": "collapse",
-			"androidCollapsedTitle": "#{unread_notifications} new messages"
+			"androidCollapsedTitle": "#{unread_notifications} unread message(s)"
 		},
 		"updates": {
 			"fallbackToCacheTimeout": 0

@@ -8,6 +8,13 @@ import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
 import { registerExpoPushToken } from './PushNotifications';
 
+// --
+import { Animated, ImageBackground, Dimensions } from 'react-native';
+import { BlurView } from 'expo';
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
+// const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+// --
+
 
 // $FlowFixMe
 /*
@@ -38,17 +45,47 @@ type InjectedProps = {
 @inject("feedStore", "profileStore")
 @observer
 export default class Loading extends React.Component<InjectedProps> {
+    // --
+    state = {
+        isReady: false,
+        intensity: new Animated.Value(0)
+    }
+
+    _animate = () => {
+        /*
+      let { intensity } = this.state;
+      Animated.timing(intensity, {duration: 2500, toValue: 100}).start(() => {
+        Animated.timing(intensity, {duration: 2500, toValue: 0}).start(this._animate);
+      });
+      */
+        Animated.timing(this.state.intensity, { duration: 2500, toValue: 100 }).start(() => {
+            // console.log('move to auth');
+            // navigation.navigate("authStackNavigator");
+        });
+
+    }
+    // --
+
     constructor(props) {
         super(props);
 
         this.isUserAutoAuthenticated = true;
+
+        this.blurRadius = new Animated.Value(0);
     }
 
     async componentDidMount(): Promise<void> {
         console.log('Loading.componentDidMount');
 
-        // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
-        const { navigation, feedStore, profileStore } = this.props;
+        // StatusBar.setHidden(true);
+
+
+
+        // StatusBar.setHidden(false);
+    }
+
+    async _cacheResourcesAsync() {
+        console.log('Loading._cacheResourcesAsync');
 
         const fonts = Font.loadAsync({
             "SFProText-Bold": SFProTextBold,
@@ -69,14 +106,20 @@ export default class Loading extends React.Component<InjectedProps> {
 
         const preload = PreloadImage.downloadAsync();
         const star = Star.downloadAsync();
+
         await Promise.all([fonts, ...preload, ...star]);
+    }
 
-
+    init() {
+        console.log('Loading.init');
 
         Firebase.init();
 
         Firebase.auth.onAuthStateChanged(async (user) => {
             console.log('onAuthStateChanged', user);
+
+            // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
+            const { navigation, feedStore, profileStore } = this.props;
 
             const isUserAuthenticated = !!user;
 
@@ -99,14 +142,28 @@ export default class Loading extends React.Component<InjectedProps> {
 
 
                 // ToDo: check updates (chat first.. post, likes, review, reply later)
-                const result = await this.checkUpdateOnChat();
-                if (result) {
+
+                // 1. home
+                // const home = await this.checkUpdateOnHome();
+                // 새로 등록된 girls
+
+                // 2. likes
+                // const likes = await this.checkUpdateOnLikes();
+
+                // 3. chat
+                const chat = await this.checkUpdateOnChat();
+                if (chat) {
                     // show badge
                     setTimeout(() => {
                         const screenProps = this.props.screenProps;
                         screenProps.changeBadgeOnChat(true, 0);
                     }, 2000); // 2 sec
                 }
+
+                // 4. profile
+                // const profile = await this.checkUpdateOnProfile();
+                // owner: 내가 올린 post에 리뷰
+                // customer: 내가 올린 review에 답글
 
 
 
@@ -135,8 +192,15 @@ export default class Loading extends React.Component<InjectedProps> {
             } else {
                 this.isUserAutoAuthenticated = false;
 
-                console.log('move to auth');
-                navigation.navigate("authStackNavigator");
+                // console.log('move to auth');
+                // navigation.navigate("authStackNavigator");
+
+                const { intensity } = this.state;
+
+                Animated.timing(intensity, { duration: 1000, toValue: 50, useNativeDriver: Platform.OS === "android" }).start(() => {
+                    console.log('move to auth');
+                    // navigation.navigate("authStackNavigator");
+                });
             }
         });
     }
@@ -166,6 +230,7 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     render() {
+        /*
         const statusBar = (
             <StatusBar
                 translucent
@@ -180,6 +245,54 @@ export default class Loading extends React.Component<InjectedProps> {
                 <AppLoading />
             </React.Fragment>
         );
+        */
+
+        if (!this.state.isReady) {
+            return (
+                <AppLoading
+                    startAsync={this._cacheResourcesAsync}
+                    onFinish={() => {
+                        this.setState({ isReady: true }, () => this.init());
+                    }}
+                    onError={console.warn}
+                >
+                </AppLoading>
+            );
+        }
+
+        return (
+            <AnimatedBlurView
+                tint="default"
+                intensity={this.state.intensity}
+                style={StyleSheet.absoluteFill}
+            >
+
+
+
+                <ImageBackground
+                    style={{
+                        flex: 1,
+                        position: 'absolute',
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height
+                    }}
+                    source={PreloadImage.Splash}
+                    resizeMode='cover'
+                // blurRadius={Platform.OS === "ios" ? 20 : 2}
+                />
+
+            </AnimatedBlurView>
+
+
+
+
+
+
+
+
+        );
+
+
     }
 
 

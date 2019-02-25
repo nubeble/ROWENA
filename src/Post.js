@@ -660,9 +660,9 @@ export default class Post extends React.Component {
 
                     contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
                     titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
                     cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: 8, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
                     confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
 

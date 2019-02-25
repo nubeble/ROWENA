@@ -45,7 +45,7 @@ export var Cons = {
     alertButtonWidth: Dimensions.get('window').width * 0.32,
     alertButtonHeight: (Dimensions.get('window').height * 0.25) / 4,
     alertButtonMarginBetween: Dimensions.get('window').width * 0.03,
-    // alertButtonPaddingTop: parseInt(Dimensions.get('window').height / 80),
+    alertButtonPaddingTop: parseInt(Dimensions.get('window').height / 80),
 
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,

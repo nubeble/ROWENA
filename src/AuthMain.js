@@ -3,21 +3,16 @@ import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndi
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-// import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
 import Firebase from './Firebase';
 import * as firebase from "firebase";
+// import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 
 
 export default class AuthMain extends React.Component {
     state = {
-        showFacebookLoader: false,
-
-        /*
-        email: '',
-        password: '',
-        */
+        showFacebookLoader: false
     };
 
     componentWillUnmount() {
@@ -93,7 +88,6 @@ export default class AuthMain extends React.Component {
     }
 
     render() {
-        // let { height, width } = Dimensions.get('window');
 
         return (
             <ImageBackground
@@ -132,7 +126,7 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
-                            <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36}/>
+                            <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(0, 0, 0, 0.6)', paddingTop: Cons.submitButtonPaddingTop() }}>Continue with Facebook</Text>
                             {
                                 this.state.showFacebookLoader &&
@@ -153,7 +147,7 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithEmailButton}
                         >
-                            <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23}/>
+                            <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Email</Text>
                         </TouchableOpacity>
 
@@ -165,7 +159,7 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithMobileButton}
                         >
-                            <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24}/>
+                            <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Mobile</Text>
                         </TouchableOpacity>
 
@@ -184,7 +178,7 @@ export default class AuthMain extends React.Component {
 
                     </View>
                 </View>
-            </ImageBackground >
+            </ImageBackground>
         );
     }
 

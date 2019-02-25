@@ -54,10 +54,12 @@ export default class App extends React.Component {
     componentDidMount() {
         console.log('App.componentDidMount');
 
+        /*
         StatusBar.setBarStyle('light-content');
         if (Platform.OS === "android") {
             StatusBar.setBackgroundColor(Theme.color.background);
         }
+        */
 
         // Handle notifications that are received or selected while the app
         // is open. If the app was closed and then opened by tapping the
@@ -280,6 +282,7 @@ export default class App extends React.Component {
                         />
                     </Provider>
                 </StyleProvider>
+                
             </React.Fragment>
         );
     }
