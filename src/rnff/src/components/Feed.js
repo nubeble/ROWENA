@@ -1,7 +1,7 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import { StyleSheet, View, FlatList, SafeAreaView, ActivityIndicator } from "react-native";
+import { StyleSheet, View, FlatList, SafeAreaView, ActivityIndicator, Dimensions } from "react-native";
 import { observer } from "mobx-react/native";
 import { type AnimatedEvent } from "react-native/Libraries/Animated/src/AnimatedEvent";
 import FeedStore from "./FeedStore";
@@ -25,13 +25,11 @@ type FeedProps = NavigationProps<> & {
 export default class Feed extends React.Component<FeedProps> {
     state = {
         isLoadingFeed: false,
-        refreshing: false,
-
-        stickyHeaderIndices: []
+        refreshing: false
     };
 
     componentDidMount() {
-        const { feed } = this.props.store; // FeedStore
+        // const { feed } = this.props.store; // FeedStore
         // console.log('Feed.componentDidMount', feed);
 
         this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
@@ -96,6 +94,20 @@ export default class Feed extends React.Component<FeedProps> {
         );
     }
 
+    _scrollTo(offset) {
+        this._flatList.scrollToOffset({ animated: false, offset: offset });
+    }
+
+    /*
+    enableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: true });
+    }
+
+    disableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: false });
+    }
+    */
+
     render(): React.Node {
         const { onScroll, store, navigation, bounce, ListHeaderComponent } = this.props;
         const { feed } = store;
@@ -107,6 +119,9 @@ export default class Feed extends React.Component<FeedProps> {
         return (
             <SafeAreaView style={styles.list}>
                 <FlatList
+                    ref={(fl) => this._flatList = fl}
+
+
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator
                     data={feed}
@@ -114,15 +129,23 @@ export default class Feed extends React.Component<FeedProps> {
                     renderItem={this.renderItem}
                     onEndReachedThreshold={0.5}
                     onEndReached={this.loadMore}
-
-                    // stickyHeaderIndices={[0]}
-                    stickyHeaderIndices={this.state.stickyHeaderIndices}
-
-
                     ListEmptyComponent={
+                        /*
                         <View style={styles.post}>
-                            {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />}
+                            {
+                                loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />
+                            }
                         </View>
+                        */
+
+                        loading ?
+                            <View style={{ height: Dimensions.get('window').height, paddingTop: 50 }}>
+                                <RefreshIndicator />
+                            </View>
+                            :
+                            <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
+                                <FirstPost {...{ navigation }} />
+                            </View>
                     }
                     ListFooterComponent={
                         this.state.isLoadingFeed &&
@@ -162,7 +185,8 @@ export default class Feed extends React.Component<FeedProps> {
 const styles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
-        paddingBottom: Theme.spacing.base
+        // paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny
     },
     list: {
         flex: 1

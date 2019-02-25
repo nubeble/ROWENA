@@ -333,7 +333,8 @@ import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
 
 import EditMain from './src/EditMain';
-import CheckMain from './src/CheckMain';
+// import CheckMain from './src/CheckMain';
+import HidingHeader from './src/HidingHeader';
 import AdvertisementMain from './src/AdvertisementMain';
 import LogoutMain from './src/LogoutMain';
 
@@ -735,7 +736,10 @@ class EditStackNavigatorWrapper extends React.Component {
 // -- start of check
 const CheckStackNavigator = createStackNavigator(
     {
-        checkMain: { screen: CheckMain },
+        // checkMain: { screen: CheckMain },
+        checkMain: { screen: HidingHeader },
+
+
         // post: { screen: PostModalNavigatorWrapper },
         // user: { screen: UserModalNavigatorWrapper }
     },

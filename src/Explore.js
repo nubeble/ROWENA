@@ -23,20 +23,24 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
+/*
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
+*/
 
 
 @inject("feedStore", "profileStore")
 @observer
 export default class Explore extends React.Component<InjectedProps> {
     state = {
-        scrollAnimation: new Animated.Value(0),
+        // scrollAnimation: new Animated.Value(0),
 
         searchText: '',
         cityName: '',
         feedSize: 0,
-        renderFeed: false
+        renderFeed: false,
+
+        scrollY: 0
     };
 
     componentDidMount() {
@@ -69,20 +73,7 @@ export default class Explore extends React.Component<InjectedProps> {
         console.log('move to Intro');
 
         // this.props.navigation.goBack();
-        // this.props.navigation.goBack(this.props.screenProps.params.key);
         // this.props.navigation.dispatch(NavigationActions.back());
-        // this.props.navigation.dispatch(NavigationActions.popToTop());
-        /*
-        return this.props.navigation.dispatch(StackActions.reset(
-            {
-                index: 0,
-                actions: [NavigationActions.navigate({ routeName: 'intro' })]
-            }
-        ));
-        */
-
-        // this.props.navigation.dispatch(NavigationActions.back());
-
         // this.props.screenProps.rootNavigation.navigate("intro");
         this.props.navigation.navigate("intro");
 
@@ -104,6 +95,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
+
+        /*
         const { profile } = profileStore;
 
         const { scrollAnimation } = this.state;
@@ -137,6 +130,21 @@ export default class Explore extends React.Component<InjectedProps> {
             outputRange: [0, 0.25],
             extrapolate: "clamp"
         });
+        */
+
+        const { feed } = feedStore;
+        const loading = feed === undefined;
+        let hasFeed = false;
+        if (feed) {
+            const size = feed.length;
+            hasFeed = !!size;
+        }
+
+
+        let showOrderTab = false;
+        if (this.orderTabY - this.state.scrollY <= 0) {
+            showOrderTab = true;
+        }
 
 
         return (
@@ -188,7 +196,49 @@ export default class Explore extends React.Component<InjectedProps> {
                 </View>
 
 
+                {
+                    showOrderTab &&
+                    < View style={styles._orderTab}>
+                        <TouchableOpacity
+                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                            onPress={() => {
+                                // this._feed.disableScroll();
+                                this.orderByRatings();
+                                this._feed._scrollTo(this.orderTabY);
+                                // this._feed.enableScroll();
+                            }}
+                        >
+                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Ratings</Text>
+                        </TouchableOpacity>
 
+                        <TouchableOpacity
+                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                            onPress={() => {
+                                // this._feed.disableScroll();
+                                this.orderByReviews();
+                                this._feed._scrollTo(this.orderTabY);
+                                // this._feed.enableScroll();
+                            }}
+                        >
+                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Reviews</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                            onPress={() => {
+                                // this._feed.disableScroll();
+                                this.orderByTime();
+                                this._feed._scrollTo(this.orderTabY);
+                                // this._feed.enableScroll();
+                            }}
+                        >
+                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Time</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+
+                {/*
                 <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
                     <Animated.View style={[styles.innerHeader, { height }]}>
                         <View>
@@ -216,6 +266,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
                     </Animated.View>
                 </AnimatedSafeAreaView>
+                */}
 
 
 
@@ -232,10 +283,11 @@ export default class Explore extends React.Component<InjectedProps> {
                     */
                     this.state.renderFeed &&
                     <Feed
+                        ref={(feed) => this._feed = feed}
+
                         store={feedStore}
 
-
-
+                        /*
                         onScroll={Animated.event([{
                             nativeEvent: {
                                 contentOffset: {
@@ -243,8 +295,14 @@ export default class Explore extends React.Component<InjectedProps> {
                                 }
                             }
                         }])}
+                        */
 
+                        onScroll={(event) => {
+                            const y = event.nativeEvent.contentOffset.y;
+                            this.setState({ scrollY: y });
 
+                            // console.log('scrollY', y);
+                        }}
 
                         ListHeaderComponent={(
                             <View>
@@ -263,7 +321,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 }}>
                                     <Swiper
                                         style={styles.wrapper}
-                                        containerStyle={{ marginBottom: 20 }}
+                                        containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: 20 }}
                                         width={Dimensions.get('window').width}
                                         height={Dimensions.get('window').width / 21 * 9}
                                         loop={false}
@@ -360,8 +418,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                     </Text>
                                 </View>
 
-
-
+                                {/*
                                 <View style={{ width: '100%', backgroundColor: '#123456', paddingTop: 10, marginTop: 30 }}>
                                     <TouchableOpacity onPress={() => this.orderByRatings()}
                                         style={styles.bottomButton}
@@ -383,21 +440,65 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <Text style={{ fontSize: 16, color: 'white' }}>orderByTime</Text>
                                     </TouchableOpacity>
                                 </View>
+                                */}
 
 
+                                {
+                                    // !loading && hasFeed &&
+                                    <View style={styles.orderTab} onLayout={(event) => {
+                                        const { y } = event.nativeEvent.layout;
+                                        this.orderTabY = y;
 
+                                        // console.log('orderTaby', y);
+                                    }}>
+                                        <TouchableOpacity
+                                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                                            onPress={() => {
+                                                //this._feed.disableScroll();
+                                                this.orderByRatings();
+                                                this._feed._scrollTo(this.state.scrollY);
+                                                // this._feed.enableScroll();
+                                            }}
+                                        >
+                                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Ratings</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                                            onPress={() => {
+                                                // this._feed.disableScroll();
+                                                this.orderByReviews();
+                                                this._feed._scrollTo(this.state.scrollY);
+                                                // this._feed.enableScroll();
+                                            }}
+                                        >
+                                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Reviews</Text>
+                                        </TouchableOpacity>
+
+                                        <TouchableOpacity
+                                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                                            onPress={() => {
+                                                // this._feed.disableScroll();
+                                                this.orderByTime();
+                                                this._feed._scrollTo(this.state.scrollY);
+                                                // this._feed.enableScroll();
+                                            }}
+                                        >
+                                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Time</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                }
                             </View>
                         )}
                         {...{ navigation }}
                     />
                 }
-            </View>
+            </View >
         );
     } // end of render()
 
 
     orderByRatings() { // 평점
-        // this.order('age'); // !@#$
         this.order('averageRating');
     }
 
@@ -405,7 +506,7 @@ export default class Explore extends React.Component<InjectedProps> {
         this.order('reviewCount');
     }
 
-    orderByTime() { // 등록 시간 (최근)
+    orderByTime() { // 최근 등록
         this.order('timestamp');
     }
 
@@ -453,7 +554,9 @@ const styles = StyleSheet.create({
         height: Cons.searchBarHeight,
         paddingBottom: 8,
         justifyContent: 'flex-end',
-        alignItems: 'center'
+        alignItems: 'center',
+
+        // backgroundColor: 'grey'
     },
     wrapper: {
     },
@@ -480,6 +583,33 @@ const styles = StyleSheet.create({
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
+    },
+    orderTab: {
+        width: '100%',
+        height: 50,
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center',
+        // borderTopColor: Theme.color.line, borderTopWidth: 1,
+        borderBottomColor: Theme.color.line, borderBottomWidth: 1,
+
+        // backgroundColor: 'green',
+        marginBottom: Theme.spacing.tiny
+    },
+    _orderTab: {
+        width: '100%',
+        height: 50,
+        flexDirection: "row",
+        justifyContent: 'center',
+        alignItems: 'center',
+        // borderTopColor: Theme.color.line, borderTopWidth: 1,
+        borderBottomColor: Theme.color.line, borderBottomWidth: 1,
+
+        position: 'absolute',
+        top: Cons.searchBarHeight,
+
+        backgroundColor: Theme.color.background,
+        zIndex: 100000
     },
 
 
@@ -512,6 +642,7 @@ const styles = StyleSheet.create({
         marginTop: 2,
         marginBottom: 2
     },
+
 
 
 

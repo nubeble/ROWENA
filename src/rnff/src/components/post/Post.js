@@ -63,7 +63,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         const nameStyle = [styles.name];
         const textStyle = [styles.text];
         const dateStyle = [];
-        // if (post.picture) {
+
         if (post.pictures.one.uri) {
             contentStyle.push(StyleSheet.absoluteFill);
             // contentStyle.push({ backgroundColor: "rgba(0, 0, 0, 0.25)", borderRadius: 2 });
@@ -76,11 +76,11 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("detail", { post: post, profile: profile })}>
 
+                {/* ToDo: use image list (one, two, ...) */}
                 <View style={styles.container}>
                     {
                         post.pictures.one.uri && (
                             <SmartImage
-                                // ToDo: use image list (one, two, ...)
                                 preview={post.pictures.one.preview}
                                 uri={post.pictures.one.uri}
                                 style={styles.picture}
@@ -110,13 +110,15 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         */}
                     </View>
                 </View>
-            
+
             </TouchableWithoutFeedback>
         );
     }
 }
 
-const { width } = Dimensions.get("window");
+// const { width } = Dimensions.get("window");
+const imageWidth = Dimensions.get("window").width - (Theme.spacing.small * 2);
+const imageHeight = imageWidth / 16 * 9;
 
 const styles = StyleSheet.create({
     container: {
@@ -153,8 +155,12 @@ const styles = StyleSheet.create({
         flexWrap: "wrap"
     },
     picture: {
-        // height: width,
-        height: width / 16 * 9,
+        // height: width / 16 * 9,
+
+        // width: imageWidth,
+        height: imageHeight,
+
+
         borderRadius: 2
         // borderColor: "transparent",
         // borderWidth: 0
