@@ -32,7 +32,8 @@ const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
 const avatarHeight = Cons.searchBarHeight * 0.5;
 const bigImageWidth = postHeight * 0.7;
-const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
+// const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
+const smallImageWidth = postHeight * 0.7;
 
 /*
 @inject("profileStore")
@@ -103,9 +104,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             }));
         });
 
-        setTimeout(() => {
-            !this.closed && this.setState({ renderPost: true });
-        }, 500);
+        if (item.contents === '') {
+            this.setState({ renderPost: true });
+        }
     }
 
     componentWillUnmount() {
@@ -144,11 +145,15 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
     @autobind
     _keyboardDidShow(e) {
+        // this.keyboardHeight = e.endCoordinates.height;
+
         if (!this.state.onKeyboard) this.setState({ onKeyboard: true });
     }
 
     @autobind
     _keyboardDidHide(e) {
+        // this.keyboardHeight = 0;
+
         if (this.state.onKeyboard) this.setState({ onKeyboard: false });
     }
 
@@ -164,12 +169,23 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     render() {
         const showPost = this.state.messages.length > 1 ? false : true;
 
-        const top1 = (Dimensions.get('window').height - postHeight) / 2;
+        const top1 = (Dimensions.get('window').height - postHeight) / 2; // center
         const top2 = Cons.searchBarHeight;
-        const postTop = this.state.onKeyboard ? top2 : top1;
+
+        // --
+        /*
+        const firstMessageHeight = 30;
+        const bottom = Dimensions.get('window').height - this.keyboardHeight - this.textInputHeight - textInputMarginBottom - firstMessageHeight;
+        const top = bottom - postHeight;
+        */
+
+        // const top2 = top;
+        // --
+
+        const _postTop = this.state.onKeyboard ? top2 : top1;
+        // const _postHeight = this.state.onKeyboard ? height2 : postHeight;
 
         const item = this.props.navigation.state.params.item;
-        // const index = this.props.navigation.state.params.index;
 
         const imageWidth = this.state.onKeyboard ? smallImageWidth : bigImageWidth;
         const labelName = item.users[1].name;
@@ -203,26 +219,26 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={async () => await this.openPost()}>
+
+                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={async () => await this.openPost()}>
                         <SmartImage
-                            style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
+                            // style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
+                            style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
                             showSpinner={false}
                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={this.state.titleImageUri}
                         />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={async () => await this.openPost()}>
                         <Text
                             style={{
                                 color: 'rgba(255, 255, 255, 0.8)',
                                 fontSize: 18,
                                 fontFamily: "SFProText-Semibold",
-                                // alignSelf: 'center',
                                 marginLeft: 10,
-                                paddingBottom: 4
+                                // paddingBottom: 4
                             }}
                         >{this.state.titleName}</Text>
                     </TouchableOpacity>
+
 
                     {/* leave button */}
                     <TouchableOpacity
@@ -261,8 +277,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         onPressAvatar={async () => await this.openAvatar()}
 
                         textInputProps={{
+                            /*
+                            onLayout: (event) => {
+                                const layout = event.nativeEvent.layout;
+                                this.textInputHeight = layout.height;
+                            },
+                            */
                             style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
-
                             selectionColor: Theme.color.selection,
                             keyboardAppearance: 'dark',
                             underlineColorAndroid: "transparent",
@@ -325,7 +346,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 {
                     // ToDo: apply animation
                     this.state.renderPost && showPost &&
-                    <View style={[styles.post, { top: postTop }]}>
+                    <View style={[styles.post, { top: _postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
                             <Text style={styles.name}>{labelName}</Text>
@@ -350,8 +371,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 <AwesomeAlert
                     show={this.state.showAlert}
                     showProgress={false}
-                    title={"Want to leave " + labelName + "?"}
-                    // message="I have a message for you!"
+                    title='Leave conversation'
+                    message={"Are you sure? You will no logner receive new messages from " + labelName + "."}
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={true}
@@ -370,13 +391,19 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
                     }}
+                    onDismiss={() => {
+                        this.setState({ showAlert: false });
+                    }}
 
                     contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
-                    titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
-                    cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
-                    confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
+
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
+                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+                    
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
+                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
+                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
             </View>
         );
@@ -556,6 +583,7 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular",
         color: "white",
         backgroundColor: Theme.color.background,
+        // backgroundColor: 'green',
         marginBottom: textInputMarginBottom,
 
         paddingLeft: textInputPaddingLeft,
@@ -568,6 +596,7 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular",
         color: "white",
         backgroundColor: Theme.color.background,
+        // backgroundColor: 'green',
         marginBottom: textInputMarginBottom,
 
         paddingLeft: textInputPaddingLeft,
@@ -577,7 +606,6 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         backgroundColor: Theme.color.background,
-        // backgroundColor: 'green',
         width: parseInt(Dimensions.get('window').width / 10),
         height: parseInt(Dimensions.get('window').width / 10),
         alignItems: 'center',
@@ -589,8 +617,11 @@ const styles = StyleSheet.create({
         width: postWidth,
         height: postHeight,
         position: 'absolute',
-        justifyContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        // justifyContent: 'flex-start',
+        justifyContent: 'center',
+
+        // backgroundColor: 'green'
     },
     text1: {
         color: Theme.color.text2,

@@ -40,7 +40,8 @@ export default class Explore extends React.Component<InjectedProps> {
         feedSize: 0,
         renderFeed: false,
 
-        scrollY: 0
+        scrollY: 0,
+        selectedOrderIndex: 2 // time
     };
 
     componentDidMount() {
@@ -202,13 +203,15 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                             onPress={() => {
-                                // this._feed.disableScroll();
+                                //this._feed.disableScroll();
                                 this.orderByRatings();
                                 this._feed._scrollTo(this.orderTabY);
                                 // this._feed.enableScroll();
+
+                                this.setState({ selectedOrderIndex: 0 });
                             }}
                         >
-                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Ratings</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -218,9 +221,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this.orderByReviews();
                                 this._feed._scrollTo(this.orderTabY);
                                 // this._feed.enableScroll();
+
+                                this.setState({ selectedOrderIndex: 1 });
                             }}
                         >
-                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Reviews</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -230,9 +235,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this.orderByTime();
                                 this._feed._scrollTo(this.orderTabY);
                                 // this._feed.enableScroll();
+
+                                this.setState({ selectedOrderIndex: 2 });
                             }}
                         >
-                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Time</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
                         </TouchableOpacity>
                     </View>
                 }
@@ -447,7 +454,8 @@ export default class Explore extends React.Component<InjectedProps> {
                                     // !loading && hasFeed &&
                                     <View style={styles.orderTab} onLayout={(event) => {
                                         const { y } = event.nativeEvent.layout;
-                                        this.orderTabY = y;
+                                        // this.orderTabY = y;
+                                        if (!this.orderTabY) this.orderTabY = y;
 
                                         // console.log('orderTaby', y);
                                     }}>
@@ -458,9 +466,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 this.orderByRatings();
                                                 this._feed._scrollTo(this.state.scrollY);
                                                 // this._feed.enableScroll();
+
+                                                this.setState({ selectedOrderIndex: 0 });
                                             }}
                                         >
-                                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Ratings</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -470,9 +480,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 this.orderByReviews();
                                                 this._feed._scrollTo(this.state.scrollY);
                                                 // this._feed.enableScroll();
+
+                                                this.setState({ selectedOrderIndex: 1 });
                                             }}
                                         >
-                                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Reviews</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -482,9 +494,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 this.orderByTime();
                                                 this._feed._scrollTo(this.state.scrollY);
                                                 // this._feed.enableScroll();
+
+                                                this.setState({ selectedOrderIndex: 2 });
                                             }}
                                         >
-                                            <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.text3 }}>Time</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }

@@ -46,6 +46,7 @@ export default class ReadAllReviewScreen extends React.Component {
         refreshing: false,
 
         showAlert: false,
+        alertTitle: '',
         alertMessage: ''
     };
 
@@ -250,6 +251,9 @@ export default class ReadAllReviewScreen extends React.Component {
                 }
 
                 <AwesomeAlert
+                    title={this.state.alertTitle}
+                    title={this.state.alertMessage}
+
                     show={this.state.showAlert}
                     showProgress={false}
                     closeOnTouchOutside={true}
@@ -259,9 +263,7 @@ export default class ReadAllReviewScreen extends React.Component {
                     cancelText="YES"
                     confirmText="NO"
                     confirmButtonColor="#DD6B55"
-                    // title={"Want to leave " + name + "?"}
-                    title={this.state.alertMessage}
-                    // message="I have a message for you!"
+
                     onCancelPressed={async () => {
                         this.setState({ showAlert: false });
 
@@ -276,13 +278,19 @@ export default class ReadAllReviewScreen extends React.Component {
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
                     }}
+                    onDismiss={() => {
+                        this.setState({ showAlert: false });
+                    }}
 
                     contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
-                    titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
-                    cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
-                    confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
+
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
+                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
+                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
+                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
 
                 <Toast
@@ -705,7 +713,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
     async removeReview(index) {
         // show dialog
-        this.showAlert('Are you sure you want to delete this review?', async () => {
+        this.showAlert('Delete', 'Are you sure you want to delete this review?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             const reviewId = reviewStore.reviews[index].review.id;
@@ -727,7 +735,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
     async removeReply(index) {
         // show dialog
-        this.showAlert('Are you sure you want to delete this reply?', async () => {
+        this.showAlert('Delete', 'Are you sure you want to delete this reply?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             const reviewId = reviewStore.reviews[index].review.id;
@@ -755,10 +763,10 @@ export default class ReadAllReviewScreen extends React.Component {
         reviewStore.init(query, count);
     }
 
-    showAlert(message, callback) {
-        this.setAlertCallback(callback);
+    showAlert(title, message, callback) {
+        this.setState({ alertTitle: title, alertMessage: message, showAlert: true });
 
-        this.setState({ alertMessage: message, showAlert: true });
+        this.setAlertCallback(callback);
     }
 
     setAlertCallback(callback) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar, Platform, Dimensions, Animated } from 'react-native';
 import { Font, AppLoading, Asset } from 'expo';
 // import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
@@ -7,13 +7,6 @@ import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
 import { registerExpoPushToken } from './PushNotifications';
-
-// --
-import { Animated, ImageBackground, Dimensions } from 'react-native';
-import { BlurView } from 'expo';
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
-// const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
-// --
 
 
 // $FlowFixMe
@@ -45,44 +38,30 @@ type InjectedProps = {
 @inject("feedStore", "profileStore")
 @observer
 export default class Loading extends React.Component<InjectedProps> {
-    // --
+    static isUserAutoAuthenticated = true;
+
     state = {
         isReady: false,
-        intensity: new Animated.Value(0)
+        // blurRadius: new Animated.Value(0)
     }
 
-    _animate = () => {
-        /*
-      let { intensity } = this.state;
-      Animated.timing(intensity, {duration: 2500, toValue: 100}).start(() => {
-        Animated.timing(intensity, {duration: 2500, toValue: 0}).start(this._animate);
-      });
-      */
-        Animated.timing(this.state.intensity, { duration: 2500, toValue: 100 }).start(() => {
-            // console.log('move to auth');
-            // navigation.navigate("authStackNavigator");
-        });
-
-    }
-    // --
-
+    /*
     constructor(props) {
         super(props);
 
         this.isUserAutoAuthenticated = true;
-
-        this.blurRadius = new Animated.Value(0);
     }
+    */
 
+    /*
     async componentDidMount(): Promise<void> {
         console.log('Loading.componentDidMount');
 
         // StatusBar.setHidden(true);
 
-
-
         // StatusBar.setHidden(false);
     }
+    */
 
     async _cacheResourcesAsync() {
         console.log('Loading._cacheResourcesAsync');
@@ -167,7 +146,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
 
 
-                if (this.isUserAutoAuthenticated) {
+                if (Loading.isUserAutoAuthenticated) {
                     // update user info to database
 
                     const profile = {
@@ -190,17 +169,20 @@ export default class Loading extends React.Component<InjectedProps> {
                     navigation.navigate("welcome");
                 }
             } else {
-                this.isUserAutoAuthenticated = false;
+                Loading.isUserAutoAuthenticated = false;
 
                 // console.log('move to auth');
-                // navigation.navigate("authStackNavigator");
+                navigation.navigate("authStackNavigator");
 
-                const { intensity } = this.state;
-
-                Animated.timing(intensity, { duration: 1000, toValue: 50, useNativeDriver: Platform.OS === "android" }).start(() => {
+                /*
+                Animated.timing(this.state.blurRadius, {
+                    toValue: Platform.OS === "ios" ? 40 : 4,
+                    duration: 1000
+                }).start(() => {
                     console.log('move to auth');
-                    // navigation.navigate("authStackNavigator");
+                    navigation.navigate("authStackNavigator");
                 });
+                */
             }
         });
     }
@@ -247,6 +229,11 @@ export default class Loading extends React.Component<InjectedProps> {
         );
         */
 
+
+        /*
+        const { blurRadius } = this.state;
+
+
         if (!this.state.isReady) {
             return (
                 <AppLoading
@@ -261,38 +248,29 @@ export default class Loading extends React.Component<InjectedProps> {
         }
 
         return (
-            <AnimatedBlurView
-                tint="default"
-                intensity={this.state.intensity}
-                style={StyleSheet.absoluteFill}
-            >
-
-
-
-                <ImageBackground
-                    style={{
-                        flex: 1,
-                        position: 'absolute',
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height
-                    }}
-                    source={PreloadImage.Splash}
-                    resizeMode='cover'
-                // blurRadius={Platform.OS === "ios" ? 20 : 2}
-                />
-
-            </AnimatedBlurView>
-
-
-
-
-
-
-
-
+            <Animated.Image
+                style={{
+                    width: Dimensions.get('window').width,
+                    height: Dimensions.get('window').height
+                }}
+                source={PreloadImage.Splash}
+                resizeMode='cover'
+                blurRadius={blurRadius}
+            />
         );
+        */
 
-
+        return (
+            <AppLoading
+                startAsync={this._cacheResourcesAsync}
+                onFinish={() => {
+                    // this.setState({ isReady: true }, () => this.init());
+                    this.init();
+                }}
+                onError={console.warn}
+            >
+            </AppLoading>
+        );
     }
 
 

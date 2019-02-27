@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Dimensions, Platform } from 'react-native';
+import {
+    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator,
+    Animated, Dimensions, Platform
+} from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -10,10 +13,41 @@ import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 
 
+const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+
+
 export default class AuthMain extends React.Component {
     state = {
-        showFacebookLoader: false
+        showFacebookLoader: false,
+        blurRadius: new Animated.Value(1),
+        offset: new Animated.Value(0)
     };
+
+    componentDidMount() {
+        const height = Dimensions.get('window').height;
+        this.state.offset.setValue(height);
+
+        Animated.sequence([
+            Animated.timing(this.state.blurRadius, {
+                toValue: Platform.OS === "ios" ? 40 : 4,
+                duration: 1500
+            }),
+            Animated.timing(this.state.offset, {
+                toValue: 0,
+                duration: 300
+            })
+        ]).start();
+
+
+
+
+        /*
+        Animated.timing(this.state.blurRadius, {
+            toValue: Platform.OS === "ios" ? 40 : 4,
+            duration: 1000
+        }).start();
+        */
+    }
 
     componentWillUnmount() {
         this.closed = true;
@@ -88,21 +122,49 @@ export default class AuthMain extends React.Component {
     }
 
     render() {
+        const { blurRadius } = this.state;
+        const viewStyle = {
+            transform: [
+                {
+                    translateY: this.state.offset
+                }
+            ]
+        };
+
 
         return (
-            <ImageBackground
-                style={{
-                    flex: 1,
-                    position: 'absolute',
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.Splash}
-                // imageStyle={{ resizeMode: 'cover' }}
-                resizeMode='cover'
-                blurRadius={Platform.OS === "ios" ? 20 : 2}
-            >
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}>
+            /*
+                        <AnimatedImageBackground
+                            style={{
+                                width: Dimensions.get('window').width,
+                                height: Dimensions.get('window').height
+                            }}
+                            source={PreloadImage.Splash}
+                            resizeMode='cover'
+                            // blurRadius={Platform.OS === "ios" ? 20 : 2}
+                            // blurRadius={Platform.OS === "ios" ? 40 : 4}
+                            blurRadius={blurRadius}
+                        >
+            */
+
+
+            <View style={styles.container}>
+
+                <Animated.Image
+                    style={{
+                        position: 'absolute',
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height
+                    }}
+                    source={PreloadImage.Splash}
+                    resizeMode='cover'
+                    blurRadius={blurRadius}
+                />
+
+                <Animated.View
+                    // style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}
+                    style={[styles.view, viewStyle]}
+                >
                     <View style={styles.logo}>
                         <Text style={{
                             // marginTop: 100,
@@ -163,10 +225,10 @@ export default class AuthMain extends React.Component {
                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Mobile</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
+                        <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
                         // onPress={() => this.props.navigation.navigate("logIn")}
                         >
-                            <Text style={{ marginBottom: 150, marginTop: 18, color: 'rgba(255, 255, 255, 0.8)' }}>
+                            <Text style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
                                 <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular" }}>Already a member?  </Text>
                                 <Text style={{ fontSize: 15, fontFamily: "SFProText-Semibold" }}>Log in</Text>
                             </Text>
@@ -177,8 +239,13 @@ export default class AuthMain extends React.Component {
                         </Text>
 
                     </View>
-                </View>
-            </ImageBackground>
+                </Animated.View>
+
+            </View>
+
+            /*                
+                        </AnimatedImageBackground>
+            */
         );
     }
 
@@ -198,8 +265,14 @@ export default class AuthMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ffffff',
+        // backgroundColor: 'green',
+        // backgroundColor: '#ffffff',
         // alignItems: 'center',
+        // justifyContent: 'center'
+    },
+    view: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.4)',
         justifyContent: 'center'
     },
     /*

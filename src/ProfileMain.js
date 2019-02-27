@@ -11,6 +11,7 @@ import { Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -332,7 +333,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <TouchableOpacity
                                             onPress={() => {
                                                 setTimeout(() => {
-                                                    this.props.navigation.navigate("logout");
+                                                    // this.props.navigation.navigate("logout");
+                                                    this.setState({ showAlert: true });
                                                 }, Cons.buttonTimeoutShort);
                                             }}
                                         >
@@ -498,8 +500,49 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     positionValue={Dimensions.get('window').height / 2}
                     opacity={0.6}
                 />
-            </View>
 
+                <AwesomeAlert
+                    show={this.state.showAlert}
+                    showProgress={false}
+                    title="Log out"
+                    message="Are you sure? Logging out will remove all Rowena data from this device."
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={false}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    cancelText="YES"
+                    confirmText="NO"
+                    confirmButtonColor="#DD6B55"
+                    onCancelPressed={async () => { // YES pressed
+                        this.setState({ showAlert: false });
+
+                        // 1. remove auth
+
+                        // 2. remove database (users, post)
+                        // await Firebase.deleteProfile(Firebase.user().uid);
+
+                        // removeFeed
+
+                        // 3. move to auth main
+                    }}
+                    onConfirmPressed={() => { // NO pressed
+                        this.setState({ showAlert: false });
+                    }}
+                    onDismiss={() => {
+                        this.setState({ showAlert: false });
+                    }}
+
+                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
+
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
+                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+                    
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
+                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
+                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                />
+            </View>
         );
     } // end of render()
 

@@ -120,8 +120,6 @@ export default class Feed extends React.Component<FeedProps> {
             <SafeAreaView style={styles.list}>
                 <FlatList
                     ref={(fl) => this._flatList = fl}
-
-
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator
                     data={feed}

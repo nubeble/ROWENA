@@ -336,10 +336,9 @@ import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
 
 import EditMain from './src/EditMain';
-// import CheckMain from './src/CheckMain';
-import HidingHeader from './src/HidingHeader';
+import CheckMain from './src/CheckMain';
 import AdvertisementMain from './src/AdvertisementMain';
-import LogoutMain from './src/LogoutMain';
+// import LogoutMain from './src/LogoutMain';
 
 
 // -- start of AuthStackNavigator
@@ -739,8 +738,8 @@ class EditStackNavigatorWrapper extends React.Component {
 // -- start of check
 const CheckStackNavigator = createStackNavigator(
     {
-        // checkMain: { screen: CheckMain },
-        checkMain: { screen: HidingHeader },
+        checkMain: { screen: CheckMain },
+        // checkMain: { screen: HidingHeader },
 
 
         // post: { screen: PostModalNavigatorWrapper },
@@ -810,6 +809,7 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
 // -- end of advertisement
 
 // -- start of logout
+/*
 const LogoutStackNavigator = createStackNavigator(
     {
         logoutMain: { screen: LogoutMain },
@@ -842,6 +842,7 @@ class LogoutStackNavigatorWrapper extends React.Component {
         );
     }
 }
+*/
 // -- end of logout
 
 // -- start of ProfileModalNavigator
@@ -851,7 +852,7 @@ const ProfileModalNavigator = createStackNavigator(
         edit: { screen: EditStackNavigatorWrapper },
         check: { screen: CheckStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
-        logout: { screen: LogoutStackNavigatorWrapper },
+        // logout: { screen: LogoutStackNavigatorWrapper },
         postPreview: { screen: PostModalNavigatorWrapper }
     },
     {
@@ -905,11 +906,13 @@ ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
         };
     }
 
+    /*
     if (route && route.routeName === 'logout') {
         return {
             tabBarVisible: false
         };
     }
+    */
 
     if (route && route.routeName === 'postPreview') {
         return {

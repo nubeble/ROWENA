@@ -5,9 +5,9 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
-    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler
+    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, MapView, Svg } from 'expo';
+import { Constants, MapView, Svg, Haptic } from 'expo';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -63,6 +63,7 @@ export default class PostScreen extends React.Component {
         offset: new Animated.Value(0),
 
         showAlert: false,
+        alertTitle: '',
         alertMessage: '',
 
         liked: false,
@@ -616,6 +617,9 @@ export default class PostScreen extends React.Component {
                 }
 
                 <AwesomeAlert
+                    title={this.state.alertTitle}
+                    message={this.state.alertMessage}
+
                     show={this.state.showAlert}
                     showProgress={false}
                     closeOnTouchOutside={true}
@@ -625,9 +629,7 @@ export default class PostScreen extends React.Component {
                     cancelText="YES"
                     confirmText="NO"
                     confirmButtonColor="#DD6B55"
-                    // title={"Want to leave " + name + "?"}
-                    title={this.state.alertMessage}
-                    // message="I have a message for you!"
+
                     onCancelPressed={async () => {
                         this.setState({ showAlert: false });
 
@@ -642,13 +644,19 @@ export default class PostScreen extends React.Component {
                     onConfirmPressed={() => {
                         this.setState({ showAlert: false });
                     }}
+                    onDismiss={() => {
+                        this.setState({ showAlert: false });
+                    }}
 
                     contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
-                    titleStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1 }} // YES
-                    cancelButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, paddingTop: Cons.alertButtonPaddingTop, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween }} // NO
-                    confirmButtonTextStyle={{ color: "black", textAlign: 'center', fontSize: 14, fontFamily: "SFProText-Semibold" }}
+
+                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
+                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
+
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
+                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
+                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
 
                 <Toast
@@ -668,12 +676,28 @@ export default class PostScreen extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`one`}>
-                    <SmartImage
-                        showSpinner={false}
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={value}
-                    />
+                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
+                        const imageW = Dimensions.get('window').width;
+                        const boundary = imageW / 2;
+                        const x = e.nativeEvent.locationX;
+
+                        if (x <= boundary) { // left
+                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                            else Vibration.vibrate(30);
+                        } else { // right
+                            this.swiper.scrollBy(1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            else Vibration.vibrate(10);
+                        }
+                    }}
+                    >
+                        <SmartImage
+                            showSpinner={false}
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableOpacity>
                 </View>
             );
         }
@@ -682,11 +706,28 @@ export default class PostScreen extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`two`}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={value}
-                    />
+                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
+                        const imageW = Dimensions.get('window').width;
+                        const boundary = imageW / 2;
+                        const x = e.nativeEvent.locationX;
+
+                        if (x <= boundary) { // left
+                            this.swiper.scrollBy(-1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            else Vibration.vibrate(10);
+                        } else { // right
+                            this.swiper.scrollBy(1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            else Vibration.vibrate(10);
+                        }
+                    }}
+                    >
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableOpacity>
                 </View>
             );
         }
@@ -695,11 +736,28 @@ export default class PostScreen extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`three`}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={value}
-                    />
+                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
+                        const imageW = Dimensions.get('window').width;
+                        const boundary = imageW / 2;
+                        const x = e.nativeEvent.locationX;
+
+                        if (x <= boundary) { // left
+                            this.swiper.scrollBy(-1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            else Vibration.vibrate(10);
+                        } else { // right
+                            this.swiper.scrollBy(1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            else Vibration.vibrate(10);
+                        }
+                    }}
+                    >
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableOpacity>
                 </View>
             );
         }
@@ -708,11 +766,27 @@ export default class PostScreen extends React.Component {
         if (value) {
             pictures.push(
                 <View style={styles.slide} key={`four`}>
-                    <SmartImage
-                        style={styles.item}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={value}
-                    />
+                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
+                        const imageW = Dimensions.get('window').width;
+                        const boundary = imageW / 2;
+                        const x = e.nativeEvent.locationX;
+
+                        if (x <= boundary) { // left
+                            this.swiper.scrollBy(-1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            else Vibration.vibrate(10);
+                        } else { // right
+                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                            else Vibration.vibrate(30);
+                        }
+                    }}
+                    >
+                        <SmartImage
+                            style={styles.item}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={value}
+                        />
+                    </TouchableOpacity>
                 </View>
             );
         }
@@ -720,6 +794,7 @@ export default class PostScreen extends React.Component {
 
         return (
             <Swiper
+                ref={(swiper) => { this.swiper = swiper; }}
                 style={styles.wrapper}
                 // containerStyle={{ marginBottom: 10 }}
                 width={Dimensions.get('window').width}
@@ -1191,7 +1266,7 @@ export default class PostScreen extends React.Component {
 
     async removeReview(index) {
         // show dialog
-        this.showAlert('Are you sure you want to delete this review?', async () => {
+        this.showAlert('Delete', 'Are you sure you want to delete this review?', async () => {
             const { post } = this.props.navigation.state.params;
 
             const placeId = post.placeId;
@@ -1211,10 +1286,10 @@ export default class PostScreen extends React.Component {
         });
     }
 
-    showAlert(message, callback) {
-        this.setAlertCallback(callback);
+    showAlert(title, message, callback) {
+        this.setState({ alertTitle: title, alertMessage: message, showAlert: true });
 
-        this.setState({ alertMessage: message, showAlert: true });
+        this.setAlertCallback(callback);
     }
 
     setAlertCallback(callback) {
@@ -1223,7 +1298,7 @@ export default class PostScreen extends React.Component {
 
     async removeReply(index) {
         // show dialog
-        this.showAlert('Are you sure you want to delete this reply?', async () => {
+        this.showAlert('Delete', 'Are you sure you want to delete this reply?', async () => {
             const { post } = this.props.navigation.state.params;
 
             const placeId = post.placeId;

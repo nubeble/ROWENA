@@ -33,7 +33,8 @@ export default class SignUpWithEmail extends React.Component {
         offset: new Animated.Value(0),
 
         invalid: true,
-        signUpButtomTextColor: 'rgba(255,255,255,0.3)',
+        // signUpButtomTextColor: 'rgba(255,255,255,0.3)',
+        signUpButtomTextColor: Theme.color.text3,
 
         securePwInput: true,
         secureText: 'Show',
@@ -153,10 +154,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.password === '') {
             // disable
-            this.setState({ invalid: true, signUpButtomTextColor: 'rgba(255,255,255,0.3)' });
+            this.setState({ invalid: true, signUpButtomTextColor: Theme.color.text3 });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)' });
+            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.text1 });
         }
 
         if (this._showNotification) {
@@ -207,10 +208,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.email === '') {
             // disable
-            this.setState({ invalid: true, signUpButtomTextColor: 'rgba(255,255,255,0.3)' });
+            this.setState({ invalid: true, signUpButtomTextColor: Theme.color.text3 });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)' });
+            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.text1 });
         }
 
         if (this._showNotification) {
@@ -357,17 +358,15 @@ export default class SignUpWithEmail extends React.Component {
 
         return (
             <ImageBackground
-                // style={{ flex: 1, width: null, height: null }}
                 style={{
-                    flex: 1,
-                    position: 'absolute',
+                    // flex: 1,
+                    // position: 'absolute',
                     width: Dimensions.get('window').width,
                     height: Dimensions.get('window').height
                 }}
                 source={PreloadImage.Splash}
-                // imageStyle={{ resizeMode: 'cover' }}
                 resizeMode='cover'
-                blurRadius={Platform.OS === "ios" ? 20 : 2}
+                blurRadius={Platform.OS === "ios" ? 40 : 4}
             >
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}>
                     <View style={styles.container}>
@@ -534,7 +533,11 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         // alignSelf: 'center',
-        backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
+
+        // backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
+        backgroundColor: Theme.color.selection,
+
+
         borderRadius: 5,
         // borderColor: "transparent",
         // borderWidth: 0

@@ -2,13 +2,13 @@
 import autobind from "autobind-decorator";
 import * as React from "react";
 import moment from "moment";
-import {StyleSheet, View, Animated, SafeAreaView, TouchableWithoutFeedback, Platform} from "react-native";
-import {inject, observer} from "mobx-react/native";
+import { StyleSheet, View, Animated, SafeAreaView, TouchableWithoutFeedback, Platform } from "react-native";
+import { inject, observer } from "mobx-react/native";
 
 import ProfileStore from "../ProfileStore";
 
-import {Text, Theme, Avatar, Feed, FeedStore} from "../../components";
-import type {ScreenProps} from "../../components/Types";
+import { Text, Theme, Avatar, Feed, FeedStore } from "../../components";
+import type { ScreenProps } from "../../components/Types";
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
@@ -39,9 +39,9 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
     }
 
     render(): React.Node {
-        const {feedStore, profileStore, navigation} = this.props;
-        const {scrollAnimation} = this.state;
-        const {profile} = profileStore;
+        const { feedStore, profileStore, navigation } = this.props;
+        const { scrollAnimation } = this.state;
+        const { profile } = profileStore;
         const opacity = scrollAnimation.interpolate({
             inputRange: [0, 60],
             outputRange: [1, 0],
@@ -81,7 +81,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                                 type="large"
                                 style={[styles.newPosts, { opacity, transform: [{ translateY }] }]}
                             >
-                            New posts
+                                New posts
                             </AnimatedText>
                             <AnimatedText
                                 type="header2"
@@ -94,7 +94,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             profile && (
                                 <TouchableWithoutFeedback onPress={this.profile}>
                                     <View>
-                                        <Avatar {...profile.picture}/>
+                                        <Avatar {...profile.picture} />
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -110,7 +110,7 @@ export default class Explore extends React.Component<ScreenProps<> & InjectedPro
                             }
                         }
                     }])}
-                    {...{navigation}}
+                    {...{ navigation }}
                 />
             </View>
         );
