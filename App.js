@@ -416,7 +416,8 @@ class ExploreStackNavigatorWrapper extends React.Component {
 const IntroStackNavigator = createStackNavigator(
     {
         introMain: { screen: Intro },
-        introSearchModal: { screen: SearchScreen }
+        introSearchModal: { screen: SearchScreen },
+        introPost: { screen: PostScreen }
     },
     {
         mode: 'modal',
@@ -444,6 +445,24 @@ class IntroStackNavigatorWrapper extends React.Component {
         );
     }
 }
+
+IntroStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    const route = navigation.state.routes[1];
+    // route.isTransitioning
+
+    if (route && route.routeName === 'introPost') {
+    // if (route && route.routeName === 'introSearchModal') {
+        console.log('!!!!!!!!!!!!!!', route.routeName);
+
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
 // -- end of IntroStackNavigator
 
 // -- start of HomeStackNavigator

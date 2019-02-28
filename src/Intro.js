@@ -153,10 +153,10 @@ export default class Intro extends React.Component {
         // await this.getPlacesImage();
         // this.getPlacesSize();
 
-        await this.getPlaces();
+        this.getPlaces();
 
-        await this.getPopularFeeds();
-        await this.getRecentFeeds();
+        this.getPopularFeeds();
+        this.getRecentFeeds();
     }
 
     async getPlacesImage() {
@@ -343,7 +343,7 @@ export default class Intro extends React.Component {
         }
         placeList.sort();
 
-        const prevItem = null;
+        let prevItem = null;
         let array = {};
         for (var i = 0; i < size; i++) {
             const item = placeList[i];
@@ -357,14 +357,15 @@ export default class Intro extends React.Component {
             }
         }
 
-        console.log('array', array);
+        // console.log('array', array);
 
         let popularFeeds = [...this.state.popularFeeds];
         let index = 0;
 
         // map search
-        for (var [key, value] of array) {
-            console.log(key + ":" + value);
+        for (key in array) {
+            var value = array[key];
+            // console.log(key + ":" + value);
 
             const feeds = await Firebase.getFeedByAverageRating(key, value);
 
@@ -408,7 +409,7 @@ export default class Intro extends React.Component {
         }
         placeList.sort();
 
-        const prevItem = null;
+        let prevItem = null;
         let array = {};
         for (var i = 0; i < size; i++) {
             const item = placeList[i];
@@ -422,14 +423,15 @@ export default class Intro extends React.Component {
             }
         }
 
-        console.log('array', array);
+        // console.log('array', array);
 
         let recentFeeds = [...this.state.recentFeeds];
         let index = 0;
 
         // map search
-        for (var [key, value] of array) {
-            console.log(key + ":" + value);
+        for (key in array) {
+            var value = array[key];
+            // console.log(key + ":" + value);
 
             const feeds = await Firebase.getFeedByAverageRating(key, value);
 
@@ -807,7 +809,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity activeOpacity={1.0} onPress={() => {
                             if (!feed.placeId) return;
                             // console.log('front', i);
-                            navigation.navigate("detail", { post: feed })
+                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
                         }}>
                             {/*
                             <SmartImage
@@ -829,7 +831,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity activeOpacity={1.0} onPress={() => {
                             if (!feed.placeId) return;
                             // console.log('rear', i);
-                            navigation.navigate("detail", { post: feed })
+                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
                         }}>
                             <Image
                                 style={styles.item}
@@ -844,7 +846,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity activeOpacity={1.0} onPress={() => {
                             if (!feed.placeId) return;
                             // console.log('middle', i);
-                            navigation.navigate("detail", { post: feed })
+                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
                         }}>
                             <Image
                                 style={styles.item}
@@ -896,7 +898,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity activeOpacity={1.0} onPress={() => {
                             if (!feed.placeId) return;
                             // console.log('front', i);
-                            navigation.navigate("detail", { post: feed })
+                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
                         }}>
                             <Image
                                 style={styles.item}
@@ -911,7 +913,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity activeOpacity={1.0} onPress={() => {
                             if (!feed.placeId) return;
                             // console.log('rear', i);
-                            navigation.navigate("detail", { post: feed })
+                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
                         }}>
                             <Image
                                 style={styles.item}
@@ -926,7 +928,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity activeOpacity={1.0} onPress={() => {
                             if (!feed.placeId) return;
                             // console.log('middle', i);
-                            navigation.navigate("detail", { post: feed })
+                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
                         }}>
                             <Image
                                 style={styles.item}

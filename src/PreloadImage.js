@@ -3,15 +3,15 @@ import { Asset } from "expo";
 const Splash = require('../assets/splash.png');
 const user = require('../assets/user.png');
 
-const Avatar1 = require('../assets/place/Avatar1.jpg');
-const Avatar2 = require('../assets/place/Avatar2.jpg');
-const Avatar3 = require('../assets/place/Avatar3.jpg');
-const Avatar4 = require('../assets/place/Avatar4.jpg');
-const Avatar5 = require('../assets/place/Avatar5.jpg');
-const Avatar6 = require('../assets/place/Avatar6.jpg');
-const Avatar7 = require('../assets/place/Avatar7.jpg');
-const Avatar8 = require('../assets/place/Avatar8.jpg');
-const Avatar9 = require('../assets/place/Avatar9.jpg');
+const Avatar1 = require('../assets/place/avatar1.jpg');
+const Avatar2 = require('../assets/place/avatar2.jpg');
+const Avatar3 = require('../assets/place/avatar3.jpeg');
+const Avatar4 = require('../assets/place/avatar4.jpeg');
+const Avatar5 = require('../assets/place/avatar5.jpg');
+const Avatar6 = require('../assets/place/avatar6.jpg');
+const Avatar7 = require('../assets/place/avatar7.jpg');
+const Avatar8 = require('../assets/place/avatar8.jpg');
+const Avatar9 = require('../assets/place/avatar9.jpg');
 
 const birth = require('../assets/icon/birth.png');
 const bra = require('../assets/icon/bra.png');
