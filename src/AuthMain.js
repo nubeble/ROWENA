@@ -29,7 +29,7 @@ export default class AuthMain extends React.Component {
 
         Animated.sequence([
             Animated.timing(this.state.blurRadius, {
-                toValue: Platform.OS === "ios" ? 40 : 4,
+                toValue: Platform.OS === "ios" ? 40 : 3,
                 duration: 1500
             }),
             Animated.timing(this.state.offset, {
@@ -234,7 +234,7 @@ export default class AuthMain extends React.Component {
                             </Text>
                         </TouchableOpacity>
 
-                        <Text style={{ position: 'absolute', bottom: 50, fontSize: 13, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>
+                        <Text style={{ position: 'absolute', bottom: 20, fontSize: 13, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
                         </Text>
 
@@ -265,6 +265,7 @@ export default class AuthMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: 'white' // ToDo: check this
         // backgroundColor: 'green',
         // backgroundColor: '#ffffff',
         // alignItems: 'center',
@@ -306,7 +307,6 @@ const styles = StyleSheet.create({
     signUpWithFacebookButton: {
         justifyContent: 'center',
         alignItems: 'center',
-
         backgroundColor: "rgba(255, 255, 255, 0.6)",
         borderRadius: 5,
         borderColor: "transparent",

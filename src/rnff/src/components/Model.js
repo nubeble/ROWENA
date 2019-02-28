@@ -61,6 +61,7 @@ export type Post = {
     uid: string,
     id: string,
     placeId: string,
+    placeName: string,
     location: Location,
     note: string,
     pictures: Pictures,

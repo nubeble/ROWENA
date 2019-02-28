@@ -34,7 +34,7 @@ export default class SignUpWithEmail extends React.Component {
 
         invalid: true,
         // signUpButtomTextColor: 'rgba(255,255,255,0.3)',
-        signUpButtomTextColor: Theme.color.text3,
+        signUpButtomTextColor: 'grey',
 
         securePwInput: true,
         secureText: 'Show',
@@ -154,10 +154,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.password === '') {
             // disable
-            this.setState({ invalid: true, signUpButtomTextColor: Theme.color.text3 });
+            this.setState({ invalid: true, signUpButtomTextColor: 'grey' });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.text1 });
+            this.setState({ invalid: false, signUpButtomTextColor: 'black' });
         }
 
         if (this._showNotification) {
@@ -208,10 +208,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.email === '') {
             // disable
-            this.setState({ invalid: true, signUpButtomTextColor: Theme.color.text3 });
+            this.setState({ invalid: true, signUpButtomTextColor: 'grey' });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.text1 });
+            this.setState({ invalid: false, signUpButtomTextColor: 'black' });
         }
 
         if (this._showNotification) {
@@ -366,7 +366,7 @@ export default class SignUpWithEmail extends React.Component {
                 }}
                 source={PreloadImage.Splash}
                 resizeMode='cover'
-                blurRadius={Platform.OS === "ios" ? 40 : 4}
+                blurRadius={Platform.OS === "ios" ? 40 : 3}
             >
                 <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}>
                     <View style={styles.container}>
@@ -527,22 +527,15 @@ const styles = StyleSheet.create({
     },
     */
     signUpButton: {
-        // marginTop: 40,
-        // position: 'absolute',
-        // bottom: 10,
-        width: '85%',
-        height: 45,
-        // alignSelf: 'center',
-
-        // backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
-        backgroundColor: Theme.color.selection,
-
-
-        borderRadius: 5,
-        // borderColor: "transparent",
-        // borderWidth: 0
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        // backgroundColor: Theme.color.selection,
+        backgroundColor: "rgba(255, 255, 255, 0.6)",
+        borderRadius: 5,
+        borderColor: "transparent",
+        borderWidth: 0,
+        width: '85%',
+        height: 45
     },
     activityIndicator: {
         position: 'absolute', top: 0, bottom: 0, left: 0, right: 0

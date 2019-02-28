@@ -123,6 +123,82 @@ export default class Firebase {
         return uri;
     }
 
+    static async getRandomPlace() {
+        // let uri = null;
+        let placeId = null;
+
+        const random = Util.getRandomNumber();
+
+        const postsRef = Firebase.firestore.collection("place");
+        const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
+        if (snap1.docs.length === 0) {
+
+            const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
+            if (snap2.docs.length === 0) {
+                // not exist
+            } else {
+                snap2.forEach((doc) => {
+                    // console.log(doc.id, '=>', doc.data());
+                    placeId = doc.id;
+                });
+            }
+
+        } else {
+            snap1.forEach((doc) => {
+                // console.log(doc.id, '=>', doc.data());
+                placeId = doc.id;
+            });
+        }
+
+        return placeId;
+    }
+
+    static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
+        let feed = null;
+
+        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(1).get();
+        snap.forEach(feedDoc => {
+            feed = feedDoc.data();
+        });
+
+        return feed;
+    }
+
+    static async getFeedByAverageRating(placeId, size) {
+        let feeds = [];
+
+        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(size).get();
+        snap.forEach(feedDoc => {
+            const feed = feedDoc.data();
+            feeds.push(feed);
+        });
+
+        return feeds;
+    }
+
+    static async getFeedByTimestamp(placeId) { // 가장 최근에 생성된 포스트
+        let feed = null;
+
+        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(1).get();
+        snap.forEach(feedDoc => {
+            feed = feedDoc.data();
+        });
+
+        return feed;
+    }
+
+    static async getFeedByTimestamp(placeId, size) {
+        let feeds = [];
+
+        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(size).get();
+        snap.forEach(feedDoc => {
+            const feed = feedDoc.data();
+            feeds.push(feed);
+        });
+
+        return feeds;
+    }
+
     static subscribeToPlaceSize(placeId, callback) {
         return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
             let count = 0;
@@ -159,9 +235,9 @@ export default class Firebase {
 
             console.log('count', count);
 
-            // 2. update the count
+            // 2. update the count & timestamp
             // transaction.update(placeRef, { count: Number(count + 1) });
-            transaction.set(placeRef, { count: Number(count + 1) });
+            transaction.set(placeRef, { count: Number(count + 1), timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn });
 
             // 3. update profile (add fields to feeds in user profile)
             const data = {

@@ -89,7 +89,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         return (
             <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }} />
+                <Post {...{ navigation, post, store, profile }}/>
             </View>
         );
     }

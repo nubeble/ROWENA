@@ -1,5 +1,5 @@
 /*
- * Copied from Post.js
+    Copied from Post.js
 */
 
 import React from 'react';

@@ -36,7 +36,7 @@ export default class Explore extends React.Component<InjectedProps> {
         // scrollAnimation: new Animated.Value(0),
 
         searchText: '',
-        cityName: '',
+        // cityName: '',
         feedSize: 0,
         renderFeed: false,
 
@@ -54,12 +54,11 @@ export default class Explore extends React.Component<InjectedProps> {
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
 
-        let place = params.place;
-        let length = params.length;
-        let city = place.city;
-        // console.log('Explore.componentDidMount', 'place', place, 'length', length, 'city', city);
+        const place = params.place;
+        const length = params.length;
 
-        this.setState({ searchText: place.description, cityName: city, feedSize: length });
+        // this.setState({ searchText: place.description, cityName: place.city, feedSize: length });
+        this.setState({ searchText: place.name, feedSize: length });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
@@ -421,7 +420,10 @@ export default class Explore extends React.Component<InjectedProps> {
 
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>
+                                        {/*
                                         {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.cityName}
+                                        */}
+                                        {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.searchText}
                                     </Text>
                                 </View>
 

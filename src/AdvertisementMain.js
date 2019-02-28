@@ -55,10 +55,35 @@ export default class AdvertisementMain extends React.Component {
 
 
                 <View style={{ height: 300, width: '100%', backgroundColor: '#123456', paddingTop: 30, marginTop: 30 }}>
-                    <TouchableOpacity onPress={() => this.createFeed()}
+                    <TouchableOpacity
+                        onPress={() => this.makeDummyData()}
                         style={styles.bottomButton}
                     >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => this.makeBangkok()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => this.makePattaya()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => this.makeManila()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => this.makeMacao()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macao)</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -68,12 +93,7 @@ export default class AdvertisementMain extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        onPress={() => this.makeDummyData()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
-                    </TouchableOpacity>
+
                 </View>
 
 
@@ -86,21 +106,14 @@ export default class AdvertisementMain extends React.Component {
     async createFeed() {
         const feedId = Util.uid(); // create uuid
         const userUid = Firebase.user().uid;
-        // ToDo: use google api
+
         let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
+        let placeName = 'Bangkok, Thailand';
         const location = {
-            description: 'Bangkok, Thailand',
+            description: 'Soi Sukhumvit 19, Khlong Toei Nuea, Watthana, Bangkok, Thailand',
             longitude: 100.5017651,
             latitude: 13.7563309
         };
-        /*
-        const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
-        const location = {
-            description: 'Ho Chi Minh, Vietnam',
-            longitude: 106.6296638,
-            latitude: 10.8230989
-        };
-        */
 
         const note = 'note';
 
@@ -121,6 +134,7 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -168,13 +182,34 @@ export default class AdvertisementMain extends React.Component {
 
     async makeDummyData() {
         for (var i = 0; i < 10; i++) {
-            this.makeBKK();
-            this.makeHCM();
+            // 1. 태국
+            this.makeBangkok(); // 방콕
+            this.makePattaya(); // 파타야
+
+            // 2. 베트남
+            this.makeHCM(); // 호치민
+            this.makeHanoi(); // 하노이
+
+            // 3. 필리핀
             this.makeManila();
+            this.makeCebu();
+
+            // 4. 라오스
             this.makeVientiane();
+
+            // 5. 캄보디아
             this.makePP();
+
+            // 6. 마카오 (Macao, Macau)
+            this.makeMacao();
+
+            // 7. 인도네시아
             this.makeJakarta();
+
+            // 8. 말레이시아
+            this.makeKL();
         }
+
         /*
         // 1. Bangkok, Thailand
         for (var i = 0; i < 10; i++) await this.makeBKK();
@@ -291,13 +326,84 @@ export default class AdvertisementMain extends React.Component {
         return images;
     }
 
-    async makeBKK() {
+    async makeBangkok() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
+        const placeName = 'Bangkok, Thailand';
+
         // ToDo: get it from google location api
         const location = {
-            description: 'Bangkok, Thailand',
+            description: 'Soi Sukhumvit 19, Khlong Toei Nuea, Watthana, Bangkok, Thailand',
+            longitude: 100.5017651,
+            latitude: 13.7563309
+        };
+
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
+
+        const name = 'Bae Soo-bin';
+        const age = 24;
+        const height = 167;
+        const weight = 48;
+        const bust = 'B+';
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                // preview: null,
+                uri: image1Uri
+            },
+            two: {
+                // preview: null,
+                uri: image2Uri
+            },
+            three: {
+                // preview: null,
+                uri: image3Uri
+            },
+            four: {
+                // preview: null,
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.age = age;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+
+        await Firebase.createFeed(feed);
+    }
+
+    async makePattaya() {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+        const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
+        const placeName = 'Pattaya, Thailand';
+
+        // ToDo: get it from google location api
+        const location = {
+            description: '파타야',
             longitude: 0.0,
             latitude: 0.0
         };
@@ -324,6 +430,7 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -360,9 +467,11 @@ export default class AdvertisementMain extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
+        const placeName = 'Ho Chi Minh, Vietnam';
+
         // ToDo: get it from google location api
         const location = {
-            description: 'Ho Chi Minh, Vietnam',
+            description: '호치민',
             longitude: 0.0,
             latitude: 0.0
         };
@@ -389,6 +498,75 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                // preview: null,
+                uri: image1Uri
+            },
+            two: {
+                // preview: null,
+                uri: image2Uri
+            },
+            three: {
+                // preview: null,
+                uri: image3Uri
+            },
+            four: {
+                // preview: null,
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.age = age;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+
+        await Firebase.createFeed(feed);
+    }
+
+    async makeHanoi() {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+        const placeId = 'ChIJKQqAE44ANTERDbkQYkF-mAI';
+        const placeName = 'Hanoi, Vietnam';
+
+        // ToDo: get it from google location api
+        const location = {
+            description: '하노이',
+            longitude: 0.0,
+            latitude: 0.0
+        };
+
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
+
+        const name = 'Kim Seol-hyun';
+        const age = 24;
+        const height = 167;
+        const weight = 49;
+        const bust = 'B+';
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -425,9 +603,11 @@ export default class AdvertisementMain extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk';
+        const placeName = 'Manila, Philippines';
+
         // ToDo: get it from google location api
         const location = {
-            description: 'Manila, Philippines',
+            description: '마닐라',
             longitude: 0.0,
             latitude: 0.0
         };
@@ -454,6 +634,75 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                // preview: null,
+                uri: image1Uri
+            },
+            two: {
+                // preview: null,
+                uri: image2Uri
+            },
+            three: {
+                // preview: null,
+                uri: image3Uri
+            },
+            four: {
+                // preview: null,
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.age = age;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+
+        await Firebase.createFeed(feed);
+    }
+
+    async makeCebu() {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+        const placeId = 'ChIJ_S3NjSWZqTMRBzXT2wwDNEw';
+        const placeName = 'Cebu, Philippines';
+
+        // ToDo: get it from google location api
+        const location = {
+            description: '세부',
+            longitude: 0.0,
+            latitude: 0.0
+        };
+
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
+
+        const name = 'Bae Soo-bin';
+        const age = 24;
+        const height = 167;
+        const weight = 48;
+        const bust = 'B+';
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -490,9 +739,11 @@ export default class AdvertisementMain extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJIXvtBoZoJDER3-7BGIaxkx8';
+        const placeName = 'Vientiane, Laos';
+
         // ToDo: get it from google location api
         const location = {
-            description: 'Vientiane, Laos',
+            description: '비엔티안',
             longitude: 0.0,
             latitude: 0.0
         };
@@ -519,6 +770,7 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -555,9 +807,11 @@ export default class AdvertisementMain extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ42tqxz1RCTERuyW1WugOAZw';
+        const placeName = 'Phnom Penh, Cambodia';
+
         // ToDo: get it from google location api
         const location = {
-            description: 'Phnom Penh, Cambodia',
+            description: '프놈펜',
             longitude: 0.0,
             latitude: 0.0
         };
@@ -584,6 +838,75 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                // preview: null,
+                uri: image1Uri
+            },
+            two: {
+                // preview: null,
+                uri: image2Uri
+            },
+            three: {
+                // preview: null,
+                uri: image3Uri
+            },
+            four: {
+                // preview: null,
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.age = age;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+
+        await Firebase.createFeed(feed);
+    }
+
+    async makeMacao() {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+        const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
+        const placeName = 'Macao, Macau';
+
+        // ToDo: get it from google location api
+        const location = {
+            description: '마카오',
+            longitude: 0.0,
+            latitude: 0.0
+        };
+
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
+
+        const name = 'Bae Soo-bin';
+        const age = 24;
+        const height = 167;
+        const weight = 48;
+        const bust = 'B+';
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -620,9 +943,11 @@ export default class AdvertisementMain extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
+        const placeName = 'Jakarta, Indonesia';
+
         // ToDo: get it from google location api
         const location = {
-            description: 'Jakarta, Indonesia',
+            description: '자카르타',
             longitude: 0.0,
             latitude: 0.0
         };
@@ -649,6 +974,7 @@ export default class AdvertisementMain extends React.Component {
         feed.uid = userUid;
         feed.id = feedId;
         feed.placeId = placeId;
+        feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
 
@@ -681,8 +1007,73 @@ export default class AdvertisementMain extends React.Component {
         await Firebase.createFeed(feed);
     }
 
+    async makeKL() {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+        const placeId = 'ChIJ5-rvAcdJzDERfSgcL1uO2fQ';
+        const placeName = 'Kuala Lumpur, Malaysia';
 
+        // ToDo: get it from google location api
+        const location = {
+            description: '쿠알라룸푸르',
+            longitude: 0.0,
+            latitude: 0.0
+        };
 
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+        // --
+        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        // --
+
+        const name = 'Bae Soo-bin';
+        const age = 24;
+        const height = 167;
+        const weight = 48;
+        const bust = 'B+';
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                // preview: null,
+                uri: image1Uri
+            },
+            two: {
+                // preview: null,
+                uri: image2Uri
+            },
+            three: {
+                // preview: null,
+                uri: image3Uri
+            },
+            four: {
+                // preview: null,
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.age = age;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+
+        await Firebase.createFeed(feed);
+    }
 }
 
 const styles = StyleSheet.create({

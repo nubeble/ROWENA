@@ -1,10 +1,16 @@
+/*
+    실행 시 최소 6개의 place (각 place는 1개 이상의 feed 소유.)가 있어야 한다!
+    그래야 2 x 3 이미지 행렬이 제대로 보인다.
+*/
+
 // @flow
 import * as React from "react";
 import {
     StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image
 } from "react-native";
 import { Header } from 'react-navigation';
-import { Constants } from "expo";
+import { Svg } from "expo";
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
@@ -28,68 +34,110 @@ type InjectedProps = {
 };
 */
 
+const PLACE_SIZE = 6;
+const FEED_SIZE = 8;
+
 const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
+
+/*
+const skeletonViewWidth = Dimensions.get('window').width;
+const skeletonViewHeight = (4 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 4) * 3;
+*/
 
 
 // @inject("feedStore", "profileStore") @observer
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
-    // Next: Place는 일단 고정. 추후 등록된 Post 개수가 가장 많은 상위 6곳을 가져와야 한다. (database indexes를 써서 미리 내림차순정렬로 가지고 있자!)
+    // places images
     static images = [
-        PreloadImage.Bangkok,
-        PreloadImage.Manila,
-        PreloadImage.HoChiMinh,
-        PreloadImage.Vientiane,
-        PreloadImage.PhnomPenh,
-        PreloadImage.Jakarta
+        PreloadImage.Avatar1,
+        PreloadImage.Avatar2,
+        PreloadImage.Avatar3,
+        PreloadImage.Avatar4,
+        PreloadImage.Avatar5,
+        PreloadImage.Avatar6,
+        PreloadImage.Avatar7,
+        PreloadImage.Avatar8,
+        PreloadImage.Avatar9
+    ];
+
+    // popular feeds images
+    static popularFeedsImages = [
+        PreloadImage.Avatar1,
+        PreloadImage.Avatar2,
+        PreloadImage.Avatar3,
+        PreloadImage.Avatar4,
+        PreloadImage.Avatar5,
+        PreloadImage.Avatar6,
+        PreloadImage.Avatar7,
+        PreloadImage.Avatar8,
+        PreloadImage.Avatar9
+    ];
+
+    // recent feeds images
+    static recentFeedsImages = [
+        PreloadImage.Avatar1,
+        PreloadImage.Avatar2,
+        PreloadImage.Avatar3,
+        PreloadImage.Avatar4,
+        PreloadImage.Avatar5,
+        PreloadImage.Avatar6,
+        PreloadImage.Avatar7,
+        PreloadImage.Avatar8,
+        PreloadImage.Avatar9
     ];
 
     state = {
+        // set the initial places (6)
         places: [
             {
-                place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE',
-                description: 'Bangkok, Thailand',
-                city: 'Bangkok',
+                place_id: null,
+                length: 0,
+                name: null,
                 uri: null,
-                length: 0
+                key: 'one'
             },
             {
-                place_id: 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk',
-                description: 'Manila, Philippines',
-                city: 'Manila',
+                place_id: null,
+                length: 0,
+                name: null,
                 uri: null,
-                length: 0
+                key: 'two'
             },
             {
-                place_id: 'ChIJ0T2NLikpdTERKxE8d61aX_E',
-                description: 'Ho Chi Minh, Vietnam',
-                city: 'Ho Chi Minh',
+                place_id: null,
+                length: 0,
+                name: null,
                 uri: null,
-                length: 0
+                key: 'three'
             },
             {
-                place_id: 'ChIJIXvtBoZoJDER3-7BGIaxkx8',
-                description: 'Vientiane, Laos',
-                city: 'Vientiane',
+                place_id: null,
+                length: 0,
+                name: null,
                 uri: null,
-                length: 0
+                key: 'four'
             },
             {
-                place_id: 'ChIJ42tqxz1RCTERuyW1WugOAZw',
-                description: 'Phnom Penh, Cambodia',
-                city: 'Phnom Penh',
+                place_id: null,
+                length: 0,
+                name: null,
                 uri: null,
-                length: 0
+                key: 'five'
             },
             {
-                place_id: 'ChIJnUvjRenzaS4RoobX2g-_cVM',
-                description: 'Jakarta, Indonesia',
-                city: 'Jakarta',
+                place_id: null,
+                length: 0,
+                name: null,
                 uri: null,
-                length: 0
+                key: 'six'
             }
         ],
+
+        popularFeeds: [],
+        recentFeeds: [],
+
         searchText: '',
         refreshing: false
     };
@@ -102,8 +150,13 @@ export default class Intro extends React.Component {
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
-        await this.getPlacesImage();
-        this.getPlacesSize();
+        // await this.getPlacesImage();
+        // this.getPlacesSize();
+
+        await this.getPlaces();
+
+        await this.getPopularFeeds();
+        await this.getRecentFeeds();
     }
 
     async getPlacesImage() {
@@ -131,7 +184,7 @@ export default class Intro extends React.Component {
             */
 
             places[i] = { ...places[i], uri: _uri };
-            Intro.images[i] = _uri;
+            Intro.places[i] = places[i];
 
             // load one by one
             !this.closed && this.setState({ places });
@@ -204,6 +257,7 @@ export default class Intro extends React.Component {
         this.setState({ places, refreshing: false });
     }
     */
+
     getPlacesSize() { // load feed length of each cities
         let __places = this.state.places;
 
@@ -225,6 +279,173 @@ export default class Intro extends React.Component {
         }
     }
 
+    async getPlaces() {
+        const size = PLACE_SIZE;
+
+        const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
+
+        if (snap.docs.length !== 0) {
+            let places = [...this.state.places];
+
+            var i = 0;
+
+            snap.forEach(async (doc) => {
+                // console.log(doc.id, '=>', doc.data());
+                const data = doc.data();
+
+                const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
+                // if (!uri) continue;
+
+                places[i] = {
+                    // ...places[i],
+
+                    place_id: doc.id,
+                    length: data.count,
+
+                    name: data.name,
+                    uri,
+                    key: doc.id
+                };
+
+                Intro.images[i] = { 'uri': uri };
+
+                !this.closed && this.setState({ places });
+
+                i++;
+            });
+        }
+    }
+
+    async getPopularFeeds() {
+        /*
+        const size = FEED_SIZE;
+
+        let popularFeeds = [...this.state.popularFeeds];
+
+        for (var i = 0; i < size; i++) {
+            const placeId = await Firebase.getRandomPlace();
+            // console.log('!!!!!!!!!!!!!!!!!', placeId) // ToDo
+
+            const feed = await Firebase.getFeedByAverageRating(placeId);
+
+            popularFeeds[i] = feed;
+            Intro.popularFeedsImages[i] = { 'uri': feed.pictures.one.uri };
+        }
+
+        !this.closed && this.setState({ popularFeeds });
+        */
+
+        const size = FEED_SIZE;
+        let placeList = [];
+        for (var i = 0; i < size; i++) {
+            const placeId = await Firebase.getRandomPlace();
+            placeList.push(placeId);
+        }
+        placeList.sort();
+
+        const prevItem = null;
+        let array = {};
+        for (var i = 0; i < size; i++) {
+            const item = placeList[i];
+
+            if (item === prevItem) {
+                array[item]++;
+            } else {
+                // new item
+                array[item] = 1;
+                prevItem = item;
+            }
+        }
+
+        console.log('array', array);
+
+        let popularFeeds = [...this.state.popularFeeds];
+        let index = 0;
+
+        // map search
+        for (var [key, value] of array) {
+            console.log(key + ":" + value);
+
+            const feeds = await Firebase.getFeedByAverageRating(key, value);
+
+            for (var i = 0; i < feeds.length; i++) {
+                const feed = feeds[i];
+
+                popularFeeds[index] = feed;
+                Intro.popularFeedsImages[index] = { 'uri': feed.pictures.one.uri };
+
+                index++;
+            }
+        }
+
+        !this.closed && this.setState({ popularFeeds });
+    }
+
+    async getRecentFeeds() {
+        /*
+        const size = FEED_SIZE;
+
+        let recentFeeds = [...this.state.recentFeeds];
+
+        for (var i = 0; i < size; i++) {
+            const placeId = await Firebase.getRandomPlace();
+            // console.log('@@@@@@@@@@@@@@@@@@@@@@', placeId)  // ToDo
+
+            const feed = await Firebase.getFeedByTimestamp(placeId);
+
+            recentFeeds[i] = feed;
+            Intro.recentFeedsImages[i] = { 'uri': feed.pictures.one.uri };
+        }
+
+        !this.closed && this.setState({ recentFeeds });
+        */
+
+        const size = FEED_SIZE;
+        let placeList = [];
+        for (var i = 0; i < size; i++) {
+            const placeId = await Firebase.getRandomPlace();
+            placeList.push(placeId);
+        }
+        placeList.sort();
+
+        const prevItem = null;
+        let array = {};
+        for (var i = 0; i < size; i++) {
+            const item = placeList[i];
+
+            if (item === prevItem) {
+                array[item]++;
+            } else {
+                // new item
+                array[item] = 1;
+                prevItem = item;
+            }
+        }
+
+        console.log('array', array);
+
+        let recentFeeds = [...this.state.recentFeeds];
+        let index = 0;
+
+        // map search
+        for (var [key, value] of array) {
+            console.log(key + ":" + value);
+
+            const feeds = await Firebase.getFeedByAverageRating(key, value);
+
+            for (var i = 0; i < feeds.length; i++) {
+                const feed = feeds[i];
+
+                recentFeeds[index] = feed;
+                Intro.recentFeedsImages[index] = { 'uri': feed.pictures.one.uri };
+
+                index++;
+            }
+        }
+
+        !this.closed && this.setState({ recentFeeds });
+    }
+
     @autobind
     onFocus() {
         Vars.currentScreenName = 'Intro';
@@ -232,8 +453,6 @@ export default class Intro extends React.Component {
     }
 
     componentWillUnmount() {
-        // console.log('Intro.componentWillUnmount');
-
         if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
 
         this.onFocusListener.remove();
@@ -244,6 +463,7 @@ export default class Intro extends React.Component {
     render(): React.Node {
         // const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
+
 
         return (
             <View style={styles.flex}>
@@ -302,42 +522,98 @@ export default class Intro extends React.Component {
                             </View>
                         </View>
                     }
+
+                    /*
+                    ListEmptyComponent={
+                        <View>
+                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={skeletonViewWidth} height={skeletonViewHeight}>
+                                <Svg.Rect
+                                    x={8}
+                                    y={8}
+                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+
+                                <Svg.Rect
+                                    x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    y={8}
+                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+
+                                <Svg.Rect
+                                    x={8}
+                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+
+                                <Svg.Rect
+                                    x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+
+                                <Svg.Rect
+                                    x={8}
+                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+
+                                <Svg.Rect
+                                    x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+                            </SvgAnimatedLinearGradient>
+                        </View>
+                    }
+                    */
+
                     columnWrapperStyle={styles.columnWrapperStyle}
                     numColumns={2}
                     data={this.state.places}
-                    keyExtractor={item => item.place_id}
-                    renderItem={({ item, index }) => {
-                        /*
-                        let uri = Intro.images[index];
-                        if (!uri) {
-                            uri = item.uri;
-                        }
-                        */
-                        let uri = item.uri;
-                        if (!uri) {
-                            uri = Intro.images[index];
-                        }
+                    // keyExtractor={item => item.place_id}
+                    keyExtractor={item => item.key}
 
+                    renderItem={({ item, index }) => {
+                        const place_id = item.place_id;
+                        const length = item.length;
+                        const name = item.name;
+                        let uri = item.uri;
+
+                        let source;
+                        if (uri) {
+                            source = { 'uri': uri };
+                        } else {
+                            source = Intro.images[index];
+                        }
 
                         return (
                             <TouchableOpacity
                                 onPress={() => {
+                                    if (!place_id) return;
+
                                     setTimeout(() => {
                                         this.props.navigation.navigate("exploreMain", { place: item, length: item.length });
                                     }, Cons.buttonTimeoutLong);
                                 }}
                             >
                                 <View style={styles.pictureContainer}>
+
                                     <Image
                                         style={styles.picture}
-                                        source={uri}
+                                        source={source}
                                     />
                                     {/*
                                     <SmartImage
                                         style={styles.picture}
-                                        // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        preview={item.preview}
-                                        uri={item.uri}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        // preview={item.preview}
+                                        uri={_uri}
                                     />
                                     */}
 
@@ -348,7 +624,7 @@ export default class Intro extends React.Component {
                                             fontSize: 20,
                                             lineHeight: 26,
                                             fontFamily: "SFProText-Bold"
-                                        }}>{item.city}</Text>
+                                        }}>{name}</Text>
 
                                         <Text style={{
                                             textAlign: 'center',
@@ -356,24 +632,29 @@ export default class Intro extends React.Component {
                                             fontSize: 14,
                                             lineHeight: 18,
                                             fontFamily: "SFProText-Semibold"
-                                        }}>{`${(item.length) ? item.length + '+ girls' : ''}`}</Text>
+                                        }}>{`${(length) ? length + '+ girls' : ''}`}</Text>
                                     </View>
                                 </View>
                             </TouchableOpacity>
                         );
                     }}
+
                     ListFooterComponent={
                         <View style={{ marginTop: 20 }}>
                             <View style={styles.titleContainer}>
                                 <Text style={styles.title}>{'Top-rated girls'}</Text>
                             </View>
 
+                            {
+                                this.renderPopularFeeds()
+                            }
+                            {/*
                             <Carousel>
                                 <View style={styles.view_front}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://2.bp.blogspot.com/-z2h6jj8PCKw/WiVyrSTiBUI/AAAAAAAAG7A/9D8ggDsoY5QArutqvVfzhSd82f5GtviAgCLcBGAs/s1600/%25EC%25A0%259C%25EB%25AA%25A9-%25EC%2597%2586%25EC%259D%258C2.gif'}
                                         />
                                     </TouchableOpacity>
@@ -382,7 +663,7 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://coinpan.com/files/attach/images/198/637/529/067/504ea1e1eae11d0485347359ba31e0c5.gif'}
                                         />
                                     </TouchableOpacity>
@@ -391,7 +672,7 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://www.nemopan.com/files/attach/images/6294/443/061/012/2926fb2e2919796604716f0aeb79c39b.gif'}
                                         />
                                     </TouchableOpacity>
@@ -400,63 +681,37 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://t1.daumcdn.net/cfile/tistory/253E1A3D56F8F68821'}
                                         />
                                     </TouchableOpacity>
                                 </View>
-
-                                {/*
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://jjalbang.today/jj1ic.gif'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('6')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://upload2.inven.co.kr/upload/2017/10/07/bbs/i15561885543.gif'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('7')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://www.city.kr/files/attach/images/238/795/978/010/00616702b6cfe1f570fb4c11730fa0cc.jpg'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                */}
-
                                 <View style={styles.view_rear}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://fimg4.pann.com/new/download.jsp?FileID=47136904'}
                                         />
                                     </TouchableOpacity>
                                 </View>
                             </Carousel>
+                            */}
 
                             <View style={styles.titleContainer}>
                                 <Text style={styles.title}>{'Recently listed girls'}</Text>
                             </View>
 
+                            {
+                                this.renderRecentFeeds()
+                            }
+                            {/*
                             <Carousel>
                                 <View style={styles.view_front}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://ncache.ilbe.com/files/attach/new/20150710/377678/2901603725/6167124321/0c0e48771650a5ea45b0ec6ef4620faf.jpg'}
                                         // uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
                                         />
@@ -466,7 +721,7 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
                                         />
                                     </TouchableOpacity>
@@ -475,7 +730,7 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://fimg4.pann.com/new/download.jsp?FileID=47449859'}
                                         />
                                     </TouchableOpacity>
@@ -484,7 +739,7 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile22.uf.tistory.com%2Fimage%2F99F75D335997CD46295649'}
                                         />
                                     </TouchableOpacity>
@@ -493,7 +748,7 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'http://www.city.kr/files/attach/images/238/795/978/010/00616702b6cfe1f570fb4c11730fa0cc.jpg'}
                                         />
                                     </TouchableOpacity>
@@ -502,20 +757,193 @@ export default class Intro extends React.Component {
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('6')}>
                                         <SmartImage
                                             style={styles.item}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
                                         />
                                     </TouchableOpacity>
                                 </View>
                             </Carousel>
+                            */}
                         </View>
                     }
+
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
                 />
             </View>
         );
     } // end of render()
+
+    renderPopularFeeds() {
+        let feeds = this.state.popularFeeds;
+        if (feeds.length === 0) {
+            // use static value (skeleton image or previous image)
+            for (var i = 0; i < FEED_SIZE; i++) {
+                const feed = {};
+                feed.id = 'id' + i;
+                feed.uri = Intro.popularFeedsImages[i];
+
+                feeds.push(feed);
+            }
+        }
+
+
+        let pictures = [];
+
+        for (var i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+
+            let source;
+            if (feed.placeId) { // state value
+                const uri = feed.pictures.one.uri;
+                source = { 'uri': uri };
+            } else { // static value
+                source = feed.uri;
+            }
+
+            if (i === 0) {
+                pictures.push(
+                    <View key={feed.id} style={styles.view_front}>
+                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                            if (!feed.placeId) return;
+                            // console.log('front', i);
+                            navigation.navigate("detail", { post: feed })
+                        }}>
+                            {/*
+                            <SmartImage
+                                style={styles.item}
+                                // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={feed.pictures.one.uri}
+                            />
+                            */}
+                            <Image
+                                style={styles.item}
+                                source={source}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                );
+            } else if (i !== 0 && i === feeds.length - 1) {
+                pictures.push(
+                    <View key={feed.id} style={styles.view_rear}>
+                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                            if (!feed.placeId) return;
+                            // console.log('rear', i);
+                            navigation.navigate("detail", { post: feed })
+                        }}>
+                            <Image
+                                style={styles.item}
+                                source={source}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                );
+            } else {
+                pictures.push(
+                    <View key={feed.id} style={styles.view_middle}>
+                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                            if (!feed.placeId) return;
+                            // console.log('middle', i);
+                            navigation.navigate("detail", { post: feed })
+                        }}>
+                            <Image
+                                style={styles.item}
+                                source={source}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                );
+            }
+        }
+
+
+        return (
+            <Carousel>
+                {pictures}
+            </Carousel>
+        );
+    }
+
+    renderRecentFeeds() {
+        let feeds = this.state.recentFeeds;
+        if (feeds.length === 0) {
+            // use static feeds (skeleton image or previous image)
+            for (var i = 0; i < FEED_SIZE; i++) {
+                const feed = {};
+                feed.id = 'id' + i;
+                feed.uri = Intro.popularFeedsImages[i];
+
+                feeds.push(feed);
+            }
+        }
+
+
+        let pictures = [];
+
+        for (var i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+            let source;
+            if (feed.placeId) { // state value
+                const uri = feed.pictures.one.uri;
+                source = { 'uri': uri };
+            } else { // static value
+                source = feed.uri;
+            }
+
+            if (i === 0) {
+                pictures.push(
+                    <View key={feed.id} style={styles.view_front}>
+                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                            if (!feed.placeId) return;
+                            // console.log('front', i);
+                            navigation.navigate("detail", { post: feed })
+                        }}>
+                            <Image
+                                style={styles.item}
+                                source={source}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                );
+            } else if (i !== 0 && i === feeds.length - 1) {
+                pictures.push(
+                    <View key={feed.id} style={styles.view_rear}>
+                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                            if (!feed.placeId) return;
+                            // console.log('rear', i);
+                            navigation.navigate("detail", { post: feed })
+                        }}>
+                            <Image
+                                style={styles.item}
+                                source={source}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                );
+            } else {
+                pictures.push(
+                    <View key={feed.id} style={styles.view_middle}>
+                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                            if (!feed.placeId) return;
+                            // console.log('middle', i);
+                            navigation.navigate("detail", { post: feed })
+                        }}>
+                            <Image
+                                style={styles.item}
+                                source={source}
+                            />
+                        </TouchableOpacity>
+                    </View>
+                );
+            }
+        }
+
+        return (
+            <Carousel>
+                {pictures}
+            </Carousel>
+        );
+    }
 
     handleRefresh = () => {
         if (this.refreshing) return;
@@ -531,8 +959,15 @@ export default class Intro extends React.Component {
                     !this.closed && this.setState({ refreshing: false });
                 }, 100);
 
-                await this.getPlacesImage();
-                this.getPlacesSize();
+                // await this.getPlacesImage();
+                // this.getPlacesSize();
+
+                await this.getPlaces();
+
+                /*
+                await this.getPopularFeeds();
+                await this.getRecentFeeds();
+                */
 
                 this.refreshing = false;
             }
