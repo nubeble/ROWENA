@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, View } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, BackHandler } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -61,6 +61,8 @@ export default class App extends React.Component {
         }
         */
 
+        // StatusBar.setHidden(true);
+
         // Handle notifications that are received or selected while the app
         // is open. If the app was closed and then opened by tapping the
         // notification (rather than just tapping the app icon to open it),
@@ -68,14 +70,14 @@ export default class App extends React.Component {
         // with the notification data.
         this.notificationListener = Notifications.addListener(this.handleNotification);
 
-        // test
+        // ToDo: this.props.exp.notification
         // console.log('props.exp.notification', this.props.exp.notification);
         if (this.props.exp.notification) {
             console.log('props.exp.notification', this.props.exp.notification);
 
             Alert.alert(
                 'props.exp.notification',
-                'check out this.props.exp.notification', // ToDo: this.props.exp.notification
+                'check out this.props.exp.notification',
                 [
                     {
                         text: 'Cancel',
@@ -90,7 +92,6 @@ export default class App extends React.Component {
                 { cancelable: false },
             );
         }
-
 
         // check the releaseChannel
         const channel = this.getApiUrl(Expo.Constants.manifest.releaseChannel);
@@ -282,7 +283,7 @@ export default class App extends React.Component {
                         />
                     </Provider>
                 </StyleProvider>
-                
+
             </React.Fragment>
         );
     }
@@ -309,7 +310,7 @@ export default class App extends React.Component {
 }
 
 
-import createAppContainer, { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
+import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { BottomTabBar } from 'react-navigation-tabs';
@@ -329,7 +330,7 @@ import LikesMain from './src/LikesMain';
 import ProfileMain from './src/ProfileMain';
 import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
-import ExploreScreen from './src/Explore';
+import Explore from './src/Explore';
 import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
@@ -378,11 +379,11 @@ class AuthStackNavigatorWrapper extends React.Component {
 }
 // -- end of AuthStackNavigator
 
-// -- start of ExploreStackNavigator
-const ExploreStackNavigator = createStackNavigator(
+// -- start of IntroModalNavigator
+const IntroModalNavigator = createStackNavigator(
     {
-        exploreMain: { screen: ExploreScreen },
-        exploreSearchModal: { screen: SearchScreen }
+        introMain: { screen: Intro },
+        introSearch: { screen: SearchScreen }
     },
     {
         mode: 'modal',
@@ -396,12 +397,12 @@ const ExploreStackNavigator = createStackNavigator(
     }
 );
 
-class ExploreStackNavigatorWrapper extends React.Component {
-    static router = ExploreStackNavigator.router;
+class IntroModalNavigatorWrapper extends React.Component {
+    static router = IntroModalNavigator.router;
 
     render() {
         return (
-            <ExploreStackNavigator navigation={this.props.navigation}
+            <IntroModalNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -410,23 +411,41 @@ class ExploreStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// -- end of ExploreStackNavigator
 
-// -- start of IntroStackNavigator
+// ToDo: not working!
+/*
+IntroModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
+    const route = navigation.state.routes[1];
+    // route.isTransitioning
+
+    if (route && route.routeName === 'introSearch') {
+        return {
+            tabBarVisible: false
+        };
+    }
+
+    return {
+        tabBarVisible: true
+    };
+};
+*/
+// -- end of IntroModalNavigator
+
+// --
 const IntroStackNavigator = createStackNavigator(
     {
-        introMain: { screen: Intro },
-        introSearchModal: { screen: SearchScreen },
-        introPost: { screen: PostScreen }
+        introHome: { screen: IntroModalNavigatorWrapper },
+        introPost: { screen: Post },
+        readReview: { screen: ReadAllReviewScreen }
     },
     {
-        mode: 'modal',
+        mode: 'card',
         headerMode: 'none',
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
     }
 );
@@ -445,15 +464,48 @@ class IntroStackNavigatorWrapper extends React.Component {
         );
     }
 }
+// --
 
-IntroStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
+// -- start of ExploreStackNavigator
+const ExploreModalNavigator = createStackNavigator(
+    {
+        exploreMain: { screen: Explore },
+        exploreSearch: { screen: SearchScreen }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
+    }
+);
+
+class ExploreModalNavigatorWrapper extends React.Component {
+    static router = ExploreModalNavigator.router;
+
+    render() {
+        return (
+            <ExploreModalNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+// ToDo: not working!
+/*
+ExploreModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
     // route.isTransitioning
 
-    if (route && route.routeName === 'introPost') {
-    // if (route && route.routeName === 'introSearchModal') {
-        console.log('!!!!!!!!!!!!!!', route.routeName);
-
+    if (route && route.routeName === 'exploreSearch') {
         return {
             tabBarVisible: false
         };
@@ -463,12 +515,13 @@ IntroStackNavigatorWrapper.navigationOptions = ({ navigation }) => {
         tabBarVisible: true
     };
 };
-// -- end of IntroStackNavigator
+*/
+// -- end of ExploreStackNavigator
 
 // -- start of HomeStackNavigator
 const HomeStackNavigator = createStackNavigator(
     {
-        home: { screen: ExploreStackNavigatorWrapper },
+        home: { screen: ExploreModalNavigatorWrapper },
         detail: { screen: Post },
         readReview: { screen: ReadAllReviewScreen }
     },
@@ -503,6 +556,7 @@ class HomeStackNavigatorWrapper extends React.Component {
 // -- start of HomeSwitchNavigator
 const HomeSwitchNavigator = createSwitchNavigator(
     {
+        // intro: { screen: IntroModalNavigatorWrapper },
         intro: { screen: IntroStackNavigatorWrapper },
         homeStackNavigator: { screen: HomeStackNavigatorWrapper }
     },
@@ -528,7 +582,7 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 // -- end of HomeSwitchNavigator
 
 // -- chat
-const PostModalNavigator = createStackNavigator(
+const PostStackNavigator = createStackNavigator(
     {
         postModal: {
             screen: PostScreen
@@ -555,12 +609,12 @@ const PostModalNavigator = createStackNavigator(
     }
 );
 
-class PostModalNavigatorWrapper extends React.Component {
-    static router = PostModalNavigator.router;
+class PostStackNavigatorWrapper extends React.Component {
+    static router = PostStackNavigator.router;
 
     render() {
         return (
-            <PostModalNavigator navigation={this.props.navigation}
+            <PostStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -619,7 +673,7 @@ class UserModalNavigatorWrapper extends React.Component {
 const ChatRoomStackNavigator = createStackNavigator(
     {
         room: { screen: ChatRoom },
-        post: { screen: PostModalNavigatorWrapper },
+        post: { screen: PostStackNavigatorWrapper },
         user: { screen: UserModalNavigatorWrapper }
     },
     {
@@ -672,8 +726,8 @@ const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
 const LikesModalNavigator = createStackNavigator(
     {
         likesMain: { screen: LikesMain },
-        // postPreview: { screen: PostModalNavigatorWrapper }
-        likesPost: { screen: PostModalNavigatorWrapper }
+        // postPreview: { screen: PostStackNavigatorWrapper }
+        likesPost: { screen: PostStackNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -703,11 +757,10 @@ class LikesModalNavigatorWrapper extends React.Component {
 }
 
 LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    const post = navigation.state.routes[1];
-    // post.isTransitioning
+    const route = navigation.state.routes[1];
+    // route.isTransitioning
 
-    // if (post && post.routeName === 'postPreview') {
-    if (post && post.routeName === 'likesPost') {
+    if (route && route.routeName === 'likesPost') {
         return {
             tabBarVisible: false
         };
@@ -723,7 +776,7 @@ LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
 const EditStackNavigator = createStackNavigator(
     {
         editMain: { screen: EditMain },
-        // post: { screen: PostModalNavigatorWrapper },
+        // post: { screen: PostStackNavigatorWrapper },
         // user: { screen: UserModalNavigatorWrapper }
     },
     {
@@ -761,7 +814,7 @@ const CheckStackNavigator = createStackNavigator(
         // checkMain: { screen: HidingHeader },
 
 
-        // post: { screen: PostModalNavigatorWrapper },
+        // post: { screen: PostStackNavigatorWrapper },
         // user: { screen: UserModalNavigatorWrapper }
     },
     {
@@ -796,7 +849,7 @@ class CheckStackNavigatorWrapper extends React.Component {
 const AdvertisementStackNavigator = createStackNavigator(
     {
         advertisementMain: { screen: AdvertisementMain },
-        // post: { screen: PostModalNavigatorWrapper },
+        // post: { screen: PostStackNavigatorWrapper },
         // user: { screen: UserModalNavigatorWrapper }
     },
     {
@@ -832,7 +885,7 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
 const LogoutStackNavigator = createStackNavigator(
     {
         logoutMain: { screen: LogoutMain },
-        // post: { screen: PostModalNavigatorWrapper },
+        // post: { screen: PostStackNavigatorWrapper },
         // user: { screen: UserModalNavigatorWrapper }
     },
     {
@@ -872,7 +925,7 @@ const ProfileModalNavigator = createStackNavigator(
         check: { screen: CheckStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
         // logout: { screen: LogoutStackNavigatorWrapper },
-        postPreview: { screen: PostModalNavigatorWrapper }
+        postPreview: { screen: PostStackNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -902,8 +955,6 @@ class ProfileModalNavigatorWrapper extends React.Component {
 }
 
 ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    // console.log('navigation.state.routes', navigation.state.routes);
-
     const route = navigation.state.routes[1];
     // route.isTransitioning
 
@@ -952,7 +1003,6 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         likes: {
-            // screen: Likes,
             screen: LikesModalNavigatorWrapper,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
@@ -965,7 +1015,6 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         }
     },
-
     (Platform.OS === "android") ?
         {
             tabBarOptions: _tabBarOptions,
@@ -977,14 +1026,6 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             tabBarOptions: _tabBarOptions
         }
 );
-
-/*
-const TabBarIconWithBadge = (props) => {
-    return (
-        <IconWithBadge {...props}/>
-    );
-}
-*/
 
 function _navigationOptions(navigation, screenProps) {
     // console.log('_navigationOptions, data', screenProps.data);
@@ -1055,7 +1096,7 @@ function _navigationOptions(navigation, screenProps) {
 class TabBarComponent extends React.Component {
     state = {
         visible: true,
-        // focused: false
+        focused: false
     };
 
     componentDidMount() {
@@ -1090,25 +1131,24 @@ class TabBarComponent extends React.Component {
     onFocus() {
         // console.log('TabBarComponent.onFocus');
 
-        // this.setState({ focused: true });
-        this.focused = true;
+        this.setState({ focused: true });
+        // this.focused = true;
     }
 
     @autobind
     onBlur() {
         // console.log('TabBarComponent.onBlur');
 
-        // this.setState({ focused: false });
-        this.focused = false;
+        this.setState({ focused: false });
+        // this.focused = false;
     }
 
     render() {
         // return this.state.focused && this.state.visible ? <BottomTabBar {...this.props}/> : null;
         // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props}/> : null; // not working in S7
 
-
-        // if (!this.state.focused) {
-        if (!this.focused) {
+        if (!this.state.focused) {
+        // if (!this.focused) {
             return <BottomTabBar {...this.props} />;
         }
 
@@ -1124,7 +1164,6 @@ class MainBottomTabNavigatorWrapper extends React.Component {
     static router = MainBottomTabNavigator.router;
 
     render() {
-
         return (
             <MainBottomTabNavigator navigation={this.props.navigation}
                 screenProps={{
@@ -1162,9 +1201,7 @@ const MainStackNavigator = createStackNavigator(
 class MainStackNavigatorWrapper extends React.Component {
     static router = MainStackNavigator.router;
 
-
     render() {
-
         return (
             <MainStackNavigator navigation={this.props.navigation}
                 screenProps={{
@@ -1190,5 +1227,3 @@ const MainSwitchNavigator = createSwitchNavigator(
         // initialRouteName: 'loading'
     }
 );
-
-// const AppContainer = createAppContainer(MainSwitchNavigator);

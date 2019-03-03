@@ -4,7 +4,7 @@ import { observable, computed } from "mobx";
 import Firebase from "../../../Firebase";
 import type { Feed, FeedEntry, Profile, Post } from "../components/Model";
 
-const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_FEED_COUNT = 10;
 
 const DEFAULT_PROFILE: Profile = {
     uid: 'uid',
@@ -49,7 +49,7 @@ export default class FeedStore {
 
     allFeedsLoaded = false;
 
-    order; // 'timestamp', 'averageRating', 'age', ... 
+    order; // 'timestamp', 'averageRating', 'reviewCount'
 
 
     setAddToFeedFinishedCallback(cb) {
@@ -84,7 +84,7 @@ export default class FeedStore {
             query = query.startAfter(this.cursor);
         }
 
-        const snap = await query.limit(DEFAULT_PAGE_SIZE).get();
+        const snap = await query.limit(DEFAULT_FEED_COUNT).get();
 
         if (snap.docs.length === 0) {
             if (!this.feed) {
@@ -117,7 +117,7 @@ export default class FeedStore {
         this.cursor = _.last(snap.docs);
 
         let allFeedsLoaded = false;
-        if (posts.length < DEFAULT_PAGE_SIZE) allFeedsLoaded = true;
+        if (posts.length < DEFAULT_FEED_COUNT) allFeedsLoaded = true;
 
         this.allFeedsLoaded = allFeedsLoaded;
         if (this.addToFeedFinishedCallback) this.addToFeedFinishedCallback();
@@ -126,12 +126,10 @@ export default class FeedStore {
     addToFeed(entries: FeedEntry[]) {
         const feed = _.uniqBy([...this.feed.slice(), ...entries], entry => entry.post.id);
 
-        // this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]); // !@#$
-
         if (this.order === 'timestamp') this.feed = _.orderBy(feed, entry => entry.post.timestamp, ["desc"]);
-        // else if (this.order === 'age') this.feed = _.orderBy(feed, entry => entry.post.age, ["desc"]);
         else if (this.order === 'averageRating') this.feed = _.orderBy(feed, entry => entry.post.averageRating, ["desc"]);
-        else if (this.order === 'reviewCount') this.feed = _.orderBy(feed, entry => entry.post.reviewCount, ["desc"])
+        else if (this.order === 'reviewCount') this.feed = _.orderBy(feed, entry => entry.post.reviewCount, ["desc"]);
+        // else if (this.order === 'age') this.feed = _.orderBy(feed, entry => entry.post.age, ["desc"]);
     }
 
     async checkForNewEntriesInFeed(): Promise<void> {
@@ -161,19 +159,7 @@ export default class FeedStore {
 
     subscribeToPost(placeId: string, id: string, callback: Post => void): Subscription {
         console.log('FeedStore.subscribeToPost', placeId, id);
-
         /*
-        return Firebase.firestore.collection("feed").where("id", "==", id).onSnapshot(async snap => {
-            const post = snap.docs[0].data();
-            callback(post);
-            this.feed.forEach((entry, index) => {
-                if (entry.post.id === post.id) {
-                    this.feed[index].post = post;
-                }
-            });
-        });
-        */
-
         // return Firebase.firestore.collection("place").doc(placeId).collection("feed").where("id", "==", id).onSnapshot(async snap => {
         return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
             // const post = snap.docs[0].data();
@@ -187,11 +173,30 @@ export default class FeedStore {
                 }
             });
         });
+        */
+        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
+            const post = snap.data();
+
+            if (post) {
+                console.log('FeedStore, feed changed.');
+            } else {
+                console.log('FeedStore, feed removed.');
+            }
+
+            callback(post);
+
+            this.feed.forEach((entry, index) => {
+                if (entry.post.id === id) {
+                    this.feed[index].post = post;
+                }
+            });
+        });
     }
 
     subscribeToProfile(id: string, callback: Profile => void): Subscription {
         console.log('FeedStore.subscribeToProfile');
 
+        /*
         return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
             const profile = snap.exists ? snap.data() : DEFAULT_PROFILE;
             console.log('FeedStore, profile changed.');
@@ -203,19 +208,38 @@ export default class FeedStore {
                 }
             });
         });
+        */
+        return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
+            const profile = snap.data();
+
+            if (profile) {
+                console.log('FeedStore, profile changed.');
+            } else {
+                console.log('FeedStore, profile removed.');
+            }
+
+            callback(profile);
+
+            this.feed.forEach((entry, index) => {
+                if (entry.post.uid === id) {
+                    this.feed[index].profile = profile;
+                }
+            });
+        });
     }
 
-    async joinProfiles(posts: Post[]): Promise<FeedEntry[]> { // feed와 feed의 owner를 계산
-        console.log('FeedStore.joinProfiles');
+    async joinProfiles(posts: Post[]): Promise<FeedEntry[]> {
+        // console.log('FeedStore.joinProfiles');
 
         const uids = posts.map(post => post.uid).filter(uid => this.profiles[uid] === undefined);
 
         const profilePromises = _.uniq(uids).map(uid => (async () => {
             try {
+                // load database
                 const profileDoc = await Firebase.firestore.collection("users").doc(uid).get();
                 this.profiles[uid] = profileDoc.data();
             } catch (e) {
-                this.profiles[uid] = DEFAULT_PROFILE;
+                // this.profiles[uid] = DEFAULT_PROFILE;
             }
         })());
 
@@ -224,9 +248,8 @@ export default class FeedStore {
         return posts.map(post => {
             const profile = this.profiles[post.uid];
 
-            // console.log('joinProfiles profile', profile, 'post', post);
-
-            return { profile, post };
+            // return { profile, post };
+            if (profile) return { profile, post };
         });
     }
 }

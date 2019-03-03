@@ -9,6 +9,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
+import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
@@ -16,7 +17,7 @@ import Swiper from './Swiper';
 import { Rating, AirbnbRating } from './react-native-ratings/src';
 import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
-import { observer } from "mobx-react/native";
+import { inject, observer } from "mobx-react/native";
 import ReviewStore from "./ReviewStore";
 import ReadMore from "./ReadMore";
 import { Cons, Vars } from "./Globals";
@@ -27,6 +28,10 @@ import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { NavigationActions } from 'react-navigation';
 
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
@@ -38,8 +43,9 @@ const bodyInfoContainerPaddingVertical = Theme.spacing.small;
 const bodyInfoItemHeight = Dimensions.get('window').height / 12;
 
 
+@inject("feedStore", "profileStore")
 @observer // for reviewStore
-export default class Post extends React.Component {
+export default class Post extends React.Component<InjectedProps> {
     reviewStore: ReviewStore = new ReviewStore();
 
     replyViewHeight = Dimensions.get('window').height / 9;
@@ -114,12 +120,16 @@ export default class Post extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('Post.handleHardwareBackPress()');
+
+
         // this.goBack(); // works best when the goBack is async
 
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
-            this.props.navigation.goBack();
+            // this.props.navigation.goBack();
+            this.props.navigation.dispatch(NavigationActions.back());
         }
 
         return true;
@@ -127,6 +137,8 @@ export default class Post extends React.Component {
 
     @autobind
     onFocus() {
+        Vars.currentScreenName = 'Post';
+
         this.focused = true;
     }
 
@@ -164,19 +176,49 @@ export default class Post extends React.Component {
         this.closed = true;
     }
 
+    /*
+    isValidPost(placeId, feedId) {
+        const { feedStore } = this.props;
+        const { feed } = feedStore;
+
+        if (feed) {
+            for (var i = 0; i < feed.length; i++) {
+                const post = feed[i].post;
+
+                if (post.placeId === placeId && post.id === feedId) {
+                    // exists
+                    return true;
+                }
+            }
+        }
+
+        return false; // removed
+    }
+    */
+
     @autobind
     async toggle() {
         if (this.toggling) return;
 
-        // check the owner of the post
+        this.toggling = true;
+
         const { post } = this.props.navigation.state.params;
 
-        if (Firebase.user().uid === post.uid) {
-            this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
+        // check if removed by the owner
+        /*
+        if (!this.isValidPost(post.placeId, post.id)) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
+        */
 
-        this.toggling = true;
+        // check the owner of the post
+        if (Firebase.user().uid === post.uid) {
+            this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
+
+            this.toggling = false;
+            return;
+        }
 
         if (!this.state.liked) {
             this.setState({ liked: true });
@@ -190,7 +232,7 @@ export default class Post extends React.Component {
             }).start();
 
             // toast
-            this.refs["toast"].show('Thanks!', 500);
+            this.refs["toast"].show('Thanks ❤', 500);
         } else {
             this.setState({ liked: false });
 
@@ -198,13 +240,17 @@ export default class Post extends React.Component {
             this.refs["toast"].show('Oh...', 500);
         }
 
+        // update database
         const placeId = post.placeId;
         const feedId = post.id;
         const uid = Firebase.user().uid;
         const uri = post.pictures.one.uri;
 
-        await Firebase.updateLikes(uid, placeId, feedId, uri);
-
+        const result = await Firebase.updateLikes(uid, placeId, feedId, uri);
+        if (!result) {
+            // the post is removed
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+        }
 
         Vars.postToggleButtonPressed = true;
 
@@ -267,7 +313,8 @@ export default class Post extends React.Component {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            this.props.navigation.goBack();
+                            // this.props.navigation.goBack();
+                            this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -540,7 +587,7 @@ export default class Post extends React.Component {
                                     {
                                         <TouchableOpacity
                                             style={[styles.contactButton, { marginTop: Theme.spacing.small + Theme.spacing.small, marginBottom: Theme.spacing.small + Theme.spacing.small }]}
-                                            onPress={async () => this.contact()}
+                                            onPress={async () => await this.contact()}
                                         >
                                             <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
                                         </TouchableOpacity>
@@ -677,7 +724,7 @@ export default class Post extends React.Component {
                 <Toast
                     ref="toast"
                     position='top'
-                    positionValue={Dimensions.get('window').height / 2}
+                    positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
             </View>
@@ -707,9 +754,10 @@ export default class Post extends React.Component {
                     }}
                     >
                         <SmartImage
-                            showSpinner={false}
                             style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            showSpinner={false}
+                            // ToDo: performance issue!
+                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
                     </TouchableOpacity>
@@ -739,7 +787,9 @@ export default class Post extends React.Component {
                     >
                         <SmartImage
                             style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            showSpinner={false}
+                            // ToDo: performance issue!
+                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
                     </TouchableOpacity>
@@ -769,7 +819,9 @@ export default class Post extends React.Component {
                     >
                         <SmartImage
                             style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            showSpinner={false}
+                            // ToDo: performance issue!
+                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
                     </TouchableOpacity>
@@ -798,7 +850,9 @@ export default class Post extends React.Component {
                     >
                         <SmartImage
                             style={styles.item}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            showSpinner={false}
+                            // ToDo: performance issue!
+                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
                     </TouchableOpacity>
@@ -1062,6 +1116,15 @@ export default class Post extends React.Component {
     ratingCompleted(rating) {
         setTimeout(() => {
             const { post } = this.props.navigation.state.params;
+
+            // check if removed by the owner
+            /*
+            if (!this.isValidPost(post.placeId, post.id)) {
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
+            */
+
             this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
         }, 500); // 0.5 sec
     }
@@ -1191,6 +1254,20 @@ export default class Post extends React.Component {
 
         const { post } = this.props.navigation.state.params;
 
+        // check if removed by the owner
+        /*
+        if (!this.isValidPost(post.placeId, post.id)) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
+        */
+
+        const feedDoc = await Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).get();
+        if (!feedDoc.exists) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
+
         const uid = Firebase.user().uid;
 
         // find existing chat room (by uid)
@@ -1242,7 +1319,6 @@ export default class Post extends React.Component {
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
-
             return;
         }
 
@@ -1279,12 +1355,25 @@ export default class Post extends React.Component {
         this.showAlert('Delete', 'Are you sure you want to delete this review?', async () => {
             const { post } = this.props.navigation.state.params;
 
+            // check if removed by the owner
+            /*
+            if (!this.isValidPost(post.placeId, post.id)) {
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
+            */
+
             const placeId = post.placeId;
             const feedId = post.id;
             const reviewId = this.reviewStore.reviews[index].review.id;
             const userUid = Firebase.user().uid;
 
-            await Firebase.removeReview(placeId, feedId, reviewId, userUid);
+            const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
+            if (!result) {
+                // the post is removed
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {

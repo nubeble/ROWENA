@@ -1,13 +1,13 @@
 import React from 'react';
-import { StyleSheet, StatusBar, Platform, Dimensions, Animated } from 'react-native';
-import { Font, AppLoading, Asset } from 'expo';
+import { StyleSheet, Animated, Dimensions, View, StatusBar } from 'react-native';
+import { Font, AppLoading, SplashScreen, Asset } from 'expo';
 // import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
 import { registerExpoPushToken } from './PushNotifications';
-
+import { RefreshIndicator } from "./rnff/src/components";
 
 // $FlowFixMe
 /*
@@ -42,26 +42,76 @@ export default class Loading extends React.Component<InjectedProps> {
 
     state = {
         isReady: false,
-        // blurRadius: new Animated.Value(0)
+        showIndicator: false,
+        image1Opacity: new Animated.Value(1),
+        image2Opacity: new Animated.Value(0)
     }
 
-    /*
     constructor(props) {
         super(props);
 
-        this.isUserAutoAuthenticated = true;
+        SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
+
+        StatusBar.setHidden(true);
     }
-    */
 
-    /*
-    async componentDidMount(): Promise<void> {
-        console.log('Loading.componentDidMount');
+    componentDidMount() {
+        this._cacheResourcesAsync().then(() => {
+            this.setState({ isReady: true });
 
-        // StatusBar.setHidden(true);
-
-        // StatusBar.setHidden(false);
+            // this.init();
+        }).catch(error => console.error(`Unexpected error thrown when loading: ${error.stack}`));
     }
-    */
+
+    render() {
+        if (!this.state.isReady) {
+            return null;
+        }
+
+        return (
+            <View style={{ flex: 1 }}>
+                <Animated.Image
+                    // style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined, opacity: this.state.image1Opacity }}
+                    style={{
+                        position: 'absolute',
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height,
+                        resizeMode: 'cover',
+                        opacity: this.state.image1Opacity
+                    }}
+                    source={PreloadImage.Background}
+                    onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
+                        SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
+
+                        this.setState({ showIndicator: true });
+
+                        this.init();
+                    }}
+                    fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
+                />
+                {
+                    this.state.showIndicator &&
+                    <View style={{
+                        position: 'absolute', top: Dimensions.get('window').height / 2 + 50,
+                        width: '100%', height: 50, justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <RefreshIndicator color='white' />
+                    </View>
+                }
+
+                <Animated.Image
+                    style={{
+                        position: 'absolute',
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height,
+                        resizeMode: 'cover',
+                        opacity: this.state.image2Opacity
+                    }}
+                    source={PreloadImage.Splash}
+                />
+            </View>
+        );
+    }
 
     async _cacheResourcesAsync() {
         console.log('Loading._cacheResourcesAsync');
@@ -163,26 +213,34 @@ export default class Loading extends React.Component<InjectedProps> {
                     await Firebase.updateProfile(uid, profile);
 
                     console.log('move to main');
+                    StatusBar.setHidden(false);
                     navigation.navigate("mainStackNavigator");
                 } else {
                     console.log('move to welcome');
+                    StatusBar.setHidden(false);
                     navigation.navigate("welcome");
                 }
             } else {
                 Loading.isUserAutoAuthenticated = false;
 
-                // console.log('move to auth');
-                navigation.navigate("authStackNavigator");
+                Animated.parallel([
+                    Animated.timing(this.state.image1Opacity, {
+                        toValue: 0,
+                        duration: 2000,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.image2Opacity, {
+                        toValue: 1,
+                        duration: 2000,
+                        useNativeDriver: true
+                    })
+                ]).start(() => {
+                    !this.closed && this.setState({ showIndicator: false });
 
-                /*
-                Animated.timing(this.state.blurRadius, {
-                    toValue: Platform.OS === "ios" ? 40 : 4,
-                    duration: 1000
-                }).start(() => {
-                    console.log('move to auth');
+                    console.log('move to auth main');
+                    // StatusBar.setHidden(false);
                     navigation.navigate("authStackNavigator");
                 });
-                */
             }
         });
     }
@@ -210,69 +268,6 @@ export default class Loading extends React.Component<InjectedProps> {
 
         return true;
     }
-
-    render() {
-        /*
-        const statusBar = (
-            <StatusBar
-                translucent
-                backgroundColor="transparent"
-                barStyle="light-content"
-            />
-        );
-
-        return (
-            <React.Fragment>
-                {statusBar}
-                <AppLoading />
-            </React.Fragment>
-        );
-        */
-
-
-        /*
-        const { blurRadius } = this.state;
-
-
-        if (!this.state.isReady) {
-            return (
-                <AppLoading
-                    startAsync={this._cacheResourcesAsync}
-                    onFinish={() => {
-                        this.setState({ isReady: true }, () => this.init());
-                    }}
-                    onError={console.warn}
-                >
-                </AppLoading>
-            );
-        }
-
-        return (
-            <Animated.Image
-                style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.Splash}
-                resizeMode='cover'
-                blurRadius={blurRadius}
-            />
-        );
-        */
-
-        return (
-            <AppLoading
-                startAsync={this._cacheResourcesAsync}
-                onFinish={() => {
-                    // this.setState({ isReady: true }, () => this.init());
-                    this.init();
-                }}
-                onError={console.warn}
-            >
-            </AppLoading>
-        );
-    }
-
 
 
 
@@ -356,6 +351,7 @@ export default class Loading extends React.Component<InjectedProps> {
         return Firebase.firestore.collection("users").doc(uid).set(user);
     }
 
+    /*
     // let users = await getUsers();
     getUsers() { // get
         return new Promise((resolve, reject) => {
@@ -375,6 +371,7 @@ export default class Loading extends React.Component<InjectedProps> {
             });
         });
     }
+    */
 
     updateUser(uid, name, email, phoneNumber) {
         var data = {
@@ -427,15 +424,7 @@ export default class Loading extends React.Component<InjectedProps> {
             });
         });
     }
-}
 
-/*
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        // alignItems: 'center',
-        backgroundColor: '#fff'
-    }
-});
-*/
+
+
+}

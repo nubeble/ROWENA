@@ -100,21 +100,21 @@ export default class Firebase {
         const postsRef = Firebase.firestore.collection("place").doc(placeId).collection("feed");
         const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
         if (snap1.docs.length === 0) {
-
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
                 // not exist
             } else {
                 snap2.forEach((doc) => {
                     // console.log(doc.id, '=>', doc.data());
+                    feedId = doc.data().id;
                     uri = doc.data().pictures.one.uri;
                     // console.log('< uri', uri);
                 });
             }
-
         } else {
             snap1.forEach((doc) => {
                 // console.log(doc.id, '=>', doc.data());
+                feedId = doc.data().id;
                 uri = doc.data().pictures.one.uri;
                 // console.log('> uri', uri);
             });
@@ -132,7 +132,6 @@ export default class Firebase {
         const postsRef = Firebase.firestore.collection("place");
         const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
         if (snap1.docs.length === 0) {
-
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
                 // not exist
@@ -142,7 +141,6 @@ export default class Firebase {
                     placeId = doc.id;
                 });
             }
-
         } else {
             snap1.forEach((doc) => {
                 // console.log(doc.id, '=>', doc.data());
@@ -153,6 +151,18 @@ export default class Firebase {
         return placeId;
     }
 
+
+
+    static subscribeToFeed(placeId, feedId, callback) {
+        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).onSnapshot(snap => {
+            const feed = snap.data();
+            console.log('Firebase.subscribeToFeed, feed changed.');
+            callback(feed);
+        });
+    }
+
+
+    /*
     static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
         let feed = null;
 
@@ -163,7 +173,7 @@ export default class Firebase {
 
         return feed;
     }
-
+    */
     static async getFeedByAverageRating(placeId, size) {
         let feeds = [];
 
@@ -176,6 +186,7 @@ export default class Firebase {
         return feeds;
     }
 
+    /*
     static async getFeedByTimestamp(placeId) { // 가장 최근에 생성된 포스트
         let feed = null;
 
@@ -186,7 +197,7 @@ export default class Firebase {
 
         return feed;
     }
-
+    */
     static async getFeedByTimestamp(placeId, size) {
         let feeds = [];
 
@@ -322,12 +333,12 @@ export default class Firebase {
     */
 
     static async updateLikes(uid, placeId, feedId, uri) {
-        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
-        const userRef = Firebase.firestore.collection("users").doc(uid);
-
         // update count
         await Firebase.firestore.runTransaction(async transaction => {
+            const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
             const postDoc = await transaction.get(feedRef);
+            if (!postDoc.exists) throw 'Post document does not exist!';
+
             const { likes } = postDoc.data();
             const idx = likes.indexOf(uid);
             if (idx === -1) {
@@ -337,11 +348,19 @@ export default class Firebase {
             }
 
             transaction.update(feedRef, { likes });
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+        }).catch((error) => {
+            console.log('Firebase.updateLikes', error);
+            return false;
         });
 
         // save to user profile
         await Firebase.firestore.runTransaction(async transaction => {
+            const userRef = Firebase.firestore.collection("users").doc(uid);
             const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'Profile document does not exist!';
+
             const { likes } = userDoc.data();
             let _idx = -1;
 
@@ -366,7 +385,15 @@ export default class Firebase {
             }
 
             transaction.update(userRef, { likes });
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+            // result = true;
+        }).catch((error) => {
+            console.log('Firebase.updateLikes', error);
+            return false;
         });
+
+        return true;
     }
 
     static async addReview(placeId, feedId, userUid, comment, rating) {
@@ -381,21 +408,22 @@ export default class Firebase {
             timestamp: timestamp
         };
 
-        // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").add(review);
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const userRef = Firebase.firestore.collection("users").doc(userUid);
 
+        // save later
+        // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
-        // 업데이트 3개 - averageRating, reviews, reviewCount
-
-        let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
-        let userRef = Firebase.firestore.collection("users").doc(userUid);
+        // update - averageRating, reviews, reviewCount
 
         let size = await Firebase.getReviewsSize(placeId, feedId);
-        // console.log('returned size', size);
+        if (size === -1) return false;
 
         await Firebase.firestore.runTransaction(async transaction => {
             // averageRating (number)
             const feedDoc = await transaction.get(feedRef);
+            if (!feedDoc.exists) throw 'Post document does not exist!';
+
             let averageRating = feedDoc.data().averageRating;
             let totalRating = averageRating * (size - 1);
             totalRating += review.rating;
@@ -421,11 +449,23 @@ export default class Firebase {
             let reviewCount = feedDoc.data().reviewCount;
             console.log('reviewCount will be', reviewCount + 1);
             transaction.update(feedRef, { reviewCount: Number(reviewCount + 1) });
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+            // result = true;
+        }).catch((error) => {
+            console.log('Firebase.addReview', error);
+            return false;
         });
+
+        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
+
+        return true;
     };
 
     static async removeReview(placeId, feedId, reviewId, userUid) {
         const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).get();
+        if (!reviewDoc.exists) return false;
+
         let rating = reviewDoc.data().rating; // rating, comment, timestamp
 
         // 업데이트 3개 - averageRating, reviews, reviewCount
@@ -434,10 +474,13 @@ export default class Firebase {
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         let size = await Firebase.getReviewsSize(placeId, feedId);
+        if (size === -1) return false;
 
         await Firebase.firestore.runTransaction(async transaction => {
             // averageRating (number)
             const feedDoc = await transaction.get(feedRef);
+            if (!feedDoc.exists) throw 'Post document does not exist!';
+
             let averageRating = feedDoc.data().averageRating;
             let totalRating = averageRating * size;
             totalRating -= rating;
@@ -463,18 +506,32 @@ export default class Firebase {
             let reviewCount = feedDoc.data().reviewCount;
             console.log('reviewCount will be', reviewCount - 1);
             transaction.update(feedRef, { reviewCount: Number(reviewCount - 1) });
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+        }).catch((error) => {
+            console.log('Firebase.removeReview', error);
+            return false;
         });
 
         await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).delete();
+
+        return true;
     }
 
     static async getReviewsSize(placeId, feedId) {
         let size = -1;
 
+        /*
         await Firebase.firestore.collection("place").doc(placeId).collection("feed")
             .doc(feedId).collection("reviews").get().then(snap => {
                 size = snap.size;
             });
+        */
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        if (feedDoc.exists) {
+            const field = snap.data().reviewCount;
+            size = field;
+        }
 
         return size;
     }
@@ -497,24 +554,24 @@ export default class Firebase {
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(transaction => {
-            return new Promise(resolve => {
-                transaction.update(reviewRef, replyData);
+            // return new Promise(resolve => {
+            transaction.update(reviewRef, replyData);
 
-                const item = {
-                    placeId: placeId,
-                    feedId: feedId,
-                    reviewId: reviewId,
-                    replyId: id
-                };
+            const item = {
+                placeId: placeId,
+                feedId: feedId,
+                reviewId: reviewId,
+                replyId: id
+            };
 
-                let userData = {
-                    replies: firebase.firestore.FieldValue.arrayUnion(item)
-                };
+            let userData = {
+                replies: firebase.firestore.FieldValue.arrayUnion(item)
+            };
 
-                transaction.update(userRef, userData);
+            transaction.update(userRef, userData);
 
-                resolve(true);
-            });
+            // resolve(true);
+            // });
         });
     };
 
@@ -592,10 +649,10 @@ export default class Firebase {
         });
     }
 
-    static loadMoreChatRoom(uid, timestamp, id, callback) {
+    static loadMoreChatRoom(count, uid, timestamp, id, callback) {
         // console.log('timestamp', timestamp);
 
-        Firebase.database.ref('chat').child(uid).orderByChild('timestamp').endAt(timestamp).limitToLast(10 + 1).once('value', snapshot => {
+        Firebase.database.ref('chat').child(uid).orderByChild('timestamp').endAt(timestamp).limitToLast(count + 1).once('value', snapshot => {
             if (snapshot.exists()) {
                 // invert the results
                 let list = [];

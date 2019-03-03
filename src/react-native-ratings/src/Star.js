@@ -26,6 +26,12 @@ export default class Star extends PureComponent {
     }
     // --
 
+    /*
+    stopAnimation() {
+        if (this.instance) this.instance.stopAnimation();
+    }
+    */
+
     constructor() {
         super();
         this.springValue = new Animated.Value(1);
@@ -40,7 +46,7 @@ export default class Star extends PureComponent {
 
         this.springValue.setValue(1.2);
 
-        Animated.spring(
+        this.instance = Animated.spring(
             this.springValue,
             {
                 toValue: 1,

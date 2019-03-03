@@ -55,6 +55,8 @@ export default class WriteReviewScreen extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        // this.refs.rating.stopAnimation();
+
         this.props.navigation.state.params.onGoBack(false);
         this.props.navigation.goBack();
 
@@ -90,7 +92,7 @@ export default class WriteReviewScreen extends React.Component {
         this.setState({ rating });
     }
 
-    post() {
+    async post() {
         let comment = this.refs['comment']._lastNativeText;
         if (comment === undefined || comment === '') {
             this.showNotification('Please enter a valid comment.');
@@ -102,6 +104,8 @@ export default class WriteReviewScreen extends React.Component {
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.closed) {
+                    // this.refs.rating.stopAnimation();
+
                     this.props.navigation.state.params.onGoBack(false);
                     this.props.navigation.goBack();
                 }
@@ -110,16 +114,29 @@ export default class WriteReviewScreen extends React.Component {
             return;
         }
 
-        this.addReview(comment);
+        const result = await this.addReview(comment);
+        if (!result) {
+            // the post is removed
+            this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
+                if (!this.closed) {
+                    // this.refs.rating.stopAnimation();
+    
+                    this.props.navigation.state.params.onGoBack(false);
+                    this.props.navigation.goBack();
+                }
+            });
+        } else {
+            this.sendPushNotification(comment);
 
-        this.sendPushNotification(comment);
+            this.refs["toast"].show('Your review has been submitted!', 500, () => {
+                if (!this.closed) {
+                    // this.refs.rating.stopAnimation();
 
-        this.refs["toast"].show('Your review has been submitted!', 500, () => {
-            if (!this.closed) {
-                this.props.navigation.state.params.onGoBack(true);
-                this.props.navigation.goBack();
-            }
-        });
+                    this.props.navigation.state.params.onGoBack(true);
+                    this.props.navigation.goBack();
+                }
+            });
+        }
     }
 
     sendPushNotification(message) {
@@ -177,6 +194,8 @@ export default class WriteReviewScreen extends React.Component {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
+                            // this.refs.rating.stopAnimation();
+
                             this.props.navigation.state.params.onGoBack(false);
                             this.props.navigation.goBack();
                         }}
@@ -194,7 +213,7 @@ export default class WriteReviewScreen extends React.Component {
                             right: 22,
                             alignSelf: 'baseline'
                         }}
-                        onPress={() => this.post()}
+                        onPress={async () => await this.post()}
                     >
                         <Text style={styles.post}>Post</Text>
                     </TouchableOpacity>
@@ -254,7 +273,7 @@ export default class WriteReviewScreen extends React.Component {
                 </View>
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                    <TouchableOpacity onPress={() => this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
+                    <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
                         <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Post</Text>
                     </TouchableOpacity>
                 </View>
@@ -338,28 +357,6 @@ export default class WriteReviewScreen extends React.Component {
 
     /*** Database ***/
 
-    // let users = await getUsers();
-    getUsers() {
-        return new Promise((resolve, reject) => {
-            let users = {};
-
-            // Firebase.firestore.collection('users').orderBy('averageRating', 'desc').limit(50).get()
-            Firebase.firestore.collection("users").get().then((snapshot) => {
-                snapshot.forEach((doc) => {
-                    console.log(doc.id, '=>', doc.data());
-                    users[doc.id] = doc.data();
-                });
-
-                resolve(users);
-            }).catch((err) => {
-                console.log('Error getting documents', err);
-
-                reject(err);
-            });
-        });
-    }
-
-    // ToDo: check this
     /*
     addReview(userUid, review) {
         var userDoc = Firebase.firestore.collection('users').doc(userUid);
@@ -390,7 +387,7 @@ export default class WriteReviewScreen extends React.Component {
         const userUid = Firebase.user().uid;
         const rating = this.state.rating;
 
-        await Firebase.addReview(placeId, feedId, userUid, comment, rating);
+        return await Firebase.addReview(placeId, feedId, userUid, comment, rating);
     };
 
 }

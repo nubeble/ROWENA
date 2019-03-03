@@ -3,7 +3,7 @@ import { observable, computed } from "mobx";
 import Firebase from "./Firebase";
 import type { Review, Reviews, ReviewEntry, Profile } from "./rnff/src/components/Model";
 
-const DEFAULT_PAGE_SIZE = 5;
+const DEFAULT_REVIEW_COUNT = 10;
 
 const DEFAULT_PROFILE: Profile = {
     uid: 'uid',
@@ -53,7 +53,7 @@ export default class ReviewStore {
         if (this.query) this.init(this.query);
     }
 
-    init(query: any, count = DEFAULT_PAGE_SIZE) {
+    init(query: any, count = DEFAULT_REVIEW_COUNT) {
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
         this.query = undefined;
@@ -65,7 +65,7 @@ export default class ReviewStore {
         this.loadReview(count);
     }
 
-    async loadReview(count = DEFAULT_PAGE_SIZE): Promise<void> {
+    async loadReview(count = DEFAULT_REVIEW_COUNT): Promise<void> {
         let query = this.query;
 
         if (this.cursor) {
@@ -99,7 +99,7 @@ export default class ReviewStore {
         this.cursor = _.last(snap.docs);
 
         let allReviewsLoaded = false;
-        if (reviews.length < DEFAULT_PAGE_SIZE) allReviewsLoaded = true;
+        if (reviews.length < DEFAULT_REVIEW_COUNT) allReviewsLoaded = true;
 
         this.allReviewsLoaded = allReviewsLoaded;
         if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
@@ -113,7 +113,7 @@ export default class ReviewStore {
                 const profileDoc = await Firebase.firestore.collection("users").doc(uid).get();
                 this.profiles[uid] = profileDoc.data();
             } catch (e) {
-                this.profiles[uid] = DEFAULT_PROFILE;
+                // this.profiles[uid] = DEFAULT_PROFILE;
             }
         })());
 
@@ -122,9 +122,8 @@ export default class ReviewStore {
         return reviews.map(review => {
             const profile = this.profiles[review.uid];
 
-            // console.log('joinProfiles profile', profile, 'review', review);
-
-            return { profile, review };
+            // return { profile, review };
+            if (profile) return { profile, review };
         });
     }
 

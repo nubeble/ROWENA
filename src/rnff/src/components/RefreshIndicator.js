@@ -11,7 +11,8 @@ type RefreshIndicatorProps = BaseProps & {
 
 type CircleProps = {
     order: number,
-    total: number
+    total: number,
+    color: string
 };
 
 type CircleState = {
@@ -19,7 +20,6 @@ type CircleState = {
 };
 
 class Circle extends React.Component<CircleProps, CircleState> {
-
     state = {
         animation: new Animated.Value(0)
     };
@@ -31,7 +31,7 @@ class Circle extends React.Component<CircleProps, CircleState> {
     }
 
     render(): React.Node {
-        const { order, total } = this.props;
+        const { order, total, color } = this.props;
         const { animation } = this.state;
         const factor = order - 1;
         const part = 1 / total;
@@ -39,8 +39,9 @@ class Circle extends React.Component<CircleProps, CircleState> {
             inputRange: [0, part * factor, (part * factor) + (part * 0.5), (part * factor) + part, 1],
             outputRange: [1, 1, 3, 1, 1]
         });
+
         return (
-            <Animated.View style={[styles.circle, { transform: [{ scale }] }]}/>
+            <Animated.View style={[styles.circle, { backgroundColor: color, transform: [{ scale }] }]} />
         );
     }
 }
@@ -49,20 +50,21 @@ class Circle extends React.Component<CircleProps, CircleState> {
 export default class RefreshIndicator extends React.PureComponent<RefreshIndicatorProps> {
 
     static defaultProps = {
-        refreshing: true
+        refreshing: true,
+        color: 'grey'
     };
 
     render(): React.Node {
-        const { refreshing, style } = this.props;
+        const { refreshing, style, color } = this.props;
         if (!refreshing) {
             return <View />;
         }
         return (
             <View style={[styles.container, style]}>
-                <Circle order={1} total={4}/>
-                <Circle order={2} total={4}/>
-                <Circle order={3} total={4}/>
-                <Circle order={4} total={4}/>
+                <Circle order={1} total={4} color={color} />
+                <Circle order={2} total={4} color={color} />
+                <Circle order={3} total={4} color={color} />
+                <Circle order={4} total={4} color={color} />
             </View>
         );
     }
@@ -73,7 +75,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
 
-        marginTop: Theme.spacing.large
+        marginTop: Theme.spacing.large,
+        marginBottom: Theme.spacing.large
     },
     circle: {
         height: 6,
@@ -85,7 +88,7 @@ const styles = StyleSheet.create({
 
         borderRadius: 3,
         // backgroundColor: Theme.palette.primary,
-        backgroundColor: 'grey',
+        // backgroundColor: 'grey',
         margin: Theme.spacing.tiny
     }
 });

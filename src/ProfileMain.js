@@ -12,6 +12,7 @@ import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import AwesomeAlert from 'react-native-awesome-alerts';
+import { RefreshIndicator } from "./rnff/src/components";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -25,7 +26,7 @@ const MAX_FEED_COUNT = 12; // 3 x 4
 export default class ProfileMain extends React.Component<InjectedProps> {
     state = {
         renderFeed: false,
-        showIndicator: false,
+        // showIndicator: false,
         showAlert: false,
         feeds: [],
         isLoadingFeeds: false,
@@ -46,6 +47,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
+        this.onLoading = false;
     }
 
     componentDidMount() {
@@ -91,12 +93,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.setState({ focused: false });
     }
 
+    /*
     @autobind
     onScrollHandler() {
         console.log('ProfileMain.onScrollHandler');
 
         this.getUserFeeds();
     }
+    */
+
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const threshold = 20; // how far from the bottom
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
+    };
 
     componentWillUnmount() {
         console.log('ProfileMain.componentWillUnmount');
@@ -109,10 +118,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     getUserFeeds() {
-        if (this.state.isLoadingFeeds) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
-            return;
-        }
+        if (this.onLoading) return;
+
+        this.onLoading = true;
 
         const { profile } = this.props.profileStore;
         const feeds = profile.feeds;
@@ -123,6 +131,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (length === 0) {
             if (this.state.refreshing) this.setState({ refreshing: false });
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
+
+            this.onLoading = false;
             return;
         }
 
@@ -136,11 +146,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.lastLoadedFeedIndex = -1;
         }
 
-        // load all?
+        // all loaded
         if (this.lastLoadedFeedIndex === 0) {
             if (this.state.refreshing) this.setState({ refreshing: false });
+
+            this.onLoading = false;
             return;
         }
+
+        console.log('ProfileMain', 'loading feeds...');
 
         this.setState({ isLoadingFeeds: true });
 
@@ -169,7 +183,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             count++;
         }
 
-
         if (this.reload) {
             this.reload = false;
 
@@ -181,6 +194,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
             });
         }
+
+        console.log('ProfileMain', 'loading feeds done!');
+
+        this.onLoading = false;
     }
 
     async openPost(item) {
@@ -188,15 +205,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         const post = feedDoc.data();
-
         if (!post) {
-            // post removed
-            this.refs["toast"].show('The post is removed by the owner.', 500);
-        } else {
-            setTimeout(() => {
-                this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
-            }, Cons.buttonTimeoutShort);
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
         }
+
+        setTimeout(() => {
+            this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
+        }, Cons.buttonTimeoutShort);
     }
 
     render() {
@@ -208,23 +224,20 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // const uri = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
         const hasImage = !!profile.picture.uri;
         const imageUri = profile.picture.uri;
-
-
         const avatarHeight = 70;
-
         const bodyInfoItemWidth = Dimensions.get('window').width / 5;
         const bodyInfoItemHeight = bodyInfoItemWidth;
 
         return (
             <View style={styles.flex}>
-
+                {/*
                 <ActivityIndicator
                     style={styles.activityIndicator}
                     animating={this.state.showIndicator}
                     size="large"
                     color='grey'
                 />
-
+                */}
                 <View style={styles.searchBar}>
 
                     <Text
@@ -422,7 +435,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 }
                             </View>
                         }
-                        // scrollEventThrottle={1}
                         columnWrapperStyle={styles.columnWrapperStyle}
                         numColumns={3}
                         data={this.state.feeds}
@@ -431,18 +443,24 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         renderItem={({ item, index }) => {
                             return (
                                 <TouchableOpacity
+                                    /*
                                     onPress={async () => {
                                         setTimeout(() => {
                                             this.openPost(item);
                                         }, Cons.buttonTimeoutShort);
                                     }}
+                                    */
+                                    onPress={async () => await this.openPost(item)}
                                 >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             // preview={item.pictures.one.preview}
                                             // uri={item.pictures.one.uri}
-                                            uri={item.picture}
+
                                             style={styles.picture}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.picture}
                                         />
 
                                         {/*
@@ -460,16 +478,20 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 </TouchableOpacity>
                             );
                         }}
-                        onEndReachedThreshold={0.5}
-                        onEndReached={this.onScrollHandler}
+                        // onEndReachedThreshold={0.5}
+                        // onEndReached={this.onScrollHandler}
+                        onScroll={({ nativeEvent }) => {
+                            if (this.isCloseToBottom(nativeEvent)) {
+                                this.getUserFeeds();
+                            }
+                        }}
+                        // scrollEventThrottle={1}
+
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
-                            <ActivityIndicator
-                                style={styles.bottomIndicator}
-                                animating={true}
-                                size="small"
-                                color='grey'
-                            />
+                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator />
+                            </View>
                         }
 
                         /*
@@ -497,7 +519,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 <Toast
                     ref="toast"
                     position='top'
-                    positionValue={Dimensions.get('window').height / 2}
+                    positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
 
@@ -505,7 +527,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     show={this.state.showAlert}
                     showProgress={false}
                     title="Log out"
-                    message="Are you sure? Logging out will remove all Rowena data from this device."
+                    message="Are you sure you want to remove all data from this device?"
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={true}
@@ -520,6 +542,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                         // 2. remove database (users, post)
                         // await Firebase.deleteProfile(Firebase.user().uid);
+                        // await Firebase.removeFeed(Firebase.user().uid, placeId, feedId);
+
+                        
 
                         // removeFeed
 
@@ -536,7 +561,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
                     messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-                    
+
                     cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
                     cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                     confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
@@ -547,11 +572,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     } // end of render()
 
     handleRefresh = () => {
+        if (this.onLoading) return;
+
         this.setState(
             {
                 refreshing: true
             },
             () => {
+                // reload
+                this.lastChangedTime = 0;
                 this.getUserFeeds();
             }
         );

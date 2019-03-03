@@ -17,7 +17,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import AwesomeAlert from 'react-native-awesome-alerts';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
@@ -55,7 +55,13 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this.itemHeights = [];
         this.lastItemIndex = 0;
+        this.onLoading = false;
     }
+
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const threshold = 20; // how far from the bottom
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
+    };
 
     componentDidMount() {
         // console.log('ReadAllReviewScreen.componentDidMount');
@@ -63,6 +69,7 @@ export default class ReadAllReviewScreen extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         const { reviewStore, isOwner } = this.props.navigation.state.params;
 
@@ -82,13 +89,18 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     onAddToReviewFinished() {
-        console.log('onAddToReviewFinished');
+        // console.log('onAddToReviewFinished');
 
         !this.closed && this.setState({ isLoadingReview: false, refreshing: false });
+
+        this.onLoading = false;
     }
 
     @autobind
     handleHardwareBackPress() {
+        console.log('ReadAllReviewScreen.handleHardwareBackPress');
+
+
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
@@ -98,10 +110,17 @@ export default class ReadAllReviewScreen extends React.Component {
         return true;
     }
 
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'ReadAllReviewScreen';
+
+    }
+
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
 
         this.closed = true;
     }
@@ -163,8 +182,14 @@ export default class ReadAllReviewScreen extends React.Component {
                             data={reviews}
                             keyExtractor={this.keyExtractor}
                             renderItem={this.renderItem}
-                            onEndReachedThreshold={0.5}
-                            onEndReached={this.loadMore}
+                            // onEndReachedThreshold={0.5}
+                            // onEndReached={this.loadMore}
+                            onScroll={({ nativeEvent }) => {
+                                if (this.isCloseToBottom(nativeEvent)) {
+                                    this.loadMore();
+                                }
+                            }}
+                            // scrollEventThrottle={1}
 
                             contentContainerStyle={styles.contentContainer}
                             showsVerticalScrollIndicator
@@ -172,12 +197,9 @@ export default class ReadAllReviewScreen extends React.Component {
                             ListEmptyComponent={this.renderListEmptyComponent}
                             ListFooterComponent={
                                 this.state.isLoadingReview &&
-                                <ActivityIndicator
-                                    style={styles.bottomIndicator}
-                                    animating={true}
-                                    size="small"
-                                    color='grey'
-                                />
+                                <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                    <RefreshIndicator />
+                                </View>
                             }
 
                             ItemSeparatorComponent={this.itemSeparatorComponent}
@@ -296,7 +318,7 @@ export default class ReadAllReviewScreen extends React.Component {
                 <Toast
                     ref="toast"
                     position='top'
-                    positionValue={Dimensions.get('window').height / 2}
+                    positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
             </View >
@@ -304,20 +326,17 @@ export default class ReadAllReviewScreen extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
+        if (this.onLoading) return;
+
         this.setState(
             {
                 refreshing: true
             },
             () => {
-                // this.loadMore();
-                this.loadReviewFromTheStart();
+                const { reviewStore } = this.props.navigation.state.params;
+                reviewStore.loadReviewFromTheStart();
             }
         );
-    }
-
-    loadReviewFromTheStart() {
-        const { reviewStore } = this.props.navigation.state.params;
-        reviewStore.loadReviewFromTheStart();
     }
 
     @autobind
@@ -447,19 +466,15 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     loadMore() {
-        console.log('ReadAllReviewScreen.loadMore');
+        if (this.onLoading) return;
 
-        if (this.state.isLoadingReview) {
-            // this.setState({ refreshing: false });
-            return;
-        }
+        this.onLoading = true;
 
         const { reviewStore } = this.props.navigation.state.params;
         if (reviewStore.allReviewsLoaded) {
-            console.log('reviewStore.allReviewsLoaded');
+            if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.setState({ refreshing: false });
-
+            this.onLoading = false;
             return;
         }
 
@@ -719,9 +734,14 @@ export default class ReadAllReviewScreen extends React.Component {
             const reviewId = reviewStore.reviews[index].review.id;
             const userUid = Firebase.user().uid;
 
-            const count = reviewStore.reviews.length;
+            // const count = reviewStore.reviews.length;
 
-            await Firebase.removeReview(placeId, feedId, reviewId, userUid);
+            const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
+            if (!result) {
+                // the post is removed
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {

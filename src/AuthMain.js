@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator,
-    Animated, Dimensions, Platform
+    StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator,
+    Animated, Dimensions, Platform, Image
 } from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -12,41 +12,29 @@ import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 
-
-const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
+const height = Dimensions.get('window').height;
 
 
 export default class AuthMain extends React.Component {
     state = {
         showFacebookLoader: false,
-        blurRadius: new Animated.Value(1),
-        offset: new Animated.Value(0)
+
+        // loaded: false,
+        // blurRadius: new Animated.Value(1),
+        // offset: new Animated.Value(0)
+
+        // opacity: new Animated.Value(0),
+        offset: new Animated.Value(height)
     };
 
     componentDidMount() {
-        const height = Dimensions.get('window').height;
-        this.state.offset.setValue(height);
-
-        Animated.sequence([
-            Animated.timing(this.state.blurRadius, {
-                toValue: Platform.OS === "ios" ? 40 : 3,
-                duration: 1500
-            }),
-            Animated.timing(this.state.offset, {
-                toValue: 0,
-                duration: 300
-            })
-        ]).start();
-
-
-
-
-        /*
-        Animated.timing(this.state.blurRadius, {
-            toValue: Platform.OS === "ios" ? 40 : 4,
-            duration: 1000
-        }).start();
-        */
+        Animated.timing(this.state.offset, {
+            toValue: 0,
+            duration: 500,
+            useNativeDriver: true
+        }).start(() => {
+            StatusBar.setHidden(false);
+        });
     }
 
     componentWillUnmount() {
@@ -122,7 +110,6 @@ export default class AuthMain extends React.Component {
     }
 
     render() {
-        const { blurRadius } = this.state;
         const viewStyle = {
             transform: [
                 {
@@ -133,38 +120,19 @@ export default class AuthMain extends React.Component {
 
 
         return (
-            /*
-                        <AnimatedImageBackground
-                            style={{
-                                width: Dimensions.get('window').width,
-                                height: Dimensions.get('window').height
-                            }}
-                            source={PreloadImage.Splash}
-                            resizeMode='cover'
-                            // blurRadius={Platform.OS === "ios" ? 20 : 2}
-                            // blurRadius={Platform.OS === "ios" ? 40 : 4}
-                            blurRadius={blurRadius}
-                        >
-            */
-
-
             <View style={styles.container}>
-
-                <Animated.Image
+                <Image
                     style={{
                         position: 'absolute',
                         width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height
+                        height: Dimensions.get('window').height,
+                        resizeMode: 'cover'
                     }}
                     source={PreloadImage.Splash}
-                    resizeMode='cover'
-                    blurRadius={blurRadius}
+                    fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
 
-                <Animated.View
-                    // style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}
-                    style={[styles.view, viewStyle]}
-                >
+                <Animated.View style={[styles.view, viewStyle]}>
                     <View style={styles.logo}>
                         <Text style={{
                             // marginTop: 100,
@@ -234,18 +202,13 @@ export default class AuthMain extends React.Component {
                             </Text>
                         </TouchableOpacity>
 
-                        <Text style={{ position: 'absolute', bottom: 20, fontSize: 13, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>
+                        <Text style={{ position: 'absolute', bottom: 30, fontSize: 13, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
                         </Text>
 
                     </View>
                 </Animated.View>
-
             </View>
-
-            /*                
-                        </AnimatedImageBackground>
-            */
         );
     }
 
@@ -265,8 +228,8 @@ export default class AuthMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white' // ToDo: check this
-        // backgroundColor: 'green',
+        // backgroundColor: 'transparent',
+        backgroundColor: '#FFB5C2',
         // backgroundColor: '#ffffff',
         // alignItems: 'center',
         // justifyContent: 'center'

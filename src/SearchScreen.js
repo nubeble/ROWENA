@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
 import { Constants } from 'expo';
 import { Theme } from './rnff/src/components';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
@@ -23,6 +23,7 @@ export default class SearchScreen extends React.Component {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         setTimeout(() => {
             !this.closed && this.setState({ renderScreen: true });
@@ -31,13 +32,22 @@ export default class SearchScreen extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('SearchScreen.handleHardwareBackPress');
+
+        
         this.props.navigation.goBack();
 
         return true;
     }
 
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'SearchScreen';
+    }
+
     componentWillUnmount() {
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
 
         this.closed = true;
     }

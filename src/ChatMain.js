@@ -14,6 +14,8 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 
+DEFAULT_ROOM_COUNT = 10;
+
 
 export default class ChatMain extends React.Component {
     state = {
@@ -27,6 +29,7 @@ export default class ChatMain extends React.Component {
         super(props);
 
         this.deletedChatRoomList = [];
+        this.onLoading = false;
     }
 
     componentDidMount() {
@@ -80,7 +83,7 @@ export default class ChatMain extends React.Component {
                 var array = [...this.state.chatRoomList];
                 const index = this.findIndex(array, roomId);
                 console.log('index', index);
-                if (index !== -1) { // if the item inside of 10 is removed then automatically updated in database, state array and index = -1
+                if (index !== -1) { // if the item inside of 10 rooms is removed then automatically updated in database, state array and index = -1
                     array.splice(index, 1);
                     this.setState({ chatRoomList: array });
                 }
@@ -169,25 +172,23 @@ export default class ChatMain extends React.Component {
                         data={this.state.chatRoomList}
                         keyExtractor={this.keyExtractor}
                         renderItem={this.renderItem}
-                        onEndReachedThreshold={0.5}
-                        onEndReached={this.loadMore}
+                        // onEndReachedThreshold={0.5}
+                        // onEndReached={this.loadMore}
+                        onScroll={({ nativeEvent }) => {
+                            if (this.isCloseToBottom(nativeEvent)) {
+                                this.loadMore();
+                            }
+                        }}
+                        // scrollEventThrottle={1}
 
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
 
                         ListFooterComponent={
                             this.state.isLoadingChat &&
-                            <ActivityIndicator
-                                style={{ marginTop: 20, marginBottom: 20 }}
-                                animating={true}
-                                size="small"
-                                color='grey'
-                            />
-                            /*
-                            <View style={{ paddingHorizontal: Theme.spacing.small, marginTop: 20 + 40, marginBottom: 20 }}>
+                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
                                 <RefreshIndicator />
                             </View>
-                            */
                         }
 
                     // ItemSeparatorComponent={this.itemSeparatorComponent}
@@ -198,7 +199,7 @@ export default class ChatMain extends React.Component {
                 <Toast
                     ref="toast"
                     position='top'
-                    positionValue={Dimensions.get('window').height / 2}
+                    positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
             </View >
@@ -294,15 +295,33 @@ export default class ChatMain extends React.Component {
         return true;
     }
 
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const threshold = 20; // how far from the bottom
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
+    };
+
     @autobind
     loadMore() {
-        console.log('ChatMain.loadMore', this.isFocused);
+        if (this.onLoading) return;
 
-        if (!this.isFocused) return;
+        this.onLoading = true;
 
-        if (this.state.chatRoomList.length <= 0) return;
+        // console.log('ChatMain.loadMore', this.isFocused);
 
-        if (this.allChatRoomsLoaded) return;
+        if (!this.isFocused) {
+            this.onLoading = false;
+            return;
+        }
+
+        if (this.state.chatRoomList.length <= 0) {
+            this.onLoading = false;
+            return;
+        }
+
+        if (this.allChatRoomsLoaded) {
+            this.onLoading = false;
+            return;
+        }
 
         this.setState({ isLoadingChat: true });
 
@@ -311,7 +330,7 @@ export default class ChatMain extends React.Component {
         const timestamp = this.state.chatRoomList[this.state.chatRoomList.length - 1].timestamp;
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
-        Firebase.loadMoreChatRoom(uid, timestamp, id, list => { // load 10 rooms
+        Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => { // load 10 rooms
             console.log('loadMoreChatRoom', list);
 
             if (list.length === 0) {
@@ -333,6 +352,8 @@ export default class ChatMain extends React.Component {
             }
 
             this.setState({ isLoadingChat: false });
+
+            this.onLoading = false;
         });
     }
 

@@ -2,6 +2,7 @@
 import * as React from "react";
 import moment from "moment";
 import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from "react-native";
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 import LikesAndComments from "./LikesAndComments";
 
@@ -38,14 +39,22 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
     componentDidMount() {
         const { post, store } = this.props;
+
+        if (post.pictures.one.uri) {
+            this.thumbnailImage = post.pictures.one.uri;
+        }
+
+        /*
         this.unsubscribeToPost = store.subscribeToPost(post.placeId, post.id, newPost => this.setState({ post: newPost }));
-        // eslint-disable-next-line max-len
         this.unsubscribeToProfile = store.subscribeToProfile(post.uid, newProfile => this.setState({ profile: newProfile }));
+        */
     }
 
     componentWillUnmount() {
+        /*
         this.unsubscribeToPost();
         this.unsubscribeToProfile();
+        */
 
         this.closed = true;
     }
@@ -54,8 +63,29 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         const { navigation } = this.props;
         const { post, profile } = this.state;
 
-        // console.log('PostComp.post', post);
-        // console.log('PostComp.profile', profile);
+        if (!post) { // removed
+            return (
+                <TouchableWithoutFeedback onPress={() => {
+                    // toast
+                    this.refs["toast"].show('The post has been removed by its owner.', 500);
+                }}>
+                    <View style={styles.container}>
+                        <SmartImage
+                            style={styles.picture}
+                            showSpinner={false}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={this.thumbnailImage}
+                        />
+                        <Toast
+                            ref="toast"
+                            position='top'
+                            positionValue={imageHeight / 2 - 20}
+                            opacity={0.6}
+                        />
+                    </View>
+                </TouchableWithoutFeedback>
+            );
+        }
 
 
         // const { likes, comments } = post;
@@ -81,9 +111,11 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                     {
                         post.pictures.one.uri && (
                             <SmartImage
-                                preview={post.pictures.one.preview}
-                                uri={post.pictures.one.uri}
                                 style={styles.picture}
+                                showSpinner={false}
+                                // ToDo: performance issue!
+                                // preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={post.pictures.one.uri}
                             />
                         )
                     }

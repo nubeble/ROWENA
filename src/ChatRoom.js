@@ -2,7 +2,8 @@ import React from 'react';
 import {
     StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, SafeAreaView
 } from 'react-native';
-import { Theme } from "./rnff/src/components";
+import { Theme, FeedStore } from "./rnff/src/components";
+import ProfileStore from "./rnff/src/home/ProfileStore";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Firebase from './Firebase';
@@ -13,12 +14,12 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
+import Toast, { DURATION } from 'react-native-easy-toast';
 
-/*
 type InjectedProps = {
+    feedStore: FeedStore,
     profileStore: ProfileStore
 };
-*/
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
@@ -35,10 +36,9 @@ const bigImageWidth = postHeight * 0.7;
 // const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
 const smallImageWidth = postHeight * 0.7;
 
-/*
-@inject("profileStore")
+
+@inject("feedStore", "profileStore")
 @observer
-*/
 export default class ChatRoom extends React.Component<InjectedProps> {
     state = {
         id: null,
@@ -129,18 +129,22 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
-            // save the last message to chat main
-            if (this.state.messages.length > 1) {
-                const lastMessage = this.state.messages[0];
-                const mid = lastMessage._id;
-
-                Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
-            }
-
-            this.props.navigation.navigate("chat");
+            this.moveToChat();
         }
 
         return true;
+    }
+
+    moveToChat() {
+        // save the last message to chat main
+        if (this.state.messages.length > 1) {
+            const lastMessage = this.state.messages[0];
+            const mid = lastMessage._id;
+
+            Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+        }
+
+        this.props.navigation.navigate("chat");
     }
 
     @autobind
@@ -205,15 +209,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            // save the last message to chat main
-                            if (this.state.messages.length > 1) {
-                                const lastMessage = this.state.messages[0];
-                                const mid = lastMessage._id;
-
-                                Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
-                            }
-
-                            this.props.navigation.navigate("chat");
+                            this.moveToChat();
                         }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -305,20 +301,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                                 // console.log('nativeEvent', nativeEvent);
                                 if (this.isCloseToTop(nativeEvent)) {
                                     console.log('close to top');
-
-                                    if (!this.onLoading) {
-                                        this.onLoading = true;
-
-                                        this.loadMore();
-                                    }
+                                    this.loadMore();
                                 }
                             }
-
-                            /*
-                            onEndReached: this.onEndReached,
-                            onEndReachedThreshold: 100
-                            // onMomentumScrollBegin: this.onMomentumScrollBegin
-                            */
                         }}
                     />
                     {/*
@@ -355,8 +340,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                         <TouchableOpacity onPress={async () => await this.openPost()}>
                             <SmartImage
-                                showSpinner={false}
                                 style={{ width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2, marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                showSpinner={false}
                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                 uri={this.state.titleImageUri}
                             />
@@ -372,7 +357,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                     show={this.state.showAlert}
                     showProgress={false}
                     title='Leave conversation'
-                    message={"Are you sure? You will no logner receive new messages from " + labelName + "."}
+                    message={"Are you sure you don't want to receive new messages from " + labelName + "."}
                     closeOnTouchOutside={true}
                     closeOnHardwareBackPress={false}
                     showCancelButton={true}
@@ -399,11 +384,17 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
                     messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-                    
+
                     cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
                     cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                     confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
                     confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
+                />
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
                 />
             </View>
         );
@@ -415,7 +406,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     }
 
     loadMore() {
-        console.log('ChatRoom.loadMore()');
+        if (this.onLoading) return;
+
+        this.onLoading = true;
 
         const lastMessage = this.state.messages[this.state.messages.length - 1];
         const time = lastMessage.createdAt;
@@ -514,8 +507,14 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         const post = feedDoc.data();
+        if (!post) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
 
-        this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
+        setTimeout(() => {
+            this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
+        }, Cons.buttonTimeoutShort);
     }
 
     async openAvatar() {
@@ -526,10 +525,20 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             const feedId = item.feedId;
             const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
             const post = feedDoc.data();
+            if (!post) {
+                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                return;
+            }
 
-            this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
+            setTimeout(() => {
+                this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
+            }, Cons.buttonTimeoutShort);
         } else {
-            this.props.navigation.navigate("user");
+            // ToDo: check validation
+
+            setTimeout(() => {
+                this.props.navigation.navigate("user");
+            }, Cons.buttonTimeoutShort);
         }
     }
 

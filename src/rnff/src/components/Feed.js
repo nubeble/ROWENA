@@ -28,6 +28,12 @@ export default class Feed extends React.Component<FeedProps> {
         refreshing: false
     };
 
+    constructor(props) {
+        super(props);
+
+        this.onLoading = false;
+    }
+
     componentDidMount() {
         // const { feed } = this.props.store; // FeedStore
         // console.log('Feed.componentDidMount', feed);
@@ -37,17 +43,11 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     onAddToFeedFinished() {
-        // console.log('onAddToFeedFinished', result);
-        console.log('onAddToFeedFinished');
-
-        /*
-        if (!result) {
-            // don't call loadFeed() again.
-            this.allFeedsLoaded = true;
-        }
-        */
+        console.log('Feed.onAddToFeedFinished');
 
         !this.closed && this.setState({ isLoadingFeed: false, refreshing: false });
+
+        this.onLoading = false;
     }
 
     componentWillUnmount() {
@@ -60,25 +60,29 @@ export default class Feed extends React.Component<FeedProps> {
         return item.post.id;
     }
 
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const threshold = 20; // how far from the bottom
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
+    };
+
     @autobind
     loadMore() {
-        console.log('Feed.loadMore');
+        if (this.onLoading) return;
 
-        if (this.state.isLoadingFeed) {
-            // this.setState({ refreshing: false });
-            return;
-        }
+        this.onLoading = true;
 
         if (this.props.store.allFeedsLoaded) {
-            console.log('feedStore.allFeedsLoaded');
+            // console.log('feedStore.allFeedsLoaded');
+            if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.setState({ refreshing: false });
-
+            this.onLoading = false;
             return;
         }
 
         this.setState({ isLoadingFeed: true });
 
+        console.log('Feed.loadMore');
+        
         this.props.store.loadFeed();
     }
 
@@ -125,8 +129,14 @@ export default class Feed extends React.Component<FeedProps> {
                     data={feed}
                     keyExtractor={this.keyExtractor}
                     renderItem={this.renderItem}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={this.loadMore}
+                    // onEndReachedThreshold={0.5}
+                    // onEndReached={this.loadMore}
+                    onScroll={({ nativeEvent }) => { // ToDo: 2 events
+                        if (this.isCloseToBottom(nativeEvent)) {
+                            this.loadMore();
+                        }
+                    }}
+
                     ListEmptyComponent={
                         /*
                         <View style={styles.post}>
@@ -147,12 +157,9 @@ export default class Feed extends React.Component<FeedProps> {
                     }
                     ListFooterComponent={
                         this.state.isLoadingFeed &&
-                        <ActivityIndicator
-                            style={styles.bottomIndicator}
-                            animating={true}
-                            size="small"
-                            color='grey'
-                        />
+                        <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
+                            <RefreshIndicator />
+                        </View>
                     }
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
@@ -163,20 +170,16 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     handleRefresh = () => {
+        if (this.onLoading) return;
+
         this.setState(
             {
                 refreshing: true
             },
             () => {
-                // this.loadMore();
-                // this.allFeedsLoaded = false;
-                this.loadFeedFromTheStart();
+                this.props.store.loadFeedFromTheStart();
             }
         );
-    }
-
-    loadFeedFromTheStart() {
-        this.props.store.loadFeedFromTheStart();
     }
 }
 

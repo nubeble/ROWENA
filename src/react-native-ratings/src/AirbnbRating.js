@@ -21,12 +21,23 @@ export default class AirbnbRating extends Component {
         this.setState({ position: position });
     }
 
+    /*
+    stopAnimation() {
+        for (var i = 0; i < this.refList.length; i++) {
+            const ref = this.refList[i];
+            ref.stopAnimation();
+        }
+    }
+    */
+
     constructor() {
         super()
 
         this.state = {
             position: 5
         }
+
+        this.refList = [];
     }
 
     componentDidMount() {
@@ -57,6 +68,7 @@ export default class AirbnbRating extends Component {
         _.times(count, index => {
             rating_array.push(
                 <Star
+                    ref={(star) => { this.refList.push(star); }}
                     margin={margin}
                     key={index}
                     position={index + 1}

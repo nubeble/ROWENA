@@ -9,28 +9,28 @@ import Firebase from "./Firebase";
 import Util from "./Util";
 // import type { FeedEntry } from "./rnff/src/components/Model";
 // import type { ScreenProps } from "./rnff/src/components/Types";
-import { Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import autobind from 'autobind-decorator';
+import { Theme, RefreshIndicator, FeedStore } from "./rnff/src/components";
+import ProfileStore from "./rnff/src/home/ProfileStore";
 
 type InjectedProps = {
+    feedStore: FeedStore,
     profileStore: ProfileStore
 };
 
-const MAX_FEED_COUNT = 5;
+const DEFAULT_FEED_COUNT = 10;
 
 
-@inject("profileStore")
+@inject("feedStore", "profileStore")
 @observer
 export default class LikesMain extends React.Component<InjectedProps> {
     state = {
         renderList: false,
-        showAlert: false,
         feeds: [],
         isLoadingFeeds: false,
         refreshing: false,
-        totalFeedsSize: 0,
         focused: false
     };
 
@@ -40,12 +40,13 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
+        this.onLoading = false;
     }
 
     componentDidMount() {
         console.log('LikesMain.componentDidMount');
 
-        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        // this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
@@ -59,12 +60,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        if (this.state.showAlert) {
-            this.setState({ showAlert: false });
-        } else {
-            // this.props.navigation.navigate("intro"); // ToDo: not working
-            this.props.navigation.navigate("home");
-        }
+        this.props.navigation.goBack();
 
         return true;
     }
@@ -75,6 +71,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         if (Vars.postToggleButtonPressed) {
             Vars.postToggleButtonPressed = false;
+
             this.getSavedFeeds();
         }
 
@@ -86,12 +83,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.setState({ focused: false });
     }
 
-    @autobind
-    onScrollHandler() {
-        console.log('LikesMain.onScrollHandler');
-
-        this.getSavedFeeds();
-    }
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const threshold = 20; // how far from the bottom
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
+    };
 
     componentWillUnmount() {
         console.log('LikesMain.componentWillUnmount');
@@ -104,26 +99,23 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     getSavedFeeds() {
-        if (this.state.isLoadingFeeds) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
-            return;
-        }
+        if (this.onLoading) return;
+
+        this.onLoading = true;
 
         const { profile } = this.props.profileStore;
         const feeds = profile.likes;
         const length = feeds.length;
-
-        this.setState({ totalFeedsSize: length });
-
         if (length === 0) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
+            if (this.state.refreshing) this.setState({ refreshing: false });
+
+            this.onLoading = false;
             return;
         }
 
         // check update
         const lastChangedTime = this.props.profileStore.lastChangedTime;
-
         if (this.lastChangedTime !== lastChangedTime) {
             this.lastChangedTime = lastChangedTime;
 
@@ -132,11 +124,15 @@ export default class LikesMain extends React.Component<InjectedProps> {
             this.lastLoadedFeedIndex = -1;
         }
 
-        // load all?
+        // all loaded
         if (this.lastLoadedFeedIndex === 0) {
             if (this.state.refreshing) this.setState({ refreshing: false });
+
+            this.onLoading = false;
             return;
         }
+
+        console.log('LikesMain', 'loading feeds...');
 
         this.setState({ isLoadingFeeds: true });
 
@@ -152,7 +148,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         let count = 0;
 
         for (var i = startIndex; i >= 0; i--) {
-            if (count >= MAX_FEED_COUNT) break;
+            if (count >= DEFAULT_FEED_COUNT) break;
 
             const value = feeds[i];
 
@@ -165,7 +161,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
             count++;
         }
 
-
         if (this.reload) {
             this.reload = false;
 
@@ -177,23 +172,63 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
             });
         }
+
+        console.log('LikesMain', 'loading feeds done!');
+
+        this.onLoading = false;
     }
+
+    /*
+    async getPost(placeId, feedId) {
+        // 1. check memory first
+        const { feedStore } = this.props;
+        const { feed } = feedStore;
+
+        if (feed) {
+            for (var i = 0; i < feed.length; i++) {
+                const post = feed[i].post;
+
+                if (post.placeId === placeId && post.id === feedId) {
+                    return post;
+                }
+            }
+        }
+
+        // removed or not loaded to memory yet
+
+        // 2. check database
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        const post = feedDoc.data();
+        return post;
+    }
+    */
 
     async openPost(item) {
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         const post = feedDoc.data();
-
+        /*
         if (!post) {
             // post removed
-            this.refs["toast"].show('The post is removed by the owner.', 500);
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
         } else {
-            // this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
             setTimeout(() => {
                 this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
             }, Cons.buttonTimeoutShort);
         }
+        */
+
+        // check if removed by the owner
+        // const post = await this.getPost(item.placeId, item.feedId);
+        if (!post) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
+
+        setTimeout(() => {
+            this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
+        }, Cons.buttonTimeoutShort);
     }
 
     render() {
@@ -231,24 +266,21 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         */
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
-                            <ActivityIndicator
-                                style={styles.bottomIndicator}
-                                animating={true}
-                                size="small"
-                                color='grey'
-                            />
+                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator />
+                            </View>
                         }
-
-                        // scrollEventThrottle={1}
                         data={this.state.feeds}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableOpacity onPress={async () => this.openPost(item)}>
+                                <TouchableOpacity onPress={async () => await this.openPost(item)}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
-                                            uri={item.picture}
                                             style={styles.picture}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.picture}
                                         />
 
                                         {/*
@@ -266,11 +298,18 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                 </TouchableOpacity>
                             );
                         }}
-                        onEndReachedThreshold={0.5}
-                        onEndReached={this.onScrollHandler}
-                        // ItemSeparatorComponent={this.itemSeparatorComponent}
+                        // onEndReachedThreshold={0.5}
+                        // onEndReached={this.handleScrollEnd}
+                        onScroll={({ nativeEvent }) => {
+                            if (this.isCloseToBottom(nativeEvent)) {
+                                this.getSavedFeeds();
+                            }
+                        }}
+                        // scrollEventThrottle={1}
+
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
+
                     />
                 }
 
@@ -287,7 +326,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 <Toast
                     ref="toast"
                     position='top'
-                    positionValue={Dimensions.get('window').height / 2}
+                    positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
             </View>
@@ -296,6 +335,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     handleRefresh = () => {
+        if (this.onLoading) return;
+
         this.setState(
             {
                 refreshing: true
@@ -305,6 +346,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
                 if (Vars.postToggleButtonPressed) Vars.postToggleButtonPressed = false;
 
+                // reload
+                this.lastChangedTime = 0;
                 this.getSavedFeeds();
             }
         );
@@ -350,10 +393,12 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
+    /*
     bottomIndicator: {
         marginTop: 20,
         marginBottom: 20
     },
+    */
 
 
     content: {

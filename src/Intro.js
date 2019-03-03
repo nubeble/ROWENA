@@ -1,12 +1,7 @@
-/*
-    실행 시 최소 6개의 place (각 place는 1개 이상의 feed 소유.)가 있어야 한다!
-    그래야 2 x 3 이미지 행렬이 제대로 보인다.
-*/
-
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, BackHandler
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Svg } from "expo";
@@ -22,6 +17,7 @@ import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
+import { RefreshIndicator } from "./rnff/src/components";
 
 /*
 type ExploreState = {
@@ -34,61 +30,23 @@ type InjectedProps = {
 };
 */
 
-const PLACE_SIZE = 6;
-const FEED_SIZE = 8;
+const DEFAULT_PLACE_COUNT = 6;
+const DEFAULT_FEED_COUNT = 5;
 
 const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
-
-/*
-const skeletonViewWidth = Dimensions.get('window').width;
-const skeletonViewHeight = (4 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 4) * 3;
-*/
 
 
 // @inject("feedStore", "profileStore") @observer
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
-    // places images
-    static images = [
-        PreloadImage.Avatar1,
-        PreloadImage.Avatar2,
-        PreloadImage.Avatar3,
-        PreloadImage.Avatar4,
-        PreloadImage.Avatar5,
-        PreloadImage.Avatar6,
-        PreloadImage.Avatar7,
-        PreloadImage.Avatar8,
-        PreloadImage.Avatar9
-    ];
-
-    // popular feeds images
-    static popularFeedsImages = [
-        PreloadImage.Avatar1,
-        PreloadImage.Avatar2,
-        PreloadImage.Avatar3,
-        PreloadImage.Avatar4,
-        PreloadImage.Avatar5,
-        PreloadImage.Avatar6,
-        PreloadImage.Avatar7,
-        PreloadImage.Avatar8,
-        PreloadImage.Avatar9
-    ];
-
-    // recent feeds images
-    static recentFeedsImages = [
-        PreloadImage.Avatar1,
-        PreloadImage.Avatar2,
-        PreloadImage.Avatar3,
-        PreloadImage.Avatar4,
-        PreloadImage.Avatar5,
-        PreloadImage.Avatar6,
-        PreloadImage.Avatar7,
-        PreloadImage.Avatar8,
-        PreloadImage.Avatar9
-    ];
+    static places = [];
+    static popularFeeds = [];
+    static recentFeeds = [];
 
     state = {
+        renderList: false,
+
         // set the initial places (6)
         places: [
             {
@@ -134,13 +92,19 @@ export default class Intro extends React.Component {
                 key: 'six'
             }
         ],
-
         popularFeeds: [],
         recentFeeds: [],
 
         searchText: '',
         refreshing: false
     };
+
+    constructor(props) {
+        super(props);
+
+        this.popularFeedsUnsubscribes = [];
+        this.recentFeedsUnsubscribes = [];
+    }
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');
@@ -149,57 +113,48 @@ export default class Intro extends React.Component {
         // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        // await this.getPlacesImage();
-        // this.getPlacesSize();
+        setTimeout(() => {
+            !this.closed && this.setState({ renderList: true });
+        }, 0);
 
-        this.getPlaces();
+        if (Intro.places.length === 0) this.getPlaces();
 
         this.getPopularFeeds();
         this.getRecentFeeds();
     }
 
-    async getPlacesImage() {
-        const _places = this.state.places;
+    @autobind
+    handleHardwareBackPress() {
+        console.log('Intro.handleHardwareBackPress');
 
-        let places = [...this.state.places];
+        return true;
+    }
 
-        for (var i = 0; i < _places.length; i++) {
-            let placeId = _places[i].place_id;
-            const uri = await Firebase.getPlaceRandomFeedImage(placeId);
-            if (!uri) continue;
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'Intro';
 
-            const _uri = { "uri": uri };
+    }
 
-            /*
-            let index = places.findIndex(el => el.place_id === placeId);
-            if (index !== -1) {
-                places[index] = { ...places[index], uri: _uri };
-                // Intro.images[i] = _uri;
+    componentWillUnmount() {
+        // if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
 
-                // load one by one
-                !this.closed && this.setState({ places });
-                Intro.images[i] = _uri;
-            }
-            */
+        this.onFocusListener.remove();
+        // this.hardwareBackPressListener.remove();
 
-            places[i] = { ...places[i], uri: _uri };
-            Intro.places[i] = places[i];
-
-            // load one by one
-            !this.closed && this.setState({ places });
-
-
-
-
-            /*
-            places[i] = { ...places[i], uri: _uri };
-            Intro.images[i] = _uri;
-            */
+        for (var i = 0; i < this.popularFeedsUnsubscribes.length; i++) {
+            const instance = this.popularFeedsUnsubscribes[i];
+            instance();
         }
 
-        // load all at once
-        // !this.closed && this.setState({ places, refreshing: false });
+        for (var i = 0; i < this.recentFeedsUnsubscribes.length; i++) {
+            const instance = this.recentFeedsUnsubscribes[i];
+            instance();
+        }
+
+        this.closed = true;
     }
 
     /*
@@ -258,6 +213,7 @@ export default class Intro extends React.Component {
     }
     */
 
+    /*
     getPlacesSize() { // load feed length of each cities
         let __places = this.state.places;
 
@@ -278,74 +234,58 @@ export default class Intro extends React.Component {
             // if (this.state.refreshing) !this.closed && this.setState({ refreshing: false });
         }
     }
+    */
 
     async getPlaces() {
-        const size = PLACE_SIZE;
+        const size = DEFAULT_PLACE_COUNT;
 
         const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
 
-        if (snap.docs.length !== 0) {
+        if (snap.docs.length > 0) {
             let places = [...this.state.places];
 
-            var i = 0;
+            var index = 0;
 
             snap.forEach(async (doc) => {
                 // console.log(doc.id, '=>', doc.data());
+
                 const data = doc.data();
 
                 const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
-                // if (!uri) continue;
 
-                places[i] = {
-                    // ...places[i],
-
+                places[index] = {
+                    // ...places[index],
                     place_id: doc.id,
                     length: data.count,
-
                     name: data.name,
                     uri,
                     key: doc.id
                 };
 
-                Intro.images[i] = { 'uri': uri };
+                index++;
 
-                !this.closed && this.setState({ places });
-
-                i++;
+                if (index === snap.docs.length) {
+                    Intro.places = places;
+                    !this.closed && this.setState({ places });
+                }
             });
         }
     }
 
     async getPopularFeeds() {
-        /*
-        const size = FEED_SIZE;
+        if (Intro.popularFeeds.length > 0) return;
 
-        let popularFeeds = [...this.state.popularFeeds];
-
-        for (var i = 0; i < size; i++) {
-            const placeId = await Firebase.getRandomPlace();
-            // console.log('!!!!!!!!!!!!!!!!!', placeId) // ToDo
-
-            const feed = await Firebase.getFeedByAverageRating(placeId);
-
-            popularFeeds[i] = feed;
-            Intro.popularFeedsImages[i] = { 'uri': feed.pictures.one.uri };
-        }
-
-        !this.closed && this.setState({ popularFeeds });
-        */
-
-        const size = FEED_SIZE;
+        const size = DEFAULT_FEED_COUNT;
         let placeList = [];
         for (var i = 0; i < size; i++) {
             const placeId = await Firebase.getRandomPlace();
-            placeList.push(placeId);
+            if (placeId) placeList.push(placeId);
         }
         placeList.sort();
 
         let prevItem = null;
         let array = {};
-        for (var i = 0; i < size; i++) {
+        for (var i = 0; i < placeList.length; i++) {
             const item = placeList[i];
 
             if (item === prevItem) {
@@ -373,45 +313,48 @@ export default class Intro extends React.Component {
                 const feed = feeds[i];
 
                 popularFeeds[index] = feed;
-                Intro.popularFeedsImages[index] = { 'uri': feed.pictures.one.uri };
 
                 index++;
             }
         }
 
         !this.closed && this.setState({ popularFeeds });
+        Intro.popularFeeds = popularFeeds;
+
+        // subscribe
+        for (var i = 0; i < popularFeeds.length; i++) {
+            const feed = popularFeeds[i];
+
+            const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                // newFeed === undefined if removed
+                if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
+
+                let _popularFeeds = [...this.state.popularFeeds];
+                let index = _popularFeeds.findIndex(item => item.id === feed.id); // snap.id
+                if (index !== -1) {
+                    _popularFeeds[index] = newFeed;
+                    !this.closed && this.setState({ popularFeeds: _popularFeeds });
+                }
+            });
+
+            this.popularFeedsUnsubscribes.push(instance);
+        }
     }
 
     async getRecentFeeds() {
-        /*
-        const size = FEED_SIZE;
+        if (Intro.recentFeeds.length > 0) return;
 
-        let recentFeeds = [...this.state.recentFeeds];
-
-        for (var i = 0; i < size; i++) {
-            const placeId = await Firebase.getRandomPlace();
-            // console.log('@@@@@@@@@@@@@@@@@@@@@@', placeId)  // ToDo
-
-            const feed = await Firebase.getFeedByTimestamp(placeId);
-
-            recentFeeds[i] = feed;
-            Intro.recentFeedsImages[i] = { 'uri': feed.pictures.one.uri };
-        }
-
-        !this.closed && this.setState({ recentFeeds });
-        */
-
-        const size = FEED_SIZE;
+        const size = DEFAULT_FEED_COUNT;
         let placeList = [];
         for (var i = 0; i < size; i++) {
             const placeId = await Firebase.getRandomPlace();
-            placeList.push(placeId);
+            if (placeId) placeList.push(placeId);
         }
         placeList.sort();
 
         let prevItem = null;
         let array = {};
-        for (var i = 0; i < size; i++) {
+        for (var i = 0; i < placeList.length; i++) {
             const item = placeList[i];
 
             if (item === prevItem) {
@@ -433,33 +376,38 @@ export default class Intro extends React.Component {
             var value = array[key];
             // console.log(key + ":" + value);
 
-            const feeds = await Firebase.getFeedByAverageRating(key, value);
+            const feeds = await Firebase.getFeedByTimestamp(key, value);
 
             for (var i = 0; i < feeds.length; i++) {
                 const feed = feeds[i];
 
                 recentFeeds[index] = feed;
-                Intro.recentFeedsImages[index] = { 'uri': feed.pictures.one.uri };
 
                 index++;
             }
         }
 
         !this.closed && this.setState({ recentFeeds });
-    }
+        Intro.recentFeeds = recentFeeds;
 
-    @autobind
-    onFocus() {
-        Vars.currentScreenName = 'Intro';
+        // subscribe
+        for (var i = 0; i < recentFeeds.length; i++) {
+            const feed = recentFeeds[i];
 
-    }
+            const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                // newFeed === undefined if removed
+                // if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
 
-    componentWillUnmount() {
-        if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
+                let _recentFeeds = [...this.state.recentFeeds];
+                let index = _recentFeeds.findIndex(item => item.id === feed.id); // snap.id
+                if (index !== -1) {
+                    _recentFeeds[index] = newFeed;
+                    !this.closed && this.setState({ recentFeeds: _recentFeeds });
+                }
+            });
 
-        this.onFocusListener.remove();
-
-        this.closed = true;
+            this.recentFeedsUnsubscribes.push(instance);
+        }
     }
 
     render(): React.Node {
@@ -478,7 +426,9 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
-                                this.props.navigation.navigate("introSearchModal");
+                                setTimeout(() => {
+                                    this.props.navigation.navigate("introSearch");
+                                }, Cons.buttonTimeoutShort);
                             }}
                         >
                             <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
@@ -487,7 +437,9 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                this.props.navigation.navigate("introSearchModal");
+                                setTimeout(() => {
+                                    this.props.navigation.navigate("introSearch");
+                                }, Cons.buttonTimeoutShort);
                             }}
                         >
 
@@ -514,143 +466,166 @@ export default class Intro extends React.Component {
                     </View>
                 </View>
 
-                <FlatList
-                    contentContainerStyle={styles.contentContainer}
-                    showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={
-                        <View>
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Popular destinations'}</Text>
+                {
+                    this.state.renderList &&
+                    <FlatList
+                        contentContainerStyle={styles.contentContainer}
+                        showsVerticalScrollIndicator={true}
+                        ListHeaderComponent={
+                            <View>
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>{'Popular destinations'}</Text>
+                                </View>
                             </View>
-                        </View>
-                    }
-
-                    /*
-                    ListEmptyComponent={
-                        <View>
-                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={skeletonViewWidth} height={skeletonViewHeight}>
-                                <Svg.Rect
-                                    x={8}
-                                    y={8}
-                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                />
-
-                                <Svg.Rect
-                                    x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    y={8}
-                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                />
-
-                                <Svg.Rect
-                                    x={8}
-                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                />
-
-                                <Svg.Rect
-                                    x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                />
-
-                                <Svg.Rect
-                                    x={8}
-                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                />
-
-                                <Svg.Rect
-                                    x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                    width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                />
-                            </SvgAnimatedLinearGradient>
-                        </View>
-                    }
-                    */
-
-                    columnWrapperStyle={styles.columnWrapperStyle}
-                    numColumns={2}
-                    data={this.state.places}
-                    // keyExtractor={item => item.place_id}
-                    keyExtractor={item => item.key}
-
-                    renderItem={({ item, index }) => {
-                        const place_id = item.place_id;
-                        const length = item.length;
-                        const name = item.name;
-                        let uri = item.uri;
-
-                        let source;
-                        if (uri) {
-                            source = { 'uri': uri };
-                        } else {
-                            source = Intro.images[index];
                         }
 
-                        return (
-                            <TouchableOpacity
-                                onPress={() => {
-                                    if (!place_id) return;
-
-                                    setTimeout(() => {
-                                        this.props.navigation.navigate("exploreMain", { place: item, length: item.length });
-                                    }, Cons.buttonTimeoutLong);
-                                }}
-                            >
-                                <View style={styles.pictureContainer}>
-
-                                    <Image
-                                        style={styles.picture}
-                                        source={source}
+                        /*
+                        ListEmptyComponent={
+                            <View>
+                                <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={skeletonViewWidth} height={skeletonViewHeight}>
+                                    <Svg.Rect
+                                        x={8}
+                                        y={8}
+                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
-                                    {/*
-                                    <SmartImage
-                                        style={styles.picture}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        // preview={item.preview}
-                                        uri={_uri}
+    
+                                    <Svg.Rect
+                                        x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        y={8}
+                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
-                                    */}
-
-                                    <View style={styles.content}>
-                                        <Text style={{
-                                            textAlign: 'center',
-                                            color: Theme.color.title,
-                                            fontSize: 20,
-                                            lineHeight: 26,
-                                            fontFamily: "SFProText-Bold"
-                                        }}>{name}</Text>
-
-                                        <Text style={{
-                                            textAlign: 'center',
-                                            color: Theme.color.subtitle,
-                                            fontSize: 14,
-                                            lineHeight: 18,
-                                            fontFamily: "SFProText-Semibold"
-                                        }}>{`${(length) ? length + '+ girls' : ''}`}</Text>
-                                    </View>
-                                </View>
-                            </TouchableOpacity>
-                        );
-                    }}
-
-                    ListFooterComponent={
-                        <View style={{ marginTop: 20 }}>
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Top-rated girls'}</Text>
+    
+                                    <Svg.Rect
+                                        x={8}
+                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    />
+    
+                                    <Svg.Rect
+                                        x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    />
+    
+                                    <Svg.Rect
+                                        x={8}
+                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    />
+    
+                                    <Svg.Rect
+                                        x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    />
+                                </SvgAnimatedLinearGradient>
                             </View>
+                        }
+                        */
 
-                            {
-                                this.renderPopularFeeds()
+                        columnWrapperStyle={styles.columnWrapperStyle}
+                        numColumns={2}
+                        data={this.state.places}
+                        // keyExtractor={item => item.place_id}
+                        keyExtractor={item => item.key}
+
+                        renderItem={({ item, index }) => {
+                            let place = null;
+                            let place_id = null;
+                            let length = 0;
+                            let name = null;
+                            let imageUri = null;
+
+                            place_id = item.place_id;
+                            if (place_id) {
+                                place = item;
+                                length = place.length;
+                                name = place.name;
+                                imageUri = place.uri;
+                            } else {
+                                if (Intro.places.length > 0) {
+                                    // use static value
+                                    place = Intro.places[index];
+                                    place_id = place.place_id;
+                                    length = place.length;
+                                    name = place.name;
+                                    imageUri = place.uri;
+                                } else {
+                                    // black image
+                                }
                             }
-                            {/*
+
+
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        if (!place) return;
+
+                                        setTimeout(() => {
+                                            this.props.navigation.navigate("exploreMain", { place: place, length: length });
+                                        }, Cons.buttonTimeoutLong);
+                                    }}
+                                >
+                                    <View style={styles.pictureContainer}>
+                                        {
+                                            imageUri ?
+                                                /*
+                                                <SmartImage
+                                                    style={styles.picture}
+                                                    // preview={item.preview}
+                                                    // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                    uri={uri}
+                                                />
+                                                */
+                                                <Image
+                                                    style={styles.picture}
+                                                    source={{ uri: imageUri }}
+                                                />
+                                                :
+                                                <View style={{ width: '100%', height: '100%', borderRadius: 2, backgroundColor: 'black' }}>
+                                                    {/*
+                                                    // ToDo: draw text line
+                                                */}
+                                                </View>
+                                        }
+                                        <View style={styles.content}>
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: 20,
+                                                lineHeight: 26,
+                                                fontFamily: "SFProText-Bold"
+                                            }}>{`${(name) ? name : ''}`}</Text>
+
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.subtitle,
+                                                fontSize: 14,
+                                                lineHeight: 18,
+                                                fontFamily: "SFProText-Semibold"
+                                            }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableOpacity>
+                            );
+                        }}
+
+                        ListFooterComponent={
+                            <View style={{ marginTop: 20 }}>
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>{'Top-rated girls'}</Text>
+                                </View>
+
+                                {
+                                    this.renderPopularFeeds()
+                                }
+                                {/*
                             <Carousel>
                                 <View style={styles.view_front}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
@@ -700,14 +675,14 @@ export default class Intro extends React.Component {
                             </Carousel>
                             */}
 
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Recently listed girls'}</Text>
-                            </View>
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>{'Recently listed girls'}</Text>
+                                </View>
 
-                            {
-                                this.renderRecentFeeds()
-                            }
-                            {/*
+                                {
+                                    this.renderRecentFeeds()
+                                }
+                                {/*
                             <Carousel>
                                 <View style={styles.view_front}>
                                     <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
@@ -766,27 +741,39 @@ export default class Intro extends React.Component {
                                 </View>
                             </Carousel>
                             */}
-                        </View>
-                    }
+                            </View>
+                        }
 
-                    onRefresh={this.handleRefresh}
-                    refreshing={this.state.refreshing}
-                />
+                        onRefresh={this.handleRefresh}
+                        refreshing={this.state.refreshing}
+                    />
+                }
             </View>
         );
     } // end of render()
 
     renderPopularFeeds() {
-        let feeds = this.state.popularFeeds;
-        if (feeds.length === 0) {
-            // use static value (skeleton image or previous image)
-            for (var i = 0; i < FEED_SIZE; i++) {
-                const feed = {};
-                feed.id = 'id' + i;
-                feed.uri = Intro.popularFeedsImages[i];
+        // very first loading
+        if (this.state.popularFeeds.length === 0 && Intro.popularFeeds.length === 0) {
+            // show indicator
+            return (
+                <View style={{
+                    width: _itemWidth, height: _itemHeight, marginHorizontal: 20, borderRadius: 2,
+                    marginBottom: Theme.spacing.base,
+                    backgroundColor: 'black',
+                    justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <RefreshIndicator />
+                </View>
+            );
+        }
 
-                feeds.push(feed);
-            }
+        // second loading
+        let feeds = [];
+        if (this.state.popularFeeds.length === 0 && Intro.popularFeeds.length !== 0) {
+            feeds = Intro.popularFeeds;
+        } else {
+            feeds = this.state.popularFeeds;
         }
 
 
@@ -795,69 +782,80 @@ export default class Intro extends React.Component {
         for (var i = 0; i < feeds.length; i++) {
             const feed = feeds[i];
 
-            let source;
-            if (feed.placeId) { // state value
-                const uri = feed.pictures.one.uri;
-                source = { 'uri': uri };
-            } else { // static value
-                source = feed.uri;
-            }
-
             if (i === 0) {
-                pictures.push(
-                    <View key={feed.id} style={styles.view_front}>
-                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                            if (!feed.placeId) return;
-                            // console.log('front', i);
-                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
-                        }}>
-                            {/*
-                            <SmartImage
+                feed &&
+                    pictures.push(
+                        <View key={feed.id} style={styles.view_front}>
+                            <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                                console.log('onpress', feed.placeId, feed.id);
+                                this.props.navigation.navigate("introPost", { post: feed });
+                            }}>
+                                <SmartImage
+                                    style={styles.item}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={feed.pictures.one.uri}
+                                />
+                                {/*
+                            <Image
                                 style={styles.item}
-                                // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                uri={feed.pictures.one.uri}
+                                source={source}
                             />
                             */}
-                            <Image
-                                style={styles.item}
-                                source={source}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                );
+                            </TouchableOpacity>
+                        </View>
+                    );
             } else if (i !== 0 && i === feeds.length - 1) {
-                pictures.push(
-                    <View key={feed.id} style={styles.view_rear}>
-                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                            if (!feed.placeId) return;
-                            // console.log('rear', i);
-                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
-                        }}>
-                            <Image
-                                style={styles.item}
-                                source={source}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                );
+                feed &&
+                    pictures.push(
+                        <View key={feed.id} style={styles.view_rear}>
+                            <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                                console.log('onpress', feed.placeId, feed.id);
+                                this.props.navigation.navigate("introPost", { post: feed });
+                            }}>
+                                <SmartImage
+                                    style={styles.item}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={feed.pictures.one.uri}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    );
             } else {
-                pictures.push(
-                    <View key={feed.id} style={styles.view_middle}>
-                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                            if (!feed.placeId) return;
-                            // console.log('middle', i);
-                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
-                        }}>
-                            <Image
-                                style={styles.item}
-                                source={source}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                );
+                feed &&
+                    pictures.push(
+                        <View key={feed.id} style={styles.view_middle}>
+                            <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                                console.log('onpress', feed.placeId, feed.id);
+                                this.props.navigation.navigate("introPost", { post: feed });
+                            }}>
+                                <SmartImage
+                                    style={styles.item}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={feed.pictures.one.uri}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    );
             }
         }
 
+        if (pictures.length === 0) {
+            pictures.push(
+                <View style={{
+                    width: _itemWidth, height: _itemHeight, marginHorizontal: 20, borderRadius: 2,
+                    marginBottom: Theme.spacing.base,
+                    backgroundColor: 'black',
+                    justifyContent: 'center', alignItems: 'center'
+                }}>
+                    {/*
+                        draw a character avatar
+                    */}
+                </View>
+            );
+        }
 
         return (
             <Carousel>
@@ -867,16 +865,27 @@ export default class Intro extends React.Component {
     }
 
     renderRecentFeeds() {
-        let feeds = this.state.recentFeeds;
-        if (feeds.length === 0) {
-            // use static feeds (skeleton image or previous image)
-            for (var i = 0; i < FEED_SIZE; i++) {
-                const feed = {};
-                feed.id = 'id' + i;
-                feed.uri = Intro.popularFeedsImages[i];
+        // very first loading
+        if (this.state.recentFeeds.length === 0 && Intro.recentFeeds.length === 0) {
+            // show indicator
+            return (
+                <View style={{
+                    width: _itemWidth, height: _itemHeight, marginHorizontal: 20, borderRadius: 2,
+                    marginBottom: Theme.spacing.base,
+                    backgroundColor: 'black',
+                    justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <RefreshIndicator />
+                </View>
+            );
+        }
 
-                feeds.push(feed);
-            }
+        // second loading
+        let feeds = [];
+        if (this.state.recentFeeds.length === 0 && Intro.recentFeeds.length !== 0) {
+            feeds = Intro.recentFeeds;
+        } else {
+            feeds = this.state.recentFeeds;
         }
 
 
@@ -884,60 +893,71 @@ export default class Intro extends React.Component {
 
         for (var i = 0; i < feeds.length; i++) {
             const feed = feeds[i];
-            let source;
-            if (feed.placeId) { // state value
-                const uri = feed.pictures.one.uri;
-                source = { 'uri': uri };
-            } else { // static value
-                source = feed.uri;
-            }
 
             if (i === 0) {
-                pictures.push(
-                    <View key={feed.id} style={styles.view_front}>
-                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                            if (!feed.placeId) return;
-                            // console.log('front', i);
-                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
-                        }}>
-                            <Image
-                                style={styles.item}
-                                source={source}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                );
+                feed &&
+                    pictures.push(
+                        <View key={feed.id} style={styles.view_front}>
+                            <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                                this.props.navigation.navigate("introPost", { post: feed })
+                            }}>
+                                <SmartImage
+                                    style={styles.item}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={feed.pictures.one.uri}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    );
             } else if (i !== 0 && i === feeds.length - 1) {
-                pictures.push(
-                    <View key={feed.id} style={styles.view_rear}>
-                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                            if (!feed.placeId) return;
-                            // console.log('rear', i);
-                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
-                        }}>
-                            <Image
-                                style={styles.item}
-                                source={source}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                );
+                feed &&
+                    pictures.push(
+                        <View key={feed.id} style={styles.view_rear}>
+                            <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                                this.props.navigation.navigate("introPost", { post: feed })
+                            }}>
+                                <SmartImage
+                                    style={styles.item}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={feed.pictures.one.uri}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    );
             } else {
-                pictures.push(
-                    <View key={feed.id} style={styles.view_middle}>
-                        <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                            if (!feed.placeId) return;
-                            // console.log('middle', i);
-                            this.props.navigation.navigate("introPost", { post: feed, from: 'Intro' })
-                        }}>
-                            <Image
-                                style={styles.item}
-                                source={source}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                );
+                feed &&
+                    pictures.push(
+                        <View key={feed.id} style={styles.view_middle}>
+                            <TouchableOpacity activeOpacity={1.0} onPress={() => {
+                                this.props.navigation.navigate("introPost", { post: feed })
+                            }}>
+                                <SmartImage
+                                    style={styles.item}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={feed.pictures.one.uri}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    );
             }
+        }
+
+        if (pictures.length === 0) {
+            pictures.push(
+                <View style={{
+                    width: _itemWidth, height: _itemHeight, marginHorizontal: 20, borderRadius: 2,
+                    marginBottom: Theme.spacing.base,
+                    backgroundColor: 'black',
+                    justifyContent: 'center', alignItems: 'center'
+                }}>
+                    {/*
+                        draw a character avatar
+                    */}
+                </View>
+            );
         }
 
         return (
@@ -957,20 +977,21 @@ export default class Intro extends React.Component {
                 refreshing: true
             },
             async () => {
+                /*
                 setTimeout(() => {
                     !this.closed && this.setState({ refreshing: false });
                 }, 100);
+                */
 
-                // await this.getPlacesImage();
-                // this.getPlacesSize();
 
                 await this.getPlaces();
-
                 /*
                 await this.getPopularFeeds();
                 await this.getRecentFeeds();
                 */
 
+                !this.closed && this.setState({ refreshing: false });
+                
                 this.refreshing = false;
             }
         );

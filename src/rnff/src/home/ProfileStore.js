@@ -30,7 +30,8 @@ const DEFAULT_PROFILE: Profile = {
 export default class ProfileStore {
     lastChangedTime: number;
 
-    @observable _profile: Profile = DEFAULT_PROFILE;
+    // @observable _profile: Profile = DEFAULT_PROFILE;
+    @observable _profile: Profile;
 
     @computed get profile(): Profile { return this._profile; }
     set profile(profile: Profile) { this._profile = profile; }
@@ -40,16 +41,20 @@ export default class ProfileStore {
         const uid = Firebase.user().uid;
         Firebase.firestore.collection("users").doc(uid).onSnapshot(async snap => {
             if (snap.exists) {
-                this.profile = snap.data();
                 console.log('ProfileStore, profile changed.');
+
+                this.profile = snap.data();
 
                 this.lastChangedTime = Date.now();
             } else {
-                console.log('this should not happen!');
+                console.log('ProfileStore, profile removed.');
 
+                this.profile = undefined;
+                /*
                 // create default
                 await Firebase.firestore.collection("users").doc(uid).set(DEFAULT_PROFILE);
                 this.profile = DEFAULT_PROFILE;
+                */
             }
         });
     }

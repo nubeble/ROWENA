@@ -45,6 +45,7 @@ export default class Explore extends React.Component<InjectedProps> {
     };
 
     componentDidMount() {
+        console.log('Explore.componentDidMount');
         console.log('width', Dimensions.get('window').width);
         console.log('height', Dimensions.get('window').height);
 
@@ -70,11 +71,15 @@ export default class Explore extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('Explore.handleHardwareBackPress');
+
+
         console.log('move to Intro');
 
         // this.props.navigation.goBack();
         // this.props.navigation.dispatch(NavigationActions.back());
         // this.props.screenProps.rootNavigation.navigate("intro");
+
         this.props.navigation.navigate("intro");
 
         return true;
@@ -87,6 +92,8 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
+        console.log('Explore.componentWillUnmount');
+
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
@@ -132,6 +139,7 @@ export default class Explore extends React.Component<InjectedProps> {
         });
         */
 
+        /*
         const { feed } = feedStore;
         const loading = feed === undefined;
         let hasFeed = false;
@@ -139,7 +147,7 @@ export default class Explore extends React.Component<InjectedProps> {
             const size = feed.length;
             hasFeed = !!size;
         }
-
+        */
 
         let showOrderTab = false;
         if (this.orderTabY - this.state.scrollY <= 0) {
@@ -159,8 +167,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             // style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
-                                console.log('move to Intro');
-                                this.props.navigation.navigate("intro");
+                                setTimeout(() => {
+                                    console.log('move to Intro');
+                                    this.props.navigation.navigate("intro");
+                                }, Cons.buttonTimeoutShort);
                             }}
                         >
                             <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
@@ -169,7 +179,9 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                this.props.navigation.navigate("exploreSearchModal");
+                                setTimeout(() => {
+                                    this.props.navigation.navigate("exploreSearch");
+                                }, Cons.buttonTimeoutShort);
                             }}
                         >
                             {/*
@@ -290,7 +302,6 @@ export default class Explore extends React.Component<InjectedProps> {
                     this.state.renderFeed &&
                     <Feed
                         ref={(feed) => this._feed = feed}
-
                         store={feedStore}
 
                         /*
@@ -306,13 +317,10 @@ export default class Explore extends React.Component<InjectedProps> {
                         onScroll={(event) => {
                             const y = event.nativeEvent.contentOffset.y;
                             this.setState({ scrollY: y });
-
-                            // console.log('scrollY', y);
                         }}
 
                         ListHeaderComponent={(
                             <View>
-
                                 {/* advertising banner */}
                                 <TouchableWithoutFeedback onPress={() => {
                                     let index;
@@ -342,6 +350,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <View style={styles.slide}>
                                             <SmartImage
                                                 style={styles.item}
+                                                showSpinner={false}
                                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                 uri={'https://aydencreative.com/files/2018/10/180221-AYD-Website-Header_Mockup-1.jpg'}
                                             />
@@ -361,6 +370,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <View style={styles.slide}>
                                             <SmartImage
                                                 style={styles.item}
+                                                showSpinner={false}
                                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                 uri={'https://www.esentra.com.tw/wp-content/uploads/2013/02/f2c70a681b8679277edc6d5e77ee5477.jpg'}
                                             />
@@ -380,6 +390,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <View style={styles.slide}>
                                             <SmartImage
                                                 style={styles.item}
+                                                showSpinner={false}
                                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                 uri={'https://www.thefriaryguildford.com/wp-content/uploads/2018/04/7640-365-Creative-Web-Banners-AW6.jpg'}
                                             />
@@ -399,6 +410,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <View style={styles.slide}>
                                             <SmartImage
                                                 style={styles.item}
+                                                showSpinner={false}
                                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                 uri={'https://www.designer-daily.com/wp-content/uploads/2015/02/wifi.jpg'}
                                             />
@@ -420,10 +432,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>
-                                        {/*
-                                        {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.cityName}
-                                        */}
-                                        {`${(this.state.feedSize) ? 'Explore all ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.searchText}
+                                        {`${(this.state.feedSize) ? 'Explore ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.searchText}
                                     </Text>
                                 </View>
 
