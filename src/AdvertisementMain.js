@@ -87,7 +87,7 @@ export default class AdvertisementMain extends React.Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        onPress={() => this.removeFeed()}
+                        onPress={async () => await this.removeFeed()}
                         style={styles.bottomButton}
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
@@ -175,7 +175,10 @@ export default class AdvertisementMain extends React.Component {
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
         const feedId = '26f7ee12-7b68-de8f-1dd1-b971b07421c4';
 
-        await Firebase.removeFeed(uid, placeId, feedId);
+        const result = await Firebase.removeFeed(uid, placeId, feedId);
+        if (!result) {
+            // ToDo
+        }
 
         Vars.userFeedsChanged = true;
     }

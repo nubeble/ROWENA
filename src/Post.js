@@ -68,7 +68,13 @@ export default class Post extends React.Component<InjectedProps> {
         alertTitle: '',
         alertMessage: '',
 
-        liked: false
+        liked: false,
+
+
+        /*
+        post: null,
+        profile: null
+        */
     };
 
     constructor(props) {
@@ -153,6 +159,13 @@ export default class Post extends React.Component<InjectedProps> {
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query);
+
+
+        /*
+        const { feedStore } = this.props;
+        this.unsubscribeToPost = feedStore.subscribeToPost(post.placeId, post.id, newPost => this.setState({ post: newPost }));
+        this.unsubscribeToProfile = feedStore.subscribeToProfile(post.uid, newProfile => this.setState({ profile: newProfile }));
+        */
     }
 
     isOwner(uid1, uid2) {
@@ -172,6 +185,12 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+
+
+        /*
+        this.unsubscribeToPost();
+        this.unsubscribeToProfile();
+        */
 
         this.closed = true;
     }
@@ -252,9 +271,13 @@ export default class Post extends React.Component<InjectedProps> {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
         }
 
-        Vars.postToggleButtonPressed = true;
-
         this.toggling = false;
+
+        Vars.postToggleButtonPressed = true;
+        const _post = {};
+        _post.placeId = placeId;
+        _post.feedId = feedId;
+        Vars.toggleButtonPressedPost = _post;
     }
 
     checkLiked(likes) {

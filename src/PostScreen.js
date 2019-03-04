@@ -7,7 +7,7 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, MapView, Svg, Haptic } from 'expo';
+import { Constants, MapView, Svg, Haptic } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -104,7 +104,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        // console.log('PostScreen.componentDidMount');
+        console.log('PostScreen.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -193,6 +193,9 @@ export default class PostScreen extends React.Component<InjectedProps> {
     @autobind
     async edit() {
         // ToDo: edit post
+
+
+        Vars.userFeedsChanged = true;
     }
 
     /*
@@ -271,9 +274,13 @@ export default class PostScreen extends React.Component<InjectedProps> {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
         }
 
-        Vars.postToggleButtonPressed = true;
-
         this.toggling = false;
+
+        Vars.postToggleButtonPressed = true;
+        const _post = {};
+        _post.placeId = placeId;
+        _post.feedId = feedId;
+        Vars.toggleButtonPressedPost = _post;
     }
 
     checkLiked(likes) {
@@ -1249,6 +1256,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             return;
         }
         */
+
         const feedDoc = await Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).get();
         if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
@@ -1306,7 +1314,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
-
             return;
         }
 

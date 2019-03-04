@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableWithoutFeedback, ActivityIndicator, BackHandler, Dimensions, FlatList } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -71,7 +71,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         if (Vars.postToggleButtonPressed) {
             Vars.postToggleButtonPressed = false;
-
             this.getSavedFeeds();
         }
 
@@ -178,55 +177,19 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.onLoading = false;
     }
 
-    /*
-    async getPost(placeId, feedId) {
-        // 1. check memory first
-        const { feedStore } = this.props;
-        const { feed } = feedStore;
-
-        if (feed) {
-            for (var i = 0; i < feed.length; i++) {
-                const post = feed[i].post;
-
-                if (post.placeId === placeId && post.id === feedId) {
-                    return post;
-                }
-            }
-        }
-
-        // removed or not loaded to memory yet
-
-        // 2. check database
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        const post = feedDoc.data();
-        return post;
-    }
-    */
-
     async openPost(item) {
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        const post = feedDoc.data();
-        /*
-        if (!post) {
-            // post removed
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-        } else {
-            setTimeout(() => {
-                this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
-            }, Cons.buttonTimeoutShort);
-        }
-        */
-
+        
         // check if removed by the owner
-        // const post = await this.getPost(item.placeId, item.feedId);
-        if (!post) {
+        if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
         setTimeout(() => {
+            const post = feedDoc.data();
             this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
         }, Cons.buttonTimeoutShort);
     }
@@ -264,17 +227,11 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             </View>
                         }
                         */
-                        ListFooterComponent={
-                            this.state.isLoadingFeeds &&
-                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
-                            </View>
-                        }
                         data={this.state.feeds}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableOpacity onPress={async () => await this.openPost(item)}>
+                                <TouchableWithoutFeedback onPress={async () => await this.openPost(item)}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={styles.picture}
@@ -295,7 +252,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                         </View>
                                         */}
                                     </View>
-                                </TouchableOpacity>
+                                </TouchableWithoutFeedback>
                             );
                         }}
                         // onEndReachedThreshold={0.5}
@@ -310,6 +267,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
 
+                        ListFooterComponent={
+                            this.state.isLoadingFeeds &&
+                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator />
+                            </View>
+                        }
                     />
                 }
 

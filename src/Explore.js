@@ -223,6 +223,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                            {
+                                this.state.selectedOrderIndex === 0 &&
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }}/>
+                            }
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -237,6 +241,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                            {
+                                this.state.selectedOrderIndex === 1 &&
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }}/>
+                            }
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -251,6 +259,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
+                            {
+                                this.state.selectedOrderIndex === 2 &&
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }}/>
+                            }
                         </TouchableOpacity>
                     </View>
                 }
@@ -314,8 +326,11 @@ export default class Explore extends React.Component<InjectedProps> {
                         }])}
                         */
 
-                        onScroll={(event) => {
-                            const y = event.nativeEvent.contentOffset.y;
+                        _onScroll={({ layoutMeasurement, contentOffset, contentSize }) => {
+                            // console.log('_onScroll', event);
+                            
+                            // const y = event.nativeEvent.contentOffset.y;
+                            const y = contentOffset.y;
                             this.setState({ scrollY: y });
                         }}
 
@@ -482,6 +497,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                                            {
+                                                this.state.selectedOrderIndex === 0 &&
+                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }}/>
+                                            }
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -496,6 +515,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                                            {
+                                                this.state.selectedOrderIndex === 1 &&
+                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }}/>
+                                            }
                                         </TouchableOpacity>
 
                                         <TouchableOpacity
@@ -510,6 +533,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
+                                            {
+                                                this.state.selectedOrderIndex === 2 &&
+                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }}/>
+                                            }
                                         </TouchableOpacity>
                                     </View>
                                 }

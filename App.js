@@ -211,9 +211,10 @@ export default class App extends React.Component {
                         const placeId = data.userData.placeId;
                         const feedId = data.userData.feedId;
                         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-                        const post = feedDoc.data();
-
-                        NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
+                        if (feedDoc.exists) {
+                            const post = feedDoc.data();
+                            NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
+                        }
                     } break;
 
                     case Cons.pushNotification.reply: {
@@ -225,8 +226,10 @@ export default class App extends React.Component {
                         const feedId = data.userData.feedId;
                         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
                         const post = feedDoc.data();
-
-                        NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
+                        if (feedDoc.exists) {
+                            const post = feedDoc.data();
+                            NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
+                        }
                         */
                     } break;
                 }

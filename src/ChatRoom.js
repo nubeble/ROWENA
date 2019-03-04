@@ -506,13 +506,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        const post = feedDoc.data();
-        if (!post) {
+        if (feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
         setTimeout(() => {
+            const post = feedDoc.data();
             this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
         }, Cons.buttonTimeoutShort);
     }
@@ -524,13 +524,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             const placeId = item.placeId;
             const feedId = item.feedId;
             const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-            const post = feedDoc.data();
-            if (!post) {
+            if (!feedDoc.exists) {
                 this.refs["toast"].show('The post has been removed by its owner.', 500);
                 return;
             }
 
             setTimeout(() => {
+                const post = feedDoc.data();
                 this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
             }, Cons.buttonTimeoutShort);
         } else {

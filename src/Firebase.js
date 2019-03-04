@@ -34,12 +34,10 @@ export default class Firebase {
 
     static async getProfile(uid) {
         const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
-
         if (userDoc.exists) return userDoc.data();
 
         return null;
     }
-
 
     static async createProfile(uid, name, email, phoneNumber) {
         const profile = {
@@ -60,7 +58,7 @@ export default class Firebase {
             },
             about: null,
 
-            feeds: [], // 내가 등록한 feed. ToDo: 삭제 시 배열을 전체 검색
+            feeds: [], // 내가 등록한 feed. ToDo: feed 삭제 시 배열에서 삭제
             reviews: [], // 내가 남긴 리뷰. (collection)
             replies: [],
             likes: []
@@ -71,8 +69,6 @@ export default class Firebase {
 
     static async updateProfile(uid, profile) {
         await Firebase.firestore.collection('users').doc(uid).update(profile);
-
-
 
         // ToDo: update firebase auth
         /*
@@ -102,7 +98,7 @@ export default class Firebase {
         if (snap1.docs.length === 0) {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
-                // not exist
+                // this should never happen!
             } else {
                 snap2.forEach((doc) => {
                     // console.log(doc.id, '=>', doc.data());
@@ -124,7 +120,6 @@ export default class Firebase {
     }
 
     static async getRandomPlace() {
-        // let uri = null;
         let placeId = null;
 
         const random = Util.getRandomNumber();
@@ -134,7 +129,7 @@ export default class Firebase {
         if (snap1.docs.length === 0) {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
-                // not exist
+                // this should never happen!
             } else {
                 snap2.forEach((doc) => {
                     // console.log(doc.id, '=>', doc.data());
@@ -151,8 +146,7 @@ export default class Firebase {
         return placeId;
     }
 
-
-
+    /*
     static subscribeToFeed(placeId, feedId, callback) {
         return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).onSnapshot(snap => {
             const feed = snap.data();
@@ -160,7 +154,7 @@ export default class Firebase {
             callback(feed);
         });
     }
-
+    */
 
     /*
     static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
@@ -210,6 +204,7 @@ export default class Firebase {
         return feeds;
     }
 
+    /*
     static subscribeToPlaceSize(placeId, callback) {
         return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
             let count = 0;
@@ -222,6 +217,7 @@ export default class Firebase {
             callback(count);
         });
     }
+    */
 
     static async createFeed(feed) {
         feed.likes = [];
@@ -239,12 +235,12 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             const placeDoc = await transaction.get(placeRef);
             let count = 0;
-            if (placeDoc.data()) {
+            if (placeDoc.exists) {
                 let field = placeDoc.data().count;
                 if (field) count = field;
             }
 
-            console.log('count', count);
+            // console.log('count', count);
 
             // 2. update the count & timestamp
             // transaction.update(placeRef, { count: Number(count + 1) });
@@ -255,7 +251,7 @@ export default class Firebase {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
-                    picture: feed.pictures.one.uri, // ToDo: update this after chaging
+                    picture: feed.pictures.one.uri, // ToDo: update this after changing
                     valid: true // ToDo: update this after removing
                 })
             };
@@ -271,13 +267,20 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             // 1. update the count first!
             const placeDoc = await transaction.get(placeRef);
+            if (!placeDoc.exists) throw 'Place document does not exist!';
+
             let count = placeDoc.data().count;
-            console.log('current count', count);
+            console.log('Firebase.removeFeed', 'current count', count);
 
             transaction.update(placeRef, { count: Number(count - 1) });
 
             // 2. remove feed
             transaction.delete(feedRef);
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+        }).catch((error) => {
+            console.log('Firebase.removeFeed', error);
+            return false;
         });
 
         // 3. update profile (remove fields to feeds in user profile)
@@ -285,6 +288,8 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
             const { feeds } = userDoc.data();
             let _idx = -1;
 
@@ -303,7 +308,14 @@ export default class Firebase {
             }
 
             transaction.update(userRef, { feeds });
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+        }).catch((error) => {
+            console.log('Firebase.removeFeed', error);
+            return false;
         });
+
+        return true;
     }
 
     /*
@@ -667,8 +679,7 @@ export default class Firebase {
         });
     }
 
-    //// receive
-
+    // parse a received message
     static parseChild = snapshot => {
         const { timestamp: numberStamp, text, user, _system } = snapshot.val();
         const { key: _id } = snapshot;
@@ -740,8 +751,6 @@ export default class Firebase {
     }
 
     static loadMoreMessage(id, lastMessageTimestamp, lastMessageId, callback) {
-        // console.log('timestamp', lastMessageTimestamp);
-
         console.log('loadMoreMessage', id, lastMessageTimestamp, lastMessageId);
 
         Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(20 + 1).once('value', snapshot => {
@@ -751,7 +760,6 @@ export default class Firebase {
         });
     }
 
-    //// send
     /*
     static uid() {
         return (Firebase.auth.currentUser || {}).uid;
@@ -793,10 +801,6 @@ export default class Firebase {
     }
 
     static async sendMessage(id, message, post) {
-        //// save contents ////
-        // for (let i = 0; i < messages.length; i++) {
-        // const { text, user } = messages[i];
-
         const { text, user } = message;
 
         let _user = {};
@@ -848,8 +852,6 @@ export default class Firebase {
         }
 
         await Firebase.database.ref('chat').child(receiverUid).child(id).update(updateData);
-
-        // }
     };
 
     static async saveLastReadMessageId(uid, id, mid) {
@@ -984,7 +986,7 @@ export default class Firebase {
     }
 
     static async deleteChatRoom(myUid, postId) {
-        // 1. delete room
+        // 1. delete room (realtime database)
         await Firebase.database.ref('chat').child(myUid).child(postId).remove();
 
         // 2. delete chat contents

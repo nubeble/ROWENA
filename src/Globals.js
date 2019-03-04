@@ -5,7 +5,10 @@ import { Constants } from "expo";
 
 export var Vars = {
     postToggleButtonPressed: false,
+    toggleButtonPressedPost: null,
+
     userFeedsChanged: false, // added or removed, not updated
+
     currentScreenName: null, // string
 
 

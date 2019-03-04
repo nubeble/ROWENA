@@ -131,10 +131,12 @@ export default class Feed extends React.Component<FeedProps> {
                     renderItem={this.renderItem}
                     // onEndReachedThreshold={0.5}
                     // onEndReached={this.loadMore}
-                    onScroll={({ nativeEvent }) => { // ToDo: 2 events
+                    onScroll={({ nativeEvent }) => {
                         if (this.isCloseToBottom(nativeEvent)) {
                             this.loadMore();
                         }
+
+                        this.props._onScroll(nativeEvent);
                     }}
 
                     ListEmptyComponent={
@@ -163,7 +165,8 @@ export default class Feed extends React.Component<FeedProps> {
                     }
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
-                    {...{ onScroll, bounce, ListHeaderComponent }}
+                    // {...{ onScroll, bounce, ListHeaderComponent }}
+                    {...{ bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
         );

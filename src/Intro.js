@@ -102,8 +102,10 @@ export default class Intro extends React.Component {
     constructor(props) {
         super(props);
 
+        /*
         this.popularFeedsUnsubscribes = [];
         this.recentFeedsUnsubscribes = [];
+        */
     }
 
     async componentDidMount() {
@@ -133,9 +135,45 @@ export default class Intro extends React.Component {
     }
 
     @autobind
-    onFocus() {
+    async onFocus() {
         Vars.currentScreenName = 'Intro';
 
+        // -- update the post that user clicked a like button
+        const _post = Vars.toggleButtonPressedPost;
+        if (_post) {
+                // reload
+                const feedDoc = await Firebase.firestore.collection("place").doc(_post.placeId).collection("feed").doc(_post.feedId).get();
+                let feed;
+                if (feedDoc.exists) {
+                    feed = feedDoc.data();
+                } else {
+                    // removed
+                    feed = undefined;
+                }
+
+                // search (popular feeds)
+                let popularFeeds = [...this.state.popularFeeds];
+                let index = popularFeeds.findIndex(el => el.placeId === _post.placeId && el.id === _post.feedId);
+                if (index !== -1) {
+                    // set
+                    popularFeeds[index] = feed;
+                    !this.closed && this.setState({ popularFeeds });
+                    Intro.popularFeeds[index] = feed;
+                }
+
+                // search (recent feeds)
+                let recentFeeds = [...this.state.recentFeeds];
+                index = recentFeeds.findIndex(el => el.placeId === _post.placeId && el.id === _post.feedId);
+                if (index !== -1) {
+                    // set
+                    recentFeeds[index] = feed;
+                    !this.closed && this.setState({ recentFeeds });
+                    Intro.recentFeeds[index] = feed;
+                }
+
+                Vars.toggleButtonPressedPost = null;
+            }
+        // --
     }
 
     componentWillUnmount() {
@@ -144,6 +182,7 @@ export default class Intro extends React.Component {
         this.onFocusListener.remove();
         // this.hardwareBackPressListener.remove();
 
+        /*
         for (var i = 0; i < this.popularFeedsUnsubscribes.length; i++) {
             const instance = this.popularFeedsUnsubscribes[i];
             instance();
@@ -153,6 +192,7 @@ export default class Intro extends React.Component {
             const instance = this.recentFeedsUnsubscribes[i];
             instance();
         }
+        */
 
         this.closed = true;
     }
@@ -240,7 +280,6 @@ export default class Intro extends React.Component {
         const size = DEFAULT_PLACE_COUNT;
 
         const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
-
         if (snap.docs.length > 0) {
             let places = [...this.state.places];
 
@@ -322,6 +361,7 @@ export default class Intro extends React.Component {
         Intro.popularFeeds = popularFeeds;
 
         // subscribe
+        /*
         for (var i = 0; i < popularFeeds.length; i++) {
             const feed = popularFeeds[i];
 
@@ -339,6 +379,7 @@ export default class Intro extends React.Component {
 
             this.popularFeedsUnsubscribes.push(instance);
         }
+        */
     }
 
     async getRecentFeeds() {
@@ -391,6 +432,7 @@ export default class Intro extends React.Component {
         Intro.recentFeeds = recentFeeds;
 
         // subscribe
+        /*
         for (var i = 0; i < recentFeeds.length; i++) {
             const feed = recentFeeds[i];
 
@@ -408,6 +450,7 @@ export default class Intro extends React.Component {
 
             this.recentFeedsUnsubscribes.push(instance);
         }
+        */
     }
 
     render(): React.Node {
@@ -621,126 +664,15 @@ export default class Intro extends React.Component {
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>{'Top-rated girls'}</Text>
                                 </View>
-
                                 {
                                     this.renderPopularFeeds()
                                 }
-                                {/*
-                            <Carousel>
-                                <View style={styles.view_front}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://2.bp.blogspot.com/-z2h6jj8PCKw/WiVyrSTiBUI/AAAAAAAAG7A/9D8ggDsoY5QArutqvVfzhSd82f5GtviAgCLcBGAs/s1600/%25EC%25A0%259C%25EB%25AA%25A9-%25EC%2597%2586%25EC%259D%258C2.gif'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://coinpan.com/files/attach/images/198/637/529/067/504ea1e1eae11d0485347359ba31e0c5.gif'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://www.nemopan.com/files/attach/images/6294/443/061/012/2926fb2e2919796604716f0aeb79c39b.gif'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://t1.daumcdn.net/cfile/tistory/253E1A3D56F8F68821'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_rear}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://fimg4.pann.com/new/download.jsp?FileID=47136904'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </Carousel>
-                            */}
-
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>{'Recently listed girls'}</Text>
                                 </View>
-
                                 {
                                     this.renderRecentFeeds()
                                 }
-                                {/*
-                            <Carousel>
-                                <View style={styles.view_front}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('1')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://ncache.ilbe.com/files/attach/new/20150710/377678/2901603725/6167124321/0c0e48771650a5ea45b0ec6ef4620faf.jpg'}
-                                        // uri={'http://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('2')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://www.city.kr/files/attach/images/238/919/279/004/5e68e793cb4707dda80030169c395b30.jpg'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('3')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://fimg4.pann.com/new/download.jsp?FileID=47449859'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('4')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://img1.daumcdn.net/thumb/R720x0.q80/?scode=mtistory&fname=http%3A%2F%2Fcfile22.uf.tistory.com%2Fimage%2F99F75D335997CD46295649'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_middle}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('5')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'http://www.city.kr/files/attach/images/238/795/978/010/00616702b6cfe1f570fb4c11730fa0cc.jpg'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={styles.view_rear}>
-                                    <TouchableOpacity activeOpacity={1.0} onPress={() => console.log('6')}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={'https://pbs.twimg.com/media/DZsUYFoVMAAoKY4.jpg'}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </Carousel>
-                            */}
                             </View>
                         }
 
@@ -991,7 +923,7 @@ export default class Intro extends React.Component {
                 */
 
                 !this.closed && this.setState({ refreshing: false });
-                
+
                 this.refreshing = false;
             }
         );

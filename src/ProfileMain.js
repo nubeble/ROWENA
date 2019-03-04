@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Feather from "react-native-vector-icons/Feather";
@@ -18,7 +18,7 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const MAX_FEED_COUNT = 12; // 3 x 4
+const DEFAULT_FEED_COUNT = 12; // 3 x 4
 
 
 @inject("profileStore")
@@ -129,8 +129,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.setState({ totalFeedsSize: length });
 
         if (length === 0) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
+            if (this.state.refreshing) this.setState({ refreshing: false });
 
             this.onLoading = false;
             return;
@@ -170,7 +170,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         let count = 0;
 
         for (var i = startIndex; i >= 0; i--) {
-            if (count >= MAX_FEED_COUNT) break;
+            if (count >= DEFAULT_FEED_COUNT) break;
 
             const value = feeds[i];
 
@@ -187,13 +187,20 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.reload = false;
 
             this.setState({
-                isLoadingFeeds: false, feeds: newFeeds, refreshing: false
+                // isLoadingFeeds: false, feeds: newFeeds, refreshing: false
+                feeds: newFeeds, refreshing: false
             });
         } else {
             this.setState({
-                isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
+                // isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
+                feeds: [...this.state.feeds, ...newFeeds], refreshing: false
             });
         }
+
+        // ToDo: check this!
+        setTimeout(() => {
+            this.setState({ isLoadingFeeds: false });
+        }, 1000);
 
         console.log('ProfileMain', 'loading feeds done!');
 
@@ -204,13 +211,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        const post = feedDoc.data();
-        if (!post) {
+        if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
         setTimeout(() => {
+            const post = feedDoc.data();
             this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
         }, Cons.buttonTimeoutShort);
     }
@@ -230,14 +237,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         return (
             <View style={styles.flex}>
-                {/*
-                <ActivityIndicator
-                    style={styles.activityIndicator}
-                    animating={this.state.showIndicator}
-                    size="large"
-                    color='grey'
-                />
-                */}
                 <View style={styles.searchBar}>
 
                     <Text
@@ -276,6 +275,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 onPress={() => {
                                                     setTimeout(() => {
                                                         // ToDo: open picture
+
                                                     }, Cons.buttonTimeoutShort);
                                                 }}
                                             >
@@ -346,7 +346,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <TouchableOpacity
                                             onPress={() => {
                                                 setTimeout(() => {
-                                                    // this.props.navigation.navigate("logout");
                                                     this.setState({ showAlert: true });
                                                 }, Cons.buttonTimeoutShort);
                                             }}
@@ -438,18 +437,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         columnWrapperStyle={styles.columnWrapperStyle}
                         numColumns={3}
                         data={this.state.feeds}
-                        // keyExtractor={item => item.id}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableOpacity
-                                    /*
-                                    onPress={async () => {
-                                        setTimeout(() => {
-                                            this.openPost(item);
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                    */
+                                <TouchableWithoutFeedback
                                     onPress={async () => await this.openPost(item)}
                                 >
                                     <View style={styles.pictureContainer}>
@@ -475,7 +466,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             </View>
                                             */}
                                     </View>
-                                </TouchableOpacity>
+                                </TouchableWithoutFeedback>
                             );
                         }}
                         // onEndReachedThreshold={0.5}
@@ -487,23 +478,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         }}
                         // scrollEventThrottle={1}
 
+                        onRefresh={this.handleRefresh}
+                        refreshing={this.state.refreshing}
+
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
                             <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
                                 <RefreshIndicator />
                             </View>
                         }
-
-                        /*
-                        ListEmptyComponent={
-                            <View style={styles.post}>
-                                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
-                            </View>
-                        }
-                        */
-
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
                     />
                 }
 
@@ -511,7 +494,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     !this.state.focused &&
                     <View style={{
                         width: '100%',
-                        height: 100, // ToDo: get the height of tab bar
+                        height: 100, // Consider: get the height of tab bar
                         // backgroundColor: 'green'
                     }} />
                 }
@@ -538,17 +521,28 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     onCancelPressed={async () => { // YES pressed
                         this.setState({ showAlert: false });
 
-                        // 1. remove auth
-
-                        // 2. remove database (users, post)
-                        // await Firebase.deleteProfile(Firebase.user().uid);
-                        // await Firebase.removeFeed(Firebase.user().uid, placeId, feedId);
-
                         
+                        return;
+                        // ToDo
 
-                        // removeFeed
+                        // 1. remove all created feeds (place - feed)
+                        const { profile } = this.props.profileStore;
+                        const feeds = profile.feeds;
+                        const length = feeds.length;
 
-                        // 3. move to auth main
+                        for (var i = 0; i < length; i++) {
+                            const feed = feeds[i];
+                            await Firebase.removeFeed(profile.uid, feed.placeId, feed.feedId);
+                        }
+
+                        // 2. remove database (users)
+                        await Firebase.deleteProfile(profile.uid);
+
+                        // 3. remove token
+
+                        // 4. remove auth
+
+                        // 5. move to auth main
                     }}
                     onConfirmPressed={() => { // NO pressed
                         this.setState({ showAlert: false });
@@ -579,6 +573,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 refreshing: true
             },
             () => {
+                if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
+
                 // reload
                 this.lastChangedTime = 0;
                 this.getUserFeeds();
