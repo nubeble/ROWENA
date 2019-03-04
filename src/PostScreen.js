@@ -162,6 +162,10 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     init(post) {
+        console.log('post', post);
+
+
+        
         const isOwner = this.isOwner(post.uid, Firebase.user().uid);
         this.setState({ isOwner });
 

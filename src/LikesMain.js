@@ -83,7 +83,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        const threshold = 20; // how far from the bottom
+        const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
@@ -178,20 +178,17 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     async openPost(item) {
+        // should get data from database
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        
-        // check if removed by the owner
         if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
-        setTimeout(() => {
-            const post = feedDoc.data();
-            this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
-        }, Cons.buttonTimeoutShort);
+        const post = feedDoc.data();
+        this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
     }
 
     render() {
@@ -269,8 +266,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
-                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
+                            <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator/>
                             </View>
                         }
                     />
@@ -309,7 +306,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
                 if (Vars.postToggleButtonPressed) Vars.postToggleButtonPressed = false;
 
-                // reload
+                // reload from the start
                 this.lastChangedTime = 0;
                 this.getSavedFeeds();
             }

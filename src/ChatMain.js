@@ -186,8 +186,8 @@ export default class ChatMain extends React.Component {
 
                         ListFooterComponent={
                             this.state.isLoadingChat &&
-                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
+                            <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator/>
                             </View>
                         }
 
@@ -296,7 +296,7 @@ export default class ChatMain extends React.Component {
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        const threshold = 20; // how far from the bottom
+        const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 

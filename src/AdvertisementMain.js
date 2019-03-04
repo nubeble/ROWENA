@@ -396,6 +396,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makePattaya() {
@@ -464,6 +466,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeHCM() {
@@ -532,6 +536,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeHanoi() {
@@ -600,6 +606,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeManila() {
@@ -668,6 +676,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeCebu() {
@@ -736,6 +746,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeVientiane() {
@@ -804,6 +816,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makePP() {
@@ -872,6 +886,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeMacao() {
@@ -940,6 +956,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeJakarta() {
@@ -1008,6 +1026,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 
     async makeKL() {
@@ -1076,6 +1096,8 @@ export default class AdvertisementMain extends React.Component {
         feed.bust = bust;
 
         await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
     }
 }
 

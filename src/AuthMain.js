@@ -128,7 +128,7 @@ export default class AuthMain extends React.Component {
                         height: Dimensions.get('window').height,
                         resizeMode: 'cover'
                     }}
-                    source={PreloadImage.Splash}
+                    source={PreloadImage.Background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
 

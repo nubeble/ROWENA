@@ -103,7 +103,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     */
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        const threshold = 20; // how far from the bottom
+        const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
@@ -200,7 +200,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // ToDo: check this!
         setTimeout(() => {
             this.setState({ isLoadingFeeds: false });
-        }, 1000);
+        }, 3000);
 
         console.log('ProfileMain', 'loading feeds done!');
 
@@ -208,6 +208,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async openPost(item) {
+        // should get data from database
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
@@ -216,10 +217,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return;
         }
 
-        setTimeout(() => {
-            const post = feedDoc.data();
-            this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
-        }, Cons.buttonTimeoutShort);
+        const post = feedDoc.data();
+        this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
     }
 
     render() {
@@ -445,9 +444,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
-                                            // preview={item.pictures.one.preview}
-                                            // uri={item.pictures.one.uri}
-
                                             style={styles.picture}
                                             showSpinner={false}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -483,8 +479,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
-                            <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
+                            <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator/>
                             </View>
                         }
                     />
@@ -575,7 +571,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             () => {
                 if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
 
-                // reload
+                // reload from the start
                 this.lastChangedTime = 0;
                 this.getUserFeeds();
             }

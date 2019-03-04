@@ -364,7 +364,7 @@ export default class SignUpWithEmail extends React.Component {
                     width: Dimensions.get('window').width,
                     height: Dimensions.get('window').height
                 }}
-                source={PreloadImage.Splash}
+                source={PreloadImage.Background}
                 resizeMode='cover'
                 // blurRadius={Platform.OS === "ios" ? 32 : 2}
             >

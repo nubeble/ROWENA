@@ -79,7 +79,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         resizeMode: 'cover',
                         opacity: this.state.image1Opacity
                     }}
-                    source={PreloadImage.Background}
+                    source={PreloadImage.Splash}
                     onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
                         SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
 
@@ -93,9 +93,9 @@ export default class Loading extends React.Component<InjectedProps> {
                     this.state.showIndicator &&
                     <View style={{
                         position: 'absolute', top: Dimensions.get('window').height / 2 + 50,
-                        width: '100%', height: 50, justifyContent: 'center', alignItems: 'center'
+                        width: '100%', height: 30, justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <RefreshIndicator color='white' />
+                        <RefreshIndicator color='white'/>
                     </View>
                 }
 
@@ -107,7 +107,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         resizeMode: 'cover',
                         opacity: this.state.image2Opacity
                     }}
-                    source={PreloadImage.Splash}
+                    source={PreloadImage.Background}
                 />
             </View>
         );
@@ -226,7 +226,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 Animated.parallel([
                     Animated.timing(this.state.image1Opacity, {
                         toValue: 0,
-                        duration: 2000,
+                        duration: 4000,
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.image2Opacity, {

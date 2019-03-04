@@ -31,7 +31,7 @@ type InjectedProps = {
 */
 
 const DEFAULT_PLACE_COUNT = 6;
-const DEFAULT_FEED_COUNT = 5;
+const DEFAULT_FEED_COUNT = 6;
 
 const _itemWidth = Dimensions.get('window').width - 40;
 const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
@@ -695,7 +695,7 @@ export default class Intro extends React.Component {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    <RefreshIndicator />
+                    <RefreshIndicator/>
                 </View>
             );
         }
@@ -807,7 +807,7 @@ export default class Intro extends React.Component {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    <RefreshIndicator />
+                    <RefreshIndicator/>
                 </View>
             );
         }
@@ -900,22 +900,13 @@ export default class Intro extends React.Component {
     }
 
     handleRefresh = () => {
-        if (this.refreshing) return;
-
-        this.refreshing = true;
+        if (this.state.refreshing) return;
 
         this.setState(
             {
                 refreshing: true
             },
             async () => {
-                /*
-                setTimeout(() => {
-                    !this.closed && this.setState({ refreshing: false });
-                }, 100);
-                */
-
-
                 await this.getPlaces();
                 /*
                 await this.getPopularFeeds();
@@ -923,18 +914,8 @@ export default class Intro extends React.Component {
                 */
 
                 !this.closed && this.setState({ refreshing: false });
-
-                this.refreshing = false;
             }
         );
-    }
-
-    startEditing() {
-        // alert('startEditing()');
-    }
-
-    leaveEditing() {
-        // alert('leaveEditing()');
     }
 }
 

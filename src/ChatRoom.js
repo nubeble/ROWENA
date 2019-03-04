@@ -329,7 +329,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 }
 
                 {
-                    // ToDo: apply animation
+                    // ToDo: apply fade in animation
                     this.state.renderPost && showPost &&
                     <View style={[styles.post, { top: _postTop }]}>
                         <Text>
@@ -401,7 +401,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     } // end of render
 
     isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
-        const threshold = 40;
+        const threshold = 80;
         return contentSize.height - layoutMeasurement.height - threshold <= contentOffset.y;
     }
 

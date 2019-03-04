@@ -61,7 +61,7 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        const threshold = 20; // how far from the bottom
+        const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
@@ -140,17 +140,9 @@ export default class Feed extends React.Component<FeedProps> {
                     }}
 
                     ListEmptyComponent={
-                        /*
-                        <View style={styles.post}>
-                            {
-                                loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }} />
-                            }
-                        </View>
-                        */
-
                         loading ?
                             <View style={{ height: Dimensions.get('window').height, paddingTop: 50 }}>
-                                <RefreshIndicator />
+                                <RefreshIndicator/>
                             </View>
                             :
                             <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
@@ -159,8 +151,8 @@ export default class Feed extends React.Component<FeedProps> {
                     }
                     ListFooterComponent={
                         this.state.isLoadingFeed &&
-                        <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                            <RefreshIndicator />
+                        <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                            <RefreshIndicator/>
                         </View>
                     }
                     onRefresh={this.handleRefresh}
@@ -180,6 +172,7 @@ export default class Feed extends React.Component<FeedProps> {
                 refreshing: true
             },
             () => {
+                // reload from the start
                 this.props.store.loadFeedFromTheStart();
             }
         );

@@ -59,7 +59,7 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        const threshold = 20; // how far from the bottom
+        const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
@@ -197,8 +197,8 @@ export default class ReadAllReviewScreen extends React.Component {
                             ListEmptyComponent={this.renderListEmptyComponent}
                             ListFooterComponent={
                                 this.state.isLoadingReview &&
-                                <View style={{ width: '100%', height: 50, justifyContent: 'center', alignItems: 'center' }}>
-                                    <RefreshIndicator />
+                                <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                    <RefreshIndicator/>
                                 </View>
                             }
 
@@ -333,6 +333,7 @@ export default class ReadAllReviewScreen extends React.Component {
                 refreshing: true
             },
             () => {
+                // reload from the start
                 const { reviewStore } = this.props.navigation.state.params;
                 reviewStore.loadReviewFromTheStart();
             }
@@ -564,19 +565,13 @@ export default class ReadAllReviewScreen extends React.Component {
         }
 
         return (
-            /*
-            <View style={{ paddingHorizontal: Theme.spacing.small }}>
-                {loading ? <RefreshIndicator /> : <FirstPost {...{ navigation }}/>}
-            </View>
-            */
-
             loading ?
                 <View style={{ paddingVertical: Theme.spacing.small }}>
                     {reviewArray}
                 </View>
                 :
                 <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    <FirstPost {...{ navigation }} />
+                    <FirstPost {...{ navigation }}/>
                 </View>
         );
     }
