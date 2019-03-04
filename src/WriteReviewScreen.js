@@ -120,7 +120,7 @@ export default class WriteReviewScreen extends React.Component {
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
-    
+
                     this.props.navigation.state.params.onGoBack(false);
                     this.props.navigation.goBack();
                 }

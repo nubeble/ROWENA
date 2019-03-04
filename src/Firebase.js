@@ -541,7 +541,7 @@ export default class Firebase {
         */
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         if (feedDoc.exists) {
-            const field = snap.data().reviewCount;
+            const field = feedDoc.data().reviewCount;
             size = field;
         }
 
