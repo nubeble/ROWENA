@@ -1479,7 +1479,6 @@ const styles = StyleSheet.create({
     },
     rating: {
         marginLeft: 5,
-
         color: '#f1c40f',
         fontSize: 18,
         lineHeight: 18,
@@ -1496,7 +1495,6 @@ const styles = StyleSheet.create({
     },
     note: {
         marginTop: 5,
-
         color: Theme.color.text2,
         fontSize: 16,
         lineHeight: 24,
@@ -1505,7 +1503,6 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.small,
         paddingLeft: Theme.spacing.small,
         paddingRight: Theme.spacing.small,
-
         backgroundColor: 'rgb(34, 34, 34)',
         borderRadius: 5,
         // borderColor: "transparent",

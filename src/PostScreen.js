@@ -162,10 +162,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     init(post) {
-        console.log('post', post);
-
-
-
         const isOwner = this.isOwner(post.uid, Firebase.user().uid);
         this.setState({ isOwner });
 
@@ -474,18 +470,14 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                 />
                                             </View>
 
-                                            {/* ToDo: draw stars based on averge rating & get review count
-                                                        {post.averageRating}
-                                                    */}
-                                            <Text style={styles.rating}>4.4</Text>
+                                            {/* ToDo: draw stars based on averge rating & get review count */}
+                                            <Text style={styles.rating}>{post.averageRating}</Text>
 
                                             <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color={Theme.color.title} size={16} />
-                                            <Text style={styles.reviewCount}>12</Text>
+                                            <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                                         </View>
 
-                                        {/*
-                                                    <Text style={styles.note}>{tmp}</Text>
-                                                */}
+                                        {/* ToDo: remove tmp */}
                                         <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                     </View>
 
@@ -1527,7 +1519,6 @@ const styles = StyleSheet.create({
     },
     note: {
         marginTop: 5,
-
         color: Theme.color.text2,
         fontSize: 16,
         lineHeight: 24,
@@ -1536,7 +1527,6 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.small,
         paddingLeft: Theme.spacing.small,
         paddingRight: Theme.spacing.small,
-
         backgroundColor: 'rgb(34, 34, 34)',
         borderRadius: 5,
         // borderColor: "transparent",
