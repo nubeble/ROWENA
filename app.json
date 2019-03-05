@@ -21,9 +21,9 @@
 			"backgroundColor": "#404040"
 		},
 		"splash": {
-			"image": "./assets/splash.png",
+			"backgroundColor": "#FFB5C2",
 			"resizeMode": "cover",
-			"backgroundColor": "#404040"
+			"image": "./assets/splash.png"
 		},
 		"notification": {
 			"icon": "./assets/noti.png",
