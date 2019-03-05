@@ -46,8 +46,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
     componentDidMount() {
         console.log('Explore.componentDidMount');
-        console.log('width', Dimensions.get('window').width);
-        console.log('height', Dimensions.get('window').height);
+        // console.log('width', Dimensions.get('window').width);
+        // console.log('height', Dimensions.get('window').height);
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);

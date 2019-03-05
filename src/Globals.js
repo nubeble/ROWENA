@@ -88,6 +88,13 @@ export var Cons = {
         if (param > 9) return 2;
     },
 
+    // feed item info text padding top
+    ratingTextPaddingTop: () => {
+        if (Platform.OS === 'ios') return 1;
+        if (Platform.OS === 'android') return 8;
+
+    },
+
 
 
 

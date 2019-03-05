@@ -506,7 +506,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const placeId = item.placeId;
         const feedId = item.feedId;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (feedDoc.exists) {
+        if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }

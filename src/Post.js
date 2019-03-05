@@ -386,92 +386,29 @@ export default class Post extends React.Component<InjectedProps> {
                                             <View style={styles.circle}></View>
                                             <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
                                         </View>
-                                        {/*
-                                        <Text style={styles.name}>{post.name}</Text>
-                                        <Text style={styles.size}>
-                                            {post.age}yrs  {post.height}cm  {post.weight}kg  {post.bust}cup
-                                        </Text>
-                                        */}
                                         <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
-                                        {/*
                                         <View style={{
-                                            // backgroundColor: 'green',
                                             width: '100%',
                                             flexDirection: 'row',
                                             alignItems: 'center', justifyContent: 'center',
                                             paddingVertical: bodyInfoContainerPaddingVertical,
                                             paddingHorizontal: bodyInfoContainerPaddingHorizontal
-                                        }}
-                                        >
-                                            <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                                alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={styles.bodyInfoTitle}>Age</Text>
-                                                <Text style={styles.bodyInfoContent}>20</Text>
-                                            </View>
-                                            <View
-                                                style={{
-                                                    borderLeftWidth: 5,
-                                                    borderLeftColor: Theme.color.line,
-                                                    //height: bodyInfoItemHeight * 0.5
-                                                }}
-                                            />
-                                            <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                                alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={styles.bodyInfoTitle}>Height</Text>
-                                                <Text style={styles.bodyInfoContent}>164</Text>
-                                            </View>
-                                            <View
-                                                style={{
-                                                    borderLeftWidth: 5,
-                                                    borderLeftColor: Theme.color.line,
-                                                    //height: bodyInfoItemHeight * 0.5
-                                                }}
-                                            />
-                                            <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                                alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={styles.bodyInfoTitle}>Weight</Text>
-                                                <Text style={styles.bodyInfoContent}>48</Text>
-                                            </View>
-                                            <View
-                                                style={{
-                                                    borderLeftWidth: 5,
-                                                    borderLeftColor: Theme.color.line,
-                                                    //height: bodyInfoItemHeight * 0.5
-                                                }}
-                                            />
-                                            <View style={{ backgroundColor: Theme.color.component, width: bodyInfoItemWidth, height: bodyInfoItemHeight,
-                                                alignItems: 'center', justifyContent: 'center' }}>
-                                                <Text style={styles.bodyInfoTitle}>Bust Size</Text>
-                                                <Text style={styles.bodyInfoContent}>C</Text>
-                                            </View>
-                                        </View>
-                                        */}
-                                        <View style={{
-                                            // backgroundColor: 'green',
-                                            width: '100%',
-                                            flexDirection: 'row',
-                                            alignItems: 'center', justifyContent: 'center',
-                                            paddingVertical: bodyInfoContainerPaddingVertical,
-                                            paddingHorizontal: bodyInfoContainerPaddingHorizontal
-                                        }}
-                                        >
+                                        }}>
                                             <View style={{
                                                 width: '50%', height: bodyInfoItemHeight,
                                                 alignItems: 'flex-start', justifyContent: 'space-between'
                                             }}>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, tintColor: 'white' }}
+                                                        style={{ width: 20, height: 20, tintColor: Theme.color.title }}
                                                         source={PreloadImage.birth}
-                                                    // tintColor={'white'} // not working in ios
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>{post.age} years old</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, marginTop: 2, tintColor: 'white' }}
+                                                        style={{ width: 20, height: 20, marginTop: 2, tintColor: Theme.color.title }}
                                                         source={PreloadImage.scale}
-                                                    // tintColor={'white'}
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                                                 </View>
@@ -482,17 +419,15 @@ export default class Post extends React.Component<InjectedProps> {
                                             }}>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, tintColor: 'white' }}
+                                                        style={{ width: 20, height: 20, tintColor: Theme.color.title }}
                                                         source={PreloadImage.ruler}
-                                                    // tintColor={'white'}
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, tintColor: 'white' }}
+                                                        style={{ width: 20, height: 20, tintColor: Theme.color.title }}
                                                         source={PreloadImage.bra}
-                                                    // tintColor={'white'}
                                                     />
                                                     <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
                                                 </View>
@@ -500,7 +435,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'white'} size={16} />
+                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={Theme.color.title} size={16} />
                                             <Text style={styles.distance}>24 km away</Text>
                                         </View>
 
@@ -516,18 +451,14 @@ export default class Post extends React.Component<InjectedProps> {
                                                 />
                                             </View>
 
-                                            {/* ToDo: draw stars based on averge rating & get review count
-                                                        {post.averageRating}
-                                                    */}
-                                            <Text style={styles.rating}>4.4</Text>
+                                            {/* ToDo: draw stars based on averge rating & get review count */}
+                                            <Text style={styles.rating}>{post.averageRating}</Text>
 
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color="white" size={16} />
-                                            <Text style={styles.reviewCount}>12</Text>
+                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color={Theme.color.title} size={16} />
+                                            <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                                         </View>
 
-                                        {/*
-                                                    <Text style={styles.note}>{tmp}</Text>
-                                                */}
+                                        {/* ToDo: remove tmp */}
                                         <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
                                     </View>
 
@@ -665,7 +596,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 borderRadius: 5,
                                 fontSize: 14,
                                 fontFamily: "SFProText-Regular",
-                                color: "white",
+                                color: Theme.color.title,
                                 textAlign: 'justify',
                                 textAlignVertical: 'top',
                                 backgroundColor: '#212121'
@@ -733,14 +664,14 @@ export default class Post extends React.Component<InjectedProps> {
                         this.setState({ showAlert: false });
                     }}
 
-                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
+                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: Theme.color.title, justifyContent: "space-between" }}
 
                     titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
                     messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
 
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
+                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: Theme.color.title, borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
                     cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
+                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: Theme.color.title, borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
                     confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
 
@@ -1507,7 +1438,7 @@ const styles = StyleSheet.create({
         color: Theme.color.text2
     },
     name: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 24,
         fontFamily: "SFProText-Semibold",
         marginTop: Theme.spacing.xSmall,
@@ -1524,15 +1455,14 @@ const styles = StyleSheet.create({
     },
     */
     bodyInfoTitle: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
         paddingTop: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.tiny,
-        // backgroundColor: 'green'
     },
     bodyInfoContent: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 18,
         fontFamily: "SFProText-Bold",
         paddingTop: Theme.spacing.xSmall,
@@ -1540,8 +1470,7 @@ const styles = StyleSheet.create({
     },
     distance: {
         paddingLeft: 5,
-
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
@@ -1559,8 +1488,7 @@ const styles = StyleSheet.create({
     },
     reviewCount: {
         marginLeft: 5,
-
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
@@ -1628,7 +1556,7 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular"
     },
     reviewName: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
     },
@@ -1658,7 +1586,7 @@ const styles = StyleSheet.create({
         marginLeft: 'auto'
     },
     replyComment: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 14,
         lineHeight: 18,
         fontFamily: "SuisseIntl-ThinItalic"

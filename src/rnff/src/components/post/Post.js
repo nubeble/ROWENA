@@ -12,6 +12,7 @@ import SmartImage from "../SmartImage";
 import Text from "../Text";
 import Avatar from "../Avatar";
 import LikesAndComments from "./LikesAndComments";
+import { Cons, Vars } from "../../../../Globals";
 
 import type { Post, Profile } from "../Model";
 import type { NavigationProps } from "../Types";
@@ -114,9 +115,9 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={post.pictures.one.uri}
                     />
-                    <View style={[styles.picture, { paddingHorizontal: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2, marginBottom: 2 }}>{post.name}</Text>
-                        <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2 }}>{post.placeName}</Text>
+                    <View style={[styles.picture, { paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                        <Text style={ styles.feedItemText }>{post.name}</Text>
+                        <Text style={ styles.feedItemText }>{post.placeName}</Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
@@ -124,14 +125,14 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                     count={5}
                                     readOnly={true}
                                     showRating={false}
-                                    defaultRating={4}
+                                    defaultRating={3}
                                     size={12}
                                     margin={1}
                                 />
                             </View>
                             <Text style={styles.rating}>{post.averageRating}</Text>
 
-                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color="white" size={12} />
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                             <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                         </View>
                     </View>
@@ -190,20 +191,24 @@ const styles = StyleSheet.create({
         // borderColor: "transparent",
         // borderWidth: 0
     },
+    feedItemText: {
+        color: Theme.color.title,
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        paddingLeft: 2
+    },
     rating: {
         marginLeft: 5,
-
         color: '#f1c40f',
         fontSize: 14,
         fontFamily: "SFProText-Regular",
-        paddingTop: 8
+        paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
-
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Regular",
-        paddingTop: 8
+        paddingTop: Cons.ratingTextPaddingTop()
     }
 });

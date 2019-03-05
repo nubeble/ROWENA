@@ -607,7 +607,7 @@ export default class Intro extends React.Component {
                                     name = place.name;
                                     imageUri = place.uri;
                                 } else {
-                                    // black image
+                                    // ToDo: black image
                                 }
                             }
 
@@ -857,9 +857,9 @@ export default class Intro extends React.Component {
                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                     uri={feed.pictures.one.uri}
                 />
-                <View style={[styles.item, { paddingHorizontal: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                    <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2, marginBottom: 2 }}>{feed.name}</Text>
-                    <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2 }}>{feed.placeName}</Text>
+                <View style={[styles.item, { paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                    <Text style={ styles.feedItemText }>{feed.name}</Text>
+                    <Text style={ styles.feedItemText }>{feed.placeName}</Text>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
@@ -867,14 +867,14 @@ export default class Intro extends React.Component {
                                 count={5}
                                 readOnly={true}
                                 showRating={false}
-                                defaultRating={4}
+                                defaultRating={3}
                                 size={12}
                                 margin={1}
                             />
                         </View>
                         <Text style={styles.rating}>{feed.averageRating}</Text>
 
-                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color="white" size={12} />
+                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                         <Text style={styles.reviewCount}>{feed.reviewCount}</Text>
                     </View>
                 </View>
@@ -1001,20 +1001,24 @@ const styles = StyleSheet.create({
         height: '100%',
         borderRadius: 2
     },
+    feedItemText: {
+        color: Theme.color.title,
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        paddingLeft: 2
+    },
     rating: {
         marginLeft: 5,
-
         color: '#f1c40f',
         fontSize: 14,
         fontFamily: "SFProText-Regular",
-        paddingTop: 8
+        paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
-
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Regular",
-        paddingTop: 8
+        paddingTop: Cons.ratingTextPaddingTop()
     }
 });
