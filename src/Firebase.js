@@ -420,29 +420,29 @@ export default class Firebase {
             timestamp: timestamp
         };
 
+        // update - averageRating, reviewCount, reviews
+
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
 
-        // save later
-        // await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
-
-        // update - averageRating, reviews, reviewCount
-
-        let size = await Firebase.getReviewsSize(placeId, feedId);
-        if (size === -1) return false;
-
         await Firebase.firestore.runTransaction(async transaction => {
-            // averageRating (number)
             const feedDoc = await transaction.get(feedRef);
             if (!feedDoc.exists) throw 'Post document does not exist!';
 
+            // reviewCount
+            let reviewCount = feedDoc.data().reviewCount;
+            console.log('reviewCount will be', reviewCount + 1);
+
+            // averageRating (number)
+            const size = reviewCount;
             let averageRating = feedDoc.data().averageRating;
-            let totalRating = averageRating * (size - 1);
+            let totalRating = averageRating * size;
             totalRating += review.rating;
-            averageRating = totalRating / size;
+            averageRating = totalRating / (size + 1);
             averageRating = averageRating.toFixed(1);
             console.log('averageRating', averageRating);
-            transaction.update(feedRef, { averageRating: Number(averageRating) });
+
+            transaction.update(feedRef, { reviewCount: Number(reviewCount + 1), averageRating: Number(averageRating) });
 
             // add new review item (map) in reviews (array)
             const item = {
@@ -456,11 +456,6 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
-
-            // reviewCount
-            let reviewCount = feedDoc.data().reviewCount;
-            console.log('reviewCount will be', reviewCount + 1);
-            transaction.update(feedRef, { reviewCount: Number(reviewCount + 1) });
         }).then(() => {
             // console.log("Transaction successfully committed!");
             // result = true;
@@ -469,37 +464,46 @@ export default class Firebase {
             return false;
         });
 
+        // add
         await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
         return true;
     };
 
     static async removeReview(placeId, feedId, reviewId, userUid) {
+        // get review
+        /*
         const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).get();
         if (!reviewDoc.exists) return false;
+        */
 
-        let rating = reviewDoc.data().rating; // rating, comment, timestamp
-
-        // 업데이트 3개 - averageRating, reviews, reviewCount
-
+        let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
         let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
-        let size = await Firebase.getReviewsSize(placeId, feedId);
-        if (size === -1) return false;
-
+        // update - averageRating, reviewCount, reviews
         await Firebase.firestore.runTransaction(async transaction => {
-            // averageRating (number)
+            const reviewDoc = await transaction.get(reviewRef);
+            if (!feedDoc.exists) throw 'Review document does not exist!';
+
+            let rating = reviewDoc.data().rating; // reviewDoc.data(): rating, comment, timestamp
+
             const feedDoc = await transaction.get(feedRef);
             if (!feedDoc.exists) throw 'Post document does not exist!';
 
+            // 1. reviewCount
+            let reviewCount = feedDoc.data().reviewCount;
+            console.log('reviewCount will be', reviewCount - 1);
+
+            // 2. averageRating
+            const size = reviewCount;
             let averageRating = feedDoc.data().averageRating;
             let totalRating = averageRating * size;
             totalRating -= rating;
             averageRating = totalRating / (size - 1);
             averageRating = averageRating.toFixed(1);
             console.log('averageRating', averageRating);
-            transaction.update(feedRef, { averageRating: Number(averageRating) });
+            transaction.update(feedRef, { reviewCount: Number(reviewCount - 1), averageRating: Number(averageRating) });
 
             // remove review item (map) in reviews (array)
             const item = {
@@ -513,11 +517,6 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
-
-            // reviewCount
-            let reviewCount = feedDoc.data().reviewCount;
-            console.log('reviewCount will be', reviewCount - 1);
-            transaction.update(feedRef, { reviewCount: Number(reviewCount - 1) });
         }).then(() => {
             // console.log("Transaction successfully committed!");
         }).catch((error) => {
@@ -530,15 +529,10 @@ export default class Firebase {
         return true;
     }
 
+    /*
     static async getReviewsSize(placeId, feedId) {
         let size = -1;
 
-        /*
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed")
-            .doc(feedId).collection("reviews").get().then(snap => {
-                size = snap.size;
-            });
-        */
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         if (feedDoc.exists) {
             const field = feedDoc.data().reviewCount;
@@ -547,6 +541,7 @@ export default class Firebase {
 
         return size;
     }
+    */
 
     static async addReply(placeId, feedId, reviewId, userUid, message) {
         const id = Util.uid(); // reply id
@@ -566,24 +561,24 @@ export default class Firebase {
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(transaction => {
-            // return new Promise(resolve => {
-            transaction.update(reviewRef, replyData);
+            return new Promise(resolve => {
+                transaction.update(reviewRef, replyData);
 
-            const item = {
-                placeId: placeId,
-                feedId: feedId,
-                reviewId: reviewId,
-                replyId: id
-            };
+                const item = {
+                    placeId: placeId,
+                    feedId: feedId,
+                    reviewId: reviewId,
+                    replyId: id
+                };
 
-            let userData = {
-                replies: firebase.firestore.FieldValue.arrayUnion(item)
-            };
+                let userData = {
+                    replies: firebase.firestore.FieldValue.arrayUnion(item)
+                };
 
-            transaction.update(userRef, userData);
+                transaction.update(userRef, userData);
 
-            // resolve(true);
-            // });
+                resolve(true);
+            });
         });
     };
 

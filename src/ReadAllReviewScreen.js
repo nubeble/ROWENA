@@ -334,10 +334,14 @@ export default class ReadAllReviewScreen extends React.Component {
             },
             () => {
                 // reload from the start
-                const { reviewStore } = this.props.navigation.state.params;
-                reviewStore.loadReviewFromTheStart();
+                this.loadReviewFromTheStart();
             }
         );
+    }
+
+    loadReviewFromTheStart() {
+        const { reviewStore } = this.props.navigation.state.params;
+        reviewStore.loadReviewFromTheStart();
     }
 
     @autobind
@@ -789,16 +793,15 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     sendPushNotification(message) {
-        const { post } = this.props.navigation.state.params;
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
         const sender = Firebase.user().uid;
         const senderName = Firebase.user().name;
-        // const receiver = post.uid; // owner
         const receiver = this.owner;
         const data = {
             message: message,
-            placeId: post.placeId,
-            feedId: post.id
+            placeId: placeId,
+            feedId, feedId
         };
 
         sendPushNotification(sender, senderName, receiver, Cons.pushNotification.reply, data);

@@ -82,6 +82,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (Vars.userFeedsChanged) {
             Vars.userFeedsChanged = false;
+
+            // reload from the start
+            this.lastChangedTime = 0;
             this.getUserFeeds();
         }
 
@@ -200,7 +203,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // ToDo: check this!
         setTimeout(() => {
             this.setState({ isLoadingFeeds: false });
-        }, 3000);
+        }, 1000);
 
         console.log('ProfileMain', 'loading feeds done!');
 
