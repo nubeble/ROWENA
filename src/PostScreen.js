@@ -750,7 +750,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
-                            // ToDo: performance issue!
                             // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
@@ -782,7 +781,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
-                            // ToDo: performance issue!
                             // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
@@ -814,7 +812,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
-                            // ToDo: performance issue!
                             // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />
@@ -845,7 +842,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
-                            // ToDo: performance issue!
                             // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
                         />

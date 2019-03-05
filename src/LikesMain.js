@@ -14,6 +14,8 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import autobind from 'autobind-decorator';
 import { Theme, RefreshIndicator, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
+import { AirbnbRating } from './react-native-ratings/src';
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -192,10 +194,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     render() {
-
         return (
             <View style={styles.flex}>
-
                 <View style={styles.searchBar}>
 
                     <Text
@@ -209,7 +209,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     >Saved</Text>
 
                 </View>
-
                 {
                     this.state.renderList &&
                     <FlatList
@@ -238,16 +237,29 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                         />
 
                                         {/*
-                                        <View style={styles.content}>
-                                            <Text style={{
-                                                textAlign: 'center',
-                                                fontWeight: '500',
-                                                color: "white",
-                                                fontSize: 21,
-                                                // flexWrap: "wrap"
-                                            }}>{item.city}</Text>
+                                        <View style={[styles.pictureContainer, { paddingHorizontal: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                            <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2, marginBottom: 2 }}>{item.name}</Text>
+                                            <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2 }}>{item.placeName}</Text>
+
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
+                                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                                    <AirbnbRating
+                                                        count={5}
+                                                        readOnly={true}
+                                                        showRating={false}
+                                                        defaultRating={4}
+                                                        size={12}
+                                                        margin={1}
+                                                    />
+                                                </View>
+                                                <Text style={styles.rating}>{item.averageRating}</Text>
+
+                                                <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color="white" size={12} />
+                                                <Text style={styles.reviewCount}>{item.reviewCount}</Text>
+                                            </View>
                                         </View>
                                         */}
+
                                     </View>
                                 </TouchableWithoutFeedback>
                             );
@@ -267,7 +279,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator/>
+                                <RefreshIndicator />
                             </View>
                         }
                     />
@@ -290,7 +302,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     opacity={0.6}
                 />
             </View>
-
         );
     }
 
@@ -353,14 +364,6 @@ const styles = StyleSheet.create({
         lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
-    /*
-    bottomIndicator: {
-        marginTop: 20,
-        marginBottom: 20
-    },
-    */
-
-
     content: {
         position: 'absolute',
         left: 0,
@@ -374,6 +377,22 @@ const styles = StyleSheet.create({
 
         borderRadius: 2,
     },
+    /*
+    rating: {
+        marginLeft: 5,
 
+        color: '#f1c40f',
+        fontSize: 14,
+        fontFamily: "SFProText-Regular",
+        paddingTop: 8
+    },
+    reviewCount: {
+        marginLeft: 5,
 
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Regular",
+        paddingTop: 8
+    }
+    */
 });

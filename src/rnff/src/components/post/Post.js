@@ -3,14 +3,15 @@ import * as React from "react";
 import moment from "moment";
 import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from "react-native";
 import Toast, { DURATION } from 'react-native-easy-toast';
-
-import LikesAndComments from "./LikesAndComments";
+import { AirbnbRating } from '../../../../react-native-ratings/src';
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 import FeedStore from "../FeedStore";
-import Text from "../Text";
-import Avatar from "../Avatar";
 import { Theme } from "../Theme";
 import SmartImage from "../SmartImage";
+import Text from "../Text";
+import Avatar from "../Avatar";
+import LikesAndComments from "./LikesAndComments";
 
 import type { Post, Profile } from "../Model";
 import type { NavigationProps } from "../Types";
@@ -105,44 +106,36 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
         return (
             <TouchableWithoutFeedback onPress={() => navigation.navigate("detail", { post: post, profile: profile })}>
-
-                {/* ToDo: use image list (one, two, ...) */}
+                {/* Consider: use image carousel (one, two, ...) */}
                 <View style={styles.container}>
-                    {
-                        post.pictures.one.uri && (
-                            <SmartImage
-                                style={styles.picture}
-                                showSpinner={false}
-                                // ToDo: performance issue!
-                                // preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                uri={post.pictures.one.uri}
-                            />
-                        )
-                    }
+                    <SmartImage
+                        style={styles.picture}
+                        showSpinner={false}
+                        preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={post.pictures.one.uri}
+                    />
+                    <View style={[styles.picture, { paddingHorizontal: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                        <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2, marginBottom: 2 }}>{post.name}</Text>
+                        <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 2, height: 14, paddingTop: 2 }}>{post.placeName}</Text>
 
-                    <View style={contentStyle}>
-                        {/*
-                        <View style={styles.header}>
-                            <Avatar {...profile.pictures.one}/>
-                            <View style={styles.metadata}>
-                                <Text style={nameStyle}>{profile.name}</Text>
-                                <Text style={dateStyle}>{moment(post.timestamp, "X").fromNow()}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={4}
+                                    size={12}
+                                    margin={1}
+                                />
                             </View>
-                        </View>
+                            <Text style={styles.rating}>{post.averageRating}</Text>
 
-                        <View>
-                            <Text style={textStyle} gutterBottom>{post.text}</Text>
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color="white" size={12} />
+                            <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                         </View>
-
-                        <LikesAndComments
-                            color={post.picture ? "white" : Theme.typography.color}
-                            id={post.id}
-                            {...{ navigation, likes, comments }}
-                        />
-                        */}
                     </View>
                 </View>
-
             </TouchableWithoutFeedback>
         );
     }
@@ -196,5 +189,21 @@ const styles = StyleSheet.create({
         borderRadius: 2
         // borderColor: "transparent",
         // borderWidth: 0
+    },
+    rating: {
+        marginLeft: 5,
+
+        color: '#f1c40f',
+        fontSize: 14,
+        fontFamily: "SFProText-Regular",
+        paddingTop: 8
+    },
+    reviewCount: {
+        marginLeft: 5,
+
+        color: 'white',
+        fontSize: 14,
+        fontFamily: "SFProText-Regular",
+        paddingTop: 8
     }
 });
