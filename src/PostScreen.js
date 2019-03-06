@@ -143,6 +143,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
         } else {
+            // this.props.navigation.goBack();
             this.props.navigation.dispatch(NavigationActions.back());
         }
 

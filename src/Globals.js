@@ -92,7 +92,6 @@ export var Cons = {
     ratingTextPaddingTop: () => {
         if (Platform.OS === 'ios') return 1;
         if (Platform.OS === 'android') return 8;
-
     },
 
 

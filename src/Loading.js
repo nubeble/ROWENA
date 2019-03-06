@@ -95,7 +95,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         position: 'absolute', top: Dimensions.get('window').height / 2 + 50,
                         width: '100%', height: 30, justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <RefreshIndicator color='white'/>
+                        <RefreshIndicator color='white' />
                     </View>
                 }
 
@@ -226,7 +226,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 Animated.parallel([
                     Animated.timing(this.state.image1Opacity, {
                         toValue: 0,
-                        duration: 4000,
+                        duration: 2000,
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.image2Opacity, {

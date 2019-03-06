@@ -341,7 +341,6 @@ export default class Post extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            // this.props.navigation.goBack();
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >

@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, BackHandler
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Svg } from "expo";
@@ -54,7 +54,7 @@ export default class Intro extends React.Component {
     state = {
         renderList: false,
 
-        // set the initial places (6)
+        // set the initial places (DEFAULT_PLACE_COUNT)
         places: [
             {
                 place_id: null,
@@ -122,7 +122,6 @@ export default class Intro extends React.Component {
         // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        // this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
@@ -132,13 +131,6 @@ export default class Intro extends React.Component {
 
         this.getPopularFeeds();
         this.getRecentFeeds();
-    }
-
-    @autobind
-    handleHardwareBackPress() {
-        console.log('Intro.handleHardwareBackPress');
-
-        return true;
     }
 
     @autobind
@@ -187,7 +179,6 @@ export default class Intro extends React.Component {
         // if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
 
         this.onFocusListener.remove();
-        // this.hardwareBackPressListener.remove();
 
         /*
         for (var i = 0; i < this.popularFeedsUnsubscribes.length; i++) {
@@ -599,22 +590,22 @@ export default class Intro extends React.Component {
                                 name = place.name;
                                 imageUri = place.uri;
                             } else {
-                                if (Intro.places.length > 0) {
-                                    // use static value
-                                    place = Intro.places[index];
+                                // use static value
+                                place = Intro.places[index];
+                                if (place) {
                                     place_id = place.place_id;
                                     length = place.length;
                                     name = place.name;
                                     imageUri = place.uri;
                                 } else {
-                                    // ToDo: black image
+                                    // nothing to do
                                 }
                             }
 
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (!place) return;
+                                        if (!place_id) return;
 
                                         setTimeout(() => {
                                             this.props.navigation.navigate("exploreMain", { place: place, length: length });
@@ -623,7 +614,7 @@ export default class Intro extends React.Component {
                                 >
                                     <View style={styles.pictureContainer}>
                                         {
-                                            imageUri ?
+                                            place_id ?
                                                 /*
                                                 <SmartImage
                                                     style={styles.picture}
@@ -637,7 +628,8 @@ export default class Intro extends React.Component {
                                                     source={{ uri: imageUri }}
                                                 />
                                                 :
-                                                <View style={{ width: '100%', height: '100%', borderRadius: 2, backgroundColor: 'black' }}>
+                                                <View style={{ width: '100%', height: '100%', borderRadius: 2, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
+                                                    <RefreshIndicator />
                                                 </View>
                                         }
                                         <View style={styles.content}>
@@ -857,9 +849,9 @@ export default class Intro extends React.Component {
                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                     uri={feed.pictures.one.uri}
                 />
-                <View style={[styles.item, { paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                    <Text style={ styles.feedItemText }>{feed.name}</Text>
-                    <Text style={ styles.feedItemText }>{feed.placeName}</Text>
+                <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                    <Text style={styles.feedItemText}>{feed.name}</Text>
+                    <Text style={styles.feedItemText}>{feed.placeName}</Text>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>

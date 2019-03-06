@@ -48,7 +48,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     componentDidMount() {
         console.log('LikesMain.componentDidMount');
 
-        // this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
@@ -62,7 +62,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        this.props.navigation.goBack();
+        // this.props.navigation.goBack();
+        this.props.navigation.navigate("intro");
 
         return true;
     }
@@ -235,10 +236,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.picture}
                                         />
-
-
-
-                                        <View style={[styles.pictureContainer, { paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                        <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
                                             <Text style={styles.feedItemText}>{item.placeName}</Text>
 
@@ -259,9 +257,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                                 <Text style={styles.reviewCount}>{item.reviewCount}</Text>
                                             </View>
                                         </View>
-
-
-
                                     </View>
                                 </TouchableWithoutFeedback>
                             );

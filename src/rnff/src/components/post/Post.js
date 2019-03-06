@@ -115,7 +115,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={post.pictures.one.uri}
                     />
-                    <View style={[styles.picture, { paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                    <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                         <Text style={ styles.feedItemText }>{post.name}</Text>
                         <Text style={ styles.feedItemText }>{post.placeName}</Text>
 

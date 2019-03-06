@@ -54,7 +54,7 @@ export default class AdvertisementMain extends React.Component {
 
 
 
-                <View style={{ height: 300, width: '100%', backgroundColor: '#123456', paddingTop: 30, marginTop: 30 }}>
+                <View style={{ height: '100%', width: '100%', backgroundColor: 'green' }}>
                     <TouchableOpacity
                         onPress={() => this.makeDummyData()}
                         style={styles.bottomButton}
@@ -92,8 +92,6 @@ export default class AdvertisementMain extends React.Component {
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
                     </TouchableOpacity>
-
-
                 </View>
 
 

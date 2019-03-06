@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, BackHandler } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -70,14 +70,14 @@ export default class App extends React.Component {
         // with the notification data.
         this.notificationListener = Notifications.addListener(this.handleNotification);
 
-        // ToDo: this.props.exp.notification
+        // ToDo: test this.props.exp.notification
         // console.log('props.exp.notification', this.props.exp.notification);
         if (this.props.exp.notification) {
             console.log('props.exp.notification', this.props.exp.notification);
 
             Alert.alert(
                 'props.exp.notification',
-                'check out this.props.exp.notification',
+                this.props.exp.notification,
                 [
                     {
                         text: 'Cancel',
