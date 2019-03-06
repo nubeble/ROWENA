@@ -43,11 +43,11 @@ export var Cons = {
     },
 
     // alert dialog
-    alertWidth: Dimensions.get('window').width * 0.9,
-    alertHeight: Dimensions.get('window').height * 0.25,
-    alertButtonWidth: Dimensions.get('window').width * 0.32,
-    alertButtonHeight: (Dimensions.get('window').height * 0.25) / 4,
-    alertButtonMarginBetween: Dimensions.get('window').width * 0.03,
+    alertWidth: parseInt((Dimensions.get('window').width) * 0.9),
+    alertHeight: parseInt((Dimensions.get('window').height) / 24 * 7),
+    alertButtonWidth: parseInt(Dimensions.get('window').width * 0.32),
+    alertButtonHeight: parseInt((Dimensions.get('window').width * 0.32) / 5 * 2),
+    alertButtonMarginBetween: parseInt(Dimensions.get('window').width * 0.03),
     alertButtonPaddingTop: parseInt(Dimensions.get('window').height / 80),
 
     // search bar height
