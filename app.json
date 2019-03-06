@@ -35,11 +35,13 @@
 		"android": {
 			"package": "com.nubeble.rowena",
 			"googleServicesFile": "./google-services.json",
-			"versionCode": 1
+			"versionCode": 1,
+			"icon": "./assets/icon_android.png"
 		},
 		"ios": {
 			"bundleIdentifier": "com.nubeble.rowena",
 			"buildNumber": "1.1.1",
+			"icon": "./assets/icon_ios.png",
 			"supportsTablet": true,
 			"infoPlist": {
 				"NSAppTransportSecurity": "",
