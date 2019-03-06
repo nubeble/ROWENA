@@ -266,9 +266,14 @@ export default class PostScreen extends React.Component<InjectedProps> {
         const placeId = post.placeId;
         const feedId = post.id;
         const uid = Firebase.user().uid;
+        
+        const name = post.name;
+        const placeName = post.placeName;
+        const averageRating = post.averageRating;
+        const reviewCount = post.reviewCount;
         const uri = post.pictures.one.uri;
 
-        const result = await Firebase.updateLikes(uid, placeId, feedId, uri);
+        const result = await Firebase.updateLikes(uid, placeId, feedId, name, placeName, averageRating, reviewCount, uri);
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500);

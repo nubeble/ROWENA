@@ -344,7 +344,7 @@ export default class Firebase {
     }
     */
 
-    static async updateLikes(uid, placeId, feedId, uri) {
+    static async updateLikes(uid, placeId, feedId, name, placeName, averageRating, reviewCount, uri) {
         // update count
         await Firebase.firestore.runTransaction(async transaction => {
             const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
@@ -386,8 +386,12 @@ export default class Firebase {
 
             if (_idx === -1) { // add
                 const data: LikeRef = {
-                    placeId: placeId,
-                    feedId: feedId,
+                    placeId,
+                    feedId,
+                    name,
+                    placeName,
+                    averageRating,
+                    reviewCount,
                     picture: uri,
                     valid: true // ToDo: update this after removing
                 }
