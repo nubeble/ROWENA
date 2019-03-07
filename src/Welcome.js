@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     container: {
-        flex: 1
+        flex: 1,
+        paddingHorizontal: Theme.spacing.base
     },
     signUpButton: {
         width: '85%',
