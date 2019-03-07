@@ -5,9 +5,9 @@ import { Cons } from "./Globals";
 import { Theme } from "./rnff/src/components";
 
 // const titlePosition = Dimensions.get('window').height / 8;
-const imageWidth = Dimensions.get('window').width - Theme.spacing.base;
+const imageWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const imageHeight = imageWidth / 16 * 9;
-const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\n";
+const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
 const bottomPosition = Dimensions.get('window').height;
 const buttonGap = 80;
 
