@@ -921,6 +921,8 @@ class ProfileModalNavigatorWrapper extends React.Component {
 ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
 
+    console.log('routes', navigation.state.routes);
+
     if (route && route.routeName === 'edit') {
         return {
             tabBarVisible: false
