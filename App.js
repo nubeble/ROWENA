@@ -760,16 +760,8 @@ class LikesModalNavigatorWrapper extends React.Component {
 
 LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
-    // route.isTransitioning
 
     if (route && route.routeName === 'likesPost') {
-
-        if (route.isTransitioning) {
-            return {
-                tabBarVisible: false
-            };
-        }
-
         return {
             tabBarVisible: false
         };
@@ -928,55 +920,26 @@ class ProfileModalNavigatorWrapper extends React.Component {
 
 ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
-    // route.isTransitioning
 
     if (route && route.routeName === 'edit') {
-
-        if (route.isTransitioning) {
-            return {
-                tabBarVisible: false
-            };
-        }
-
         return {
             tabBarVisible: false
         };
     }
 
     if (route && route.routeName === 'check') {
-
-        if (route.isTransitioning) {
-            return {
-                tabBarVisible: false
-            };
-        }
-
         return {
             tabBarVisible: false
         };
     }
 
     if (route && route.routeName === 'advertisement') {
-
-        if (route.isTransitioning) {
-            return {
-                tabBarVisible: false
-            };
-        }
-
         return {
             tabBarVisible: false
         };
     }
 
     if (route && route.routeName === 'postPreview') {
-
-        if (route.isTransitioning) {
-            return {
-                tabBarVisible: false
-            };
-        }
-
         return {
             tabBarVisible: false
         };
