@@ -9,7 +9,7 @@ import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 
-const imageWidth = Dimensions.get('window').width;
+const imageWidth = Dimensions.get('window').width - Theme.spacing.base;
 const imageHeight = imageWidth / 650 * 597;
 const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\n";
 const bottomPosition = Dimensions.get('window').height;

@@ -851,7 +851,7 @@ const AdvertisementStackNavigator = createStackNavigator(
     {
         advertisementGuide: { screen: AdvertisementGuide },
         advertisementMain: { screen: AdvertisementMain },
-        
+
         // user: { screen: UserModalNavigatorWrapper }
     },
     {
@@ -1103,7 +1103,7 @@ class TabBarComponent extends React.Component {
         // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props}/> : null; // not working in S7
 
         if (!this.state.focused) {
-        // if (!this.focused) {
+            // if (!this.focused) {
             return <BottomTabBar {...this.props} />;
         }
 
