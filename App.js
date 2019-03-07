@@ -343,8 +343,6 @@ import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
 import AdvertisementGuide from './src/AdvertisementGuide';
 import AdvertisementMain from './src/AdvertisementMain';
-// import LogoutMain from './src/LogoutMain';
-
 
 // -- start of AuthStackNavigator
 const AuthStackNavigator = createStackNavigator(
@@ -764,7 +762,14 @@ LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
     // route.isTransitioning
 
-    if (route && route.routeName === 'likesPost' && !route.isTransitioning) {
+    if (route && route.routeName === 'likesPost') {
+
+        if (route.isTransitioning) {
+            return {
+                tabBarVisible: false
+            };
+        }
+
         return {
             tabBarVisible: false
         };
@@ -885,43 +890,6 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
 }
 // -- end of advertisement
 
-// -- start of logout
-/*
-const LogoutStackNavigator = createStackNavigator(
-    {
-        logoutMain: { screen: LogoutMain },
-        // post: { screen: PostStackNavigatorWrapper },
-        // user: { screen: UserModalNavigatorWrapper }
-    },
-    {
-        mode: 'card',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
-    }
-);
-
-class LogoutStackNavigatorWrapper extends React.Component {
-    static router = LogoutStackNavigator.router;
-
-    render() {
-        return (
-            <LogoutStackNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-*/
-// -- end of logout
-
 // -- start of ProfileModalNavigator
 const ProfileModalNavigator = createStackNavigator(
     {
@@ -929,7 +897,6 @@ const ProfileModalNavigator = createStackNavigator(
         edit: { screen: EditStackNavigatorWrapper },
         check: { screen: CheckStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
-        // logout: { screen: LogoutStackNavigatorWrapper },
         postPreview: { screen: PostStackNavigatorWrapper }
     },
     {
@@ -963,33 +930,53 @@ ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
     // route.isTransitioning
 
-    if (route && route.routeName === 'edit' && !route.isTransitioning) {
+    if (route && route.routeName === 'edit') {
+
+        if (route.isTransitioning) {
+            return {
+                tabBarVisible: false
+            };
+        }
+
         return {
             tabBarVisible: false
         };
     }
 
-    if (route && route.routeName === 'check' && !route.isTransitioning) {
+    if (route && route.routeName === 'check') {
+
+        if (route.isTransitioning) {
+            return {
+                tabBarVisible: false
+            };
+        }
+
         return {
             tabBarVisible: false
         };
     }
 
-    if (route && route.routeName === 'advertisement' && !route.isTransitioning) {
+    if (route && route.routeName === 'advertisement') {
+
+        if (route.isTransitioning) {
+            return {
+                tabBarVisible: false
+            };
+        }
+
         return {
             tabBarVisible: false
         };
     }
 
-    /*
-    if (route && route.routeName === 'logout') {
-        return {
-            tabBarVisible: false
-        };
-    }
-    */
+    if (route && route.routeName === 'postPreview') {
 
-    if (route && route.routeName === 'postPreview' && !route.isTransitioning) {
+        if (route.isTransitioning) {
+            return {
+                tabBarVisible: false
+            };
+        }
+
         return {
             tabBarVisible: false
         };
