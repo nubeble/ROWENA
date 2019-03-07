@@ -764,7 +764,7 @@ LikesModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
     // route.isTransitioning
 
-    if (route && route.routeName === 'likesPost') {
+    if (route && route.routeName === 'likesPost' && !route.isTransitioning) {
         return {
             tabBarVisible: false
         };
@@ -963,19 +963,19 @@ ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     const route = navigation.state.routes[1];
     // route.isTransitioning
 
-    if (route && route.routeName === 'edit') {
+    if (route && route.routeName === 'edit' && !route.isTransitioning) {
         return {
             tabBarVisible: false
         };
     }
 
-    if (route && route.routeName === 'check') {
+    if (route && route.routeName === 'check' && !route.isTransitioning) {
         return {
             tabBarVisible: false
         };
     }
 
-    if (route && route.routeName === 'advertisement') {
+    if (route && route.routeName === 'advertisement' && !route.isTransitioning) {
         return {
             tabBarVisible: false
         };
@@ -989,7 +989,7 @@ ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
     }
     */
 
-    if (route && route.routeName === 'postPreview') {
+    if (route && route.routeName === 'postPreview' && !route.isTransitioning) {
         return {
             tabBarVisible: false
         };
