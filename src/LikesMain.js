@@ -1,7 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, ActivityIndicator, BackHandler, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, View, Text, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
+import PreloadImage from './PreloadImage';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { inject, observer } from "mobx-react/native";
@@ -23,6 +24,9 @@ type InjectedProps = {
 };
 
 const DEFAULT_FEED_COUNT = 10;
+
+const guideImageWidth = 300;
+const guideImageHeight = 150;
 
 
 @inject("feedStore", "profileStore")
@@ -277,6 +281,44 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             this.state.isLoadingFeeds &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                                 <RefreshIndicator />
+                            </View>
+                        }
+
+                        ListEmptyComponent={
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{
+                                    // marginTop: 20,
+                                    color: Theme.color.text2,
+                                    fontSize: 18,
+                                    fontFamily: "SFProText-Semibold"
+                                }}>No selected girls</Text>
+                                <Text style={{
+                                    // marginTop: 10,
+                                    color: Theme.color.text3,
+                                    fontSize: 16,
+                                    fontFamily: "SFProText-Regular"
+                                }}>Start exploring girls for your next trip</Text>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTimeout(() => {
+                                            // ToDo: set scroll position 0
+
+                                            this.props.navigation.navigate("intro");
+                                        }, Cons.buttonTimeoutShort);
+                                    }}
+                                    style={{ marginTop: 10 }}>
+                                    <Image
+                                        style={{
+                                            width: guideImageWidth,
+                                            height: guideImageHeight,
+                                            // backgroundColor: 'green',
+                                            // alignSelf: 'center'
+                                        }}
+                                        // resizeMode={'contain'}
+                                        source={PreloadImage.likes}
+                                    />
+                                </TouchableOpacity>
                             </View>
                         }
                     />

@@ -609,7 +609,7 @@ export default class Intro extends React.Component {
 
                                         setTimeout(() => {
                                             this.props.navigation.navigate("exploreMain", { place: place, length: length });
-                                        }, Cons.buttonTimeoutLong);
+                                        }, Cons.buttonTimeoutShort);
                                     }}
                                 >
                                     <View style={styles.pictureContainer}>

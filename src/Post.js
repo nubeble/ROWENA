@@ -313,7 +313,6 @@ export default class Post extends React.Component<InjectedProps> {
             ]
         };
 
-
         return (
             <View style={styles.flex}>
                 <Animated.View
@@ -479,7 +478,7 @@ export default class Post extends React.Component<InjectedProps> {
                                                     });
                                                     */
                                                     this.props.navigation.navigate("map", { post: post });
-                                                }, Cons.buttonTimeoutLong);
+                                                }, Cons.buttonTimeoutShort);
                                             }}
                                         >
                                             <View style={styles.mapView}>

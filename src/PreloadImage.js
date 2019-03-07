@@ -21,6 +21,13 @@ const bra = require('../assets/icon/bra.png');
 const ruler = require('../assets/icon/ruler.png');
 const scale = require('../assets/icon/scale.png');
 
+// illustration
+const explore = require('../assets/sample/explore.jpg');
+const advertisement = require('../assets/sample/advertisement.jpg');
+const likes = require('../assets/sample/likes.png');
+const chat = require('../assets/sample/chat.png');
+
+
 
 export default class PreloadImage {
     static Splash = Splash;
@@ -43,6 +50,12 @@ export default class PreloadImage {
     static birth = birth;
     static ruler = ruler;
     static scale = scale;
+
+    static explore = explore;
+    static advertisement = advertisement;
+    static likes = likes;
+    static chat = chat;
+
 
 
     static downloadAsync(): Promise<*>[] {
@@ -68,7 +81,15 @@ export default class PreloadImage {
                 PreloadImage.bra,
                 PreloadImage.birth,
                 PreloadImage.ruler,
-                PreloadImage.scale
+                PreloadImage.scale,
+
+                PreloadImage.explore,
+                PreloadImage.advertisement,
+                PreloadImage.likes,
+                PreloadImage.chat,
+
+
+
             ])
         ];
     }

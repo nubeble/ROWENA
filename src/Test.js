@@ -71,19 +71,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
-
-
-
-
-
     container: {
         flex: 1,
-        marginTop: 50,
-        backgroundColor: 'black',
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        justifyContent: 'center'
+        // backgroundColor: 'black'
     },
+
 
     header: {
         width: '100%',

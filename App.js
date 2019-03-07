@@ -341,6 +341,7 @@ import ReadAllReviewScreen from './src/ReadAllReviewScreen';
 
 import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
+import AdvertisementGuide from './src/AdvertisementGuide';
 import AdvertisementMain from './src/AdvertisementMain';
 // import LogoutMain from './src/LogoutMain';
 
@@ -851,8 +852,9 @@ class CheckStackNavigatorWrapper extends React.Component {
 // -- start of advertisement
 const AdvertisementStackNavigator = createStackNavigator(
     {
+        advertisementGuide: { screen: AdvertisementGuide },
         advertisementMain: { screen: AdvertisementMain },
-        // post: { screen: PostStackNavigatorWrapper },
+        
         // user: { screen: UserModalNavigatorWrapper }
     },
     {

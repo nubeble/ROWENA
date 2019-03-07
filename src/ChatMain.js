@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, ActivityIndicator, BackHandler
+    StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler
 } from 'react-native';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
+import PreloadImage from './PreloadImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from "autobind-decorator";
 import { Theme } from "./rnff/src/components";
@@ -15,6 +16,9 @@ import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 
 DEFAULT_ROOM_COUNT = 10;
+
+const guideImageWidth = 150;
+const guideImageHeight = 150;
 
 
 export default class ChatMain extends React.Component {
@@ -187,13 +191,43 @@ export default class ChatMain extends React.Component {
                         ListFooterComponent={
                             this.state.isLoadingChat &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator/>
+                                <RefreshIndicator />
                             </View>
                         }
 
-                    // ItemSeparatorComponent={this.itemSeparatorComponent}
-                    />
+                        ListEmptyComponent={
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{
+                                    color: Theme.color.text2,
+                                    fontSize: 18,
+                                    fontFamily: "SFProText-Semibold"
+                                }}>No new messages</Text>
+                                <Text style={{
+                                    color: Theme.color.text3,
+                                    fontSize: 16,
+                                    fontFamily: "SFProText-Regular"
+                                }}>Let's find some beautiful girls</Text>
 
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTimeout(() => {
+                                            // ToDo: set scroll position 0
+
+                                            this.props.navigation.navigate("intro");
+                                        }, Cons.buttonTimeoutShort);
+                                    }}
+                                    style={{ marginTop: 10 }}>
+                                    <Image
+                                        style={{
+                                            width: guideImageWidth,
+                                            height: guideImageHeight
+                                        }}
+                                        source={PreloadImage.chat}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    />
                 }
 
                 <Toast
@@ -202,7 +236,7 @@ export default class ChatMain extends React.Component {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-            </View >
+            </View>
         );
     }
 

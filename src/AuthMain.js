@@ -152,7 +152,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.continueWithFacebook();
-                                }, Cons.buttonTimeoutLong);
+                                }, Cons.buttonTimeoutShort);
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
@@ -173,7 +173,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithEmail();
-                                }, Cons.buttonTimeoutLong);
+                                }, Cons.buttonTimeoutShort);
                             }}
                             style={styles.signUpWithEmailButton}
                         >
@@ -185,7 +185,7 @@ export default class AuthMain extends React.Component {
                             onPress={() => {
                                 setTimeout(() => {
                                     this.signUpWithMobile();
-                                }, Cons.buttonTimeoutLong);
+                                }, Cons.buttonTimeoutShort);
                             }}
                             style={styles.signUpWithMobileButton}
                         >

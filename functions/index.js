@@ -154,7 +154,7 @@ exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
 
 
 // app.post("/images", function (req, res, next) {
-    app.post("/images", function (req, res) {
+app.post("/images", function (req, res) {
     console.log('Image Upload', req.field);
 
     const storage = admin.storage();
@@ -444,8 +444,10 @@ const processPushNotification = async(function () {
     if (!targetToken) {
         const error = `Push token is null.`;
         console.error(error);
-        
+
         res.status(500).send(error);
+
+        return;
     }
 
     if (!Expo.isExpoPushToken(targetToken)) {
@@ -453,6 +455,8 @@ const processPushNotification = async(function () {
         console.error(error);
 
         res.status(500).send(error);
+
+        return;
     }
 
     // const sender = fields.sender;

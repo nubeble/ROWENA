@@ -167,7 +167,6 @@ export default class WriteReviewScreen extends React.Component {
             ]
         };
 
-
         return (
             <View style={styles.flex}>
                 <Animated.View

@@ -138,7 +138,6 @@ export default class ReadAllReviewScreen extends React.Component {
             ]
         };
 
-
         return (
             <View style={styles.flex}>
                 <Animated.View

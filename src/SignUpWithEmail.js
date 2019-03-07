@@ -347,6 +347,7 @@ export default class SignUpWithEmail extends React.Component {
         // const showIndicator = this.state.showIndicator;
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
+        
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [

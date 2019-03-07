@@ -1,49 +1,80 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
+import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
+
+// const titlePosition = Dimensions.get('window').height / 8;
+const imageWidth = Dimensions.get('window').width;
+const imageHeight = imageWidth / 16 * 9;
+const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\n";
+const bottomPosition = Dimensions.get('window').height;
+const buttonGap = 80;
 
 
 export default class Welcome extends React.Component {
-    state = {
-        bottomPosition: Dimensions.get('window').height
-    };
-
     render() {
-        const buttonGap = 80;
-
         return (
-            <View style={styles.container}>
-                <Image
-                    style={{ width: '100%', height: 200, marginTop: 80, marginBottom: 40 }}
-                    resizeMode={'cover'}
-                    source={require('../assets/sample2.png')}
-                />
+            <View style={styles.flex}>
+                <View style={styles.searchBar}>
+                </View>
 
-                <Image
-                    style={{ width: '100%', height: 200 }}
-                    resizeMode={'contain'}
-                    source={require('../assets/sample3.png')}
-                />
+                <View style={styles.container}>
+                    <Text style={{
+                        // marginTop: titlePosition,
+                        marginTop: 10,
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        fontSize: 32,
+                        fontFamily: "SFProText-Semibold",
+                        textAlign: 'center'
+                    }}>Welcome!</Text>
 
+                    <Image
+                        style={{
+                            marginTop: 30,
+                            width: imageWidth,
+                            height: imageHeight
+                        }}
+                        resizeMode={'contain'}
+                        source={PreloadImage.explore}
+                    />
 
-                <View style={{ position: 'absolute', top: this.state.bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate("mainStackNavigator")} style={styles.signUpButton}>
+                    <Text style={{
+                        marginTop: 10,
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        fontSize: 16,
+                        lineHeight: 30,
+                        fontFamily: "SFProText-Regular",
+                        textAlign: 'center'
+                    }}>{contentText}</Text>
+                </View>
+
+                <View style={{ position: 'absolute', top: bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                    <TouchableOpacity onPress={() => {
+                        setTimeout(() => {
+                            this.props.navigation.navigate("mainStackNavigator");
+                        }, Cons.buttonTimeoutShort);
+                    }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'white', paddingTop: Cons.submitButtonPaddingTop() }}>Get Started</Text>
                     </TouchableOpacity>
                 </View>
-
-
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    flex: {
         flex: 1,
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        backgroundColor: 'rgb(175, 175, 175)'
+        backgroundColor: '#8EC2EA'
+    },
+    searchBar: {
+        height: Cons.searchBarHeight,
+        paddingBottom: 8,
+        flexDirection: 'column',
+        justifyContent: 'flex-end'
+    },
+    container: {
+        flex: 1
     },
     signUpButton: {
         width: '85%',

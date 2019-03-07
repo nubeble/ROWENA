@@ -771,7 +771,7 @@ export default class Firebase {
 
         if (user !== null) {
             name = user.displayName;
-            if (!name) name = 'Firebase Name'; // test
+            if (!name) name = 'Max Power'; // test
             email = user.email;
             photoUrl = user.photoURL;
             if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // test
