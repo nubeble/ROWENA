@@ -1,11 +1,12 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import { StyleSheet, View, FlatList, SafeAreaView, ActivityIndicator, Dimensions } from "react-native";
+import { StyleSheet, View, FlatList, SafeAreaView, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 import { observer } from "mobx-react/native";
 import { type AnimatedEvent } from "react-native/Libraries/Animated/src/AnimatedEvent";
 import FeedStore from "./FeedStore";
 import { RefreshIndicator, Post, Theme, FirstPost } from "../components";
+import PreloadImage from '../../../PreloadImage';
 import type { FeedEntry } from "../components/Model";
 import type { NavigationProps } from "../components/Types";
 
@@ -19,6 +20,9 @@ type FeedProps = NavigationProps<> & {
     bounce?: boolean,
     ListHeaderComponent?: React.Node
 };
+
+const guideImageWidth = 300;
+const guideImageHeight = 150;
 
 
 @observer
@@ -82,7 +86,7 @@ export default class Feed extends React.Component<FeedProps> {
         this.setState({ isLoadingFeed: true });
 
         console.log('Feed.loadMore');
-        
+
         this.props.store.loadFeed();
     }
 
@@ -93,7 +97,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         return (
             <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }}/>
+                <Post {...{ navigation, post, store, profile }} />
             </View>
         );
     }
@@ -117,9 +121,6 @@ export default class Feed extends React.Component<FeedProps> {
         const { feed } = store;
         const loading = feed === undefined;
 
-        // console.log('renderItem.feed', feed); // true -> false
-
-
         return (
             <SafeAreaView style={styles.list}>
                 <FlatList
@@ -139,22 +140,50 @@ export default class Feed extends React.Component<FeedProps> {
                         this.props._onScroll(nativeEvent);
                     }}
 
-                    ListEmptyComponent={
-                        loading ?
-                            <View style={{ height: Dimensions.get('window').height, paddingTop: 50 }}>
-                                <RefreshIndicator/>
-                            </View>
-                            :
-                            <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                                <FirstPost {...{ navigation }} />
-                            </View>
-                    }
                     ListFooterComponent={
                         this.state.isLoadingFeed &&
                         <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                            <RefreshIndicator/>
+                            <RefreshIndicator />
                         </View>
                     }
+
+                    ListEmptyComponent={
+                        loading ?
+                            <View style={{ height: Dimensions.get('window').height, paddingTop: 50 }}>
+                                <RefreshIndicator />
+                            </View>
+                            :
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{
+                                    color: Theme.color.text2,
+                                    fontSize: 18,
+                                    fontFamily: "SFProText-Semibold"
+                                }}>No registered girls yet</Text>
+                                <Text style={{
+                                    color: Theme.color.text3,
+                                    fontSize: 16,
+                                    fontFamily: "SFProText-Regular"
+                                }}>Start exploring girls for your next trip</Text>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTimeout(() => {
+                                            // ToDo: set scroll position 0
+
+                                            // this.props.navigation.navigate("intro");
+                                        }, Cons.buttonTimeoutShort);
+                                    }}
+                                    style={{ marginTop: 10 }}>
+                                    <Image
+                                        style={{
+                                            width: guideImageWidth,
+                                            height: guideImageHeight
+                                        }}
+                                        source={PreloadImage.likes}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                    }
+
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
                     // {...{ onScroll, bounce, ListHeaderComponent }}

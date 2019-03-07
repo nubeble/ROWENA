@@ -287,18 +287,15 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         ListEmptyComponent={
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
-                                    // marginTop: 20,
                                     color: Theme.color.text2,
                                     fontSize: 18,
                                     fontFamily: "SFProText-Semibold"
                                 }}>No selected girls</Text>
                                 <Text style={{
-                                    // marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 16,
                                     fontFamily: "SFProText-Regular"
                                 }}>Start exploring girls for your next trip</Text>
-
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
@@ -311,11 +308,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                     <Image
                                         style={{
                                             width: guideImageWidth,
-                                            height: guideImageHeight,
-                                            // backgroundColor: 'green',
-                                            // alignSelf: 'center'
+                                            height: guideImageHeight
                                         }}
-                                        // resizeMode={'contain'}
                                         source={PreloadImage.likes}
                                     />
                                 </TouchableOpacity>
