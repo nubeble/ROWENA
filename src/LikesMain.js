@@ -377,7 +377,8 @@ const styles = StyleSheet.create({
         paddingTop: Theme.spacing.base,
         paddingBottom: Theme.spacing.base
     },
-    pictureContainer: { // 8:5 image
+    pictureContainer: {
+        // 8:5 image
         width: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2),
         height: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2) / 8 * 5,
         borderRadius: 2,

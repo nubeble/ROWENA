@@ -207,7 +207,6 @@ export default class ChatMain extends React.Component {
                                     fontSize: 16,
                                     fontFamily: "SFProText-Regular"
                                 }}>Let's find some beautiful girls</Text>
-
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {

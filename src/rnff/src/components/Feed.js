@@ -76,7 +76,6 @@ export default class Feed extends React.Component<FeedProps> {
         this.onLoading = true;
 
         if (this.props.store.allFeedsLoaded) {
-            // console.log('feedStore.allFeedsLoaded');
             if (this.state.refreshing) this.setState({ refreshing: false });
 
             this.onLoading = false;

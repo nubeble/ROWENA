@@ -35,6 +35,7 @@ type InjectedProps = {
 const DEFAULT_PLACE_COUNT = 6;
 const DEFAULT_FEED_COUNT = 6;
 
+// 5:3 image
 const itemWidth = Dimensions.get('window').width - 40;
 const itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
 

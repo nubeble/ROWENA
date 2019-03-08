@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text, BackHandler } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, BackHandler, Dimensions, Image } from 'react-native';
+import { Permissions, Linking, ImagePicker } from 'expo';
 import { Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,8 +10,20 @@ import Firebase from './Firebase';
 import Util from './Util';
 import autobind from 'autobind-decorator';
 
+const imageViewWidth = Dimensions.get('window').width / 2;
+const imageViewHeight = imageViewWidth / 4 * 3;
+
+const imageWidth = imageViewWidth * 0.84;
+const imageHeight = imageViewHeight * 0.84;
+
 
 export default class AdvertisementMain extends React.Component {
+    state = {
+        uploadImage1Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
+        uploadImage2Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
+        uploadImage3Uri: null,
+        uploadImage4Uri: null
+    };
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
@@ -50,11 +63,52 @@ export default class AdvertisementMain extends React.Component {
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
+                <View style={{ flex: 1 }}>
+
+
+
+                    {/* image editor view */}
+                    <View style={{ width: '100%' }}>
+                        {/* row 1 view */}
+                        <View style={{ width: '100%', marginBottom: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            {/* cell 1 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                                {
+                                    this.renderImage(1, this.state.uploadImage1Uri)
+                                }
+                            </View>
+                            {/* cell 2 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                                {
+                                    this.renderImage(2, this.state.uploadImage2Uri)
+                                }
+                            </View>
+                        </View>
+                        {/* row 2 view */}
+                        <View style={{ width: '100%', marginBottom: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                            {/* cell 1 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                                {
+                                    this.renderImage(3, this.state.uploadImage3Uri)
+                                }
+                            </View>
+                            {/* cell 2 view */}
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                                {
+                                    this.renderImage(4, this.state.uploadImage4Uri)
+                                }
+                            </View>
+                        </View>
+                    </View>
 
 
 
 
-                <View style={{ height: '100%', width: '100%', backgroundColor: 'green' }}>
+
+
+
+
+
                     <TouchableOpacity
                         onPress={() => this.makeDummyData()}
                         style={styles.bottomButton}
@@ -98,6 +152,172 @@ export default class AdvertisementMain extends React.Component {
 
             </View>
         );
+    }
+
+    renderImage(number, uri) {
+        if (!uri) {
+            return (
+                <View style={{ width: imageWidth, height: imageHeight, borderRadius: 2, borderColor: 'darkgrey', borderWidth: 2, borderStyle: 'dashed', backgroundColor: 'dimgrey' }}>
+                    {/* number */}
+                    <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'white', position: 'absolute', top: 2, left: 8 }}>{number}</Text>
+
+                    {/* icon */}
+                    <TouchableOpacity
+                        style={{ width: 40, height: 40, position: 'absolute', bottom: -20 + 8, right: -20 + 8, justifyContent: "center", alignItems: "center" }}
+                        onPress={() => {
+                            this.uploadPicture(number - 1);
+                        }}
+                    >
+                        <Ionicons name='md-add-circle' color="#FFB5C2" size={36} />
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+
+        return (
+            <View style={{ width: imageWidth, height: imageHeight }}>
+                <Image
+                    style={{ width: imageWidth, height: imageHeight, borderRadius: 2 }}
+                    source={{ uri: uri }}
+                />
+
+                {/* icon */}
+                <TouchableOpacity
+                    style={{ width: 40, height: 40, position: 'absolute', bottom: -20 + 8, right: -20 + 8, justifyContent: "center", alignItems: "center" }}
+                    onPress={() => {
+                        // this.props.navigation.dispatch(NavigationActions.back());
+                    }}
+                >
+                    <Ionicons name='md-close-circle' color="white" size={36} />
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    //// upload image
+    uploadPicture(index) {
+        this.pickImage(index);
+    }
+
+    async pickImage(index) {
+        const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
+        const { status: cameraRollPermission } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+        if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [1, 1],
+                quality: 1.0
+            });
+
+            console.log('result of launchImageLibraryAsync:', result);
+
+            if (!result.cancelled) {
+                this.setState({ uploadingImage: true });
+
+                // show indicator
+                this.setState({ showIndicator: true });
+
+                // ToDo: show progress bar
+
+
+                // upload image
+                // var that = this;
+                this.uploadImage(result.uri, index, (uri) => {
+                    switch (index) {
+                        case 0: this.setState({ uploadImage1Uri: uri }); break;
+                        case 1: this.setState({ uploadImage2Uri: uri }); break;
+                        case 2: this.setState({ uploadImage3Uri: uri }); break;
+                        case 3: this.setState({ uploadImage4Uri: uri }); break;
+                    }
+
+                    // save to database
+                    /*
+                    var data = {
+                        pictures: {
+                            uri: uri
+                        }
+                    };
+
+                    this.updateUser(Firebase.user().uid, data);
+                    */
+                });
+
+
+                /*
+                const fileName = result.uri.split('/').pop();
+                const url = await firebase.storage().ref(fileName).getDownloadURL();
+                console.log('download URL:', url);
+                */
+
+
+
+                // close indicator
+                this.setState({ showIndicator: false });
+
+                this.setState({ uploadingImage: false });
+
+            } // press OK
+        } else {
+            Linking.openURL('app-settings:');
+        }
+    }
+
+    async uploadImage(uri, index, cb) {
+        const fileName = uri.split('/').pop();
+        var ext = fileName.split('.').pop();
+
+        if (!Util.isImage(ext)) {
+            alert('invalid image file!');
+            return;
+        }
+
+        var type = Util.getImageType(ext);
+        // console.log('file type:', type);
+
+        const formData = new FormData();
+        formData.append("image", {
+            uri,
+            name: fileName,
+            type: type
+        });
+        formData.append("userUid", Firebase.user().uid);
+        // formData.append("feedId", Firebase.user().uid);
+        formData.append("pictureIndex", index);
+
+        try {
+            let response = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/uploadFile/images",
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "multipart/form-data"
+                    },
+                    body: formData
+                }
+            );
+
+            let responseJson = await response.json();
+            console.log('uploadImage, responseJson', responseJson);
+
+            // console.log('responseJson', await response.json());
+
+            cb(responseJson.downloadUrl);
+
+            /*
+            try {
+                let downloadURL = await Firebase.storage.ref(responseJson.name).getDownloadURL();
+                // let downloadURL = await Firebase.storage.child(responseJson.name).getDownloadURL();
+                cb(downloadURL);
+            } catch (error) {
+                console.error(error);
+            }
+            */
+        } catch (error) {
+            console.error(error);
+
+            // ToDo: error handling
+        }
     }
 
     //// DB
@@ -1105,7 +1325,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        backgroundColor: '#123456',
+        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
