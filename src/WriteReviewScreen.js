@@ -57,7 +57,7 @@ export default class WriteReviewScreen extends React.Component {
     handleHardwareBackPress() {
         // this.refs.rating.stopAnimation();
 
-        this.props.navigation.state.params.onGoBack(false);
+        this.props.navigation.state.params.initFromWriteReview(false);
         this.props.navigation.goBack();
 
         return true;
@@ -106,7 +106,7 @@ export default class WriteReviewScreen extends React.Component {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
 
-                    this.props.navigation.state.params.onGoBack(false);
+                    this.props.navigation.state.params.initFromWriteReview(false);
                     this.props.navigation.goBack();
                 }
             });
@@ -121,7 +121,7 @@ export default class WriteReviewScreen extends React.Component {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
 
-                    this.props.navigation.state.params.onGoBack(false);
+                    this.props.navigation.state.params.initFromWriteReview(false);
                     this.props.navigation.goBack();
                 }
             });
@@ -132,7 +132,7 @@ export default class WriteReviewScreen extends React.Component {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
 
-                    this.props.navigation.state.params.onGoBack(true);
+                    this.props.navigation.state.params.initFromWriteReview(true);
                     this.props.navigation.goBack();
                 }
             });
@@ -195,7 +195,7 @@ export default class WriteReviewScreen extends React.Component {
                         onPress={() => {
                             // this.refs.rating.stopAnimation();
 
-                            this.props.navigation.state.params.onGoBack(false);
+                            this.props.navigation.state.params.initFromWriteReview(false);
                             this.props.navigation.goBack();
                         }}
                     >

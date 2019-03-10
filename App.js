@@ -252,7 +252,6 @@ export default class App extends React.Component {
         return (
             <React.Fragment>
                 {statusBar}
-
                 <StyleProvider style={getTheme(variables)}>
                     {/*
                     <Provider {...{ feedStore, profileStore, userFeedStore }}>
@@ -264,7 +263,6 @@ export default class App extends React.Component {
                             ref={navigatorRef => {
                                 NavigationService.setTopLevelNavigator(navigatorRef);
                             }}
-
                             screenProps={{
                                 showBadgeOnHome: this.state.showBadgeOnHome,
                                 badgeOnHomeCount: this.state.badgeOnHomeCount,
@@ -286,7 +284,6 @@ export default class App extends React.Component {
                         />
                     </Provider>
                 </StyleProvider>
-
             </React.Fragment>
         );
     }

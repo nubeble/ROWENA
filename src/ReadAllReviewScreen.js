@@ -525,7 +525,7 @@ export default class ReadAllReviewScreen extends React.Component {
         for (var i = 0; i < 4; i++) {
             reviewArray.push(
                 <View key={i}>
-                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={width} height={160}>
+                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
                         <Svg.Circle
                             cx={18 + 2}
                             cy={18 + 2}

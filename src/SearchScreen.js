@@ -34,7 +34,7 @@ export default class SearchScreen extends React.Component {
     handleHardwareBackPress() {
         console.log('SearchScreen.handleHardwareBackPress');
 
-        
+
         this.props.navigation.goBack();
 
         return true;
@@ -82,22 +82,27 @@ export default class SearchScreen extends React.Component {
                         listViewDisplayed='auto'    // true/false/undefined
                         // listViewDisplayed={this.state.showPlaceSearchListView}
                         fetchDetails={true}
-                        // fetchDetails={false}
                         renderDescription={row => row.description} // custom description render
                         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                            console.log('data', data);
-                            console.log('details', details);
-                            console.log('data.place_id', data.place_id);
-                            console.log('data.description', data.description);
-
-                            // console.log('details', details.geometry.location);
-                            // const location = details.geometry.location;
-                            // location.lat;
-                            // location.lng;
+                            // console.log('data', data);
+                            // console.log('details', details);
 
                             // close the modal in 0.3 sec
                             setTimeout(() => {
-                                !this.closed && this.props.navigation.goBack();
+                                if (this.closed) return;
+
+                                const location = details.geometry.location;
+                                const result = {
+                                    description: data.description,
+                                    place_id: data.place_id,
+                                    location: {
+                                        lat: location.lat,
+                                        lng: location.lng
+                                    }
+                                }
+
+                                this.props.navigation.state.params.initFromSearch(result);
+                                this.props.navigation.goBack();
                             }, 300);
                         }}
 

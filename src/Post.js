@@ -89,8 +89,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.springValue = new Animated.Value(1);
     }
 
-    onGoBack(result) { // back from rating
-        console.log('Post.onGoBack', result);
+    initFromWriteReview(result) { // back from rating
+        // console.log('Post.initFromWriteReview', result);
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -849,7 +849,7 @@ export default class Post extends React.Component<InjectedProps> {
             for (var i = 0; i < 4; i++) {
                 reviewArray.push(
                     <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={width} height={120}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={120}>
                             <Svg.Circle
                                 cx={18 + 2}
                                 cy={18 + 2}
@@ -1081,7 +1081,7 @@ export default class Post extends React.Component<InjectedProps> {
             }
             */
 
-            this.props.navigation.navigate("writeReview", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
+            this.props.navigation.navigate("writeReview", { post: post, rating: rating, initFromWriteReview: (result) => this.initFromWriteReview(result) });
         }, 500); // 0.5 sec
     }
 

@@ -31,8 +31,6 @@ module.exports = (path, app) => {
         if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
             const busboy = new Busboy({ headers: req.headers });
 
-            let fileBuffer = new Buffer("");
-
             req.files = {
                 file: []
             };
@@ -40,6 +38,8 @@ module.exports = (path, app) => {
             req.field = {};
 
             busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+                let fileBuffer = new Buffer("");
+
                 file.on("data", (data) => {
                     fileBuffer = Buffer.concat([fileBuffer, data]);
                 });

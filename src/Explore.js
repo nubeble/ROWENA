@@ -56,17 +56,44 @@ export default class Explore extends React.Component<InjectedProps> {
         const params = this.props.navigation.state.params;
 
         const place = params.place;
-        const length = params.length;
 
-        // this.setState({ searchText: place.description, cityName: place.city, feedSize: length });
-        this.setState({ searchText: place.name, feedSize: length });
-
-        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
-        this.props.feedStore.init(query, 'timestamp');
-
+        this.init(place);
+        
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
+    }
+    
+    init(place) {
+        // this.setState({ searchText: place.description, cityName: place.city, feedSize: length });
+        this.setState({ searchText: place.name, feedSize: place.length });
+
+        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
+        this.props.feedStore.init(query, 'timestamp');
+    }
+
+    async initFromSearch(result) {
+        console.log('Explore.initFromSearch', result);
+
+        // load length from database
+        const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
+        let count = 0;
+        if (placeDoc.exists) {
+            let field = placeDoc.data().count;
+            if (field) count = field;
+        }
+
+        // console.log('count', count);
+
+        const place = {
+            name: result.description,
+            place_id: result.place_id,
+            length: count
+            // location: result.location
+        }
+
+        // ToDo: 
+        this.init(place);
     }
 
     @autobind
@@ -177,7 +204,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("exploreSearch");
+                                    this.props.navigation.navigate("exploreSearch", { initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >

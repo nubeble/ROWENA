@@ -91,8 +91,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
         this.springValue = new Animated.Value(1);
     }
 
-    onGoBack(result) { // back from rating
-        console.log('PostScreen.onGoBack', result);
+    initFromWriteReview(result) { // back from rating
+        console.log('PostScreen.initFromWriteReview', result);
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -271,7 +271,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         const placeId = post.placeId;
         const feedId = post.id;
         const uid = Firebase.user().uid;
-        
+
         const name = post.name;
         const placeName = post.placeName;
         const averageRating = post.averageRating;
@@ -368,7 +368,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 }}
                                 onPress={this.edit}
                             >
-                                <MaterialIcons name="edit" color="rgba(255, 255, 255, 0.8)" size={24} />
+                                <Ionicons name="md-create" color="rgba(255, 255, 255, 0.8)" size={24} />
                             </TouchableOpacity>
                             :
                             <TouchableWithoutFeedback onPress={this.toggle}>
@@ -870,7 +870,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             for (var i = 0; i < 4; i++) {
                 reviewArray.push(
                     <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={width} height={120}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={120}>
                             <Svg.Circle
                                 cx={18 + 2}
                                 cy={18 + 2}
@@ -1102,7 +1102,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             }
             */
 
-            this.props.navigation.navigate("writeReviewModal", { post: post, rating: rating, onGoBack: (result) => this.onGoBack(result) });
+            this.props.navigation.navigate("writeReviewModal", { post: post, rating: rating, initFromWriteReview: (result) => this.initFromWriteReview(result) });
         }, 500); // 0.5 sec
     }
 

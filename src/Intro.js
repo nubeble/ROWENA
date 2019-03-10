@@ -35,6 +35,10 @@ type InjectedProps = {
 const DEFAULT_PLACE_COUNT = 6;
 const DEFAULT_FEED_COUNT = 6;
 
+// 1:1 image
+const imageWidth = parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2;
+const imageHeight = imageWidth;
+
 // 5:3 image
 const itemWidth = Dimensions.get('window').width - 40;
 const itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
@@ -132,6 +136,31 @@ export default class Intro extends React.Component {
 
         this.getPopularFeeds();
         this.getRecentFeeds();
+    }
+
+    async initFromSearch(result) {
+        console.log('Intro.initFromSearch', result);
+
+        // load length from database
+        const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
+        let count = 0;
+        if (placeDoc.exists) {
+            let field = placeDoc.data().count;
+            if (field) count = field;
+        }
+
+        // console.log('count', count);
+
+        const place = {
+            name: result.description,
+            place_id: result.place_id,
+            length: count
+            // location: result.location
+        }
+
+        setTimeout(() => {
+            this.props.navigation.navigate("exploreMain", { place: place });
+        }, Cons.buttonTimeoutShort);
     }
 
     @autobind
@@ -469,7 +498,7 @@ export default class Intro extends React.Component {
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("introSearch");
+                                    this.props.navigation.navigate("introSearch", { initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -480,7 +509,7 @@ export default class Intro extends React.Component {
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("introSearch");
+                                    this.props.navigation.navigate("introSearch", { initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -603,36 +632,35 @@ export default class Intro extends React.Component {
                                 }
                             }
 
+                            if (!place_id) {
+                                return (
+                                    <View style={styles.pictureContainer}>
+                                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={imageWidth} height={imageHeight}>
+                                            <Svg.Rect
+                                                x={0}
+                                                y={0}
+                                                width={imageWidth}
+                                                height={imageHeight}
+                                            />
+                                        </SvgAnimatedLinearGradient>
+                                    </View>
+                                );
+                            }
+
                             return (
                                 <TouchableOpacity
                                     onPress={() => {
-                                        if (!place_id) return;
-
                                         setTimeout(() => {
-                                            this.props.navigation.navigate("exploreMain", { place: place, length: length });
+                                            this.props.navigation.navigate("exploreMain", { place: place });
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                 >
                                     <View style={styles.pictureContainer}>
-                                        {
-                                            place_id ?
-                                                /*
-                                                <SmartImage
-                                                    style={styles.picture}
-                                                    // preview={item.preview}
-                                                    // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={uri}
-                                                />
-                                                */
-                                                <Image
-                                                    style={styles.picture}
-                                                    source={{ uri: imageUri }}
-                                                />
-                                                :
-                                                <View style={{ width: '100%', height: '100%', borderRadius: 2, backgroundColor: 'black', justifyContent: 'center', alignItems: 'center' }}>
-                                                    <RefreshIndicator />
-                                                </View>
-                                        }
+                                        <Image
+                                            style={styles.picture}
+                                            source={{ uri: imageUri }}
+                                            fadeDuration={0}
+                                        />
                                         <View style={styles.content}>
                                             <Text style={{
                                                 textAlign: 'center',
@@ -641,7 +669,6 @@ export default class Intro extends React.Component {
                                                 lineHeight: 26,
                                                 fontFamily: "SFProText-Bold"
                                             }}>{`${(name) ? name : ''}`}</Text>
-
                                             <Text style={{
                                                 textAlign: 'center',
                                                 color: Theme.color.subtitle,
@@ -685,6 +712,7 @@ export default class Intro extends React.Component {
         if (this.state.popularFeeds.length === 0 && Intro.popularFeeds.length === 0) {
             // show indicator
             return (
+                /*
                 <View style={{
                     width: itemWidth, height: itemHeight, marginHorizontal: 20, borderRadius: 2,
                     marginBottom: Theme.spacing.base,
@@ -692,6 +720,22 @@ export default class Intro extends React.Component {
                     justifyContent: 'center', alignItems: 'center'
                 }}>
                     <RefreshIndicator />
+                </View>
+                */
+                <View style={{
+                    width: itemWidth, height: itemHeight, marginHorizontal: 20, borderRadius: 2,
+                    marginBottom: Theme.spacing.base,
+                    // backgroundColor: 'black',
+                    // justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                        <Svg.Rect
+                            x={0}
+                            y={0}
+                            width={itemWidth}
+                            height={itemHeight}
+                        />
+                    </SvgAnimatedLinearGradient>
                 </View>
             );
         }
@@ -764,6 +808,7 @@ export default class Intro extends React.Component {
         if (this.state.recentFeeds.length === 0 && Intro.recentFeeds.length === 0) {
             // show indicator
             return (
+                /*
                 <View style={{
                     width: itemWidth, height: itemHeight, marginHorizontal: 20, borderRadius: 2,
                     marginBottom: Theme.spacing.base,
@@ -771,6 +816,22 @@ export default class Intro extends React.Component {
                     justifyContent: 'center', alignItems: 'center'
                 }}>
                     <RefreshIndicator />
+                </View>
+                */
+                <View style={{
+                    width: itemWidth, height: itemHeight, marginHorizontal: 20, borderRadius: 2,
+                    marginBottom: Theme.spacing.base,
+                    // backgroundColor: 'black',
+                    // justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                        <Svg.Rect
+                            x={0}
+                            y={0}
+                            width={itemWidth}
+                            height={itemHeight}
+                        />
+                    </SvgAnimatedLinearGradient>
                 </View>
             );
         }
@@ -935,13 +996,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     pictureContainer: {
-        // width: parseInt(Dimensions.get('window').width) / 2 - 12,
-        // height: parseInt(Dimensions.get('window').width) / 2 - 12,
-        width: parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2,
-        height: parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2,
-        borderRadius: 2,
-        // marginVertical: Theme.spacing.tiny,
-        // marginHorizontal: Theme.spacing.tiny
+        width: imageWidth,
+        height: imageHeight,
+        // borderRadius: 2,
         marginVertical: 4,
         marginHorizontal: 4
     },

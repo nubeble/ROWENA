@@ -347,7 +347,7 @@ export default class SignUpWithEmail extends React.Component {
         // const showIndicator = this.state.showIndicator;
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
-        
+
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [
@@ -367,53 +367,39 @@ export default class SignUpWithEmail extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-                // blurRadius={Platform.OS === "ios" ? 32 : 2}
+            // blurRadius={Platform.OS === "ios" ? 32 : 2}
             >
-                <View style={{ backgroundColor: 'rgba(0,0,0,0.4)', flex: 1, justifyContent: 'center' }}>
-                    <View style={styles.container}>
-
-                        <Animated.View
-                            style={[styles.notification, notificationStyle]}
-                            ref={notification => this._notification = notification}
+                <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}>
+                    <View style={styles.searchBar}>
+                        <TouchableOpacity
+                            style={{
+                                width: 48,
+                                height: 48,
+                                position: 'absolute',
+                                bottom: 2,
+                                left: 2,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => this.props.navigation.goBack()}
                         >
-                            <Text style={styles.notificationText}>{this.state.notification}</Text>
-                            <TouchableOpacity
-                                style={styles.notificationButton}
-                                onPress={() => this.hideNotification()}
-                            >
-                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
-                            </TouchableOpacity>
-                        </Animated.View>
+                            <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        </TouchableOpacity>
+                    </View>
 
-                        {/*
-                        <ActivityIndicator
-                            style={styles.activityIndicator}
-                            animating={showIndicator}
-                            size="large"
-                            color='grey'
-                        />
-                        */}
+                    <Animated.View
+                        style={[styles.notification, notificationStyle]}
+                        ref={notification => this._notification = notification}
+                    >
+                        <Text style={styles.notificationText}>{this.state.notification}</Text>
+                        <TouchableOpacity
+                            style={styles.notificationButton}
+                            onPress={() => this.hideNotification()}
+                        >
+                            <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        </TouchableOpacity>
+                    </Animated.View>
 
-                        {/*
-                        <View style={{ position: 'absolute', top: 34, width: '100%', backgroundColor: '#999999', height: 2 }}/>
-                        */}
-
-                        <View style={styles.searchBar}>
-                            <TouchableOpacity
-                                style={{
-                                    width: 48,
-                                    height: 48,
-                                    position: 'absolute',
-                                    bottom: 2,
-                                    left: 2,
-                                    justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => this.props.navigation.goBack()}
-                            >
-                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                            </TouchableOpacity>
-                        </View>
-
+                    <View style={{ flex: 1 }}>
                         <Text style={{
                             // marginTop: 2,
                             marginLeft: 22,
@@ -426,7 +412,7 @@ export default class SignUpWithEmail extends React.Component {
                         <Form style={{ marginLeft: 4, marginRight: 16 }}>
                             <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>EMAIL ADDRESS</Label>
                             <Item>
-                                <Input ref='emailInput' style={{ height: 38, fontSize: 22, lineHeight: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                <Input ref='emailInput' style={{ height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                     keyboardType={'email-address'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
@@ -451,7 +437,7 @@ export default class SignUpWithEmail extends React.Component {
                                 <Text style={{ fontSize: 13, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
                             </TouchableOpacity>
                             <Item>
-                                <Input ref='pwInput' style={{ height: 38, fontSize: 22, lineHeight: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                <Input ref='pwInput' style={{ height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                     // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
                                     secureTextEntry={this.state.securePwInput}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
@@ -469,28 +455,21 @@ export default class SignUpWithEmail extends React.Component {
                                 {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             </Item>
                         </Form>
+                    </View>
 
-                        {/*
-                        <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={ this.state.invalid }>
-                            <Text style={{ fontWeight: 'bold', fontSize: 16, color: this.state.signUpButtomTextColor }}>Sign up</Text>
+                    <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                        <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid}>
+                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Sign up</Text>
+                            {
+                                this.state.showSignUpLoader &&
+                                <ActivityIndicator
+                                    style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                    animating={true}
+                                    size="small"
+                                    color='rgba(0, 0, 0, 0.6)'
+                                />
+                            }
                         </TouchableOpacity>
-                        */}
-                        <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                            <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid}>
-                                <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Sign up</Text>
-                                {
-                                    this.state.showSignUpLoader &&
-                                    <ActivityIndicator
-                                        style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
-                                        animating={true}
-                                        size="small"
-                                        color='rgba(0, 0, 0, 0.6)'
-                                    />
-                                }
-                            </TouchableOpacity>
-                        </View>
-
-
                     </View>
                 </View>
             </ImageBackground>
@@ -499,9 +478,11 @@ export default class SignUpWithEmail extends React.Component {
 }
 
 const styles = StyleSheet.create({
+    /*
     container: {
         flex: 1
     },
+    */
     searchBar: {
         height: Cons.searchBarHeight,
         // paddingBottom: 8 + 4, // paddingBottom from searchBar

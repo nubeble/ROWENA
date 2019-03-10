@@ -1,5 +1,9 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Text, BackHandler, Dimensions, Image } from 'react-native';
+import {
+    StyleSheet, TouchableOpacity, View, Text, BackHandler, Dimensions, Image, TextInput,
+    Platform,
+    // DatePickerAndroid, DatePickerIOS
+} from 'react-native';
 import { Permissions, Linking, ImagePicker } from 'expo';
 import { Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
@@ -9,20 +13,35 @@ import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import Util from './Util';
 import autobind from 'autobind-decorator';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import DateTimePicker from 'react-native-modal-datetime-picker';
+import moment from 'moment';
 
 const imageViewWidth = Dimensions.get('window').width / 2;
 const imageViewHeight = imageViewWidth / 4 * 3;
 
-const imageWidth = imageViewWidth * 0.84;
-const imageHeight = imageViewHeight * 0.84;
+const imageWidth = imageViewWidth * 0.8;
+const imageHeight = imageViewHeight * 0.8;
 
 
 export default class AdvertisementMain extends React.Component {
     state = {
         uploadImage1Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
-        uploadImage2Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
+        uploadImage2Uri: null,
         uploadImage3Uri: null,
-        uploadImage4Uri: null
+        uploadImage4Uri: null,
+
+        name: '',
+
+        showDatePicker: false,
+        datePickerTitle: null,
+        datePickerDate: new Date(1990, 1, 1),
+        birthday: null,
+
+        height: '',
+        weight: '',
+
+
     };
 
     componentDidMount() {
@@ -40,6 +59,66 @@ export default class AdvertisementMain extends React.Component {
         this.hardwareBackPressListener.remove();
 
         this.closed = true;
+    }
+
+    validateName(text) {
+        this.setState({ name: text });
+    }
+
+    onFocusHeight() {
+        // clear
+        this.setState({ height: '' });
+    }
+
+    onBlurHeight() {
+        // set cm
+        const text = this.state.height;
+
+        if (text.length === 0) return;
+
+        this.setState({ height: text + ' cm' });
+    }
+
+    validateHeight(text) {
+        if (text.length === 0) {
+            this.setState({ height: '' });
+
+            return;
+        }
+
+        if (text.length > 3) {
+            return;
+        }
+
+        this.setState({ height: text });
+    }
+
+    onFocusWeight() {
+        // clear
+        this.setState({ weight: '' });
+    }
+
+    onBlurWeight() {
+        // set kg
+        const text = this.state.weight;
+
+        if (text.length === 0) return;
+
+        this.setState({ weight: text + ' kg' });
+    }
+
+    validateWeight(text) {
+        if (text.length === 0) {
+            this.setState({ weight: '' });
+
+            return;
+        }
+
+        if (text.length > 3) {
+            return;
+        }
+
+        this.setState({ weight: text });
     }
 
     render() {
@@ -63,42 +142,203 @@ export default class AdvertisementMain extends React.Component {
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
-                <View style={{ flex: 1 }}>
-
-
+                <KeyboardAwareScrollView style={{ flex: 1 }}>
 
                     {/* image editor view */}
-                    <View style={{ width: '100%' }}>
+                    <Text style={{ paddingHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        PICTURES
+                    </Text>
+                    <View style={{ width: '100%', marginBottom: 20 }}>
                         {/* row 1 view */}
-                        <View style={{ width: '100%', marginBottom: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                             {/* cell 1 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
                                 {
                                     this.renderImage(1, this.state.uploadImage1Uri)
                                 }
                             </View>
                             {/* cell 2 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
                                 {
                                     this.renderImage(2, this.state.uploadImage2Uri)
                                 }
                             </View>
                         </View>
                         {/* row 2 view */}
-                        <View style={{ width: '100%', marginBottom: 12, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
                             {/* cell 1 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
                                 {
                                     this.renderImage(3, this.state.uploadImage3Uri)
                                 }
                             </View>
                             {/* cell 2 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
                                 {
                                     this.renderImage(4, this.state.uploadImage4Uri)
                                 }
                             </View>
                         </View>
+                    </View>
+
+                    {/* input view */}
+                    <View style={{ paddingHorizontal: 4 }}>
+                        {/* 1. name */}
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            NAME
+                        </Text>
+                        <TextInput
+                            style={{
+                                paddingHorizontal: 18,
+                                height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                            }}
+                            // keyboardType={'email-address'}
+                            // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                            onChangeText={(text) => this.validateName(text)}
+                            selectionColor={Theme.color.selection}
+                            keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                            autoCapitalize="words"
+                            placeholder='Selena Gomez'
+                            placeholderTextColor='rgb(160, 160, 160)'
+                            value={this.state.name}
+                        />
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+                        {/* 2. birthday */}
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            BIRTHDAY
+                        </Text>
+                        {/* picker */}
+                        <TouchableOpacity
+                            onPress={() => this.showDateTimePicker('What is your date of birth?')}
+                        >
+                            {/*
+                            <View style={{ width: '40%', height: 38, marginLeft: 9 + 10, paddingLeft: 10, borderColor: 'rgba(255, 255, 255, 0.8)', borderWidth: 1, borderRadius: 2, justifyContent: 'center', alignItems: 'flex-start' }}>
+                                {
+                                    !this.state.birthday ?
+                                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>{'DD  MM  YYYY'}</Text>
+                                        :
+                                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>{this.state.birthday}</Text>
+                                }
+                                <View
+                                    style={{ position: 'absolute', right: 4, top: (38 - 24) / 2, width: 24, height: 24, justifyContent: "flex-start", alignItems: "center" }}
+                                >
+                                    <Ionicons name='md-calendar' color="rgba(255, 255, 255, 0.8)" size={18} />
+                                </View>
+                            </View>
+                            */}
+                            <Text
+                                style={[{
+                                    paddingHorizontal: 18,
+                                    height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: !this.state.birthday ? 'rgb(160, 160, 160)' : 'rgba(255, 255, 255, 0.8)'
+                                },
+                                Platform.OS === 'ios' && {
+                                    paddingTop: 4
+                                }
+                                ]}
+                            >{this.state.birthday ? this.state.birthday : 'Select a date'}</Text>
+                        </TouchableOpacity>
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+                        {/* 3. height */}
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            HEIGHT
+                        </Text>
+                        <TextInput
+                            style={{
+                                paddingHorizontal: 18,
+                                height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                                width: '50%'
+                            }}
+                            keyboardType={'phone-pad'}
+                            // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                            onFocus={(e) => this.onFocusHeight()}
+                            onBlur={(e) => this.onBlurHeight()}
+                            onChangeText={(text) => this.validateHeight(text)}
+                            selectionColor={Theme.color.selection}
+                            keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            placeholder='164 cm'
+                            placeholderTextColor='rgb(160, 160, 160)'
+                            value={this.state.height}
+                        />
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+                        {/* 4. weight */}
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            WEIGHT
+                        </Text>
+                        <TextInput
+                            style={{
+                                paddingHorizontal: 18,
+                                height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                                width: '50%'
+                            }}
+                            keyboardType={'phone-pad'}
+                            onFocus={(e) => this.onFocusWeight()}
+                            onBlur={(e) => this.onBlurWeight()}
+                            onChangeText={(text) => this.validateWeight(text)}
+                            selectionColor={Theme.color.selection}
+                            keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                            placeholder='45 kg'
+                            placeholderTextColor='rgb(160, 160, 160)'
+                            value={this.state.weight}
+                        />
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+                        {/* 5. breasts */}
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            BREASTS
+                        </Text>
+
+                        {/* ToDo: picker - A, B, C, D, E, F */}
+
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+
+
+
+
+
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            LOCATION
+                        </Text>
+
+                        {/* ToDo: open search screen */}
+
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                            NOTE
+                        </Text>
+                        <TextInput
+                            style={{
+                                paddingLeft: 20,
+                                paddingRight: 20,
+                                paddingTop: 20,
+                                paddingBottom: 20,
+                                backgroundColor: 'blue',
+                                height: 100,
+                                fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                            }}
+                            // keyboardType={'email-address'}
+                            // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                            // onChangeText={(text) => this.validateEmail(text)}
+                            selectionColor={Theme.color.selection}
+                            keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                        />
+
+                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
                     </View>
 
 
@@ -109,47 +349,62 @@ export default class AdvertisementMain extends React.Component {
 
 
 
-                    <TouchableOpacity
-                        onPress={() => this.makeDummyData()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => this.makeBangkok()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => this.makePattaya()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => this.makeManila()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => this.makeMacao()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macao)</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={async () => await this.removeFeed()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
-                    </TouchableOpacity>
-                </View>
 
 
 
+
+
+
+                    <View style={{ marginTop: 200 }}>
+                        <TouchableOpacity
+                            onPress={() => this.makeDummyData()}
+                            style={styles.bottomButton}
+                        >
+                            <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => this.makeBangkok()}
+                            style={styles.bottomButton}
+                        >
+                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => this.makePattaya()}
+                            style={styles.bottomButton}
+                        >
+                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => this.makeManila()}
+                            style={styles.bottomButton}
+                        >
+                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => this.makeMacao()}
+                            style={styles.bottomButton}
+                        >
+                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macao)</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            onPress={async () => await this.removeFeed()}
+                            style={styles.bottomButton}
+                        >
+                            <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
+                        </TouchableOpacity>
+                    </View>
+                </KeyboardAwareScrollView>
+
+
+                <DateTimePicker
+                    isVisible={this.state.showDatePicker}
+                    onConfirm={this._handleDatePicked}
+                    onCancel={this._hideDateTimePicker}
+
+                    date={this.state.datePickerDate}
+                    titleIOS={this.state.datePickerTitle}
+                />
             </View>
         );
     }
@@ -157,18 +412,20 @@ export default class AdvertisementMain extends React.Component {
     renderImage(number, uri) {
         if (!uri) {
             return (
-                <View style={{ width: imageWidth, height: imageHeight, borderRadius: 2, borderColor: 'darkgrey', borderWidth: 2, borderStyle: 'dashed', backgroundColor: 'dimgrey' }}>
+                <View style={{ width: imageWidth, height: imageHeight }}>
+                    <View style={{ width: '100%', height: '100%', borderRadius: 2, borderColor: 'darkgrey', borderWidth: 2, borderStyle: 'dashed', backgroundColor: 'dimgrey' }} />
+
                     {/* number */}
                     <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'white', position: 'absolute', top: 2, left: 8 }}>{number}</Text>
 
                     {/* icon */}
                     <TouchableOpacity
-                        style={{ width: 40, height: 40, position: 'absolute', bottom: -20 + 8, right: -20 + 8, justifyContent: "center", alignItems: "center" }}
+                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: '#FFB5C2', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                         onPress={() => {
                             this.uploadPicture(number - 1);
                         }}
                     >
-                        <Ionicons name='md-add-circle' color="#FFB5C2" size={36} />
+                        <Ionicons name='ios-add' color='white' size={24} />
                     </TouchableOpacity>
                 </View>
             );
@@ -183,12 +440,12 @@ export default class AdvertisementMain extends React.Component {
 
                 {/* icon */}
                 <TouchableOpacity
-                    style={{ width: 40, height: 40, position: 'absolute', bottom: -20 + 8, right: -20 + 8, justifyContent: "center", alignItems: "center" }}
+                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'white', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                     onPress={() => {
-                        // this.props.navigation.dispatch(NavigationActions.back());
+                        this.uploadPicture(number - 1);
                     }}
                 >
-                    <Ionicons name='md-close-circle' color="white" size={36} />
+                    <Ionicons name='md-create' color='#FFB5C2' size={18} />
                 </TouchableOpacity>
             </View>
         );
@@ -1317,6 +1574,114 @@ export default class AdvertisementMain extends React.Component {
 
         Vars.userFeedsChanged = true;
     }
+
+
+
+
+    /*
+    async openCalendar() {
+        try {
+            const { action, year, month, day } = await DatePickerAndroid.open({
+                date: new Date(1990, 1, 1)
+            });
+
+            if (action !== DatePickerAndroid.dismissedAction) {
+                // Selected year, month (0-11), day
+                // this.setState({ day, month, year });
+
+                let _day = '';
+                if (day < 10) {
+                    _day = '0' + day;
+                } else {
+                    _day = day.toString();
+                }
+
+                let _month = '';
+                switch (month) {
+                    case 1: _month = 'JAN'; break;
+                    case 2: _month = 'FEB'; break;
+                    case 3: _month = 'MAR'; break;
+                    case 4: _month = 'APR'; break;
+                    case 5: _month = 'MAY'; break;
+                    case 6: _month = 'JUN'; break;
+                    case 7: _month = 'JUL'; break;
+                    case 8: _month = 'AUG'; break;
+                    case 9: _month = 'SEP'; break;
+                    case 10: _month = 'OCT'; break;
+                    case 11: _month = 'NOV'; break;
+                    case 12: _month = 'DEC'; break;
+                }
+
+                let _year = year.toString();
+
+                const birthday = _month + '  ' + _day + '  ' + _year;
+                this.setState({ birthday });
+            }
+
+        } catch ({ code, message }) {
+            console.warn('Cannot open date picker', message);
+        }
+    }
+
+    onDateChange(date) {
+        console.log('date', date);
+        this.setState({ birthday: date });
+    }
+    */
+
+    showDateTimePicker(title) {
+        this.setState({ datePickerTitle: title, showDatePicker: true });
+    }
+
+    _hideDateTimePicker = () => this.setState({ showDatePicker: false });
+
+    _handleDatePicked = (date) => {
+        console.log('A date has been picked: ', date);
+
+        this._hideDateTimePicker();
+
+        const _date = new Date(date);
+
+        const day = _date.getDate();
+        const month = _date.getMonth();
+        const year = _date.getFullYear();
+        console.log('day', day);
+        console.log('month', month);
+        console.log('year', year);
+
+        let _day = '';
+        if (day < 10) {
+            _day = '0' + day.toString();
+        } else {
+            _day = day.toString();
+        }
+
+        let _month = '';
+        switch (month) {
+            case 0: _month = 'JAN'; break;
+            case 1: _month = 'FEB'; break;
+            case 2: _month = 'MAR'; break;
+            case 3: _month = 'APR'; break;
+            case 4: _month = 'MAY'; break;
+            case 5: _month = 'JUN'; break;
+            case 6: _month = 'JUL'; break;
+            case 7: _month = 'AUG'; break;
+            case 8: _month = 'SEP'; break;
+            case 9: _month = 'OCT'; break;
+            case 10: _month = 'NOV'; break;
+            case 11: _month = 'DEC'; break;
+        }
+
+        let _year = '';
+        _year = year.toString();
+
+        const birthday = _day + '  ' + _month + '  ' + _year;
+
+        this.setState({ birthday, datePickerDate: _date });
+    };
+
+
+
 }
 
 const styles = StyleSheet.create({
@@ -1351,4 +1716,3 @@ const styles = StyleSheet.create({
 
 
 });
-

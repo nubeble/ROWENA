@@ -9,6 +9,7 @@ import { RefreshIndicator, Post, Theme, FirstPost } from "../components";
 import PreloadImage from '../../../PreloadImage';
 import type { FeedEntry } from "../components/Model";
 import type { NavigationProps } from "../components/Types";
+import { Cons, Vars } from "../../../Globals";
 
 type FlatListItem<T> = {
     item: T

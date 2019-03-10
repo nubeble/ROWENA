@@ -80,7 +80,8 @@ const theme: Theme = {
         textInput: "rgb(208, 211, 218)",
         selection: "rgb(62, 165, 255)",
         placeholder: "rgb(160, 160, 160)",
-        skeleton: "rgb(80, 80, 80)"
+        skeleton1: "#505050",
+        skeleton2: "#606060"
     },
     palette: {
         primary: "#00AAFF",

@@ -229,6 +229,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     render() {
         const { profile } = this.props.profileStore;
 
+        // if (!profile) return null;
+
         const baselineTop = 0;
 
         const avatarName = (profile.name) ? profile.name : 'Max Power';

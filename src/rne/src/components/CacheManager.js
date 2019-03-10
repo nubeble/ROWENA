@@ -1,12 +1,11 @@
 // @flow
 import * as _ from "lodash";
-import {FileSystem} from "expo";
+import { FileSystem } from "expo";
 import SHA1 from "crypto-js/sha1";
 
 const BASE_DIR = `${FileSystem.cacheDirectory}expo-image-cache/`;
 
 export class CacheEntry {
-
     uri: string
     path: string;
 
@@ -15,8 +14,8 @@ export class CacheEntry {
     }
 
     async getPath(): Promise<?string> {
-        const {uri} = this;
-        const {path, exists, tmpPath} = await getCacheEntry(uri);
+        const { uri } = this;
+        const { path, exists, tmpPath } = await getCacheEntry(uri);
         if (exists) {
             return path;
         }
@@ -55,6 +54,6 @@ const getCacheEntry = async (uri: string): Promise<{ exists: boolean, path: stri
         // do nothing
     }
     const info = await FileSystem.getInfoAsync(path);
-    const {exists} = info;
+    const { exists } = info;
     return { exists, path, tmpPath };
 };
