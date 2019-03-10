@@ -4,19 +4,19 @@
 }
 */
 {
-	"indexes": [
-		{
-			"collectionId": "feed",
-			"fields": [
-				{
-					"fieldPath": "uid",
-					"mode": "ASCENDING"
-				},
-				{
-					"fieldPath": "timestamp",
-					"mode": "DESCENDING"
-				}
-			]
-		}
-	]
+    "indexes": [
+        {
+            "collectionId": "feed",
+            "fields": [
+                {
+                    "fieldPath": "uid",
+                    "mode": "ASCENDING"
+                },
+                {
+                    "fieldPath": "timestamp",
+                    "mode": "DESCENDING"
+                }
+            ]
+        }
+    ]
 }

@@ -16,6 +16,7 @@ export default class CheckMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('CheckMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;

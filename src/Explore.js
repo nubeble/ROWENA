@@ -98,6 +98,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('Explore.handleHardwareBackPress');
         // console.log('Explore.handleHardwareBackPress');
         // this.props.navigation.goBack(); // not working
         // this.props.navigation.dispatch(NavigationActions.back()); // not working

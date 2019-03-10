@@ -1,55 +1,55 @@
 {
-	"expo": {
-		"name": "Rowena",
-		"description": "CHANEL of the social dating apps.",
-		"slug": "rowena",
-		"privacy": "public",
-		"sdkVersion": "31.0.0",
-		"version": "1.0.0",
-		"platforms": [
-			"ios",
-			"android"
-		],
-		"orientation": "portrait",
-		"primaryColor": "#FFFFFF",
-		"icon": "./assets/logo.png",
-		"assetBundlePatterns": [
-			"**/*"
-		],
-		"androidStatusBar": {
-			"barStyle": "light-content",
-			"backgroundColor": "#404040"
-		},
-		"splash": {
-			"backgroundColor": "#FFB5C2",
-			"resizeMode": "cover",
-			"image": "./assets/splash.png"
-		},
-		"notification": {
-			"androidMode": "collapse",
-			"androidCollapsedTitle": "#{unread_notifications} unread message(s)"
-		},
-		"updates": {
-			"fallbackToCacheTimeout": 0
-		},
-		"android": {
-			"package": "com.nubeble.rowena",
-			"googleServicesFile": "./google-services.json",
-			"versionCode": 1,
-			"icon": "./assets/icon_android.png"
-		},
-		"ios": {
-			"bundleIdentifier": "com.nubeble.rowena",
-			"buildNumber": "1.1.2",
-			"icon": "./assets/icon_ios.png",
-			"supportsTablet": true,
-			"infoPlist": {
-				"NSAppTransportSecurity": "",
-				"NSCameraUsageDescription": "Privacy - Camera Usage Description",
-				"NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
-				"NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
-				"NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
-			}
-		}
-	}
+    "expo": {
+        "name": "Rowena",
+        "description": "CHANEL of the social dating apps.",
+        "slug": "rowena",
+        "privacy": "public",
+        "sdkVersion": "31.0.0",
+        "version": "1.0.0",
+        "platforms": [
+            "ios",
+            "android"
+        ],
+        "orientation": "portrait",
+        "primaryColor": "#FFFFFF",
+        "icon": "./assets/logo.png",
+        "assetBundlePatterns": [
+            "**/*"
+        ],
+        "androidStatusBar": {
+            "barStyle": "light-content",
+            "backgroundColor": "#404040"
+        },
+        "splash": {
+            "backgroundColor": "#FFB5C2",
+            "resizeMode": "cover",
+            "image": "./assets/splash.png"
+        },
+        "notification": {
+            "androidMode": "collapse",
+            "androidCollapsedTitle": "#{unread_notifications} unread message(s)"
+        },
+        "updates": {
+            "fallbackToCacheTimeout": 0
+        },
+        "android": {
+            "package": "com.nubeble.rowena",
+            "googleServicesFile": "./google-services.json",
+            "versionCode": 1,
+            "icon": "./assets/icon_android.png"
+        },
+        "ios": {
+            "bundleIdentifier": "com.nubeble.rowena",
+            "buildNumber": "1.1.2",
+            "icon": "./assets/icon_ios.png",
+            "supportsTablet": true,
+            "infoPlist": {
+                "NSAppTransportSecurity": "",
+                "NSCameraUsageDescription": "Privacy - Camera Usage Description",
+                "NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
+                "NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
+                "NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
+            }
+        }
+    }
 }

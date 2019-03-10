@@ -61,7 +61,7 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onFocus() {
-        console.log('ChatMain.onFocus');
+        // console.log('ChatMain.onFocus');
         this.isFocused = true;
 
         Vars.currentScreenName = 'ChatMain';
@@ -129,12 +129,13 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onBlur() {
-        console.log('ChatMain.onBlur');
+        // console.log('ChatMain.onBlur');
         this.isFocused = false;
     }
 
     @autobind
     handleHardwareBackPress() {
+        console.log('ChatMain.handleHardwareBackPress');
         this.props.navigation.navigate("intro");
 
         return true;

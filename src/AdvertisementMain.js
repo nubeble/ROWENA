@@ -50,6 +50,7 @@ export default class AdvertisementMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('AdvertisementMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -1645,9 +1646,11 @@ export default class AdvertisementMain extends React.Component {
         const day = _date.getDate();
         const month = _date.getMonth();
         const year = _date.getFullYear();
+        /*
         console.log('day', day);
         console.log('month', month);
         console.log('year', year);
+        */
 
         let _day = '';
         if (day < 10) {

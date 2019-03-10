@@ -17,6 +17,7 @@ export default class LogoutMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('LogoutMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;

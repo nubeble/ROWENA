@@ -23,6 +23,7 @@ export default class AdvertisementGuide extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('AdvertisementGuide.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;

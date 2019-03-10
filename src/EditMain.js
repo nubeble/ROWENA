@@ -28,6 +28,7 @@ export default class EditMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('EditMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;

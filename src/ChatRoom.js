@@ -124,6 +124,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
+        console.log('ChatRoom.handleHardwareBackPress');
         // this.goBack(); // works best when the goBack is async
 
         if (this.state.showAlert) {

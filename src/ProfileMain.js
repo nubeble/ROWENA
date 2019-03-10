@@ -67,7 +67,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        // console.log('ProfileMain.handleHardwareBackPress', this.state.showAlert);
+        console.log('ProfileMain.handleHardwareBackPress');
 
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
