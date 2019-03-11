@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, TouchableOpacity, View, Text, BackHandler, Dimensions, Image, TextInput,
-    Platform,
+    Platform, Picker
     // DatePickerAndroid, DatePickerIOS
 } from 'react-native';
 import { Permissions, Linking, ImagePicker } from 'expo';
@@ -40,6 +40,7 @@ export default class AdvertisementMain extends React.Component {
 
         height: '',
         weight: '',
+        breasts: '',
 
 
     };
@@ -298,9 +299,20 @@ export default class AdvertisementMain extends React.Component {
                         <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
                             BREASTS
                         </Text>
-
                         {/* ToDo: picker - A, B, C, D, E, F */}
-
+                        <Picker
+                            mode='dropdown'
+                            selectedValue={this.state.breasts}
+                            style={{ height: 38, width: '50%', backgroundColor: 'green' }}
+                            onValueChange={(itemValue, itemIndex) => this.setState({ breasts: itemValue })}>
+                            <Picker.Item label="Select your bra size" value="" />
+                            <Picker.Item label="A" value="A" />
+                            <Picker.Item label="B" value="B" />
+                            <Picker.Item label="C" value="C" />
+                            <Picker.Item label="D" value="D" />
+                            <Picker.Item label="E" value="E" />
+                            <Picker.Item label="F" value="F" />
+                        </Picker>
                         <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
 
 
