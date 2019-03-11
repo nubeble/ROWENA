@@ -15,13 +15,47 @@ import Util from './Util';
 import autobind from 'autobind-decorator';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
-import moment from 'moment';
+import Select from 'react-native-picker-select';
+// import { Chevron } from 'react-native-shapes';
 
 const imageViewWidth = Dimensions.get('window').width / 2;
 const imageViewHeight = imageViewWidth / 4 * 3;
 
 const imageWidth = imageViewWidth * 0.8;
 const imageHeight = imageViewHeight * 0.8;
+
+const braSizeItems = [
+    {
+        label: 'A cup',
+        value: 'A cup',
+        // color: 'yellow'
+    },
+    {
+        label: 'B cup',
+        value: 'B cup',
+        // color: 'yellow'
+    },
+    {
+        label: 'C cup',
+        value: 'C cup',
+        // color: 'yellow'
+    },
+    {
+        label: 'D cup',
+        value: 'D cup',
+        // color: 'green'
+    },
+    {
+        label: 'E cup',
+        value: 'E cup',
+        // color: 'blue'
+    },
+    {
+        label: 'F cup',
+        value: 'F cup',
+        // color: 'purple'
+    }
+];
 
 
 export default class AdvertisementMain extends React.Component {
@@ -144,7 +178,7 @@ export default class AdvertisementMain extends React.Component {
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
-                <KeyboardAwareScrollView style={{ flex: 1 }}>
+                <KeyboardAwareScrollView style={{ flex: 1, paddingTop: Theme.spacing.base }}>
 
                     {/* image editor view */}
                     <Text style={{ paddingHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
@@ -202,7 +236,7 @@ export default class AdvertisementMain extends React.Component {
                             underlineColorAndroid="transparent"
                             autoCorrect={false}
                             autoCapitalize="words"
-                            placeholder='Selena Gomez'
+                            placeholder="Type your name / girl's name"
                             placeholderTextColor='rgb(160, 160, 160)'
                             value={this.state.name}
                         />
@@ -210,7 +244,7 @@ export default class AdvertisementMain extends React.Component {
 
                         {/* 2. birthday */}
                         <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            BIRTHDAY
+                            AGE (BIRTHDAY)
                         </Text>
                         {/* picker */}
                         <TouchableOpacity
@@ -240,7 +274,10 @@ export default class AdvertisementMain extends React.Component {
                                     paddingTop: 4
                                 }
                                 ]}
-                            >{this.state.birthday ? this.state.birthday : 'Select a date'}</Text>
+                            >{this.state.birthday ? this.state.birthday : 'Select your birthday'}</Text>
+
+                            {/* ToDo: add icon */}
+
                         </TouchableOpacity>
                         <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
 
@@ -278,7 +315,8 @@ export default class AdvertisementMain extends React.Component {
                             style={{
                                 paddingHorizontal: 18,
                                 height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                                width: '50%'
+                                width: '50%',
+                                // backgroundColor: 'green'
                             }}
                             keyboardType={'phone-pad'}
                             onFocus={(e) => this.onFocusWeight()}
@@ -300,6 +338,7 @@ export default class AdvertisementMain extends React.Component {
                             BREASTS
                         </Text>
                         {/* ToDo: picker - A, B, C, D, E, F */}
+                        {/*
                         <Picker
                             mode='dropdown'
                             selectedValue={this.state.breasts}
@@ -313,7 +352,72 @@ export default class AdvertisementMain extends React.Component {
                             <Picker.Item label="E" value="E" />
                             <Picker.Item label="F" value="F" />
                         </Picker>
+                        */}
+                        <Select
+                            placeholder={{
+                                label: 'Select your bra size',
+                                value: null,
+                                // color: '#9EA0A4'
+                                // color: 'green'
+                            }}
+                            // placeholderTextColor='rgb(160, 160, 160)'
+
+                            items={braSizeItems}
+                            onValueChange={(value) => {
+                                this.setState({ breasts: value });
+                            }}
+                            style={{
+                                iconContainer: {
+                                    top: 5,
+                                    right: 100
+                                },
+                                inputAndroid: {
+                                    // marginLeft: 18,
+                                    // paddingRight: 30, // to ensure the text is never behind the icon
+                                    // height: 38,
+                                    // width: '50%',
+                                    // fontSize: 22, fontFamily: "SFProText-Regular",
+                                    // color: 'rgba(255, 255, 255, 0.8)',
+                                    // color: 'red',
+                                    // backgroundColor: 'red'
+                                    // backgroundColor: 'transparent'
+                                },
+                                inputIOS: {
+                                    /*
+                                    paddingVertical: 12,
+                                    paddingHorizontal: 10,
+                                    borderWidth: 1,
+                                    borderColor: 'gray',
+                                    borderRadius: 4,
+                                    color: 'black',
+                                    paddingRight: 30, // to ensure the text is never behind the icon
+                                    */
+                                }
+                            }}
+                            textInputProps={{
+                                style: {
+                                    paddingHorizontal: 18,
+                                    height: 38, fontSize: 22, fontFamily: "SFProText-Regular",
+                                    color: (this.state.breasts) ? 'rgba(255, 255, 255, 0.8)' : 'rgb(160, 160, 160)'
+                                }
+                            }}
+                            useNativeAndroidPickerStyle={false}
+                            value={this.state.breasts}
+
+                            Icon={() => {
+                                // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                                return null;
+                            }}
+
+                        /*
+                        ref={(el) => {
+                            this.inputRefs.favSport0 = el;
+                        }}
+                        */
+                        />
                         <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+                        {/* 6. location */}
 
 
 

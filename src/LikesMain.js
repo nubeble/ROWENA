@@ -67,7 +67,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     @autobind
     handleHardwareBackPress() {
         console.log('LikesMain.handleHardwareBackPress');
-        // this.props.navigation.goBack();
+
         this.props.navigation.navigate("intro");
 
         return true;

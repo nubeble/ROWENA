@@ -341,7 +341,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Advertise myself or my friends'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Advertise yourself / your girls'}</Text>
                                                 <AntDesign name='notification' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>

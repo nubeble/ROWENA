@@ -136,6 +136,7 @@ export default class ChatMain extends React.Component {
     @autobind
     handleHardwareBackPress() {
         console.log('ChatMain.handleHardwareBackPress');
+
         this.props.navigation.navigate("intro");
 
         return true;
