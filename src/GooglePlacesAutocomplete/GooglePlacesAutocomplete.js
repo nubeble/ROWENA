@@ -766,7 +766,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             keyboardAppearance={'dark'}
                             underlineColorAndroid={this.props.underlineColorAndroid}
                             autoCorrect={false} // ToDo: NOT work in Android
-                            // autoCapitalize="none"
+                            autoCapitalize="words"
 
                             // tintColor='rgb(234, 150, 24)'
                             selectionColor={Theme.color.selection} // ToDo: NOT work in Android

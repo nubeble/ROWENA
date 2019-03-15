@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard,
-    KeyboardAvoidingView, Animated, StatusBar, BackHandler
+    KeyboardAvoidingView, Animated, StatusBar, BackHandler, Platform
 } from 'react-native';
 import { Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -56,6 +56,14 @@ export default class WriteReviewScreen extends React.Component {
     @autobind
     handleHardwareBackPress() {
         // this.refs.rating.stopAnimation();
+
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+
+            return true;
+        }
 
         this.props.navigation.state.params.initFromWriteReview(false);
         this.props.navigation.goBack();
@@ -195,6 +203,12 @@ export default class WriteReviewScreen extends React.Component {
                         onPress={() => {
                             // this.refs.rating.stopAnimation();
 
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                                this._showNotification = false;
+                            }
+
                             this.props.navigation.state.params.initFromWriteReview(false);
                             this.props.navigation.goBack();
                         }}
@@ -202,9 +216,8 @@ export default class WriteReviewScreen extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    {/* ToDo: get geolocation of my location */}
-                    <Text style={styles.distance}>{post.name}</Text>
-
+                    <Text style={styles.searchBarTitle}>{post.name}</Text>
+                    {/*
                     <TouchableOpacity
                         style={{
                             position: 'absolute',
@@ -216,6 +229,7 @@ export default class WriteReviewScreen extends React.Component {
                     >
                         <Text style={styles.post}>Post</Text>
                     </TouchableOpacity>
+                    */}
                 </View>
 
                 <View style={styles.infoContainer}>
@@ -258,7 +272,9 @@ export default class WriteReviewScreen extends React.Component {
                             width: '100%',
                             height: Dimensions.get('window').height / 5,
                             fontSize: 16, fontFamily: "SFProText-Regular",
-                            color: "white", textAlign: 'justify', textAlignVertical: 'top', backgroundColor: '#212121'
+                            color: "white", textAlign: 'justify',
+                            textAlignVertical: 'top',
+                            backgroundColor: '#212121'
                         }}
                         placeholder='Share details of your own experience'
                         placeholderTextColor={Theme.color.placeholder}
@@ -273,7 +289,7 @@ export default class WriteReviewScreen extends React.Component {
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Post</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor, paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -293,7 +309,7 @@ export default class WriteReviewScreen extends React.Component {
         );
     }
 
-    showNotification = (msg) => {
+    showNotification(msg) {
         if (!this._showNotification) {
             this._showNotification = true;
 
@@ -396,10 +412,23 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Theme.color.background
     },
+    searchBar: {
+        height: Cons.searchBarHeight,
+        paddingBottom: 8,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    searchBarTitle: {
+        fontSize: 20,
+        fontFamily: "SFProText-Semibold",
+        color: 'rgba(255, 255, 255, 0.8)',
+        paddingBottom: 4
+    },
     notification: {
-        position: "absolute",
         width: '100%',
         height: Constants.statusBarHeight + 10,
+        position: "absolute",
         top: 0,
         backgroundColor: "rgba(255, 184, 24, 0.8)",
         zIndex: 10000,
@@ -409,36 +438,17 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     notificationText: {
-        position: 'absolute',
-        // bottom: 0,
         alignSelf: 'center',
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        color: "#FFF"
+        color: "#FFF",
+        paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        // bottom: 0,
+        bottom: 4,
         // alignSelf: 'baseline'
-    },
-    searchBar: {
-        /*
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        // zIndex: 10000,
-        */
-        width: '100%',
-        height: Cons.searchBarHeight
-    },
-    distance: {
-        position: 'absolute',
-        bottom: 8 + 4 + 3, // paddingBottom from searchBar
-        alignSelf: 'center',
-        fontSize: 16,
-        fontFamily: "SFProText-Semibold",
-        color: "rgba(255, 255, 255, 0.8)"
     },
     post: {
         alignSelf: 'center',
@@ -471,9 +481,9 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '85%',
         height: 45,
-        // alignSelf: 'center',
         backgroundColor: "rgba(255, 255, 255, 0.3)",
         borderRadius: 5,
+
         justifyContent: 'center',
         alignItems: 'center'
     }

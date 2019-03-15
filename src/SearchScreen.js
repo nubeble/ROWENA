@@ -53,22 +53,43 @@ export default class SearchScreen extends React.Component {
     }
 
     render() {
+        const from = this.props.navigation.state.params.from;
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            left: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => this.props.navigation.goBack()}
-                    >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
+                    {
+                        from === 'AdvertisementMain' ?
+                            <TouchableOpacity
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    left: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    this.props.navigation.goBack();
+                                }}
+                            >
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    left: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => this.props.navigation.goBack()}
+                            >
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+                    }
                 </View>
 
                 {

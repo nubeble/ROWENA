@@ -28,6 +28,10 @@ type PostState = {
     profile: Profile
 };
 
+// 3:2 image
+const imageWidth = Dimensions.get("window").width - (Theme.spacing.small * 2);
+const imageHeight = imageWidth / 3 * 2;
+
 
 export default class PostComp extends React.Component<PostProps, PostState> {
     state: $Shape<PostState> = {};
@@ -141,10 +145,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         );
     }
 }
-
-// const { width } = Dimensions.get("window");
-const imageWidth = Dimensions.get("window").width - (Theme.spacing.small * 2);
-const imageHeight = imageWidth / 16 * 9;
 
 const styles = StyleSheet.create({
     container: {

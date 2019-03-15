@@ -53,6 +53,8 @@ export default class App extends React.Component {
 
     componentDidMount() {
         console.log('App.componentDidMount');
+        console.log('width', Dimensions.get('window').width);
+        console.log('height', Dimensions.get('window').height);
 
         /*
         StatusBar.setBarStyle('light-content');
@@ -340,6 +342,8 @@ import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
 import AdvertisementGuide from './src/AdvertisementGuide';
 import AdvertisementMain from './src/AdvertisementMain';
+
+import Admin from './src/Admin';
 
 // -- start of AuthStackNavigator
 const AuthStackNavigator = createStackNavigator(
@@ -848,8 +852,7 @@ const AdvertisementStackNavigator = createStackNavigator(
     {
         advertisementGuide: { screen: AdvertisementGuide },
         advertisementMain: { screen: AdvertisementMain },
-
-        // user: { screen: UserModalNavigatorWrapper }
+        advertisementSearch: { screen: SearchScreen }
     },
     {
         mode: 'card',
@@ -1130,13 +1133,49 @@ class MainBottomTabNavigatorWrapper extends React.Component {
 }
 // -- end of MainBottomTabNavigator
 
+// -- start of Admin
+const AdminNavigator = createStackNavigator(
+    {
+        adminMain: { screen: Admin }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class AdminNavigatorWrapper extends React.Component {
+    static router = AdminNavigator.router;
+
+    render() {
+        return (
+            <AdminNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation,
+
+                    data: this.props.screenProps.data
+                }}
+            />
+        );
+    }
+}
+// -- end of Admin
+
 // -- start of MainStackNavigator
 const MainStackNavigator = createStackNavigator(
     {
         root: { screen: MainBottomTabNavigatorWrapper },
         map: { screen: MapScreen },
         writeReview: { screen: WriteReviewScreen },
-        chatRoom: { screen: ChatRoomStackNavigatorWrapper }
+        chatRoom: { screen: ChatRoomStackNavigatorWrapper },
+        admin: { screen: AdminNavigatorWrapper }
     },
     {
         mode: 'card',

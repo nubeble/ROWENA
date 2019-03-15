@@ -100,12 +100,21 @@ export default class ReadAllReviewScreen extends React.Component {
     handleHardwareBackPress() {
         console.log('ReadAllReviewScreen.handleHardwareBackPress');
 
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+
+            return true;
+        }
 
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
-        } else {
-            this.props.navigation.goBack();
+
+            return true;
         }
+
+        this.props.navigation.goBack();
 
         return true;
     }
@@ -197,7 +206,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             ListFooterComponent={
                                 this.state.isLoadingReview &&
                                 <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                    <RefreshIndicator/>
+                                    <RefreshIndicator />
                                 </View>
                             }
 
@@ -245,7 +254,8 @@ export default class ReadAllReviewScreen extends React.Component {
                                     borderRadius: 5,
                                     fontSize: 14,
                                     fontFamily: "SFProText-Regular",
-                                    color: "white", textAlign: 'justify', textAlignVertical: 'top',
+                                    color: "white", textAlign: 'justify',
+                                    textAlignVertical: 'top',
                                     backgroundColor: '#212121'
                                 }}
                                 placeholder='Reply to a review...'
@@ -574,7 +584,7 @@ export default class ReadAllReviewScreen extends React.Component {
                 </View>
                 :
                 <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    <FirstPost {...{ navigation }}/>
+                    <FirstPost {...{ navigation }} />
                 </View>
         );
     }
@@ -630,7 +640,7 @@ export default class ReadAllReviewScreen extends React.Component {
         this.owner = owner;
     }
 
-    showNotification = (msg) => {
+    showNotification(msg) {
         if (!this._showNotification) {
             this._showNotification = true;
 
@@ -897,16 +907,10 @@ const styles = StyleSheet.create({
         // marginTop: Theme.spacing.small + 2, // total size = 20 - 2 (margin of user feed picture)
         marginBottom: 20
     },
-    /*
-    activityIndicator: {
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0, right: 0
-    },
-    */
     notification: {
-        position: "absolute",
         width: '100%',
         height: Constants.statusBarHeight + 10,
+        position: "absolute",
         top: 0,
         backgroundColor: "rgba(255, 184, 24, 0.8)",
         zIndex: 10000,
@@ -916,17 +920,16 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     notificationText: {
-        position: 'absolute',
-        // bottom: 0,
         alignSelf: 'center',
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        color: "#FFF"
+        color: "#FFF",
+        paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        // bottom: 0,
+        bottom: 4,
         // alignSelf: 'baseline'
     }
 });

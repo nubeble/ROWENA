@@ -27,19 +27,25 @@ export var Cons = {
     buttonTimeoutLong: 300,
 
     submitButtonPaddingTop: () => {
+        if (Platform.OS === 'ios') return 0;
+
+        return 5;
+
+        /*
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
 
         switch (param) {
             case 5: return 3;
-            case 6: return 4; // Galaxy S7: 640
+            case 6: return 4; // Galaxy S7: 640, S9: 692
             case 7: return 5; // Tango: 731
-            case 8: return 6; // iphone X: 812
+            case 8: return 6;
             case 9: return 7;
         }
 
         if (param < 5) return 3;
         if (param > 9) return 7;
+        */
     },
 
     // alert dialog
@@ -92,6 +98,28 @@ export var Cons = {
     ratingTextPaddingTop: () => {
         if (Platform.OS === 'ios') return 1;
         if (Platform.OS === 'android') return 8;
+    },
+
+    // body info text padding top
+    bodyInfoTitlePaddingTop: () => {
+        /*
+        const height = Dimensions.get('window').height;
+        const param = parseInt(height / 100);
+
+        switch (param) {
+            case 5: return 7;
+            case 6: return 8; // Galaxy S7: 640
+            case 7: return 9; // Tango: 731
+            case 8: return 10; // iphone X: 812
+            case 9: return 11;
+        }
+
+        if (param < 5) return 7;
+        if (param > 9) return 11;
+        */
+
+        if (Platform.OS === 'ios') return 3;
+        if (Platform.OS === 'android') return 7;
     },
 
 

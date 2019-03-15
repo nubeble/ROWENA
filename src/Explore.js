@@ -189,7 +189,6 @@ export default class Explore extends React.Component<InjectedProps> {
                         borderRadius: 25
                     }}>
                         <TouchableOpacity
-                            // style={{ position: 'absolute', left: 12, top: 9, alignSelf: 'baseline' }}
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
@@ -200,12 +199,11 @@ export default class Explore extends React.Component<InjectedProps> {
                         >
                             <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
                         </TouchableOpacity>
-
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("exploreSearch", { initFromSearch: (result) => this.initFromSearch(result) });
+                                    this.props.navigation.navigate("exploreSearch", { from: 'Explore', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -375,7 +373,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 }}>
                                     <Swiper
                                         style={styles.wrapper}
-                                        containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: 20 }}
+                                        containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                         width={Dimensions.get('window').width}
                                         height={Dimensions.get('window').width / 21 * 9}
                                         loop={false}
@@ -475,32 +473,6 @@ export default class Explore extends React.Component<InjectedProps> {
                                         {`${(this.state.feedSize) ? 'Explore ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.searchText}
                                     </Text>
                                 </View>
-
-                                {/*
-                                <View style={{ width: '100%', backgroundColor: '#123456', paddingTop: 10, marginTop: 30 }}>
-                                    <TouchableOpacity onPress={() => this.orderByRatings()}
-                                        style={styles.bottomButton}
-                                    >
-                                        <Text style={{ fontSize: 16, color: 'white' }}>orderByRatings</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        onPress={() => this.orderByReviews()}
-                                        style={styles.bottomButton}
-                                    >
-                                        <Text style={{ fontSize: 16, color: 'white' }}>orderByReviews</Text>
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        onPress={() => this.orderByTime()}
-                                        style={styles.bottomButton}
-                                    >
-                                        <Text style={{ fontSize: 16, color: 'white' }}>orderByTime</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                */}
-
-
                                 {
                                     // !loading && hasFeed &&
                                     <View style={styles.orderTab} onLayout={(event) => {
@@ -654,7 +626,6 @@ const styles = StyleSheet.create({
     title: {
         color: Theme.color.text2,
         fontSize: 18,
-        lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
     activityIndicator: {

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, TextInput,
+    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
     Keyboard, Dimensions, Platform, StatusBar
 } from 'react-native';
 import { Header } from 'react-navigation';
@@ -47,6 +47,7 @@ export default class SignUpWithEmail extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         let that = this;
         setTimeout(function () {
@@ -57,8 +58,24 @@ export default class SignUpWithEmail extends React.Component {
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
 
         this.closed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+
+            return true;
+        }
+
+        this.props.navigation.goBack();
+
+        return true;
     }
 
     @autobind
@@ -77,7 +94,7 @@ export default class SignUpWithEmail extends React.Component {
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
 
-    showNotification = (msg) => {
+    showNotification(msg) {
         if (!this._showNotification) {
             this._showNotification = true;
 
@@ -416,13 +433,10 @@ export default class SignUpWithEmail extends React.Component {
                                     keyboardType={'email-address'}
                                     onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validateEmail(text)}
-
-                                    // selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     selectionColor={Theme.color.selection}
                                     keyboardAppearance={'dark'}
                                     underlineColorAndroid="transparent"
                                     autoCorrect={false}
-
                                     autoCapitalize="none"
                                 />
                                 {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -442,13 +456,10 @@ export default class SignUpWithEmail extends React.Component {
                                     secureTextEntry={this.state.securePwInput}
                                     onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                     onChangeText={(text) => this.validatePassword(text)}
-
-                                    // selectionColor={'rgba(255, 255, 255, 0.8)'}
                                     selectionColor={Theme.color.selection}
                                     keyboardAppearance={'dark'}
                                     underlineColorAndroid="transparent"
                                     autoCorrect={false}
-
                                     autoCapitalize="none"
                                 />
                                 {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
@@ -459,7 +470,7 @@ export default class SignUpWithEmail extends React.Component {
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                         <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid}>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor }}>Sign up</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor, paddingTop: Cons.submitButtonPaddingTop() }}>Sign up</Text>
                             {
                                 this.state.showSignUpLoader &&
                                 <ActivityIndicator
@@ -509,23 +520,24 @@ const styles = StyleSheet.create({
     },
     */
     signUpButton: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        // backgroundColor: Theme.color.selection,
+        width: '85%',
+        height: 45,
         backgroundColor: "rgba(255, 255, 255, 0.6)",
         borderRadius: 5,
+        /*
         borderColor: "transparent",
         borderWidth: 0,
-        width: '85%',
-        height: 45
+        */
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     activityIndicator: {
         position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
-        position: "absolute",
         width: '100%',
         height: Constants.statusBarHeight + 10,
+        position: "absolute",
         top: 0,
         backgroundColor: "rgba(255, 184, 24, 0.8)",
         zIndex: 10000,
@@ -535,17 +547,16 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     notificationText: {
-        position: 'absolute',
-        // bottom: 0,
         alignSelf: 'center',
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        color: "#FFF"
+        color: "#FFF",
+        paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        // bottom: 0,
+        bottom: 4,
         // alignSelf: 'baseline'
     }
 });

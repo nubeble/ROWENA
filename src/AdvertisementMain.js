@@ -1,22 +1,24 @@
 import React from 'react';
 import {
     StyleSheet, TouchableOpacity, View, Text, BackHandler, Dimensions, Image, TextInput,
-    Platform, Picker
-    // DatePickerAndroid, DatePickerIOS
+    Platform, FlatList, Animated, StatusBar
 } from 'react-native';
-import { Permissions, Linking, ImagePicker } from 'expo';
+import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import { Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from "react-native-vector-icons/AntDesign";
 import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import Util from './Util';
 import autobind from 'autobind-decorator';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Select from 'react-native-picker-select';
 // import { Chevron } from 'react-native-shapes';
+
+const textInputFontSize = 18;
+const textInputHeight = 34;
 
 const imageViewWidth = Dimensions.get('window').width / 2;
 const imageViewHeight = imageViewWidth / 4 * 3;
@@ -60,6 +62,7 @@ const braSizeItems = [
 
 export default class AdvertisementMain extends React.Component {
     state = {
+        // ToDo: test
         uploadImage1Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
         uploadImage2Uri: null,
         uploadImage3Uri: null,
@@ -75,17 +78,64 @@ export default class AdvertisementMain extends React.Component {
         height: '',
         weight: '',
         breasts: '',
+        note: '',
+        noteLength: 0,
 
+        location: '',
+        place: null,
 
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(0),
+
+        showNameAlertIcon: false,
+        showAgeAlertIcon: false,
+        showHeightAlertIcon: false,
+        showWeightAlertIcon: false,
+        showBreastsAlertIcon: false,
+        showLocationAlertIcon: false,
+        showPicturesAlertIcon: false,
+
+        viewMarginBottom: 0,
+        // showPaddingView: false
     };
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        // ToDo: iphone x, iphone xr, iphone xs, ...
+        if (Platform.OS === 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') this.setState({ viewMarginBottom: 8 });
+    }
+
+    initFromSearch(result) {
+        console.log('AdvertisementMain.initFromSearch', result);
+
+        /*
+        {
+            "description": "Cebu, Philippines",
+            "location": Object {
+                "lat": 10.3156992,
+                "lng": 123.8854366,
+            },
+            "place_id": "ChIJ_S3NjSWZqTMRBzXT2wwDNEw",
+        }
+        */
+
+        this.setState({ location: result.description, place: result });
     }
 
     @autobind
     handleHardwareBackPress() {
         console.log('AdvertisementMain.handleHardwareBackPress');
+
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+
+            return true;
+        }
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -101,9 +151,27 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ name: text });
     }
 
+    onFocusName() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+        }
+
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+    }
+
     onFocusHeight() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+        }
+
         // clear
         this.setState({ height: '' });
+
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
     }
 
     onBlurHeight() {
@@ -130,8 +198,16 @@ export default class AdvertisementMain extends React.Component {
     }
 
     onFocusWeight() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+        }
+
         // clear
         this.setState({ weight: '' });
+
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
     }
 
     onBlurWeight() {
@@ -157,11 +233,129 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ weight: text });
     }
 
+    onFocusBreasts() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+        }
+
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+    }
+
+    onFocusNote() {
+        // show padding view
+        // this.setState({ showPaddingView: true });
+
+        // console.log (this.inputViewY, this.nameY, this.birthdayY, this.heightY, this.weightY, this.breastsY, this.locationY);
+
+        // ToDo: only works in ios!
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+    }
+
+    onBlurNote() {
+        // hide padding view
+        // this.setState({ showPaddingView: false });
+    }
+
+    async post() {
+        // 1. check
+        const { name, birthday, height, weight, breasts, note, location, place, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+
+        if (uploadImage1Uri === null) {
+            this.showNotification('Please add your 1st profile picture.');
+
+            this.setState({ showPicturesAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: 0, animated: true });
+
+            return;
+        }
+
+        if (name === '') {
+            this.showNotification('Please write your name.');
+
+            this.setState({ showNameAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        if (birthday === null) {
+            this.showNotification('Please select your date of birth.');
+
+            this.setState({ showAgeAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        if (height === '') {
+            this.showNotification('Please enter your height.');
+
+            this.setState({ showHeightAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        if (weight === '') {
+            this.showNotification('Please enter your weight.');
+
+            this.setState({ showWeightAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        if (breasts === '') {
+            this.showNotification('Please select your bra size.');
+
+            this.setState({ showBreastsAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        if (location === '') {
+            this.showNotification('Please enter your city.');
+
+            this.setState({ showLocationAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        // 2. upload
+
+        // ToDo:
+
+
+
+
+
+
+    }
+
     render() {
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [
+                {
+                    translateY: this.state.offset
+                }
+            ]
+        };
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
-                    {/* close button */}
                     <TouchableOpacity
                         style={{
                             width: 48,
@@ -172,356 +366,440 @@ export default class AdvertisementMain extends React.Component {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                                this._showNotification = false;
+                            }
+
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+
+                    <Text style={styles.searchBarTitle}>{'Writing a Post'}</Text>
                 </View>
-                <KeyboardAwareScrollView style={{ flex: 1, paddingTop: Theme.spacing.base }}>
 
-                    {/* image editor view */}
-                    <Text style={{ paddingHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                        PICTURES
-                    </Text>
-                    <View style={{ width: '100%', marginBottom: 20 }}>
-                        {/* row 1 view */}
-                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            {/* cell 1 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
-                                {
-                                    this.renderImage(1, this.state.uploadImage1Uri)
-                                }
-                            </View>
-                            {/* cell 2 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
-                                {
-                                    this.renderImage(2, this.state.uploadImage2Uri)
-                                }
-                            </View>
-                        </View>
-                        {/* row 2 view */}
-                        <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                            {/* cell 1 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
-                                {
-                                    this.renderImage(3, this.state.uploadImage3Uri)
-                                }
-                            </View>
-                            {/* cell 2 view */}
-                            <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
-                                {
-                                    this.renderImage(4, this.state.uploadImage4Uri)
-                                }
-                            </View>
-                        </View>
-                    </View>
-
-                    {/* input view */}
-                    <View style={{ paddingHorizontal: 4 }}>
-                        {/* 1. name */}
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            NAME
-                        </Text>
-                        <TextInput
-                            style={{
-                                paddingHorizontal: 18,
-                                height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                            }}
-                            // keyboardType={'email-address'}
-                            // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
-                            onChangeText={(text) => this.validateName(text)}
-                            selectionColor={Theme.color.selection}
-                            keyboardAppearance={'dark'}
-                            underlineColorAndroid="transparent"
-                            autoCorrect={false}
-                            autoCapitalize="words"
-                            placeholder="Type your name / girl's name"
-                            placeholderTextColor='rgb(160, 160, 160)'
-                            value={this.state.name}
-                        />
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-
-                        {/* 2. birthday */}
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            AGE (BIRTHDAY)
-                        </Text>
-                        {/* picker */}
-                        <TouchableOpacity
-                            onPress={() => this.showDateTimePicker('What is your date of birth?')}
-                        >
-                            {/*
-                            <View style={{ width: '40%', height: 38, marginLeft: 9 + 10, paddingLeft: 10, borderColor: 'rgba(255, 255, 255, 0.8)', borderWidth: 1, borderRadius: 2, justifyContent: 'center', alignItems: 'flex-start' }}>
-                                {
-                                    !this.state.birthday ?
-                                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>{'DD  MM  YYYY'}</Text>
-                                        :
-                                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>{this.state.birthday}</Text>
-                                }
-                                <View
-                                    style={{ position: 'absolute', right: 4, top: (38 - 24) / 2, width: 24, height: 24, justifyContent: "flex-start", alignItems: "center" }}
-                                >
-                                    <Ionicons name='md-calendar' color="rgba(255, 255, 255, 0.8)" size={18} />
-                                </View>
-                            </View>
-                            */}
-                            <Text
-                                style={[{
-                                    paddingHorizontal: 18,
-                                    height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: !this.state.birthday ? 'rgb(160, 160, 160)' : 'rgba(255, 255, 255, 0.8)'
-                                },
-                                Platform.OS === 'ios' && {
-                                    paddingTop: 4
-                                }
-                                ]}
-                            >{this.state.birthday ? this.state.birthday : 'Select your birthday'}</Text>
-
-                            {/* ToDo: add icon */}
-
-                        </TouchableOpacity>
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-
-                        {/* 3. height */}
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            HEIGHT
-                        </Text>
-                        <TextInput
-                            style={{
-                                paddingHorizontal: 18,
-                                height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                                width: '50%'
-                            }}
-                            keyboardType={'phone-pad'}
-                            // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
-                            onFocus={(e) => this.onFocusHeight()}
-                            onBlur={(e) => this.onBlurHeight()}
-                            onChangeText={(text) => this.validateHeight(text)}
-                            selectionColor={Theme.color.selection}
-                            keyboardAppearance={'dark'}
-                            underlineColorAndroid="transparent"
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            placeholder='164 cm'
-                            placeholderTextColor='rgb(160, 160, 160)'
-                            value={this.state.height}
-                        />
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-
-                        {/* 4. weight */}
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            WEIGHT
-                        </Text>
-                        <TextInput
-                            style={{
-                                paddingHorizontal: 18,
-                                height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                                width: '50%',
-                                // backgroundColor: 'green'
-                            }}
-                            keyboardType={'phone-pad'}
-                            onFocus={(e) => this.onFocusWeight()}
-                            onBlur={(e) => this.onBlurWeight()}
-                            onChangeText={(text) => this.validateWeight(text)}
-                            selectionColor={Theme.color.selection}
-                            keyboardAppearance={'dark'}
-                            underlineColorAndroid="transparent"
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                            placeholder='45 kg'
-                            placeholderTextColor='rgb(160, 160, 160)'
-                            value={this.state.weight}
-                        />
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-
-                        {/* 5. breasts */}
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            BREASTS
-                        </Text>
-                        {/* ToDo: picker - A, B, C, D, E, F */}
-                        {/*
-                        <Picker
-                            mode='dropdown'
-                            selectedValue={this.state.breasts}
-                            style={{ height: 38, width: '50%', backgroundColor: 'green' }}
-                            onValueChange={(itemValue, itemIndex) => this.setState({ breasts: itemValue })}>
-                            <Picker.Item label="Select your bra size" value="" />
-                            <Picker.Item label="A" value="A" />
-                            <Picker.Item label="B" value="B" />
-                            <Picker.Item label="C" value="C" />
-                            <Picker.Item label="D" value="D" />
-                            <Picker.Item label="E" value="E" />
-                            <Picker.Item label="F" value="F" />
-                        </Picker>
-                        */}
-                        <Select
-                            placeholder={{
-                                label: 'Select your bra size',
-                                value: null,
-                                // color: '#9EA0A4'
-                                // color: 'green'
-                            }}
-                            // placeholderTextColor='rgb(160, 160, 160)'
-
-                            items={braSizeItems}
-                            onValueChange={(value) => {
-                                this.setState({ breasts: value });
-                            }}
-                            style={{
-                                iconContainer: {
-                                    top: 5,
-                                    right: 100
-                                },
-                                inputAndroid: {
-                                    // marginLeft: 18,
-                                    // paddingRight: 30, // to ensure the text is never behind the icon
-                                    // height: 38,
-                                    // width: '50%',
-                                    // fontSize: 22, fontFamily: "SFProText-Regular",
-                                    // color: 'rgba(255, 255, 255, 0.8)',
-                                    // color: 'red',
-                                    // backgroundColor: 'red'
-                                    // backgroundColor: 'transparent'
-                                },
-                                inputIOS: {
-                                    /*
-                                    paddingVertical: 12,
-                                    paddingHorizontal: 10,
-                                    borderWidth: 1,
-                                    borderColor: 'gray',
-                                    borderRadius: 4,
-                                    color: 'black',
-                                    paddingRight: 30, // to ensure the text is never behind the icon
-                                    */
-                                }
-                            }}
-                            textInputProps={{
-                                style: {
-                                    paddingHorizontal: 18,
-                                    height: 38, fontSize: 22, fontFamily: "SFProText-Regular",
-                                    color: (this.state.breasts) ? 'rgba(255, 255, 255, 0.8)' : 'rgb(160, 160, 160)'
-                                }
-                            }}
-                            useNativeAndroidPickerStyle={false}
-                            value={this.state.breasts}
-
-                            Icon={() => {
-                                // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
-                                return null;
-                            }}
-
-                        /*
-                        ref={(el) => {
-                            this.inputRefs.favSport0 = el;
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            this.hideNotification();
+                            this.hideAlertIcon();
                         }}
-                        */
-                        />
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+                    >
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
 
-                        {/* 6. location */}
-
-
-
-
-
-
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            LOCATION
-                        </Text>
-
-                        {/* ToDo: open search screen */}
-
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-
-                        <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
-                            NOTE
-                        </Text>
-                        <TextInput
-                            style={{
-                                paddingLeft: 20,
-                                paddingRight: 20,
-                                paddingTop: 20,
-                                paddingBottom: 20,
-                                backgroundColor: 'blue',
-                                height: 100,
-                                fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                            }}
-                            // keyboardType={'email-address'}
-                            // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
-                            // onChangeText={(text) => this.validateEmail(text)}
-                            selectionColor={Theme.color.selection}
-                            keyboardAppearance={'dark'}
-                            underlineColorAndroid="transparent"
-                            autoCorrect={false}
-                            autoCapitalize="none"
-                        />
-
-                        <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-                    </View>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    <View style={{ marginTop: 200 }}>
-                        <TouchableOpacity
-                            onPress={() => this.makeDummyData()}
-                            style={styles.bottomButton}
-                        >
-                            <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => this.makeBangkok()}
-                            style={styles.bottomButton}
-                        >
-                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => this.makePattaya()}
-                            style={styles.bottomButton}
-                        >
-                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => this.makeManila()}
-                            style={styles.bottomButton}
-                        >
-                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity onPress={() => this.makeMacao()}
-                            style={styles.bottomButton}
-                        >
-                            <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macao)</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            onPress={async () => await this.removeFeed()}
-                            style={styles.bottomButton}
-                        >
-                            <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
-                        </TouchableOpacity>
-                    </View>
-                </KeyboardAwareScrollView>
-
+                <FlatList
+                    // ref={(fl) => this._flatList = fl}
+                    ref="flatList"
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={this.renderContainer()}
+                />
 
                 <DateTimePicker
                     isVisible={this.state.showDatePicker}
                     onConfirm={this._handleDatePicked}
                     onCancel={this._hideDateTimePicker}
-
                     date={this.state.datePickerDate}
                     titleIOS={this.state.datePickerTitle}
                 />
+            </View>
+        );
+    }
+
+    renderContainer() {
+        return (
+            <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: this.state.viewMarginBottom }}>
+                {/* image editor view */}
+                <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    {'PICTURES'}
+                </Text>
+
+                <View style={{ width: '100%', marginBottom: 20 }}>
+                    {/* row 1 view */}
+                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* cell 1 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
+                            {
+                                this.renderImage(1, this.state.uploadImage1Uri)
+                            }
+                        </View>
+                        {/* cell 2 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
+                            {
+                                this.renderImage(2, this.state.uploadImage2Uri)
+                            }
+                        </View>
+                    </View>
+                    {/* row 2 view */}
+                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* cell 1 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
+                            {
+                                this.renderImage(3, this.state.uploadImage3Uri)
+                            }
+                        </View>
+                        {/* cell 2 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
+                            {
+                                this.renderImage(4, this.state.uploadImage4Uri)
+                            }
+                        </View>
+                    </View>
+                </View>
+
+                {/* input view */}
+                <View style={{ paddingHorizontal: 4 }}
+                    onLayout={(e) => {
+                        const { y } = e.nativeEvent.layout;
+                        this.inputViewY = y;
+                    }}
+                >
+                    {/* 1. name */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'NAME'}
+                    </Text>
+                    <TextInput
+                        style={{
+                            paddingHorizontal: 18,
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                        // keyboardType={'email-address'}
+                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                        onChangeText={(text) => this.validateName(text)}
+                        selectionColor={Theme.color.selection}
+                        // keyboardAppearance='dark'
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="words"
+                        placeholder="Selena Gomez"
+                        placeholderTextColor={Theme.color.placeholder}
+                        value={this.state.name}
+                        onFocus={(e) => this.onFocusName()}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.nameY = y;
+                        }}
+                    />
+                    {
+                        this.state.showNameAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 16, top: this.nameY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+
+                    {/* 2. birthday */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'AGE (BIRTHDAY)'}
+                    </Text>
+                    {/* picker */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.showDateTimePicker('What is your date of birth?');
+                        }}
+                    >
+                        <Text
+                            style={[{
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            },
+                            Platform.OS === 'ios' && {
+                                paddingTop: 4
+                            }]}
+                        >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
+
+                        {/* ToDo: add icon */}
+
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.birthdayY = y;
+                        }}
+                    />
+                    {
+                        this.state.showAgeAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 16, top: this.birthdayY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+
+                    {/* 3. height */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'HEIGHT'}
+                    </Text>
+                    <TextInput
+                        style={{
+                            paddingHorizontal: 18,
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            width: '50%'
+                        }}
+                        keyboardType='phone-pad'
+                        returnKeyType='done'
+
+                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                        onFocus={(e) => this.onFocusHeight()}
+                        onBlur={(e) => this.onBlurHeight()}
+                        onChangeText={(text) => this.validateHeight(text)}
+                        selectionColor={Theme.color.selection}
+                        // keyboardAppearance='dark'
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        placeholder='164 cm'
+                        placeholderTextColor={Theme.color.placeholder}
+                        value={this.state.height}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.heightY = y;
+                        }}
+                    />
+                    {
+                        this.state.showHeightAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 16, top: this.heightY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+
+                    {/* 4. weight */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'WEIGHT'}
+                    </Text>
+                    <TextInput
+                        style={{
+                            paddingHorizontal: 18,
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            width: '50%'
+                        }}
+                        keyboardType='phone-pad'
+                        returnKeyType='done'
+
+                        onFocus={(e) => this.onFocusWeight()}
+                        onBlur={(e) => this.onBlurWeight()}
+                        onChangeText={(text) => this.validateWeight(text)}
+                        selectionColor={Theme.color.selection}
+                        // keyboardAppearance='dark'
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="none"
+                        placeholder='45 kg'
+                        placeholderTextColor={Theme.color.placeholder}
+                        value={this.state.weight}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.weightY = y;
+                        }}
+                    />
+                    {
+                        this.state.showWeightAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 16, top: this.weightY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+
+                    {/* 5. breasts */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'BREASTS'}
+                    </Text>
+                    <Select
+                        /*
+                        ref={(el) => {
+                            this.inputRefs.favSport0 = el;
+                        }}
+                        */
+                        onOpen={() => this.onFocusBreasts()} // NOT work in Android
+                        placeholder={{
+                            label: "What's your bra size?",
+                            value: null,
+                            // color: '#9EA0A4'
+                            // color: 'green'
+                        }}
+                        // placeholderTextColor={Theme.color.placeholder}
+
+                        items={braSizeItems}
+                        onValueChange={(value) => {
+                            // so, only for Android
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                                this._showNotification = false;
+                            }
+
+                            this.setState({ breasts: value });
+                        }}
+                        style={{
+                            iconContainer: {
+                                top: 5,
+                                right: 100
+                            },
+                            /*
+                            inputAndroid: {
+                                // marginLeft: 18,
+                                // paddingRight: 30, // to ensure the text is never behind the icon
+                                // height: 38,
+                                // width: '50%',
+                                // fontSize: 22, fontFamily: "SFProText-Regular",
+                                // color: 'rgba(255, 255, 255, 0.8)',
+                                // color: 'red',
+                                // backgroundColor: 'red'
+                                // backgroundColor: 'transparent'
+                            },
+                            inputIOS: {
+                            }
+                            */
+                        }}
+                        textInputProps={{
+                            style: {
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular",
+                                color: (this.state.breasts) ? 'rgba(255, 255, 255, 0.8)' : Theme.color.placeholder
+                            }
+                        }}
+                        useNativeAndroidPickerStyle={false}
+                        value={this.state.breasts}
+
+                        Icon={() => {
+                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            return null;
+                        }}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.breastsY = y;
+                        }}
+                    />
+                    {
+                        this.state.showBreastsAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 16, top: this.breastsY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+
+                    {/* 7. note */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'NOTE'}
+                    </Text>
+                    <TextInput
+                        style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
+                        placeholder='More information about you'
+                        placeholderTextColor={Theme.color.placeholder}
+                        onChangeText={(text) => {
+                            this.setState({ note: text, noteLength: text.length });
+                        }}
+                        selectionColor={Theme.color.selection}
+
+                        // keyboardType='default'
+                        // returnKeyType='done'
+                        // keyboardAppearance='dark'
+
+
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        // autoCapitalize="none"
+                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                        maxLength={200}
+                        multiline={true}
+                        numberOfLines={4}
+                        onFocus={(e) => this.onFocusNote()}
+                        onBlur={(e) => this.onBlurNote()}
+                    />
+                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "SFProText-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
+                        {this.state.noteLength}
+                    </Text>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.noteY = y;
+                        }}
+                    />
+
+                    {/* 6. location */}
+                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                        {'LOCATION'}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                                this._showNotification = false;
+                            }
+
+                            this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', initFromSearch: (result) => this.initFromSearch(result) });
+                        }}
+                    >
+                        <Text
+                            style={[{
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.location ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            },
+                            Platform.OS === 'ios' && {
+                                paddingTop: 4
+                            }]}
+                        >{this.state.location ? this.state.location : "What city do you live in?"}</Text>
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: 'transparent', borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.locationY = y;
+                        }}
+                    />
+                    {
+                        this.state.showLocationAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 16, top: this.locationY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+                </View>
+
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
+
+
+
+
+
+
+
+                <Text style={{
+                    fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.placeholder,
+                    textAlign: 'center', lineHeight: 26,
+                    marginTop: Theme.spacing.large,
+                    marginBottom: Theme.spacing.small
+                }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
+
+
+
+
+
+
+
+                <TouchableOpacity
+                    // style={[styles.contactButton, { marginTop: Theme.spacing.small * 2, marginBottom: Theme.spacing.small * 2 }]}
+                    style={[styles.contactButton, { marginBottom: Theme.spacing.small * 2 }]}
+                    onPress={async () => await this.post()}
+                >
+                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>{'Post'}</Text>
+                </TouchableOpacity>
+                {
+                    /*
+                    this.state.showPaddingView &&
+                    <View style={{ height: Dimensions.get('window').height / 3 * 2 }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.paddingViewY = y;
+
+                            console.log('this.paddingViewY', this.paddingViewY);
+
+                            // ToDo: move scroll here
+                            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.locationY + 1, animated: true });
+                        }}
+                    />
+                    */
+                }
             </View>
         );
     }
@@ -607,14 +885,14 @@ export default class AdvertisementMain extends React.Component {
 
                     // save to database
                     /*
-                    var data = {
-                        pictures: {
+                            var data = {
+                            pictures: {
                             uri: uri
-                        }
-                    };
-
-                    this.updateUser(Firebase.user().uid, data);
-                    */
+                    }
+                };
+        
+                this.updateUser(Firebase.user().uid, data);
+                */
                 });
 
 
@@ -626,7 +904,7 @@ export default class AdvertisementMain extends React.Component {
 
 
 
-                // close indicator
+                // hide indicator
                 this.setState({ showIndicator: false });
 
                 this.setState({ uploadingImage: false });
@@ -679,22 +957,22 @@ export default class AdvertisementMain extends React.Component {
             cb(responseJson.downloadUrl);
 
             /*
-            try {
-                let downloadURL = await Firebase.storage.ref(responseJson.name).getDownloadURL();
-                // let downloadURL = await Firebase.storage.child(responseJson.name).getDownloadURL();
-                cb(downloadURL);
-            } catch (error) {
-                console.error(error);
-            }
-            */
+                    try {
+                            let downloadURL = await Firebase.storage.ref(responseJson.name).getDownloadURL();
+                        // let downloadURL = await Firebase.storage.child(responseJson.name).getDownloadURL();
+                        cb(downloadURL);
+                    } catch (error) {
+                            console.error(error);
+                        }
+                        */
         } catch (error) {
             console.error(error);
 
-            // ToDo: error handling
+            this.showNotification('An error occurred. Please try again.');
         }
     }
 
-    //// DB
+    //// database
     async createFeed() {
         const feedId = Util.uid(); // create uuid
         const userUid = Firebase.user().uid;
@@ -769,984 +1047,19 @@ export default class AdvertisementMain extends React.Component {
 
         const result = await Firebase.removeFeed(uid, placeId, feedId);
         if (!result) {
-            // ToDo
+            // error handling - nothig to do
         }
 
         Vars.userFeedsChanged = true;
     }
-
-    async makeDummyData() {
-        for (var i = 0; i < 10; i++) {
-            // 1. 태국
-            this.makeBangkok(); // 방콕
-            this.makePattaya(); // 파타야
-
-            // 2. 베트남
-            this.makeHCM(); // 호치민
-            this.makeHanoi(); // 하노이
-
-            // 3. 필리핀
-            this.makeManila();
-            this.makeCebu();
-
-            // 4. 라오스
-            this.makeVientiane();
-
-            // 5. 캄보디아
-            this.makePP();
-
-            // 6. 마카오 (Macao, Macau)
-            this.makeMacao();
-
-            // 7. 인도네시아
-            this.makeJakarta();
-
-            // 8. 말레이시아
-            this.makeKL();
-        }
-
-        /*
-        // 1. Bangkok, Thailand
-        for (var i = 0; i < 10; i++) await this.makeBKK();
-
-        // 2. Ho Chi Minh, Vietnam
-        for (var i = 0; i < 10; i++) await this.makeHCM();
-
-        // 3. Manila
-        for (var i = 0; i < 10; i++) await this.makeManila();
-
-        // 4. Vientiane
-        for (var i = 0; i < 10; i++) await this.makeVientiane();
-
-        // 5. Phnom Penh
-        for (var i = 0; i < 10; i++) await this.makePP();
-
-        // 6. Jakarta
-        for (var i = 0; i < 10; i++) await this.makeJakarta();
-        */
-    }
-
-    getRandomImage(number) { // 0 ~ 5
-        let images = []; // random item
-
-        let uri1, uri2, uri3, uri4;
-
-        switch (number) {
-            case 0: {
-                // --
-                uri1 = 'https://pds.joins.com/news/component/htmlphoto_mmdata/201705/20/htm_2017052043510989199.jpeg';
-                uri2 = 'https://i.pinimg.com/originals/a2/10/18/a210180e93b5e277050c3384b9dad462.jpg';
-                uri3 = 'https://i.pinimg.com/originals/95/8a/f8/958af83d9cd2eb5a079cc652cffb3b4f.jpg';
-                uri4 = 'https://upload.wikimedia.org/wikipedia/commons/0/04/%28%EC%98%88%EA%B3%A0%29_CNTV_%EC%97%AD%EC%A0%81_-_%EC%9C%A4%EA%B7%A0%EC%83%81%2C_%EC%B1%84%EC%88%98%EB%B9%88_%EC%B1%84%EC%88%98%EB%B9%88_24s.jpg';
-                // --
-            } break;
-
-            case 1: {
-                uri1 = 'https://post-phinf.pstatic.net/MjAxNzA4MzFfMTI5/MDAxNTA0MTYwODU4MzQ3.HxB3nEhj4uv-3XWu2Z2zAr4iSPas3aOokdPh1AgY5F4g.egcEId7lF7bFsE5s14XRTNnVGiqxUOYL4SJ4-7p95kQg.JPEG/AOA_%EC%84%A4%ED%98%84_%EB%8D%B0%EC%8B%B1%EB%94%94%EB%B0%94_%282%29.jpg?type=w1200';
-                uri2 = 'https://t1.daumcdn.net/cfile/tistory/263CCB345769E5A308';
-                uri3 = 'https://img.huffingtonpost.com/asset/5aaf1a5b1e000057107af0b7.jpeg?cache=HNh7gSVWkr&ops=scalefit_630_noupscale';
-                uri4 = 'https://i.pinimg.com/originals/a0/2e/ec/a02eecdae0e3fb79dcbf762cddaa952b.jpg';
-            } break;
-
-            case 2: {
-                uri1 = 'https://i1.daumcdn.net/thumb/R750x0/?fname=http%3A%2F%2Fcfile27.uf.tistory.com%2Fimage%2F99115C3359D104EA04DB67';
-                uri2 = 'https://i.ytimg.com/vi/dW0mXvpPRJ8/maxresdefault.jpg';
-                uri3 = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';
-                uri4 = 'https://pbs.twimg.com/profile_images/744128499904978944/eIN4yA3y_400x400.jpg';
-            } break;
-
-            case 3: {
-                uri1 = 'https://i0.hdslb.com/bfs/archive/14e43191ca970b80912c58acf9987f0b8eadb80e.jpg';
-                uri2 = 'https://i.ytimg.com/vi/aApMHbQR_OI/hqdefault.jpg?v=58dddaf4';
-                uri3 = 'https://pbs.twimg.com/media/DA4zuBYUAAEfNMG.jpg';
-                uri4 = 'https://i1.wp.com/overdope.com/wp-content/uploads/2017/01/2017-01-21_220645.jpg?fit=690%2C460';
-            } break;
-
-            case 4: {
-                uri1 = 'https://pkpkgirls.files.wordpress.com/2018/08/38751740_651875865193841_3072906610452987904_o.jpg';
-                uri2 = 'https://t1.daumcdn.net/cfile/tistory/241FE94E58F9E0911C';
-                uri3 = 'https://t1.daumcdn.net/cfile/tistory/2379514F58F806902F';
-                uri4 = 'https://img1.daumcdn.net/thumb/R1920x0/?fname=http%3A%2F%2Fcfile21.uf.tistory.com%2Fimage%2F9969BD415C472ACB1DF0F5';
-            } break;
-
-            case 5: {
-                uri1 = 'https://t1.daumcdn.net/news/201808/09/10asia/20180809101854646ppyw.jpg';
-                uri2 = 'https://t1.daumcdn.net/news/201808/16/moneytoday/20180816131509218odci.jpg';
-                uri3 = 'https://t1.daumcdn.net/cfile/tistory/99B9D8375A9E4FE30B';
-                uri4 = 'https://t1.daumcdn.net/cfile/tistory/991B0F4F5BCEC5FC19';
-            } break;
-        }
-
-        let image1Uri = null;
-        let image2Uri = null;
-        let image3Uri = null;
-        let image4Uri = null;
-
-        let num = parseInt(Math.random() * 10 % 4); // 0 ~ 3
-        switch (num) {
-            case 0: {
-                image1Uri = uri1;
-                image2Uri = uri2;
-                image3Uri = uri3;
-                image4Uri = uri4;
-            } break;
-
-            case 1: {
-                image4Uri = uri1;
-                image1Uri = uri2;
-                image2Uri = uri3;
-                image3Uri = uri4;
-            } break;
-
-            case 2: {
-                image3Uri = uri1;
-                image4Uri = uri2;
-                image1Uri = uri3;
-                image2Uri = uri4;
-            } break;
-
-            case 3: {
-                image2Uri = uri1;
-                image3Uri = uri2;
-                image4Uri = uri3;
-                image1Uri = uri4;
-            } break;
-        }
-
-        images[0] = image1Uri;
-        images[1] = image2Uri;
-        images[2] = image3Uri;
-        images[3] = image4Uri;
-
-        return images;
-    }
-
-    async makeBangkok() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-
-        const placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
-        const placeName = 'Bangkok, Thailand';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: 'Soi Sukhumvit 19, Khlong Toei Nuea, Watthana, Bangkok, Thailand',
-            longitude: 100.5017651,
-            latitude: 13.7563309
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makePattaya() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
-        const placeName = 'Pattaya, Thailand';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '파타야',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeHCM() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
-        const placeName = 'Ho Chi Minh, Vietnam';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '호치민',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Kim Seol-hyun';
-        const age = 24;
-        const height = 167;
-        const weight = 49;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeHanoi() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJKQqAE44ANTERDbkQYkF-mAI';
-        const placeName = 'Hanoi, Vietnam';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '하노이',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Kim Seol-hyun';
-        const age = 24;
-        const height = 167;
-        const weight = 49;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeManila() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk';
-        const placeName = 'Manila, Philippines';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '마닐라',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeCebu() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJ_S3NjSWZqTMRBzXT2wwDNEw';
-        const placeName = 'Cebu, Philippines';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '세부',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeVientiane() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJIXvtBoZoJDER3-7BGIaxkx8';
-        const placeName = 'Vientiane, Laos';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '비엔티안',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Angelina Danilova';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makePP() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJ42tqxz1RCTERuyW1WugOAZw';
-        const placeName = 'Phnom Penh, Cambodia';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '프놈펜',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeMacao() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
-        const placeName = 'Macao, Macau';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '마카오',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeJakarta() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
-        const placeName = 'Jakarta, Indonesia';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '자카르타',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-    async makeKL() {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-        const placeId = 'ChIJ5-rvAcdJzDERfSgcL1uO2fQ';
-        const placeName = 'Kuala Lumpur, Malaysia';
-
-        // ToDo: get it from google location api
-        const location = {
-            description: '쿠알라룸푸르',
-            longitude: 0.0,
-            latitude: 0.0
-        };
-
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
-        // --
-        const number = parseInt(Math.random() * 10 % 6); // 0 ~ 5
-        const images = this.getRandomImage(number);
-        let image1Uri = images[0];
-        let image2Uri = images[1];
-        let image3Uri = images[2];
-        let image4Uri = images[3];
-        // --
-
-        const name = 'Bae Soo-bin';
-        const age = 24;
-        const height = 167;
-        const weight = 48;
-        const bust = 'B+';
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.age = age;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-
-        await Firebase.createFeed(feed);
-
-        Vars.userFeedsChanged = true;
-    }
-
-
-
-
-    /*
-    async openCalendar() {
-        try {
-            const { action, year, month, day } = await DatePickerAndroid.open({
-                date: new Date(1990, 1, 1)
-            });
-
-            if (action !== DatePickerAndroid.dismissedAction) {
-                // Selected year, month (0-11), day
-                // this.setState({ day, month, year });
-
-                let _day = '';
-                if (day < 10) {
-                    _day = '0' + day;
-                } else {
-                    _day = day.toString();
-                }
-
-                let _month = '';
-                switch (month) {
-                    case 1: _month = 'JAN'; break;
-                    case 2: _month = 'FEB'; break;
-                    case 3: _month = 'MAR'; break;
-                    case 4: _month = 'APR'; break;
-                    case 5: _month = 'MAY'; break;
-                    case 6: _month = 'JUN'; break;
-                    case 7: _month = 'JUL'; break;
-                    case 8: _month = 'AUG'; break;
-                    case 9: _month = 'SEP'; break;
-                    case 10: _month = 'OCT'; break;
-                    case 11: _month = 'NOV'; break;
-                    case 12: _month = 'DEC'; break;
-                }
-
-                let _year = year.toString();
-
-                const birthday = _month + '  ' + _day + '  ' + _year;
-                this.setState({ birthday });
-            }
-
-        } catch ({ code, message }) {
-            console.warn('Cannot open date picker', message);
-        }
-    }
-
-    onDateChange(date) {
-        console.log('date', date);
-        this.setState({ birthday: date });
-    }
-    */
 
     showDateTimePicker(title) {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
+        }
+
         this.setState({ datePickerTitle: title, showDatePicker: true });
     }
 
@@ -1799,8 +1112,71 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ birthday, datePickerDate: _date });
     };
 
+    showNotification(msg) {
+        if (!this._showNotification) {
+            this._showNotification = true;
 
+            this.setState({ notification: msg },
+                () => {
+                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                        this.state.offset.setValue(height * -1);
 
+                        Animated.sequence([
+                            Animated.parallel([
+                                Animated.timing(this.state.opacity, {
+                                    toValue: 1,
+                                    duration: 200,
+                                }),
+                                Animated.timing(this.state.offset, {
+                                    toValue: 0,
+                                    duration: 200,
+                                }),
+                            ])
+                        ]).start();
+                    });
+                }
+            );
+
+            StatusBar.setHidden(true);
+        }
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 200,
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: height * -1,
+                        duration: 200,
+                    })
+                ])
+            ]).start();
+        });
+
+        StatusBar.setHidden(false);
+
+        this._showNotification = false;
+    }
+
+    hideAlertIcon() {
+        if (this.state.showNameAlertIcon) this.setState({ showNameAlertIcon: false });
+
+        if (this.state.showAgeAlertIcon) this.setState({ showAgeAlertIcon: false });
+
+        if (this.state.showHeightAlertIcon) this.setState({ showHeightAlertIcon: false });
+
+        if (this.state.showWeightAlertIcon) this.setState({ showWeightAlertIcon: false });
+
+        if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
+
+        if (this.state.showLocationAlertIcon) this.setState({ showLocationAlertIcon: false });
+
+        if (this.state.showPicturesAlertIcon) this.setState({ showPicturesAlertIcon: false });
+    }
 }
 
 const styles = StyleSheet.create({
@@ -1809,29 +1185,61 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
-
-    bottomButton: {
+    searchBarTitle: {
+        fontSize: 20,
+        fontFamily: "SFProText-Semibold",
+        color: 'rgba(255, 255, 255, 0.8)',
+        paddingBottom: 4
+    },
+    contactButton: {
         width: '85%',
         height: 45,
         alignSelf: 'center',
-
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        backgroundColor: "grey",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
         borderRadius: 5,
-        borderColor: "transparent",
-        borderWidth: 0,
-
-        marginTop: 10,
-        marginBottom: 10
+        justifyContent: 'center',
+        alignItems: 'center'
     },
+    notification: {
+        width: '100%',
+        height: Constants.statusBarHeight + 10,
+        position: "absolute",
+        top: 0,
+        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        zIndex: 10000,
 
-
+        flexDirection: 'column',
+        // justifyContent: 'center'
+        justifyContent: 'flex-end'
+    },
+    notificationText: {
+        alignSelf: 'center',
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        color: "#FFF",
+        paddingBottom: Platform.OS === 'ios' ? 4 : 0
+    },
+    notificationButton: {
+        position: 'absolute',
+        right: 18,
+        bottom: 4,
+        // alignSelf: 'baseline'
+    },
+    textInputStyleIOS: {
+        paddingHorizontal: 18,
+        fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+        minHeight: 52
+    },
+    textInputStyleAndroid: {
+        paddingHorizontal: 18,
+        fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+        height: 84,
+        textAlignVertical: 'top'
+    }
 });

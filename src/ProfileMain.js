@@ -13,6 +13,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import AwesomeAlert from 'react-native-awesome-alerts';
 import { RefreshIndicator } from "./rnff/src/components";
+import Dialog from "react-native-dialog";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -38,7 +39,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         uploadImage1: 'http://imgnews.naver.net/image/001/2017/05/20/PYH2017052019870001300_P2_20170520101607447.jpg',
         uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
         uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'
+        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
+
+        dialogVisible: false,
+        dialogPassword: ''
     };
 
     constructor(props) {
@@ -239,21 +243,25 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const imageUri = profile.picture.uri;
         const avatarHeight = 70;
         const bodyInfoItemWidth = Dimensions.get('window').width / 5;
-        const bodyInfoItemHeight = bodyInfoItemWidth;
+        // const bodyInfoItemHeight = bodyInfoItemWidth;
 
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
 
-                    <Text
-                        style={{
-                            color: Theme.color.text1,
-                            fontSize: 20,
-                            fontFamily: "SFProText-Semibold",
-                            alignSelf: 'flex-start',
-                            marginLeft: 16
-                        }}
-                    >Profile</Text>
+                    <TouchableWithoutFeedback
+                        onPress={() => this.openAdmin()}
+                    >
+                        <Text
+                            style={{
+                                color: Theme.color.text1,
+                                fontSize: 20,
+                                fontFamily: "SFProText-Semibold",
+                                alignSelf: 'flex-start',
+                                marginLeft: 16
+                            }}
+                        >Profile</Text>
+                    </TouchableWithoutFeedback>
 
                 </View>
 
@@ -321,7 +329,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'See my ratings & reviews'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{"Posts You've Reviewed"}</Text>
                                                 <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -341,7 +349,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Advertise yourself / your girls'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
                                                 <AntDesign name='notification' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -361,7 +369,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Log out'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Log Out'}</Text>
                                                 <Feather name='log-out' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -487,7 +495,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
                             <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator/>
+                                <RefreshIndicator />
                             </View>
                         }
                     />
@@ -524,7 +532,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     onCancelPressed={async () => { // YES pressed
                         this.setState({ showAlert: false });
 
-                        
+
                         return;
                         // ToDo
 
@@ -564,6 +572,24 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
                     confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
                 />
+
+                <Dialog.Container
+                    visible={this.state.dialogVisible}
+                >
+                    <Dialog.Title>Admin Login</Dialog.Title>
+                    <Dialog.Description>Type an administrator password</Dialog.Description>
+                    <Dialog.Input
+                        keyboardType={'phone-pad'}
+                        keyboardAppearance={'dark'}
+                        onChangeText={(text) => this.setState({ dialogPassword: text })}
+                        autoFocus={true}
+                        secureTextEntry={true}
+                    />
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
+
             </View>
         );
     } // end of render()
@@ -585,8 +611,50 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         );
     }
 
+    // open admin menu
+    openAdmin() {
+        if (!this.adminCount) {
+            this.adminCount = 1;
 
+            return;
+        } else {
+            this.adminCount++;
+        }
 
+        if (this.adminCount > 9) {
+            // open pw menu
+            this.showDialog();
+
+            this.adminCount = undefined;
+        }
+    }
+
+    showDialog() {
+        if (!this.state.dialogVisible) this.setState({ dialogVisible: true });
+    };
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    };
+
+    handleCancel() {
+        this.setState({ dialogPassword: '' });
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        const pw = this.state.dialogPassword;
+        if (pw === '1103') {
+            console.log('admin');
+
+            setTimeout(() => {
+                this.props.navigation.navigate("admin");
+            }, Cons.buttonTimeoutShort);
+        }
+
+        this.setState({ dialogPassword: '' });
+        this.hideDialog();
+    };
 }
 
 const styles = StyleSheet.create({
@@ -657,7 +725,6 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 18,
-        lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
     bottomIndicator: {

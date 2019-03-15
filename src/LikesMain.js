@@ -379,9 +379,10 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.base
     },
     pictureContainer: {
-        // 8:5 image
+        // 3:2 image
         width: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2),
-        height: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2) / 8 * 5,
+        height: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2) / 3 * 2,
+
         borderRadius: 2,
         marginVertical: Theme.spacing.base
     },
@@ -396,7 +397,6 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 18,
-        lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
     content: {

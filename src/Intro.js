@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Svg } from "expo";
@@ -39,9 +39,9 @@ const DEFAULT_FEED_COUNT = 6;
 const imageWidth = parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2;
 const imageHeight = imageWidth;
 
-// 5:3 image
+// 3:2 image
 const itemWidth = Dimensions.get('window').width - 40;
-const itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
+const itemHeight = parseInt(Dimensions.get('window').width - 40) / 3 * 2;
 
 /*
 const skeletonViewWidth = Dimensions.get('window').width;
@@ -498,7 +498,7 @@ export default class Intro extends React.Component {
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("introSearch", { initFromSearch: (result) => this.initFromSearch(result) });
+                                    this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -666,14 +666,13 @@ export default class Intro extends React.Component {
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: 20,
-                                                lineHeight: 26,
+                                                lineHeight: Platform.OS === 'ios' ? 26 : 32,
                                                 fontFamily: "SFProText-Bold"
                                             }}>{`${(name) ? name : ''}`}</Text>
                                             <Text style={{
                                                 textAlign: 'center',
                                                 color: Theme.color.subtitle,
                                                 fontSize: 14,
-                                                lineHeight: 18,
                                                 fontFamily: "SFProText-Semibold"
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
@@ -959,7 +958,6 @@ export default class Intro extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        // backgroundColor: 'black'
         backgroundColor: Theme.color.background
     },
     searchBar: {
@@ -968,30 +966,19 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
-    ad: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
-        marginBottom: Theme.spacing.small
-    },
     titleContainer: {
         padding: Theme.spacing.small
     },
     title: {
         color: Theme.color.text2,
         fontSize: 18,
-        lineHeight: 20,
         fontFamily: "SFProText-Semibold"
     },
     contentContainer: {
         flexGrow: 1,
-        // backgroundColor: 'black',
-        paddingBottom: Theme.spacing.tiny
+        // paddingBottom: Theme.spacing.tiny
     },
     columnWrapperStyle: {
-        /*
-        marginRight: Theme.spacing.small,
-        marginTop: Theme.spacing.small
-        */
         flex: 1,
         justifyContent: 'center'
     },

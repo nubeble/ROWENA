@@ -35,9 +35,9 @@ type InjectedProps = {
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
-// 4:3 image
+// 3:2 image
 const imageWidth = Dimensions.get('window').width;
-const imageHeight = imageWidth / 4 * 3;
+const imageHeight = imageWidth / 3 * 2;
 
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
@@ -130,17 +130,25 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
+        // this.goBack(); // works best when the goBack is async
+
         console.log('Post.handleHardwareBackPress()');
 
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            this._showNotification = false;
 
-        // this.goBack(); // works best when the goBack is async
+            return true;
+        }
 
         if (this.state.showAlert) {
             this.setState({ showAlert: false });
-        } else {
-            // this.props.navigation.goBack();
-            this.props.navigation.dispatch(NavigationActions.back());
+
+            return true;
         }
+
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }
@@ -545,14 +553,13 @@ export default class Post extends React.Component<InjectedProps> {
                                     </View>
 
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
-                                    {
-                                        <TouchableOpacity
-                                            style={[styles.contactButton, { marginTop: Theme.spacing.small + Theme.spacing.small, marginBottom: Theme.spacing.small + Theme.spacing.small }]}
-                                            onPress={async () => await this.contact()}
-                                        >
-                                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
-                                        </TouchableOpacity>
-                                    }
+
+                                    <TouchableOpacity
+                                        style={[styles.contactButton, { marginTop: Theme.spacing.small + Theme.spacing.small, marginBottom: Theme.spacing.small + Theme.spacing.small }]}
+                                        onPress={async () => await this.contact()}
+                                    >
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
+                                    </TouchableOpacity>
                                 </View>
                             }
                         />
@@ -1145,7 +1152,7 @@ export default class Post extends React.Component<InjectedProps> {
         this.owner = owner;
     }
 
-    showNotification = (msg) => {
+    showNotification(msg) {
         if (!this._showNotification) {
             this._showNotification = true;
 
@@ -1464,15 +1471,8 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        paddingTop: Theme.spacing.tiny,
+        paddingTop: Cons.bodyInfoTitlePaddingTop(),
         paddingLeft: Theme.spacing.tiny,
-    },
-    bodyInfoContent: {
-        color: Theme.color.title,
-        fontSize: 18,
-        fontFamily: "SFProText-Bold",
-        paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
     },
     distance: {
         paddingLeft: 5,
@@ -1503,7 +1503,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: Theme.color.text2,
         fontSize: 16,
-        lineHeight: 24,
+        lineHeight: Platform.OS === 'ios' ? 26 : 32,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.small,
         paddingBottom: Theme.spacing.small,
@@ -1604,27 +1604,28 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     notification: {
-        position: "absolute",
         width: '100%',
         height: Constants.statusBarHeight + 10,
+        position: "absolute",
         top: 0,
         backgroundColor: "rgba(255, 184, 24, 0.8)",
         zIndex: 10000,
+
         flexDirection: 'column',
+        // justifyContent: 'center'
         justifyContent: 'flex-end'
     },
     notificationText: {
-        position: 'absolute',
-        // bottom: 0,
         alignSelf: 'center',
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        color: "#FFF"
+        color: "#FFF",
+        paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        // bottom: 0,
+        bottom: 4,
         // alignSelf: 'baseline'
     }
 });
