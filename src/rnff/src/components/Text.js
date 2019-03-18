@@ -29,11 +29,13 @@ export default class Text extends React.PureComponent<TypographyProps> {
 
 
         let paddingTop = 0;
-        if (style.paddingTop) {
-            paddingTop = style.paddingTop;
-        } else {
-            if (style.fontSize) {
-                paddingTop = style.fontSize / 3;
+        if (style) {
+            if (style.paddingTop) {
+                paddingTop = style.paddingTop;
+            } else {
+                if (style.fontSize) {
+                    paddingTop = style.fontSize / 3;
+                }
             }
         }
 

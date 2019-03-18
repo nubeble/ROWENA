@@ -13,8 +13,6 @@ import autobind from 'autobind-decorator';
 
 export default class EditMain extends React.Component {
     state = {
-        postSuccess: false, // true when the post is done
-
         onUploadingImage: false,
         uploadingImageNumber: 0, // 1,2,3,4
 
@@ -284,8 +282,8 @@ const styles = StyleSheet.create({
         // justifyContent: 'center'
     },
     ad: {
-        width: parseInt(Dimensions.get('window').width) / 2,
-        height: (parseInt(Dimensions.get('window').width) / 2) / 5 * 3,
+        width: (Dimensions.get('window').width) / 2,
+        height: (Dimensions.get('window').width) / 2 / 5 * 3,
         marginTop: Theme.spacing.tiny,
         marginBottom: Theme.spacing.tiny
     },

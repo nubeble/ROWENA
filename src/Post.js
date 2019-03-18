@@ -1481,7 +1481,7 @@ const styles = StyleSheet.create({
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
         // paddingTop: Theme.spacing.xSmall
-        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
+        paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
     },
     rating: {
         marginLeft: 5,
@@ -1489,7 +1489,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
-        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
+        paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
     },
     reviewCount: {
         marginLeft: 5,
@@ -1497,7 +1497,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
-        paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
+        paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
     },
     note: {
         marginTop: 5,

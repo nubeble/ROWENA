@@ -65,8 +65,6 @@ const braSizeItems = [
 
 export default class AdvertisementMain extends React.Component {
     state = {
-        postSuccess: false, // true when the post is done
-
         onUploadingImage: false,
         uploadingImageNumber: 0, // 1,2,3,4
 
@@ -125,6 +123,8 @@ export default class AdvertisementMain extends React.Component {
         super(props);
 
         this.feedId = null;
+
+        this.imageRefs = []; // for cleaning files in server
     }
 
     componentDidMount() {
@@ -221,49 +221,19 @@ export default class AdvertisementMain extends React.Component {
     }
 
     componentWillUnmount() {
+        // remove server files
+        if (this.imageRefs.length > 0) {
+            console.log('clean image files');
 
-        // ToDo: remove server files
-        if (!this.state.postSuccess) {
-            /*
-            let images = [4];
-            for (var i = 0; i < images.length; i++) images[i] = false;
-
-            if (this.state.uploadImage1Uri) {
-                images[0] = true;
-            }
-
-            if (this.state.uploadImage2Uri) {
-                images[1] = true;
-            }
-
-            if (this.state.uploadImage3Uri) {
-                images[2] = true;
-            }
-
-            if (this.state.uploadImage4Uri) {
-                images[3] = true;
-            }
-            */
-
-            // call rest function
             const formData = new FormData();
-            /*
-            formData.append("image1", images[0].toString());
-            formData.append("image2", images[1].toString());
-            formData.append("image3", images[2].toString());
-            formData.append("image4", images[3].toString());
-            */
-            if (this.state.uploadImage1Uri) {
-                formData.append("image1", this.state.uploadImage1Uri);
-            }
-            if (this.state.uploadImage2Uri) {
-                formData.append("image2", this.state.uploadImage2Uri);
-            }
-            if (this.state.uploadImage3Uri) {
-                formData.append("image3", this.state.uploadImage3Uri);
-            }
-            if (this.state.uploadImage4Uri) {
-                formData.append("image4", this.state.uploadImage4Uri);
+            for (var i = 0; i < this.imageRefs.length; i++) {
+                const ref = this.imageRefs[i];
+
+                const number = i + 1;
+                const fieldName = 'file' + number.toString();
+                formData.append(fieldName, ref);
+
+                console.log(fieldName, ref);
             }
 
             fetch(SERVER_ENDPOINT + "cleanPostImages", {
@@ -531,7 +501,7 @@ export default class AdvertisementMain extends React.Component {
 
         await this.createFeed(data);
 
-        this.setState({ postSuccess: true });
+        this.removeItemFromList();
 
         // ToDo: 3. move to finish page
 
@@ -539,6 +509,40 @@ export default class AdvertisementMain extends React.Component {
 
         // 2. move next page
 
+    }
+
+    removeItemFromList() {
+        if (this.uploadImage1Ref) {
+            const ref = this.uploadImage1Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+
+        if (this.uploadImage2Ref) {
+            const ref = this.uploadImage2Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+
+        if (this.uploadImage3Ref) {
+            const ref = this.uploadImage3Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+
+        if (this.uploadImage4Ref) {
+            const ref = this.uploadImage4Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
     }
 
     render() {
@@ -1170,6 +1174,16 @@ export default class AdvertisementMain extends React.Component {
                         case 1: this.setState({ uploadImage2Uri: uri }); break;
                         case 2: this.setState({ uploadImage3Uri: uri }); break;
                         case 3: this.setState({ uploadImage4Uri: uri }); break;
+                    }
+
+                    const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
+                    this.imageRefs.push(ref);
+
+                    switch (index) {
+                        case 0: this.uploadImage1Ref = ref; break;
+                        case 1: this.uploadImage2Ref = ref; break;
+                        case 2: this.uploadImage3Ref = ref; break;
+                        case 3: this.uploadImage4Ref = ref; break;
                     }
 
                     // save to database

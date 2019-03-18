@@ -203,23 +203,23 @@ const styles = StyleSheet.create({
     },
 
 
-        header: {
-            padding: StyleGuide.spacing.small
-            // padding: StyleGuide.spacing.tiny
+    header: {
+        padding: StyleGuide.spacing.small
+        // padding: StyleGuide.spacing.tiny
     },
-        headerText: {
-            color: 'rgba(255, 255, 255, 0.6)',
-            fontSize: 18,
-            lineHeight: 20,
-            fontFamily: "SFProText-Semibold"
+    headerText: {
+        color: 'rgba(255, 255, 255, 0.6)',
+        fontSize: 18,
+        lineHeight: 20,
+        fontFamily: "SFProText-Semibold"
     },
-        extraHeader: {
-            backgroundColor: StyleGuide.palette.white,
-        ...StyleGuide.styles.shadow
+    extraHeader: {
+        backgroundColor: StyleGuide.palette.white,
+    ...StyleGuide.styles.shadow
     },
-        columnWrapperStyle: {
-            marginRight: StyleGuide.spacing.small,
-        marginTop: StyleGuide.spacing.small
+    columnWrapperStyle: {
+        marginRight: StyleGuide.spacing.small,
+    marginTop: StyleGuide.spacing.small
     },
     searchBar: {
         height: Constants.statusBarHeight + Header.HEIGHT,
@@ -230,8 +230,8 @@ const styles = StyleSheet.create({
 
 
     ad: {
-        width: parseInt(Dimensions.get('window').width) - 2,
-        height: (parseInt(Dimensions.get('window').width) - 2) / 21 * 9,
+        width: (Dimensions.get('window').width) - 2,
+        height: (Dimensions.get('window').width - 2) / 21 * 9,
         marginBottom: StyleGuide.spacing.small
     }
 

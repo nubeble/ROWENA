@@ -380,8 +380,8 @@ const styles = StyleSheet.create({
     },
     pictureContainer: {
         // 3:2 image
-        width: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2),
-        height: parseInt(Dimensions.get('window').width - Theme.spacing.base * 2) / 3 * 2,
+        width: (Dimensions.get('window').width - Theme.spacing.base * 2),
+        height: (Dimensions.get('window').width - Theme.spacing.base * 2) / 3 * 2,
 
         borderRadius: 2,
         marginVertical: Theme.spacing.base

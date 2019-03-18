@@ -261,7 +261,7 @@ export default class ChatMain extends React.Component {
         // const viewHeight = Dimensions.get('window').height / 10;
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
-        const badgeWidth = parseInt(Dimensions.get('window').height / 100) + 1;
+        const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
 
         return (
             <TouchableHighlight onPress={() => this.props.navigation.navigate("chatRoom", { item: item })}>

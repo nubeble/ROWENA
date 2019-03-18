@@ -6,7 +6,7 @@ import {
 import { Theme } from "./rnff/src/components";
 
 const _itemWidth = Dimensions.get('window').width - 40;
-// const _itemHeight = parseInt(Dimensions.get('window').width - 40) / 5 * 3;
+// const _itemHeight = (Dimensions.get('window').width - 40) / 5 * 3;
 
 
 export default class extends Component {

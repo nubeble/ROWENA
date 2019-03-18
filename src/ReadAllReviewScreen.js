@@ -877,7 +877,6 @@ const styles = StyleSheet.create({
 
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.xSmall
-        // paddingTop: parseInt(Dimensions.get('window').height / 100) - 2
     },
     replyOwner: {
         // color: "rgb(170, 170, 170)",

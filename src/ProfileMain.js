@@ -672,8 +672,8 @@ const styles = StyleSheet.create({
         // backgroundColor: 'black'
     },
     ad: {
-        width: parseInt(Dimensions.get('window').width),
-        height: parseInt(Dimensions.get('window').width) / 21 * 9,
+        width: (Dimensions.get('window').width),
+        height: (Dimensions.get('window').width) / 21 * 9,
         marginTop: Theme.spacing.tiny,
         marginBottom: Theme.spacing.tiny
     },
@@ -690,10 +690,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     pictureContainer: {
-        // width: (parseInt(Dimensions.get('window').width) - 2) / 3,
-        // height: (parseInt(Dimensions.get('window').width) - 2) / 3,
-        width: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
-        height: (parseInt(Dimensions.get('window').width) - 2 * 6) / 3,
+        width: (Dimensions.get('window').width - 2 * 6) / 3,
+        height: (Dimensions.get('window').width - 2 * 6) / 3,
         marginVertical: 2,
         marginHorizontal: 2,
         borderRadius: 2

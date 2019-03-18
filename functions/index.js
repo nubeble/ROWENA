@@ -641,13 +641,6 @@ const getReceipts = async(function (receiptIdChunks) {
     }
 });
 
-
-
-
-
-
-
-
 exports.cleanPostImages = functions.https.onRequest((req, res) => {
     if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
         const busboy = new Busboy({ headers: req.headers });
@@ -690,43 +683,25 @@ const deleteFiles = async(function () {
 
     console.log('Done parsing form.', fields);
 
-    // ToDo: delete files
-    // await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
-
     const storage = admin.storage();
 
-    let fileRef = storage.ref();
+    const length = Object.keys(fields).length;
+    for (var i = 0; i < length; i++) {
+        const number = i + 1;
+        const key = 'file' + number.toString();
+        const value = fields[key];
 
-    if (fields.image1) {
-        fileRef = storage.ref(fields.image1);
-        await fileRef.delete();
+        // console.log(key, value);
+
+        const fileRef = storage.bucket(bucketName).file(value);
+        // await(fileRef.delete());
+        fileRef.delete().then(function () {
+            // File deleted successfully
+        }).catch(function (error) {
+            // Uh-oh, an error occurred!
+            res.status(405).end(error + fileRef);
+        });
     }
-
-    if (fields.image2) {
-        fileRef = storage.ref(fields.image2);
-        await fileRef.delete();
-    }
-
-    if (fields.image3) {
-        fileRef = storage.ref(fields.image3);
-        await fileRef.delete();
-    }
-
-    if (fields.image4) {
-        fileRef = storage.ref(fields.image4);
-        await fileRef.delete();
-    }
-
-    /*
-    // var desertRef = storage.child('images/desert.jpg');
-
-    // Delete the file
-    desertRef.delete().then(function() {
-        // File deleted successfully
-    }).catch(function(error) {
-        // Uh-oh, an error occurred!
-    });
-    */
 
     console.log('Done deleting files in database.');
 

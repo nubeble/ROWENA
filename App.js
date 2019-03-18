@@ -713,7 +713,7 @@ const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
         backgroundColor: Theme.color.background,
         borderTopWidth: 1,
         borderTopColor: Theme.color.line,
-        // paddingTop: Platform.OS === "ios" ? parseInt(Dimensions.get('window').height / 80) : 0
+        // paddingTop: Platform.OS === "ios" ? Math.round(Dimensions.get('window').height / 80) : 0
     },
     animationEnabled: true,
     showLabel: false,

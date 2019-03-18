@@ -135,11 +135,10 @@ export default class AuthMain extends React.Component {
                 <Animated.View style={[styles.view, viewStyle]}>
                     <View style={styles.logo}>
                         <Text style={{
-                            // marginTop: 100,
-                            padding: 50,
                             fontFamily: "FriendlySchoolmates-Regular",
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 42,
+                            paddingTop: 24,
                             textAlign: 'center'
                         }}>ROWENA</Text>
                     </View>
@@ -194,18 +193,18 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
+                        // ToDo: login
                         // onPress={() => this.props.navigation.navigate("logIn")}
                         >
-                            <Text style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                                <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular" }}>Already a member?  </Text>
-                                <Text style={{ fontSize: 15, fontFamily: "SFProText-Semibold" }}>Log in</Text>
+                            <Text>
+                                <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
+                                <Text style={{ fontSize: 15, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
                             </Text>
                         </TouchableOpacity>
 
                         <Text style={{ position: 'absolute', bottom: 30, fontSize: 13, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
                         </Text>
-
                     </View>
                 </Animated.View>
             </View>

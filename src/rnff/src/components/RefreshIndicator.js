@@ -81,11 +81,6 @@ const styles = StyleSheet.create({
     circle: {
         height: 6,
         width: 6,
-        /*
-        height: parseInt(Dimensions.get('window').height / 100) - 1,
-        width: parseInt(Dimensions.get('window').height / 100) - 1,
-        */
-
         borderRadius: 3,
         // backgroundColor: Theme.palette.primary,
         // backgroundColor: 'grey',

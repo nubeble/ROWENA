@@ -216,8 +216,8 @@ export default class Home extends React.Component<NavigationProps<>> {
         const { navigation } = this.props;
 
         let gap = 2;
-        const height1 = parseInt(Dimensions.get('window').width) - gap * 2;
-        const height2 = parseInt(Dimensions.get('window').width) / 2 - gap * 2; // image width - padding
+        const height1 = (Dimensions.get('window').width) - gap * 2;
+        const height2 = (Dimensions.get('window').width) / 2 - gap * 2; // image width - padding
 
         return (
             <View style={styles.row}>
@@ -342,7 +342,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
     });
     */
     
-    let order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
+    let order = (Math.random() * 100 % 2) + 1; // 1 or 2
     // console.log('order:', order);
 
     let randomFlag = false;
@@ -366,7 +366,7 @@ const windowing = (guides: Guide[]): Guide[][] => {
         }
 
         if (randomFlag) {
-            order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
+            order = (Math.random() * 100 % 2) + 1; // 1 or 2
             // console.log('order:', order);
             randomFlag = false;
         }
@@ -414,14 +414,14 @@ const _windowing = (users: User[]): User[][] => {
 
     const windows = [[]];
 
-    let order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
+    let order = (Math.random() * 100 % 2) + 1; // 1 or 2
     // console.log('order:', order);
 
     let randomFlag = false;
 
     users.forEach(user => {
 
-        // user['key'] = parseInt(Math.random() * 1000);
+        // user['key'] = (Math.random() * 1000);
 
         // ToDo: check
 
@@ -440,7 +440,7 @@ const _windowing = (users: User[]): User[][] => {
         }
 
         if (randomFlag) {
-            order = parseInt(Math.random() * 100 % 2) + 1; // 1 or 2
+            order = (Math.random() * 100 % 2) + 1; // 1 or 2
             // console.log('order:', order);
             randomFlag = false;
         }

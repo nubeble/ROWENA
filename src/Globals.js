@@ -34,7 +34,7 @@ export var Cons = {
 
         /*
         const height = Dimensions.get('window').height;
-        const param = parseInt(height / 100);
+        const param = (height / 100);
 
         switch (param) {
             case 5: return 3;
@@ -50,12 +50,12 @@ export var Cons = {
     },
 
     // alert dialog
-    alertWidth: parseInt((Dimensions.get('window').width) * 0.9),
-    alertHeight: parseInt((Dimensions.get('window').height) / 24 * 7),
-    alertButtonWidth: parseInt(Dimensions.get('window').width * 0.32),
-    alertButtonHeight: parseInt((Dimensions.get('window').width * 0.32) / 5 * 2),
-    alertButtonMarginBetween: parseInt(Dimensions.get('window').width * 0.03),
-    alertButtonPaddingTop: parseInt(Dimensions.get('window').height / 80),
+    alertWidth: ((Dimensions.get('window').width) * 0.9),
+    alertHeight: ((Dimensions.get('window').height) / 24 * 7),
+    alertButtonWidth: (Dimensions.get('window').width * 0.32),
+    alertButtonHeight: ((Dimensions.get('window').width * 0.32) / 5 * 2),
+    alertButtonMarginBetween: (Dimensions.get('window').width * 0.03),
+    alertButtonPaddingTop: (Dimensions.get('window').height / 80),
 
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
@@ -68,7 +68,7 @@ export var Cons = {
 
         /*
         const height = Dimensions.get('window').height;
-        const param = parseInt(height / 100);
+        const param = (height / 100);
 
         switch (param) {
             case 6: return 8; // Galaxy S7: 640
@@ -88,7 +88,7 @@ export var Cons = {
 
         /*
         const height = Dimensions.get('window').height;
-        const param = parseInt(height / 100);
+        const param = (height / 100);
 
         switch (param) {
             case 5: return 1;
@@ -116,7 +116,7 @@ export var Cons = {
 
         /*
         const height = Dimensions.get('window').height;
-        const param = parseInt(height / 100);
+        const param = (height / 100);
 
         switch (param) {
             case 5: return 7;

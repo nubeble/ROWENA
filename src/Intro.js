@@ -36,16 +36,16 @@ const DEFAULT_PLACE_COUNT = 6;
 const DEFAULT_FEED_COUNT = 6;
 
 // 1:1 image
-const imageWidth = parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2;
+const imageWidth = (Dimensions.get('window').width - 4 * 2 * 3) / 2;
 const imageHeight = imageWidth;
 
 // 3:2 image
 const itemWidth = Dimensions.get('window').width - 40;
-const itemHeight = parseInt(Dimensions.get('window').width - 40) / 3 * 2;
+const itemHeight = (Dimensions.get('window').width - 40) / 3 * 2;
 
 /*
 const skeletonViewWidth = Dimensions.get('window').width;
-const skeletonViewHeight = (4 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 4) * 3;
+const skeletonViewHeight = (4 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 4) * 3;
 */
 
 
@@ -557,43 +557,43 @@ export default class Intro extends React.Component {
                                     <Svg.Rect
                                         x={8}
                                         y={8}
-                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
 
                                     <Svg.Rect
-                                        x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                         y={8}
-                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
 
                                     <Svg.Rect
                                         x={8}
-                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
 
                                     <Svg.Rect
-                                        x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
 
                                     <Svg.Rect
                                         x={8}
-                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
 
                                     <Svg.Rect
-                                        x={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        y={8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={parseInt(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     />
                                 </SvgAnimatedLinearGradient>
                             </View>

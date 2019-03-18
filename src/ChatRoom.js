@@ -22,12 +22,12 @@ type InjectedProps = {
 };
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
-const textInputPaddingTop = parseInt(Dimensions.get('window').height / 26);
-const textInputPaddingLeft = parseInt(Dimensions.get('window').width / 20);
-const textInputPaddingRight = parseInt(Dimensions.get('window').width / 20);
+const textInputPaddingTop = (Dimensions.get('window').height / 26);
+const textInputPaddingLeft = (Dimensions.get('window').width / 20);
+const textInputPaddingRight = (Dimensions.get('window').width / 20);
 const textInputMarginBottom = (Platform.OS === 'ios') ? 20 : 12;
-const sendButtonMarginBottom = parseInt(Dimensions.get('window').height / 40);
-const inputToolbarHeight = parseInt(Dimensions.get('window').height / 10);
+const sendButtonMarginBottom = (Dimensions.get('window').height / 40);
+const inputToolbarHeight = (Dimensions.get('window').height / 10);
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
@@ -617,8 +617,8 @@ const styles = StyleSheet.create({
     },
     sendButton: {
         backgroundColor: Theme.color.background,
-        width: parseInt(Dimensions.get('window').width / 10),
-        height: parseInt(Dimensions.get('window').width / 10),
+        width: (Dimensions.get('window').width / 10),
+        height: (Dimensions.get('window').width / 10),
         alignItems: 'center',
         justifyContent: 'center',
 
