@@ -767,11 +767,8 @@ export default class GooglePlacesAutocomplete extends Component {
                             underlineColorAndroid={this.props.underlineColorAndroid}
                             autoCorrect={false} // ToDo: NOT work in Android
                             autoCapitalize="words"
-
                             // tintColor='rgb(234, 150, 24)'
-                            selectionColor={Theme.color.selection} // ToDo: NOT work in Android
-
-
+                            selectionColor={Theme.color.selection}
                             editable={this.props.editable}
                             returnKeyType={this.props.returnKeyType}
                             autoFocus={this.props.autoFocus}
