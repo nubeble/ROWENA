@@ -1,6 +1,8 @@
+// ToDo: add notification, flash
+
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
-import { Theme } from './rnff/src/components';
+import { StyleSheet, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
@@ -11,15 +13,28 @@ import autobind from 'autobind-decorator';
 
 export default class EditMain extends React.Component {
     state = {
-        showIndicator: false,
-        showAlert: false,
+        postSuccess: false, // true when the post is done
+
+        onUploadingImage: false,
+        uploadingImageNumber: 0, // 1,2,3,4
+
+        uploadImage1Uri: null,
+        uploadImage2Uri: null,
+        uploadImage3Uri: null,
+        uploadImage4Uri: null,
+
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+
+        flashMessageTitle: '',
+        flashMessageSubtitle: '',
+        flashImage: null, // uri
+        flashOpacity: new Animated.Value(0),
+        flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
 
 
-        uploadingImage: false,
-        uploadImage1: 'http://imgnews.naver.net/image/001/2017/05/20/PYH2017052019870001300_P2_20170520101607447.jpg',
-        uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg'
+        
     };
 
     componentDidMount() {
@@ -35,6 +50,8 @@ export default class EditMain extends React.Component {
     }
 
     componentWillUnmount() {
+        // ToDo: remove server files
+        
         this.hardwareBackPressListener.remove();
 
         this.closed = true;
@@ -103,7 +120,15 @@ export default class EditMain extends React.Component {
         );
     }
 
+
+
+
+
+
+
     uploadPicture(index) {
+        if (this.state.onUploadingImage) return;
+
         this.pickImage(index);
     }
 
@@ -114,58 +139,52 @@ export default class EditMain extends React.Component {
         if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
             let result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
-                aspect: [1, 1],
+                aspect: [4, 3],
                 quality: 1.0
             });
 
             console.log('result of launchImageLibraryAsync:', result);
 
             if (!result.cancelled) {
-                this.setState({ uploadingImage: true });
+                this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
 
-                // show indicator
-                this.setState({ showIndicator: true });
-
-                // ToDo: show progress bar
-
+                // show indicator & progress bar
+                this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
 
                 // upload image
-                // var that = this;
                 this.uploadImage(result.uri, index, (uri) => {
                     switch (index) {
-                        case 0: this.setState({ uploadImage1: uri }); break;
-                        case 1: this.setState({ uploadImage2: uri }); break;
-                        case 2: this.setState({ uploadImage3: uri }); break;
-                        case 3: this.setState({ uploadImage4: uri }); break;
+                        case 0: this.setState({ uploadImage1Uri: uri }); break;
+                        case 1: this.setState({ uploadImage2Uri: uri }); break;
+                        case 2: this.setState({ uploadImage3Uri: uri }); break;
+                        case 3: this.setState({ uploadImage4Uri: uri }); break;
                     }
 
                     // save to database
                     /*
-                    var data = {
+                        var data = {
                         pictures: {
                             uri: uri
                         }
                     };
-
                     this.updateUser(Firebase.user().uid, data);
                     */
+
+                    /*
+                    const fileName = result.uri.split('/').pop();
+                    const url = await firebase.storage().ref(fileName).getDownloadURL();
+                    console.log('download URL:', url);
+                    */
+
+                    // hide indicator & progress bar
+                    this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+                    setTimeout(() => {
+                        !this.closed && this.hideFlash();
+
+                        this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
+                    }, 1500);
                 });
-
-
-                /*
-                const fileName = result.uri.split('/').pop();
-                const url = await firebase.storage().ref(fileName).getDownloadURL();
-                console.log('download URL:', url);
-                */
-
-
-
-                // close indicator
-                this.setState({ showIndicator: false });
-
-                this.setState({ uploadingImage: false });
-
-            } // press OK
+            }
         } else {
             Linking.openURL('app-settings:');
         }
@@ -184,13 +203,20 @@ export default class EditMain extends React.Component {
         // console.log('file type:', type);
 
         const formData = new FormData();
+        formData.append("type", "profile"); // ToDo: check the type ('post', 'profile')
+
+        if (!this.feedId) {
+            this.feedId = Util.uid();
+        }
+
+        formData.append("feedId", this.feedId);
+
         formData.append("image", {
             uri,
             name: fileName,
             type: type
         });
         formData.append("userUid", Firebase.user().uid);
-        // formData.append("feedId", Firebase.user().uid);
         formData.append("pictureIndex", index);
 
         try {
@@ -224,9 +250,15 @@ export default class EditMain extends React.Component {
         } catch (error) {
             console.error(error);
 
-            // ToDo: error handling
+            this.showNotification('An error occurred. Please try again.');
         }
     }
+
+
+
+
+
+
 }
 
 const styles = StyleSheet.create({

@@ -1,11 +1,11 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import { StyleSheet, View, FlatList, SafeAreaView, Text, TouchableOpacity, Image, Dimensions } from "react-native";
+import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Image, Dimensions } from "react-native";
 import { observer } from "mobx-react/native";
 import { type AnimatedEvent } from "react-native/Libraries/Animated/src/AnimatedEvent";
 import FeedStore from "./FeedStore";
-import { RefreshIndicator, Post, Theme, FirstPost } from "../components";
+import { RefreshIndicator, Post, Text, Theme, FirstPost } from "../components";
 import PreloadImage from '../../../PreloadImage';
 import type { FeedEntry } from "../components/Model";
 import type { NavigationProps } from "../components/Types";

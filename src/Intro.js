@@ -122,9 +122,9 @@ export default class Intro extends React.Component {
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');
-
-        // console.log('window width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
-        // console.log('window height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        console.log('uid', Firebase.user().uid);
+        console.log('width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        console.log('height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 

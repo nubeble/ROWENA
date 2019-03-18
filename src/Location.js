@@ -1,12 +1,12 @@
 import React from 'react';
 import {
     // StyleSheet,
-    Text,
     View,
     FlatList,
     ActivityIndicator,
     AppRegistry
 } from 'react-native';
+import { Text } from "./rnff/src/components";
 import { List, ListItem } from "react-native-elements";
 
 var _ = require('lodash');

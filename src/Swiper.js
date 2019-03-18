@@ -1,7 +1,6 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import {
-    Text,
     View,
     ViewPropTypes,
     ScrollView,
@@ -10,7 +9,8 @@ import {
     ViewPagerAndroid,
     Platform,
     ActivityIndicator
-} from 'react-native'
+} from 'react-native';
+import { Text } from "./rnff/src/components";
 
 /**
  * Default styles
@@ -565,7 +565,7 @@ export default class extends Component {
             marginRight: 3,
             marginTop: 3,
             marginBottom: 3
-        }, this.props.activeDotStyle]}/>
+        }, this.props.activeDotStyle]} />
         const Dot = this.props.dot || <View style={[{
             backgroundColor: this.props.dotColor || 'rgba(0,0,0,.3)',
             // width: 8,
@@ -577,7 +577,7 @@ export default class extends Component {
             marginRight: 3,
             marginTop: 3,
             marginBottom: 3
-        }, this.props.dotStyle]}/>
+        }, this.props.dotStyle]} />
         for (let i = 0; i < this.state.total; i++) {
             dots.push(i === this.state.index
                 ? React.cloneElement(ActiveDot, { key: i })
@@ -659,18 +659,18 @@ export default class extends Component {
             case 'dragging':
                 // console.log('dragging');
                 this.onScrollBegin();
-            break;
+                break;
 
             case 'idle':
                 // console.log('idle');
                 this.__onScrollEnd();
                 if (this.props.onTouchEnd) this.props.onTouchEnd();
-            break;
+                break;
 
             case 'settling':
                 // console.log('settling');
                 if (this.props.onTouchEnd) this.props.onTouchEnd();
-            break;
+                break;
         }
     }
 

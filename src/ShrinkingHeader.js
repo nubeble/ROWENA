@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
+import { Text } from "./rnff/src/components";
 import { Animated, Dimensions, Platform } from 'react-native';
 import { Body, Header, List, ListItem as Item, ScrollableTab, Tab, Tabs, Title } from "native-base";
 

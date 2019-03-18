@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Text } from "./rnff/src/components";
 
 export default class ReadMore extends React.Component {
     state = {
@@ -10,22 +11,17 @@ export default class ReadMore extends React.Component {
 
     async componentDidMount() {
         this._isMounted = true;
+
         await nextFrameAsync();
 
-        if (!this._isMounted) {
-            return;
-        }
-
         // Get the height of the text with no restriction on number of lines
+        if (!this._isMounted) return;
         const fullHeight = await measureHeightAsync(this._text);
         this.setState({ measured: true });
         await nextFrameAsync();
 
-        if (!this._isMounted) {
-            return;
-        }
-
         // Get the height of the text now that number of lines has been set
+        if (!this._isMounted) return;
         const limitedHeight = await measureHeightAsync(this._text);
 
         if (fullHeight > limitedHeight) {
@@ -95,6 +91,9 @@ export default class ReadMore extends React.Component {
 
 function measureHeightAsync(component) {
     return new Promise(resolve => {
+
+        if (!this._isMounted) resolve(0);
+
         component.measure((x, y, w, h) => {
             resolve(h);
         });

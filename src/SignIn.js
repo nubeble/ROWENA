@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, View, TextInput, Button } from 'react-native';
+import { Text } from "./rnff/src/components";
 
 //import { Auth, Analytics } from 'aws-amplify';
 

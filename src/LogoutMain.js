@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, BackHandler } from 'react-native';
-import { Theme } from './rnff/src/components';
+import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
+import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';

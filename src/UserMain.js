@@ -1,5 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button, TouchableOpacity, BackHandler } from 'react-native';
+import { StyleSheet, View, Image, Button, TouchableOpacity, BackHandler } from 'react-native';
+import { Text } from "./rnff/src/components";
 import { NavigationActions } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Cons } from "./Globals";

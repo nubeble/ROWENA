@@ -43,7 +43,8 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 
-const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\n";
 const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
 const bodyInfoContainerPaddingVertical = Theme.spacing.small;
 // const bodyInfoItemWidth = Dimensions.get('window').width / 5;
@@ -70,7 +71,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0),
+        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
 
         showAlert: false,
         alertTitle: '',
@@ -146,8 +147,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcon();
-            this._showNotification = false;
 
             return true;
         }
@@ -197,7 +196,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
-
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
@@ -332,19 +330,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         return (
             <View style={styles.flex}>
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
-                    >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
-
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -365,7 +350,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
                     {/* like button or edit button */}
                     {
-                        (this.state.from === 'Profile') ?
+                        this.state.from === 'Profile' ?
                             <TouchableOpacity
                                 style={{
                                     width: 48,
@@ -400,6 +385,19 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     }
                 </View>
 
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => this.hideNotification()}
+                    >
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 {
                     this.state.renderList &&
                     <TouchableWithoutFeedback
@@ -419,7 +417,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                     }
 
                                     <View style={styles.infoContainer}>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                        <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                             <View style={styles.circle}></View>
                                             <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
                                         </View>
@@ -440,7 +438,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                         style={{ width: 20, height: 20, tintColor: Theme.color.title }}
                                                         source={PreloadImage.birth}
                                                     />
-                                                    <Text style={styles.bodyInfoTitle}>{post.age} years old</Text>
+                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
                                                 </View>
                                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
                                                     <Image
@@ -495,8 +493,10 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                             <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                                         </View>
 
-                                        {/* ToDo: remove tmp */}
-                                        <Text style={styles.note}>{post.note === 'note' ? tmp : post.note}</Text>
+                                        {
+                                            post.note &&
+                                            <Text style={styles.note}>{post.note}</Text>
+                                        }
                                     </View>
 
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
@@ -574,10 +574,17 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         </View>
                                     </View>
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                                    <Text style={{
+                                        marginTop: Theme.spacing.small,
+                                        marginBottom: Theme.spacing.small,
+                                        fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.placeholder,
+                                        textAlign: 'center', lineHeight: 26
+                                    }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
 
                                     <TouchableOpacity
-                                        style={[styles.contactButton, { marginTop: Theme.spacing.small + Theme.spacing.small, marginBottom: Theme.spacing.small + Theme.spacing.small }]}
+                                        style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                                         onPress={async () => await this.contact()}
                                     >
                                         <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
@@ -1156,10 +1163,11 @@ export default class PostScreen extends React.Component<InjectedProps> {
         this.selectedItemIndex = undefined;
         this.owner = undefined;
 
+        /*
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
         }
+        */
     }
 
     openKeyboard(ref, index, owner) {
@@ -1178,26 +1186,24 @@ export default class PostScreen extends React.Component<InjectedProps> {
         if (!this._showNotification) {
             this._showNotification = true;
 
-            this.setState({ notification: msg },
-                () => {
-                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                        this.state.offset.setValue(height * -1);
+            this.setState({ notification: msg }, () => {
+                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.offset.setValue(height * -1);
 
-                        Animated.sequence([
-                            Animated.parallel([
-                                Animated.timing(this.state.opacity, {
-                                    toValue: 1,
-                                    duration: 200,
-                                }),
-                                Animated.timing(this.state.offset, {
-                                    toValue: 0,
-                                    duration: 200,
-                                }),
-                            ])
-                        ]).start();
-                    });
-                }
-            );
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.opacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.offset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ])
+                    ]).start();
+                });
+            });
 
             StatusBar.setHidden(true);
         }
@@ -1227,7 +1233,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
     onChangeText(text) {
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
         }
     }
 
@@ -1468,12 +1473,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        // backgroundColor: 'rgb(70, 154, 32)',
-        height: 14,
         paddingTop: Cons.lastLogInDatePaddingTop(),
         marginLeft: 8,
         fontSize: 14,
-        lineHeight: 14,
         fontFamily: "SFProText-Light",
         color: Theme.color.text2
     },
@@ -1530,7 +1532,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: Theme.color.text2,
         fontSize: 16,
-        lineHeight: Platform.OS === 'ios' ? 26 : 32,
+        lineHeight: Platform.OS === 'ios' ? 26 : 30,
         fontFamily: "SFProText-Regular",
         paddingTop: Theme.spacing.small,
         paddingBottom: Theme.spacing.small,

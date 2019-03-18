@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-    TextInput, View, FlatList, ScrollView, Image, Text, StyleSheet, Dimensions,
+    TextInput, View, FlatList, ScrollView, Image, StyleSheet, Dimensions,
     TouchableHighlight, Platform, ActivityIndicator, PixelRatio, TouchableOpacity
 } from 'react-native';
 import Qs from 'qs';
 // import debounce from 'lodash.debounce';
 import { debounce } from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { Theme } from '../rnff/src/components';
+import { Text, Theme } from '../rnff/src/components';
 
 const WINDOW = Dimensions.get('window');
 

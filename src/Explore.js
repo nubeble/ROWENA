@@ -46,8 +46,6 @@ export default class Explore extends React.Component<InjectedProps> {
 
     componentDidMount() {
         console.log('Explore.componentDidMount');
-        // console.log('width', Dimensions.get('window').width);
-        // console.log('height', Dimensions.get('window').height);
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -58,12 +56,12 @@ export default class Explore extends React.Component<InjectedProps> {
         const place = params.place;
 
         this.init(place);
-        
+
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
     }
-    
+
     init(place) {
         // this.setState({ searchText: place.description, cityName: place.city, feedSize: length });
         this.setState({ searchText: place.name, feedSize: place.length });
@@ -92,8 +90,10 @@ export default class Explore extends React.Component<InjectedProps> {
             // location: result.location
         }
 
-        // ToDo: 
         this.init(place);
+        this.setState({ selectedOrderIndex: 2, scrollY: 0 });
+
+        this._feed._scrollTo(0);
     }
 
     @autobind
@@ -239,10 +239,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             onPress={() => {
                                 //this._feed.disableScroll();
                                 this.orderByRatings();
+                                this.setState({ selectedOrderIndex: 0, scrollY: this.orderTabY });
+
                                 this._feed._scrollTo(this.orderTabY);
                                 // this._feed.enableScroll();
-
-                                this.setState({ selectedOrderIndex: 0 });
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
@@ -257,10 +257,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             onPress={() => {
                                 // this._feed.disableScroll();
                                 this.orderByReviews();
+                                this.setState({ selectedOrderIndex: 1, scrollY: this.orderTabY });
+
                                 this._feed._scrollTo(this.orderTabY);
                                 // this._feed.enableScroll();
-
-                                this.setState({ selectedOrderIndex: 1 });
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
@@ -275,10 +275,10 @@ export default class Explore extends React.Component<InjectedProps> {
                             onPress={() => {
                                 // this._feed.disableScroll();
                                 this.orderByTime();
+                                this.setState({ selectedOrderIndex: 2, scrollY: this.orderTabY });
+
                                 this._feed._scrollTo(this.orderTabY);
                                 // this._feed.enableScroll();
-
-                                this.setState({ selectedOrderIndex: 2 });
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
@@ -487,10 +487,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 //this._feed.disableScroll();
                                                 this.orderByRatings();
+                                                this.setState({ selectedOrderIndex: 0 });
+
                                                 this._feed._scrollTo(this.state.scrollY);
                                                 // this._feed.enableScroll();
-
-                                                this.setState({ selectedOrderIndex: 0 });
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
@@ -505,10 +505,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 // this._feed.disableScroll();
                                                 this.orderByReviews();
+                                                this.setState({ selectedOrderIndex: 1 });
+
                                                 this._feed._scrollTo(this.state.scrollY);
                                                 // this._feed.enableScroll();
-
-                                                this.setState({ selectedOrderIndex: 1 });
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
@@ -523,10 +523,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 // this._feed.disableScroll();
                                                 this.orderByTime();
+                                                this.setState({ selectedOrderIndex: 2 });
+
                                                 this._feed._scrollTo(this.state.scrollY);
                                                 // this._feed.enableScroll();
-
-                                                this.setState({ selectedOrderIndex: 2 });
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
@@ -547,19 +547,19 @@ export default class Explore extends React.Component<InjectedProps> {
     } // end of render()
 
 
-    orderByRatings() { // 평점
+    orderByRatings() { // review score
         this.order('averageRating');
     }
 
-    orderByReviews() { // 리뷰 개수
+    orderByReviews() { // review count
         this.order('reviewCount');
     }
 
-    orderByTime() { // 최근 등록
+    orderByTime() { // recently posted
         this.order('timestamp');
     }
 
-    orderByDistance() { // 가까운 거리
+    orderByDistance() { // ToDo: distance
         // this.order('averageRating');
     }
 
@@ -578,8 +578,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: Theme.color.background
     },
-
-
+    /*
     header: {
         backgroundColor: "white",
         shadowColor: "black",
@@ -599,6 +598,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 0
     },
+    */
     searchBar: {
         height: Cons.searchBarHeight,
         paddingBottom: 8,
@@ -615,11 +615,9 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     item: {
-        // flex: 1,
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').width / 21 * 9
     },
-
     titleContainer: {
         padding: Theme.spacing.small
     },
@@ -628,10 +626,24 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: "SFProText-Semibold"
     },
+    /*
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
+    */
+    /*
+    // test: advertising area
+    content: {
+        position: 'absolute',
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        padding: Theme.spacing.small,
+        flex: 1
+    },
+    */
     orderTab: {
         width: '100%',
         height: 50,
@@ -658,40 +670,5 @@ const styles = StyleSheet.create({
 
         backgroundColor: Theme.color.background,
         zIndex: 100000
-    },
-
-
-    // test: advertising area
-    /*
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        padding: Theme.spacing.small,
-        flex: 1
     }
-    */
-
-    bottomButton: {
-        width: '85%',
-        height: 45,
-        alignSelf: 'center',
-
-        justifyContent: 'center',
-        alignItems: 'center',
-
-        backgroundColor: "grey",
-        borderRadius: 5,
-        borderColor: "transparent",
-        borderWidth: 0,
-
-        marginTop: 2,
-        marginBottom: 2
-    },
-
-
-
-
 });

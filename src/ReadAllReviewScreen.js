@@ -41,7 +41,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0),
+        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
 
         refreshing: false,
 
@@ -102,8 +102,6 @@ export default class ReadAllReviewScreen extends React.Component {
 
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcon();
-            this._showNotification = false;
 
             return true;
         }
@@ -622,10 +620,11 @@ export default class ReadAllReviewScreen extends React.Component {
         this.selectedItemIndex = undefined;
         this.owner = undefined;
 
+        /*
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
         }
+        */
     }
 
     openKeyboard(ref, index, owner) {
@@ -644,26 +643,24 @@ export default class ReadAllReviewScreen extends React.Component {
         if (!this._showNotification) {
             this._showNotification = true;
 
-            this.setState({ notification: msg },
-                () => {
-                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                        this.state.offset.setValue(height * -1);
+            this.setState({ notification: msg }, () => {
+                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.offset.setValue(height * -1);
 
-                        Animated.sequence([
-                            Animated.parallel([
-                                Animated.timing(this.state.opacity, {
-                                    toValue: 1,
-                                    duration: 200,
-                                }),
-                                Animated.timing(this.state.offset, {
-                                    toValue: 0,
-                                    duration: 200,
-                                }),
-                            ])
-                        ]).start();
-                    });
-                }
-            );
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.opacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.offset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ])
+                    ]).start();
+                });
+            });
 
             StatusBar.setHidden(true);
         }
@@ -693,7 +690,6 @@ export default class ReadAllReviewScreen extends React.Component {
     onChangeText(text) {
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
         }
     }
 

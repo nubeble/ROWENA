@@ -11,6 +11,7 @@ export var Vars = {
 
     currentScreenName: null, // string
 
+    //// add here ////
 
 };
 
@@ -60,25 +61,32 @@ export var Cons = {
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
 
     // search bar text padding
-    // iPhone X: 4, Tango: ?, S7: 8
+    // iPhone X: 4, Tango: 7, S7: 8
     searchBarPaddingTop: () => {
+        if (Platform.OS === 'ios') return 4;
+        if (Platform.OS === 'android') return 8;
+
+        /*
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
 
         switch (param) {
-            case 5: return 10;
             case 6: return 8; // Galaxy S7: 640
-            case 7: return 6; // Tango: 731
-            case 8: return 4; // iphone X: 812
-            case 9: return 2;
+            case 7: return 7; // Tango: 731
+            case 8: return 6;
         }
 
-        if (param < 5) return 10;
-        if (param > 9) return 2;
+        if (param < 6) return 8;
+        if (param > 8) return 6;
+        */
     },
 
     // posting date text padding top
     lastLogInDatePaddingTop: () => {
+        if (Platform.OS === 'ios') return 0;
+        if (Platform.OS === 'android') return 6;
+
+        /*
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
 
@@ -86,12 +94,13 @@ export var Cons = {
             case 5: return 1;
             case 6: return 1; // Galaxy S7: 640
             case 7: return 1; // Tango: 731
-            case 8: return 2; // iphone X: 812
+            case 8: return 2;
             case 9: return 2;
         }
 
         if (param < 5) return 1;
         if (param > 9) return 2;
+        */
     },
 
     // feed item info text padding top
@@ -102,6 +111,9 @@ export var Cons = {
 
     // body info text padding top
     bodyInfoTitlePaddingTop: () => {
+        if (Platform.OS === 'ios') return 3;
+        if (Platform.OS === 'android') return 7;
+
         /*
         const height = Dimensions.get('window').height;
         const param = parseInt(height / 100);
@@ -117,12 +129,8 @@ export var Cons = {
         if (param < 5) return 7;
         if (param > 9) return 11;
         */
-
-        if (Platform.OS === 'ios') return 3;
-        if (Platform.OS === 'android') return 7;
     },
 
-
-
+    //// add here ////
 
 };

@@ -1,13 +1,13 @@
 import autobind from "autobind-decorator";
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Feather from "react-native-vector-icons/Feather";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
-import { Theme } from "./rnff/src/components";
+import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
@@ -283,7 +283,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         }}
                                     >
                                         <View style={{ width: '100%', height: 100 }}>
-
                                             <TouchableOpacity
                                                 style={{ width: avatarHeight, height: avatarHeight, position: "absolute", top: (100 - avatarHeight) / 2, right: 30 }}
                                                 onPress={() => {
@@ -305,11 +304,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                             source={PreloadImage.user}
                                                         />
                                                 }
-
                                             </TouchableOpacity>
                                             <Text style={{ color: Theme.color.text2, fontSize: 24, fontFamily: "SFProText-Semibold", position: "absolute", top: baselineTop + 20, left: 30 }}>{avatarName}</Text>
                                             <Text style={{ color: Theme.color.text3, fontSize: 16, fontFamily: "SFProText-Light", position: "absolute", top: baselineTop + 56, left: 30 }}>View and edit profile</Text>
-
                                         </View>
                                     </TouchableHighlight>
 

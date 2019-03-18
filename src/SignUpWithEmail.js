@@ -1,10 +1,10 @@
 import React from 'react';
 import {
-    StyleSheet, View, Text, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
-    Keyboard, Dimensions, Platform, StatusBar
+    StyleSheet, View, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
+    Keyboard, Dimensions, Platform, StatusBar, TextInput
 } from 'react-native';
 import { Header } from 'react-navigation';
-import { Form, Item, Input, Label } from 'native-base';
+// import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -12,7 +12,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import Firebase from './Firebase'
 import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
-import { Theme } from "./rnff/src/components";
+import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 
 
@@ -30,7 +30,7 @@ export default class SignUpWithEmail extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0),
+        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
 
         invalid: true,
         // signUpButtomTextColor: 'rgba(255,255,255,0.3)',
@@ -49,9 +49,15 @@ export default class SignUpWithEmail extends React.Component {
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
+        /*
         let that = this;
         setTimeout(function () {
             !that.closed && that.refs['emailInput'] && that.refs['emailInput']._root.focus();
+        }, 750); // 0.75 sec
+        */
+
+        setTimeout(() => {
+            !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
         }, 750); // 0.75 sec
     }
 
@@ -67,8 +73,7 @@ export default class SignUpWithEmail extends React.Component {
     handleHardwareBackPress() {
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcon();
-            this._showNotification = false;
+            this.hideAlertIcons();
 
             return true;
         }
@@ -98,44 +103,39 @@ export default class SignUpWithEmail extends React.Component {
         if (!this._showNotification) {
             this._showNotification = true;
 
-            this.setState(
-                {
-                    notification: msg
-                },
-                () => {
-                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                        this.state.offset.setValue(height * -1);
+            this.setState({ notification: msg }, () => {
+                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.offset.setValue(height * -1);
 
-                        Animated.sequence([
-                            Animated.parallel([
-                                Animated.timing(this.state.opacity, {
-                                    toValue: 1,
-                                    duration: 200,
-                                }),
-                                Animated.timing(this.state.offset, {
-                                    toValue: 0,
-                                    duration: 200,
-                                }),
-                            ]),
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.opacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.offset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ]),
 
-                            /*
-                            Animated.delay(1500),
+                        /*
+                        Animated.delay(1500),
 
-                            Animated.parallel([
-                                Animated.timing(this.state.opacity, {
-                                    toValue: 0,
-                                    duration: 300,
-                                }),
-                                Animated.timing(this.state.offset, {
-                                    toValue: height * -1,
-                                    duration: 300,
-                                }),
-                            ]),
-                            */
-                        ]).start();
-                    });
-                }
-            );
+                        Animated.parallel([
+                            Animated.timing(this.state.opacity, {
+                                toValue: 0,
+                                duration: 300,
+                            }),
+                            Animated.timing(this.state.offset, {
+                                toValue: height * -1,
+                                duration: 300,
+                            }),
+                        ]),
+                        */
+                    ]).start();
+                });
+            });
 
             StatusBar.setHidden(true);
         }
@@ -179,7 +179,7 @@ export default class SignUpWithEmail extends React.Component {
 
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
+            this.hideEmailIcon();
         }
 
         let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -207,13 +207,13 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ emailIcon: 1 });
 
             // set focus
-            this.refs['emailInput']._root.focus();
+            this.refs['emailInput'].focus();
 
             return;
         }
 
         // set focus
-        this.refs['pwInput']._root.focus();
+        this.refs['pwInput'].focus();
     }
 
     validatePassword(text) {
@@ -233,7 +233,7 @@ export default class SignUpWithEmail extends React.Component {
 
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
+            this.hidePasswordIcon();
         }
 
         if (text.length < 6) {
@@ -270,7 +270,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ pwIcon: 1 });
 
             // set focus
-            this.refs['pwInput']._root.focus();
+            this.refs['pwInput'].focus();
 
             return;
         }
@@ -298,7 +298,7 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         // ToDo: don't need this in ios, not working in android. check!!
-        this.refs['pwInput']._root.setNativeProps({ selection: { start: this.state.password.length, end: this.state.password.length } });
+        this.refs['pwInput'].setNativeProps({ selection: { start: this.state.password.length, end: this.state.password.length } });
     }
 
     signUp() {
@@ -311,7 +311,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ emailIcon: 1 });
 
             // set focus
-            this.refs['emailInput']._root.focus();
+            this.refs['emailInput'].focus();
 
             return;
         }
@@ -325,14 +325,14 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ pwIcon: 1 });
 
             // set focus
-            this.refs['pwInput']._root.focus();
+            this.refs['pwInput'].focus();
 
             return;
         }
 
         // hide keyboard
-        this.refs['emailInput']._root.blur();
-        this.refs['pwInput']._root.blur();
+        this.refs['emailInput'].blur();
+        this.refs['pwInput'].blur();
 
         this.processSignUp();
     }
@@ -360,8 +360,6 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     render() {
-        // const { goBack } = this.props.navigation;
-        // const showIndicator = this.state.showIndicator;
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
 
@@ -377,14 +375,11 @@ export default class SignUpWithEmail extends React.Component {
         return (
             <ImageBackground
                 style={{
-                    // flex: 1,
-                    // position: 'absolute',
                     width: Dimensions.get('window').width,
                     height: Dimensions.get('window').height
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-            // blurRadius={Platform.OS === "ios" ? 32 : 2}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}>
                     <View style={styles.searchBar}>
@@ -410,22 +405,82 @@ export default class SignUpWithEmail extends React.Component {
                         <Text style={styles.notificationText}>{this.state.notification}</Text>
                         <TouchableOpacity
                             style={styles.notificationButton}
-                            onPress={() => this.hideNotification()}
+                            onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideActiveAlertIcons();
+                                }
+                            }}
                         >
                             <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                         </TouchableOpacity>
                     </Animated.View>
 
-                    <View style={{ flex: 1 }}>
+                    <View style={{ paddingTop: Theme.spacing.tiny }}>
                         <Text style={{
-                            // marginTop: 2,
                             marginLeft: 22,
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 28,
-                            fontFamily: "SFProText-Semibold",
-                            // textAlign: 'center'
+                            fontFamily: "SFProText-Semibold"
                         }}>What's your email?</Text>
 
+                        <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
+                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                                {'EMAIL ADDRESS'}
+                            </Text>
+                            <TextInput
+                                ref='emailInput'
+                                style={{ paddingLeft: 18, paddingRight: 32, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                keyboardType={'email-address'}
+                                onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                                onChangeText={(text) => this.validateEmail(text)}
+                                selectionColor={Theme.color.selection}
+                                keyboardAppearance={'dark'}
+                                underlineColorAndroid="transparent"
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                            />
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 20, top: this.emailY - 33 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={28} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 20, top: this.emailY - 33 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.emailY = y;
+                                }}
+                            />
+                            <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                                {'PASSWORD'}
+                            </Text>
+                            <TextInput
+                                ref='pwInput'
+                                style={{ paddingLeft: 18, paddingRight: 32, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
+                                secureTextEntry={this.state.securePwInput}
+                                onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
+                                onChangeText={(text) => this.validatePassword(text)}
+                                selectionColor={Theme.color.selection}
+                                keyboardAppearance={'dark'}
+                                underlineColorAndroid="transparent"
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                            />
+                            <TouchableOpacity
+                                style={{ position: 'absolute', top: 90, right: 14, alignSelf: 'baseline' }}
+                                onPress={() => this.toggleSecureText()}
+                            >
+                                <Text style={{ fontSize: 13, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
+                            </TouchableOpacity>
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 20, top: this.passwordY - 33 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={28} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 20, top: this.passwordY - 33 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.passwordY = y;
+                                }}
+                            />
+                        </View>
+
+                        {/*
                         <Form style={{ marginLeft: 4, marginRight: 16 }}>
                             <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>EMAIL ADDRESS</Label>
                             <Item>
@@ -466,6 +521,20 @@ export default class SignUpWithEmail extends React.Component {
                                 {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             </Item>
                         </Form>
+                        */}
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </View>
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
@@ -485,6 +554,26 @@ export default class SignUpWithEmail extends React.Component {
                 </View>
             </ImageBackground>
         );
+    }
+
+    hideEmailIcon() {
+        if (this.state.emailIcon !== 0) this.setState({ emailIcon: 0 });
+    }
+
+    hidePasswordIcon() {
+        if (this.state.pwIcon !== 0) this.setState({ pwIcon: 0 });
+    }
+
+    hideAlertIcons() {
+        if (this.state.emailIcon !== 0) this.setState({ emailIcon: 0 });
+
+        if (this.state.pwIcon !== 0) this.setState({ pwIcon: 0 });
+    }
+
+    hideActiveAlertIcons() { // hide only alert icon
+        if (this.state.emailIcon === 1) this.setState({ emailIcon: 0 });
+
+        if (this.state.pwIcon === 1) this.setState({ pwIcon: 0 });
     }
 }
 

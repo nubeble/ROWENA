@@ -1,14 +1,13 @@
 import React from 'react';
 import {
-    StyleSheet, TouchableOpacity, View, Text, BackHandler, Dimensions, Image, TextInput,
-    Platform, FlatList, Animated, StatusBar
+    StyleSheet, TouchableOpacity, View, BackHandler, Dimensions, Image, TextInput,
+    Platform, FlatList, Animated, StatusBar, Keyboard, ActivityIndicator
 } from 'react-native';
 import { Permissions, Linking, ImagePicker, Constants } from 'expo';
-import { Theme } from './rnff/src/components';
+import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from "react-native-vector-icons/AntDesign";
-import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import Util from './Util';
@@ -16,6 +15,10 @@ import autobind from 'autobind-decorator';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import Select from 'react-native-picker-select';
 // import { Chevron } from 'react-native-shapes';
+
+const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
+
+const doneButtonViewHeight = 44;
 
 const textInputFontSize = 18;
 const textInputHeight = 34;
@@ -62,8 +65,13 @@ const braSizeItems = [
 
 export default class AdvertisementMain extends React.Component {
     state = {
-        // ToDo: test
-        uploadImage1Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
+        postSuccess: false, // true when the post is done
+
+        onUploadingImage: false,
+        uploadingImageNumber: 0, // 1,2,3,4
+
+        // uploadImage1Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
+        uploadImage1Uri: null,
         uploadImage2Uri: null,
         uploadImage3Uri: null,
         uploadImage4Uri: null,
@@ -86,7 +94,13 @@ export default class AdvertisementMain extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0),
+        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+
+        flashMessageTitle: '',
+        flashMessageSubtitle: '',
+        flashImage: null, // uri
+        flashOpacity: new Animated.Value(0),
+        flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
 
         showNameAlertIcon: false,
         showAgeAlertIcon: false,
@@ -96,11 +110,28 @@ export default class AdvertisementMain extends React.Component {
         showLocationAlertIcon: false,
         showPicturesAlertIcon: false,
 
+        /*
+        showKeyboard: false,
+        bottomPosition: Dimensions.get('window').height,
+        */
+        onNote: false,
+        keyboardTop: Dimensions.get('window').height,
+
         viewMarginBottom: 0,
         // showPaddingView: false
     };
 
+    constructor(props) {
+        super(props);
+
+        this.feedId = null;
+    }
+
     componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         // ToDo: iphone x, iphone xr, iphone xs, ...
@@ -125,13 +156,61 @@ export default class AdvertisementMain extends React.Component {
     }
 
     @autobind
+    _keyboardDidShow(e) {
+        if (!this.focused) return;
+
+        console.log('AdvertisementMain._keyboardDidShow');
+
+        if (this.noteFocused) {
+            if (!this.state.onNote) this.setState({ onNote: true });
+        }
+
+        this.setState({ keyboardTop: Dimensions.get('window').height - e.endCoordinates.height });
+    }
+
+    @autobind
+    _keyboardDidHide() {
+        if (!this.focused) return;
+
+        console.log('AdvertisementMain._keyboardDidHide');
+
+        if (this.state.onNote) this.setState({ onNote: false });
+
+        this.setState({ keyboardTop: Dimensions.get('window').height });
+    }
+
+    noteDone() {
+        this.setState({ onNote: false, keyboardTop: Dimensions.get('window').height });
+
+        Keyboard.dismiss();
+    }
+
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'AdvertisementMain';
+
+        this.focused = true;
+    }
+
+    @autobind
+    onBlur() {
+        this.focused = false;
+    }
+
+    @autobind
     handleHardwareBackPress() {
         console.log('AdvertisementMain.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            this._showNotification = false;
+            // this._showNotification = false;
+
+            return true;
+        }
+
+        if (this._showFlash) {
+            this.hideFlash();
 
             return true;
         }
@@ -142,7 +221,66 @@ export default class AdvertisementMain extends React.Component {
     }
 
     componentWillUnmount() {
+
+        // ToDo: remove server files
+        if (!this.state.postSuccess) {
+            /*
+            let images = [4];
+            for (var i = 0; i < images.length; i++) images[i] = false;
+
+            if (this.state.uploadImage1Uri) {
+                images[0] = true;
+            }
+
+            if (this.state.uploadImage2Uri) {
+                images[1] = true;
+            }
+
+            if (this.state.uploadImage3Uri) {
+                images[2] = true;
+            }
+
+            if (this.state.uploadImage4Uri) {
+                images[3] = true;
+            }
+            */
+
+            // call rest function
+            const formData = new FormData();
+            /*
+            formData.append("image1", images[0].toString());
+            formData.append("image2", images[1].toString());
+            formData.append("image3", images[2].toString());
+            formData.append("image4", images[3].toString());
+            */
+            if (this.state.uploadImage1Uri) {
+                formData.append("image1", this.state.uploadImage1Uri);
+            }
+            if (this.state.uploadImage2Uri) {
+                formData.append("image2", this.state.uploadImage2Uri);
+            }
+            if (this.state.uploadImage3Uri) {
+                formData.append("image3", this.state.uploadImage3Uri);
+            }
+            if (this.state.uploadImage4Uri) {
+                formData.append("image4", this.state.uploadImage4Uri);
+            }
+
+            fetch(SERVER_ENDPOINT + "cleanPostImages", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+        }
+
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -155,7 +293,7 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            this._showNotification = false;
+            // this._showNotification = false;
         }
 
         this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
@@ -165,7 +303,7 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            this._showNotification = false;
+            // this._showNotification = false;
         }
 
         // clear
@@ -201,7 +339,7 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            this._showNotification = false;
+            // this._showNotification = false;
         }
 
         // clear
@@ -237,28 +375,44 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            this._showNotification = false;
+            // this._showNotification = false;
         }
 
         this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
     }
 
     onFocusNote() {
+        this.noteFocused = true;
+
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+            // this._showNotification = false;
+        }
+
+        if (!this.state.onNote) this.setState({ onNote: true });
+
         // show padding view
         // this.setState({ showPaddingView: true });
 
         // console.log (this.inputViewY, this.nameY, this.birthdayY, this.heightY, this.weightY, this.breastsY, this.locationY);
 
-        // ToDo: only works in ios!
+        // Consider: only works well in ios, can reach only to the max scroll position in android.
         this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
     }
 
     onBlurNote() {
+        this.noteFocused = false;
+
+        if (this.state.onNote) this.setState({ onNote: false });
+
         // hide padding view
         // this.setState({ showPaddingView: false });
     }
 
     async post() {
+        if (this.state.onUploadingImage) return;
+
         // 1. check
         const { name, birthday, height, weight, breasts, note, location, place, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
@@ -333,13 +487,57 @@ export default class AdvertisementMain extends React.Component {
         }
 
         // 2. upload
+        let data = {};
 
-        // ToDo:
+        if (!this.feedId) {
+            this.feedId = Util.uid();
+        }
+        data.feedId = this.feedId;
 
+        data.userUid = Firebase.user().uid;
 
+        data.name = name;
 
+        let _birthday = 'DDMMYYYY';
+        _birthday = Util.getBirthday(this.state.datePickerDate);
+        data.birthday = _birthday;
 
+        data.height = Util.getHeight(height);
+        data.weight = Util.getWeight(weight);
+        data.bust = Util.getBust(breasts);
+        // console.log('data.bust', data.bust);
 
+        data.placeId = place.place_id;
+        data.placeName = place.description;
+
+        let _location = {};
+        _location.description = place.description;
+        _location.longitude = place.location.lng;
+        _location.latitude = place.location.lat;
+
+        data.location = _location;
+
+        let _note = null;
+        if (note !== '') {
+            _note = note;
+        }
+
+        data.note = _note;
+
+        data.image1Uri = uploadImage1Uri;
+        data.image2Uri = uploadImage2Uri;
+        data.image3Uri = uploadImage3Uri;
+        data.image4Uri = uploadImage4Uri;
+
+        await this.createFeed(data);
+
+        this.setState({ postSuccess: true });
+
+        // ToDo: 3. move to finish page
+
+        // 1. toast message
+
+        // 2. move next page
 
     }
 
@@ -349,6 +547,15 @@ export default class AdvertisementMain extends React.Component {
             transform: [
                 {
                     translateY: this.state.offset
+                }
+            ]
+        };
+
+        const flashStyle = {
+            opacity: this.state.flashOpacity,
+            transform: [
+                {
+                    translateY: this.state.flashOffset
                 }
             ]
         };
@@ -369,7 +576,10 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                this._showNotification = false;
+                            }
+
+                            if (this._showFlash) {
+                                this.hideFlash();
                             }
 
                             this.props.navigation.dispatch(NavigationActions.back());
@@ -389,12 +599,47 @@ export default class AdvertisementMain extends React.Component {
                     <TouchableOpacity
                         style={styles.notificationButton}
                         onPress={() => {
-                            this.hideNotification();
-                            this.hideAlertIcon();
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                                // this._showNotification = false;
+                            }
                         }}
                     >
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
                     </TouchableOpacity>
+                </Animated.View>
+
+                <Animated.View
+                    style={[styles.flash, flashStyle]}
+                    ref={flash => this._flash = flash}
+                >
+                    <View>
+                        <Text style={styles.flashMessageTitle}>{this.state.flashMessageTitle}</Text>
+                        <Text style={styles.flashMessageSubtitle}>{this.state.flashMessageSubtitle}</Text>
+                    </View>
+                    {
+                        this.state.flashImage &&
+                        <Image
+                            style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
+                            source={{ uri: this.state.flashImage }}
+                        />
+                    }
+
+                    {/*
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                                // this._showNotification = false;
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                    </TouchableOpacity>
+                    */}
                 </Animated.View>
 
                 <FlatList
@@ -412,6 +657,26 @@ export default class AdvertisementMain extends React.Component {
                     date={this.state.datePickerDate}
                     titleIOS={this.state.datePickerTitle}
                 />
+
+
+                {
+                    this.state.onNote &&
+                    <View style={{
+                        width: '100%', height: doneButtonViewHeight, backgroundColor: '#D0D0D0',
+                        // borderTopColor: '#3B3B3B', borderTopWidth: 1,
+                        position: 'absolute', top: this.state.keyboardTop - doneButtonViewHeight,
+                        justifyContent: "center", alignItems: "flex-end", paddingRight: 15
+                    }}>
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => this.noteDone()}
+                        >
+                            <Text style={styles.done}>Done</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
             </View>
         );
     }
@@ -465,19 +730,19 @@ export default class AdvertisementMain extends React.Component {
                     }}
                 >
                     {/* 1. name */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'NAME'}
                     </Text>
                     <TextInput
                         style={{
-                            paddingHorizontal: 18,
+                            paddingLeft: 18, paddingRight: 32,
                             height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
                         }}
                         // keyboardType={'email-address'}
-                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                        // keyboardAppearance='dark'
+
                         onChangeText={(text) => this.validateName(text)}
                         selectionColor={Theme.color.selection}
-                        // keyboardAppearance='dark'
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="words"
@@ -494,11 +759,11 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showNameAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 16, top: this.nameY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 18, top: this.nameY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 2. birthday */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'AGE (BIRTHDAY)'}
                     </Text>
                     {/* picker */}
@@ -508,13 +773,11 @@ export default class AdvertisementMain extends React.Component {
                         }}
                     >
                         <Text
-                            style={[{
+                            style={{
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                            },
-                            Platform.OS === 'ios' && {
-                                paddingTop: 4
-                            }]}
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
                         >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
 
                         {/* ToDo: add icon */}
@@ -528,28 +791,27 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showAgeAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 16, top: this.birthdayY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 18, top: this.birthdayY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 3. height */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'HEIGHT'}
                     </Text>
                     <TextInput
                         style={{
-                            paddingHorizontal: 18,
+                            paddingLeft: 18, paddingRight: 32,
                             height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
                             width: '50%'
                         }}
                         keyboardType='phone-pad'
                         returnKeyType='done'
+                        // keyboardAppearance='dark'
 
-                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                         onFocus={(e) => this.onFocusHeight()}
                         onBlur={(e) => this.onBlurHeight()}
                         onChangeText={(text) => this.validateHeight(text)}
                         selectionColor={Theme.color.selection}
-                        // keyboardAppearance='dark'
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="none"
@@ -565,27 +827,27 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showHeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 16, top: this.heightY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 18, top: this.heightY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 4. weight */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'WEIGHT'}
                     </Text>
                     <TextInput
                         style={{
-                            paddingHorizontal: 18,
+                            paddingLeft: 18, paddingRight: 32,
                             height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
                             width: '50%'
                         }}
                         keyboardType='phone-pad'
                         returnKeyType='done'
+                        // keyboardAppearance='dark'
 
                         onFocus={(e) => this.onFocusWeight()}
                         onBlur={(e) => this.onBlurWeight()}
                         onChangeText={(text) => this.validateWeight(text)}
                         selectionColor={Theme.color.selection}
-                        // keyboardAppearance='dark'
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="none"
@@ -601,11 +863,11 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showWeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 16, top: this.weightY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 18, top: this.weightY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 5. breasts */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'BREASTS'}
                     </Text>
                     <Select
@@ -629,7 +891,7 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                this._showNotification = false;
+                                // this._showNotification = false;
                             }
 
                             this.setState({ breasts: value });
@@ -659,7 +921,7 @@ export default class AdvertisementMain extends React.Component {
                             style: {
                                 paddingHorizontal: 18,
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular",
-                                color: (this.state.breasts) ? 'rgba(255, 255, 255, 0.8)' : Theme.color.placeholder
+                                color: (this.state.breasts === '') ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                             }
                         }}
                         useNativeAndroidPickerStyle={false}
@@ -678,11 +940,11 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showBreastsAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 16, top: this.breastsY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 18, top: this.breastsY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 7. note */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'NOTE'}
                     </Text>
                     <TextInput
@@ -698,15 +960,15 @@ export default class AdvertisementMain extends React.Component {
                         // returnKeyType='done'
                         // keyboardAppearance='dark'
 
-
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         // autoCapitalize="none"
-                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                         maxLength={200}
                         multiline={true}
                         numberOfLines={4}
-                        onFocus={(e) => this.onFocusNote()}
+                        onFocus={(e) => {
+                            this.onFocusNote();
+                        }}
                         onBlur={(e) => this.onBlurNote()}
                     />
                     <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "SFProText-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
@@ -720,7 +982,7 @@ export default class AdvertisementMain extends React.Component {
                     />
 
                     {/* 6. location */}
-                    <Text style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                         {'LOCATION'}
                     </Text>
                     <TouchableOpacity
@@ -728,23 +990,21 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                this._showNotification = false;
+                                // this._showNotification = false;
                             }
 
                             this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', initFromSearch: (result) => this.initFromSearch(result) });
                         }}
                     >
                         <Text
-                            style={[{
+                            style={{
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.location ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                            },
-                            Platform.OS === 'ios' && {
-                                paddingTop: 4
-                            }]}
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.location ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
                         >{this.state.location ? this.state.location : "What city do you live in?"}</Text>
                     </TouchableOpacity>
-                    <View style={{ alignSelf: 'center', borderBottomColor: 'transparent', borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.locationY = y;
@@ -752,37 +1012,26 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showLocationAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 16, top: this.locationY - 30 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 18, top: this.locationY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
                 </View>
 
+                {/*
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
-
-
-
-
-
-
+                */}
 
                 <Text style={{
+                    marginTop: Theme.spacing.small,
+                    marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.placeholder,
-                    textAlign: 'center', lineHeight: 26,
-                    marginTop: Theme.spacing.large,
-                    marginBottom: Theme.spacing.small
+                    textAlign: 'center', lineHeight: 26
                 }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
 
-
-
-
-
-
-
                 <TouchableOpacity
-                    // style={[styles.contactButton, { marginTop: Theme.spacing.small * 2, marginBottom: Theme.spacing.small * 2 }]}
-                    style={[styles.contactButton, { marginBottom: Theme.spacing.small * 2 }]}
+                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                     onPress={async () => await this.post()}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>{'Post'}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
                 </TouchableOpacity>
                 {
                     /*
@@ -794,7 +1043,7 @@ export default class AdvertisementMain extends React.Component {
 
                             console.log('this.paddingViewY', this.paddingViewY);
 
-                            // ToDo: move scroll here
+                            // Consider: move scroll here
                             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.locationY + 1, animated: true });
                         }}
                     />
@@ -808,20 +1057,54 @@ export default class AdvertisementMain extends React.Component {
         if (!uri) {
             return (
                 <View style={{ width: imageWidth, height: imageHeight }}>
-                    <View style={{ width: '100%', height: '100%', borderRadius: 2, borderColor: 'darkgrey', borderWidth: 2, borderStyle: 'dashed', backgroundColor: 'dimgrey' }} />
+                    <View style={{ width: '100%', height: '100%', borderRadius: 2, borderColor: '#707070', borderWidth: 2, borderStyle: 'dashed', backgroundColor: '#505050' }} />
 
                     {/* number */}
-                    <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'white', position: 'absolute', top: 2, left: 8 }}>{number}</Text>
+                    <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'white', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
 
                     {/* icon */}
                     <TouchableOpacity
                         style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: '#FFB5C2', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                         onPress={() => {
                             this.uploadPicture(number - 1);
+
+                            // test
+                            /*
+                            if (number === 3) {
+                                this.showFlash('Uploading...', 'Your picture is now uploading.', null);
+                            } else if (number === 4) {
+                                this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+                                setTimeout(() => {
+                                    !this.closed && this.hideFlash();
+                                }, 1000);
+                            }
+                            */
                         }}
                     >
                         <Ionicons name='ios-add' color='white' size={24} />
                     </TouchableOpacity>
+                    {
+                        number === 1 && this.state.showPicturesAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+                    {
+                        this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
+                        /*
+                        <View style={{
+                            width: imageWidth, height: imageHeight,
+                            position: 'absolute', top: 0, left: 0,
+                            justifyContent: 'center', alignItems: 'center'
+                        }}>
+                            <RefreshIndicator />
+                        </View>
+                        */
+                        <ActivityIndicator
+                            style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, zIndex: 10001 }}
+                            animating={true}
+                            size="small"
+                            color='#A8A8A8'
+                        />
+                    }
                 </View>
             );
         }
@@ -842,12 +1125,22 @@ export default class AdvertisementMain extends React.Component {
                 >
                     <Ionicons name='md-create' color='#FFB5C2' size={18} />
                 </TouchableOpacity>
+                {
+                    this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
+                    <ActivityIndicator
+                        style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, zIndex: 10001 }}
+                        animating={true}
+                        size="small"
+                        color='rgba(0, 0, 0, 0.6)'
+                    />
+                }
             </View>
         );
     }
 
-    //// upload image
     uploadPicture(index) {
+        if (this.state.onUploadingImage) return;
+
         this.pickImage(index);
     }
 
@@ -858,23 +1151,19 @@ export default class AdvertisementMain extends React.Component {
         if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
             let result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
-                aspect: [1, 1],
+                aspect: [4, 3],
                 quality: 1.0
             });
 
             console.log('result of launchImageLibraryAsync:', result);
 
             if (!result.cancelled) {
-                this.setState({ uploadingImage: true });
+                this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
 
-                // show indicator
-                this.setState({ showIndicator: true });
-
-                // ToDo: show progress bar
-
+                // show indicator & progress bar
+                this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
 
                 // upload image
-                // var that = this;
                 this.uploadImage(result.uri, index, (uri) => {
                     switch (index) {
                         case 0: this.setState({ uploadImage1Uri: uri }); break;
@@ -885,31 +1174,29 @@ export default class AdvertisementMain extends React.Component {
 
                     // save to database
                     /*
-                            var data = {
-                            pictures: {
+                        var data = {
+                        pictures: {
                             uri: uri
-                    }
-                };
-        
-                this.updateUser(Firebase.user().uid, data);
-                */
+                        }
+                    };
+                    this.updateUser(Firebase.user().uid, data);
+                    */
+
+                    /*
+                    const fileName = result.uri.split('/').pop();
+                    const url = await firebase.storage().ref(fileName).getDownloadURL();
+                    console.log('download URL:', url);
+                    */
+
+                    // hide indicator & progress bar
+                    this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+                    setTimeout(() => {
+                        !this.closed && this.hideFlash();
+
+                        this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
+                    }, 1500);
                 });
-
-
-                /*
-                const fileName = result.uri.split('/').pop();
-                const url = await firebase.storage().ref(fileName).getDownloadURL();
-                console.log('download URL:', url);
-                */
-
-
-
-                // hide indicator
-                this.setState({ showIndicator: false });
-
-                this.setState({ uploadingImage: false });
-
-            } // press OK
+            }
         } else {
             Linking.openURL('app-settings:');
         }
@@ -928,17 +1215,24 @@ export default class AdvertisementMain extends React.Component {
         // console.log('file type:', type);
 
         const formData = new FormData();
+        formData.append("type", "post"); // formData.append("type", "profile");
+
+        if (!this.feedId) {
+            this.feedId = Util.uid();
+        }
+
+        formData.append("feedId", this.feedId);
+
         formData.append("image", {
             uri,
             name: fileName,
             type: type
         });
         formData.append("userUid", Firebase.user().uid);
-        // formData.append("feedId", Firebase.user().uid);
         formData.append("pictureIndex", index);
 
         try {
-            let response = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/uploadFile/images",
+            let response = await fetch(SERVER_ENDPOINT + "uploadFile/images",
                 {
                     method: "POST",
                     headers: {
@@ -957,14 +1251,14 @@ export default class AdvertisementMain extends React.Component {
             cb(responseJson.downloadUrl);
 
             /*
-                    try {
-                            let downloadURL = await Firebase.storage.ref(responseJson.name).getDownloadURL();
-                        // let downloadURL = await Firebase.storage.child(responseJson.name).getDownloadURL();
-                        cb(downloadURL);
-                    } catch (error) {
-                            console.error(error);
-                        }
-                        */
+            try {
+                let downloadURL = await Firebase.storage.ref(responseJson.name).getDownloadURL();
+                // let downloadURL = await Firebase.storage.child(responseJson.name).getDownloadURL();
+                cb(downloadURL);
+            } catch (error) {
+                console.error(error);
+            }
+            */
         } catch (error) {
             console.error(error);
 
@@ -972,7 +1266,56 @@ export default class AdvertisementMain extends React.Component {
         }
     }
 
-    //// database
+    //// database ////
+    async createFeed(data) {
+        console.log('data', data);
+
+        // const feedId = Util.uid(); // create uuid
+        // const userUid = Firebase.user().uid;
+
+        let feed = {};
+        feed.uid = data.userUid;
+        feed.id = data.feedId;
+        feed.placeId = data.placeId;
+        feed.placeName = data.placeName;
+        feed.location = data.location;
+        feed.note = data.note;
+
+        const pictures = {
+            one: {
+                preview: null,
+                uri: data.image1Uri
+            },
+            two: {
+                preview: null,
+                uri: data.image2Uri
+            },
+            three: {
+                preview: null,
+                uri: data.image3Uri
+            },
+            four: {
+                preview: null,
+                uri: data.image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = data.name;
+        feed.birthday = data.birthday;
+        feed.height = data.height;
+        feed.weight = data.weight;
+        feed.bust = data.bust;
+
+        console.log('feed', feed);
+
+        await Firebase.createFeed(feed);
+
+        Vars.userFeedsChanged = true;
+    }
+
+    // ToDo: test
+    /*
     async createFeed() {
         const feedId = Util.uid(); // create uuid
         const userUid = Firebase.user().uid;
@@ -987,14 +1330,13 @@ export default class AdvertisementMain extends React.Component {
 
         const note = 'note';
 
-        // ToDo: use image picker
         const image1Uri = 'https://i.ytimg.com/vi/FLm-oBqOM24/maxresdefault.jpg';
         const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
         const image3Uri = 'https://i.ytimg.com/vi/jn2XzSxv4sU/maxresdefault.jpg';
         const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';
 
         const name = 'name';
-        const age = 20;
+        const birthday = '03111982';
         const height = 166;
         const weight = 50;
         const bust = 'D';
@@ -1029,7 +1371,7 @@ export default class AdvertisementMain extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -1039,6 +1381,7 @@ export default class AdvertisementMain extends React.Component {
         Vars.userFeedsChanged = true;
     }
 
+    // ToDo: test
     async removeFeed() {
         const uid = Firebase.user().uid;
 
@@ -1052,12 +1395,13 @@ export default class AdvertisementMain extends React.Component {
 
         Vars.userFeedsChanged = true;
     }
+    */
 
     showDateTimePicker(title) {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            this._showNotification = false;
+            // this._showNotification = false;
         }
 
         this.setState({ datePickerTitle: title, showDatePicker: true });
@@ -1116,26 +1460,26 @@ export default class AdvertisementMain extends React.Component {
         if (!this._showNotification) {
             this._showNotification = true;
 
-            this.setState({ notification: msg },
-                () => {
-                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                        this.state.offset.setValue(height * -1);
+            if (this._showFlash) this.hideFlash();
 
-                        Animated.sequence([
-                            Animated.parallel([
-                                Animated.timing(this.state.opacity, {
-                                    toValue: 1,
-                                    duration: 200,
-                                }),
-                                Animated.timing(this.state.offset, {
-                                    toValue: 0,
-                                    duration: 200,
-                                }),
-                            ])
-                        ]).start();
-                    });
-                }
-            );
+            this.setState({ notification: msg }, () => {
+                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.offset.setValue(height * -1);
+
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.opacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.offset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ])
+                    ]).start();
+                });
+            });
 
             StatusBar.setHidden(true);
         }
@@ -1177,6 +1521,62 @@ export default class AdvertisementMain extends React.Component {
 
         if (this.state.showPicturesAlertIcon) this.setState({ showPicturesAlertIcon: false });
     }
+
+    showFlash(title, subtitle, image) {
+        if (!this._showFlash) {
+            this._showFlash = true;
+
+            if (this._showNotification) {
+                this.hideNotification();
+                this.hideAlertIcon();
+            }
+
+            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.flashOffset.setValue(height * -1);
+
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.flashOpacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.flashOffset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ])
+                    ]).start();
+                });
+            });
+
+            StatusBar.setHidden(true);
+        }
+    };
+
+    hideFlash() {
+        this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 0,
+                        duration: 200,
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: height * -1,
+                        duration: 200,
+                    })
+                ])
+            ]).start();
+        });
+
+        StatusBar.setHidden(false);
+
+        this._showFlash = false;
+    }
+
+
+
 }
 
 const styles = StyleSheet.create({
@@ -1195,7 +1595,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: "SFProText-Semibold",
         color: 'rgba(255, 255, 255, 0.8)',
-        paddingBottom: 4
+        paddingBottom: 8
     },
     contactButton: {
         width: '85%',
@@ -1231,15 +1631,49 @@ const styles = StyleSheet.create({
         bottom: 4,
         // alignSelf: 'baseline'
     },
+    flash: {
+        width: '100%',
+        height: Cons.searchBarHeight,
+        position: "absolute",
+        top: 0,
+        backgroundColor: "#FFB5C2",
+        zIndex: 9999,
+
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: Theme.spacing.base
+    },
+    flashMessageTitle: {
+        fontSize: 16,
+        fontFamily: "SFProText-Semibold",
+        color: "#282828"
+    },
+    flashMessageSubtitle: {
+        fontSize: 14,
+        fontFamily: "SFProText-Semibold",
+        color: "#585858"
+    },
     textInputStyleIOS: {
-        paddingHorizontal: 18,
+        paddingLeft: 18, paddingRight: 32,
         fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
         minHeight: 52
     },
     textInputStyleAndroid: {
-        paddingHorizontal: 18,
+        paddingLeft: 18, paddingRight: 32,
         fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
         height: 84,
         textAlignVertical: 'top'
+    },
+    done: {
+        fontSize: 17,
+        // fontFamily: "SFProText-Regular",
+        fontWeight: '300',
+        color: Theme.color.selection,
+        // backgroundColor: 'grey',
+        alignSelf: 'center'
     }
+
+
+
 });

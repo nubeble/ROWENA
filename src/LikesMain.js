@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Text, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
 import PreloadImage from './PreloadImage';
@@ -13,7 +13,7 @@ import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import autobind from 'autobind-decorator';
-import { Theme, RefreshIndicator, FeedStore } from "./rnff/src/components";
+import { Text, Theme, RefreshIndicator, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";

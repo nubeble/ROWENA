@@ -222,7 +222,7 @@ export default class Firebase {
     static async createFeed(feed) {
         feed.likes = [];
         feed.reviewCount = 0;
-        feed.averageRating = 0.0;
+        feed.averageRating = 0;
         feed.timestamp = Firebase.getTimestamp();
         feed.rn = Util.getRandomNumber();
 

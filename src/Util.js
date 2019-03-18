@@ -83,4 +83,91 @@ export default class Util extends React.Component {
 
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
+
+    static getBirthday(date) {
+        let birthday = 'DDMMYYYY';
+
+        const day = date.getDate();
+        const month = date.getMonth();
+        const year = date.getFullYear();
+
+        let _day = '';
+        if (day < 10) {
+            _day = '0' + day.toString();
+        } else {
+            _day = day.toString();
+        }
+
+        let _month = '';
+        switch (month) {
+            case 0: _month = '01'; break;
+            case 1: _month = '02'; break;
+            case 2: _month = '03'; break;
+            case 3: _month = '04'; break;
+            case 4: _month = '05'; break;
+            case 5: _month = '06'; break;
+            case 6: _month = '07'; break;
+            case 7: _month = '08'; break;
+            case 8: _month = '09'; break;
+            case 9: _month = '10'; break;
+            case 10: _month = '11'; break;
+            case 11: _month = '12'; break;
+        }
+
+        birthday = _day + _month + year.toString();
+
+        return birthday;
+    }
+
+    static getBust(breats) {
+        let bust = '';
+
+        const words = breats.split(' ');
+
+        bust = words[0];
+
+        return bust;
+    }
+
+    static getHeight(height) {
+        let value = 0; // number
+
+        const words = height.split(' ');
+
+        value = parseInt(words[0]);
+
+        return value;
+    }
+
+    static getWeight(weight) {
+        let value = 0; // number
+
+        const words = weight.split(' ');
+
+        value = parseInt(words[0]);
+
+        return value;
+    }
+
+    static getAge(birthday) { // 'DDMMYYYY'
+        let age = 0;
+
+        const dold = parseInt(birthday.substring(0, 2));
+        const mold = parseInt(birthday.substring(2, 4));
+        const yold = parseInt(birthday.substring(4, 8));
+
+        const now = new Date();
+        const ynew = now.getFullYear();
+        const mnew = now.getMonth();
+        const dnew = now.getDate();
+
+        let years = (ynew - yold);
+        if (mnew < mold || mnew == mold && dnew < dold) {
+            years--;
+        }
+
+        age = years;
+
+        return age;
+    }
 }

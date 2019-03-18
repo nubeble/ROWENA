@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, SafeAreaView
+    StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, SafeAreaView
 } from 'react-native';
-import { Theme, FeedStore } from "./rnff/src/components";
+import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
@@ -229,6 +229,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             style={{
                                 color: 'rgba(255, 255, 255, 0.8)',
                                 fontSize: 18,
+                                paddingTop: 10,
                                 fontFamily: "SFProText-Semibold",
                                 marginLeft: 10,
                                 // paddingBottom: 4

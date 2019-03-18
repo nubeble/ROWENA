@@ -4,7 +4,7 @@ import { Header } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
 import { Constants } from 'expo';
-import { Theme } from './rnff/src/components';
+import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 

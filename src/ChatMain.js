@@ -1,12 +1,12 @@
 import React from 'react';
 import {
-    StyleSheet, Text, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler
+    StyleSheet, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler
 } from 'react-native';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import PreloadImage from './PreloadImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from "autobind-decorator";
-import { Theme } from "./rnff/src/components";
+import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Constants } from "expo";
 import Firebase from './Firebase';

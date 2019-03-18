@@ -75,7 +75,8 @@ export type Post = {
     averageRating: number,
     likes: Array<string>, // user uid list
     name: string,
-    age: number,
+    // age: number,
+    birthday: string, // DDMMYYYY
     height: number,
     weight: number,
     bust: string,

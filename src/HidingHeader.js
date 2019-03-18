@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, ScrollView, Image, Animated } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, Animated } from 'react-native';
+import { Text } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 
 // const HEADER_MAX_HEIGHT = 200;// set the initial height

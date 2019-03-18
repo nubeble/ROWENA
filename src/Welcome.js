@@ -1,8 +1,8 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
-import { Theme } from "./rnff/src/components";
+import { Text, Theme } from "./rnff/src/components";
 
 // const titlePosition = Dimensions.get('window').height / 8;
 const imageWidth = Dimensions.get('window').width - Theme.spacing.base * 2;

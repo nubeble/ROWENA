@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Animated } from 'react-native';
+import { View, Animated } from 'react-native';
+import { Text } from './rnff/src/components';
 import { Ionicons, FontAwesome, SimpleLineIcons } from '@expo/vector-icons';
 
 

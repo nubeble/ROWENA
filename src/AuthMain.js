@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, Text, StatusBar, TouchableOpacity, ActivityIndicator,
+    StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator,
     Animated, Dimensions, Platform, Image
 } from 'react-native';
 import EvilIcons from "react-native-vector-icons/EvilIcons";
@@ -11,6 +11,7 @@ import * as firebase from "firebase";
 // import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
+import { Text, Theme } from "./rnff/src/components";
 
 const height = Dimensions.get('window').height;
 
@@ -117,7 +118,6 @@ export default class AuthMain extends React.Component {
                 }
             ]
         };
-
 
         return (
             <View style={styles.container}>

@@ -157,8 +157,15 @@ exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
 app.post("/images", function (req, res) {
     console.log('Image Upload', req.field);
 
-    const storage = admin.storage();
-    const fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
+    // const fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
+
+    let fileDir = '';
+
+    if (req.field.type === 'post') {
+        fileDir = 'images/' + req.field.userUid + '/post/' + req.field.feedId + '/' + req.files.file[0].originalname;
+    } else if (req.field.type === 'profile') {
+        fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
+    }
 
     return new Promise((resolve, reject) => {
 
@@ -166,6 +173,7 @@ app.post("/images", function (req, res) {
             console.log('metadata', metadata);
 
             // get download URL
+            const storage = admin.storage();
             storage.bucket(bucketName).file(fileDir).getSignedUrl({
                 action: 'read',
                 // expires: '03-09-2491'
@@ -189,8 +197,6 @@ app.post("/images", function (req, res) {
                     };
 
                     res.status(200).send(result);
-
-                    // next();
                 });
             });
         }).catch(error => {
@@ -199,8 +205,6 @@ app.post("/images", function (req, res) {
             reject(); // catch
 
             res.status(500).send(error);
-
-            // next();
         });
 
     });
@@ -635,4 +639,96 @@ const getReceipts = async(function (receiptIdChunks) {
             console.error(error);
         }
     }
+});
+
+
+
+
+
+
+
+
+exports.cleanPostImages = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        const fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            // console.log('Field [' + fieldname + ']: value: ' + val);
+
+            fields[fieldname] = val;
+        });
+
+        const params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", deleteFiles.bind(params));
+
+        // req.pipe(busboy); // not working!
+        busboy.end(req.rawBody);
+
+        /*
+        res.writeHead(303, { Connection: 'close', Location: '/' });
+        res.end();
+        */
+
+        // res.status(200).send(fields);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});
+
+const deleteFiles = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+
+    console.log('Done parsing form.', fields);
+
+    // ToDo: delete files
+    // await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
+
+    const storage = admin.storage();
+
+    let fileRef = storage.ref();
+
+    if (fields.image1) {
+        fileRef = storage.ref(fields.image1);
+        await fileRef.delete();
+    }
+
+    if (fields.image2) {
+        fileRef = storage.ref(fields.image2);
+        await fileRef.delete();
+    }
+
+    if (fields.image3) {
+        fileRef = storage.ref(fields.image3);
+        await fileRef.delete();
+    }
+
+    if (fields.image4) {
+        fileRef = storage.ref(fields.image4);
+        await fileRef.delete();
+    }
+
+    /*
+    // var desertRef = storage.child('images/desert.jpg');
+
+    // Delete the file
+    desertRef.delete().then(function() {
+        // File deleted successfully
+    }).catch(function(error) {
+        // Uh-oh, an error occurred!
+    });
+    */
+
+    console.log('Done deleting files in database.');
+
+    res.status(200).send(fields);
 });

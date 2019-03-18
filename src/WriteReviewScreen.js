@@ -24,7 +24,7 @@ export default class WriteReviewScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(0)
+        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
     };
 
     componentDidMount() {
@@ -59,8 +59,6 @@ export default class WriteReviewScreen extends React.Component {
 
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcon();
-            this._showNotification = false;
 
             return true;
         }
@@ -177,19 +175,6 @@ export default class WriteReviewScreen extends React.Component {
 
         return (
             <View style={styles.flex}>
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
-                    >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
-
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -205,8 +190,6 @@ export default class WriteReviewScreen extends React.Component {
 
                             if (this._showNotification) {
                                 this.hideNotification();
-                                this.hideAlertIcon();
-                                this._showNotification = false;
                             }
 
                             this.props.navigation.state.params.initFromWriteReview(false);
@@ -217,6 +200,7 @@ export default class WriteReviewScreen extends React.Component {
                     </TouchableOpacity>
 
                     <Text style={styles.searchBarTitle}>{post.name}</Text>
+
                     {/*
                     <TouchableOpacity
                         style={{
@@ -231,6 +215,19 @@ export default class WriteReviewScreen extends React.Component {
                     </TouchableOpacity>
                     */}
                 </View>
+
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => this.hideNotification()}
+                    >
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
 
                 <View style={styles.infoContainer}>
                     <TouchableWithoutFeedback
@@ -313,26 +310,24 @@ export default class WriteReviewScreen extends React.Component {
         if (!this._showNotification) {
             this._showNotification = true;
 
-            this.setState({ notification: msg },
-                () => {
-                    this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                        this.state.offset.setValue(height * -1);
+            this.setState({ notification: msg }, () => {
+                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.offset.setValue(height * -1);
 
-                        Animated.sequence([
-                            Animated.parallel([
-                                Animated.timing(this.state.opacity, {
-                                    toValue: 1,
-                                    duration: 200,
-                                }),
-                                Animated.timing(this.state.offset, {
-                                    toValue: 0,
-                                    duration: 200,
-                                }),
-                            ])
-                        ]).start();
-                    });
-                }
-            );
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.opacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.offset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ])
+                    ]).start();
+                });
+            });
 
             StatusBar.setHidden(true);
         }
@@ -362,7 +357,6 @@ export default class WriteReviewScreen extends React.Component {
     onChangeText(text) {
         if (this._showNotification) {
             this.hideNotification();
-            this._showNotification = false;
         }
     }
 
@@ -423,7 +417,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: "SFProText-Semibold",
         color: 'rgba(255, 255, 255, 0.8)',
-        paddingBottom: 4
+        paddingBottom: 8
     },
     notification: {
         width: '100%',

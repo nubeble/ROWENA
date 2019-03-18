@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, BackHandler, Dimensions } from 'react-native';
-import { Theme } from './rnff/src/components';
+import { StyleSheet, View, TouchableOpacity, Image, BackHandler, Dimensions } from 'react-native';
+import { Text, Theme } from './rnff/src/components';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -59,10 +59,9 @@ export default class AdvertisementGuide extends React.Component {
 
                 <View style={styles.container}>
                     <Text style={{
-                        // marginTop: titlePosition,
                         marginTop: 10,
-                        color: 'black',
                         fontSize: 32,
+                        color: 'black',
                         fontFamily: "SFProText-Semibold",
                         textAlign: 'center'
                     }}>Let's start!</Text>

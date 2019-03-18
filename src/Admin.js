@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, BackHandler } from 'react-native';
-import { Theme } from './rnff/src/components';
+import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
+import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
@@ -265,7 +265,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -300,7 +300,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -335,7 +335,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -370,7 +370,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -405,7 +405,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Kim Seol-hyun';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 49;
         const bust = 'B+';
@@ -440,7 +440,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -475,7 +475,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Kim Seol-hyun';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 49;
         const bust = 'B+';
@@ -510,7 +510,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -545,7 +545,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -580,7 +580,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -615,7 +615,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -650,7 +650,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -685,7 +685,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Angelina Danilova';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -720,7 +720,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -755,7 +755,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -790,7 +790,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -825,7 +825,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -860,7 +860,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -895,7 +895,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -930,7 +930,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
@@ -965,7 +965,7 @@ export default class Admin extends React.Component {
         // --
 
         const name = 'Bae Soo-bin';
-        const age = 24;
+        const birthday = '02121996';
         const height = 167;
         const weight = 48;
         const bust = 'B+';
@@ -1000,7 +1000,7 @@ export default class Admin extends React.Component {
 
         feed.pictures = pictures;
         feed.name = name;
-        feed.age = age;
+        feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
