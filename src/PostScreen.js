@@ -1042,7 +1042,9 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         {
                             this.state.isOwner && !reply &&
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.openKeyboard(ref, index, _profile.uid)}>
+                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                    onPress={() => this.openKeyboard(ref, index, _profile.uid)}
+                                >
                                     <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1654,7 +1656,6 @@ const styles = StyleSheet.create({
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4,
-        // alignSelf: 'baseline'
+        bottom: 4
     }
 });

@@ -33,6 +33,7 @@ export default class Admin extends React.Component {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
+                    {/* close button */}
                     <TouchableOpacity
                         style={{
                             width: 48,
@@ -46,7 +47,7 @@ export default class Admin extends React.Component {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
                 <View style={styles.container}>
@@ -1025,10 +1026,8 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        // backgroundColor: 'black'
-        // backgroundColor: '#ff9a9a'
+        backgroundColor: 'white'
     },
-
     bottomButton: {
         width: '85%',
         height: 45,

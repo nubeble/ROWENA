@@ -161,9 +161,24 @@ export default class AdvertisementMain extends React.Component {
 
         console.log('AdvertisementMain._keyboardDidShow');
 
+        if (this.focusedItem === 'name') {
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        } else if (this.focusedItem === 'height') {
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        } else if (this.focusedItem === 'weight') {
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        } else if (this.focusedItem === 'note') {
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+
+            if (!this.state.onNote) this.setState({ onNote: true });
+        }
+
+
+        /*
         if (this.noteFocused) {
             if (!this.state.onNote) this.setState({ onNote: true });
         }
+        */
 
         this.setState({ keyboardTop: Dimensions.get('window').height - e.endCoordinates.height });
     }
@@ -266,7 +281,9 @@ export default class AdvertisementMain extends React.Component {
             // this._showNotification = false;
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        // move to keyboard show event
+        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        this.focusedItem = 'name';
     }
 
     onFocusHeight() {
@@ -279,7 +296,9 @@ export default class AdvertisementMain extends React.Component {
         // clear
         this.setState({ height: '' });
 
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        // move to keyboard show event
+        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        this.focusedItem = 'height';
     }
 
     onBlurHeight() {
@@ -315,7 +334,9 @@ export default class AdvertisementMain extends React.Component {
         // clear
         this.setState({ weight: '' });
 
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        // move to keyboard show event
+        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        this.focusedItem = 'weight';
     }
 
     onBlurWeight() {
@@ -352,7 +373,7 @@ export default class AdvertisementMain extends React.Component {
     }
 
     onFocusNote() {
-        this.noteFocused = true;
+        // this.noteFocused = true;
 
         if (this._showNotification) {
             this.hideNotification();
@@ -368,11 +389,13 @@ export default class AdvertisementMain extends React.Component {
         // console.log (this.inputViewY, this.nameY, this.birthdayY, this.heightY, this.weightY, this.breastsY, this.locationY);
 
         // Consider: only works well in ios, can reach only to the max scroll position in android.
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+        // move to keyboard show event
+        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+        this.focusedItem = 'note';
     }
 
     onBlurNote() {
-        this.noteFocused = false;
+        // this.noteFocused = false;
 
         if (this.state.onNote) this.setState({ onNote: false });
 
@@ -1642,8 +1665,7 @@ const styles = StyleSheet.create({
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4,
-        // alignSelf: 'baseline'
+        bottom: 4
     },
     flash: {
         width: '100%',

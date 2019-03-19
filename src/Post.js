@@ -8,13 +8,13 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
-import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
+import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
 import Swiper from './Swiper';
-import { Rating, AirbnbRating } from './react-native-ratings/src';
+import { AirbnbRating } from './react-native-ratings/src';
 import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
 import { inject, observer } from "mobx-react/native";
@@ -1018,7 +1018,9 @@ export default class Post extends React.Component<InjectedProps> {
                         {
                             this.state.isOwner && !reply &&
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }} onPress={() => this.openKeyboard(ref, index, _profile.uid)}>
+                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                    onPress={() => this.openKeyboard(ref, index, _profile.uid)}
+                                >
                                     <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
@@ -1625,7 +1627,6 @@ const styles = StyleSheet.create({
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4,
-        // alignSelf: 'baseline'
+        bottom: 4
     }
 });

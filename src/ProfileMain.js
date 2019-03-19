@@ -249,7 +249,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
 
-                    <TouchableWithoutFeedback
+                    <TouchableOpacity activeOpacity={1.0}
                         onPress={() => this.openAdmin()}
                     >
                         <Text
@@ -261,7 +261,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 marginLeft: 16
                             }}
                         >Profile</Text>
-                    </TouchableWithoutFeedback>
+                    </TouchableOpacity>
 
                 </View>
 

@@ -900,10 +900,12 @@ export default class Intro extends React.Component {
 
     renderFeedItem(feed) {
         return (
-            <TouchableOpacity activeOpacity={1.0} onPress={() => {
-                console.log('onpress', feed.placeId, feed.id);
-                this.props.navigation.navigate("introPost", { post: feed });
-            }}>
+            <TouchableOpacity activeOpacity={1.0}
+                onPress={() => {
+                    console.log('onpress', feed.placeId, feed.id);
+                    this.props.navigation.navigate("introPost", { post: feed });
+                }}
+            >
                 <SmartImage
                     style={styles.item}
                     showSpinner={false}

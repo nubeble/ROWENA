@@ -234,15 +234,9 @@ export default class SearchScreen extends React.Component {
                         }}
                         GooglePlacesSearchQuery={{
                             // available options for GooglePlacesSearch API : https://developers.google.com/places/web-service/search
-                            // ToDo: check!
-                            /*
                             rankby: 'distance',
                             types: 'food'
-                            */
-                            rankby: 'prominence',
-                            types: 'city_hall'
                         }}
-
                         filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
                         predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
 

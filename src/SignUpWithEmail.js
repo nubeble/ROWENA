@@ -645,7 +645,6 @@ const styles = StyleSheet.create({
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4,
-        // alignSelf: 'baseline'
+        bottom: 4
     }
 });
