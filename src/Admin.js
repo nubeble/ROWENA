@@ -201,7 +201,7 @@ export default class Admin extends React.Component {
         let image3Uri = null;
         let image4Uri = null;
 
-        let num = Math.random() * 10 % 4; // 0 ~ 3
+        let num = Math.round(Math.random() * 10) % 4; // 0 ~ 3
         switch (num) {
             case 0: {
                 image1Uri = uri1;
@@ -254,10 +254,10 @@ export default class Admin extends React.Component {
             latitude: 13.7563309
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -327,7 +327,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -397,7 +397,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -467,7 +467,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -537,7 +537,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -607,7 +607,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -677,7 +677,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -747,7 +747,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -817,7 +817,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -887,7 +887,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
@@ -957,7 +957,7 @@ export default class Admin extends React.Component {
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
         // --
-        const number = Math.random() * 10 % 6; // 0 ~ 5
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
         const images = this.getRandomImage(number);
         let image1Uri = images[0];
         let image2Uri = images[1];
