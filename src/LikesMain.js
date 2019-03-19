@@ -25,8 +25,8 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 10;
 
-const guideImageWidth = 300;
-const guideImageHeight = 150;
+const guideImageWidth = 400;
+const guideImageHeight = guideImageWidth / 2;
 
 
 @inject("feedStore", "profileStore")
