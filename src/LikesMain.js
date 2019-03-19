@@ -25,7 +25,7 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 10;
 
-const guideImageWidth = 400;
+const guideImageWidth = Dimensions.get('window').width - 20;
 const guideImageHeight = guideImageWidth / 2;
 
 
