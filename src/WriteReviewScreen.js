@@ -276,9 +276,8 @@ export default class WriteReviewScreen extends React.Component {
                         placeholder='Share details of your own experience'
                         placeholderTextColor={Theme.color.placeholder}
                         onChangeText={(text) => this.onChangeText(text)}
-
                         selectionColor={Theme.color.selection}
-                        keyboardAppearance={'dark'}
+                        // keyboardAppearance={'dark'}
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                     />

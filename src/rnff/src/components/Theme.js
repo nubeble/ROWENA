@@ -23,7 +23,9 @@ type Theme = {
         textInput: Color,
         selection: Color,
         placeholder: Color,
-        skeleton: Color
+        skeleton1: Color,
+        skeleton2: Color,
+        theme: Color
     },
     palette: {
         primary: Color,
@@ -81,7 +83,9 @@ const theme: Theme = {
         selection: "rgb(62, 165, 255)",
         placeholder: "rgb(160, 160, 160)",
         skeleton1: "#505050",
-        skeleton2: "#606060"
+        skeleton2: "#606060",
+        // theme: "#FFB5C2"
+        theme: "rgba(255, 181, 194, 0.6)"
     },
     palette: {
         primary: "#00AAFF",

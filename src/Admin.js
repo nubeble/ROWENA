@@ -250,6 +250,7 @@ export default class Admin extends React.Component {
         // ToDo: get it from google location api
         const location = {
             description: 'Soi Sukhumvit 19, Khlong Toei Nuea, Watthana, Bangkok, Thailand',
+            // description: '방콕',
             longitude: 100.5017651,
             latitude: 13.7563309
         };
@@ -269,7 +270,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -324,7 +325,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -339,7 +340,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -394,7 +395,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -409,7 +410,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 49;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -464,7 +465,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -479,7 +480,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 49;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -534,7 +535,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -549,7 +550,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -604,7 +605,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -619,7 +620,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -674,7 +675,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -689,7 +690,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -744,7 +745,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -759,7 +760,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -814,7 +815,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -829,7 +830,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -884,7 +885,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -899,7 +900,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};
@@ -954,7 +955,7 @@ export default class Admin extends React.Component {
             latitude: 0.0
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -969,7 +970,7 @@ export default class Admin extends React.Component {
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
-        const bust = 'B+';
+        const bust = 'B';
 
         // set
         let feed = {};

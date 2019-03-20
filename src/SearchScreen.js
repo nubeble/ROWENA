@@ -17,17 +17,21 @@ const Vientiane = { description: 'Vientiane, Laos', place_id: 'ChIJIXvtBoZoJDER3
 
 
 export default class SearchScreen extends React.Component {
+    /*
     state = {
         renderScreen: false
     };
+    */
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderScreen: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -58,45 +62,29 @@ export default class SearchScreen extends React.Component {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
-                    {
-                        from === 'AdvertisementMain' ?
-                            <TouchableOpacity
-                                style={{
-                                    width: 48,
-                                    height: 48,
-                                    position: 'absolute',
-                                    bottom: 2,
-                                    left: 2,
-                                    justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => {
-                                    this.props.navigation.goBack();
-                                }}
-                            >
-                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                            </TouchableOpacity>
-                            :
-                            <TouchableOpacity
-                                style={{
-                                    width: 48,
-                                    height: 48,
-                                    position: 'absolute',
-                                    bottom: 2,
-                                    left: 2,
-                                    justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => this.props.navigation.goBack()}
-                            >
-                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
-                            </TouchableOpacity>
-                    }
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            this.props.navigation.goBack();
+                        }}
+                    >
+                        <Ionicons name={from === 'AdvertisementMain' ? 'md-arrow-back' : 'md-close'} color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
                 </View>
 
                 {
-                    this.state.renderScreen &&
+                    // this.state.renderScreen &&
                     <GooglePlacesAutocomplete
                         enablePoweredByContainer={false}
                         placeholder='Where to?'
+                        placeholderTextColor={Theme.color.placeholder}
                         minLength={2} // minimum length of text to search
                         autoFocus={false}
                         returnKeyType={'search'} // Can be left out for default return key https://facebook.github.io/react-native/docs/textinput.html#returnkeytype
@@ -211,8 +199,12 @@ export default class SearchScreen extends React.Component {
                                 fontFamily: "SFProText-Regular",
                             },
                             predefinedPlacesDescription: {
-                                // color: 'rgb(234, 150, 24)'
-                                color: 'white'
+                                // color: 'white'
+                                fontSize: 16,
+                                lineHeight: 20,
+                                height: 30,
+                                color: "white",
+                                fontFamily: "SFProText-Regular",
                             },
                             poweredContainer: {
                                 backgroundColor: 'transparent',

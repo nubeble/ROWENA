@@ -372,8 +372,8 @@ export default class Explore extends React.Component<InjectedProps> {
                                     console.log('TouchableWithoutFeedback onPress', index);
                                 }}>
                                     <Swiper
-                                        style={styles.wrapper}
-                                        containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                        // style={styles.wrapper}
+                                        // containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                         width={Dimensions.get('window').width}
                                         height={Dimensions.get('window').width / 21 * 9}
                                         loop={false}
@@ -646,7 +646,7 @@ const styles = StyleSheet.create({
     */
     orderTab: {
         width: '100%',
-        height: 50,
+        height: 38,
         flexDirection: "row",
         justifyContent: 'center',
         alignItems: 'center',
@@ -658,7 +658,7 @@ const styles = StyleSheet.create({
     },
     _orderTab: {
         width: '100%',
-        height: 50,
+        height: 38,
         flexDirection: "row",
         justifyContent: 'center',
         alignItems: 'center',

@@ -59,12 +59,14 @@ export default class AdvertisementGuide extends React.Component {
 
                 <View style={styles.container}>
                     <Text style={{
-                        marginTop: 10,
-                        fontSize: 32,
+                        marginTop: Theme.spacing.tiny,
+                        paddingHorizontal: 22,
+                        fontSize: 28,
+                        lineHeight: 46, // ToDo: check ios!
                         color: 'black',
                         fontFamily: "SFProText-Semibold",
-                        textAlign: 'center'
-                    }}>Let's start!</Text>
+                        // textAlign: 'center'
+                    }}>Let's set up your listing</Text>
 
                     <Image
                         style={{
@@ -79,9 +81,10 @@ export default class AdvertisementGuide extends React.Component {
 
                     <Text style={{
                         marginTop: 10,
+                        paddingHorizontal: Theme.spacing.base,
                         color: 'black',
                         fontSize: 16,
-                        lineHeight: 30,
+                        lineHeight: 30, // ToDo: check ios!
                         fontFamily: "SFProText-Regular",
                         textAlign: 'center'
                     }}>{contentText}</Text>
@@ -143,8 +146,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     container: {
-        flex: 1,
-        paddingHorizontal: Theme.spacing.base
+        flex: 1
     },
     signUpButton: {
         width: '85%',

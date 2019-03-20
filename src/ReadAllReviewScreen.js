@@ -259,9 +259,8 @@ export default class ReadAllReviewScreen extends React.Component {
                                 placeholder='Reply to a review...'
                                 placeholderTextColor={Theme.color.placeholder}
                                 onChangeText={(text) => this.onChangeText(text)}
-
                                 selectionColor={Theme.color.selection}
-                                keyboardAppearance={'dark'}
+                                // keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
                             />

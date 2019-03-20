@@ -577,7 +577,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     <Dialog.Description>Type an administrator password</Dialog.Description>
                     <Dialog.Input
                         keyboardType={'phone-pad'}
-                        keyboardAppearance={'dark'}
+                        // keyboardAppearance={'dark'}
                         onChangeText={(text) => this.setState({ dialogPassword: text })}
                         autoFocus={true}
                         secureTextEntry={true}

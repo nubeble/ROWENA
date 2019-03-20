@@ -41,7 +41,7 @@ const defaultStyles = {
 		flex: 1
 		*/
 
-        flex: 1,
+
         // borderRadius: 5,
         marginTop: 8,
         marginLeft: 8,
@@ -51,7 +51,8 @@ const defaultStyles = {
 
         backgroundColor: 'transparent',
         // backgroundColor: 'green',
-
+        // width: '100%',
+        flex: 1,
         height: 40,
         fontSize: 24,
         color: "white",
@@ -144,13 +145,9 @@ export default class GooglePlacesAutocomplete extends Component {
         // been rendered
         this._handleChangeText(this.state.text);
 
-        if (!this.closed) {
-            let that = this;
-            setTimeout(function () {
-                // if (that.refs.textInput) !that.closed && that.refs.textInput.focus();
-                !that.closed && that.refs.textInput && that.refs.textInput.focus();
-            }, 500); // 0.5 sec
-        }
+        setTimeout(() => {
+            !this.closed && this.refs.textInput && this.refs.textInput.focus();
+        }, 500);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -706,12 +703,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     style={{ position: 'absolute', right: 30, top: 16, alignSelf: 'baseline' }}
                     onPress={() => {
                         if (this.refs.textInput) {
-                            !this.closed && this.setState({ text: '' });
-                            !this.closed && this.setState({
-                                dataSource: this.buildRowsFromResults([]),
-                            });
-
-                            !this.closed && this.setState({ clearButtonDisplayed: false });
+                            !this.closed && this.setState({ text: '', dataSource: this.buildRowsFromResults([]), clearButtonDisplayed: false });
                         }
                     }}
                 >
@@ -762,20 +754,17 @@ export default class GooglePlacesAutocomplete extends Component {
                         <TextInput
                             ref="textInput"
                             multiline={false}
-                            keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
-                            keyboardAppearance={'dark'}
+                            // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
+                            // returnKeyType={this.props.returnKeyType}
+                            // keyboardAppearance={'dark'}
                             underlineColorAndroid={this.props.underlineColorAndroid}
-                            autoCorrect={false} // ToDo: NOT work in Android
+                            autoCorrect={false}
                             autoCapitalize="words"
-                            // tintColor='rgb(234, 150, 24)'
                             selectionColor={Theme.color.selection}
                             editable={this.props.editable}
-                            returnKeyType={this.props.returnKeyType}
                             autoFocus={this.props.autoFocus}
                             style={[this.props.suppressDefaultStyles ? {} : defaultStyles.textInput, this.props.styles.textInput]}
-                            value={this.state.text}
                             placeholder={this.props.placeholder}
-                            onSubmitEditing={this.props.onSubmitEditing}
                             placeholderTextColor={this.props.placeholderTextColor}
                             onFocus={onFocus ? () => { this._onFocus(); onFocus() } : this._onFocus}
                             onBlur={this._onBlur}
@@ -787,6 +776,8 @@ export default class GooglePlacesAutocomplete extends Component {
                             clearButtonMode={'never'}
                             {...userProps}
                             onChangeText={this._handleChangeText}
+                            onSubmitEditing={this.props.onSubmitEditing}
+                            value={this.state.text}
                         />
                         {this.renderClearButton()}
 

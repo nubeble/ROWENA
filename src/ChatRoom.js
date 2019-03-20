@@ -283,7 +283,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             */
                             style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
                             selectionColor: Theme.color.selection,
-                            keyboardAppearance: 'dark',
+                            // keyboardAppearance: 'dark',
                             underlineColorAndroid: "transparent",
                             autoCorrect: false,
 

@@ -430,18 +430,18 @@ export default class SignUpWithEmail extends React.Component {
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ paddingLeft: 18, paddingRight: 32, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ paddingLeft: 18, paddingRight: 48, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 keyboardType={'email-address'}
                                 onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                 onChangeText={(text) => this.validateEmail(text)}
                                 selectionColor={Theme.color.selection}
-                                keyboardAppearance={'dark'}
+                                // keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
                                 autoCapitalize="none"
                             />
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 20, top: this.emailY - 33 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={28} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 20, top: this.emailY - 33 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 22, top: this.emailY - 34 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 22, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
@@ -453,16 +453,16 @@ export default class SignUpWithEmail extends React.Component {
                             </Text>
                             <TextInput
                                 ref='pwInput'
-                                style={{ paddingLeft: 18, paddingRight: 32, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ paddingLeft: 18, paddingRight: 48, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
                                 secureTextEntry={this.state.securePwInput}
                                 onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                 onChangeText={(text) => this.validatePassword(text)}
+                                autoCapitalize="none"
                                 selectionColor={Theme.color.selection}
-                                keyboardAppearance={'dark'}
+                                // keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                autoCapitalize="none"
                             />
                             <TouchableOpacity
                                 style={{ position: 'absolute', top: 90, right: 14, alignSelf: 'baseline' }}
@@ -470,8 +470,8 @@ export default class SignUpWithEmail extends React.Component {
                             >
                                 <Text style={{ fontSize: 13, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
                             </TouchableOpacity>
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 20, top: this.passwordY - 33 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={28} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 20, top: this.passwordY - 33 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 22, top: this.passwordY - 34 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 22, top: this.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;

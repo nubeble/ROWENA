@@ -13,6 +13,7 @@ import Firebase from './Firebase';
 import Util from './Util';
 import autobind from 'autobind-decorator';
 import DateTimePicker from 'react-native-modal-datetime-picker';
+// https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
 // import { Chevron } from 'react-native-shapes';
 
@@ -87,7 +88,10 @@ export default class AdvertisementMain extends React.Component {
         note: '',
         noteLength: 0,
 
-        location: '',
+        country: null,
+        street: null,
+        city: '',
+        state: '',
         place: null,
 
         notification: '',
@@ -105,7 +109,8 @@ export default class AdvertisementMain extends React.Component {
         showHeightAlertIcon: false,
         showWeightAlertIcon: false,
         showBreastsAlertIcon: false,
-        showLocationAlertIcon: false,
+        showCountryAlertIcon: false,
+        showStreetAlertIcon: false,
         showPicturesAlertIcon: false,
 
         /*
@@ -115,8 +120,7 @@ export default class AdvertisementMain extends React.Component {
         onNote: false,
         keyboardTop: Dimensions.get('window').height,
 
-        viewMarginBottom: 0,
-        // showPaddingView: false
+        viewMarginBottom: 0
     };
 
     constructor(props) {
@@ -152,7 +156,13 @@ export default class AdvertisementMain extends React.Component {
         }
         */
 
-        this.setState({ location: result.description, place: result });
+        this.setState({ street: result.description, place: result });
+    }
+
+    initFromSelect(result) {
+        console.log('AdvertisementMain.initFromSelect', result);
+
+        this.setState({ country: result.name });
     }
 
     @autobind
@@ -383,9 +393,6 @@ export default class AdvertisementMain extends React.Component {
 
         if (!this.state.onNote) this.setState({ onNote: true });
 
-        // show padding view
-        // this.setState({ showPaddingView: true });
-
         // console.log (this.inputViewY, this.nameY, this.birthdayY, this.heightY, this.weightY, this.breastsY, this.locationY);
 
         // Consider: only works well in ios, can reach only to the max scroll position in android.
@@ -398,16 +405,13 @@ export default class AdvertisementMain extends React.Component {
         // this.noteFocused = false;
 
         if (this.state.onNote) this.setState({ onNote: false });
-
-        // hide padding view
-        // this.setState({ showPaddingView: false });
     }
 
     async post() {
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { name, birthday, height, weight, breasts, note, location, place, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const { name, birthday, height, weight, breasts, note, country, street, place, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -469,10 +473,20 @@ export default class AdvertisementMain extends React.Component {
             return;
         }
 
-        if (location === '') {
+        if (country === null) {
+            this.showNotification('Please enter your country.');
+
+            this.setState({ showCountryAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+
+            return;
+        }
+
+        if (street === null) {
             this.showNotification('Please enter your city.');
 
-            this.setState({ showLocationAlertIcon: true });
+            this.setState({ showStreetAlertIcon: true });
 
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
 
@@ -500,6 +514,9 @@ export default class AdvertisementMain extends React.Component {
         data.bust = Util.getBust(breasts);
         // console.log('data.bust', data.bust);
 
+        // ToDo:
+        // country
+        // ----
         data.placeId = place.place_id;
         data.placeName = place.description;
 
@@ -509,6 +526,7 @@ export default class AdvertisementMain extends React.Component {
         _location.latitude = place.location.lat;
 
         data.location = _location;
+        // ----
 
         let _note = null;
         if (note !== '') {
@@ -615,7 +633,7 @@ export default class AdvertisementMain extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    <Text style={styles.searchBarTitle}>{'Writing a Post'}</Text>
+                    <Text style={styles.searchBarTitle}>{'New Post'}</Text>
                 </View>
 
                 <Animated.View
@@ -767,7 +785,6 @@ export default class AdvertisementMain extends React.Component {
                         }}
                         // keyboardType={'email-address'}
                         // keyboardAppearance='dark'
-
                         onChangeText={(text) => this.validateName(text)}
                         selectionColor={Theme.color.selection}
                         underlineColorAndroid="transparent"
@@ -786,7 +803,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showNameAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 18, top: this.nameY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 2. birthday */}
@@ -818,7 +835,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showAgeAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 18, top: this.birthdayY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 3. height */}
@@ -834,7 +851,6 @@ export default class AdvertisementMain extends React.Component {
                         keyboardType='phone-pad'
                         returnKeyType='done'
                         // keyboardAppearance='dark'
-
                         onFocus={(e) => this.onFocusHeight()}
                         onBlur={(e) => this.onBlurHeight()}
                         onChangeText={(text) => this.validateHeight(text)}
@@ -854,7 +870,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showHeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 18, top: this.heightY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 4. weight */}
@@ -870,7 +886,6 @@ export default class AdvertisementMain extends React.Component {
                         keyboardType='phone-pad'
                         returnKeyType='done'
                         // keyboardAppearance='dark'
-
                         onFocus={(e) => this.onFocusWeight()}
                         onBlur={(e) => this.onBlurWeight()}
                         onChangeText={(text) => this.validateWeight(text)}
@@ -890,7 +905,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showWeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 18, top: this.weightY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 5. breasts */}
@@ -967,7 +982,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showBreastsAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 18, top: this.breastsY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
 
                     {/* 7. note */}
@@ -986,7 +1001,6 @@ export default class AdvertisementMain extends React.Component {
                         // keyboardType='default'
                         // returnKeyType='done'
                         // keyboardAppearance='dark'
-
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         // autoCapitalize="none"
@@ -1008,9 +1022,44 @@ export default class AdvertisementMain extends React.Component {
                         }}
                     />
 
-                    {/* 6. location */}
+                    {/* country */}
                     <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
-                        {'LOCATION'}
+                        {'COUNTRY'}
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                // height: textInputHeight,
+                                minHeight: textInputHeight,
+                                fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.country ? this.state.country : "What country do you live in?"}</Text>
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.countryY = y;
+                        }}
+                    />
+                    {
+                        this.state.showCountryAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+
+                    {/* street */}
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        {'STREET'}
                     </Text>
                     <TouchableOpacity
                         onPress={() => {
@@ -1026,21 +1075,59 @@ export default class AdvertisementMain extends React.Component {
                         <Text
                             style={{
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.location ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.location ? this.state.location : "What city do you live in?"}</Text>
+                        >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
-                            this.locationY = y;
+                            this.streetY = y;
                         }}
                     />
                     {
-                        this.state.showLocationAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 18, top: this.locationY - 29 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        this.state.showStreetAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
+
+
+
+                    {/* city */}
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        {'CITY'}
+                    </Text>
+                    <Text
+                        style={{
+                            paddingHorizontal: 18,
+                            height: textInputHeight,
+                            // minHeight: textInputHeight,
+                            fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            paddingTop: 7
+                        }}
+                    >
+                        {this.state.city}
+                    </Text>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+                    {/* state */}
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        {'STATE'}
+                    </Text>
+                    <Text
+                        style={{
+                            paddingHorizontal: 18,
+                            height: textInputHeight,
+                            // minHeight: textInputHeight,
+                            fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            paddingTop: 7
+                        }}
+                    >
+                        {this.state.state}
+                    </Text>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
+
+
+
                 </View>
 
                 {/*
@@ -1060,22 +1147,6 @@ export default class AdvertisementMain extends React.Component {
                 >
                     <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
                 </TouchableOpacity>
-                {
-                    /*
-                    this.state.showPaddingView &&
-                    <View style={{ height: Dimensions.get('window').height / 3 * 2 }}
-                        onLayout={(e) => {
-                            const { y } = e.nativeEvent.layout;
-                            this.paddingViewY = y;
-
-                            console.log('this.paddingViewY', this.paddingViewY);
-
-                            // Consider: move scroll here
-                            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.locationY + 1, animated: true });
-                        }}
-                    />
-                    */
-                }
             </View>
         );
     }
@@ -1091,7 +1162,7 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* icon */}
                     <TouchableOpacity
-                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: '#FFB5C2', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
+                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.theme, position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                         onPress={() => {
                             this.uploadPicture(number - 1);
 
@@ -1108,11 +1179,11 @@ export default class AdvertisementMain extends React.Component {
                             */
                         }}
                     >
-                        <Ionicons name='ios-add' color='white' size={24} />
+                        <Ionicons name='ios-add' color='rgba(255, 255, 255, 0.8)' size={24} />
                     </TouchableOpacity>
                     {
                         number === 1 && this.state.showPicturesAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamation' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
                     {
                         this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
@@ -1145,12 +1216,12 @@ export default class AdvertisementMain extends React.Component {
 
                 {/* icon */}
                 <TouchableOpacity
-                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'white', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
+                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(255, 255, 255, 0.8)', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                     onPress={() => {
                         this.uploadPicture(number - 1);
                     }}
                 >
-                    <Ionicons name='md-create' color='#FFB5C2' size={18} />
+                    <Ionicons name='md-create' color={Theme.color.theme} size={18} />
                 </TouchableOpacity>
                 {
                     this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
@@ -1554,7 +1625,9 @@ export default class AdvertisementMain extends React.Component {
 
         if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
 
-        if (this.state.showLocationAlertIcon) this.setState({ showLocationAlertIcon: false });
+        if (this.state.showCountryAlertIcon) this.setState({ showCountryAlertIcon: false });
+
+        if (this.state.showStreetAlertIcon) this.setState({ showStreetAlertIcon: false });
 
         if (this.state.showPicturesAlertIcon) this.setState({ showPicturesAlertIcon: false });
     }
@@ -1638,7 +1711,8 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         alignSelf: 'center',
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        // backgroundColor: "rgba(255, 255, 255, 0.3)",
+        backgroundColor: Theme.color.theme,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'

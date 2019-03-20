@@ -471,6 +471,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                                             <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={Theme.color.title} size={16} />
+                                            {/* ToDo: calculate distance */}
                                             <Text style={styles.distance}>24 km away</Text>
                                         </View>
 
@@ -503,6 +504,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
                                     {/* map */}
                                     <View style={styles.mapContainer}>
+                                        <Text style={styles.location}>{post.location.description}</Text>
                                         <TouchableOpacity activeOpacity={0.5}
                                             onPress={() => {
                                                 setTimeout(() => {
@@ -647,9 +649,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             placeholder='Reply to a review...'
                             placeholderTextColor={Theme.color.placeholder}
                             onChangeText={(text) => this.onChangeText(text)}
-
                             selectionColor={Theme.color.selection}
-                            keyboardAppearance={'dark'}
+                            // keyboardAppearance={'dark'}
                             underlineColorAndroid="transparent"
                             autoCorrect={false}
                         />
@@ -1484,10 +1485,7 @@ const styles = StyleSheet.create({
     name: {
         color: Theme.color.title,
         fontSize: 24,
-        fontFamily: "SFProText-Semibold",
-        marginTop: Theme.spacing.xSmall,
-        paddingTop: Theme.spacing.xSmall,
-        // paddingBottom: Theme.spacing.xSmall
+        fontFamily: "SFProText-Semibold"
     },
     /*
     size: {
@@ -1511,7 +1509,6 @@ const styles = StyleSheet.create({
         fontSize: 18,
         lineHeight: 18,
         fontFamily: "SFProText-Regular",
-        // paddingTop: Theme.spacing.xSmall
         paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
     },
     rating: {
@@ -1530,6 +1527,7 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Regular",
         paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
     },
+    /*
     note: {
         marginTop: 5,
         color: Theme.color.text2,
@@ -1545,11 +1543,28 @@ const styles = StyleSheet.create({
         // borderColor: "transparent",
         borderWidth: 0,
     },
+    */
+    note: {
+        marginTop: Theme.spacing.xSmall,
+
+        color: Theme.color.text2,
+        fontSize: 16,
+        fontFamily: "SFProText-Regular",
+        lineHeight: Platform.OS === 'ios' ? 26 : 30
+    },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
         paddingBottom: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.small,
         paddingRight: Theme.spacing.small,
+    },
+    location: {
+        // marginTop: Theme.spacing.xSmall,
+
+        color: Theme.color.text2,
+        fontSize: 18,
+        lineHeight: 18,
+        fontFamily: "SFProText-Regular"
     },
     mapView: {
         paddingTop: Theme.spacing.tiny,
@@ -1629,7 +1644,8 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         alignSelf: 'center',
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        // backgroundColor: "rgba(255, 255, 255, 0.3)",
+        backgroundColor: Theme.color.theme,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
