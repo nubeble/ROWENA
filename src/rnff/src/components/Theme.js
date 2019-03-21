@@ -25,7 +25,8 @@ type Theme = {
         placeholder: Color,
         skeleton1: Color,
         skeleton2: Color,
-        theme: Color
+        flashBackground: Color,
+        flashText: Color
     },
     palette: {
         primary: Color,
@@ -84,8 +85,8 @@ const theme: Theme = {
         placeholder: "rgb(160, 160, 160)",
         skeleton1: "#505050",
         skeleton2: "#606060",
-        // theme: "#FFB5C2"
-        theme: "rgba(255, 181, 194, 0.6)"
+        themeBackground: "#FEBFD4",
+        themeText: "white"
     },
     palette: {
         primary: "#00AAFF",

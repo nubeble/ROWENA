@@ -509,7 +509,7 @@ export default class Intro extends React.Component {
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("introSearch", { initFromSearch: (result) => this.initFromSearch(result) });
+                                    this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -671,7 +671,7 @@ export default class Intro extends React.Component {
                                             }}>{`${(name) ? name : ''}`}</Text>
                                             <Text style={{
                                                 textAlign: 'center',
-                                                color: Theme.color.subtitle,
+                                                color: Theme.color.themeText,
                                                 fontSize: 14,
                                                 fontFamily: "SFProText-Semibold"
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>

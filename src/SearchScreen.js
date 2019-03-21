@@ -58,6 +58,7 @@ export default class SearchScreen extends React.Component {
 
     render() {
         const from = this.props.navigation.state.params.from;
+        const countryCode = this.props.navigation.state.params.countryCode;
 
         return (
             <View style={styles.flex}>
@@ -114,16 +115,25 @@ export default class SearchScreen extends React.Component {
                                 this.props.navigation.goBack();
                             }, 300);
                         }}
-
                         getDefaultValue={() => ''}
-
-                        query={{
-                            // available options: https://developers.google.com/places/web-service/autocomplete
-                            key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
-                            language: 'en', // language of the results
-                            types: '(cities)' // default: 'geocode'
-                        }}
-
+                        query={
+                            from === 'AdvertisementMain' ?
+                                {
+                                    // available options: https://developers.google.com/places/web-service/autocomplete
+                                    key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
+                                    language: 'en', // language of the results
+                                    types: '(cities)', // default: 'geocode'
+                                    //  ISO 3166-1 Alpha-2 compatible country code
+                                    componentRestrictions: { country: countryCode }
+                                }
+                                :
+                                {
+                                    // available options: https://developers.google.com/places/web-service/autocomplete
+                                    key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
+                                    language: 'en', // language of the results
+                                    types: '(cities)' // default: 'geocode'
+                                }
+                        }
                         styles={{
                             container: {
                                 // position: 'absolute',
@@ -179,7 +189,6 @@ export default class SearchScreen extends React.Component {
                                 fontFamily: "SFProText-Regular",
                                 */
                             },
-
                             listView: {
                                 marginTop: 20,
                                 // position: 'absolute',
@@ -221,6 +230,7 @@ export default class SearchScreen extends React.Component {
                         currentLocation={true} // Will add a 'Current location' button at the top of the predefined places list
                         currentLocationLabel="Current location"
                         nearbyPlacesAPI='GooglePlacesSearch' // Which API to use: GoogleReverseGeocoding or GooglePlacesSearch
+                        // nearbyPlacesAPI='GoogleReverseGeocoding'
                         GoogleReverseGeocodingQuery={{
                             // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
                         }}
@@ -231,8 +241,8 @@ export default class SearchScreen extends React.Component {
                         }}
                         filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
                         predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
-
                         debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
+
                     // renderLeftButton={() => <Image source={require('path/custom/left-icon')}/>}
                     /*
                     renderLeftButton={() =>

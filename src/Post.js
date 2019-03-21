@@ -352,7 +352,7 @@ export default class Post extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}>
                             {
-                                this.state.liked ? // false -> true
+                                this.state.liked ?
                                     <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
                                     :
                                     <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -565,7 +565,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                                         onPress={async () => await this.contact()}
                                     >
-                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -1531,10 +1531,11 @@ const styles = StyleSheet.create({
     },
     location: {
         // marginTop: Theme.spacing.xSmall,
+        marginBottom: Theme.spacing.tiny,
 
         color: Theme.color.text2,
         fontSize: 18,
-        lineHeight: 18,
+        // lineHeight: 18, // ToDo: multiline
         fontFamily: "SFProText-Regular"
     },
     mapView: {
@@ -1615,8 +1616,7 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         alignSelf: 'center',
-        // backgroundColor: "rgba(255, 255, 255, 0.3)",
-        backgroundColor: Theme.color.theme,
+        backgroundColor: Theme.color.themeBackground,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'

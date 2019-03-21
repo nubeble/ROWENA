@@ -89,6 +89,7 @@ export default class AdvertisementMain extends React.Component {
         noteLength: 0,
 
         country: null,
+        countryCode: null,
         street: null,
         city: '',
         state: '',
@@ -162,6 +163,7 @@ export default class AdvertisementMain extends React.Component {
     initFromSelect(result) {
         console.log('AdvertisementMain.initFromSelect', result);
 
+        // ToDo: set countryCode
         this.setState({ country: result.name });
     }
 
@@ -291,8 +293,6 @@ export default class AdvertisementMain extends React.Component {
             // this._showNotification = false;
         }
 
-        // move to keyboard show event
-        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
         this.focusedItem = 'name';
     }
 
@@ -306,8 +306,6 @@ export default class AdvertisementMain extends React.Component {
         // clear
         this.setState({ height: '' });
 
-        // move to keyboard show event
-        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
         this.focusedItem = 'height';
     }
 
@@ -344,8 +342,6 @@ export default class AdvertisementMain extends React.Component {
         // clear
         this.setState({ weight: '' });
 
-        // move to keyboard show event
-        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
         this.focusedItem = 'weight';
     }
 
@@ -383,8 +379,6 @@ export default class AdvertisementMain extends React.Component {
     }
 
     onFocusNote() {
-        // this.noteFocused = true;
-
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
@@ -393,17 +387,10 @@ export default class AdvertisementMain extends React.Component {
 
         if (!this.state.onNote) this.setState({ onNote: true });
 
-        // console.log (this.inputViewY, this.nameY, this.birthdayY, this.heightY, this.weightY, this.breastsY, this.locationY);
-
-        // Consider: only works well in ios, can reach only to the max scroll position in android.
-        // move to keyboard show event
-        // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
         this.focusedItem = 'note';
     }
 
     onBlurNote() {
-        // this.noteFocused = false;
-
         if (this.state.onNote) this.setState({ onNote: false });
     }
 
@@ -1066,10 +1053,9 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                // this._showNotification = false;
                             }
 
-                            this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', initFromSearch: (result) => this.initFromSearch(result) });
+                            this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result) => this.initFromSearch(result) });
                         }}
                     >
                         <Text
@@ -1145,7 +1131,7 @@ export default class AdvertisementMain extends React.Component {
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                     onPress={async () => await this.post()}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -1158,11 +1144,11 @@ export default class AdvertisementMain extends React.Component {
                     <View style={{ width: '100%', height: '100%', borderRadius: 2, borderColor: '#707070', borderWidth: 2, borderStyle: 'dashed', backgroundColor: '#505050' }} />
 
                     {/* number */}
-                    <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'white', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
+                    <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'rgba(255, 255, 255, 0.8)', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
 
                     {/* icon */}
                     <TouchableOpacity
-                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.theme, position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
+                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.selection, position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                         onPress={() => {
                             this.uploadPicture(number - 1);
 
@@ -1179,7 +1165,7 @@ export default class AdvertisementMain extends React.Component {
                             */
                         }}
                     >
-                        <Ionicons name='ios-add' color='rgba(255, 255, 255, 0.8)' size={24} />
+                        <Ionicons name='ios-add' color='white' size={24} />
                     </TouchableOpacity>
                     {
                         number === 1 && this.state.showPicturesAlertIcon &&
@@ -1216,12 +1202,12 @@ export default class AdvertisementMain extends React.Component {
 
                 {/* icon */}
                 <TouchableOpacity
-                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'rgba(255, 255, 255, 0.8)', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
+                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'white', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
                     onPress={() => {
                         this.uploadPicture(number - 1);
                     }}
                 >
-                    <Ionicons name='md-create' color={Theme.color.theme} size={18} />
+                    <Ionicons name='md-create' color={Theme.color.selection} size={18} />
                 </TouchableOpacity>
                 {
                     this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
@@ -1711,8 +1697,7 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         alignSelf: 'center',
-        // backgroundColor: "rgba(255, 255, 255, 0.3)",
-        backgroundColor: Theme.color.theme,
+        backgroundColor: Theme.color.themeBackground,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
@@ -1746,7 +1731,7 @@ const styles = StyleSheet.create({
         height: Cons.searchBarHeight,
         position: "absolute",
         top: 0,
-        backgroundColor: "#FFB5C2",
+        backgroundColor: Theme.color.selection,
         zIndex: 9999,
 
         flexDirection: 'row',
@@ -1757,12 +1742,12 @@ const styles = StyleSheet.create({
     flashMessageTitle: {
         fontSize: 16,
         fontFamily: "SFProText-Semibold",
-        color: "#282828"
+        color: "white"
     },
     flashMessageSubtitle: {
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        color: "#585858"
+        color: "white"
     },
     textInputStyleIOS: {
         paddingLeft: 18, paddingRight: 32,
