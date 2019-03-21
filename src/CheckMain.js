@@ -45,7 +45,7 @@ export default class CheckMain extends React.Component {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 

@@ -196,7 +196,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         }
 
         const post = feedDoc.data();
-        this.props.navigation.navigate("likesPost", { post: post, from: 'LikesMain' });
+        this.props.navigation.navigate("postPreview", { post: post, from: 'LikesMain' });
     }
 
     render() {

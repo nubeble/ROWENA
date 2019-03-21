@@ -11,7 +11,6 @@ import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
 
@@ -28,7 +27,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     state = {
         renderFeed: false,
         // showIndicator: false,
-        showAlert: false,
+
         feeds: [],
         isLoadingFeeds: false,
         refreshing: false,
@@ -42,6 +41,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
 
         dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: '',
+        dialogType: 'alert',
         dialogPassword: ''
     };
 
@@ -73,11 +75,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     handleHardwareBackPress() {
         console.log('ProfileMain.handleHardwareBackPress');
 
-        if (this.state.showAlert) {
-            this.setState({ showAlert: false });
-        } else {
-            this.props.navigation.navigate("intro");
+        if (this.state.dialogVisible) {
+            this.hideDialog();
         }
+
+        this.props.navigation.navigate("intro");
 
         return true;
     }
@@ -356,9 +358,32 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         {/* Log out */}
                                         <TouchableOpacity
                                             onPress={() => {
-                                                setTimeout(() => {
-                                                    this.setState({ showAlert: true });
-                                                }, Cons.buttonTimeoutShort);
+                                                this.openDialog('alert', 'Log out', 'Are you sure you want to remove all data from this device?', async () => {
+
+                                                    // ToDo: block now
+                                                    return;
+
+                                                    // 1. remove all created feeds (place - feed)
+                                                    const { profile } = this.props.profileStore;
+                                                    const feeds = profile.feeds;
+                                                    const length = feeds.length;
+
+                                                    for (var i = 0; i < length; i++) {
+                                                        const feed = feeds[i];
+                                                        await Firebase.removeFeed(profile.uid, feed.placeId, feed.feedId);
+                                                    }
+
+                                                    // 2. remove database (users)
+                                                    await Firebase.deleteProfile(profile.uid);
+
+                                                    // 3. remove token
+
+                                                    // 4. remove auth
+
+                                                    // 5. move to auth main
+
+                                                });
+
                                             }}
                                         >
                                             <View style={{
@@ -514,79 +539,22 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     opacity={0.6}
                 />
 
-                <AwesomeAlert
-                    show={this.state.showAlert}
-                    showProgress={false}
-                    title="Log out"
-                    message="Are you sure you want to remove all data from this device?"
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-                    cancelText="YES"
-                    confirmText="NO"
-                    confirmButtonColor="#DD6B55"
-                    onCancelPressed={async () => { // YES pressed
-                        this.setState({ showAlert: false });
-
-
-                        return;
-                        // ToDo
-
-                        // 1. remove all created feeds (place - feed)
-                        const { profile } = this.props.profileStore;
-                        const feeds = profile.feeds;
-                        const length = feeds.length;
-
-                        for (var i = 0; i < length; i++) {
-                            const feed = feeds[i];
-                            await Firebase.removeFeed(profile.uid, feed.placeId, feed.feedId);
-                        }
-
-                        // 2. remove database (users)
-                        await Firebase.deleteProfile(profile.uid);
-
-                        // 3. remove token
-
-                        // 4. remove auth
-
-                        // 5. move to auth main
-                    }}
-                    onConfirmPressed={() => { // NO pressed
-                        this.setState({ showAlert: false });
-                    }}
-                    onDismiss={() => {
-                        this.setState({ showAlert: false });
-                    }}
-
-                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
-
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
-                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
-                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
-                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                />
-
-                <Dialog.Container
-                    visible={this.state.dialogVisible}
-                >
-                    <Dialog.Title>Admin Login</Dialog.Title>
-                    <Dialog.Description>Type an administrator password</Dialog.Description>
-                    <Dialog.Input
-                        keyboardType={'phone-pad'}
-                        // keyboardAppearance={'dark'}
-                        onChangeText={(text) => this.setState({ dialogPassword: text })}
-                        autoFocus={true}
-                        secureTextEntry={true}
-                    />
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    {
+                        this.state.dialogType === 'pad' &&
+                        <Dialog.Input
+                            keyboardType={'phone-pad'}
+                            // keyboardAppearance={'dark'}
+                            onChangeText={(text) => this.setState({ dialogPassword: text })}
+                            autoFocus={true}
+                            secureTextEntry={true}
+                        />
+                    }
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
-
-
             </View>
         );
     } // end of render()
@@ -620,38 +588,58 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (this.adminCount > 9) {
             // open pw menu
-            this.showDialog();
+            this.openDialog('pad', 'Admin Login', 'Type an administrator password', null);
 
             this.adminCount = undefined;
         }
     }
 
-    showDialog() {
-        if (!this.state.dialogVisible) this.setState({ dialogVisible: true });
-    };
+    openDialog(type, title, message, callback) {
+        this.setState({ dialogType: type, dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
 
     hideDialog() {
         if (this.state.dialogVisible) this.setState({ dialogVisible: false });
-    };
+    }
 
     handleCancel() {
-        this.setState({ dialogPassword: '' });
+        // --
+        if (this.state.dialogType === 'pad') this.setState({ dialogPassword: '' });
+        // --
+
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
         this.hideDialog();
     }
 
     handleConfirm() {
-        const pw = this.state.dialogPassword;
-        if (pw === '1103') {
-            console.log('admin');
+        // --
+        if (this.state.dialogType === 'pad') {
+            const pw = this.state.dialogPassword;
+            if (pw === '1103') {
 
-            setTimeout(() => {
-                this.props.navigation.navigate("admin");
-            }, Cons.buttonTimeoutShort);
+                setTimeout(() => {
+                    this.props.navigation.navigate("admin");
+                }, Cons.buttonTimeoutShort);
+            }
+
+            this.setState({ dialogPassword: '' });
+        }
+        // --
+
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
         }
 
-        this.setState({ dialogPassword: '' });
         this.hideDialog();
-    };
+    }
 }
 
 const styles = StyleSheet.create({

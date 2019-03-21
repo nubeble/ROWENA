@@ -159,7 +159,8 @@ export default class Intro extends React.Component {
         }
 
         setTimeout(() => {
-            this.props.navigation.navigate("exploreMain", { place: place });
+            // this.props.navigation.navigate("exploreMain", { place: place });
+            this.props.navigation.navigate("home", { place: place });
         }, Cons.buttonTimeoutShort);
     }
 
@@ -498,7 +499,8 @@ export default class Intro extends React.Component {
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
+                                    // this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
+                                    this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -509,7 +511,8 @@ export default class Intro extends React.Component {
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
+                                    // this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
+                                    this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -651,7 +654,8 @@ export default class Intro extends React.Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
-                                            this.props.navigation.navigate("exploreMain", { place: place });
+                                            // this.props.navigation.navigate("exploreMain", { place: place });
+                                            this.props.navigation.navigate("home", { place: place });
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                 >

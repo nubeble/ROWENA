@@ -8,7 +8,7 @@ import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
-import AwesomeAlert from 'react-native-awesome-alerts';
+import Dialog from "react-native-dialog";
 import autobind from "autobind-decorator";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Cons } from "./Globals";
@@ -45,7 +45,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         titleImageUri: null,
         titleName: null,
         messages: [],
-        showAlert: false,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: '',
+
         onKeyboard: false,
         renderPost: false
     };
@@ -127,11 +131,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         console.log('ChatRoom.handleHardwareBackPress');
         // this.goBack(); // works best when the goBack is async
 
-        if (this.state.showAlert) {
-            this.setState({ showAlert: false });
-        } else {
-            this.moveToChat();
+        if (this.state.dialogVisible) {
+            this.hideDialog();
+
+            return true;
         }
+
+        this.moveToChat();
 
         return true;
     }
@@ -248,7 +254,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             right: 2,
                             justifyContent: "center", alignItems: "center"
                         }}
-                        onPress={() => this.setState({ showAlert: true })}
+                        onPress={() => {
+                            this.handleLeave();
+                        }}
                     >
                         <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
@@ -355,43 +363,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                     </View>
                 }
 
-                <AwesomeAlert
-                    show={this.state.showAlert}
-                    showProgress={false}
-                    title='Leave conversation'
-                    message={"Are you sure you don't want to receive new messages from " + labelName + "."}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-                    cancelText="YES"
-                    confirmText="NO"
-                    confirmButtonColor="#DD6B55"
-                    onCancelPressed={async () => { // YES pressed
-                        this.setState({ showAlert: false });
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
 
-                        await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
-
-                        // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
-                        this.props.navigation.navigate("chat", { roomId: item.id });
-                    }}
-                    onConfirmPressed={() => {
-                        this.setState({ showAlert: false });
-                    }}
-                    onDismiss={() => {
-                        this.setState({ showAlert: false });
-                    }}
-
-                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
-
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
-                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
-                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
-                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                />
                 <Toast
                     ref="toast"
                     position='top'
@@ -566,6 +544,43 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             borderTopColor: Theme.color.textInput
             // borderTopWidth: 0
         }} />
+    }
+
+    handleLeave() {
+        this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
+            await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
+            // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
+            this.props.navigation.navigate("chat", { roomId: item.id });
+        });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

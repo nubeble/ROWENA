@@ -1,12 +1,12 @@
 // ToDo: add notification, flash
 
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Dimensions, BackHandler, Animated } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { Permissions, Linking, ImagePicker } from 'expo';
+import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 
@@ -73,7 +73,7 @@ export default class EditMain extends React.Component {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 

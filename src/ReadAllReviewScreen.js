@@ -16,7 +16,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 // import ReadMore from "./ReadMore";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
-import AwesomeAlert from 'react-native-awesome-alerts';
+import Dialog from "react-native-dialog";
 import { Cons, Vars } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
@@ -45,9 +45,9 @@ export default class ReadAllReviewScreen extends React.Component {
 
         refreshing: false,
 
-        showAlert: false,
-        alertTitle: '',
-        alertMessage: ''
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
@@ -106,10 +106,8 @@ export default class ReadAllReviewScreen extends React.Component {
             return true;
         }
 
-        if (this.state.showAlert) {
-            this.setState({ showAlert: false });
-
-            return true;
+        if (this.state.dialogVisible) {
+            this.hideDialog();
         }
 
         this.props.navigation.goBack();
@@ -278,6 +276,23 @@ export default class ReadAllReviewScreen extends React.Component {
                     )
                 }
 
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    {
+                        this.state.dialogType === 'pad' &&
+                        <Dialog.Input
+                            keyboardType={'phone-pad'}
+                            // keyboardAppearance={'dark'}
+                            onChangeText={(text) => this.setState({ dialogPassword: text })}
+                            autoFocus={true}
+                            secureTextEntry={true}
+                        />
+                    }
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
                 <AwesomeAlert
                     title={this.state.alertTitle}
                     title={this.state.alertMessage}
@@ -300,7 +315,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
                         if (this.alertCallback) {
                             this.alertCallback();
-                            this.alertCallback = null;
+                            this.alertCallback = undefined;
                         }
                     }}
                     onConfirmPressed={() => {
@@ -732,8 +747,7 @@ export default class ReadAllReviewScreen extends React.Component {
     };
 
     async removeReview(index) {
-        // show dialog
-        this.showAlert('Delete', 'Are you sure you want to delete this review?', async () => {
+        this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             const reviewId = reviewStore.reviews[index].review.id;
@@ -759,8 +773,7 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     async removeReply(index) {
-        // show dialog
-        this.showAlert('Delete', 'Are you sure you want to delete this reply?', async () => {
+        this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             const reviewId = reviewStore.reviews[index].review.id;
@@ -788,14 +801,33 @@ export default class ReadAllReviewScreen extends React.Component {
         reviewStore.init(query, count);
     }
 
-    showAlert(title, message, callback) {
-        this.setState({ alertTitle: title, alertMessage: message, showAlert: true });
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
 
-        this.setAlertCallback(callback);
+        this.setDialogCallback(callback);
     }
 
-    setAlertCallback(callback) {
-        this.alertCallback = callback;
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 
     sendPushNotification(message) {

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
-    FlatList, TouchableWithoutFeedback, Alert, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
+    FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
 import { Constants, MapView, Svg, Haptic } from "expo";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -25,8 +25,8 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
-import AwesomeAlert from 'react-native-awesome-alerts';
 import { NavigationActions } from 'react-navigation';
+import Dialog from "react-native-dialog";
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -55,8 +55,6 @@ export default class Post extends React.Component<InjectedProps> {
 
     replyViewHeight = Dimensions.get('window').height / 9;
 
-    alertCallback = null;
-
     state = {
         rating: 0,
         renderList: false,
@@ -69,9 +67,9 @@ export default class Post extends React.Component<InjectedProps> {
         opacity: new Animated.Value(0),
         offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
 
-        showAlert: false,
-        alertTitle: '',
-        alertMessage: '',
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: '',
 
         liked: false,
 
@@ -131,7 +129,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('Post.handleHardwareBackPress()');
+        console.log('Post.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
@@ -139,8 +137,8 @@ export default class Post extends React.Component<InjectedProps> {
             return true;
         }
 
-        if (this.state.showAlert) {
-            this.setState({ showAlert: false });
+        if (this.state.dialogVisible) {
+            this.hideDialog();
 
             return true;
         }
@@ -652,48 +650,12 @@ export default class Post extends React.Component<InjectedProps> {
                     </View>
                 }
 
-                <AwesomeAlert
-                    title={this.state.alertTitle}
-                    message={this.state.alertMessage}
-
-                    show={this.state.showAlert}
-                    showProgress={false}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-                    cancelText="YES"
-                    confirmText="NO"
-                    confirmButtonColor="#DD6B55"
-
-                    onCancelPressed={async () => {
-                        this.setState({ showAlert: false });
-
-                        // pressed YES
-                        console.log('YES');
-
-                        if (this.alertCallback) {
-                            this.alertCallback();
-                            this.alertCallback = null;
-                        }
-                    }}
-                    onConfirmPressed={() => {
-                        this.setState({ showAlert: false });
-                    }}
-                    onDismiss={() => {
-                        this.setState({ showAlert: false });
-                    }}
-
-                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: Theme.color.title, justifyContent: "space-between" }}
-
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
-                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: Theme.color.title, borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
-                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: Theme.color.title, borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
-                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                />
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
 
                 <Toast
                     ref="toast"
@@ -1320,8 +1282,7 @@ export default class Post extends React.Component<InjectedProps> {
     };
 
     async removeReview(index) {
-        // show dialog
-        this.showAlert('Delete', 'Are you sure you want to delete this review?', async () => {
+        this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
             const { post } = this.props.navigation.state.params;
 
             // check if removed by the owner
@@ -1354,19 +1315,8 @@ export default class Post extends React.Component<InjectedProps> {
         });
     }
 
-    showAlert(title, message, callback) {
-        this.setState({ alertTitle: title, alertMessage: message, showAlert: true });
-
-        this.setAlertCallback(callback);
-    }
-
-    setAlertCallback(callback) {
-        this.alertCallback = callback;
-    }
-
     async removeReply(index) {
-        // show dialog
-        this.showAlert('Delete', 'Are you sure you want to delete this reply?', async () => {
+        this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
             const { post } = this.props.navigation.state.params;
 
             const placeId = post.placeId;
@@ -1385,6 +1335,35 @@ export default class Post extends React.Component<InjectedProps> {
                 }
             });
         });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 
     sendPushNotification(message) {
