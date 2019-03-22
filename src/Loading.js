@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Animated, Dimensions, View, StatusBar, Image } from 'react-native';
-import { Font, AppLoading, SplashScreen, Asset } from 'expo';
+import { Font, AppLoading, SplashScreen, Asset, FileSystem } from 'expo';
 // import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
 import { inject, observer } from "mobx-react/native";

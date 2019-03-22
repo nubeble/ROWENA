@@ -164,6 +164,8 @@ export default class AdvertisementMain extends React.Component {
         console.log('AdvertisementMain.initFromSelect', result);
 
         // ToDo: set countryCode
+        // this.setState({ country: result.name, countryCode: code });
+        
         this.setState({ country: result.name });
     }
 

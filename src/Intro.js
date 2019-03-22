@@ -496,7 +496,7 @@ export default class Intro extends React.Component {
                         borderRadius: 25
                     }}>
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
+                            style={{ position: 'absolute', left: 3, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
                                     // this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });

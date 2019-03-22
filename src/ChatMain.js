@@ -429,13 +429,6 @@ export default class ChatMain extends React.Component {
 
         this.setState({ chatRoomList: newList });
     }
-
-    @autobind
-    itemSeparatorComponent() {
-        return (
-            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%' }} />
-        );
-    }
 }
 
 const styles = StyleSheet.create({

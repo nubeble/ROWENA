@@ -60,6 +60,10 @@ export default class SearchScreen extends React.Component {
         const from = this.props.navigation.state.params.from;
         const countryCode = this.props.navigation.state.params.countryCode;
 
+        let predefinedPlaces = null;
+        if (from !== 'AdvertisementMain') predefinedPlaces = [Bangkok, Manila, HoChiMinh, Vientiane];
+        else predefinedPlaces = [];
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -84,7 +88,8 @@ export default class SearchScreen extends React.Component {
                     // this.state.renderScreen &&
                     <GooglePlacesAutocomplete
                         enablePoweredByContainer={false}
-                        placeholder='Where to?'
+                        // placeholder='Where to?'
+                        placeholder={from === 'AdvertisementMain' ? 'Where do you live?' : 'Where to?'}
                         placeholderTextColor={Theme.color.placeholder}
                         minLength={2} // minimum length of text to search
                         autoFocus={false}
@@ -94,8 +99,8 @@ export default class SearchScreen extends React.Component {
                         fetchDetails={true}
                         renderDescription={row => row.description} // custom description render
                         onPress={(data, details = null) => { // 'details' is provided when fetchDetails = true
-                            // console.log('data', data);
-                            // console.log('details', details);
+                            console.log('data', data);
+                            console.log('details', details);
 
                             // close the modal in 0.3 sec
                             setTimeout(() => {
@@ -124,7 +129,7 @@ export default class SearchScreen extends React.Component {
                                     language: 'en', // language of the results
                                     types: '(cities)', // default: 'geocode'
                                     //  ISO 3166-1 Alpha-2 compatible country code
-                                    componentRestrictions: { country: countryCode }
+                                    componentRestrictions: { country: countryCode } // ToDo: check!
                                 }
                                 :
                                 {
@@ -190,31 +195,34 @@ export default class SearchScreen extends React.Component {
                                 */
                             },
                             listView: {
-                                marginTop: 20,
+                                // marginTop: 20,
                                 // position: 'absolute',
                                 // width: '100%',
                                 // left: 0, right: 0,
-                                height: '100%',
-                                backgroundColor: 'transparent'
+                                // height: '100%',
+                                // backgroundColor: 'transparent'
                             },
                             separator: {
                                 backgroundColor: 'transparent'
                             },
-                            description: {
-                                fontSize: 16,
-                                lineHeight: 20,
-                                height: 30,
-                                color: "white",
-                                fontFamily: "SFProText-Regular",
-                            },
+
                             predefinedPlacesDescription: {
-                                // color: 'white'
-                                fontSize: 16,
-                                lineHeight: 20,
-                                height: 30,
-                                color: "white",
+                                fontSize: 14,
+                                color: Theme.color.text2,
                                 fontFamily: "SFProText-Regular",
+                                // height: 30,
+
+                                // backgroundColor: 'green'
                             },
+                            description: {
+                                fontSize: 14,
+                                color: Theme.color.text2,
+                                fontFamily: "SFProText-Regular",
+                                // height: 30,
+
+                                // backgroundColor: 'blue'
+                            },
+
                             poweredContainer: {
                                 backgroundColor: 'transparent',
                                 width: 0,
@@ -240,7 +248,7 @@ export default class SearchScreen extends React.Component {
                             types: 'food'
                         }}
                         filterReverseGeocodingByTypes={['locality', 'administrative_area_level_3']} // filter the reverse geocoding results by types - ['locality', 'administrative_area_level_3'] if you want to display only cities
-                        predefinedPlaces={[Bangkok, Manila, HoChiMinh, Vientiane]}
+                        predefinedPlaces={predefinedPlaces}
                         debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
 
                     // renderLeftButton={() => <Image source={require('path/custom/left-icon')}/>}

@@ -15,7 +15,7 @@ export var Vars = {
 
 };
 
-export var Cons = {
+export const Cons = {
     // push notification type
     pushNotification: {
         chat: 1,
