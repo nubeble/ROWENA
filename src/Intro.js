@@ -10,7 +10,7 @@ import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { FontAwesome, AntDesign } from 'react-native-vector-icons';
 import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
@@ -19,7 +19,6 @@ import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
-import AntDesign from "react-native-vector-icons/AntDesign";
 
 /*
 type ExploreState = {
@@ -496,7 +495,7 @@ export default class Intro extends React.Component {
                         borderRadius: 25
                     }}>
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 3, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
+                            style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
                                     // this.props.navigation.navigate("introSearch", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
@@ -535,6 +534,7 @@ export default class Intro extends React.Component {
                                     width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Cons.searchBarPaddingTop(),
                                     color: "rgb(160, 160, 160)", textAlign: 'center'
                                 }}
+                                numberOfLines={1}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -547,7 +547,7 @@ export default class Intro extends React.Component {
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
                             <View>
-                                <View style={styles.titleContainer}>
+                                <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
                                     <Text style={styles.title}>{'Popular destinations'}</Text>
                                 </View>
                             </View>
@@ -621,6 +621,15 @@ export default class Intro extends React.Component {
                                 place = item;
                                 length = place.length;
                                 name = place.name;
+
+                                // get city, country
+                                const words = name.split(', ');
+                                if (words.length > 1) {
+                                    const city = words[0];
+                                    const country = words[words.length - 1];
+                                    name = city + ', ' + country;
+                                }
+
                                 imageUri = place.uri;
                             } else {
                                 // use static value
@@ -629,6 +638,15 @@ export default class Intro extends React.Component {
                                     place_id = place.place_id;
                                     length = place.length;
                                     name = place.name;
+
+                                    // get city, country
+                                    const words = name.split(', ');
+                                    if (words.length > 1) {
+                                        const city = words[0];
+                                        const country = words[words.length - 1];
+                                        name = city + ', ' + country;
+                                    }
+
                                     imageUri = place.uri;
                                 } else {
                                     // nothing to do
@@ -972,6 +990,13 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
+    contentContainer: {
+        flexGrow: 1
+    },
+    columnWrapperStyle: {
+        flex: 1,
+        justifyContent: 'center'
+    },
     titleContainer: {
         padding: Theme.spacing.small
     },
@@ -979,14 +1004,6 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 18,
         fontFamily: "SFProText-Semibold"
-    },
-    contentContainer: {
-        flexGrow: 1,
-        // paddingBottom: Theme.spacing.tiny
-    },
-    columnWrapperStyle: {
-        flex: 1,
-        justifyContent: 'center'
     },
     pictureContainer: {
         width: imageWidth,

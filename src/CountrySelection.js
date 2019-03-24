@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,6 +8,8 @@ import autobind from 'autobind-decorator';
 // https://github.com/ElekenAgency/ReactNativeCountryCodeList
 import CountryCodeList from './ReactNativeCountryCodeList/src/CountryCodeList';
 import Util from './Util';
+
+// const countryCodes = require('./CountryCodes');
 
 const sectionItemTextHeight = (Dimensions.get('window').height - Cons.searchBarHeight - 52) / 26; // 52: textInputContainer height, 26: number of alphabets
 
@@ -57,12 +59,25 @@ export default class CountrySelection extends React.Component {
                         onClickCell={(cellObject) => {
                             console.log(cellObject);
 
+                            if (this.cellClicked) return;
+                            this.cellClicked = true;
+
+                            /*
+                            const code = this.getCountryCode(cellObject.name);
+                            console.log('country code', code);
+                            */
+
+                            const result = {
+                                name: cellObject.name,
+                                code: cellObject.code
+                            };
+
                             setTimeout(() => {
                                 if (this.closed) return;
-                                
-                                this.props.navigation.state.params.initFromSelect(cellObject);
+
+                                this.props.navigation.state.params.initFromSelect(result);
                                 this.props.navigation.dispatch(NavigationActions.back());
-                            }, 300);
+                            }, Cons.buttonTimeoutShort);
                         }}
 
                         headerBackground={Theme.color.component}
@@ -75,7 +90,8 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: 'red',
 
                             fontSize: 16,
-                            paddingTop: 8, // ToDo: check ios!
+                            paddingTop: Platform.OS === 'ios' ? 2 : 8,
+
                             color: "white",
                             fontFamily: "SFProText-Regular"
                         }}
@@ -85,18 +101,20 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: Util.getRandomColor(),
 
                             fontSize: 12,
-                            paddingTop: 2, // ToDo: check ios!
+                            paddingTop: Platform.OS === 'ios' ? 2 : 2,
                             color: "white",
-                            fontFamily: "SFProText-Regular"
+                            fontFamily: "SFProText-Regular",
+
+                            marginRight: 8
                         }}
 
                         // cellStyle={{ backgroundColor: 'yellow' }}
 
                         cellTitleStyle={{
-                            // backgroundColor: 'purple',
+                            // backgroundColor: 'green',
 
                             fontSize: 16,
-                            paddingTop: 8, // ToDo: check ios!
+                            paddingTop: Platform.OS === 'ios' ? 2 : 8,
                             color: "white",
                             fontFamily: "SFProText-Regular"
                         }}
@@ -106,7 +124,7 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: 'grey',
 
                             fontSize: 16,
-                            paddingTop: 8, // ToDo: check ios!
+                            paddingTop: Platform.OS === 'ios' ? 2 : 8,
                             color: "white",
                             fontFamily: "SFProText-Regular"
                         }}
@@ -115,6 +133,21 @@ export default class CountrySelection extends React.Component {
             </View>
         );
     }
+
+    /*
+    getCountryCode(name) {
+        const length = countryCodes.length;
+
+        for (var i = 0; i < length; i++) {
+            const item = countryCodes[i];
+            if (item.Name === name) {
+                return item.Code;
+            }
+        }
+
+        return null;
+    }
+    */
 }
 
 const styles = StyleSheet.create({

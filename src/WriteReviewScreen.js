@@ -37,12 +37,9 @@ export default class WriteReviewScreen extends React.Component {
         this.setState({ rating });
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
 
-        if (!this.closed) {
-            let that = this;
-            setTimeout(function () {
-                !that.closed && that.refs['comment'] && that.refs['comment'].focus();
-            }, 1500); // 1.5 sec
-        }
+        setTimeout(() => {
+            !this.closed && this.refs['comment'] && this.refs['comment'].focus();
+        }, Cons.buttonTimeoutLong);
     }
 
     componentWillUnmount() {
@@ -306,30 +303,30 @@ export default class WriteReviewScreen extends React.Component {
     }
 
     showNotification(msg) {
-        if (!this._showNotification) {
-            this._showNotification = true;
+        if (this._showNotification) this.hideNotification();
 
-            this.setState({ notification: msg }, () => {
-                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    // this.state.offset.setValue(height * -1);
+        this._showNotification = true;
 
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.opacity, {
-                                toValue: 1,
-                                duration: 200,
-                            }),
-                            Animated.timing(this.state.offset, {
-                                toValue: 0,
-                                duration: 200,
-                            }),
-                        ])
-                    ]).start();
-                });
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                // this.state.offset.setValue(height * -1);
+
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200,
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: 0,
+                            duration: 200,
+                        }),
+                    ])
+                ]).start();
             });
+        });
 
-            StatusBar.setHidden(true);
-        }
+        StatusBar.setHidden(true);
     };
 
     hideNotification() {

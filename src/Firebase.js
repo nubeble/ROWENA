@@ -51,11 +51,13 @@ export default class Firebase {
                 preview: null,
                 uri: null
             },
+            /*
             location: {
                 description: null, // "Cebu, Philippines"
                 longitude: 0.0, // 경도
                 latitude: 0.0 // 위도
             },
+            */
             about: null,
 
             feeds: [], // 내가 등록한 feed. ToDo: feed 삭제 시 배열에서 삭제

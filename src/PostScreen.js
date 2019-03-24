@@ -8,10 +8,7 @@ import {
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
 import { Constants, MapView, Svg, Haptic } from "expo";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -416,7 +413,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                     <View style={styles.infoContainer}>
                                         <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                             <View style={styles.circle}></View>
-                                            <Text style={styles.date}>Activate {moment(post.timestamp).fromNow()}</Text>
+                                            <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
                                         </View>
                                         <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
                                         <View style={{
@@ -586,7 +583,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                                         onPress={async () => await this.contact()}
                                     >
-                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Contact</Text>
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Start a Chat</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -1082,7 +1079,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             */
 
             this.props.navigation.navigate("writeReviewModal", { post: post, rating: rating, initFromWriteReview: (result) => this.initFromWriteReview(result) });
-        }, 500); // 0.5 sec
+        }, Cons.buttonTimeoutLong);
     }
 
     @autobind
@@ -1147,30 +1144,30 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     showNotification(msg) {
-        if (!this._showNotification) {
-            this._showNotification = true;
+        if (this._showNotification) this.hideNotification();
 
-            this.setState({ notification: msg }, () => {
-                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    // this.state.offset.setValue(height * -1);
+        this._showNotification = true;
 
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.opacity, {
-                                toValue: 1,
-                                duration: 200,
-                            }),
-                            Animated.timing(this.state.offset, {
-                                toValue: 0,
-                                duration: 200,
-                            }),
-                        ])
-                    ]).start();
-                });
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                // this.state.offset.setValue(height * -1);
+
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200,
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: 0,
+                            duration: 200,
+                        }),
+                    ])
+                ]).start();
             });
+        });
 
-            StatusBar.setHidden(true);
-        }
+        StatusBar.setHidden(true);
     };
 
     hideNotification() {
@@ -1541,8 +1538,8 @@ const styles = StyleSheet.create({
         marginBottom: Theme.spacing.tiny,
 
         color: Theme.color.text2,
-        fontSize: 18,
-        // lineHeight: 18, // ToDo: multiline
+        fontSize: 16,
+        lineHeight: Platform.OS === 'android' ? 30 : 28,
         fontFamily: "SFProText-Regular"
     },
     mapView: {

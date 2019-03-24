@@ -3,9 +3,7 @@ import {
     StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator,
     Animated, Dimensions, Platform, Image
 } from 'react-native';
-import EvilIcons from "react-native-vector-icons/EvilIcons";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { EvilIcons, Ionicons, FontAwesome } from "react-native-vector-icons";
 import Firebase from './Firebase';
 import * as firebase from "firebase";
 // import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';

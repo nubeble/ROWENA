@@ -6,8 +6,7 @@ import {
 import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from "react-native-vector-icons/AntDesign";
+import { Ionicons, AntDesign } from 'react-native-vector-icons';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import Util from './Util';
@@ -90,10 +89,11 @@ export default class AdvertisementMain extends React.Component {
 
         country: null,
         countryCode: null,
+
         street: null,
         city: '',
         state: '',
-        place: null,
+        location: null,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -143,30 +143,75 @@ export default class AdvertisementMain extends React.Component {
         if (Platform.OS === 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') this.setState({ viewMarginBottom: 8 });
     }
 
-    initFromSearch(result) {
+    initFromSelect(result) { // country
+        console.log('AdvertisementMain.initFromSelect', result);
+
+        this.setState({
+            country: result.name, countryCode: result.code,
+            street: null, city: '', state: '', location: null
+        });
+    }
+
+    initFromSearch(result) { // street
         console.log('AdvertisementMain.initFromSearch', result);
 
         /*
-        {
-            "description": "Cebu, Philippines",
-            "location": Object {
-                "lat": 10.3156992,
-                "lng": 123.8854366,
+        "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
+        "location": {
+            "lat": 37.4851745,
+            "lng": 127.0131415,
             },
-            "place_id": "ChIJ_S3NjSWZqTMRBzXT2wwDNEw",
+            "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
         }
         */
+        /*
+        type Location = {
+            description: string,
+            streetId: string, // place_id for street
+            longitude: number,
+            latitude: number
+        };
+        */
 
-        this.setState({ street: result.description, place: result });
-    }
+        const location = {
+            description: result.description,
+            streetId: result.place_id,
+            longitude: result.location.lng,
+            latitude: result.location.lat
+        };
 
-    initFromSelect(result) {
-        console.log('AdvertisementMain.initFromSelect', result);
+        const words = result.description.split(', ');
+        console.log('words', words.length, words); // 4, Myeong-dong, Jung-gu, Seoul, South Korea
 
-        // ToDo: set countryCode
-        // this.setState({ country: result.name, countryCode: code });
-        
-        this.setState({ country: result.name });
+        let street = null;
+        let state = '';
+        let city = '';
+
+        // set street, state, city text
+        if (words.length === 0) {
+            // someting is wrong
+        } else if (words.length === 1) {
+            // someting is wrong
+        } else if (words.length === 2) {
+            // someting is wrong
+            state = words[0];
+        } else if (words.length === 3) {
+            city = words[0];
+            state = words[1];
+        } else {
+            street = '';
+            const length = words.length - 3;
+            for (var i = 0; i < length; i++) {
+                street += words[i];
+
+                if (i !== length - 1) street += ', ';
+            }
+
+            city = words[words.length - 3];
+            state = words[words.length - 2];
+        }
+
+        this.setState({ street: street, city: city, state: state, location: location });
     }
 
     @autobind
@@ -400,7 +445,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { name, birthday, height, weight, breasts, note, country, street, place, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const { name, birthday, height, weight, breasts, note, country, street, location, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -467,7 +512,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showCountryAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
 
             return;
         }
@@ -477,7 +522,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showStreetAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
 
             return;
         }
@@ -503,18 +548,13 @@ export default class AdvertisementMain extends React.Component {
         data.bust = Util.getBust(breasts);
         // console.log('data.bust', data.bust);
 
-        // ToDo:
+        // ToDo: placeId, placeName, location
         // country
         // ----
-        data.placeId = place.place_id;
-        data.placeName = place.description;
-
-        let _location = {};
-        _location.description = place.description;
-        _location.longitude = place.location.lng;
-        _location.latitude = place.location.lat;
-
-        data.location = _location;
+        // ToDo: !!!
+        data.placeId = 'place.place_id';
+        data.placeName = 'place.description';
+        data.location = location;
         // ----
 
         let _note = null;
@@ -655,7 +695,8 @@ export default class AdvertisementMain extends React.Component {
                     {
                         this.state.flashImage &&
                         <Image
-                            style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
+                            // style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
+                            style={{ width: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.9 / 3 * 4, height: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.9, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }
@@ -1022,7 +1063,9 @@ export default class AdvertisementMain extends React.Component {
                                 this.hideAlertIcon();
                             }
 
-                            this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                            setTimeout(() => {
+                                this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                            }, Cons.buttonTimeoutShort);
                         }}
                     >
                         <Text
@@ -1057,7 +1100,20 @@ export default class AdvertisementMain extends React.Component {
                                 this.hideAlertIcon();
                             }
 
-                            this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result) => this.initFromSearch(result) });
+                            // check the country is filled
+                            if (!this.state.country) {
+                                this.showNotification('Please enter your country.');
+
+                                this.setState({ showCountryAlertIcon: true });
+
+                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+
+                                return;
+                            }
+
+                            setTimeout(() => {
+                                this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result) => this.initFromSearch(result) });
+                            }, Cons.buttonTimeoutShort);
                         }}
                     >
                         <Text
@@ -1148,9 +1204,9 @@ export default class AdvertisementMain extends React.Component {
                     {/* number */}
                     <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'rgba(255, 255, 255, 0.8)', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
 
-                    {/* icon */}
+                    {/* icon button */}
                     <TouchableOpacity
-                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.selection, position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
+                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.selection, position: 'absolute', bottom: -14 + 10, right: -14 + 10, justifyContent: "center", alignItems: "center" }}
                         onPress={() => {
                             this.uploadPicture(number - 1);
 
@@ -1204,7 +1260,7 @@ export default class AdvertisementMain extends React.Component {
 
                 {/* icon */}
                 <TouchableOpacity
-                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'white', position: 'absolute', bottom: -14, right: -14, justifyContent: "center", alignItems: "center" }}
+                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'white', position: 'absolute', bottom: -14 + 10, right: -14 + 10, justifyContent: "center", alignItems: "center" }}
                     onPress={() => {
                         this.uploadPicture(number - 1);
                     }}
@@ -1415,7 +1471,7 @@ export default class AdvertisementMain extends React.Component {
     async createFeed() {
         const feedId = Util.uid(); // create uuid
         const userUid = Firebase.user().uid;
-
+    
         let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         let placeName = 'Bangkok, Thailand';
         const location = {
@@ -1423,20 +1479,20 @@ export default class AdvertisementMain extends React.Component {
             longitude: 100.5017651,
             latitude: 13.7563309
         };
-
+    
         const note = 'note';
-
+    
         const image1Uri = 'https://i.ytimg.com/vi/FLm-oBqOM24/maxresdefault.jpg';
         const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
         const image3Uri = 'https://i.ytimg.com/vi/jn2XzSxv4sU/maxresdefault.jpg';
         const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';
-
+    
         const name = 'name';
         const birthday = '03111982';
         const height = 166;
         const weight = 50;
         const bust = 'D';
-
+    
         // set
         let feed = {};
         feed.uid = userUid;
@@ -1445,7 +1501,7 @@ export default class AdvertisementMain extends React.Component {
         feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
-
+    
         const pictures = {
             one: {
                 // preview: null,
@@ -1464,31 +1520,31 @@ export default class AdvertisementMain extends React.Component {
                 uri: image4Uri
             }
         };
-
+    
         feed.pictures = pictures;
         feed.name = name;
         feed.birthday = birthday;
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
+    
         await Firebase.createFeed(feed);
-
+    
         Vars.userFeedsChanged = true;
     }
-
+    
     // ToDo: test
     async removeFeed() {
         const uid = Firebase.user().uid;
-
+    
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
         const feedId = '26f7ee12-7b68-de8f-1dd1-b971b07421c4';
-
+    
         const result = await Firebase.removeFeed(uid, placeId, feedId);
         if (!result) {
             // error handling - nothig to do
         }
-
+    
         Vars.userFeedsChanged = true;
     }
     */
@@ -1553,32 +1609,35 @@ export default class AdvertisementMain extends React.Component {
     };
 
     showNotification(msg) {
-        if (!this._showNotification) {
-            this._showNotification = true;
-
-            if (this._showFlash) this.hideFlash();
-
-            this.setState({ notification: msg }, () => {
-                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    // this.state.offset.setValue(height * -1);
-
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.opacity, {
-                                toValue: 1,
-                                duration: 200,
-                            }),
-                            Animated.timing(this.state.offset, {
-                                toValue: 0,
-                                duration: 200,
-                            }),
-                        ])
-                    ]).start();
-                });
-            });
-
-            StatusBar.setHidden(true);
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
         }
+
+        this._showNotification = true;
+
+        if (this._showFlash) this.hideFlash();
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                // this.state.offset.setValue(height * -1);
+
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200,
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: 0,
+                            duration: 200,
+                        }),
+                    ])
+                ]).start();
+            });
+        });
+
+        StatusBar.setHidden(true);
     };
 
     hideNotification() {
@@ -1739,7 +1798,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: Theme.spacing.base
+        paddingHorizontal: Theme.spacing.base,
+        paddingTop: Constants.statusBarHeight
     },
     flashMessageTitle: {
         fontSize: 16,
@@ -1766,7 +1826,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         // fontFamily: "SFProText-Regular",
         fontWeight: '300',
-        color: Theme.color.selection,
+        color: 'blue',
         // backgroundColor: 'grey',
         alignSelf: 'center'
     }

@@ -293,49 +293,6 @@ export default class ReadAllReviewScreen extends React.Component {
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
 
-                <AwesomeAlert
-                    title={this.state.alertTitle}
-                    title={this.state.alertMessage}
-
-                    show={this.state.showAlert}
-                    showProgress={false}
-                    closeOnTouchOutside={true}
-                    closeOnHardwareBackPress={false}
-                    showCancelButton={true}
-                    showConfirmButton={true}
-                    cancelText="YES"
-                    confirmText="NO"
-                    confirmButtonColor="#DD6B55"
-
-                    onCancelPressed={async () => {
-                        this.setState({ showAlert: false });
-
-                        // pressed YES
-                        console.log('YES');
-
-                        if (this.alertCallback) {
-                            this.alertCallback();
-                            this.alertCallback = undefined;
-                        }
-                    }}
-                    onConfirmPressed={() => {
-                        this.setState({ showAlert: false });
-                    }}
-                    onDismiss={() => {
-                        this.setState({ showAlert: false });
-                    }}
-
-                    contentContainerStyle={{ width: Cons.alertWidth, height: Cons.alertHeight, backgroundColor: "white", justifyContent: "space-between" }}
-
-                    titleStyle={{ fontSize: 18, fontFamily: "SFProText-Bold", color: 'black' }}
-                    messageStyle={{ fontSize: 16, fontFamily: "SFProText-Regular", color: 'black' }}
-
-                    cancelButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, justifyContent: 'center', alignItems: 'center' }} // YES
-                    cancelButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                    confirmButtonStyle={{ width: Cons.alertButtonWidth, height: Cons.alertButtonHeight, marginBottom: 10, backgroundColor: "white", borderColor: "black", borderWidth: 1, marginLeft: Cons.alertButtonMarginBetween, justifyContent: 'center', alignItems: 'center' }} // NO
-                    confirmButtonTextStyle={{ color: "black", fontSize: 14, fontFamily: "SFProText-Semibold" }}
-                />
-
                 <Toast
                     ref="toast"
                     position='top'
@@ -656,30 +613,30 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     showNotification(msg) {
-        if (!this._showNotification) {
-            this._showNotification = true;
+        if (this._showNotification) this.hideNotification();
 
-            this.setState({ notification: msg }, () => {
-                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    // this.state.offset.setValue(height * -1);
+        this._showNotification = true;
 
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.opacity, {
-                                toValue: 1,
-                                duration: 200,
-                            }),
-                            Animated.timing(this.state.offset, {
-                                toValue: 0,
-                                duration: 200,
-                            }),
-                        ])
-                    ]).start();
-                });
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                // this.state.offset.setValue(height * -1);
+
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200,
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: 0,
+                            duration: 200,
+                        }),
+                    ])
+                ]).start();
             });
+        });
 
-            StatusBar.setHidden(true);
-        }
+        StatusBar.setHidden(true);
     };
 
     hideNotification() {

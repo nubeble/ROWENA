@@ -189,7 +189,7 @@ export default class Explore extends React.Component<InjectedProps> {
                         borderRadius: 25
                     }}>
                         <TouchableOpacity
-                            style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
+                            style={{ position: 'absolute', left: 0, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
                                     console.log('move to Intro');
@@ -226,6 +226,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                     width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Cons.searchBarPaddingTop(),
                                     color: Theme.color.text2, textAlign: 'center'
                                 }}
+                                numberOfLines={1}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
                     </View>
@@ -249,7 +250,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
                             {
                                 this.state.selectedOrderIndex === 0 &&
-                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }} />
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                             }
                         </TouchableOpacity>
 
@@ -267,7 +268,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
                             {
                                 this.state.selectedOrderIndex === 1 &&
-                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }} />
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                             }
                         </TouchableOpacity>
 
@@ -285,7 +286,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
                             {
                                 this.state.selectedOrderIndex === 2 &&
-                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }} />
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                             }
                         </TouchableOpacity>
                     </View>
@@ -497,7 +498,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
                                             {
                                                 this.state.selectedOrderIndex === 0 &&
-                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }} />
+                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                                             }
                                         </TouchableOpacity>
 
@@ -515,7 +516,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
                                             {
                                                 this.state.selectedOrderIndex === 1 &&
-                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }} />
+                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                                             }
                                         </TouchableOpacity>
 
@@ -533,7 +534,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
                                             {
                                                 this.state.selectedOrderIndex === 2 &&
-                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 10, alignSelf: 'center' }} />
+                                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                                             }
                                         </TouchableOpacity>
                                     </View>
@@ -625,6 +626,7 @@ const styles = StyleSheet.create({
     title: {
         color: Theme.color.text2,
         fontSize: 18,
+        lineHeight: Platform.OS === 'ios' ? 26 : 32,
         fontFamily: "SFProText-Semibold"
     },
     /*

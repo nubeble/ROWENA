@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, AsyncStorage } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -82,11 +82,20 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macao)</Text>
                     </TouchableOpacity>
 
+                    {/*
                     <TouchableOpacity
                         onPress={async () => await this.removeFeed()}
                         style={styles.bottomButton}
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
+                    </TouchableOpacity>
+                    */}
+
+                    <TouchableOpacity
+                        onPress={async () => await this.clearStorage()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Clear Storage</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -247,12 +256,11 @@ export default class Admin extends React.Component {
         const placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         const placeName = 'Bangkok, Thailand';
 
-        // ToDo: get it from google location api
+        // random street address
         const location = {
-            description: 'Soi Sukhumvit 19, Khlong Toei Nuea, Watthana, Bangkok, Thailand',
-            // description: '방콕',
-            longitude: 100.5017651,
-            latitude: 13.7563309
+            description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
+            longitude: 100.5368514,
+            latitude: 13.7236856
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -272,7 +280,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -316,13 +323,12 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
-        const placeName = 'Pattaya, Thailand';
+        const placeName = 'Pattaya City, Thailand';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '파타야',
-            longitude: 0.0,
-            latitude: 0.0
+            description: '333 North Pattaya Road, Pattaya City, Amphoe Bang Lamung, Chon Buri, Thailand',
+            longitude: 100.8933377,
+            latitude: 12.9503984
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -342,7 +348,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -386,13 +391,12 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
-        const placeName = 'Ho Chi Minh, Vietnam';
+        const placeName = 'Ho Chi Minh City, Vietnam';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '호치민',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "125/51/25 Hẻm 47/52 Bùi Đình Túy, Ward Number 24, Bình Thạnh, Ho Chi Minh City, Vietnam",
+            longitude: 106.7062009,
+            latitude: 10.8063619
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -412,7 +416,6 @@ export default class Admin extends React.Component {
         const weight = 49;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -455,14 +458,13 @@ export default class Admin extends React.Component {
     async makeHanoi() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
-        const placeId = 'ChIJKQqAE44ANTERDbkQYkF-mAI';
-        const placeName = 'Hanoi, Vietnam';
+        const placeId = 'ChIJoRyG2ZurNTERqRfKcnt_iOc';
+        const placeName = 'Hanoi, Hoàn Kiếm, Hanoi, Vietnam';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '하노이',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "34 Hai Bà Trưng, Trang Tien, Hoàn Kiếm, Hanoi, Vietnam",
+            longitude: 105.852382,
+            latitude: 21.0246754
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -482,7 +484,6 @@ export default class Admin extends React.Component {
         const weight = 49;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -526,13 +527,12 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk';
-        const placeName = 'Manila, Philippines';
+        const placeName = 'Manila, Metro Manila, Philippines';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '마닐라',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "468 Epifanio de los Santos Avenue, East Grace Park, Caloocan, Metro Manila, Philippines",
+            longitude: 120.9891925,
+            latitude: 14.6569403
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -552,7 +552,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -598,11 +597,10 @@ export default class Admin extends React.Component {
         const placeId = 'ChIJ_S3NjSWZqTMRBzXT2wwDNEw';
         const placeName = 'Cebu, Philippines';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '세부',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "37 Cebu Transcentral Highway, Cebu City, Cebu, Philippines",
+            longitude: 123.9011798,
+            latitude: 10.3162864
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -622,7 +620,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -668,11 +665,10 @@ export default class Admin extends React.Component {
         const placeId = 'ChIJIXvtBoZoJDER3-7BGIaxkx8';
         const placeName = 'Vientiane, Laos';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '비엔티안',
-            longitude: 0.0,
-            latitude: 0.0
+            description: 'Crowne Plaza Vientiane, Vientiane, Laos',
+            longitude: 102.5970396,
+            latitude: 17.9696983
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -692,7 +688,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -738,11 +733,10 @@ export default class Admin extends React.Component {
         const placeId = 'ChIJ42tqxz1RCTERuyW1WugOAZw';
         const placeName = 'Phnom Penh, Cambodia';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '프놈펜',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "831c Preah Monivong Boulevard (93), Phnom Penh, Cambodia",
+            longitude: 104.925715,
+            latitude: 11.530557
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -762,7 +756,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -805,14 +798,13 @@ export default class Admin extends React.Component {
     async makeMacao() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
-        const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
-        const placeName = 'Macao, Macau';
+        const placeId = 'ChIJn3eZEdMCozYRqJXEz_0TPu8';
+        const placeName = 'Macau, China';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '마카오',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "Macau Island, Macau",
+            longitude: 113.5463889,
+            latitude: 22.1997222
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -832,7 +824,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -875,14 +866,13 @@ export default class Admin extends React.Component {
     async makeJakarta() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
-        const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
+        const placeId = 'ChIJnUvjRenzaS4RILjULejFAAE';
         const placeName = 'Jakarta, Indonesia';
 
-        // ToDo: get it from google location api
         const location = {
-            description: '자카르타',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia",
+            longitude: 106.8400149,
+            latitude: -6.227615
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -902,7 +892,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -946,13 +935,12 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ5-rvAcdJzDERfSgcL1uO2fQ';
-        const placeName = 'Kuala Lumpur, Malaysia';
+        const placeName = "Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia";
 
-        // ToDo: get it from google location api
         const location = {
-            description: '쿠알라룸푸르',
-            longitude: 0.0,
-            latitude: 0.0
+            description: "Central Market, Kuala Lumpur City Centre, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
+            longitude: 101.695556,
+            latitude: 3.145832999999999
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -972,7 +960,6 @@ export default class Admin extends React.Component {
         const weight = 48;
         const bust = 'B';
 
-        // set
         let feed = {};
         feed.uid = userUid;
         feed.id = feedId;
@@ -1010,6 +997,14 @@ export default class Admin extends React.Component {
         await Firebase.createFeed(feed);
 
         Vars.userFeedsChanged = true;
+    }
+
+    async clearStorage() {
+        try {
+            await AsyncStorage.clear();
+        } catch (error) {
+            console.log('clearStorage clear error', error);
+        }
     }
 }
 

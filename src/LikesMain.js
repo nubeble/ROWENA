@@ -4,7 +4,6 @@ import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
 import PreloadImage from './PreloadImage';
 import SmartImage from "./rnff/src/components/SmartImage";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import Util from "./Util";

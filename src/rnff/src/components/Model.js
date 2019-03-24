@@ -1,5 +1,7 @@
+
 type Location = {
     description: string,
+    streetId: string, // place_id for street
     longitude: number,
     latitude: number
 };
@@ -46,7 +48,7 @@ export type Profile = {
     email: string,
     phoneNumber: string,
     picture: Picture,
-    location: Location,
+    // location: Location,
     about: string,
     feeds: FeedRef[],
     reviews: ReviewRef[],

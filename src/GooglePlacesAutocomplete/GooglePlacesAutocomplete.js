@@ -7,8 +7,9 @@ import {
 import Qs from 'qs';
 // import debounce from 'lodash.debounce';
 import { debounce } from 'lodash';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Text, Theme } from '../rnff/src/components';
+import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Cons } from '../Globals';
 
 const WINDOW = Dimensions.get('window');
 
@@ -69,11 +70,16 @@ const defaultStyles = {
     listView: {},
     row: {
         width: WINDOW.width,
+        /*
         height: 48,
         paddingLeft: 18,
         paddingRight: 18,
         paddingTop: 16,
-        // backgroundColor: 'green',
+        */
+        height: 60,
+        paddingLeft: 20,
+        paddingRight: 20,
+
         flexDirection: 'row'
     },
     separator: {
@@ -157,7 +163,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
         setTimeout(() => {
             !this.closed && this.refs.textInput && this.refs.textInput.focus();
-        }, 500);
+        }, Cons.buttonTimeoutLong);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -220,7 +226,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
 
 
-        
+
         let options = {
             enableHighAccuracy: false,
             timeout: 20000,
@@ -328,7 +334,7 @@ export default class GooglePlacesAutocomplete extends Component {
             request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
                 key: this.props.query.key,
                 placeid: rowData.place_id,
-                language: this.props.query.language,
+                language: this.props.query.language
             }));
 
             if (this.props.query.origin !== null) {
@@ -348,7 +354,7 @@ export default class GooglePlacesAutocomplete extends Component {
             delete rowData.isLoading;
             this.getCurrentLocation();
 
-        } else {
+        } else { // predefined place
             !this.closed && this.setState({
                 text: this._renderDescription(rowData),
             });
@@ -421,6 +427,43 @@ export default class GooglePlacesAutocomplete extends Component {
                 results.push(unfilteredResults[i]);
             }
         }
+
+        return results;
+    }
+
+    _filterByALLTypes = (unfilteredResults, types) => {
+        if (types.length === 0) return unfilteredResults;
+
+        const results = [];
+        for (let i = 0; i < unfilteredResults.length; i++) {
+            let add = true;
+            let count = 0; // count of false
+
+            for (let j = 0; j < types.length; j++) {
+                /*
+                if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
+                    found = false;
+                    break;
+                }
+                */
+
+                const type = types[j]; // ["locality", "political", "geocode"]
+
+                for (let k = 0; k < type.length; k++) {
+                    if (unfilteredResults[i].types.indexOf(type[k]) === -1) {
+                        count++;
+                        break;
+                    }
+                }
+            }
+
+            if (count === 2) add = false;
+
+            if (add) {
+                results.push(unfilteredResults[i]);
+            }
+        }
+
         return results;
     }
 
@@ -448,14 +491,19 @@ export default class GooglePlacesAutocomplete extends Component {
                         if (!this.closed) {
                             var results = [];
                             if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
+                                console.log('_requestNearby GoogleReverseGeocoding pre results', responseJSON.results);
                                 results = this._filterResultsByTypes(responseJSON.results, this.props.filterReverseGeocodingByTypes);
-                            } else {
-                                results = responseJSON.results;
-                                console.log('results', results);
+                                console.log('_requestNearby GoogleReverseGeocoding results', results);
+                            } else { // GooglePlacesSearch
+                                // results = responseJSON.results;
+
+                                console.log('_requestNearby GooglePlacesSearch pre results', results);
+                                results = this._filterByALLTypes(responseJSON.results, this.props.filterPlacesSearchByTypes);
+                                console.log('_requestNearby GooglePlacesSearch results', results);
                             }
 
                             !this.closed && this.setState({
-                                dataSource: this.buildRowsFromResults(results),
+                                dataSource: this.buildRowsFromResults(results)
                             });
                         }
                     }
@@ -478,13 +526,13 @@ export default class GooglePlacesAutocomplete extends Component {
                 url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
                     latlng: latitude + ',' + longitude,
                     key: this.props.query.key,
-                    ...this.props.GoogleReverseGeocodingQuery,
+                    ...this.props.GoogleReverseGeocodingQuery
                 });
-            } else {
+            } else { // GooglePlacesSearch
                 url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?' + Qs.stringify({
                     location: latitude + ',' + longitude,
                     key: this.props.query.key,
-                    ...this.props.GooglePlacesSearchQuery,
+                    ...this.props.GooglePlacesSearchQuery
                 });
             }
 
@@ -517,18 +565,33 @@ export default class GooglePlacesAutocomplete extends Component {
 
                 if (request.status === 200) {
                     const responseJSON = JSON.parse(request.responseText);
+
                     if (typeof responseJSON.predictions !== 'undefined') {
                         if (!this.closed) {
+                            // console.log('predictions', responseJSON.predictions);
 
-                            console.log(responseJSON.predictions);
-
+                            /*
                             const results = this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
                                 ? this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes)
                                 : responseJSON.predictions;
+                            */
+
+                            var results = [];
+                            if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
+                                console.log('_request GoogleReverseGeocoding pre results', responseJSON.predictions);
+                                results = this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes);
+                                console.log('_request GoogleReverseGeocoding results', results);
+                            } else { // GooglePlacesSearch
+                                // results = responseJSON.predictions;
+
+                                console.log('_request GooglePlacesSearch pre results', responseJSON.predictions);
+                                results = this._filterByALLTypes(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
+                                console.log('_request GooglePlacesSearch results', results);
+                            }
 
                             this._results = results;
                             !this.closed && this.setState({
-                                dataSource: this.buildRowsFromResults(results),
+                                dataSource: this.buildRowsFromResults(results)
                             });
                         }
                     }
@@ -546,6 +609,11 @@ export default class GooglePlacesAutocomplete extends Component {
             };
 
             request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
+            /*
+            request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + 
+            'key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A' + '&' + 'language=en' + '&' + 'types=(address)' + '&' + 'components=country:kr'
+            );
+            */
             if (this.props.query.origin !== null) {
                 request.setRequestHeader('Referer', this.props.query.origin)
             }
@@ -553,7 +621,7 @@ export default class GooglePlacesAutocomplete extends Component {
         } else {
             this._results = [];
             !this.closed && this.setState({
-                dataSource: this.buildRowsFromResults([]),
+                dataSource: this.buildRowsFromResults([])
             });
         }
     }
@@ -602,18 +670,113 @@ export default class GooglePlacesAutocomplete extends Component {
             return this.props.renderRow(rowData);
         }
 
+        /*
         return (
-            <Text style={[{ flex: 1 },
-            this.props.suppressDefaultStyles ? {} : defaultStyles.description,
-            this.props.styles.description,
-            rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {},
-            rowData.isCurrentLocation ? defaultStyles.currentLocationText : {}
-            ]}
-
+            <Text
+                style={[{ flex: 1 }, this.props.suppressDefaultStyles ? {} : defaultStyles.description,
+                    this.props.styles.description,
+                    rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {},
+                    rowData.isCurrentLocation ? defaultStyles.currentLocationText : {}
+                ]}
                 numberOfLines={this.props.numberOfLines}
             >
                 {this._renderDescription(rowData)}
             </Text>
+        );
+        */
+
+
+
+        if (rowData.isCurrentLocation) {
+            return (
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                        <FontAwesome style={{ width: 20 }} name='location-arrow' color={Theme.color.selection} size={16} />
+                        <Text
+                            style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
+                            { fontSize: 15, fontFamily: "SFProText-Semibold", marginLeft: 14, paddingTop: Platform.OS === "ios" ? 2 : 10 }
+                            ]}
+                        >
+                            {rowData.description}
+                        </Text>
+                    </View>
+                </View>
+            );
+        }
+
+        const description = rowData.description;
+        const index = description.indexOf(',');
+
+        let city = '';
+        let state = '';
+
+        if (index === -1) {
+            city = description;
+
+            if (city === 'Macau') state = 'China'; // ToDo: exception
+        } else {
+            city = description.substring(0, index);
+            state = description.substring(index + 2, description.length);
+
+            // console.log('city', city);
+            // console.log('state', state);
+        }
+
+        if (rowData.isPredefinedPlace) {
+            const icon = rowData.icon;
+
+            return (
+                <View style={{ flex: 1, justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                        {
+                            icon === 'saved' &&
+                            <MaterialIcons style={{ width: 20 }} name='watch-later' color={Theme.color.text2} size={15} />
+                        }
+                        {
+                            icon === 'predefined' &&
+                            <MaterialIcons style={{ width: 20 }} name='whatshot' color={Theme.color.text2} size={15} />
+                        }
+                        {
+                            !icon &&
+                            <Ionicons style={{ width: 20 }} name='ios-heart' color={Theme.color.text2} size={15} />
+                        }
+                        <View style={{ marginLeft: 14 }}>
+                            <Text
+                                style={[defaultStyles.description, this.props.styles.description,
+                                this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "SFProText-Semibold" }
+                                ]}
+                            >{city}</Text>
+                            <Text
+                                style={[defaultStyles.description, this.props.styles.description,
+                                this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "SFProText-Regular" }
+                                ]}
+                                numberOfLines={this.props.numberOfLines}
+                            >{state}</Text>
+                        </View>
+                    </View>
+                </View>
+            );
+        }
+
+        return (
+            <View style={{ flex: 1, justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                    <MaterialIcons style={{ width: 20 }} name='location-on' color={Theme.color.text2} size={15} />
+                    <View style={{ marginLeft: 14 }}>
+                        <Text
+                            style={[defaultStyles.description, this.props.styles.description,
+                            this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "SFProText-Semibold" }
+                            ]}
+                        >{city}</Text>
+                        <Text
+                            style={[defaultStyles.description, this.props.styles.description,
+                            this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "SFProText-Regular" }
+                            ]}
+                            numberOfLines={this.props.numberOfLines}
+                        >{state}</Text>
+                    </View>
+                </View>
+            </View>
         );
     }
 
@@ -784,7 +947,7 @@ export default class GooglePlacesAutocomplete extends Component {
         return null;
     }
     render() {
-        let {
+        const {
             onFocus,
             clearButtonMode,
             ...userProps
@@ -834,12 +997,11 @@ export default class GooglePlacesAutocomplete extends Component {
                     </View>
                 }
                 {!this.props.textInputHide &&
-                    <View
-                        style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', alignSelf: 'center' }} />
+                    <View style={{
+                        borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', alignSelf: 'center',
+                        marginBottom: Theme.spacing.small
+                    }} />
                 }
-
-
-
 
                 {this._getFlatList()}
                 {this.props.children}
@@ -875,6 +1037,9 @@ GooglePlacesAutocomplete.propTypes = {
     nearbyPlacesAPI: PropTypes.string,
     enableHighAccuracyLocation: PropTypes.bool,
     filterReverseGeocodingByTypes: PropTypes.array,
+
+    filterPlacesSearchByTypes: PropTypes.array,
+
     predefinedPlacesAlwaysVisible: PropTypes.bool,
     enableEmptySections: PropTypes.bool,
     renderDescription: PropTypes.func,
@@ -917,7 +1082,7 @@ GooglePlacesAutocomplete.defaultProps = {
     GoogleReverseGeocodingQuery: {},
     GooglePlacesSearchQuery: {
         rankby: 'distance',
-        types: 'food',
+        types: 'food'
     },
     styles: {},
     textInputProps: {},
@@ -928,6 +1093,9 @@ GooglePlacesAutocomplete.defaultProps = {
     nearbyPlacesAPI: 'GooglePlacesSearch',
     enableHighAccuracyLocation: true,
     filterReverseGeocodingByTypes: [],
+
+    filterPlacesSearchByTypes: [],
+
     predefinedPlacesAlwaysVisible: false,
     enableEmptySections: true,
     listViewDisplayed: 'auto',

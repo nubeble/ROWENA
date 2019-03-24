@@ -6,8 +6,7 @@ import {
 import { Header } from 'react-navigation';
 // import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
-import Ionicons from "react-native-vector-icons/Ionicons";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import { Ionicons, AntDesign } from "react-native-vector-icons";
 // import * as firebase from 'firebase';
 import Firebase from './Firebase'
 import autobind from "autobind-decorator";
@@ -49,16 +48,9 @@ export default class SignUpWithEmail extends React.Component {
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        /*
-        let that = this;
-        setTimeout(function () {
-            !that.closed && that.refs['emailInput'] && that.refs['emailInput']._root.focus();
-        }, 750); // 0.75 sec
-        */
-
         setTimeout(() => {
             !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
-        }, 750); // 0.75 sec
+        }, Cons.buttonTimeoutLong);
     }
 
     componentWillUnmount() {
@@ -100,45 +92,48 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     showNotification(msg) {
-        if (!this._showNotification) {
-            this._showNotification = true;
-
-            this.setState({ notification: msg }, () => {
-                this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    // this.state.offset.setValue(height * -1);
-
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.opacity, {
-                                toValue: 1,
-                                duration: 200,
-                            }),
-                            Animated.timing(this.state.offset, {
-                                toValue: 0,
-                                duration: 200,
-                            }),
-                        ]),
-
-                        /*
-                        Animated.delay(1500),
-
-                        Animated.parallel([
-                            Animated.timing(this.state.opacity, {
-                                toValue: 0,
-                                duration: 300,
-                            }),
-                            Animated.timing(this.state.offset, {
-                                toValue: height * -1,
-                                duration: 300,
-                            }),
-                        ]),
-                        */
-                    ]).start();
-                });
-            });
-
-            StatusBar.setHidden(true);
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcons();
         }
+
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                // this.state.offset.setValue(height * -1);
+
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200,
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: 0,
+                            duration: 200,
+                        }),
+                    ]),
+
+                    /*
+                    Animated.delay(1500),
+
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 0,
+                            duration: 300,
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: height * -1,
+                            duration: 300,
+                        }),
+                    ]),
+                    */
+                ]).start();
+            });
+        });
+
+        StatusBar.setHidden(true);
     };
 
     hideNotification() {
@@ -430,7 +425,7 @@ export default class SignUpWithEmail extends React.Component {
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ paddingLeft: 18, paddingRight: 48, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 keyboardType={'email-address'}
                                 onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                 onChangeText={(text) => this.validateEmail(text)}
@@ -440,20 +435,23 @@ export default class SignUpWithEmail extends React.Component {
                                 autoCorrect={false}
                                 autoCapitalize="none"
                             />
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 22, top: this.emailY - 34 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 22, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
                                     this.emailY = y;
                                 }}
                             />
+                            {/* to block shaking */}
+                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={30} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+
                             <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
                                 {'PASSWORD'}
                             </Text>
                             <TextInput
                                 ref='pwInput'
-                                style={{ paddingLeft: 18, paddingRight: 48, height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
                                 secureTextEntry={this.state.securePwInput}
                                 onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
@@ -465,19 +463,21 @@ export default class SignUpWithEmail extends React.Component {
                                 autoCorrect={false}
                             />
                             <TouchableOpacity
-                                style={{ position: 'absolute', top: 90, right: 14, alignSelf: 'baseline' }}
+                                style={{ position: 'absolute', top: 98, right: 24, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}
                             >
                                 <Text style={{ fontSize: 13, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
                             </TouchableOpacity>
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 22, top: this.passwordY - 34 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 22, top: this.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
                                     this.passwordY = y;
                                 }}
                             />
+                            {/* to block shaking */}
+                            {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="transparent" size={28} />}
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                         </View>
 
                         {/*

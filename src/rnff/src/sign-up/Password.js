@@ -116,10 +116,12 @@ export default class Password extends React.Component<NavigationProps<*>, Passwo
                     uri: null
                 }
             },
+            /*
             location: {
                 longitude: 100.46775760000003, // 경도
                 latitude: 13.7659225 // 위도
             },
+            */
             about: "about",
             receivedReviews: [ // 나한테 달린 리뷰 [review id]
             ],

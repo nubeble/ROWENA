@@ -169,7 +169,7 @@ export default class Feed extends React.Component<FeedProps> {
                                         setTimeout(() => {
                                             // ToDo: set scroll position 0
 
-                                            // this.props.navigation.navigate("intro");
+                                            this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 10 }}>

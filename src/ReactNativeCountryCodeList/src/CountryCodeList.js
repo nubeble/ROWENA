@@ -15,6 +15,7 @@ import Search from 'react-native-search-box';
 import _ from 'lodash';
 import { Text, Theme } from '../../rnff/src/components';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Cons } from '../../Globals';
 
 
 export default class CountryCodeList extends React.Component {
@@ -34,7 +35,7 @@ export default class CountryCodeList extends React.Component {
     componentDidMount() {
         setTimeout(() => {
             !this.closed && this.refs.textInput && this.refs.textInput.focus();
-        }, 500);
+        }, Cons.buttonTimeoutLong);
     }
 
     componentWillUnmount() {
@@ -95,17 +96,20 @@ export default class CountryCodeList extends React.Component {
     }
 
     filterData = _.debounce(() => {
-        const initialData = this.props.data || getAlphabet()
-        let data = JSON.parse(JSON.stringify(initialData))
+        const initialData = this.props.data || getAlphabet();
+        let data = JSON.parse(JSON.stringify(initialData));
         Object.keys(data).map((key) => {
             data[key] = data[key].filter((el) => {
-                return el.name.toLowerCase().includes(this.state.query.toLowerCase()) || el.code.includes(this.state.query)
+                // return el.name.toLowerCase().includes(this.state.query.toLowerCase()) || el.code.includes(this.state.query)
+                return el.name.toLowerCase().includes(this.state.query.toLowerCase())
             })
+
             if (data[key].length === 0) {
                 delete (data[key])
             }
-        })
-        this.setState({ data })
+        });
+
+        this.setState({ data });
     }, 450)
 
     clearQuery = () => {
@@ -128,6 +132,7 @@ export default class CountryCodeList extends React.Component {
         if (this.props.renderSectionHeader) {
             return this.props.renderSectionHeader(rowData)
         }
+
         return (
             <View style={[
                 styles.sectionHeader,
@@ -143,6 +148,7 @@ export default class CountryCodeList extends React.Component {
         if (this.props.renderSectionItem) {
             return this.props.renderSectionItem(rowData)
         }
+
         return (
             <Text style={[styles.sectionItemText, this.props.sectionItemTextStyle]}>{rowData.title}</Text>
         )
@@ -152,13 +158,16 @@ export default class CountryCodeList extends React.Component {
         if (this.props.renderCell) {
             return this.props.renderCell(rowData)
         }
+
         return (
             <View>
                 <TouchableOpacity
                     onPress={() => { this.props.onClickCell(rowData.item) }}
                     style={[styles.cell, this.props.cellStyle, { height: this.props.cellHeight - 0.5 }]}>
                     <Text numberOfLines={1} style={[styles.cellTitle, this.props.cellTitleStyle]}>{rowData.item.name}</Text>
+                    {/*
                     <Text style={[styles.cellLabel, this.props.cellLabelStyle]}>{rowData.item.code}</Text>
+                    */}
                 </TouchableOpacity>
                 <View style={styles.separator} />
             </View>

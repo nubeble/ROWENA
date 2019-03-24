@@ -3,8 +3,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import SmartImage from "./rnff/src/components/SmartImage";
-import Feather from "react-native-vector-icons/Feather";
-import AntDesign from "react-native-vector-icons/AntDesign";
+import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import { Text, Theme } from "./rnff/src/components";
@@ -349,7 +348,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
-                                                <AntDesign name='notification' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                <MaterialCommunityIcons name='square-edit-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -392,7 +391,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Log Out'}</Text>
-                                                <Feather name='log-out' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                <Ionicons name='md-log-out' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -514,12 +513,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
 
-                        ListFooterComponent={
-                            this.state.isLoadingFeeds &&
-                            <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
-                            </View>
-                        }
+                    /*
+                    ListFooterComponent={
+                        this.state.isLoadingFeeds &&
+                        <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                            <RefreshIndicator />
+                        </View>
+                    }
+                    */
                     />
                 }
 
