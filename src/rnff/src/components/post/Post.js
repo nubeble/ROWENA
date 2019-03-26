@@ -93,6 +93,22 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             );
         }
 
+        /*
+        let placeName = post.placeName;
+        const words = placeName.split(', ');
+        if (words.length > 2) {
+            const city = words[0];
+            const country = words[words.length - 1];
+            placeName = city + ', ' + country;
+        }
+        */
+        // ToDo: get distance
+        let distance = '12 km away';
+        /*
+        const location = post.location;
+        location.longitude
+        location.latitude
+        */
 
         // const { likes, comments } = post;
         const contentStyle = [styles.content];
@@ -121,7 +137,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                     />
                     <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                         <Text style={styles.feedItemText}>{post.name}</Text>
-                        <Text style={styles.feedItemText}>{post.placeName}</Text>
+                        <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{distance}</Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
@@ -197,12 +213,9 @@ const styles = StyleSheet.create({
         fontFamily: "SFProText-Semibold",
         paddingLeft: 2,
 
-        // ToDo
-        // shadowOpacity: 1,
         textShadowColor: "#3D3D3D",
         textShadowOffset: { width: 0.6, height: 0.6 },
         textShadowRadius: 4
-        // textShadowRadius: 10
     },
     rating: {
         marginLeft: 5,

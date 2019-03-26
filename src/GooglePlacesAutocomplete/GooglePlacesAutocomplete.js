@@ -113,6 +113,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
     constructor(props) {
         super(props);
+
         this.state = this.getInitialState.call(this);
     }
 
@@ -296,10 +297,13 @@ export default class GooglePlacesAutocomplete extends Component {
                             this._onBlur();
 
                             !this.closed && this.setState({
-                                text: this._renderDescription(rowData),
+                                text: this._renderDescription(rowData)
                             });
 
                             delete rowData.isLoading;
+
+                            if (rowData.description === 'Macau') rowData.description = 'Macau, China'; // ToDo: exception
+
                             this.props.onPress(rowData, details);
                         }
                     } else {
@@ -309,6 +313,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             !this.closed && this.setState({
                                 text: this._renderDescription(rowData)
                             });
+
                             delete rowData.isLoading;
                         }
 
@@ -356,9 +361,8 @@ export default class GooglePlacesAutocomplete extends Component {
 
         } else { // predefined place
             !this.closed && this.setState({
-                text: this._renderDescription(rowData),
+                text: this._renderDescription(rowData)
             });
-
             this._onBlur();
             delete rowData.isLoading;
             let predefinedPlace = this._getPredefinedPlace(rowData);
@@ -374,7 +378,7 @@ export default class GooglePlacesAutocomplete extends Component {
             if ((rows[i].place_id === rowData.place_id) || (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true)) {
                 rows[i].isLoading = true;
                 !this.closed && this.setState({
-                    dataSource: rows,
+                    dataSource: rows
                 });
                 break;
             }
@@ -740,7 +744,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             !icon &&
                             <Ionicons style={{ width: 20 }} name='ios-heart' color={Theme.color.text2} size={15} />
                         }
-                        <View style={{ marginLeft: 14 }}>
+                        <View style={{ marginLeft: 14, marginRight: 20 }}>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
                                 this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "SFProText-Semibold" }
@@ -762,7 +766,7 @@ export default class GooglePlacesAutocomplete extends Component {
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                     <MaterialIcons style={{ width: 20 }} name='location-on' color={Theme.color.text2} size={15} />
-                    <View style={{ marginLeft: 14 }}>
+                    <View style={{ marginLeft: 14, marginRight: 20 }}>
                         <Text
                             style={[defaultStyles.description, this.props.styles.description,
                             this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "SFProText-Semibold" }

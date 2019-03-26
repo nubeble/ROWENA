@@ -140,6 +140,17 @@ export default class Intro extends React.Component {
     async initFromSearch(result) {
         console.log('Intro.initFromSearch', result);
 
+        // get city, country
+        let name = result.description;
+        /*
+        const words = name.split(', ');
+        if (words.length > 1) {
+            city = words[0];
+            country = words[words.length - 1];
+            name = city + ', ' + country;
+        }
+        */
+
         // load length from database
         const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
         let count = 0;
@@ -151,7 +162,7 @@ export default class Intro extends React.Component {
         // console.log('count', count);
 
         const place = {
-            name: result.description,
+            name: name,
             place_id: result.place_id,
             length: count
             // location: result.location
@@ -612,7 +623,11 @@ export default class Intro extends React.Component {
                             let place_id = null;
                             let length = 0;
                             let name = null;
+                            let city = '';
+                            let country = '';
                             let imageUri = null;
+
+
 
                             place_id = item.place_id;
                             if (place_id) {
@@ -623,9 +638,10 @@ export default class Intro extends React.Component {
                                 // get city, country
                                 const words = name.split(', ');
                                 if (words.length > 1) {
-                                    const city = words[0];
-                                    const country = words[words.length - 1];
-                                    name = city + ', ' + country;
+                                    city = words[0];
+                                    country = words[words.length - 1];
+
+                                    // name = city + ', ' + country;
                                 }
 
                                 imageUri = place.uri;
@@ -640,9 +656,10 @@ export default class Intro extends React.Component {
                                     // get city, country
                                     const words = name.split(', ');
                                     if (words.length > 1) {
-                                        const city = words[0];
-                                        const country = words[words.length - 1];
-                                        name = city + ', ' + country;
+                                        city = words[0];
+                                        country = words[words.length - 1];
+
+                                        // name = city + ', ' + country;
                                     }
 
                                     imageUri = place.uri;
@@ -682,17 +699,36 @@ export default class Intro extends React.Component {
                                             fadeDuration={0}
                                         />
                                         <View style={styles.content}>
+                                            {/*
                                             <Text style={{
+                                                backgroundColor: 'green',
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: 20,
-                                                lineHeight: Platform.OS === 'ios' ? 26 : 32,
+                                                lineHeight: Platform.OS === 'ios' ? 26 : 34,
                                                 fontFamily: "SFProText-Bold"
                                             }}>{`${(name) ? name : ''}`}</Text>
+                                            */}
+                                            <Text style={{
+                                                // backgroundColor: 'green',
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: 20,
+                                                fontFamily: "SFProText-Bold"
+                                            }}>{city}</Text>
+                                            <Text style={{
+                                                // backgroundColor: 'green',
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: 20,
+                                                fontFamily: "SFProText-Bold"
+                                            }}>{country}</Text>
+
                                             <Text style={{
                                                 textAlign: 'center',
-                                                color: Theme.color.themeText,
+                                                color: Theme.color.subtitle,
                                                 fontSize: 14,
+                                                paddingTop: Platform.OS === 'ios' ? 4 : 8,
                                                 fontFamily: "SFProText-Semibold"
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
@@ -702,7 +738,7 @@ export default class Intro extends React.Component {
                         }}
 
                         ListFooterComponent={
-                            <View style={{ marginTop: 20 }}>
+                            <View style={{ marginTop: 20, marginBottom: 8 }}>
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>{'Top-rated girls'}</Text>
                                 </View>
@@ -919,6 +955,14 @@ export default class Intro extends React.Component {
     }
 
     renderFeedItem(feed) {
+        let placeName = feed.placeName;
+        const words = placeName.split(', ');
+        if (words.length > 2) {
+            const city = words[0];
+            const country = words[words.length - 1];
+            placeName = city + ', ' + country;
+        }
+
         return (
             <TouchableOpacity activeOpacity={1.0}
                 onPress={() => {
@@ -934,7 +978,7 @@ export default class Intro extends React.Component {
                 />
                 <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{feed.name}</Text>
-                    <Text style={styles.feedItemText}>{feed.placeName}</Text>
+                    <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{placeName}</Text>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
@@ -1063,7 +1107,11 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        paddingLeft: 2
+        paddingLeft: 2,
+
+        textShadowColor: "#3D3D3D",
+        textShadowOffset: { width: 0.6, height: 0.6 },
+        textShadowRadius: 4
     },
     rating: {
         marginLeft: 5,

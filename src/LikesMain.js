@@ -242,7 +242,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                         />
                                         <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
-                                            <Text style={styles.feedItemText}>{item.placeName}</Text>
+                                            <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{item.placeName}</Text>
 
                                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                                                 <View style={{ width: 'auto', alignItems: 'flex-start' }}>

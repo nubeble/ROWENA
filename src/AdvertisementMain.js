@@ -1342,7 +1342,7 @@ export default class AdvertisementMain extends React.Component {
                             position: 'absolute', top: 0, left: 0,
                             justifyContent: 'center', alignItems: 'center'
                         }}>
-                            <RefreshIndicator refreshing={this.state.refreshing} number={3} size={4} />
+                            <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} />
                         </View>
                     }
                 </View>

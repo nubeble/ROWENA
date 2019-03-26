@@ -303,7 +303,7 @@ export default class SearchScreen extends React.Component {
                                 const key = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
 
                                 Util.getPlaceId(input, key, (obj) => {
-                                    // console.log('Util.getPlaceId result', obj);
+                                    console.log('Util.getPlaceId result', obj);
 
                                     const city = {
                                         name: obj.formatted_address,

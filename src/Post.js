@@ -307,6 +307,14 @@ export default class Post extends React.Component<InjectedProps> {
     render() {
         const { post } = this.props.navigation.state.params;
 
+        // ToDo: get distance
+        let distance = '12 km away';
+        /*
+        const location = post.location;
+        location.longitude
+        location.latitude
+        */
+
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [
@@ -442,8 +450,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                                             <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={Theme.color.title} size={16} />
-                                            {/* ToDo: calculate distance */}
-                                            <Text style={styles.distance}>24 km away</Text>
+                                            <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>

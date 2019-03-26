@@ -798,7 +798,7 @@ export default class Admin extends React.Component {
     async makeMacao() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
-        const placeId = 'ChIJn3eZEdMCozYRqJXEz_0TPu8';
+        const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
         const placeName = 'Macau, China';
 
         const location = {
