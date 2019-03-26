@@ -25,8 +25,8 @@ type Theme = {
         placeholder: Color,
         skeleton1: Color,
         skeleton2: Color,
-        flashBackground: Color,
-        flashText: Color
+        themeBackground: Color,
+        themeText: Color
     },
     palette: {
         primary: Color,

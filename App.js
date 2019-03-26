@@ -340,18 +340,17 @@ import ReadAllReviewScreen from './src/ReadAllReviewScreen';
 
 import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
-import AdvertisementGuide from './src/AdvertisementGuide';
+import AdvertisementStart from './src/AdvertisementStart';
 import AdvertisementMain from './src/AdvertisementMain';
 import CountrySelection from './src/CountrySelection';
+import AdvertisementFinish from './src/AdvertisementFinish';
 import Admin from './src/Admin';
 
 // -- start of AuthStackNavigatorWrapper
 const AuthStackNavigator = createStackNavigator(
     {
         authMain: { screen: AuthMain },
-
         email: { screen: SignUpWithEmail },
-
         mobile: { screen: SignUpWithMobile }
     },
     {
@@ -679,7 +678,7 @@ const EditStackNavigator = createStackNavigator(
     {
         editMain: { screen: EditMain },
 
-        
+
     },
     {
         mode: 'card',
@@ -748,12 +747,14 @@ class CheckStackNavigatorWrapper extends React.Component {
 // -- start of AdvertisementStackNavigatorWrapper
 const AdvertisementStackNavigator = createStackNavigator(
     {
-        advertisementGuide: { screen: AdvertisementGuide },
+        advertisementStart: { screen: AdvertisementStart },
         advertisementMain: { screen: AdvertisementMain },
         advertisementSelect: { screen: CountrySelection },
-        advertisementSearch: { screen: SearchScreen }
+        advertisementSearch: { screen: SearchScreen },
+        advertisementFinish: { screen: AdvertisementFinish }
     },
     {
+        // initialRouteName: 'advertisementStart',
         mode: 'card',
         headerMode: 'none',
         navigationOptions: {

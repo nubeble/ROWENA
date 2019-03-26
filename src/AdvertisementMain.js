@@ -6,7 +6,7 @@ import {
 import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import { Ionicons, AntDesign } from 'react-native-vector-icons';
+import { Ionicons, AntDesign, FontAwesome } from 'react-native-vector-icons';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import Util from './Util';
@@ -15,6 +15,7 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 // https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
 // import { Chevron } from 'react-native-shapes';
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
@@ -74,6 +75,8 @@ export default class AdvertisementMain extends React.Component {
         uploadImage3Uri: null,
         uploadImage4Uri: null,
 
+        refreshing: true,
+
         name: '',
 
         showDatePicker: false,
@@ -93,7 +96,9 @@ export default class AdvertisementMain extends React.Component {
         street: null,
         city: '',
         state: '',
-        location: null,
+        streetInfo: null,
+        cityInfo: null,
+
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -148,12 +153,12 @@ export default class AdvertisementMain extends React.Component {
 
         this.setState({
             country: result.name, countryCode: result.code,
-            street: null, city: '', state: '', location: null
+            street: null, city: '', state: '', streetInfo: null, cityInfo: null
         });
     }
 
-    initFromSearch(result) { // street
-        console.log('AdvertisementMain.initFromSearch', result);
+    initFromSearch(result1, result2) { // street
+        console.log('AdvertisementMain.initFromSearch', result1, result2);
 
         /*
         "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
@@ -172,33 +177,51 @@ export default class AdvertisementMain extends React.Component {
             latitude: number
         };
         */
+        /*
+        const city = {
+            name: obj.formatted_address,
+            placeId: obj.place_id
+        };
+        */
 
         const location = {
-            description: result.description,
-            streetId: result.place_id,
-            longitude: result.location.lng,
-            latitude: result.location.lat
+            description: result1.description,
+            streetId: result1.place_id,
+            longitude: result1.location.lng,
+            latitude: result1.location.lat
         };
 
-        const words = result.description.split(', ');
-        console.log('words', words.length, words); // 4, Myeong-dong, Jung-gu, Seoul, South Korea
+        // const words = result1.description.split(', ');
+        const words2 = result2.name.split(', ');
+        // console.log('words', words.length, words); // 4, Myeong-dong, Jung-gu, Seoul, South Korea
 
         let street = null;
         let state = '';
         let city = '';
 
-        // set street, state, city text
-        if (words.length === 0) {
+        // get street text
+        const words1 = result1.description.split(', ');
+        const length = words1.length - words2.length;
+
+        street = '';
+        for (var i = 0; i < length; i++) {
+            street += words1[i];
+
+            if (i !== length - 1) street += ', ';
+        }
+
+        // get, state, city text
+        if (words2.length === 0) {
             // someting is wrong
-        } else if (words.length === 1) {
+        } else if (words2.length === 1) {
             // someting is wrong
-        } else if (words.length === 2) {
-            // someting is wrong
-            state = words[0];
-        } else if (words.length === 3) {
-            city = words[0];
-            state = words[1];
+        } else if (words2.length === 2) {
+            city = words2[0];
+        } else if (words2.length === 3) {
+            city = words2[0];
+            state = words2[1];
         } else {
+            /*
             street = '';
             const length = words.length - 3;
             for (var i = 0; i < length; i++) {
@@ -209,9 +232,18 @@ export default class AdvertisementMain extends React.Component {
 
             city = words[words.length - 3];
             state = words[words.length - 2];
+            */
+
+            city = words2[words2.length - 3];
+            state = words2[words2.length - 2];
         }
 
-        this.setState({ street: street, city: city, state: state, location: location });
+        const cityInfo = {
+            description: result2.name,
+            cityId: result2.placeId
+        };
+
+        this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
     }
 
     @autobind
@@ -445,7 +477,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { name, birthday, height, weight, breasts, note, country, street, location, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const { name, birthday, height, weight, breasts, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -546,16 +578,13 @@ export default class AdvertisementMain extends React.Component {
         data.height = Util.getHeight(height);
         data.weight = Util.getWeight(weight);
         data.bust = Util.getBust(breasts);
-        // console.log('data.bust', data.bust);
 
-        // ToDo: placeId, placeName, location
-        // country
-        // ----
-        // ToDo: !!!
-        data.placeId = 'place.place_id';
-        data.placeName = 'place.description';
+        // placeId, placeName, location
+        // --
+        data.placeId = streetInfo.placeId;
+        data.placeName = streetInfo.description;
         data.location = location;
-        // ----
+        // --
 
         let _note = null;
         if (note !== '') {
@@ -573,12 +602,12 @@ export default class AdvertisementMain extends React.Component {
 
         this.removeItemFromList();
 
-        // ToDo: 3. move to finish page
-
-        // 1. toast message
-
-        // 2. move next page
-
+        // 3. move to finish page
+        this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            if (!this.closed) {
+                this.props.navigation.navigate("advertisementFinish");
+            }
+        });
     }
 
     removeItemFromList() {
@@ -733,7 +762,6 @@ export default class AdvertisementMain extends React.Component {
                     titleIOS={this.state.datePickerTitle}
                 />
 
-
                 {
                     this.state.onNote &&
                     <View style={{
@@ -752,6 +780,13 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                 }
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2}
+                    opacity={0.6}
+                />
             </View>
         );
     }
@@ -805,9 +840,28 @@ export default class AdvertisementMain extends React.Component {
                     }}
                 >
                     {/* 1. name */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
-                        {'NAME'}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                            {'NAME'}
+                        </Text>
+                        {/*
+                        <Text style={{ marginRight: 18, color: Theme.color.text5, fontSize: 12, lineHeight: 19, fontFamily: "SFProText-Regular" }}>
+                            {'Customers find you with it.'}
+                        </Text>
+                        */}
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
@@ -837,9 +891,23 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* 2. birthday */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
-                        {'AGE (BIRTHDAY)'}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                            {'AGE (BIRTHDAY)'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     {/* picker */}
                     <TouchableOpacity
                         onPress={() => {
@@ -939,9 +1007,23 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* 5. breasts */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
-                        {'BREASTS'}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                            {'BREASTS'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <Select
                         /*
                         ref={(el) => {
@@ -1090,9 +1172,23 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* street */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
-                        {'STREET'}
-                    </Text>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                            {'STREET'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <TouchableOpacity
                         onPress={() => {
                             if (this._showNotification) {
@@ -1112,14 +1208,16 @@ export default class AdvertisementMain extends React.Component {
                             }
 
                             setTimeout(() => {
-                                this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result) => this.initFromSearch(result) });
+                                this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
                         <Text
                             style={{
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                // height: textInputHeight,
+                                minHeight: textInputHeight,
+                                fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
@@ -1189,7 +1287,7 @@ export default class AdvertisementMain extends React.Component {
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                     onPress={async () => await this.post()}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Post an Advertisement</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -1232,20 +1330,20 @@ export default class AdvertisementMain extends React.Component {
                     {
                         this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
                         /*
-                        <View style={{
-                            width: imageWidth, height: imageHeight,
-                            position: 'absolute', top: 0, left: 0,
-                            justifyContent: 'center', alignItems: 'center'
-                        }}>
-                            <RefreshIndicator />
-                        </View>
-                        */
                         <ActivityIndicator
                             style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, zIndex: 10001 }}
                             animating={true}
                             size="small"
                             color='#A8A8A8'
                         />
+                        */
+                        <View style={{
+                            width: imageWidth, height: imageHeight,
+                            position: 'absolute', top: 0, left: 0,
+                            justifyContent: 'center', alignItems: 'center'
+                        }}>
+                            <RefreshIndicator refreshing={this.state.refreshing} number={3} size={4} />
+                        </View>
                     }
                 </View>
             );
@@ -1269,12 +1367,21 @@ export default class AdvertisementMain extends React.Component {
                 </TouchableOpacity>
                 {
                     this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
+                    /*
                     <ActivityIndicator
                         style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, zIndex: 10001 }}
                         animating={true}
                         size="small"
                         color='rgba(0, 0, 0, 0.6)'
                     />
+                    */
+                    <View style={{
+                        width: imageWidth, height: imageHeight,
+                        position: 'absolute', top: 0, left: 0,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} />
+                    </View>
                 }
             </View>
         );
@@ -1415,6 +1522,12 @@ export default class AdvertisementMain extends React.Component {
             console.error(error);
 
             this.showNotification('An error occurred. Please try again.');
+
+            // stop indicator
+            this.setState({ refreshing: false });
+
+            // ToDo: show alert icon
+            // exclamationcircleo
         }
     }
 

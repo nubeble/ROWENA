@@ -23,10 +23,10 @@ const scale = require('../assets/icon/scale.png');
 
 // illustration
 const explore = require('../assets/sample/explore.jpg');
-const advertisement = require('../assets/sample/advertisement.jpg');
+const advertisement = require('../assets/sample/write.jpg');
 const likes = require('../assets/sample/likes.png');
 const chat = require('../assets/sample/chat.png');
-
+const wait = require('../assets/sample/wait.png');
 
 
 export default class PreloadImage {
@@ -55,6 +55,7 @@ export default class PreloadImage {
     static advertisement = advertisement;
     static likes = likes;
     static chat = chat;
+    static wait = wait;
 
 
 
@@ -87,6 +88,7 @@ export default class PreloadImage {
                 PreloadImage.advertisement,
                 PreloadImage.likes,
                 PreloadImage.chat,
+                PreloadImage.wait
 
 
 

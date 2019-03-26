@@ -203,7 +203,6 @@ export default class Explore extends React.Component<InjectedProps> {
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    // this.props.navigation.navigate("exploreSearch", { from: 'Explore', initFromSearch: (result) => this.initFromSearch(result) });
                                     this.props.navigation.navigate("search", { from: 'Explore', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}

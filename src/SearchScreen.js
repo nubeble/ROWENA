@@ -6,6 +6,7 @@ import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAut
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
+import Util from './Util';
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
@@ -25,7 +26,8 @@ export default class SearchScreen extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
-        await this.loadHistory();
+        const from = this.props.navigation.state.params.from;
+        if (from !== 'AdvertisementMain') await this.loadHistory();
 
         /*
         setTimeout(() => {
@@ -244,26 +246,83 @@ export default class SearchScreen extends React.Component {
 
                             // save the keyword to storage
                             // --
-                            const item = {
-                                description: data.description,
-                                place_id: data.place_id,
-                                geometry: {
-                                    location: {
-                                        lat: location.lat,
-                                        lng: location.lng
+                            if (from !== 'AdvertisementMain') {
+                                const item = {
+                                    description: data.description,
+                                    place_id: data.place_id,
+                                    geometry: {
+                                        location: {
+                                            lat: location.lat,
+                                            lng: location.lng
+                                        }
                                     }
-                                }
-                            };
+                                };
 
-                            await this.saveHistory(JSON.stringify(item));
+                                await this.saveHistory(JSON.stringify(item));
+                            }
                             // --
 
-                            setTimeout(() => {
-                                if (this.closed) return;
+                            // ToDo: get place_id for the city
+                            /*
+                            let input = null;
 
-                                this.props.navigation.state.params.initFromSearch(result);
-                                this.props.navigation.goBack();
-                            }, Cons.buttonTimeoutShort);
+                            const isFederation = Util.isFederation(countryCode); // true: pick last 3 words (city, state, country), false: pick last 2 words (city, country)
+                            if (isFederation) {
+                                // pick last 3
+                                const address = data.description;
+                                const words = address.split(', ');
+                                if (words.length > 2) {
+                                    input = words[words.length - 3] + ',' + words[words.length - 2] + ',' + words[words.length - 1];
+                                } else {
+                                    input = address;
+                                }
+                            } else {
+                                // pick last 2
+                                const address = data.description;
+                                const words = address.split(', ');
+                                if (words.length > 1) {
+                                    input = words[words.length - 2] + ',' + words[words.length - 1];
+                                } else {
+                                    input = address;
+                                }
+                            }
+
+                            const _query = {
+                                key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
+                                language: 'en',
+                                types: ['(cities)']
+                            };
+                            */
+
+                            if (from === 'AdvertisementMain') {
+                                const input = {
+                                    lat: location.lat,
+                                    lng: location.lng
+                                };
+
+                                const key = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+
+                                Util.getPlaceId(input, key, (obj) => {
+                                    // console.log('Util.getPlaceId result', obj);
+
+                                    const city = {
+                                        name: obj.formatted_address,
+                                        placeId: obj.place_id
+                                    };
+
+                                    if (this.closed) return;
+
+                                    this.props.navigation.state.params.initFromSearch(result, city);
+                                    this.props.navigation.goBack();
+                                });
+                            } else {
+                                setTimeout(() => {
+                                    if (this.closed) return;
+    
+                                    this.props.navigation.state.params.initFromSearch(result);
+                                    this.props.navigation.goBack();
+                                }, Cons.buttonTimeoutShort);
+                            }
                         }}
                         getDefaultValue={() => ''}
                         query={
@@ -336,7 +395,7 @@ export default class SearchScreen extends React.Component {
     }
 
     async loadHistory() {
-        console.log('loadHistory');
+        console.log('SearchScreen.loadHistory');
 
         // test
         /*

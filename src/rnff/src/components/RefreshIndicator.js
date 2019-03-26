@@ -6,12 +6,17 @@ import { Theme } from "./Theme";
 import type { BaseProps } from "./Types";
 
 type RefreshIndicatorProps = BaseProps & {
-    refreshing: boolean
+    refreshing: boolean,
+    style: Object, // not map
+    total: number,
+    size: number,
+    color: string
 };
 
 type CircleProps = {
     order: number,
     total: number,
+    size: number,
     color: string
 };
 
@@ -31,8 +36,9 @@ class Circle extends React.Component<CircleProps, CircleState> {
     }
 
     render(): React.Node {
-        const { order, total, color } = this.props;
+        const { order, total, size, color } = this.props;
         const { animation } = this.state;
+
         const factor = order - 1;
         const part = 1 / total;
         const scale = animation.interpolate({
@@ -40,31 +46,46 @@ class Circle extends React.Component<CircleProps, CircleState> {
             outputRange: [1, 1, 3, 1, 1]
         });
 
+        let margin = Theme.spacing.tiny;
+        if (size === 4) margin = 6;
+
         return (
-            <Animated.View style={[styles.circle, { backgroundColor: color, transform: [{ scale }] }]} />
+            <Animated.View style={[styles.circle, {
+                backgroundColor: color,
+                width: size, height: size, borderRadius: size / 2,
+                transform: [{ scale }],
+                margin: margin
+            }]} />
         );
     }
 }
 
 // eslint-disable-next-line react/no-multi-comp
 export default class RefreshIndicator extends React.PureComponent<RefreshIndicatorProps> {
-
     static defaultProps = {
         refreshing: true,
+        total: 4,
+        size: 6,
         color: 'grey'
     };
 
     render(): React.Node {
-        const { refreshing, style, color } = this.props;
+        const { refreshing, style, total, size, color } = this.props;
+
         if (!refreshing) {
             return <View />;
         }
+
+        let circleArray = [];
+        for (var i = 0; i < total; i++) {
+            circleArray.push(
+                <Circle key={i} order={i + 1} total={total} size={size} color={color} />
+            );
+        }
+
         return (
             <View style={[styles.container, style]}>
-                <Circle order={1} total={4} color={color} />
-                <Circle order={2} total={4} color={color} />
-                <Circle order={3} total={4} color={color} />
-                <Circle order={4} total={4} color={color} />
+                {circleArray}
             </View>
         );
     }

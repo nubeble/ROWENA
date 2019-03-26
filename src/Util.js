@@ -1,5 +1,6 @@
 import React from 'react';
 import moment from "moment";
+import Qs from 'qs';
 
 const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
@@ -179,4 +180,125 @@ export default class Util extends React.Component {
         }
         return color;
     }
+
+    static isFederation(code) {
+        let value = false;
+        switch (code) {
+            case 'AR':
+            case 'AU':
+            case 'AT':
+            case 'BE':
+            case 'BA':
+            case 'BR':
+            case 'CA':
+            case 'KM':
+            case 'ET':
+            case 'DE':
+            case 'IN':
+            case 'IQ':
+            case 'MY':
+            case 'MX':
+            case 'FM':
+            case 'NP':
+            case 'NG':
+            case 'PK':
+            case 'RU':
+            case 'KN':
+            case 'SO':
+            case 'SS':
+            case 'SD':
+            case 'CH':
+            case 'AE':
+            case 'US':
+            case 'VE':
+                value = true;
+                break;
+        }
+
+        return value;
+    }
+
+    static async getPlaceId(input, key, callback) {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+            if (request.readyState !== 4) return;
+
+            if (request.status === 200) {
+                const responseJSON = JSON.parse(request.responseText);
+
+                // console.log('responseJSON', responseJSON);
+
+                // if (typeof responseJSON.predictions !== 'undefined') {
+                if (typeof responseJSON.results !== 'undefined') {
+                    /*
+                    const results = responseJSON.predictions; // array
+                    console.log('getPlaceId predictions', results);
+                    const result = results[0]; // map object
+                    console.log('getPlaceId array 0', result);
+
+                    callback(result);
+                    */
+
+                    // console.log('getPlaceId pre results', responseJSON.results);
+                    const filter = ['locality', 'administrative_area_level_3'];
+                    const results = Util._filterResultsByTypes(responseJSON.results, filter);
+                    // console.log('getPlaceId after results', results);
+
+                    const result = results[0];
+                    callback(result);
+                }
+
+                if (typeof responseJSON.error_message !== 'undefined') {
+                    console.warn('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                }
+            }
+        };
+
+        // request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(input) + '&' + Qs.stringify(query));
+        const latitude = input.lat;
+        const longitude = input.lng;
+        const url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
+            latlng: latitude + ',' + longitude,
+            key: key
+            // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+        });
+        request.open('GET', url);
+        request.send();
+
+        // get detail
+        /*
+        request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
+            key: this.props.query.key,
+            placeid: rowData.place_id,
+            language: this.props.query.language
+        }));
+
+        request.send();
+        */
+    }
+
+    static _filterResultsByTypes = (unfilteredResults, types) => {
+        if (types.length === 0) return unfilteredResults;
+
+        const results = [];
+        for (let i = 0; i < unfilteredResults.length; i++) {
+            let found = false;
+
+            for (let j = 0; j < types.length; j++) {
+                if (unfilteredResults[i].types.indexOf(types[j]) !== -1) {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (found === true) {
+                results.push(unfilteredResults[i]);
+            }
+        }
+
+        return results;
+    }
+
+
+
 }

@@ -120,8 +120,8 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         uri={post.pictures.one.uri}
                     />
                     <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={ styles.feedItemText }>{post.name}</Text>
-                        <Text style={ styles.feedItemText }>{post.placeName}</Text>
+                        <Text style={styles.feedItemText}>{post.name}</Text>
+                        <Text style={styles.feedItemText}>{post.placeName}</Text>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
@@ -195,7 +195,14 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "SFProText-Semibold",
-        paddingLeft: 2
+        paddingLeft: 2,
+
+        // ToDo
+        // shadowOpacity: 1,
+        textShadowColor: "#3D3D3D",
+        textShadowOffset: { width: 0.6, height: 0.6 },
+        textShadowRadius: 4
+        // textShadowRadius: 10
     },
     rating: {
         marginLeft: 5,
