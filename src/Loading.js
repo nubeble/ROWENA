@@ -18,12 +18,27 @@ const SFProTextMedium = require("../fonts/SF-Pro-Text-Medium.otf");
 const SFProTextHeavy = require("../fonts/SF-Pro-Text-Heavy.otf");
 const SFProTextLight = require("../fonts/SF-Pro-Text-Light.otf");
 */
+/*
 const SFProTextBold = require("../fonts/SuisseIntl/SuisseIntl-Bold.otf");
 const SFProTextSemibold = require("../fonts/SuisseIntl/SuisseIntl-SemiBold.otf");
 const SFProTextRegular = require("../fonts/SuisseIntl/SuisseIntl-Regular.otf");
 const SFProTextMedium = require("../fonts/SuisseIntl/SuisseIntl-Medium.otf");
 const SFProTextLight = require("../fonts/SuisseIntl/SuisseIntl-Light.otf");
 const SFProTextBlack = require("../fonts/SuisseIntl/SuisseIntl-Black.otf");
+*/
+const RobotoBlack = require("../fonts/Roboto/Roboto-Black.ttf");
+const RobotoBlackItalic = require("../fonts/Roboto/Roboto-BlackItalic.ttf");
+const RobotoBold = require("../fonts/Roboto/Roboto-Bold.ttf");
+const RobotoBoldItalic = require("../fonts/Roboto/Roboto-BoldItalic.ttf");
+const RobotoItalic = require("../fonts/Roboto/Roboto-Italic.ttf");
+const RobotoLight = require("../fonts/Roboto/Roboto-Light.ttf");
+const RobotoLightItalic = require("../fonts/Roboto/Roboto-LightItalic.ttf");
+const RobotoMedium = require("../fonts/Roboto/Roboto-Medium.ttf");
+const RobotoMediumItalic = require("../fonts/Roboto/Roboto-MediumItalic.ttf");
+const RobotoRegular = require("../fonts/Roboto/Roboto-Regular.ttf");
+const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
+const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
+
 // const SuisseIntlUltraLightItalic = require("../fonts/SuisseIntl/SuisseIntl-UltraLightItalic.otf");
 const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo
@@ -113,13 +128,29 @@ export default class Loading extends React.Component<InjectedProps> {
     async _cacheResourcesAsync() {
         console.log('Loading._cacheResourcesAsync');
 
+        // font
         const fonts = Font.loadAsync({
+            'Roboto-Black': RobotoBlack,
+            'Roboto-BlackItalic': RobotoBlackItalic,
+            'Roboto-Bold': RobotoBold,
+            'Roboto-BoldItalic': RobotoBoldItalic,
+            'Roboto-Italic': RobotoItalic,
+            'Roboto-Light': RobotoLight,
+            'Roboto-LightItalic': RobotoLightItalic,
+            'Roboto-Medium': RobotoMedium,
+            'Roboto-MediumItalic': RobotoMediumItalic,
+            'Roboto-Regular': RobotoRegular,
+            'Roboto-Thin': RobotoThin,
+            'Roboto-ThinItalic': RobotoThinItalic,
+            /*
             "SFProText-Bold": SFProTextBold,
             "SFProText-Semibold": SFProTextSemibold,
             "SFProText-Regular": SFProTextRegular,
             "SFProText-Medium": SFProTextMedium,
             "SFProText-Black": SFProTextBlack,
             "SFProText-Light": SFProTextLight,
+            */
+
             // "SuisseIntl-UltraLightItalic": SuisseIntlUltraLightItalic,
             "SuisseIntl-ThinItalic": SuisseIntlThinItalic,
             "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,

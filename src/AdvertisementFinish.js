@@ -51,10 +51,13 @@ export default class AdvertisementFinish extends React.Component {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            this.props.navigation.dispatch(NavigationActions.back());
+                            // this.props.navigation.dispatch(NavigationActions.back());
+                            setTimeout(() => {
+                                this.props.navigation.navigate("profile");
+                            }, Cons.buttonTimeoutShort);
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="black" size={24} />
+                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 
@@ -63,9 +66,9 @@ export default class AdvertisementFinish extends React.Component {
                         marginTop: Theme.spacing.tiny,
                         paddingHorizontal: 22,
                         fontSize: 28,
-                        lineHeight: 44, // ToDo: check ios!
+                        lineHeight: 32, // ToDo: check ios!
                         color: Theme.color.text2,
-                        fontFamily: "SFProText-Semibold",
+                        fontFamily: "Roboto-Medium",
                         // textAlign: 'center'
                     }}>Let's wait awhile</Text>
 
@@ -85,8 +88,8 @@ export default class AdvertisementFinish extends React.Component {
                         paddingHorizontal: Theme.spacing.base,
                         color: Theme.color.text3,
                         fontSize: 16,
-                        lineHeight: 30, // ToDo: check ios!
-                        fontFamily: "SFProText-Regular",
+                        lineHeight: 24, // ToDo: check ios!
+                        fontFamily: "Roboto-Light",
                         textAlign: 'center'
                     }}>{contentText}</Text>
                 </View>
@@ -94,10 +97,10 @@ export default class AdvertisementFinish extends React.Component {
                 <View style={{ position: 'absolute', top: bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
-                            this.props.navigation.navigate("advertisementMain");
+                            this.props.navigation.navigate("profile");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Next</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Finish</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -123,7 +126,7 @@ export default class AdvertisementFinish extends React.Component {
                         <TouchableOpacity
                             onPress={() => this.props.navigation.navigate("advertisementMain")}
                             style={styles.signUpButton}>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'white', paddingTop: Cons.submitButtonPaddingTop() }}>Let's start!</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'white' }}>Let's start!</Text>
                         </TouchableOpacity>
                     </View>
 

@@ -207,22 +207,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
-                            {/*
-                            <TextInput
-                                // ref='searchInput'
-                                pointerEvents="none"
-                                editable={false}
-                                style={{ width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", color: "white", textAlign: 'center' }}
-                                placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
-                                // underlineColorAndroid="transparent"
-                                // onTouchStart={() => this.startEditing()}
-                                // onEndEditing={() => this.leaveEditing()}
-                                value={this.state.searchText}
-                            />
-                            */}
                             <Text
                                 style={{
-                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Cons.searchBarPaddingTop(),
+                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "Roboto-Medium",
+                                    // paddingTop: Cons.searchBarPaddingTop(),
+                                    paddingTop: 3,
                                     color: Theme.color.text2, textAlign: 'center'
                                 }}
                                 numberOfLines={1}
@@ -246,7 +235,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 // this._feed.enableScroll();
                             }}
                         >
-                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Ratings</Text>
                             {
                                 this.state.selectedOrderIndex === 0 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -264,7 +253,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 // this._feed.enableScroll();
                             }}
                         >
-                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Reviews</Text>
                             {
                                 this.state.selectedOrderIndex === 1 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -282,7 +271,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 // this._feed.enableScroll();
                             }}
                         >
-                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Time</Text>
                             {
                                 this.state.selectedOrderIndex === 2 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -400,7 +389,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                         fontWeight: '500',
                                                         color: "black",
                                                         fontSize: 21,
-                                                        fontFamily: "SFProText-Semibold"
+                                                        fontFamily: "Roboto-Medium"
                                                     }}>{"advertising area 1"}
                                                     </Text>
                                                 </View>
@@ -420,7 +409,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                         fontWeight: '500',
                                                         color: "black",
                                                         fontSize: 21,
-                                                        fontFamily: "SFProText-Semibold"
+                                                        fontFamily: "Roboto-Medium"
                                                     }}>{"advertising area 2"}
                                                     </Text>
                                                 </View>
@@ -440,7 +429,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                         fontWeight: '500',
                                                         color: "black",
                                                         fontSize: 21,
-                                                        fontFamily: "SFProText-Semibold"
+                                                        fontFamily: "Roboto-Medium"
                                                     }}>{"advertising area 3"}
                                                     </Text>
                                                 </View>
@@ -460,7 +449,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                         fontWeight: '500',
                                                         color: "black",
                                                         fontSize: 21,
-                                                        fontFamily: "SFProText-Semibold"
+                                                        fontFamily: "Roboto-Medium"
                                                     }}>{"advertising area 4"}
                                                     </Text>
                                                 </View>
@@ -494,7 +483,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 // this._feed.enableScroll();
                                             }}
                                         >
-                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Ratings</Text>
                                             {
                                                 this.state.selectedOrderIndex === 0 &&
                                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -512,7 +501,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 // this._feed.enableScroll();
                                             }}
                                         >
-                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Reviews</Text>
                                             {
                                                 this.state.selectedOrderIndex === 1 &&
                                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -530,7 +519,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 // this._feed.enableScroll();
                                             }}
                                         >
-                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "SFProText-Bold" : "SFProText-Regular", color: Theme.color.text2 }}>Time</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Time</Text>
                                             {
                                                 this.state.selectedOrderIndex === 2 &&
                                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -626,7 +615,7 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 18,
         lineHeight: Platform.OS === 'ios' ? 26 : 32,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     /*
     activityIndicator: {

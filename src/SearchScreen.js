@@ -177,7 +177,7 @@ export default class SearchScreen extends React.Component {
                                 height: 40,
                                 fontSize: 24,
                                 color: "white",
-                                fontFamily: "SFProText-Regular",
+                                fontFamily: "Roboto-Light",
                                 */
                             },
                             listView: {
@@ -195,7 +195,7 @@ export default class SearchScreen extends React.Component {
                             predefinedPlacesDescription: {
                                 fontSize: 14,
                                 color: Theme.color.text2,
-                                fontFamily: "SFProText-Regular",
+                                fontFamily: "Roboto-Light",
                                 // height: 30,
 
                                 // backgroundColor: 'green'
@@ -203,7 +203,7 @@ export default class SearchScreen extends React.Component {
                             description: {
                                 fontSize: 14,
                                 color: Theme.color.text2,
-                                fontFamily: "SFProText-Regular",
+                                fontFamily: "Roboto-Light",
                                 // height: 30,
 
                                 // backgroundColor: 'blue'

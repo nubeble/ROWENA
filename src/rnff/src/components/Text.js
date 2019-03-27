@@ -27,7 +27,7 @@ export default class Text extends React.PureComponent<TypographyProps> {
         const isHeader = type.startsWith("header");
 
 
-
+        /*
         let paddingTop = 0;
         if (style) {
             if (style.paddingTop) {
@@ -38,6 +38,7 @@ export default class Text extends React.PureComponent<TypographyProps> {
                 }
             }
         }
+        */
 
 
 
@@ -49,7 +50,7 @@ export default class Text extends React.PureComponent<TypographyProps> {
 
 
 
-            paddingTop: paddingTop
+            // paddingTop: paddingTop
 
 
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList, TouchableOpacity, Platform } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
 import PreloadImage from './PreloadImage';
@@ -207,7 +207,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         style={{
                             color: Theme.color.text1,
                             fontSize: 20,
-                            fontFamily: "SFProText-Semibold",
+                            fontFamily: "Roboto-Medium",
                             alignSelf: 'flex-start',
                             marginLeft: 16
                         }}
@@ -244,7 +244,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             <Text style={styles.feedItemText}>{item.name}</Text>
                                             <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{item.placeName}</Text>
 
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
+                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                                                 <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                     <AirbnbRating
                                                         count={5}
@@ -289,13 +289,16 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                 <Text style={{
                                     color: Theme.color.text2,
                                     fontSize: 18,
-                                    fontFamily: "SFProText-Semibold"
+                                    fontFamily: "Roboto-Medium"
                                 }}>No selected girls</Text>
+
                                 <Text style={{
+                                    marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 16,
-                                    fontFamily: "SFProText-Regular"
+                                    fontFamily: "Roboto-Light"
                                 }}>Start exploring girls for your next trip</Text>
+
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
@@ -304,7 +307,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
-                                    style={{ marginTop: 10 }}>
+                                    style={{ marginTop: 20 }}>
                                     <Image
                                         style={{
                                             width: guideImageWidth,
@@ -396,7 +399,7 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 18,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     content: {
         position: 'absolute',
@@ -414,27 +417,25 @@ const styles = StyleSheet.create({
     feedItemText: {
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
-        paddingLeft: 2
-    },
-    feedItemText: {
-        color: Theme.color.title,
-        fontSize: 14,
-        fontFamily: "SFProText-Semibold",
-        paddingLeft: 2
+        fontFamily: "Roboto-Medium",
+        paddingLeft: 2,
+
+        textShadowColor: "#3D3D3D",
+        textShadowOffset: { width: 0.6, height: 0.6 },
+        textShadowRadius: 4
     },
     rating: {
         marginLeft: 5,
         color: '#f1c40f',
         fontSize: 14,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Cons.ratingTextPaddingTop()
+        fontFamily: "Roboto-Light",
+        // paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Cons.ratingTextPaddingTop()
+        fontFamily: "Roboto-Light",
+        // paddingTop: Cons.ratingTextPaddingTop()
     }
 });

@@ -276,7 +276,8 @@ const styles = StyleSheet.create({
     ratingText: {
         fontSize: 15,
         textAlign: 'center',
-        fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null,
+        // fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null,
+        fontFamily: "Roboto-Regular",
         color: '#34495e'
     },
     readonlyLabel: {
@@ -284,18 +285,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         fontSize: 12,
         textAlign: 'center',
-        fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null,
+        // fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null,
+        fontFamily: "Roboto-Regular",
         color: '#34495a'
     },
     currentRatingText: {
         fontSize: 30,
         textAlign: 'center',
-        fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null
+        // fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null
+        fontFamily: "Roboto-Regular",
     },
     maxRatingText: {
         fontSize: 18,
         textAlign: 'center',
-        fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null,
+        // fontFamily: Platform.OS === 'ios' ? 'Trebuchet MS' : null,
+        fontFamily: "Roboto-Regular",
         color: '#34495e'
     }
 });

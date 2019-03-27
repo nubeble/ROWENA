@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
         height: 40,
         fontSize: 24,
         color: "white",
-        fontFamily: "SFProText-Regular"
+        fontFamily: "Roboto-Light"
     }
 });
 

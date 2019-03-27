@@ -1,7 +1,7 @@
 
 type Location = {
     description: string,
-    streetId: string, // place_id for street
+    // streetId: string, // place_id for street
     longitude: number,
     latitude: number
 };

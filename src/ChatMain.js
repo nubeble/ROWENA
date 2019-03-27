@@ -163,7 +163,7 @@ export default class ChatMain extends React.Component {
                         style={{
                             color: Theme.color.text1,
                             fontSize: 20,
-                            fontFamily: "SFProText-Semibold",
+                            fontFamily: "Roboto-Medium",
                             alignSelf: 'flex-start',
                             marginLeft: 16
                         }}
@@ -202,13 +202,16 @@ export default class ChatMain extends React.Component {
                                 <Text style={{
                                     color: Theme.color.text2,
                                     fontSize: 18,
-                                    fontFamily: "SFProText-Semibold"
+                                    fontFamily: "Roboto-Medium"
                                 }}>No new messages</Text>
+
                                 <Text style={{
+                                    marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 16,
-                                    fontFamily: "SFProText-Regular"
+                                    fontFamily: "Roboto-Light"
                                 }}>Let's find some beautiful girls</Text>
+
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
@@ -217,7 +220,7 @@ export default class ChatMain extends React.Component {
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
-                                    style={{ marginTop: 10 }}>
+                                    style={{ marginTop: 20 }}>
                                     <Image
                                         style={{
                                             width: guideImageWidth,
@@ -453,16 +456,16 @@ const styles = StyleSheet.create({
     name: {
         color: Theme.color.text2,
         fontSize: 17,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     contents: {
         color: Theme.color.text3,
         fontSize: 15,
-        fontFamily: "SFProText-Light"
+        fontFamily: "Roboto-Regular"
     },
     time: {
         color: 'grey',
         fontSize: 12,
-        fontFamily: "SFProText-Light"
+        fontFamily: "Roboto-Regular"
     }
 });

@@ -416,16 +416,17 @@ export default class SignUpWithEmail extends React.Component {
                             marginLeft: 22,
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 28,
-                            fontFamily: "SFProText-Semibold"
+                            fontFamily: "Roboto-Medium",
+                            paddingTop: 8
                         }}>What's your email?</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
-                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'EMAIL ADDRESS'}
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 keyboardType={'email-address'}
                                 onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                 onChangeText={(text) => this.validateEmail(text)}
@@ -446,12 +447,12 @@ export default class SignUpWithEmail extends React.Component {
                             {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={30} />}
                             {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
 
-                            <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                            <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
                             </Text>
                             <TextInput
                                 ref='pwInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
                                 secureTextEntry={this.state.securePwInput}
                                 onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
@@ -466,7 +467,7 @@ export default class SignUpWithEmail extends React.Component {
                                 style={{ position: 'absolute', top: 98, right: 24, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}
                             >
-                                <Text style={{ fontSize: 13, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
+                                <Text style={{ fontSize: 13, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
                             </TouchableOpacity>
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
@@ -479,67 +480,11 @@ export default class SignUpWithEmail extends React.Component {
                             {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
                             {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                         </View>
-
-                        {/*
-                        <Form style={{ marginLeft: 4, marginRight: 16 }}>
-                            <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>EMAIL ADDRESS</Label>
-                            <Item>
-                                <Input ref='emailInput' style={{ height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
-                                    keyboardType={'email-address'}
-                                    onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
-                                    onChangeText={(text) => this.validateEmail(text)}
-                                    selectionColor={Theme.color.selection}
-                                    keyboardAppearance={'dark'}
-                                    underlineColorAndroid="transparent"
-                                    autoCorrect={false}
-                                    autoCapitalize="none"
-                                />
-                                {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
-                                {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
-                            </Item>
-
-                            <Label style={{ marginTop: 16, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", marginLeft: 18 }}>PASSWORD</Label>
-                            <TouchableOpacity
-                                style={{ position: 'absolute', top: 88, right: 10, alignSelf: 'baseline' }}
-                                onPress={() => this.toggleSecureText()}
-                            >
-                                <Text style={{ fontSize: 13, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
-                            </TouchableOpacity>
-                            <Item>
-                                <Input ref='pwInput' style={{ height: 38, fontSize: 22, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
-                                    // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
-                                    secureTextEntry={this.state.securePwInput}
-                                    onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
-                                    onChangeText={(text) => this.validatePassword(text)}
-                                    selectionColor={Theme.color.selection}
-                                    keyboardAppearance={'dark'}
-                                    underlineColorAndroid="transparent"
-                                    autoCorrect={false}
-                                    autoCapitalize="none"
-                                />
-                                {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='exclamation' color="rgba(255, 255, 255, 0.8)" size={28} />}
-                                {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 2, top: 8 }} name='check' color="rgba(255, 255, 255, 0.8)" size={28} />}
-                            </Item>
-                        </Form>
-                        */}
-
-
-
-
-
-
-
-
-
-
-
-
-
                     </View>
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                         <TouchableOpacity onPress={() => this.signUp()} style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtonTextColor, paddingTop: Cons.submitButtonPaddingTop() }}>Sign up</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Sign up</Text>
                             {
                                 this.state.showSignUpLoader &&
                                 <ActivityIndicator
@@ -638,7 +583,7 @@ const styles = StyleSheet.create({
     notificationText: {
         alignSelf: 'center',
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "#FFF",
         paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },

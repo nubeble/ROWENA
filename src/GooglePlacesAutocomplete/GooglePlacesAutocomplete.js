@@ -59,7 +59,7 @@ const defaultStyles = {
         height: 40,
         fontSize: 24,
         color: "white",
-        fontFamily: "SFProText-Regular"
+        fontFamily: "Roboto-Light"
     },
     poweredContainer: {
         justifyContent: 'flex-end',
@@ -125,9 +125,8 @@ export default class GooglePlacesAutocomplete extends Component {
         clearButtonDisplayed: false
     })
 
-    setAddressText = address => !this.closed && this.setState({ text: address })
-
-    getAddressText = () => this.state.text
+    // setAddressText = address => !this.closed && this.setState({ text: address })
+    // getAddressText = () => this.state.text
 
     buildRowsFromResults = (results) => {
         let res = [];
@@ -300,6 +299,8 @@ export default class GooglePlacesAutocomplete extends Component {
                                 text: this._renderDescription(rowData)
                             });
 
+                            if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
+
                             delete rowData.isLoading;
 
                             if (rowData.description === 'Macau') rowData.description = 'Macau, China'; // ToDo: exception
@@ -313,6 +314,8 @@ export default class GooglePlacesAutocomplete extends Component {
                             !this.closed && this.setState({
                                 text: this._renderDescription(rowData)
                             });
+
+                            if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
 
                             delete rowData.isLoading;
                         }
@@ -355,6 +358,8 @@ export default class GooglePlacesAutocomplete extends Component {
                 text: this._renderDescription(rowData),
             });
 
+            if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
+
             this.triggerBlur(); // hide keyboard but not the results
             delete rowData.isLoading;
             this.getCurrentLocation();
@@ -363,6 +368,9 @@ export default class GooglePlacesAutocomplete extends Component {
             !this.closed && this.setState({
                 text: this._renderDescription(rowData)
             });
+
+            if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
+
             this._onBlur();
             delete rowData.isLoading;
             let predefinedPlace = this._getPredefinedPlace(rowData);
@@ -698,7 +706,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         <FontAwesome style={{ width: 20 }} name='location-arrow' color={Theme.color.selection} size={16} />
                         <Text
                             style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
-                            { fontSize: 15, fontFamily: "SFProText-Semibold", marginLeft: 14, paddingTop: Platform.OS === "ios" ? 2 : 10 }
+                            { fontSize: 15, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: Platform.OS === "ios" ? 2 : 10 }
                             ]}
                         >
                             {rowData.description}
@@ -747,12 +755,12 @@ export default class GooglePlacesAutocomplete extends Component {
                         <View style={{ marginLeft: 14, marginRight: 20 }}>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "SFProText-Semibold" }
+                                this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "Roboto-Medium" }
                                 ]}
                             >{city}</Text>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "SFProText-Regular" }
+                                this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "Roboto-Light" }
                                 ]}
                                 numberOfLines={this.props.numberOfLines}
                             >{state}</Text>
@@ -769,12 +777,12 @@ export default class GooglePlacesAutocomplete extends Component {
                     <View style={{ marginLeft: 14, marginRight: 20 }}>
                         <Text
                             style={[defaultStyles.description, this.props.styles.description,
-                            this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "SFProText-Semibold" }
+                            this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "Roboto-Medium" }
                             ]}
                         >{city}</Text>
                         <Text
                             style={[defaultStyles.description, this.props.styles.description,
-                            this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "SFProText-Regular" }
+                            this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "Roboto-Light" }
                             ]}
                             numberOfLines={this.props.numberOfLines}
                         >{state}</Text>

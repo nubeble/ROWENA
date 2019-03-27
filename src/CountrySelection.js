@@ -93,7 +93,7 @@ export default class CountrySelection extends React.Component {
                             paddingTop: Platform.OS === 'ios' ? 2 : 8,
 
                             color: "white",
-                            fontFamily: "SFProText-Regular"
+                            fontFamily: "Roboto-Light"
                         }}
 
                         sectionItemTextStyle={{
@@ -103,7 +103,7 @@ export default class CountrySelection extends React.Component {
                             fontSize: 12,
                             paddingTop: Platform.OS === 'ios' ? 2 : 2,
                             color: "white",
-                            fontFamily: "SFProText-Regular",
+                            fontFamily: "Roboto-Light",
 
                             marginRight: 8
                         }}
@@ -116,7 +116,7 @@ export default class CountrySelection extends React.Component {
                             fontSize: 16,
                             paddingTop: Platform.OS === 'ios' ? 2 : 8,
                             color: "white",
-                            fontFamily: "SFProText-Regular"
+                            fontFamily: "Roboto-Light"
                         }}
 
                         cellLabelStyle={{ // country number
@@ -126,7 +126,7 @@ export default class CountrySelection extends React.Component {
                             fontSize: 16,
                             paddingTop: Platform.OS === 'ios' ? 2 : 8,
                             color: "white",
-                            fontFamily: "SFProText-Regular"
+                            fontFamily: "Roboto-Light"
                         }}
                     />
                 </View>

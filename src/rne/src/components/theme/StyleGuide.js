@@ -21,7 +21,6 @@ export type Typographies = {
     title1: Typography,
     title2: Typography,
     title3: Typography,
-
     addressBar: Typography
 };
 
@@ -110,56 +109,56 @@ const styleGuide: StyleGuide = {
         body: {
             fontSize: 17,
             lineHeight: 20,
-            fontFamily: "SFProText-Regular"
+            fontFamily: "Roboto-Light"
         },
         callout: {
             fontSize: 16,
             lineHeight: 20,
-            fontFamily: "SFProText-Regular"
+            fontFamily: "Roboto-Light"
         },
         caption: {
             fontSize: 11,
             lineHeight: 13,
-            fontFamily: "SFProText-Regular"
+            fontFamily: "Roboto-Light"
         },
         footnote: {
             fontSize: 13,
             lineHeight: 18,
-            fontFamily: "SFProText-Regular",
+            fontFamily: "Roboto-Light",
             color: darkGray
         },
         headline: {
             fontSize: 17,
             lineHeight: 22,
-            fontFamily: "SFProText-Semibold"
+            fontFamily: "Roboto-Medium"
         },
         subhead: {
             fontSize: 15,
             lineHeight: 20,
-            fontFamily: "SFProText-Regular"
+            fontFamily: "Roboto-Light"
         },
         title1: {
             fontSize: 34,
             lineHeight: 41,
-            fontFamily: "SFProText-Bold"
+            fontFamily: "Roboto-Bold"
         },
         title2: {
             fontSize: 28,
             lineHeight: 34,
-            fontFamily: "SFProText-Bold"
+            fontFamily: "Roboto-Bold"
         },
         title3: {
             // fontSize: 22,
             // lineHeight: 26,
             fontSize: 17,
             lineHeight: 22,
-            fontFamily: "SFProText-Bold"
+            fontFamily: "Roboto-Bold"
         },
 
         addressBar: {
             fontSize: 18,
             // lineHeight: 24,
-            fontFamily: "SFProText-Bold"
+            fontFamily: "Roboto-Bold"
         }
     },
     spacing: {

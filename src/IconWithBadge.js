@@ -77,7 +77,7 @@ export default class IconWithBadge extends React.Component {
                         alignItems: 'center',
                         transform: [{ scale: this.springValue }]
                     }}>
-                        <Text style={{ color: 'white', fontSize: 9, fontFamily: "SFProText-Semibold", paddingTop: 2.5 }}>{badgeCount}</Text>
+                        <Text style={{ color: 'white', fontSize: 9, fontFamily: "Roboto-Medium", paddingTop: 2.5 }}>{badgeCount}</Text>
                     </Animated.View>
                 }
                 {
@@ -96,7 +96,7 @@ export default class IconWithBadge extends React.Component {
                         alignItems: 'center',
                         transform: [{ scale: this.springValue }]
                     }}>
-                        <Text style={{ color: 'white', fontSize: 9, fontFamily: "SFProText-Semibold", paddingTop: 2.5 }}>9+</Text>
+                        <Text style={{ color: 'white', fontSize: 9, fontFamily: "Roboto-Medium", paddingTop: 2.5 }}>9+</Text>
                     </Animated.View>
                 }
             </View>

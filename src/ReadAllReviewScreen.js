@@ -249,7 +249,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
                                     borderRadius: 5,
                                     fontSize: 14,
-                                    fontFamily: "SFProText-Regular",
+                                    fontFamily: "Roboto-Light",
                                     color: "white", textAlign: 'justify',
                                     textAlignVertical: 'top',
                                     backgroundColor: '#212121'
@@ -379,7 +379,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeReview(index)}
                             >
-                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
                             </TouchableOpacity>
                         </View>
                     )
@@ -412,7 +412,7 @@ export default class ReadAllReviewScreen extends React.Component {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )
@@ -428,7 +428,7 @@ export default class ReadAllReviewScreen extends React.Component {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
-                                    <Text style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
+                                    <Text style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
                         )
@@ -835,57 +835,51 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         // backgroundColor: 'yellow',
     },
-    reviewText: {
-        color: 'silver',
-        fontSize: 15,
-        lineHeight: 22,
-        fontFamily: "SFProText-Regular"
-    },
     reviewName: {
         color: 'white',
         fontSize: 15,
-        fontFamily: "SFProText-Semibold",
-        // paddingBottom: Theme.spacing.tiny
-        // backgroundColor: 'red',
-
-        // alignSelf: 'flex-start'
+        fontFamily: "Roboto-Medium"
     },
     reviewDate: {
-        // backgroundColor: 'red',
-        // marginLeft: 27,
         color: 'grey',
-        fontSize: 15,
-        fontFamily: "SFProText-Light",
+        fontSize: 13,
+        fontFamily: "Roboto-Thin",
         marginLeft: 'auto'
     },
     reviewRating: {
         marginLeft: 4,
-
         color: '#f1c40f',
         fontSize: 15,
-        lineHeight: 15,
-
-        fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.xSmall
+        // lineHeight: 15,
+        fontFamily: "Roboto-Light",
+        // paddingTop: Theme.spacing.xSmall
+    },
+    reviewText: {
+        color: 'silver',
+        fontSize: 15,
+        lineHeight: 22,
+        fontFamily: "Roboto-Light"
     },
     replyOwner: {
         // color: "rgb(170, 170, 170)",
         color: "#E5E5E5",
         fontSize: 15,
         // lineHeight: 22,
-        fontFamily: "SuisseIntl-ThinItalic"
+        // fontFamily: "SuisseIntl-ThinItalic"
+        fontFamily: "Roboto-MediumItalic"
     },
     replyDate: {
         color: 'grey',
-        fontSize: 15,
-        fontFamily: "SFProText-Light",
+        fontSize: 13,
+        fontFamily: "Roboto-Thin",
         marginLeft: 'auto'
     },
     replyComment: {
         color: 'white',
         fontSize: 15,
         lineHeight: 22,
-        fontFamily: "SuisseIntl-ThinItalic"
+        // fontFamily: "SuisseIntl-ThinItalic"
+        fontFamily: "Roboto-LightItalic"
     },
     bottomIndicator: {
         marginTop: 20,
@@ -907,7 +901,7 @@ const styles = StyleSheet.create({
     notificationText: {
         alignSelf: 'center',
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "#FFF",
         paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },

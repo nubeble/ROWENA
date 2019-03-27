@@ -198,6 +198,13 @@ export default class Post extends React.Component<InjectedProps> {
         this.closed = true;
     }
 
+    async edit() {
+        // ToDo: edit post
+
+
+        Vars.userFeedsChanged = true;
+    }
+
     /*
     isValidPost(placeId, feedId) {
         const { feedStore } = this.props;
@@ -400,7 +407,7 @@ export default class Post extends React.Component<InjectedProps> {
                                             <View style={styles.circle}></View>
                                             <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
                                         </View>
-                                        <Text style={styles.name}>{post.name === 'name' ? 'Anna' : post.name}</Text>
+                                        <Text style={styles.name}>{post.name}</Text>
                                         <View style={{
                                             width: '100%',
                                             flexDirection: 'row',
@@ -559,15 +566,15 @@ export default class Post extends React.Component<InjectedProps> {
                                     <Text style={{
                                         marginTop: Theme.spacing.small,
                                         marginBottom: Theme.spacing.small,
-                                        fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.placeholder,
-                                        textAlign: 'center', lineHeight: 26
+                                        fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                                        textAlign: 'center', lineHeight: 24
                                     }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
 
                                     <TouchableOpacity
                                         style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                                         onPress={async () => await this.contact()}
                                     >
-                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Start a Chat</Text>
+                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Start a Chat</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -618,7 +625,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                                 borderRadius: 5,
                                 fontSize: 14,
-                                fontFamily: "SFProText-Regular",
+                                fontFamily: "Roboto-Light",
                                 color: Theme.color.title,
                                 textAlign: 'justify',
                                 textAlignVertical: 'top',
@@ -912,7 +919,7 @@ export default class Post extends React.Component<InjectedProps> {
                             <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                             {/* ToDo: draw stars based on averge rating & get review count */}
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
@@ -942,7 +949,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.removeReview(index)}
                                 >
-                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -975,7 +982,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Delete</Text>
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -988,7 +995,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
-                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "SFProText-Light", color: "silver" }}>Reply</Text>
+                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -1027,7 +1034,7 @@ export default class Post extends React.Component<InjectedProps> {
                         // borderBottomWidth: 1,
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
-                        <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "SFProText-Regular" }}>Read all {reviewLength}+ reviews</Text>
+                        <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "Roboto-Light" }}>Read all {reviewLength}+ reviews</Text>
                         <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                     </View>
@@ -1430,22 +1437,23 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        paddingTop: Cons.lastLogInDatePaddingTop(),
+        // paddingTop: Cons.lastLogInDatePaddingTop(),
         marginLeft: 8,
         fontSize: 14,
-        fontFamily: "SFProText-Light",
+        fontFamily: "Roboto-Thin",
         color: Theme.color.text5
     },
     name: {
         color: Theme.color.title,
         fontSize: 24,
-        fontFamily: "SFProText-Semibold"
+        paddingTop: 4,
+        fontFamily: "Roboto-Medium"
     },
     /*
     size: {
         color: "white",
         fontSize: 18,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.xSmall
     },
@@ -1453,33 +1461,37 @@ const styles = StyleSheet.create({
     bodyInfoTitle: {
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
-        paddingTop: Cons.bodyInfoTitlePaddingTop(),
+        fontFamily: "Roboto-Medium",
+        // paddingTop: Cons.bodyInfoTitlePaddingTop(),
+        paddingTop: 2,
         paddingLeft: Theme.spacing.tiny,
     },
     distance: {
         paddingLeft: 5,
         color: Theme.color.title,
         fontSize: 18,
-        lineHeight: 18,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        // lineHeight: 18,
+        fontFamily: "Roboto-Regular",
+        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        paddingTop: 2
     },
     rating: {
         marginLeft: 5,
         color: '#f1c40f',
         fontSize: 18,
-        lineHeight: 18,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        // lineHeight: 18,
+        fontFamily: "Roboto-Regular",
+        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        paddingTop: 2
     },
     reviewCount: {
         marginLeft: 5,
         color: Theme.color.title,
         fontSize: 18,
-        lineHeight: 18,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        // lineHeight: 18,
+        fontFamily: "Roboto-Regular",
+        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        paddingTop: 2
     },
     /*
     note: {
@@ -1487,7 +1499,7 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 16,
         lineHeight: Platform.OS === 'ios' ? 26 : 30,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         paddingTop: Theme.spacing.small,
         paddingBottom: Theme.spacing.small,
         paddingLeft: Theme.spacing.small,
@@ -1499,11 +1511,11 @@ const styles = StyleSheet.create({
     },
     */
     note: {
-        marginTop: Theme.spacing.xSmall,
+        marginTop: Theme.spacing.tiny,
 
         color: Theme.color.text2,
         fontSize: 16,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         lineHeight: Platform.OS === 'ios' ? 26 : 30
     },
     mapContainer: {
@@ -1519,7 +1531,7 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 16,
         lineHeight: Platform.OS === 'android' ? 30 : 28,
-        fontFamily: "SFProText-Regular"
+        fontFamily: "Roboto-Regular"
     },
     mapView: {
         paddingTop: Theme.spacing.tiny,
@@ -1538,8 +1550,8 @@ const styles = StyleSheet.create({
         color: 'grey',
         textAlign: 'center',
         fontSize: 16,
-        lineHeight: 16,
-        fontFamily: "SFProText-Regular",
+        // lineHeight: 16,
+        fontFamily: "Roboto-Light",
         paddingTop: 10,
         paddingBottom: 10
     },
@@ -1553,48 +1565,50 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         padding: 10,
     },
-    reviewText: {
-        color: 'silver',
-        fontSize: 14,
-        lineHeight: 18,
-        fontFamily: "SFProText-Regular"
-    },
     reviewName: {
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
     },
     reviewDate: {
         color: 'grey',
-        fontSize: 14,
-        fontFamily: "SFProText-Light",
+        fontSize: 12,
+        fontFamily: "Roboto-Thin",
         marginLeft: 'auto'
     },
     reviewRating: {
         marginLeft: 4,
         color: '#f1c40f',
-        fontSize: 13,
-        lineHeight: 13,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Theme.spacing.xSmall
+        fontSize: 14,
+        // lineHeight: 13,
+        fontFamily: "Roboto-Light",
+        // paddingTop: Theme.spacing.xSmall
+        // paddingTop: 1
+    },
+    reviewText: {
+        color: 'silver',
+        fontSize: 14,
+        lineHeight: 18,
+        fontFamily: "Roboto-Light"
     },
     replyOwner: {
         color: "#E5E5E5",
         fontSize: 14,
-        fontFamily: "SuisseIntl-ThinItalic"
+        // fontFamily: "SuisseIntl-ThinItalic"
+        fontFamily: "Roboto-MediumItalic"
     },
-
     replyDate: {
         color: 'grey',
-        fontSize: 14,
-        fontFamily: "SFProText-Light",
+        fontSize: 12,
+        fontFamily: "Roboto-Thin",
         marginLeft: 'auto'
     },
     replyComment: {
         color: Theme.color.title,
         fontSize: 14,
         lineHeight: 18,
-        fontFamily: "SuisseIntl-ThinItalic"
+        // fontFamily: "SuisseIntl-ThinItalic"
+        fontFamily: "Roboto-LightItalic"
     },
     contactButton: {
         width: '85%',
@@ -1620,7 +1634,7 @@ const styles = StyleSheet.create({
     notificationText: {
         alignSelf: 'center',
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "#FFF",
         paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },

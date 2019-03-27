@@ -157,12 +157,12 @@ export default class Feed extends React.Component<FeedProps> {
                                 <Text style={{
                                     color: Theme.color.text2,
                                     fontSize: 18,
-                                    fontFamily: "SFProText-Semibold"
+                                    fontFamily: "Roboto-Medium"
                                 }}>No registered girls yet</Text>
                                 <Text style={{
                                     color: Theme.color.text3,
                                     fontSize: 16,
-                                    fontFamily: "SFProText-Regular"
+                                    fontFamily: "Roboto-Light"
                                 }}>Start exploring girls for your next trip</Text>
                                 <TouchableOpacity
                                     onPress={() => {

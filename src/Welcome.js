@@ -25,7 +25,9 @@ export default class Welcome extends React.Component {
                         marginTop: 10,
                         color: 'rgba(255, 255, 255, 0.8)',
                         fontSize: 32,
-                        fontFamily: "SFProText-Semibold",
+                        paddingTop: 12,
+                        // backgroundColor: 'green',
+                        fontFamily: "Roboto-Medium",
                         textAlign: 'center'
                     }}>Welcome!</Text>
 
@@ -44,7 +46,7 @@ export default class Welcome extends React.Component {
                         color: 'rgba(255, 255, 255, 0.8)',
                         fontSize: 16,
                         lineHeight: 30,
-                        fontFamily: "SFProText-Regular",
+                        fontFamily: "Roboto-Light",
                         textAlign: 'center'
                     }}>{contentText}</Text>
                 </View>
@@ -55,7 +57,7 @@ export default class Welcome extends React.Component {
                             this.props.navigation.navigate("mainStackNavigator");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Get Started</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Get Started</Text>
                     </TouchableOpacity>
                 </View>
             </View>

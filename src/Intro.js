@@ -524,23 +524,11 @@ export default class Intro extends React.Component {
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
-
-                            {/*
-                            <TextInput
-                                // ref='searchInput'
-                                pointerEvents="none"
-                                editable={false}
-                                style={{ width: '100%', height: '100%', backgroundColor: 'green', fontSize: 16, fontFamily: "SFProText-Semibold", color: "white", textAlign: 'center' }}
-                                placeholder='Where to?' placeholderTextColor='rgb(160, 160, 160)'
-                                // underlineColorAndroid="transparent"
-                                // onTouchStart={() => this.startEditing()}
-                                // onEndEditing={() => this.leaveEditing()}
-                                value={this.state.searchText}
-                            />
-                            */}
                             <Text
                                 style={{
-                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "SFProText-Semibold", paddingTop: Cons.searchBarPaddingTop(),
+                                    width: '100%', height: '100%', fontSize: 16, fontFamily: "Roboto-Medium",
+                                    // paddingTop: Cons.searchBarPaddingTop(),
+                                    paddingTop: 3,
                                     color: "rgb(160, 160, 160)", textAlign: 'center'
                                 }}
                                 numberOfLines={1}
@@ -699,37 +687,29 @@ export default class Intro extends React.Component {
                                             fadeDuration={0}
                                         />
                                         <View style={styles.content}>
-                                            {/*
-                                            <Text style={{
-                                                backgroundColor: 'green',
-                                                textAlign: 'center',
-                                                color: Theme.color.title,
-                                                fontSize: 20,
-                                                lineHeight: Platform.OS === 'ios' ? 26 : 34,
-                                                fontFamily: "SFProText-Bold"
-                                            }}>{`${(name) ? name : ''}`}</Text>
-                                            */}
                                             <Text style={{
                                                 // backgroundColor: 'green',
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: 20,
-                                                fontFamily: "SFProText-Bold"
+                                                fontFamily: "Roboto-Bold"
                                             }}>{city}</Text>
                                             <Text style={{
+                                                marginTop: Platform.OS === 'android' ? 8 : 0,
                                                 // backgroundColor: 'green',
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: 20,
-                                                fontFamily: "SFProText-Bold"
+                                                fontFamily: "Roboto-Bold"
                                             }}>{country}</Text>
 
                                             <Text style={{
+                                                marginTop: Platform.OS === 'ios' ? 4 : 8,
+                                                // backgroundColor: 'green',
                                                 textAlign: 'center',
                                                 color: Theme.color.subtitle,
                                                 fontSize: 14,
-                                                paddingTop: Platform.OS === 'ios' ? 4 : 8,
-                                                fontFamily: "SFProText-Semibold"
+                                                fontFamily: "Roboto-Medium"
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
                                     </View>
@@ -980,7 +960,7 @@ export default class Intro extends React.Component {
                     <Text style={styles.feedItemText}>{feed.name}</Text>
                     <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{placeName}</Text>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                             <AirbnbRating
                                 count={5}
@@ -1045,7 +1025,7 @@ const styles = StyleSheet.create({
     title: {
         color: Theme.color.text2,
         fontSize: 18,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     pictureContainer: {
         width: imageWidth,
@@ -1106,7 +1086,7 @@ const styles = StyleSheet.create({
     feedItemText: {
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         paddingLeft: 2,
 
         textShadowColor: "#3D3D3D",
@@ -1117,14 +1097,14 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         color: '#f1c40f',
         fontSize: 14,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Cons.ratingTextPaddingTop()
+        fontFamily: "Roboto-Light",
+        // paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Cons.ratingTextPaddingTop()
+        fontFamily: "Roboto-Light",
+        // paddingTop: Cons.ratingTextPaddingTop()
     }
 });

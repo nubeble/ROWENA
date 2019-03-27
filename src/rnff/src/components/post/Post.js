@@ -139,13 +139,13 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         <Text style={styles.feedItemText}>{post.name}</Text>
                         <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{distance}</Text>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
                                     count={5}
                                     readOnly={true}
                                     showRating={false}
-                                    defaultRating={3}
+                                    defaultRating={2}
                                     size={12}
                                     margin={1}
                                 />
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     feedItemText: {
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         paddingLeft: 2,
 
         textShadowColor: "#3D3D3D",
@@ -220,14 +220,14 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         color: '#f1c40f',
         fontSize: 14,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Cons.ratingTextPaddingTop()
+        fontFamily: "Roboto-Light",
+        // paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "SFProText-Regular",
-        paddingTop: Cons.ratingTextPaddingTop()
+        fontFamily: "Roboto-Light",
+        // paddingTop: Cons.ratingTextPaddingTop()
     }
 });

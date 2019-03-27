@@ -103,48 +103,44 @@ const theme: Theme = {
     },
     typography: {
         color: "#666666",
-        bold: "SFProText-Bold",
-        semibold: "SFProText-Semibold",
-        normal: "SFProText-Medium",
-        light: "SFProText-Light",
+        bold: "Roboto-Bold",
+        semibold: "Roboto-Medium",
+        normal: "Roboto-Regular",
+        light: "Roboto-Light",
         header1: {
             fontSize: 48,
             lineHeight: 58,
-            // fontFamily: "SFProText-Heavy"
-            fontFamily: "SFProText-Black"
+            fontFamily: "Roboto-Black"
         },
         header2: {
             fontSize: 36,
             lineHeight: 43,
-            // fontFamily: "SFProText-Heavy"
-            fontFamily: "SFProText-Black"
+            fontFamily: "Roboto-Black"
         },
         header3: {
             fontSize: 24,
             lineHeight: 28,
-            // fontFamily: "SFProText-Heavy"
-            fontFamily: "SFProText-Black"
+            fontFamily: "Roboto-Black"
         },
         large: {
             fontSize: 14,
             lineHeight: 21,
-            // fontFamily: "SFProText-Heavy"
-            fontFamily: "SFProText-Black"
+            fontFamily: "Roboto-Black"
         },
         regular: {
             fontSize: 14,
             lineHeight: 21,
-            fontFamily: "SFProText-Medium"
+            fontFamily: "Roboto-Regular"
         },
         small: {
             fontSize: 14,
             lineHeight: 18,
-            fontFamily: "SFProText-Regular"
+            fontFamily: "Roboto-Light"
         },
         micro: {
             fontSize: 8,
             lineHeight: 8,
-            fontFamily: "SFProText-Bold"
+            fontFamily: "Roboto-Bold"
         }
     },
     spacing: {

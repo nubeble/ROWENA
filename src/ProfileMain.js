@@ -257,7 +257,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                             style={{
                                 color: Theme.color.text1,
                                 fontSize: 20,
-                                fontFamily: "SFProText-Semibold",
+                                fontFamily: "Roboto-Medium",
                                 alignSelf: 'flex-start',
                                 marginLeft: 16
                             }}
@@ -306,8 +306,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         />
                                                 }
                                             </TouchableOpacity>
-                                            <Text style={{ color: Theme.color.text2, fontSize: 24, fontFamily: "SFProText-Semibold", position: "absolute", top: baselineTop + 20, left: 30 }}>{avatarName}</Text>
-                                            <Text style={{ color: Theme.color.text3, fontSize: 16, fontFamily: "SFProText-Light", position: "absolute", top: baselineTop + 56, left: 30 }}>View and edit profile</Text>
+                                            <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium", position: "absolute", top: baselineTop + 20, left: 30 }}>{avatarName}</Text>
+                                            <Text style={{ color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light", position: "absolute", top: baselineTop + 56, left: 30 }}>View and edit profile</Text>
                                         </View>
                                     </TouchableHighlight>
 
@@ -327,7 +327,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{"Posts You've Reviewed"}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Posts You've Reviewed"}</Text>
                                                 <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -347,7 +347,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
                                                 <MaterialCommunityIcons name='square-edit-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -390,7 +390,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "SFProText-Regular" }}>{'Log Out'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
                                                 <Ionicons name='md-log-out' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -709,7 +709,7 @@ const styles = StyleSheet.create({
     title: {
         color: 'white',
         fontSize: 18,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     bottomIndicator: {
         marginTop: 20,
@@ -726,13 +726,13 @@ const styles = StyleSheet.create({
     bodyInfoTitle: {
         color: 'white',
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         paddingTop: Theme.spacing.base
     },
     bodyInfoContent: {
         color: 'white',
         fontSize: 18,
-        fontFamily: "SFProText-Bold",
+        fontFamily: "Roboto-Bold",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.base
     },
@@ -740,13 +740,13 @@ const styles = StyleSheet.create({
     infoText1: {
         color: Theme.color.text2,
         fontSize: 17,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         paddingTop: Theme.spacing.base
     },
     infoText2: {
         color: Theme.color.text3,
         fontSize: 15,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.base
     },

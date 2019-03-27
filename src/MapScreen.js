@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
         bottom: 8 + 4 + 3, // paddingBottom from searchBar
         alignSelf: 'center',
         fontSize: 16,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "black"
     },
     map: {

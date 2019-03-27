@@ -264,7 +264,7 @@ export default class WriteReviewScreen extends React.Component {
                             borderRadius: 5,
                             width: '100%',
                             height: Dimensions.get('window').height / 5,
-                            fontSize: 16, fontFamily: "SFProText-Regular",
+                            fontSize: 16, fontFamily: "Roboto-Light",
                             color: "white", textAlign: 'justify',
                             textAlignVertical: 'top',
                             backgroundColor: '#212121'
@@ -281,7 +281,7 @@ export default class WriteReviewScreen extends React.Component {
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     },
     searchBarTitle: {
         fontSize: 20,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: 'rgba(255, 255, 255, 0.8)',
         paddingBottom: 8
     },
@@ -429,7 +429,7 @@ const styles = StyleSheet.create({
     notificationText: {
         alignSelf: 'center',
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "#FFF",
         paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },
@@ -441,7 +441,7 @@ const styles = StyleSheet.create({
     post: {
         alignSelf: 'center',
         fontSize: 18,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "rgba(255, 255, 255, 0.8)"
     },
     infoContainer: {
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 16,
         lineHeight: 16,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         paddingTop: 10,
         paddingBottom: 10
     },

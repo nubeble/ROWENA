@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
         color: 'rgba(255, 255, 255, 0.6)',
         fontSize: 18,
         lineHeight: 20,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     extraHeader: {
         backgroundColor: StyleGuide.palette.white,

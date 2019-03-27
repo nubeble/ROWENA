@@ -136,7 +136,7 @@ export default class AuthMain extends React.Component {
                             fontFamily: "FriendlySchoolmates-Regular",
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 42,
-                            paddingTop: 24,
+                            paddingTop: 22,
                             textAlign: 'center'
                         }}>ROWENA</Text>
                     </View>
@@ -154,7 +154,7 @@ export default class AuthMain extends React.Component {
                             style={styles.signUpWithFacebookButton}
                         >
                             <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(0, 0, 0, 0.6)', paddingTop: Cons.submitButtonPaddingTop() }}>Continue with Facebook</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
                             {
                                 this.state.showFacebookLoader &&
                                 <ActivityIndicator
@@ -175,7 +175,7 @@ export default class AuthMain extends React.Component {
                             style={styles.signUpWithEmailButton}
                         >
                             <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Email</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -187,7 +187,7 @@ export default class AuthMain extends React.Component {
                             style={styles.signUpWithMobileButton}
                         >
                             <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)', paddingTop: Cons.submitButtonPaddingTop() }}>Sign up with Mobile</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
@@ -195,12 +195,12 @@ export default class AuthMain extends React.Component {
                         // onPress={() => this.props.navigation.navigate("logIn")}
                         >
                             <Text>
-                                <Text style={{ fontSize: 14, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
-                                <Text style={{ fontSize: 15, fontFamily: "SFProText-Semibold", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
+                                <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
+                                <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
                             </Text>
                         </TouchableOpacity>
 
-                        <Text style={{ position: 'absolute', bottom: 30, fontSize: 13, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)' }}>
+                        <Text style={{ position: 'absolute', bottom: 30, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
                         </Text>
                     </View>

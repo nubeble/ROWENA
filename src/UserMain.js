@@ -59,7 +59,7 @@ export default class UserMain extends React.Component {
                         style={{
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 20,
-                            fontFamily: "SFProText-Semibold",
+                            fontFamily: "Roboto-Medium",
                             alignSelf: 'center',
                             paddingBottom: 4
                         }}

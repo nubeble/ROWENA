@@ -584,8 +584,16 @@ export default class AdvertisementMain extends React.Component {
 
         // placeId, placeName, location
         // --
-        data.placeId = streetInfo.placeId;
-        data.placeName = streetInfo.description;
+        data.placeId = cityInfo.cityId;
+        data.placeName = cityInfo.description;
+
+        const location = {
+            description: streetInfo.description,
+            // streetId: streetInfo.placeId,
+            longitude: streetInfo.longitude,
+            latitude: streetInfo.latitude
+        };
+
         data.location = location;
         // --
 
@@ -728,7 +736,7 @@ export default class AdvertisementMain extends React.Component {
                         this.state.flashImage &&
                         <Image
                             // style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
-                            style={{ width: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.9 / 3 * 4, height: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.9, borderRadius: 2 }}
+                            style={{ width: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.84 / 3 * 4, height: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.84, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }
@@ -798,7 +806,7 @@ export default class AdvertisementMain extends React.Component {
         return (
             <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: this.state.viewMarginBottom }}>
                 {/* image editor view */}
-                <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold", paddingLeft: 18 }}>
+                <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium", paddingLeft: 18 }}>
                     {'PICTURES'}
                 </Text>
 
@@ -844,11 +852,11 @@ export default class AdvertisementMain extends React.Component {
                 >
                     {/* 1. name */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'NAME'}
                         </Text>
                         {/*
-                        <Text style={{ marginRight: 18, color: Theme.color.text5, fontSize: 12, lineHeight: 19, fontFamily: "SFProText-Regular" }}>
+                        <Text style={{ marginRight: 18, color: Theme.color.text5, fontSize: 12, lineHeight: 19, fontFamily: "Roboto-Light" }}>
                             {'Customers find you with it.'}
                         </Text>
                         */}
@@ -868,7 +876,7 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)'
                         }}
                         // keyboardType={'email-address'}
                         // keyboardAppearance='dark'
@@ -895,7 +903,7 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* 2. birthday */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'AGE (BIRTHDAY)'}
                         </Text>
                         <TouchableOpacity
@@ -920,7 +928,7 @@ export default class AdvertisementMain extends React.Component {
                         <Text
                             style={{
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
@@ -940,13 +948,13 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* 3. height */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'HEIGHT'}
                     </Text>
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
                             width: '50%'
                         }}
                         keyboardType='phone-pad'
@@ -975,13 +983,13 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* 4. weight */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'WEIGHT'}
                     </Text>
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
                             width: '50%'
                         }}
                         keyboardType='phone-pad'
@@ -1011,7 +1019,7 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* 5. breasts */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'BREASTS'}
                         </Text>
                         <TouchableOpacity
@@ -1064,7 +1072,7 @@ export default class AdvertisementMain extends React.Component {
                                 // paddingRight: 30, // to ensure the text is never behind the icon
                                 // height: 38,
                                 // width: '50%',
-                                // fontSize: 22, fontFamily: "SFProText-Regular",
+                                // fontSize: 22, fontFamily: "Roboto-Light",
                                 // color: 'rgba(255, 255, 255, 0.8)',
                                 // color: 'red',
                                 // backgroundColor: 'red'
@@ -1077,7 +1085,7 @@ export default class AdvertisementMain extends React.Component {
                         textInputProps={{
                             style: {
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "SFProText-Regular",
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light",
                                 color: (this.state.breasts === '') ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                             }
                         }}
@@ -1101,7 +1109,7 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* 7. note */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'NOTE'}
                     </Text>
                     <TextInput
@@ -1127,7 +1135,7 @@ export default class AdvertisementMain extends React.Component {
                         }}
                         onBlur={(e) => this.onBlurNote()}
                     />
-                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "SFProText-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
+                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Light", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
                         {this.state.noteLength}
                     </Text>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
@@ -1138,7 +1146,7 @@ export default class AdvertisementMain extends React.Component {
                     />
 
                     {/* country */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'COUNTRY'}
                     </Text>
                     <TouchableOpacity
@@ -1158,7 +1166,7 @@ export default class AdvertisementMain extends React.Component {
                                 paddingHorizontal: 18,
                                 // height: textInputHeight,
                                 minHeight: textInputHeight,
-                                fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.country ? this.state.country : "What country do you live in?"}</Text>
@@ -1176,7 +1184,7 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* street */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'STREET'}
                         </Text>
                         <TouchableOpacity
@@ -1220,7 +1228,7 @@ export default class AdvertisementMain extends React.Component {
                                 paddingHorizontal: 18,
                                 // height: textInputHeight,
                                 minHeight: textInputHeight,
-                                fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
@@ -1239,7 +1247,7 @@ export default class AdvertisementMain extends React.Component {
 
 
                     {/* city */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'CITY'}
                     </Text>
                     <Text
@@ -1247,7 +1255,7 @@ export default class AdvertisementMain extends React.Component {
                             paddingHorizontal: 18,
                             height: textInputHeight,
                             // minHeight: textInputHeight,
-                            fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
                             paddingTop: 7
                         }}
                     >
@@ -1255,7 +1263,7 @@ export default class AdvertisementMain extends React.Component {
                     </Text>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
                     {/* state */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "SFProText-Semibold" }}>
+                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'STATE'}
                     </Text>
                     <Text
@@ -1263,7 +1271,7 @@ export default class AdvertisementMain extends React.Component {
                             paddingHorizontal: 18,
                             height: textInputHeight,
                             // minHeight: textInputHeight,
-                            fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
                             paddingTop: 7
                         }}
                     >
@@ -1282,15 +1290,15 @@ export default class AdvertisementMain extends React.Component {
                 <Text style={{
                     marginTop: Theme.spacing.small,
                     marginBottom: Theme.spacing.small,
-                    fontSize: 14, fontFamily: "SFProText-Regular", color: Theme.color.placeholder,
-                    textAlign: 'center', lineHeight: 26
+                    fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                    textAlign: 'center', lineHeight: 24
                 }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
 
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                     onPress={async () => await this.post()}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Post an Advertisement</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post an Advertisement</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -1303,7 +1311,7 @@ export default class AdvertisementMain extends React.Component {
                     <View style={{ width: '100%', height: '100%', borderRadius: 2, borderColor: '#707070', borderWidth: 2, borderStyle: 'dashed', backgroundColor: '#505050' }} />
 
                     {/* number */}
-                    <Text style={{ fontFamily: "SFProText-Semibold", fontSize: 18, color: 'rgba(255, 255, 255, 0.8)', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
+                    <Text style={{ fontFamily: "Roboto-Medium", fontSize: 18, color: 'rgba(255, 255, 255, 0.8)', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
 
                     {/* icon button */}
                     <TouchableOpacity
@@ -1877,7 +1885,7 @@ const styles = StyleSheet.create({
     },
     searchBarTitle: {
         fontSize: 20,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: 'rgba(255, 255, 255, 0.8)',
         paddingBottom: 8
     },
@@ -1905,7 +1913,7 @@ const styles = StyleSheet.create({
     notificationText: {
         alignSelf: 'center',
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "#FFF",
         paddingBottom: Platform.OS === 'ios' ? 4 : 0
     },
@@ -1930,28 +1938,28 @@ const styles = StyleSheet.create({
     },
     flashMessageTitle: {
         fontSize: 16,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "white"
     },
     flashMessageSubtitle: {
         fontSize: 14,
-        fontFamily: "SFProText-Semibold",
+        fontFamily: "Roboto-Medium",
         color: "white"
     },
     textInputStyleIOS: {
         paddingLeft: 18, paddingRight: 32,
-        fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+        fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
         minHeight: 52
     },
     textInputStyleAndroid: {
         paddingLeft: 18, paddingRight: 32,
-        fontSize: textInputFontSize, fontFamily: "SFProText-Regular", color: 'rgba(255, 255, 255, 0.8)',
+        fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
         height: 84,
         textAlignVertical: 'top'
     },
     done: {
         fontSize: 17,
-        // fontFamily: "SFProText-Regular",
+        // fontFamily: "Roboto-Light",
         fontWeight: '300',
         color: 'blue',
         // backgroundColor: 'grey',

@@ -235,8 +235,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             style={{
                                 color: 'rgba(255, 255, 255, 0.8)',
                                 fontSize: 18,
-                                paddingTop: 10,
-                                fontFamily: "SFProText-Semibold",
+                                // paddingTop: 10,
+                                fontFamily: "Roboto-Medium",
                                 marginLeft: 10,
                                 // paddingBottom: 4
                             }}
@@ -547,6 +547,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     }
 
     handleLeave() {
+        const item = this.props.navigation.state.params.item;
+        const labelName = item.users[1].name;
+
         this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
             await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
             // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
@@ -606,7 +609,7 @@ const styles = StyleSheet.create({
         width: '86%',
         height: inputToolbarHeight,
         fontSize: 16,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         color: "white",
         backgroundColor: Theme.color.background,
         // backgroundColor: 'green',
@@ -619,7 +622,7 @@ const styles = StyleSheet.create({
         width: '86%',
         height: inputToolbarHeight,
         fontSize: 16,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         color: "white",
         backgroundColor: Theme.color.background,
         // backgroundColor: 'green',
@@ -652,17 +655,17 @@ const styles = StyleSheet.create({
     text1: {
         color: Theme.color.text2,
         fontSize: 20,
-        fontFamily: "SFProText-Regular"
+        fontFamily: "Roboto-Light"
     },
     name: {
         color: Theme.color.text2,
         fontSize: 20,
-        fontFamily: "SFProText-Semibold"
+        fontFamily: "Roboto-Medium"
     },
     text2: {
         color: Theme.color.text2,
         fontSize: 18,
-        fontFamily: "SFProText-Regular",
+        fontFamily: "Roboto-Light",
         paddingHorizontal: Theme.spacing.base,
         textAlign: 'center'
     }
