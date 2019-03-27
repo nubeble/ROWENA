@@ -27,8 +27,7 @@ type Theme = {
         skeleton2: Color,
         buttonBackground: Color,
         buttonText: Color,
-        flashBackground: Color,
-        // themeText: Color
+        flashBackground: Color
     },
     palette: {
         primary: Color,
@@ -87,8 +86,7 @@ const theme: Theme = {
         skeleton2: "#606060",
         buttonBackground: "rgb(62, 165, 255)",
         buttonText: 'white',
-        flashBackground: "#FEBFD4",
-        // themeText: "white"
+        flashBackground: "#FEBFD4"
     },
     palette: {
         primary: "#00AAFF",

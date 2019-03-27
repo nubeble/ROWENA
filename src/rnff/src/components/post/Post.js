@@ -202,7 +202,6 @@ const styles = StyleSheet.create({
         // width: imageWidth,
         height: imageHeight,
 
-
         borderRadius: 2
         // borderColor: "transparent",
         // borderWidth: 0

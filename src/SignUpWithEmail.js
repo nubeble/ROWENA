@@ -32,7 +32,8 @@ export default class SignUpWithEmail extends React.Component {
         offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
 
         invalid: true,
-        signUpButtomTextColor: 'grey',
+        signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)',
+        signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
 
         securePwInput: true,
         secureText: 'Show',
@@ -165,10 +166,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.password === '') {
             // disable
-            this.setState({ invalid: true, signUpButtomTextColor: 'grey' });
+            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.buttonText });
+            this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
 
         if (this._showNotification) {
@@ -219,10 +220,10 @@ export default class SignUpWithEmail extends React.Component {
         // enable/disable signup button
         if (text === '' || this.state.email === '') {
             // disable
-            this.setState({ invalid: true, signUpButtomTextColor: 'grey' });
+            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.buttonText });
+            this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
 
         if (this._showNotification) {
@@ -537,8 +538,8 @@ export default class SignUpWithEmail extends React.Component {
                     </View>
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                        <TouchableOpacity onPress={() => this.signUp()} style={styles.signUpButton} disabled={this.state.invalid}>
-                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor, paddingTop: Cons.submitButtonPaddingTop() }}>Sign up</Text>
+                        <TouchableOpacity onPress={() => this.signUp()} style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}>
+                            <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtonTextColor, paddingTop: Cons.submitButtonPaddingTop() }}>Sign up</Text>
                             {
                                 this.state.showSignUpLoader &&
                                 <ActivityIndicator

@@ -66,8 +66,8 @@ export default class Welcome extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        // backgroundColor: '#8EC2EA'
-        backgroundColor: Theme.color.flashBackground
+        backgroundColor: '#8EC2EA'
+        // backgroundColor: Theme.color.flashBackground
     },
     searchBar: {
         height: Cons.searchBarHeight,

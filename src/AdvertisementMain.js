@@ -110,6 +110,10 @@ export default class AdvertisementMain extends React.Component {
         flashOpacity: new Animated.Value(0),
         flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
 
+        showPicture1AlertIcon: false,
+        showPicture2AlertIcon: false,
+        showPicture3AlertIcon: false,
+        showPicture4AlertIcon: false,
         showNameAlertIcon: false,
         showAgeAlertIcon: false,
         showHeightAlertIcon: false,
@@ -117,7 +121,6 @@ export default class AdvertisementMain extends React.Component {
         showBreastsAlertIcon: false,
         showCountryAlertIcon: false,
         showStreetAlertIcon: false,
-        showPicturesAlertIcon: false,
 
         /*
         showKeyboard: false,
@@ -482,7 +485,7 @@ export default class AdvertisementMain extends React.Component {
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
 
-            this.setState({ showPicturesAlertIcon: true });
+            this.setState({ showPicture1AlertIcon: true });
 
             this.refs.flatList.scrollToOffset({ offset: 0, animated: true });
 
@@ -1306,25 +1309,30 @@ export default class AdvertisementMain extends React.Component {
                     <TouchableOpacity
                         style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.selection, position: 'absolute', bottom: -14 + 10, right: -14 + 10, justifyContent: "center", alignItems: "center" }}
                         onPress={() => {
-                            this.uploadPicture(number - 1);
-
-                            // test
-                            /*
-                            if (number === 3) {
-                                this.showFlash('Uploading...', 'Your picture is now uploading.', null);
-                            } else if (number === 4) {
-                                this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
-                                setTimeout(() => {
-                                    !this.closed && this.hideFlash();
-                                }, 1000);
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
                             }
-                            */
+
+                            this.uploadPicture(number - 1);
                         }}
                     >
                         <Ionicons name='ios-add' color='white' size={24} />
                     </TouchableOpacity>
                     {
-                        number === 1 && this.state.showPicturesAlertIcon &&
+                        number === 1 && this.state.showPicture1AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+                    {
+                        number === 2 && this.state.showPicture2AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+                    {
+                        number === 3 && this.state.showPicture3AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                    }
+                    {
+                        number === 4 && this.state.showPicture4AlertIcon &&
                         <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
                     }
                     {
@@ -1526,8 +1534,11 @@ export default class AdvertisementMain extends React.Component {
             // stop indicator
             this.setState({ refreshing: false });
 
-            // ToDo: show alert icon
-            // exclamationcircleo
+            // show alert icon
+            if (index === 0) this.setState({ showPicture1AlertIcon: true });
+            if (index === 1) this.setState({ showPicture2AlertIcon: true });
+            if (index === 2) this.setState({ showPicture3AlertIcon: true });
+            if (index === 3) this.setState({ showPicture4AlertIcon: true });
         }
     }
 
@@ -1789,7 +1800,10 @@ export default class AdvertisementMain extends React.Component {
 
         if (this.state.showStreetAlertIcon) this.setState({ showStreetAlertIcon: false });
 
-        if (this.state.showPicturesAlertIcon) this.setState({ showPicturesAlertIcon: false });
+        if (this.state.showPicture1AlertIcon) this.setState({ showPicture1AlertIcon: false });
+        if (this.state.showPicture2AlertIcon) this.setState({ showPicture2AlertIcon: false });
+        if (this.state.showPicture3AlertIcon) this.setState({ showPicture3AlertIcon: false });
+        if (this.state.showPicture4AlertIcon) this.setState({ showPicture4AlertIcon: false });
     }
 
     showFlash(title, subtitle, image) {
