@@ -225,7 +225,7 @@ export default class AuthMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Theme.color.themeBackground
+        backgroundColor: Theme.color.flashBackground
     },
     view: {
         flex: 1,

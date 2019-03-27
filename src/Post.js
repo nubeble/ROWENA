@@ -567,7 +567,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                                         onPress={async () => await this.contact()}
                                     >
-                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Start a Chat</Text>
+                                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Start a Chat</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -1583,6 +1583,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "SuisseIntl-ThinItalic"
     },
+
     replyDate: {
         color: 'grey',
         fontSize: 14,
@@ -1599,7 +1600,7 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         alignSelf: 'center',
-        backgroundColor: Theme.color.themeBackground,
+        backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'

@@ -25,8 +25,10 @@ type Theme = {
         placeholder: Color,
         skeleton1: Color,
         skeleton2: Color,
-        themeBackground: Color,
-        themeText: Color
+        buttonBackground: Color,
+        buttonText: Color,
+        flashBackground: Color,
+        // themeText: Color
     },
     palette: {
         primary: Color,
@@ -73,8 +75,6 @@ const theme: Theme = {
         line: "rgb(62, 62, 62)",
         title: "#F0F0F0",
         subtitle: "#C0C0C0",
-        // text1: "rgb(255, 255, 255)",
-        // text2: "rgb(178, 178, 178)",
         text1: "#F3F3F3",
         text2: "#F0F0F0",
         text3: "#C0C0C0",
@@ -85,8 +85,10 @@ const theme: Theme = {
         placeholder: "rgb(160, 160, 160)",
         skeleton1: "#505050",
         skeleton2: "#606060",
-        themeBackground: "#FEBFD4",
-        themeText: "white"
+        buttonBackground: "rgb(62, 165, 255)",
+        buttonText: 'white',
+        flashBackground: "#FEBFD4",
+        // themeText: "white"
     },
     palette: {
         primary: "#00AAFF",

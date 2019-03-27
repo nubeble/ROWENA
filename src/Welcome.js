@@ -55,7 +55,7 @@ export default class Welcome extends React.Component {
                             this.props.navigation.navigate("mainStackNavigator");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'white', paddingTop: Cons.submitButtonPaddingTop() }}>Get Started</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Get Started</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -66,7 +66,8 @@ export default class Welcome extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: '#8EC2EA'
+        // backgroundColor: '#8EC2EA'
+        backgroundColor: Theme.color.flashBackground
     },
     searchBar: {
         height: Cons.searchBarHeight,
@@ -81,7 +82,8 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '85%',
         height: 45,
-        backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
+        // backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
+        backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'

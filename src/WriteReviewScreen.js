@@ -18,7 +18,6 @@ export default class WriteReviewScreen extends React.Component {
     state = {
         rating: 5,
         invalid: false,
-        signUpButtomTextColor: 'rgba(255, 255, 255, 0.8)',
         bottomPosition: Dimensions.get('window').height,
         postButtonTop: Dimensions.get('window').height - 80 - 50, // 80: bottom gap, 50: button height
 
@@ -282,7 +281,7 @@ export default class WriteReviewScreen extends React.Component {
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: this.state.signUpButtomTextColor, paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Post</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -470,9 +469,8 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '85%',
         height: 45,
-        backgroundColor: "rgba(255, 255, 255, 0.3)",
+        backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
-
         justifyContent: 'center',
         alignItems: 'center'
     }

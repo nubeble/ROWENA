@@ -1287,7 +1287,7 @@ export default class AdvertisementMain extends React.Component {
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
                     onPress={async () => await this.post()}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.themeText, paddingTop: Cons.submitButtonPaddingTop() }}>Post an Advertisement</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Post an Advertisement</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -1871,7 +1871,7 @@ const styles = StyleSheet.create({
         width: '85%',
         height: 45,
         alignSelf: 'center',
-        backgroundColor: Theme.color.themeBackground,
+        backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'

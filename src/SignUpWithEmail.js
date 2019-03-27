@@ -32,7 +32,6 @@ export default class SignUpWithEmail extends React.Component {
         offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
 
         invalid: true,
-        // signUpButtomTextColor: 'rgba(255,255,255,0.3)',
         signUpButtomTextColor: 'grey',
 
         securePwInput: true,
@@ -169,7 +168,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ invalid: true, signUpButtomTextColor: 'grey' });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: 'black' });
+            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.buttonText });
         }
 
         if (this._showNotification) {
@@ -223,7 +222,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ invalid: true, signUpButtomTextColor: 'grey' });
         } else {
             // enable
-            this.setState({ invalid: false, signUpButtomTextColor: 'black' });
+            this.setState({ invalid: false, signUpButtomTextColor: Theme.color.buttonText });
         }
 
         if (this._showNotification) {
@@ -611,7 +610,7 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '85%',
         height: 45,
-        backgroundColor: "rgba(255, 255, 255, 0.6)",
+        backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
         /*
         borderColor: "transparent",

@@ -97,7 +97,7 @@ export default class AdvertisementFinish extends React.Component {
                             this.props.navigation.navigate("advertisementMain");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
-                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: 'black', paddingTop: Cons.submitButtonPaddingTop() }}>Next</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "SFProText-Semibold", color: Theme.color.buttonText, paddingTop: Cons.submitButtonPaddingTop() }}>Next</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '85%',
         height: 45,
-        backgroundColor: "rgba(255, 255, 255, 0.6)", // "transparent"
+        backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
