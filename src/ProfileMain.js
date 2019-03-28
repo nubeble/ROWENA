@@ -12,6 +12,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
+import Util from "./Util";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -749,14 +750,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Light",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.base
-    },
-
-
-
-
-
-
-
+    }
 
 
 });

@@ -550,13 +550,17 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                     <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                        {/* Consider: show review chart */}
+                                        {/* ToDo: show review chart */}
+                                        {/*
                                         <Image
                                             style={{ width: '100%', height: 140, marginBottom: 10 }}
                                             resizeMode={'cover'}
                                             source={require('../assets/sample1.jpg')}
                                         />
-
+                                        */}
+                                        {
+                                            this.renderChart(this.reviewStore.reviews)
+                                        }
                                         {
                                             this.renderReviews(this.reviewStore.reviews)
                                         }
@@ -835,6 +839,216 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 {pictures}
             </Swiper>
         );
+    }
+
+    renderChart(data) {
+        /*
+        const cityName = data.cityName;
+        const numberOfGirls = data.numberOfGirls;
+        const averageRating = data.averageRating;
+        const reviewCount = data.reviewCount;
+        const statistics = data.statistics; // 5
+        const ranking = data.ranking;
+        */
+        // ToDo: test
+        const cityName = 'Bali'; // string
+        const numberOfGirls = 10; // number
+        const averageRating = 4.2; // number
+        const reviewCount = 60; // number, 15+27+14+3+1
+        const statistics = [
+            15, 27, 14, 3, 1
+        ];
+        const ranking = 2; // number
+
+        // calc bar size
+        let rate = [];
+        for (var i = 0; i < statistics.length; i++) {
+            var value = Math.round(statistics[i] / reviewCount * 100);
+            var percentage = value.toString() + '%';
+            rate[i] = percentage;
+        }
+
+        return (
+            <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 16 }}>
+                    <Text style={{
+                        color: Theme.color.text2,
+                        fontSize: 34,
+                        paddingTop: 16,
+                        fontFamily: "Roboto-Medium",
+                        // backgroundColor: 'green',
+                    }}>{averageRating}</Text>
+
+                    <View style={{ marginLeft: 6, alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={4}
+                                size={14}
+                                margin={1}
+                            />
+                        </View>
+
+                        <View style={{ marginLeft: 2, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                            <Ionicons name='md-person' color={Theme.color.text4} size={14} />
+                            <Text style={{
+                                paddingLeft: 5,
+                                color: Theme.color.text4,
+                                fontSize: 12,
+                                fontFamily: "Roboto-Light",
+                                // backgroundColor: 'green'
+                            }}>{reviewCount.toString() + " total"}</Text>
+                        </View>
+                    </View>
+
+                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                        <Text style={{
+                            marginLeft: 12,
+                            color: Theme.color.text3,
+                            fontSize: 16,
+                            fontFamily: "Roboto-Regular",
+                            // backgroundColor: 'green',
+                            paddingTop: 12
+                        }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
+                    </View>
+                </View>
+
+                <View>
+                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                        <Text style={styles.ratingText1}>{"5.0"}</Text>
+                        <View style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            // width: barWidth,
+                            flex: 1,
+                            height: 14,
+                            backgroundColor: Theme.color.chartBarBackground,
+                            borderRadius: 14
+                        }}>
+
+                            {/* draw bar */}
+                            <View style={{
+                                flex: 1,
+                                width: rate[0],
+
+                                backgroundColor: Theme.color.chartBar,
+                                borderRadius: 14
+                            }} />
+
+                        </View>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[0])}</Text>
+                    </View>
+
+                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                        <Text style={styles.ratingText1}>{"4.0"}</Text>
+                        <View style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            // width: barWidth,
+                            flex: 1,
+                            height: 14,
+                            backgroundColor: Theme.color.chartBarBackground,
+                            borderRadius: 14
+                        }}>
+
+                            {/* draw bar */}
+                            <View style={{
+                                flex: 1,
+                                width: rate[1],
+
+                                backgroundColor: Theme.color.chartBar,
+                                borderRadius: 14
+                            }} />
+
+                        </View>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[1])}</Text>
+                    </View>
+
+                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                        <Text style={styles.ratingText1}>{"3.0"}</Text>
+                        <View style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            // width: barWidth,
+                            flex: 1,
+                            height: 14,
+                            backgroundColor: Theme.color.chartBarBackground,
+                            borderRadius: 14
+                        }}>
+
+                            {/* draw bar */}
+                            <View style={{
+                                flex: 1,
+                                width: rate[2],
+
+                                backgroundColor: Theme.color.chartBar,
+                                borderRadius: 14
+                            }} />
+
+                        </View>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[2])}</Text>
+                    </View>
+
+                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                        <Text style={styles.ratingText1}>{"2.0"}</Text>
+                        <View style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            // width: barWidth,
+                            flex: 1,
+                            height: 14,
+                            backgroundColor: Theme.color.chartBarBackground,
+                            borderRadius: 14
+                        }}>
+
+                            {/* draw bar */}
+                            <View style={{
+                                flex: 1,
+                                width: rate[3],
+
+                                backgroundColor: Theme.color.chartBar,
+                                borderRadius: 14
+                            }} />
+
+                        </View>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[3])}</Text>
+                    </View>
+
+                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                        <Text style={styles.ratingText1}>{"1.0"}</Text>
+                        <View style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            // width: barWidth,
+                            flex: 1,
+                            height: 14,
+                            backgroundColor: Theme.color.chartBarBackground,
+                            borderRadius: 14
+                        }}>
+
+                            {/* draw bar */}
+                            <View style={{
+                                flex: 1,
+                                width: rate[4],
+
+                                backgroundColor: Theme.color.chartBar,
+                                borderRadius: 14
+                            }} />
+
+                        </View>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[4])}</Text>
+                    </View>
+                </View>
+            </View>
+        );
+
     }
 
     renderReviews(reviews) { // draw items up to 4
@@ -1462,7 +1676,7 @@ const styles = StyleSheet.create({
         marginLeft: 8,
         fontSize: 14,
         fontFamily: "Roboto-Thin",
-        color: Theme.color.text5
+        color: Theme.color.placeholder
     },
     name: {
         color: Theme.color.title,
@@ -1568,7 +1782,7 @@ const styles = StyleSheet.create({
         paddingRight: Theme.spacing.small
     },
     ratingText: {
-        color: 'grey',
+        color: Theme.color.placeholder,
         textAlign: 'center',
         fontSize: 16,
         // lineHeight: 16,
@@ -1663,5 +1877,25 @@ const styles = StyleSheet.create({
         position: 'absolute',
         right: 18,
         bottom: 4
+    },
+    ratingText1: {
+        // height: 8,
+        width: 20,
+
+        color: Theme.color.text4,
+        fontSize: 12,
+        fontFamily: "Roboto-Medium",
+        // backgroundColor: 'green'
+    },
+    ratingText2: {
+        // height: 8,
+
+        width: 30,
+        textAlign: 'right',
+
+        color: Theme.color.text4,
+        fontSize: 12,
+        fontFamily: "Roboto-Medium",
+        // backgroundColor: 'green'
     }
 });

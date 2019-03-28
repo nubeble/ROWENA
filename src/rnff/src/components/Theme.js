@@ -27,7 +27,9 @@ type Theme = {
         skeleton2: Color,
         buttonBackground: Color,
         buttonText: Color,
-        flashBackground: Color
+        flashBackground: Color,
+        chartBarBackground: Color,
+        chartBar: Color
     },
     palette: {
         primary: Color,
@@ -86,7 +88,10 @@ const theme: Theme = {
         skeleton2: "#606060",
         buttonBackground: "rgb(62, 165, 255)",
         buttonText: 'white',
-        flashBackground: "#FEBFD4"
+        flashBackground: "#FEBFD4",
+        // chartBarBackground: 'rgba(226, 108, 12, 0.6)',
+        chartBarBackground: "#7B7B7B",
+        chartBar: '#f1c40f'
     },
     palette: {
         primary: "#00AAFF",

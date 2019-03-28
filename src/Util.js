@@ -299,6 +299,21 @@ export default class Util extends React.Component {
         return results;
     }
 
+    static numberWithCommas(value) {
+        let len, point, str;
 
+        const num = value.toString();
 
+        point = num.length % 3;
+        len = num.length;
+
+        str = num.substring(0, point);
+        while (point < len) {
+            if (str != "") str += ",";
+            str += num.substring(point, point + 3);
+            point += 3;
+        }
+
+        return str;
+    }
 }

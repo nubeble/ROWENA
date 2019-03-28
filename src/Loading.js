@@ -40,7 +40,8 @@ const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
 const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
 
 // const SuisseIntlUltraLightItalic = require("../fonts/SuisseIntl/SuisseIntl-UltraLightItalic.otf");
-const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
+// const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
+
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo
 // const SansSerif = require("../fonts/Sans-Serif.ttf");
 
@@ -152,7 +153,8 @@ export default class Loading extends React.Component<InjectedProps> {
             */
 
             // "SuisseIntl-UltraLightItalic": SuisseIntlUltraLightItalic,
-            "SuisseIntl-ThinItalic": SuisseIntlThinItalic,
+            // "SuisseIntl-ThinItalic": SuisseIntlThinItalic,
+
             "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,
             // "SansSerif": SansSerif
         });

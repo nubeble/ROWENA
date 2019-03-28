@@ -10,6 +10,8 @@ import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 
+const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
+
 
 export default class EditMain extends React.Component {
     state = {
@@ -32,7 +34,7 @@ export default class EditMain extends React.Component {
         flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
 
 
-        
+
     };
 
     componentDidMount() {
@@ -49,7 +51,7 @@ export default class EditMain extends React.Component {
 
     componentWillUnmount() {
         // ToDo: remove server files
-        
+
         this.hardwareBackPressListener.remove();
 
         this.closed = true;
@@ -158,6 +160,16 @@ export default class EditMain extends React.Component {
                         case 3: this.setState({ uploadImage4Uri: uri }); break;
                     }
 
+                    const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
+                    this.imageRefs.push(ref);
+
+                    switch (index) {
+                        case 0: this.uploadImage1Ref = ref; break;
+                        case 1: this.uploadImage2Ref = ref; break;
+                        case 2: this.uploadImage3Ref = ref; break;
+                        case 3: this.uploadImage4Ref = ref; break;
+                    }
+
                     // save to database
                     /*
                         var data = {
@@ -218,7 +230,7 @@ export default class EditMain extends React.Component {
         formData.append("pictureIndex", index);
 
         try {
-            let response = await fetch("https://us-central1-rowena-88cfd.cloudfunctions.net/uploadFile/images",
+            let response = await fetch(SERVER_ENDPOINT + "uploadFile/images",
                 {
                     method: "POST",
                     headers: {
@@ -250,6 +262,59 @@ export default class EditMain extends React.Component {
 
             this.showNotification('An error occurred. Please try again.');
         }
+    }
+
+    showFlash(title, subtitle, image) {
+        if (!this._showFlash) {
+            this._showFlash = true;
+
+            if (this._showNotification) {
+                this.hideNotification();
+                this.hideAlertIcon();
+            }
+
+            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    // this.state.flashOffset.setValue(height * -1);
+
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.flashOpacity, {
+                                toValue: 1,
+                                duration: 200,
+                            }),
+                            Animated.timing(this.state.flashOffset, {
+                                toValue: 0,
+                                duration: 200,
+                            }),
+                        ])
+                    ]).start();
+                });
+            });
+
+            StatusBar.setHidden(true);
+        }
+    };
+
+    hideFlash() {
+        this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 0,
+                        duration: 200,
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: height * -1,
+                        duration: 200,
+                    })
+                ])
+            ]).start();
+        });
+
+        StatusBar.setHidden(false);
+
+        this._showFlash = false;
     }
 
 
