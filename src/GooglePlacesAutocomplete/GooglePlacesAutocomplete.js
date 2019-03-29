@@ -59,7 +59,7 @@ const defaultStyles = {
         height: 40,
         fontSize: 24,
         color: "white",
-        fontFamily: "Roboto-Light"
+        fontFamily: "Roboto-Regular"
     },
     poweredContainer: {
         justifyContent: 'flex-end',
@@ -706,7 +706,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         <FontAwesome style={{ width: 20 }} name='location-arrow' color={Theme.color.selection} size={16} />
                         <Text
                             style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
-                            { fontSize: 15, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: Platform.OS === "ios" ? 2 : 10 }
+                            { fontSize: 15, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: 2 }
                             ]}
                         >
                             {rowData.description}
@@ -760,7 +760,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             >{city}</Text>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "Roboto-Light" }
+                                this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "Roboto-Regular" }
                                 ]}
                                 numberOfLines={this.props.numberOfLines}
                             >{state}</Text>

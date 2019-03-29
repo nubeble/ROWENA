@@ -235,7 +235,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 // this._feed.enableScroll();
                             }}
                         >
-                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Ratings</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
                             {
                                 this.state.selectedOrderIndex === 0 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -253,7 +253,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 // this._feed.enableScroll();
                             }}
                         >
-                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Reviews</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
                             {
                                 this.state.selectedOrderIndex === 1 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -271,7 +271,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 // this._feed.enableScroll();
                             }}
                         >
-                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Time</Text>
+                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
                             {
                                 this.state.selectedOrderIndex === 2 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -483,7 +483,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 // this._feed.enableScroll();
                                             }}
                                         >
-                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Ratings</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
                                             {
                                                 this.state.selectedOrderIndex === 0 &&
                                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -501,7 +501,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 // this._feed.enableScroll();
                                             }}
                                         >
-                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Reviews</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
                                             {
                                                 this.state.selectedOrderIndex === 1 &&
                                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -519,7 +519,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 // this._feed.enableScroll();
                                             }}
                                         >
-                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Light", color: Theme.color.text2 }}>Time</Text>
+                                            <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
                                             {
                                                 this.state.selectedOrderIndex === 2 &&
                                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -614,7 +614,7 @@ const styles = StyleSheet.create({
     title: {
         color: Theme.color.text2,
         fontSize: 18,
-        lineHeight: Platform.OS === 'ios' ? 26 : 32,
+        lineHeight: 26,
         fontFamily: "Roboto-Medium"
     },
     /*

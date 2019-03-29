@@ -249,7 +249,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
                                     borderRadius: 5,
                                     fontSize: 14,
-                                    fontFamily: "Roboto-Light",
+                                    fontFamily: "Roboto-Regular",
                                     color: "white", textAlign: 'justify',
                                     textAlignVertical: 'top',
                                     backgroundColor: '#212121'
@@ -903,11 +903,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         color: "#FFF",
-        paddingBottom: Platform.OS === 'ios' ? 4 : 0
+        paddingBottom: 2
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4
+        bottom: 2
     }
 });

@@ -90,10 +90,10 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: 'red',
 
                             fontSize: 16,
-                            paddingTop: Platform.OS === 'ios' ? 2 : 8,
+                            paddingTop: 2,
 
-                            color: "white",
-                            fontFamily: "Roboto-Light"
+                            color: Theme.color.text1,
+                            fontFamily: "Roboto-Regular"
                         }}
 
                         sectionItemTextStyle={{
@@ -101,8 +101,8 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: Util.getRandomColor(),
 
                             fontSize: 12,
-                            paddingTop: Platform.OS === 'ios' ? 2 : 2,
-                            color: "white",
+                            paddingTop: 2,
+                            color: Theme.color.text4,
                             fontFamily: "Roboto-Light",
 
                             marginRight: 8
@@ -114,9 +114,9 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: 'green',
 
                             fontSize: 16,
-                            paddingTop: Platform.OS === 'ios' ? 2 : 8,
-                            color: "white",
-                            fontFamily: "Roboto-Light"
+                            paddingTop: 2,
+                            color: Theme.color.text2,
+                            fontFamily: "Roboto-Regular"
                         }}
 
                         cellLabelStyle={{ // country number
@@ -124,9 +124,9 @@ export default class CountrySelection extends React.Component {
                             // backgroundColor: 'grey',
 
                             fontSize: 16,
-                            paddingTop: Platform.OS === 'ios' ? 2 : 8,
-                            color: "white",
-                            fontFamily: "Roboto-Light"
+                            paddingTop: 2,
+                            color: Theme.color.text2,
+                            fontFamily: "Roboto-Regular"
                         }}
                     />
                 </View>

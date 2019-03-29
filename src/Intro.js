@@ -695,7 +695,7 @@ export default class Intro extends React.Component {
                                                 fontFamily: "Roboto-Bold"
                                             }}>{city}</Text>
                                             <Text style={{
-                                                marginTop: Platform.OS === 'android' ? 8 : 0,
+                                                marginTop: 8,
                                                 // backgroundColor: 'green',
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
@@ -704,7 +704,7 @@ export default class Intro extends React.Component {
                                             }}>{country}</Text>
 
                                             <Text style={{
-                                                marginTop: Platform.OS === 'ios' ? 4 : 8,
+                                                marginTop: 8,
                                                 // backgroundColor: 'green',
                                                 textAlign: 'center',
                                                 color: Theme.color.subtitle,
@@ -958,8 +958,7 @@ export default class Intro extends React.Component {
                 />
                 <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{feed.name}</Text>
-                    <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{placeName}</Text>
-
+                    <Text style={styles.feedItemText}>{placeName}</Text>
                     <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                             <AirbnbRating
@@ -972,7 +971,6 @@ export default class Intro extends React.Component {
                             />
                         </View>
                         <Text style={styles.rating}>{feed.averageRating}</Text>
-
                         <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                         <Text style={styles.reviewCount}>{feed.reviewCount}</Text>
                     </View>

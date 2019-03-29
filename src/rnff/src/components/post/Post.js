@@ -137,8 +137,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                     />
                     <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                         <Text style={styles.feedItemText}>{post.name}</Text>
-                        <Text style={[styles.feedItemText, { marginBottom: Platform.OS === 'ios' ? 4 : 0 }]}>{distance}</Text>
-
+                        <Text style={styles.feedItemText}>{distance}</Text>
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
@@ -151,7 +150,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                 />
                             </View>
                             <Text style={styles.rating}>{post.averageRating}</Text>
-
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                             <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                         </View>

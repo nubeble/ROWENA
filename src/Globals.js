@@ -27,6 +27,7 @@ export const Cons = {
     buttonTimeoutShort: 100,
     buttonTimeoutLong: 300,
 
+    // NOT USED
     submitButtonPaddingTop: () => {
         if (Platform.OS === 'ios') return 0;
 
@@ -60,6 +61,7 @@ export const Cons = {
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
 
+    // NOT USED
     // search bar text padding
     // iPhone X: 4, Tango: 7, S7: 8
     searchBarPaddingTop: () => {
@@ -81,6 +83,7 @@ export const Cons = {
         */
     },
 
+    // NOT USED
     // posting date text padding top
     lastLogInDatePaddingTop: () => {
         if (Platform.OS === 'ios') return 0;
@@ -103,12 +106,14 @@ export const Cons = {
         */
     },
 
+    // NOT USED
     // feed item info text padding top
     ratingTextPaddingTop: () => {
         if (Platform.OS === 'ios') return 1;
         if (Platform.OS === 'android') return 8;
     },
 
+    // NOT USED
     // body info text padding top
     bodyInfoTitlePaddingTop: () => {
         if (Platform.OS === 'ios') return 3;

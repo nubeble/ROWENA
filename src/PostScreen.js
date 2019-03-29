@@ -471,12 +471,12 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                             </View>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                                             <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={Theme.color.title} size={16} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                 <AirbnbRating
                                                     count={5}
@@ -645,7 +645,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
                                 borderRadius: 5,
                                 fontSize: 14,
-                                fontFamily: "Roboto-Light",
+                                fontFamily: "Roboto-Regular",
                                 color: Theme.color.title,
                                 textAlign: 'justify',
                                 textAlignVertical: 'top',
@@ -870,7 +870,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         return (
             <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 16 }}>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
                     <Text style={{
                         color: Theme.color.text2,
                         fontSize: 34,
@@ -903,19 +903,19 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
                         <Text style={{
                             marginLeft: 12,
                             color: Theme.color.text3,
                             fontSize: 16,
                             fontFamily: "Roboto-Regular",
                             // backgroundColor: 'green',
-                            paddingTop: 12
+                            // paddingTop: 12
                         }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
                     </View>
                 </View>
 
-                <View>
+                <View style={{ marginBottom: 18 }}>
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
                         <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
                         <Text style={styles.ratingText1}>{"5.0"}</Text>
@@ -1048,7 +1048,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 </View>
             </View>
         );
-
     }
 
     renderReviews(reviews) { // draw items up to 4
@@ -1149,7 +1148,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                             {/* ToDo: draw stars based on averge rating & get review count */}
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
@@ -1751,7 +1750,7 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 16,
         fontFamily: "Roboto-Light",
-        lineHeight: Platform.OS === 'ios' ? 26 : 30
+        lineHeight: 26
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
@@ -1765,7 +1764,7 @@ const styles = StyleSheet.create({
 
         color: Theme.color.text2,
         fontSize: 16,
-        lineHeight: Platform.OS === 'android' ? 30 : 28,
+        lineHeight: 26,
         fontFamily: "Roboto-Regular"
     },
     mapView: {
@@ -1871,12 +1870,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         color: "#FFF",
-        paddingBottom: Platform.OS === 'ios' ? 4 : 0
+        paddingBottom: 2
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4
+        bottom: 2
     },
     ratingText1: {
         // height: 8,

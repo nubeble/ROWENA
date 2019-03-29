@@ -876,7 +876,7 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)'
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
                         }}
                         // keyboardType={'email-address'}
                         // keyboardAppearance='dark'
@@ -928,7 +928,7 @@ export default class AdvertisementMain extends React.Component {
                         <Text
                             style={{
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
@@ -954,7 +954,7 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
                             width: '50%'
                         }}
                         keyboardType='phone-pad'
@@ -989,7 +989,7 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
                             width: '50%'
                         }}
                         keyboardType='phone-pad'
@@ -1085,7 +1085,7 @@ export default class AdvertisementMain extends React.Component {
                         textInputProps={{
                             style: {
                                 paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Light",
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
                                 color: (this.state.breasts === '') ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                             }
                         }}
@@ -1135,7 +1135,7 @@ export default class AdvertisementMain extends React.Component {
                         }}
                         onBlur={(e) => this.onBlurNote()}
                     />
-                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Light", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
+                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
                         {this.state.noteLength}
                     </Text>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
@@ -1166,7 +1166,7 @@ export default class AdvertisementMain extends React.Component {
                                 paddingHorizontal: 18,
                                 // height: textInputHeight,
                                 minHeight: textInputHeight,
-                                fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.country ? this.state.country : "What country do you live in?"}</Text>
@@ -1228,7 +1228,7 @@ export default class AdvertisementMain extends React.Component {
                                 paddingHorizontal: 18,
                                 // height: textInputHeight,
                                 minHeight: textInputHeight,
-                                fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
                         >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
@@ -1255,7 +1255,7 @@ export default class AdvertisementMain extends React.Component {
                             paddingHorizontal: 18,
                             height: textInputHeight,
                             // minHeight: textInputHeight,
-                            fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
                             paddingTop: 7
                         }}
                     >
@@ -1271,7 +1271,7 @@ export default class AdvertisementMain extends React.Component {
                             paddingHorizontal: 18,
                             height: textInputHeight,
                             // minHeight: textInputHeight,
-                            fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
                             paddingTop: 7
                         }}
                     >
@@ -1915,12 +1915,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         color: "#FFF",
-        paddingBottom: Platform.OS === 'ios' ? 4 : 0
+        paddingBottom: 2
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4
+        bottom: 2
     },
     flash: {
         width: '100%',
@@ -1948,20 +1948,23 @@ const styles = StyleSheet.create({
     },
     textInputStyleIOS: {
         paddingLeft: 18, paddingRight: 32,
-        fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
+        fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
         minHeight: 52
     },
     textInputStyleAndroid: {
         paddingLeft: 18, paddingRight: 32,
-        fontSize: textInputFontSize, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)',
+        fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
         height: 84,
         textAlignVertical: 'top'
     },
     done: {
         fontSize: 17,
-        // fontFamily: "Roboto-Light",
-        fontWeight: '300',
-        color: 'blue',
+        fontFamily: 'System',
+        // fontWeight: 'bold',
+        fontWeight: '500',
+
+        // color: Theme.color.selection,
+        color: 'rgb(30, 117, 212)',
         // backgroundColor: 'grey',
         alignSelf: 'center'
     }

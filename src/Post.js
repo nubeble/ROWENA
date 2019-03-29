@@ -455,12 +455,12 @@ export default class Post extends React.Component<InjectedProps> {
                                             </View>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                                             <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={Theme.color.title} size={16} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                 <AirbnbRating
                                                     count={5}
@@ -629,7 +629,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                                 borderRadius: 5,
                                 fontSize: 14,
-                                fontFamily: "Roboto-Light",
+                                fontFamily: "Roboto-Regular",
                                 color: Theme.color.title,
                                 textAlign: 'justify',
                                 textAlignVertical: 'top',
@@ -835,7 +835,7 @@ export default class Post extends React.Component<InjectedProps> {
         const ranking = data.ranking;
         */
         // ToDo: test
-        const cityName = 'Bali'; // string
+        const cityName = 'Puerto Vallarta'; // string
         const numberOfGirls = 10; // number
         const averageRating = 4.2; // number
         const reviewCount = 60; // number, 15+27+14+3+1
@@ -852,9 +852,25 @@ export default class Post extends React.Component<InjectedProps> {
             rate[i] = percentage;
         }
 
+        // calc star number (0, 1, 2, 3, 4, 5)
+        /*
+        const _number = Math.floor(averageRating);
+        const _decimal = averageRating - _number; // if 1.0 - 1 = 0 or 0.0 ?
+
+        if (_decimal <= 0.2) {
+
+        } else if (0.8 <= _decimal) {
+
+        } else {
+
+        }
+        */
+        const defaultRating = Math.floor(averageRating);
+
         return (
             <View>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 16 }}>
+                {/*
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
                     <Text style={{
                         color: Theme.color.text2,
                         fontSize: 34,
@@ -874,7 +890,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 margin={1}
                             />
                         </View>
-
                         <View style={{ marginLeft: 2, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Ionicons name='md-person' color={Theme.color.text4} size={14} />
                             <Text style={{
@@ -887,19 +902,60 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
                         <Text style={{
                             marginLeft: 12,
                             color: Theme.color.text3,
                             fontSize: 16,
                             fontFamily: "Roboto-Regular",
                             // backgroundColor: 'green',
-                            paddingTop: 12
+                            // paddingTop: 12
                         }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
                     </View>
                 </View>
+                */}
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 8 }}>
+                    <Text style={{
+                        color: Theme.color.text2,
+                        fontSize: 28,
+                        lineHeight: 34,
+                        fontFamily: "Roboto-Medium",
+                        // backgroundColor: 'green',
+                        marginRight: 8
+                    }}>{averageRating}</Text>
 
-                <View>
+                    <View style={{ width: 'auto', alignItems: 'flex-start', marginRight: 12 }}>
+                        <AirbnbRating
+                            count={5}
+                            readOnly={true}
+                            showRating={false}
+                            defaultRating={defaultRating}
+                            size={24}
+                            margin={2}
+                        />
+                    </View>
+
+                    <Text style={{
+                        // paddingLeft: 5,
+                        color: Theme.color.text4,
+                        fontSize: 16,
+                        lineHeight: 34,
+                        fontFamily: "Roboto-Light",
+                        // backgroundColor: 'green'
+                    }}>{"(" + reviewCount.toString() + " reviews)"}</Text>
+                </View>
+
+                <Text style={{
+                    marginBottom: 20,
+                    // marginLeft: 12,
+                    color: Theme.color.text3,
+                    fontSize: 16,
+                    fontFamily: "Roboto-Regular",
+                    // backgroundColor: 'green',
+                    // paddingTop: 12
+                }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
+
+                <View style={{ marginBottom: 18 }}>
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
                         <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
                         <Text style={styles.ratingText1}>{"5.0"}</Text>
@@ -1032,7 +1088,6 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
             </View>
         );
-
     }
 
     renderReviews(reviews) { // draw items up to 4
@@ -1133,7 +1188,7 @@ export default class Post extends React.Component<InjectedProps> {
                             <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                             {/* ToDo: draw stars based on averge rating & get review count */}
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
@@ -1730,7 +1785,7 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 16,
         fontFamily: "Roboto-Light",
-        lineHeight: Platform.OS === 'ios' ? 26 : 30
+        lineHeight: 26
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
@@ -1744,7 +1799,7 @@ const styles = StyleSheet.create({
 
         color: Theme.color.text2,
         fontSize: 16,
-        lineHeight: Platform.OS === 'android' ? 30 : 28,
+        lineHeight: 26,
         fontFamily: "Roboto-Regular"
     },
     mapView: {
@@ -1850,12 +1905,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         color: "#FFF",
-        paddingBottom: Platform.OS === 'ios' ? 4 : 0
+        paddingBottom: 2
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4
+        bottom: 2
     },
     ratingText1: {
         // height: 8,

@@ -585,11 +585,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         color: "#FFF",
-        paddingBottom: Platform.OS === 'ios' ? 4 : 0
+        paddingBottom: 2
     },
     notificationButton: {
         position: 'absolute',
         right: 18,
-        bottom: 4
+        bottom: 2
     }
 });
