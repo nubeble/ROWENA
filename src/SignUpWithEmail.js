@@ -491,7 +491,7 @@ export default class SignUpWithEmail extends React.Component {
                                     style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
                                     animating={true}
                                     size="small"
-                                    color='rgba(0, 0, 0, 0.6)'
+                                    color={this.state.signUpButtonTextColor}
                                 />
                             }
                         </TouchableOpacity>

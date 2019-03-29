@@ -128,6 +128,11 @@ export default class Explore extends React.Component<InjectedProps> {
     render(): React.Node {
         const { feedStore, profileStore, navigation } = this.props;
 
+        const extra = {
+            // cityName: this.state.searchText,
+            feedSize: this.state.feedSize
+        };
+
         /*
         const { profile } = profileStore;
 
@@ -328,6 +333,7 @@ export default class Explore extends React.Component<InjectedProps> {
                     <Feed
                         ref={(feed) => this._feed = feed}
                         store={feedStore}
+                        extra={extra}
 
                         /*
                         onScroll={Animated.event([{

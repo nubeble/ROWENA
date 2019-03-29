@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard,
-    KeyboardAvoidingView, Animated, StatusBar, BackHandler, Platform
+    KeyboardAvoidingView, Animated, StatusBar, BackHandler, ActivityIndicator
 } from 'react-native';
 import { Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -16,6 +16,8 @@ import { sendPushNotification } from './PushNotifications';
 
 export default class WriteReviewScreen extends React.Component {
     state = {
+        showPostLoader: false,
+
         rating: 5,
         invalid: false,
         bottomPosition: Dimensions.get('window').height,
@@ -102,7 +104,7 @@ export default class WriteReviewScreen extends React.Component {
             return;
         }
 
-        const { post, rating } = this.props.navigation.state.params;
+        const { post } = this.props.navigation.state.params;
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.closed) {
@@ -116,7 +118,7 @@ export default class WriteReviewScreen extends React.Component {
             return;
         }
 
-        const result = await this.addReview(comment);
+        const result = await this.addReview(post.placeId, post.id, Firebase.user().uid, comment, this.state.rating);
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
@@ -128,9 +130,13 @@ export default class WriteReviewScreen extends React.Component {
                 }
             });
         } else {
+            this.setState({ showPostLoader: true });
+
             this.sendPushNotification(comment);
 
             this.refs["toast"].show('Your review has been submitted!', 500, () => {
+                this.setState({ showPostLoader: false });
+
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
 
@@ -282,6 +288,15 @@ export default class WriteReviewScreen extends React.Component {
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post</Text>
+                        {
+                            this.state.showPostLoader &&
+                            <ActivityIndicator
+                                style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                animating={true}
+                                size="small"
+                                color={Theme.color.buttonText}
+                            />
+                        }
                     </TouchableOpacity>
                 </View>
 
@@ -383,14 +398,7 @@ export default class WriteReviewScreen extends React.Component {
     }
     */
 
-    async addReview(comment) {
-        const { post } = this.props.navigation.state.params;
-
-        const placeId = post.placeId;
-        const feedId = post.id;
-        const userUid = Firebase.user().uid;
-        const rating = this.state.rating;
-
+    async addReview(placeId, feedId, userUid, comment, rating) {
         return await Firebase.addReview(placeId, feedId, userUid, comment, rating);
     };
 

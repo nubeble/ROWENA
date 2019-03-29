@@ -54,6 +54,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
         this.onLoading = false;
+
+        this.feedSizeList = new Map();
     }
 
     componentDidMount() {
@@ -229,7 +231,47 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         }
 
         const post = feedDoc.data();
-        this.props.navigation.navigate("postPreview", { post: post, from: 'Profile' });
+
+        const feedSize = this.getFeedSize(placeId);
+
+        const extra = {
+            // cityName: this.state.searchText,
+            feedSize: feedSize
+        };
+
+        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+    }
+
+    async getFeedSize(placeId) {
+        /*
+        for (item in this.feedSizeList) {
+            if (item.key === placeId) {
+                // found
+                return item.value;
+            }
+        }
+        */
+
+        if (this.feedSizeList.has(placeId)) {
+            return this.feedSizeList.get(placeId);
+        }
+
+        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        if (!placeDoc.exists) return 0;
+
+        const count = placeDoc.data().count;
+
+        /*
+        const item = {
+            key: placeId,
+            value: count
+        };
+
+        this.feedSizeList.push(item);
+        */
+        this.feedSizeList.set(placeId, count);
+
+        return count;
     }
 
     render() {

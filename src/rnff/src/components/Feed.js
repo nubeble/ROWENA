@@ -17,6 +17,7 @@ type FlatListItem<T> = {
 
 type FeedProps = NavigationProps<> & {
     store: FeedStore,
+    extra: Object,
     onScroll?: AnimatedEvent | () => void,
     bounce?: boolean,
     ListHeaderComponent?: React.Node
@@ -92,12 +93,12 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     renderItem({ item }: FlatListItem<FeedEntry>): React.Node {
-        const { navigation, store } = this.props;
+        const { navigation, store, extra } = this.props;
         const { post, profile } = item;
 
         return (
             <View style={styles.post}>
-                <Post {...{ navigation, post, store, profile }} />
+                <Post {...{ navigation, post, store, extra, profile }} />
             </View>
         );
     }

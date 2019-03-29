@@ -491,9 +491,20 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             return;
         }
 
-        setTimeout(() => {
+        setTimeout(async () => {
             const post = feedDoc.data();
-            this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
+
+            if (!this.feedSize) {
+                const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+                this.feedSize = placeDoc.data().count;
+            }
+
+            const extra = {
+                // cityName: this.state.searchText,
+                feedSize: this.feedSize
+            };
+
+            this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
         }, Cons.buttonTimeoutShort);
     }
 
@@ -509,9 +520,20 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 return;
             }
 
-            setTimeout(() => {
+            setTimeout(async () => {
                 const post = feedDoc.data();
-                this.props.navigation.navigate("post", { post: post, from: 'ChatRoom' });
+
+                if (!this.feedSize) {
+                    const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+                    this.feedSize = placeDoc.data().count;
+                }
+
+                const extra = {
+                    // cityName: this.state.searchText,
+                    feedSize: this.feedSize
+                };
+
+                this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
             }, Cons.buttonTimeoutShort);
         } else {
             // ToDo: check validation

@@ -66,6 +66,8 @@ const braSizeItems = [
 
 export default class AdvertisementMain extends React.Component {
     state = {
+        showPostLoader: false,
+
         onUploadingImage: false,
         uploadingImageNumber: 0, // 1,2,3,4
 
@@ -563,6 +565,8 @@ export default class AdvertisementMain extends React.Component {
         }
 
         // 2. upload
+        this.setState({ showPostLoader: true });
+
         let data = {};
 
         if (!this.feedId) {
@@ -615,6 +619,8 @@ export default class AdvertisementMain extends React.Component {
 
         // 3. move to finish page
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            this.setState({ showPostLoader: false });
+
             if (!this.closed) {
                 this.props.navigation.navigate("advertisementFinish");
             }
@@ -1299,6 +1305,15 @@ export default class AdvertisementMain extends React.Component {
                     onPress={async () => await this.post()}
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post an Advertisement</Text>
+                    {
+                        this.state.showPostLoader &&
+                        <ActivityIndicator
+                            style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                            animating={true}
+                            size="small"
+                            color={Theme.color.buttonText}
+                        />
+                    }
                 </TouchableOpacity>
             </View>
         );
@@ -1866,9 +1881,6 @@ export default class AdvertisementMain extends React.Component {
 
         this._showFlash = false;
     }
-
-
-
 }
 
 const styles = StyleSheet.create({
@@ -1968,7 +1980,4 @@ const styles = StyleSheet.create({
         // backgroundColor: 'grey',
         alignSelf: 'center'
     }
-
-
-
 });

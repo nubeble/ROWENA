@@ -225,6 +225,7 @@ export default class Firebase {
         feed.likes = [];
         feed.reviewCount = 0;
         feed.averageRating = 0;
+        feed.reviewStats = [0, 0, 0, 0, 0];
         feed.timestamp = Firebase.getTimestamp();
         feed.rn = Util.getRandomNumber();
 
@@ -426,7 +427,7 @@ export default class Firebase {
             timestamp: timestamp
         };
 
-        // update - averageRating, reviewCount, reviews
+        // update - averageRating, reviewCount, reviews, stats
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
@@ -448,7 +449,51 @@ export default class Firebase {
             averageRating = averageRating.toFixed(1);
             console.log('averageRating', averageRating);
 
-            transaction.update(feedRef, { reviewCount: Number(reviewCount + 1), averageRating: Number(averageRating) });
+            // stats
+            let reviewStats = feedDoc.data().reviewStats;
+            if (rating === 1) {
+                let value = reviewStats[4];
+                if (value) {
+                    value++
+                } else {
+                    value = 1;
+                }
+                reviewStats[4] = value;
+            } else if (rating === 2) {
+                let value = reviewStats[3];
+                if (value) {
+                    value++
+                } else {
+                    value = 1;
+                }
+                reviewStats[3] = value++;
+            } else if (rating === 3) {
+                let value = reviewStats[2];
+                if (value) {
+                    value++
+                } else {
+                    value = 1;
+                }
+                reviewStats[2] = value++;
+            } else if (rating === 4) {
+                let value = reviewStats[1];
+                if (value) {
+                    value++
+                } else {
+                    value = 1;
+                }
+                reviewStats[1] = value++;
+            } else if (rating === 5) {
+                let value = reviewStats[0];
+                if (value) {
+                    value++
+                } else {
+                    value = 1;
+                }
+                reviewStats[0] = value++;
+            }
+
+            transaction.update(feedRef, { reviewCount: Number(reviewCount + 1), averageRating: Number(averageRating), reviewStats: reviewStats });
 
             // add new review item (map) in reviews (array)
             const item = {
@@ -509,7 +554,27 @@ export default class Firebase {
             averageRating = totalRating / (size - 1);
             averageRating = averageRating.toFixed(1);
             console.log('averageRating', averageRating);
-            transaction.update(feedRef, { reviewCount: Number(reviewCount - 1), averageRating: Number(averageRating) });
+
+            // 3. stats
+            let reviewStats = feedDoc.data().reviewStats;
+            if (rating === 1) {
+                let value = reviewStats[4];
+                reviewStats[4] = value--;
+            } else if (rating === 2) {
+                let value = reviewStats[3];
+                reviewStats[3] = value--;
+            } else if (rating === 3) {
+                let value = reviewStats[2];
+                reviewStats[2] = value--;
+            } else if (rating === 4) {
+                let value = reviewStats[1];
+                reviewStats[1] = value--;
+            } else if (rating === 5) {
+                let value = reviewStats[0];
+                reviewStats[0] = value--;
+            }
+
+            transaction.update(feedRef, { reviewCount: Number(reviewCount - 1), averageRating: Number(averageRating), reviewStats: reviewStats });
 
             // remove review item (map) in reviews (array)
             const item = {

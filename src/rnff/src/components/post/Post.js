@@ -20,7 +20,8 @@ import type { NavigationProps } from "../Types";
 type PostProps = NavigationProps<> & {
     post: Post,
     profile: Profile,
-    store: FeedStore
+    store: FeedStore,
+    extra: Object
 };
 
 type PostState = {
@@ -66,7 +67,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
     }
 
     render(): React.Node {
-        const { navigation } = this.props;
+        const { navigation, extra } = this.props;
         const { post, profile } = this.state;
 
         if (!post) { // removed
@@ -126,7 +127,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         }
 
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("detail", { post: post, profile: profile })}>
+            <TouchableWithoutFeedback onPress={() => navigation.navigate("detail", { post: post, profile: profile, extra: extra })}>
                 {/* Consider: use image carousel (one, two, ...) */}
                 <View style={styles.container}>
                     <SmartImage

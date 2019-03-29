@@ -40,6 +40,9 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 
+const illustrationWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
+const illustrationHeight = illustrationWidth / 2321 * 1890;
+
 // const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\n";
 const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
@@ -74,6 +77,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         liked: false,
 
+        chartData: null,
+
         from: null,
         viewMarginBottom: 0,
         disableContactButton: false
@@ -88,7 +93,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     initFromWriteReview(result) { // back from rating
-        console.log('PostScreen.initFromWriteReview', result);
+        // console.log('PostScreen.initFromWriteReview', result);
 
         this.setState({ rating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -112,7 +117,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        const { post, from } = this.props.navigation.state.params;
+        const { post, extra, from } = this.props.navigation.state.params;
         this.init(post);
 
         // view margin bottom
@@ -130,6 +135,27 @@ export default class PostScreen extends React.Component<InjectedProps> {
         if (liked) {
             this.setState({ liked: true });
         }
+
+        // city name
+        const placeName = post.placeName;
+        const words = placeName.split(', ');
+        const cityName = words[0];
+
+        // chart data
+        // ToDo: calc ranking
+        const ranking = 4;
+
+        const chart = {
+            // cityName: extra.cityName,
+            cityName: cityName,
+            numberOfGirls: extra.feedSize,
+            averageRating: post.averageRating,
+            reviewCount: post.reviewCount,
+            reviewStats: post.reviewStats, // 5, 4, 3, 2, 1
+            ranking: ranking
+        };
+
+        this.setState({ chart: chart });
 
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
@@ -313,7 +339,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     render() {
         const { post } = this.props.navigation.state.params;
 
-        // ToDo: get distance
+        // ToDo: calc distance (get my location)
         let distance = '12 km away';
         /*
         const location = post.location;
@@ -550,16 +576,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                                     <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                        {/* ToDo: show review chart */}
-                                        {/*
-                                        <Image
-                                            style={{ width: '100%', height: 140, marginBottom: 10 }}
-                                            resizeMode={'cover'}
-                                            source={require('../assets/sample1.jpg')}
-                                        />
-                                        */}
                                         {
-                                            this.renderChart(this.reviewStore.reviews)
+                                            this.renderChart(this.state.chart)
                                         }
                                         {
                                             this.renderReviews(this.reviewStore.reviews)
@@ -842,28 +860,50 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     renderChart(data) {
-        /*
+        if (data.reviewCount === 0) {
+            return (
+                <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
+                    <Text style={{
+                        // color: Theme.color.text3,
+                        color: 'rgb(221, 184, 128)',
+                        fontSize: 24,
+                        paddingTop: 4,
+                        // backgroundColor: 'green',
+                        fontFamily: "Roboto-Medium",
+                        marginBottom: 20
+                    }}>Please write the first review.</Text>
+                    <Image
+                        style={{ width: illustrationWidth * 0.6, height: illustrationHeight * 0.6 }}
+                        source={PreloadImage.keyboard}
+                        resizeMode={'cover'}
+                    />
+                </View>
+            );
+        }
+
         const cityName = data.cityName;
         const numberOfGirls = data.numberOfGirls;
         const averageRating = data.averageRating;
         const reviewCount = data.reviewCount;
-        const statistics = data.statistics; // 5
+        const stats = data.reviewStats; // 5
         const ranking = data.ranking;
-        */
+
+        /*
         // ToDo: test
-        const cityName = 'Puerto Vallarta'; // string
-        const numberOfGirls = 10; // number
+        // const cityName = 'Puerto Vallarta'; // string
+        // const numberOfGirls = 10; // number
         const averageRating = 4.2; // number
         const reviewCount = 60; // number, 15+27+14+3+1
-        const statistics = [
+        const stats = [
             15, 27, 14, 3, 1
         ];
-        const ranking = 2; // number
+        // const ranking = 2; // number
+        */
 
         // calc bar size
         let rate = [];
-        for (var i = 0; i < statistics.length; i++) {
-            var value = Math.round(statistics[i] / reviewCount * 100);
+        for (var i = 0; i < stats.length; i++) {
+            var value = Math.round(stats[i] / reviewCount * 100);
             var percentage = value.toString() + '%';
             rate[i] = percentage;
         }
@@ -872,7 +912,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
         /*
         const _number = Math.floor(averageRating);
         const _decimal = averageRating - _number; // if 1.0 - 1 = 0 or 0.0 ?
-
         if (_decimal <= 0.2) {
 
         } else if (0.8 <= _decimal) {
@@ -995,7 +1034,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             }} />
 
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[0])}</Text>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[0])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1021,7 +1060,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             }} />
 
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[1])}</Text>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[1])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1047,7 +1086,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             }} />
 
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[2])}</Text>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[2])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1073,7 +1112,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             }} />
 
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[3])}</Text>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[3])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1099,7 +1138,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             }} />
 
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(statistics[4])}</Text>
+                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[4])}</Text>
                     </View>
                 </View>
             </View>
@@ -1107,16 +1146,12 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('PostScreen.renderReviews');
-
-        const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
-
-        let reviewArray = [];
-
-        const { post } = this.props.navigation.state.params;
-        const reviewLength = post.reviewCount;
+        console.log('Post.renderReviews');
 
         if (reviews === undefined) {
+            let reviewArray = [];
+            const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
+
             for (var i = 0; i < 4; i++) {
                 reviewArray.push(
                     <View key={i}>
@@ -1177,8 +1212,18 @@ export default class PostScreen extends React.Component<InjectedProps> {
             );
             */
 
+            return (
+                <View style={styles.reviewContainer}>
+                    {reviewArray}
+                </View>
+            );
         } else {
-            console.log('reviews length', reviews.length);
+            // console.log('reviews length', reviews.length);
+
+            const { post } = this.props.navigation.state.params;
+            const reviewLength = post.reviewCount;
+
+            let reviewArray = [];
 
             for (var i = 0; i < reviews.length; i++) {
                 if (i > 3) break;
@@ -1193,7 +1238,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
                 let isMyReply = undefined;
                 if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
-
 
                 reviewArray.push(
                     <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -1289,45 +1333,48 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     </View>
                 );
             } // end of for
+
+            if (reviews.length === 0) {
+                return null;
+            }
+
+            return (
+                <View style={styles.reviewContainer}>
+                    {reviewArray}
+
+                    {/* Read all ??? reviews button */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            setTimeout(() => {
+                                this.props.navigation.navigate("readReview",
+                                    {
+                                        reviewStore: this.reviewStore,
+                                        isOwner: this.state.isOwner,
+                                        placeId: this.props.navigation.state.params.post.placeId,
+                                        feedId: this.props.navigation.state.params.post.id
+                                    });
+                            }, Cons.buttonTimeoutShort);
+                        }}
+                    >
+                        <View style={{
+                            width: '100%', height: Dimensions.get('window').height / 14,
+                            justifyContent: 'center',
+                            // alignItems: 'center',
+                            // backgroundColor: 'blue',
+                            // borderTopWidth: 1,
+                            // borderBottomWidth: 1,
+                            // borderColor: 'rgb(34, 34, 34)'
+                        }}>
+                            <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "Roboto-Light" }}>Read all {reviewLength}+ reviews</Text>
+                            <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
+
+                        </View>
+                    </TouchableOpacity>
+
+                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                </View>
+            );
         }
-
-
-        return (
-            <View style={styles.reviewContainer}>
-                {reviewArray}
-
-                {/* Read all ??? reviews button */}
-                <TouchableOpacity
-                    onPress={() => {
-                        setTimeout(() => {
-                            this.props.navigation.navigate("readReviewModal",
-                                {
-                                    reviewStore: this.reviewStore,
-                                    isOwner: this.state.isOwner,
-                                    placeId: post.placeId,
-                                    feedId: post.id
-                                });
-                        }, Cons.buttonTimeoutShort);
-                    }}
-                >
-                    <View style={{
-                        width: '100%', height: Dimensions.get('window').height / 14,
-                        justifyContent: 'center',
-                        // alignItems: 'center',
-                        // backgroundColor: 'blue',
-                        // borderTopWidth: 1,
-                        // borderBottomWidth: 1,
-                        // borderColor: 'rgb(34, 34, 34)'
-                    }}>
-                        <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "Roboto-Light" }}>Read all {reviewLength}+ reviews</Text>
-                        <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
-
-                    </View>
-                </TouchableOpacity>
-
-                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
-            </View>
-        );
     }
 
     onLayoutReviewsContainer = (event) => {

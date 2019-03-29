@@ -27,6 +27,7 @@ const advertisement = require('../assets/sample/write.jpg');
 const likes = require('../assets/sample/likes.png');
 const chat = require('../assets/sample/chat.png');
 const wait = require('../assets/sample/wait.png');
+const keyboard = require('../assets/sample/keyboard.png');
 
 
 export default class PreloadImage {
@@ -56,7 +57,7 @@ export default class PreloadImage {
     static likes = likes;
     static chat = chat;
     static wait = wait;
-
+    static keyboard = keyboard;
 
 
     static downloadAsync(): Promise<*>[] {
@@ -88,8 +89,8 @@ export default class PreloadImage {
                 PreloadImage.advertisement,
                 PreloadImage.likes,
                 PreloadImage.chat,
-                PreloadImage.wait
-
+                PreloadImage.wait,
+                PreloadImage.keyboard
 
 
             ])
