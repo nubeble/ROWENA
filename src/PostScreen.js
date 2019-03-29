@@ -851,7 +851,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         const ranking = data.ranking;
         */
         // ToDo: test
-        const cityName = 'Bali'; // string
+        const cityName = 'Puerto Vallarta'; // string
         const numberOfGirls = 10; // number
         const averageRating = 4.2; // number
         const reviewCount = 60; // number, 15+27+14+3+1
@@ -868,8 +868,24 @@ export default class PostScreen extends React.Component<InjectedProps> {
             rate[i] = percentage;
         }
 
+        // calc star number (0, 1, 2, 3, 4, 5)
+        /*
+        const _number = Math.floor(averageRating);
+        const _decimal = averageRating - _number; // if 1.0 - 1 = 0 or 0.0 ?
+
+        if (_decimal <= 0.2) {
+
+        } else if (0.8 <= _decimal) {
+
+        } else {
+
+        }
+        */
+        const defaultRating = Math.floor(averageRating);
+
         return (
             <View>
+                {/*
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
                     <Text style={{
                         color: Theme.color.text2,
@@ -890,7 +906,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 margin={1}
                             />
                         </View>
-
                         <View style={{ marginLeft: 2, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Ionicons name='md-person' color={Theme.color.text4} size={14} />
                             <Text style={{
@@ -914,6 +929,47 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
                     </View>
                 </View>
+                */}
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 8 }}>
+                    <Text style={{
+                        color: Theme.color.text2,
+                        fontSize: 28,
+                        lineHeight: 34,
+                        fontFamily: "Roboto-Medium",
+                        // backgroundColor: 'green',
+                        marginRight: 8
+                    }}>{averageRating}</Text>
+
+                    <View style={{ width: 'auto', alignItems: 'flex-start', marginRight: 12 }}>
+                        <AirbnbRating
+                            count={5}
+                            readOnly={true}
+                            showRating={false}
+                            defaultRating={defaultRating}
+                            size={24}
+                            margin={2}
+                        />
+                    </View>
+
+                    <Text style={{
+                        // paddingLeft: 5,
+                        color: Theme.color.text4,
+                        fontSize: 16,
+                        lineHeight: 34,
+                        fontFamily: "Roboto-Light",
+                        // backgroundColor: 'green'
+                    }}>{"(" + reviewCount.toString() + " reviews)"}</Text>
+                </View>
+
+                <Text style={{
+                    marginBottom: 20,
+                    // marginLeft: 12,
+                    color: Theme.color.text3,
+                    fontSize: 16,
+                    fontFamily: "Roboto-Regular",
+                    // backgroundColor: 'green',
+                    // paddingTop: 12
+                }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
 
                 <View style={{ marginBottom: 18 }}>
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
