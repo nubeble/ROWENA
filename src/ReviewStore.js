@@ -3,7 +3,7 @@ import { observable, computed } from "mobx";
 import Firebase from "./Firebase";
 import type { Review, Reviews, ReviewEntry, Profile } from "./rnff/src/components/Model";
 
-const DEFAULT_REVIEW_COUNT = 10;
+const DEFAULT_REVIEW_COUNT = 5;
 
 const DEFAULT_PROFILE: Profile = {
     uid: 'uid',
@@ -100,10 +100,14 @@ export default class ReviewStore {
         this.addToReview(_reviews);
         this.cursor = _.last(snap.docs);
 
+        /*
         let allReviewsLoaded = false;
         if (reviews.length < DEFAULT_REVIEW_COUNT) allReviewsLoaded = true;
 
         this.allReviewsLoaded = allReviewsLoaded;
+        */
+        if (reviews.length < count) this.allReviewsLoaded = true;
+
         if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
     }
 

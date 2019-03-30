@@ -32,12 +32,14 @@ type InjectedProps = {
 
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
+const DEFAULT_REVIEW_COUNT = 3;
+
 // 3:2 image
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 
-const illustrationWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
-const illustrationHeight = illustrationWidth / 2321 * 1890;
+const illustWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
+const illustHeight = illustWidth / 2321 * 1890;
 
 // const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\n";
@@ -56,7 +58,9 @@ export default class Post extends React.Component<InjectedProps> {
     replyViewHeight = Dimensions.get('window').height / 9;
 
     state = {
-        rating: 0,
+        post: null,
+
+        writeRating: 0,
         renderList: false,
         isOwner: false,
 
@@ -73,7 +77,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         liked: false,
 
-        chartData: null,
+        chartInfo: null,
 
         /*
         post: null,
@@ -89,20 +93,57 @@ export default class Post extends React.Component<InjectedProps> {
         this.springValue = new Animated.Value(1);
     }
 
-    initFromWriteReview(result) { // back from rating
+    async initFromWriteReview(result) { // back from rating
         // console.log('Post.initFromWriteReview', result);
 
-        this.setState({ rating: 0 });
+        this.setState({ writeRating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
         // reload reviews
         if (result) {
-            const { post } = this.props.navigation.state.params;
+            // const { post } = this.props.navigation.state.params;
+            const post = this.state.post;
             const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-            this.reviewStore.init(query);
+            this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
-            this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
+            // 1.
+            const newPost = await this.reloadPost(post.placeId, post.id);
+            const newChart = this.getChartInfo(newPost);
+            this.setState({ post: newPost, chartInfo: newChart });
+
+            // this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
         }
+    }
+
+    async reloadPost(placeId, feedId) {
+        const postDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        if (postDoc.exists) {
+            const post = postDoc.data();
+
+            return post;
+        }
+
+        return null;
+    }
+
+    getChartInfo(post) {
+        const chart = this.state.chartInfo;
+
+        // 2) ranking
+        // ToDo: calc ranking
+        const ranking = 2;
+
+        const newChart = {
+            cityName: chart.cityName,
+            numberOfGirls: chart.numberOfGirls,
+
+            averageRating: post.averageRating,
+            reviewCount: post.reviewCount,
+            reviewStats: post.reviewStats,
+            ranking: ranking
+        };
+
+        return newChart;
     }
 
     componentDidMount() {
@@ -114,35 +155,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        const { post, profile, extra } = this.props.navigation.state.params;
-        this.init(post);
-
-        // check liked
-        const liked = this.checkLiked(post.likes);
-        if (liked) {
-            this.setState({ liked: true });
-        }
-
-        // city name
-        const placeName = post.placeName;
-        const words = placeName.split(', ');
-        const cityName = words[0];
-
-        // chart data
-        // ToDo: calc ranking
-        const ranking = 4;
-
-        const chart = {
-            // cityName: extra.cityName,
-            cityName: cityName,
-            numberOfGirls: extra.feedSize,
-            averageRating: post.averageRating,
-            reviewCount: post.reviewCount,
-            reviewStats: post.reviewStats, // 5, 4, 3, 2, 1
-            ranking: ranking
-        };
-
-        this.setState({ chart: chart });
+        const { post, extra } = this.props.navigation.state.params;
+        this.init(post, extra);
 
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
@@ -182,13 +196,43 @@ export default class Post extends React.Component<InjectedProps> {
         this.focused = false;
     }
 
-    init(post) {
+    init(post, extra) {
+        this.setState({ post });
+
+        const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+        this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+
         const isOwner = this.isOwner(post.uid, Firebase.user().uid);
         this.setState({ isOwner });
 
-        const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-        this.reviewStore.init(query);
+        // check liked
+        const liked = this.checkLiked(post.likes);
+        if (liked) {
+            this.setState({ liked: true });
+        }
 
+        // chart info
+
+        // 1) city name
+        const placeName = post.placeName;
+        const words = placeName.split(', ');
+        const cityName = words[0];
+
+        // 2) ranking
+        // ToDo: calc ranking
+        const ranking = 4;
+
+        const chart = {
+            // cityName: extra.cityName,
+            cityName: cityName,
+            numberOfGirls: extra.feedSize,
+            averageRating: post.averageRating,
+            reviewCount: post.reviewCount,
+            reviewStats: post.reviewStats, // 5, 4, 3, 2, 1
+            ranking: ranking
+        };
+
+        this.setState({ chartInfo: chart });
 
         /*
         const { feedStore } = this.props;
@@ -256,7 +300,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.toggling = true;
 
-        const { post } = this.props.navigation.state.params;
+        // const { post } = this.props.navigation.state.params;
+        const post = this.state.post;
 
         // check if removed by the owner
         /*
@@ -337,7 +382,8 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     render() {
-        const { post } = this.props.navigation.state.params;
+        // const { post } = this.props.navigation.state.params;
+        const post = this.state.post;
 
         // ToDo: calc distance (get my location)
         let distance = '12 km away';
@@ -491,15 +537,12 @@ export default class Post extends React.Component<InjectedProps> {
                                                     count={5}
                                                     readOnly={true}
                                                     showRating={false}
-                                                    defaultRating={4}
+                                                    defaultRating={Math.floor(post.averageRating)}
                                                     size={16}
                                                     margin={1}
                                                 />
                                             </View>
-
-                                            {/* ToDo: draw stars based on averge rating & get review count */}
                                             <Text style={styles.rating}>{post.averageRating}</Text>
-
                                             <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color={Theme.color.title} size={16} />
                                             <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                                         </View>
@@ -560,7 +603,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                                     <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
                                         {
-                                            this.renderChart(this.state.chart)
+                                            this.renderChart(this.state.chartInfo)
                                         }
                                         {
                                             this.renderReviews(this.reviewStore.reviews)
@@ -575,7 +618,7 @@ export default class Post extends React.Component<InjectedProps> {
                                                 onFinishRating={this.ratingCompleted}
                                                 showRating={false}
                                                 count={5}
-                                                defaultRating={this.state.rating}
+                                                defaultRating={this.state.writeRating}
                                                 size={32}
                                                 margin={3}
                                             />
@@ -843,6 +886,12 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderChart(data) {
+        if (data === null) {
+            // ToDo: draw skeleton
+
+            return null;
+        }
+
         if (data.reviewCount === 0) {
             return (
                 <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
@@ -851,14 +900,18 @@ export default class Post extends React.Component<InjectedProps> {
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,
                         paddingTop: 4,
-                        // backgroundColor: 'green',
-                        fontFamily: "Roboto-Medium",
-                        marginBottom: 20
+                        fontFamily: "Roboto-Medium"
                     }}>Please write the first review.</Text>
+
                     <Image
-                        style={{ width: illustrationWidth * 0.6, height: illustrationHeight * 0.6 }}
+                        style={{
+                            marginTop: 30,
+                            marginBottom: 8,
+                            width: illustWidth * 0.4,
+                            height: illustHeight * 0.4,
+                            resizeMode: 'cover'
+                        }}
                         source={PreloadImage.keyboard}
-                        resizeMode={'cover'}
                     />
                 </View>
             );
@@ -1132,12 +1185,14 @@ export default class Post extends React.Component<InjectedProps> {
         console.log('Post.renderReviews');
 
         if (reviews === undefined) {
+            // draw skeleton
+
             let reviewArray = [];
             const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
 
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
-                    <View key={i}>
+                    <View key={i} style={{ paddingVertical: 4 }}>
                         <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={120}>
                             <Svg.Circle
                                 cx={18 + 2}
@@ -1201,15 +1256,19 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
             );
         } else {
+            if (reviews.length === 0) {
+                return null;
+            }
+
             // console.log('reviews length', reviews.length);
 
-            const { post } = this.props.navigation.state.params;
-            const reviewLength = post.reviewCount;
+            // const { post } = this.props.navigation.state.params;
+            const post = this.state.post;
 
             let reviewArray = [];
 
             for (var i = 0; i < reviews.length; i++) {
-                if (i > 3) break;
+                if (i >= DEFAULT_REVIEW_COUNT) break;
 
                 const review = reviews[i];
 
@@ -1232,13 +1291,12 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
 
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
-                            {/* ToDo: draw stars based on averge rating & get review count */}
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
                                     count={5}
                                     readOnly={true}
                                     showRating={false}
-                                    defaultRating={4}
+                                    defaultRating={_review.rating}
                                     size={12}
                                     margin={1}
                                 />
@@ -1317,10 +1375,6 @@ export default class Post extends React.Component<InjectedProps> {
                 );
             } // end of for
 
-            if (reviews.length === 0) {
-                return null;
-            }
-
             return (
                 <View style={styles.reviewContainer}>
                     {reviewArray}
@@ -1328,15 +1382,15 @@ export default class Post extends React.Component<InjectedProps> {
                     {/* Read all ??? reviews button */}
                     <TouchableOpacity
                         onPress={() => {
-                            setTimeout(() => {
-                                this.props.navigation.navigate("readReview",
-                                    {
-                                        reviewStore: this.reviewStore,
-                                        isOwner: this.state.isOwner,
-                                        placeId: this.props.navigation.state.params.post.placeId,
-                                        feedId: this.props.navigation.state.params.post.id
-                                    });
-                            }, Cons.buttonTimeoutShort);
+                            // setTimeout(() => {
+                            this.props.navigation.navigate("readReview",
+                                {
+                                    reviewStore: this.reviewStore,
+                                    isOwner: this.state.isOwner,
+                                    placeId: this.props.navigation.state.params.post.placeId,
+                                    feedId: this.props.navigation.state.params.post.id
+                                });
+                            // }, Cons.buttonTimeoutShort);
                         }}
                     >
                         <View style={{
@@ -1348,7 +1402,7 @@ export default class Post extends React.Component<InjectedProps> {
                             // borderBottomWidth: 1,
                             // borderColor: 'rgb(34, 34, 34)'
                         }}>
-                            <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "Roboto-Light" }}>Read all {reviewLength}+ reviews</Text>
+                            <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "Roboto-Light" }}>Read all {post.reviewCount}+ reviews</Text>
                             <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                         </View>
@@ -1374,7 +1428,8 @@ export default class Post extends React.Component<InjectedProps> {
     @autobind
     ratingCompleted(rating) {
         setTimeout(() => {
-            const { post } = this.props.navigation.state.params;
+            // const { post } = this.props.navigation.state.params;
+            const post = this.state.post;
 
             // check if removed by the owner
             /*
@@ -1509,7 +1564,8 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
-        const { post } = this.props.navigation.state.params;
+        // const { post } = this.props.navigation.state.params;
+        const post = this.state.post;
 
         // check if removed by the owner
         /*
@@ -1583,21 +1639,30 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.sendPushNotification(message);
 
-        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
+        this.refs["toast"].show('Your reply has been submitted!', 500, async () => {
             if (!this.closed) {
                 // this._reply.blur();
                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
-                // Consider: reload only the added review!
-                const { post } = this.props.navigation.state.params;
+                // reload reviews
+                // const { post } = this.props.navigation.state.params;
+                const post = this.state.post;
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                this.reviewStore.init(query);
+                this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+
+                // 2.
+                const newPost = await this.reloadPost(post.placeId, post.id);
+                const newChart = this.getChartInfo(newPost);
+                this.setState({ post: newPost, chartInfo: newChart });
+
+                this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
             }
         });
     }
 
     async addReply(message) {
-        const { post } = this.props.navigation.state.params;
+        // const { post } = this.props.navigation.state.params;
+        const post = this.state.post;
 
         const placeId = post.placeId;
         const feedId = post.id;
@@ -1609,7 +1674,8 @@ export default class Post extends React.Component<InjectedProps> {
 
     async removeReview(index) {
         this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
-            const { post } = this.props.navigation.state.params;
+            // const { post } = this.props.navigation.state.params;
+            const post = this.state.post;
 
             // check if removed by the owner
             /*
@@ -1631,11 +1697,18 @@ export default class Post extends React.Component<InjectedProps> {
                 return;
             }
 
-            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
+            this.refs["toast"].show('Your review has successfully been removed.', 500, async () => {
                 if (!this.closed) {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                    this.reviewStore.init(query);
+                    this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+
+                    // 3.
+                    const newPost = await this.reloadPost(post.placeId, post.id);
+                    const newChart = this.getChartInfo(newPost);
+                    this.setState({ post: newPost, chartInfo: newChart });
+
+                    this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
                 }
             });
         });
@@ -1643,7 +1716,8 @@ export default class Post extends React.Component<InjectedProps> {
 
     async removeReply(index) {
         this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
-            const { post } = this.props.navigation.state.params;
+            // const { post } = this.props.navigation.state.params;
+            const post = this.state.post;
 
             const placeId = post.placeId;
             const feedId = post.id;
@@ -1653,11 +1727,18 @@ export default class Post extends React.Component<InjectedProps> {
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
+            this.refs["toast"].show('Your reply has successfully been removed.', 500, async () => {
                 if (!this.closed) {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                    this.reviewStore.init(query);
+                    this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+
+                    // 4.
+                    const newPost = await this.reloadPost(post.placeId, post.id);
+                    const newChart = this.getChartInfo(newPost);
+                    this.setState({ post: newPost, chartInfo: newChart });
+
+                    this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
                 }
             });
         });
@@ -1693,7 +1774,8 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     sendPushNotification(message) {
-        const { post } = this.props.navigation.state.params;
+        // const { post } = this.props.navigation.state.params;
+        const post = this.state.post;
 
         const sender = Firebase.user().uid;
         const senderName = Firebase.user().name;

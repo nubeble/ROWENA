@@ -40,8 +40,8 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 
-const illustrationWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
-const illustrationHeight = illustrationWidth / 2321 * 1890;
+const illustWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
+const illustHeight = illustWidth / 2321 * 1890;
 
 // const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\n";
@@ -868,14 +868,18 @@ export default class PostScreen extends React.Component<InjectedProps> {
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,
                         paddingTop: 4,
-                        // backgroundColor: 'green',
-                        fontFamily: "Roboto-Medium",
-                        marginBottom: 20
+                        fontFamily: "Roboto-Medium"
                     }}>Please write the first review.</Text>
+
                     <Image
-                        style={{ width: illustrationWidth * 0.6, height: illustrationHeight * 0.6 }}
+                        style={{
+                            marginTop: 30,
+                            marginBottom: 8,
+                            width: illustWidth * 0.4,
+                            height: illustHeight * 0.4,
+                            resizeMode: 'cover'
+                        }}
                         source={PreloadImage.keyboard}
-                        resizeMode={'cover'}
                     />
                 </View>
             );
@@ -1610,10 +1614,12 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 // this._reply.blur();
                 if (this.state.showKeyboard) this.setState({ showKeyboard: false });
 
-                // Consider: reload only the added review!
+                // reload reviews
                 const { post } = this.props.navigation.state.params;
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                 this.reviewStore.init(query);
+
+                this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
             }
         });
     }
@@ -1658,6 +1664,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                     this.reviewStore.init(query);
+
+                    this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
                 }
             });
         });
@@ -1680,6 +1688,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     // refresh UI
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                     this.reviewStore.init(query);
+
+                    this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
                 }
             });
         });

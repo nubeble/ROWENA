@@ -24,8 +24,9 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 10;
 
-const guideImageWidth = Dimensions.get('window').width - 20;
-const guideImageHeight = guideImageWidth / 2;
+// 600, 510
+const illustHeight = 300;
+const illustWidth = 300 / 510 * 600;
 
 
 @inject("feedStore", "profileStore")
@@ -46,6 +47,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
         this.onLoading = false;
+
+        this.feedSizeList = new Map();
     }
 
     componentDidMount() {
@@ -195,7 +198,29 @@ export default class LikesMain extends React.Component<InjectedProps> {
         }
 
         const post = feedDoc.data();
-        this.props.navigation.navigate("postPreview", { post: post, from: 'LikesMain' });
+
+        const feedSize = await this.getFeedSize(placeId);
+
+        const extra = {
+            feedSize: feedSize
+        };
+
+        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'LikesMain' });
+    }
+
+    async getFeedSize(placeId) {
+        if (this.feedSizeList.has(placeId)) {
+            return this.feedSizeList.get(placeId);
+        }
+
+        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        if (!placeDoc.exists) return 0;
+
+        const count = placeDoc.data().count;
+
+        this.feedSizeList.set(placeId, count);
+
+        return count;
     }
 
     render() {
@@ -286,15 +311,16 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
-                                    fontSize: 18,
+                                    fontSize: 24,
+                                    paddingTop: 4,
                                     fontFamily: "Roboto-Medium"
                                 }}>No selected girls</Text>
 
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
-                                    fontSize: 16,
-                                    fontFamily: "Roboto-Light"
+                                    fontSize: 18,
+                                    fontFamily: "Roboto-Medium"
                                 }}>Start exploring girls for your next trip</Text>
 
                                 <TouchableOpacity
@@ -308,10 +334,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                     style={{ marginTop: 20 }}>
                                     <Image
                                         style={{
-                                            width: guideImageWidth,
-                                            height: guideImageHeight
+                                            width: illustWidth,
+                                            height: illustHeight,
+                                            resizeMode: 'cover'
                                         }}
-                                        source={PreloadImage.likes}
+                                        source={PreloadImage.find}
+
                                     />
                                 </TouchableOpacity>
                             </View>

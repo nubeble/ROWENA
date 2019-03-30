@@ -5,8 +5,9 @@ import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
 
 // const titlePosition = Dimensions.get('window').height / 8;
-const imageWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
-const imageHeight = imageWidth / 16 * 9;
+const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
+const illustHeight = illustWidth / 16 * 9;
+
 const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
 const bottomPosition = Dimensions.get('window').height;
 const buttonGap = 80;
@@ -34,10 +35,10 @@ export default class Welcome extends React.Component {
                     <Image
                         style={{
                             marginTop: 30,
-                            width: imageWidth,
-                            height: imageHeight
+                            width: illustWidth,
+                            height: illustHeight,
+                            resizeMode: 'cover'
                         }}
-                        resizeMode={'contain'}
                         source={PreloadImage.explore}
                     />
 

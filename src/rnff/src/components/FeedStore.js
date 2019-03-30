@@ -118,10 +118,13 @@ export default class FeedStore {
         this.addToFeed(feed);
         this.cursor = _.last(snap.docs);
 
+        /*
         let allFeedsLoaded = false;
         if (posts.length < DEFAULT_FEED_COUNT) allFeedsLoaded = true;
-
         this.allFeedsLoaded = allFeedsLoaded;
+        */
+        if (posts.length < DEFAULT_FEED_COUNT) this.allFeedsLoaded = true;
+
         if (this.addToFeedFinishedCallback) this.addToFeedFinishedCallback();
     }
 

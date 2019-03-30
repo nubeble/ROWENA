@@ -117,6 +117,8 @@ export default class Intro extends React.Component {
         this.popularFeedsUnsubscribes = [];
         this.recentFeedsUnsubscribes = [];
         */
+
+        this.feedSizeList = new Map();
     }
 
     async componentDidMount() {
@@ -945,9 +947,16 @@ export default class Intro extends React.Component {
 
         return (
             <TouchableOpacity activeOpacity={1.0}
-                onPress={() => {
+                onPress={async () => {
                     console.log('onpress', feed.placeId, feed.id);
-                    this.props.navigation.navigate("introPost", { post: feed });
+
+                    const feedSize = await this.getFeedSize(feed.placeId);
+
+                    const extra = {
+                        feedSize: feedSize
+                    };
+
+                    this.props.navigation.navigate("introPost", { post: feed, extra: extra });
                 }}
             >
                 <SmartImage
@@ -977,6 +986,21 @@ export default class Intro extends React.Component {
                 </View>
             </TouchableOpacity>
         );
+    }
+
+    async getFeedSize(placeId) {
+        if (this.feedSizeList.has(placeId)) {
+            return this.feedSizeList.get(placeId);
+        }
+
+        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        if (!placeDoc.exists) return 0;
+
+        const count = placeDoc.data().count;
+
+        this.feedSizeList.set(placeId, count);
+
+        return count;
     }
 
     handleRefresh = () => {

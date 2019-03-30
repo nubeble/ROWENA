@@ -211,12 +211,19 @@ export default class App extends React.Component {
 
                         // move to detail
                         const placeId = data.userData.placeId;
+                        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+                        if (!placeDoc.exists) return;
+
+                        const extra = {
+                            feedSize: placeDoc.data().count
+                        };
+
                         const feedId = data.userData.feedId;
                         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-                        if (feedDoc.exists) {
-                            const post = feedDoc.data();
-                            NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
-                        }
+                        if (!feedDoc.exists) return;
+
+                        const post = feedDoc.data();
+                        NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
                     } break;
 
                     case Cons.pushNotification.reply: {
@@ -225,13 +232,19 @@ export default class App extends React.Component {
 
                         // move to detail
                         const placeId = data.userData.placeId;
+                        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+                        if (!placeDoc.exists) return;
+
+                        const extra = {
+                            feedSize: placeDoc.data().count
+                        };
+
                         const feedId = data.userData.feedId;
                         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+                        if (!feedDoc.exists) return;
+
                         const post = feedDoc.data();
-                        if (feedDoc.exists) {
-                            const post = feedDoc.data();
-                            NavigationService.navigate("postPreview", { post: post, from: 'Profile' });
-                        }
+                        NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
                         */
                     } break;
                 }

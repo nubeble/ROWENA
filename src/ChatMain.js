@@ -17,8 +17,9 @@ import { Cons, Vars } from "./Globals";
 
 DEFAULT_ROOM_COUNT = 10;
 
-const guideImageWidth = 150;
-const guideImageHeight = 150;
+// 1:1
+const illustHeight = 300;
+const illustWidth = 300;
 
 
 export default class ChatMain extends React.Component {
@@ -201,15 +202,16 @@ export default class ChatMain extends React.Component {
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
-                                    fontSize: 18,
+                                    fontSize: 24,
+                                    paddingTop: 4,
                                     fontFamily: "Roboto-Medium"
                                 }}>No new messages</Text>
 
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
-                                    fontSize: 16,
-                                    fontFamily: "Roboto-Light"
+                                    fontSize: 18,
+                                    fontFamily: "Roboto-Medium"
                                 }}>Let's find some beautiful girls</Text>
 
                                 <TouchableOpacity
@@ -221,13 +223,20 @@ export default class ChatMain extends React.Component {
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>
-                                    <Image
-                                        style={{
-                                            width: guideImageWidth,
-                                            height: guideImageHeight
-                                        }}
-                                        source={PreloadImage.chat}
-                                    />
+
+                                    <View style={{
+                                        width: illustWidth, height: illustHeight,
+                                        justifyContent: 'center', alignItems: 'center'
+                                    }}>
+                                        <Image
+                                            style={{
+                                                width: illustWidth * 0.6,
+                                                height: illustHeight * 0.6,
+                                                resizeMode: 'cover'
+                                            }}
+                                            source={PreloadImage.chat}
+                                        />
+                                    </View>
                                 </TouchableOpacity>
                             </View>
                         }

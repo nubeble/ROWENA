@@ -22,9 +22,10 @@ const ruler = require('../assets/icon/ruler.png');
 const scale = require('../assets/icon/scale.png');
 
 // illustration
+const feed = require('../assets/sample/feed.png');
 const explore = require('../assets/sample/explore.jpg');
 const advertisement = require('../assets/sample/write.jpg');
-const likes = require('../assets/sample/likes.png');
+const find = require('../assets/sample/find.png');
 const chat = require('../assets/sample/chat.png');
 const wait = require('../assets/sample/wait.png');
 const keyboard = require('../assets/sample/keyboard.png');
@@ -52,9 +53,10 @@ export default class PreloadImage {
     static ruler = ruler;
     static scale = scale;
 
+    static feed = feed;
     static explore = explore;
     static advertisement = advertisement;
-    static likes = likes;
+    static find = find;
     static chat = chat;
     static wait = wait;
     static keyboard = keyboard;
@@ -85,9 +87,10 @@ export default class PreloadImage {
                 PreloadImage.ruler,
                 PreloadImage.scale,
 
+                PreloadImage.feed,
                 PreloadImage.explore,
                 PreloadImage.advertisement,
-                PreloadImage.likes,
+                PreloadImage.find,
                 PreloadImage.chat,
                 PreloadImage.wait,
                 PreloadImage.keyboard

@@ -23,9 +23,6 @@ type FeedProps = NavigationProps<> & {
     ListHeaderComponent?: React.Node
 };
 
-const guideImageWidth = 300;
-const guideImageHeight = 150;
-
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
@@ -157,29 +154,33 @@ export default class Feed extends React.Component<FeedProps> {
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
-                                    fontSize: 18,
+                                    fontSize: 24,
+                                    paddingTop: 4,
                                     fontFamily: "Roboto-Medium"
                                 }}>No registered girls yet</Text>
+
                                 <Text style={{
+                                    marginTop: 10,
                                     color: Theme.color.text3,
-                                    fontSize: 16,
-                                    fontFamily: "Roboto-Light"
+                                    fontSize: 18,
+                                    fontFamily: "Roboto-Medium"
                                 }}>Start exploring girls for your next trip</Text>
+
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
-                                            // ToDo: set scroll position 0
-
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 10 }}>
+
                                     <Image
                                         style={{
-                                            width: guideImageWidth,
-                                            height: guideImageHeight
+                                            width: 180,
+                                            height: 180,
+                                            resizeMode: 'cover'
                                         }}
-                                        source={PreloadImage.likes}
+                                        source={PreloadImage.feed}
                                     />
                                 </TouchableOpacity>
                             </View>

@@ -9,9 +9,8 @@ import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 
-const imageWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
-// const imageHeight = imageWidth / 650 * 597;
-const imageHeight = imageWidth;
+const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
+const illustHeight = illustWidth;
 
 const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
 const bottomPosition = Dimensions.get('window').height;
@@ -73,11 +72,11 @@ export default class AdvertisementStart extends React.Component {
                     <Image
                         style={{
                             marginTop: 10,
-                            width: imageWidth * 0.7,
-                            height: imageHeight * 0.7,
-                            alignSelf: 'center'
+                            width: illustWidth * 0.7,
+                            height: illustHeight * 0.7,
+                            alignSelf: 'center',
+                            resizeMode: 'cover'
                         }}
-                        resizeMode={'contain'}
                         source={PreloadImage.advertisement}
                     />
 

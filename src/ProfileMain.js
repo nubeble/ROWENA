@@ -232,7 +232,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         const post = feedDoc.data();
 
-        const feedSize = this.getFeedSize(placeId);
+        const feedSize = await this.getFeedSize(placeId);
 
         const extra = {
             // cityName: this.state.searchText,
@@ -344,7 +344,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         />
                                                         :
                                                         <Image
-                                                            style={{ backgroundColor: 'black', tintColor: 'white', width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
+                                                            style={{
+                                                                backgroundColor: 'black', tintColor: 'white', width: avatarHeight, height: avatarHeight,
+                                                                borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1,
+                                                                resizeMode: 'cover'
+                                                            }}
                                                             source={PreloadImage.user}
                                                         />
                                                 }

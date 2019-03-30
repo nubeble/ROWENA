@@ -687,9 +687,10 @@ export default class ReadAllReviewScreen extends React.Component {
 
                 // refresh all
                 const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-                const count = reviewStore.reviews.length;
-                // this.refreshReviews(placeId, feedId, count + 1);
-                this.refreshReviews(placeId, feedId, 5);
+                this.refreshReviews(placeId, feedId, 6);
+
+                // move scroll top
+                this._flatList.scrollToOffset({ offset: 0, animated: false });
             }
         });
     }
@@ -710,8 +711,6 @@ export default class ReadAllReviewScreen extends React.Component {
             const reviewId = reviewStore.reviews[index].review.id;
             const userUid = Firebase.user().uid;
 
-            // const count = reviewStore.reviews.length;
-
             const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
             if (!result) {
                 // the post is removed
@@ -722,8 +721,10 @@ export default class ReadAllReviewScreen extends React.Component {
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
                     // refresh all
-                    // this.refreshReviews(placeId, feedId, count - 1);
-                    this.refreshReviews(placeId, feedId, 5);
+                    this.refreshReviews(placeId, feedId, 6);
+
+                    // move scroll top
+                    this._flatList.scrollToOffset({ offset: 0, animated: false });
                 }
             });
         });
@@ -737,15 +738,15 @@ export default class ReadAllReviewScreen extends React.Component {
             const replyId = reviewStore.reviews[index].review.reply.id;
             const userUid = Firebase.user().uid;
 
-            const count = reviewStore.reviews.length;
-
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
                     // refresh UI
-                    // this.refreshReviews(placeId, feedId, count - 1);
-                    this.refreshReviews(placeId, feedId, 5);
+                    this.refreshReviews(placeId, feedId, 6);
+
+                    // move scroll top
+                    this._flatList.scrollToOffset({ offset: 0, animated: false });
                 }
             });
         });
