@@ -103,13 +103,25 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             placeName = city + ', ' + country;
         }
         */
+
         // ToDo: get distance
-        let distance = '12 km away';
+        let distance = '18 km away';
         /*
         const location = post.location;
         location.longitude
         location.latitude
         */
+
+        const averageRating = post.averageRating;
+
+        const integer = Math.floor(averageRating);
+
+        let number = '';
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
 
         // const { likes, comments } = post;
         const contentStyle = [styles.content];
@@ -145,12 +157,12 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                     count={5}
                                     readOnly={true}
                                     showRating={false}
-                                    defaultRating={2}
+                                    defaultRating={integer}
                                     size={12}
                                     margin={1}
                                 />
                             </View>
-                            <Text style={styles.rating}>{post.averageRating}</Text>
+                            <Text style={styles.rating}>{number}</Text>
                             <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                             <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                         </View>
@@ -219,14 +231,14 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         color: '#f1c40f',
         fontSize: 14,
-        fontFamily: "Roboto-Light",
+        fontFamily: "Roboto-Regular",
         // paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "Roboto-Light",
+        fontFamily: "Roboto-Regular",
         // paddingTop: Cons.ratingTextPaddingTop()
     }
 });

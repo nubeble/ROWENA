@@ -256,6 +256,27 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
+                            // placeName
+                            let placeName = item.placeName;
+                            const words = placeName.split(', ');
+                            if (words.length > 2) {
+                                const city = words[0];
+                                const country = words[words.length - 1];
+                                placeName = city + ', ' + country;
+                            }
+
+                            // defaultRating, averageRating
+                            const averageRating = item.averageRating;
+
+                            const integer = Math.floor(averageRating);
+
+                            let number = '';
+                            if (Number.isInteger(averageRating)) {
+                                number = averageRating + '.0';
+                            } else {
+                                number = averageRating.toString();
+                            }
+
                             return (
                                 <TouchableWithoutFeedback onPress={async () => await this.openPost(item)}>
                                     <View style={styles.pictureContainer}>
@@ -267,19 +288,19 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                         />
                                         <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
-                                            <Text style={styles.feedItemText}>{item.placeName}</Text>
+                                            <Text style={styles.feedItemText}>{placeName}</Text>
                                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
                                                 <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                     <AirbnbRating
                                                         count={5}
                                                         readOnly={true}
                                                         showRating={false}
-                                                        defaultRating={3}
+                                                        defaultRating={integer}
                                                         size={12}
                                                         margin={1}
                                                     />
                                                 </View>
-                                                <Text style={styles.rating}>{item.averageRating}</Text>
+                                                <Text style={styles.rating}>{number}</Text>
                                                 <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                                                 <Text style={styles.reviewCount}>{item.reviewCount}</Text>
                                             </View>
@@ -454,14 +475,14 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         color: '#f1c40f',
         fontSize: 14,
-        fontFamily: "Roboto-Light",
+        fontFamily: "Roboto-Regular",
         // paddingTop: Cons.ratingTextPaddingTop()
     },
     reviewCount: {
         marginLeft: 5,
         color: Theme.color.title,
         fontSize: 14,
-        fontFamily: "Roboto-Light",
+        fontFamily: "Roboto-Regular",
         // paddingTop: Cons.ratingTextPaddingTop()
     }
 });

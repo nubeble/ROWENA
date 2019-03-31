@@ -2,8 +2,11 @@ import React, { PureComponent } from 'react';
 import { StyleSheet, Animated, TouchableOpacity } from 'react-native';
 import { Asset } from 'expo';
 
-const STAR_IMAGE = require('./images/airbnb-star.png');
-const STAR_SELECTED_IMAGE = require('./images/airbnb-star-selected.png');
+// const STAR_IMAGE = require('./images/airbnb-star.png');
+// const STAR_SELECTED_IMAGE = require('./images/airbnb-star-selected.png');
+const STAR_IMAGE = require('./images/rocket.png');
+const STAR_SELECTED_IMAGE = require('./images/heart.png');
+
 const STAR_SIZE = 40;
 
 
@@ -26,11 +29,13 @@ export default class Star extends PureComponent {
     }
     // --
 
-    /*
+    componentWillUnmount() {
+        this.stopAnimation();
+    }
+
     stopAnimation() {
         if (this.instance) this.instance.stopAnimation();
     }
-    */
 
     constructor() {
         super();

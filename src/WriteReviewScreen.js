@@ -118,6 +118,8 @@ export default class WriteReviewScreen extends React.Component {
             return;
         }
 
+        this.setState({ showPostLoader: true });
+
         const result = await this.addReview(post.placeId, post.id, Firebase.user().uid, comment, this.state.rating);
         if (!result) {
             // the post is removed
@@ -130,13 +132,9 @@ export default class WriteReviewScreen extends React.Component {
                 }
             });
         } else {
-            this.setState({ showPostLoader: true });
-
             this.sendPushNotification(comment);
 
             this.refs["toast"].show('Your review has been submitted!', 500, () => {
-                this.setState({ showPostLoader: false });
-
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
 
@@ -145,6 +143,8 @@ export default class WriteReviewScreen extends React.Component {
                 }
             });
         }
+
+        this.setState({ showPostLoader: false });
     }
 
     sendPushNotification(message) {

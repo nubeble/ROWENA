@@ -393,6 +393,22 @@ export default class Post extends React.Component<InjectedProps> {
         location.latitude
         */
 
+
+        let integer = 0;
+        let number = '';
+        if (post) {
+            const averageRating = post.averageRating;
+
+            integer = Math.floor(averageRating);
+
+            if (Number.isInteger(averageRating)) {
+                number = averageRating + '.0';
+            } else {
+                number = averageRating.toString();
+            }
+        }
+
+
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [
@@ -527,7 +543,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={Theme.color.title} size={16} />
+                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 2 }} name='location-on' color={Theme.color.title} size={16} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
@@ -537,13 +553,13 @@ export default class Post extends React.Component<InjectedProps> {
                                                     count={5}
                                                     readOnly={true}
                                                     showRating={false}
-                                                    defaultRating={Math.floor(post.averageRating)}
+                                                    defaultRating={integer}
                                                     size={16}
                                                     margin={1}
                                                 />
                                             </View>
-                                            <Text style={styles.rating}>{post.averageRating}</Text>
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 1 }} name='message1' color={Theme.color.title} size={16} />
+                                            <Text style={styles.rating}>{number}</Text>
+                                            <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
                                             <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                                         </View>
 
@@ -956,7 +972,15 @@ export default class Post extends React.Component<InjectedProps> {
 
         }
         */
-        const defaultRating = Math.floor(averageRating);
+
+        const integer = Math.floor(averageRating);
+
+        let number = '';
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
 
         return (
             <View>
@@ -1013,19 +1037,17 @@ export default class Post extends React.Component<InjectedProps> {
                         fontFamily: "Roboto-Medium",
                         // backgroundColor: 'green',
                         marginRight: 8
-                    }}>{averageRating}</Text>
-
+                    }}>{number}</Text>
                     <View style={{ width: 'auto', alignItems: 'flex-start', marginRight: 12 }}>
                         <AirbnbRating
                             count={5}
                             readOnly={true}
                             showRating={false}
-                            defaultRating={defaultRating}
+                            defaultRating={integer}
                             size={24}
                             margin={2}
                         />
                     </View>
-
                     <Text style={{
                         // paddingLeft: 5,
                         color: Theme.color.text4,
@@ -1978,7 +2000,7 @@ const styles = StyleSheet.create({
         color: '#f1c40f',
         fontSize: 14,
         // lineHeight: 13,
-        fontFamily: "Roboto-Light",
+        fontFamily: "Roboto-Regular",
         // paddingTop: Theme.spacing.xSmall
         // paddingTop: 1
     },

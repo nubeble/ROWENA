@@ -341,7 +341,6 @@ export default class ReadAllReviewScreen extends React.Component {
         let isMyReply = undefined;
         if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
-
         return (
             <View style={{ paddingBottom: Theme.spacing.tiny }} onLayout={(event) => this.onItemLayout(event, index)}>
                 {/* ToDo: add profile image */}
@@ -358,7 +357,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             count={5}
                             readOnly={true}
                             showRating={false}
-                            defaultRating={4}
+                            defaultRating={_review.rating}
                             size={14}
                             margin={1}
                         />
@@ -852,7 +851,7 @@ const styles = StyleSheet.create({
         color: '#f1c40f',
         fontSize: 15,
         // lineHeight: 15,
-        fontFamily: "Roboto-Light",
+        fontFamily: "Roboto-Regular",
         // paddingTop: Theme.spacing.xSmall
     },
     reviewText: {
