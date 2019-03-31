@@ -224,8 +224,9 @@ const styles = StyleSheet.create({
         paddingLeft: 2,
 
         textShadowColor: "#3D3D3D",
-        textShadowOffset: { width: 0.6, height: 0.6 },
-        textShadowRadius: 4
+        // textShadowOffset: { width: 0.6, height: 0.6 },
+        // textShadowRadius: 4
+        textShadowOffset: { width: 0.2, height: 0.2 }
     },
     rating: {
         marginLeft: 5,

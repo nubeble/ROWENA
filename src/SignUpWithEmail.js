@@ -464,8 +464,8 @@ export default class SignUpWithEmail extends React.Component {
                                 autoCorrect={false}
                             />
                             <TouchableOpacity
-                                // style={{ position: 'absolute', top: 98, right: 24, alignSelf: 'baseline' }}
-                                style={{ position: 'absolute', top: 98, right: Dimensions.get('window').width / 2, alignSelf: 'baseline' }}
+                                style={{ position: 'absolute', top: 94, right: 24, alignSelf: 'baseline' }}
+                                // style={{ position: 'absolute', top: 94, right: Dimensions.get('window').width / 2, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}
                             >
                                 <Text style={{ fontSize: 13, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>

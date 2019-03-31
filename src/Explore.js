@@ -12,7 +12,7 @@ import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import { FontAwesome, MaterialIcons } from 'react-native-vector-icons';
 import Firebase from './Firebase';
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
@@ -223,8 +223,27 @@ export default class Explore extends React.Component<InjectedProps> {
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
 
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            // bottom: 2,
+                            bottom: 0,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => this.openMap()}
+                    >
+                        <View style={{
+                            width: 34, height: 34, borderRadius: 17, justifyContent: "center", alignItems: "center",
+                            backgroundColor: Theme.color.component
+                        }}>
+                            <MaterialIcons name="location-on" color="rgba(255, 255, 255, 0.8)" size={24} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
 
                 {
                     showOrderTab &&
@@ -284,7 +303,6 @@ export default class Explore extends React.Component<InjectedProps> {
                         </TouchableOpacity>
                     </View>
                 }
-
 
                 {/*
                 <AnimatedSafeAreaView style={[styles.header, { shadowOpacity }]}>
@@ -566,6 +584,10 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy(order, "desc");
         this.props.feedStore.init(query, order);
+    }
+
+    openMap() {
+        // ToDo: show map overview
     }
 }
 

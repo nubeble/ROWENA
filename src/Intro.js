@@ -694,7 +694,10 @@ export default class Intro extends React.Component {
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: 20,
-                                                fontFamily: "Roboto-Bold"
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: "#3D3D3D",
+                                                textShadowOffset: { width: 0.6, height: 0.6 }
                                             }}>{city}</Text>
                                             <Text style={{
                                                 marginTop: 8,
@@ -702,7 +705,10 @@ export default class Intro extends React.Component {
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: 20,
-                                                fontFamily: "Roboto-Bold"
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: "#3D3D3D",
+                                                textShadowOffset: { width: 0.6, height: 0.6 }
                                             }}>{country}</Text>
 
                                             <Text style={{
@@ -711,7 +717,10 @@ export default class Intro extends React.Component {
                                                 textAlign: 'center',
                                                 color: Theme.color.subtitle,
                                                 fontSize: 14,
-                                                fontFamily: "Roboto-Medium"
+                                                fontFamily: "Roboto-Medium",
+
+                                                textShadowColor: "black",
+                                                textShadowOffset: { width: 0.2, height: 0.2 }
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
                                     </View>
@@ -773,6 +782,7 @@ export default class Intro extends React.Component {
                             height={itemHeight}
                         />
                     </SvgAnimatedLinearGradient>
+                    {/*
                     <View style={{
                         width: itemWidth, height: itemHeight,
                         position: 'absolute', top: 0, left: 0,
@@ -780,6 +790,7 @@ export default class Intro extends React.Component {
                     }}>
                         <RefreshIndicator />
                     </View>
+                    */}
                 </View>
             );
         }
@@ -876,6 +887,7 @@ export default class Intro extends React.Component {
                             height={itemHeight}
                         />
                     </SvgAnimatedLinearGradient>
+                    {/*
                     <View style={{
                         width: itemWidth, height: itemHeight,
                         position: 'absolute', top: 0, left: 0,
@@ -883,6 +895,7 @@ export default class Intro extends React.Component {
                     }}>
                         <RefreshIndicator />
                     </View>
+                    */}
                 </View>
             );
         }
@@ -1135,8 +1148,9 @@ const styles = StyleSheet.create({
         paddingLeft: 2,
 
         textShadowColor: "#3D3D3D",
-        textShadowOffset: { width: 0.6, height: 0.6 },
-        textShadowRadius: 4
+        // textShadowOffset: { width: 0.6, height: 0.6 },
+        // textShadowRadius: 4
+        textShadowOffset: { width: 0.2, height: 0.2 }
     },
     rating: {
         marginLeft: 5,
