@@ -120,6 +120,9 @@ export default class Post extends React.Component<InjectedProps> {
         if (postDoc.exists) {
             const post = postDoc.data();
 
+            const { feedStore } = this.props;
+            feedStore.updateFeed(post);
+
             return post;
         }
 
@@ -233,12 +236,6 @@ export default class Post extends React.Component<InjectedProps> {
         };
 
         this.setState({ chartInfo: chart });
-
-        /*
-        const { feedStore } = this.props;
-        this.unsubscribeToPost = feedStore.subscribeToPost(post.placeId, post.id, newPost => this.setState({ post: newPost }));
-        this.unsubscribeToProfile = feedStore.subscribeToProfile(post.uid, newProfile => this.setState({ profile: newProfile }));
-        */
     }
 
     isOwner(uid1, uid2) {
@@ -257,12 +254,6 @@ export default class Post extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
-
-
-        /*
-        this.unsubscribeToPost();
-        this.unsubscribeToProfile();
-        */
 
         this.closed = true;
     }

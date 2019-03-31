@@ -882,6 +882,7 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
+                            width: '80%',
                             height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
                         }}
                         // keyboardType={'email-address'}
@@ -909,7 +910,9 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* 2. birthday */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
                             {'AGE (BIRTHDAY)'}
                         </Text>
                         <TouchableOpacity
@@ -934,6 +937,7 @@ export default class AdvertisementMain extends React.Component {
                         <Text
                             style={{
                                 paddingHorizontal: 18,
+                                width: '80%',
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
@@ -960,8 +964,8 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                            width: '50%'
+                            width: '80%',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
                         }}
                         keyboardType='phone-pad'
                         returnKeyType='done'
@@ -995,8 +999,8 @@ export default class AdvertisementMain extends React.Component {
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                            width: '50%'
+                            width: '80%',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
                         }}
                         keyboardType='phone-pad'
                         returnKeyType='done'
@@ -1025,7 +1029,9 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* 5. breasts */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
                             {'BREASTS'}
                         </Text>
                         <TouchableOpacity
@@ -1092,7 +1098,7 @@ export default class AdvertisementMain extends React.Component {
                             style: {
                                 paddingHorizontal: 18,
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                color: (this.state.breasts === '') ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                color: (this.state.breasts === '') ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
                             }
                         }}
                         useNativeAndroidPickerStyle={false}

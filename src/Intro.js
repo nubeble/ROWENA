@@ -773,6 +773,13 @@ export default class Intro extends React.Component {
                             height={itemHeight}
                         />
                     </SvgAnimatedLinearGradient>
+                    <View style={{
+                        width: itemWidth, height: itemHeight,
+                        position: 'absolute', top: 0, left: 0,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <RefreshIndicator />
+                    </View>
                 </View>
             );
         }
@@ -869,6 +876,13 @@ export default class Intro extends React.Component {
                             height={itemHeight}
                         />
                     </SvgAnimatedLinearGradient>
+                    <View style={{
+                        width: itemWidth, height: itemHeight,
+                        position: 'absolute', top: 0, left: 0,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <RefreshIndicator />
+                    </View>
                 </View>
             );
         }
@@ -1025,10 +1039,6 @@ export default class Intro extends React.Component {
             },
             async () => {
                 await this.getPlaces();
-                /*
-                await this.getPopularFeeds();
-                await this.getRecentFeeds();
-                */
 
                 !this.closed && this.setState({ refreshing: false });
             }

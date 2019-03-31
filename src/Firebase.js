@@ -528,22 +528,22 @@ export default class Firebase {
         if (!reviewDoc.exists) return false;
         */
 
-        let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
-        let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
-        let userRef = Firebase.firestore.collection("users").doc(userUid);
+        const reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const userRef = Firebase.firestore.collection("users").doc(userUid);
+
+        // get rating
+        const reviewDoc = await reviewRef.get();
+        if (!reviewDoc.exists) return false;
+        const rating = reviewDoc.data().rating; // reviewDoc.data(): rating, comment, timestamp
 
         // update - averageRating, reviewCount, reviews
         await Firebase.firestore.runTransaction(async transaction => {
-            const reviewDoc = await transaction.get(reviewRef);
-            if (!feedDoc.exists) throw 'Review document does not exist!';
-
-            let rating = reviewDoc.data().rating; // reviewDoc.data(): rating, comment, timestamp
-
             const feedDoc = await transaction.get(feedRef);
             if (!feedDoc.exists) throw 'Post document does not exist!';
 
             // 1. reviewCount
-            let reviewCount = feedDoc.data().reviewCount;
+            const reviewCount = feedDoc.data().reviewCount;
             console.log('reviewCount will be', reviewCount - 1);
 
             // 2. averageRating
@@ -551,8 +551,13 @@ export default class Firebase {
             let averageRating = feedDoc.data().averageRating;
             let totalRating = averageRating * size;
             totalRating -= rating;
-            averageRating = totalRating / (size - 1);
-            averageRating = averageRating.toFixed(1);
+
+            if (size - 1 === 0) { // to avoid 0 / 0
+                averageRating = 0;
+            } else {
+                averageRating = totalRating / (size - 1);
+                averageRating = averageRating.toFixed(1);
+            }
             console.log('averageRating', averageRating);
 
             // 3. stats
@@ -574,7 +579,9 @@ export default class Firebase {
                 reviewStats[0] = value--;
             }
 
-            transaction.update(feedRef, { reviewCount: Number(reviewCount - 1), averageRating: Number(averageRating), reviewStats: reviewStats });
+            transaction.update(feedRef,
+                { reviewCount: Number(reviewCount - 1), averageRating: Number(averageRating), reviewStats: reviewStats }
+            );
 
             // remove review item (map) in reviews (array)
             const item = {
@@ -583,7 +590,7 @@ export default class Firebase {
                 reviewId: reviewId
             };
 
-            let data = {
+            const data = {
                 reviews: firebase.firestore.FieldValue.arrayRemove(item)
             };
 
@@ -595,7 +602,7 @@ export default class Firebase {
             return false;
         });
 
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).delete();
+        await reviewRef.delete();
 
         return true;
     }
