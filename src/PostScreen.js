@@ -1552,6 +1552,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         this._showNotification = true;
 
+        StatusBar.setHidden(true);
+
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
                 // this.state.offset.setValue(height * -1);
@@ -1570,8 +1572,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 ]).start();
             });
         });
-
-        StatusBar.setHidden(true);
     };
 
     hideNotification() {

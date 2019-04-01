@@ -588,6 +588,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
     openMap() {
         // ToDo: show map overview
+        // this.props.navigation.navigate("mapOverview", { post: post });
+        this.props.navigation.navigate("mapOverview");
     }
 }
 

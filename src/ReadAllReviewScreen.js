@@ -616,6 +616,8 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this._showNotification = true;
 
+        StatusBar.setHidden(true);
+
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
                 // this.state.offset.setValue(height * -1);
@@ -634,8 +636,6 @@ export default class ReadAllReviewScreen extends React.Component {
                 ]).start();
             });
         });
-
-        StatusBar.setHidden(true);
     };
 
     hideNotification() {

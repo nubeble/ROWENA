@@ -357,6 +357,7 @@ import AdvertisementStart from './src/AdvertisementStart';
 import AdvertisementMain from './src/AdvertisementMain';
 import CountrySelection from './src/CountrySelection';
 import AdvertisementFinish from './src/AdvertisementFinish';
+import MapOverview from './src/MapOverview';
 import Admin from './src/Admin';
 
 // -- start of AuthStackNavigatorWrapper
@@ -1138,6 +1139,8 @@ const MainStackNavigator = createStackNavigator(
     {
         // root: { screen: MainBottomTabNavigatorWrapper },
         root: { screen: RootStackNavigatorWrapper },
+
+        mapOverview: { screen: MapOverview },
 
         map: { screen: MapScreen },
         readReview: { screen: ReadAllReviewScreen },

@@ -24,7 +24,6 @@ export default class SignUpWithEmail extends React.Component {
         emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
         pwIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
-        // showIndicator: false,
         showSignUpLoader: false,
 
         notification: '',
@@ -37,6 +36,7 @@ export default class SignUpWithEmail extends React.Component {
 
         securePwInput: true,
         secureText: 'Show',
+
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 80 - 50 // 80: bottom gap, 50: button height
     };
@@ -99,6 +99,8 @@ export default class SignUpWithEmail extends React.Component {
 
         this._showNotification = true;
 
+        StatusBar.setHidden(true);
+
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
                 // this.state.offset.setValue(height * -1);
@@ -132,8 +134,6 @@ export default class SignUpWithEmail extends React.Component {
                 ]).start();
             });
         });
-
-        StatusBar.setHidden(true);
     };
 
     hideNotification() {
@@ -287,13 +287,21 @@ export default class SignUpWithEmail extends React.Component {
 
     toggleSecureText() {
         if (this.state.secureText === 'Show') {
+            console.log('toggleSecureText', 'show -> hide');
             this.setState({ secureText: 'Hide', securePwInput: false });
         } else {
+            console.log('toggleSecureText', 'hide -> show');
             this.setState({ secureText: 'Show', securePwInput: true });
         }
 
-        // ToDo: don't need this in ios, not working in android. check!!
-        this.refs['pwInput'].setNativeProps({ selection: { start: this.state.password.length, end: this.state.password.length } });
+        // ToDo: don't need this in ios, not working in android!
+        /*
+        if (Platform.OS === 'android') {
+            this.refs['pwInput'].setNativeProps(
+                { selection: { start: this.state.password.length - 1, end: this.state.password.length - 1 } }
+            );
+        }
+        */
     }
 
     signUp() {
@@ -334,7 +342,6 @@ export default class SignUpWithEmail extends React.Component {
 
     async processSignUp() {
         // show indicator
-        // this.setState({ showIndicator: true });
         this.setState({ showSignUpLoader: true });
 
         try {
@@ -350,7 +357,6 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         // close indicator
-        // !this.closed && this.setState({ showIndicator: false });
         !this.closed && this.setState({ showSignUpLoader: false });
     }
 
