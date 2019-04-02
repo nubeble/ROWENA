@@ -65,6 +65,8 @@ export default class Intro extends React.Component {
                 length: 0,
                 name: null,
                 uri: null,
+                lat: 0,
+                lng: 0,
                 key: 'one'
             },
             {
@@ -72,6 +74,8 @@ export default class Intro extends React.Component {
                 length: 0,
                 name: null,
                 uri: null,
+                lat: 0,
+                lng: 0,
                 key: 'two'
             },
             {
@@ -79,6 +83,8 @@ export default class Intro extends React.Component {
                 length: 0,
                 name: null,
                 uri: null,
+                lat: 0,
+                lng: 0,
                 key: 'three'
             },
             {
@@ -86,6 +92,8 @@ export default class Intro extends React.Component {
                 length: 0,
                 name: null,
                 uri: null,
+                lat: 0,
+                lng: 0,
                 key: 'four'
             },
             {
@@ -93,6 +101,8 @@ export default class Intro extends React.Component {
                 length: 0,
                 name: null,
                 uri: null,
+                lat: 0,
+                lng: 0,
                 key: 'five'
             },
             {
@@ -100,6 +110,8 @@ export default class Intro extends React.Component {
                 length: 0,
                 name: null,
                 uri: null,
+                lat: 0,
+                lng: 0,
                 key: 'six'
             }
         ],
@@ -166,12 +178,14 @@ export default class Intro extends React.Component {
         const place = {
             name: name,
             place_id: result.place_id,
-            length: count
+            length: count,
+
             // location: result.location
+            lat: result.location.lat,
+            lng: result.location.lng
         }
 
         setTimeout(() => {
-            // this.props.navigation.navigate("exploreMain", { place: place });
             this.props.navigation.navigate("home", { place: place });
         }, Cons.buttonTimeoutShort);
     }
@@ -339,6 +353,8 @@ export default class Intro extends React.Component {
                     length: data.count,
                     name: data.name,
                     uri,
+                    lat: data.lat,
+                    lng: data.lng,
                     key: doc.id
                 };
 
@@ -617,8 +633,6 @@ export default class Intro extends React.Component {
                             let country = '';
                             let imageUri = null;
 
-
-
                             place_id = item.place_id;
                             if (place_id) {
                                 place = item;
@@ -677,7 +691,6 @@ export default class Intro extends React.Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
-                                            // this.props.navigation.navigate("exploreMain", { place: place });
                                             this.props.navigation.navigate("home", { place: place });
                                         }, Cons.buttonTimeoutShort);
                                     }}
@@ -852,7 +865,11 @@ export default class Intro extends React.Component {
         }
 
         return (
-            <Carousel>
+            <Carousel
+                onPageChanged={(page) => {
+                    console.log('Intro.renderPopularFeeds, current page', page);
+                }}
+            >
                 {pictures}
             </Carousel>
         );
@@ -957,7 +974,11 @@ export default class Intro extends React.Component {
         }
 
         return (
-            <Carousel>
+            <Carousel
+                onPageChanged={(page) => {
+                    console.log('Intro.renderRecentFeeds, current page', page);
+                }}
+            >
                 {pictures}
             </Carousel>
         );

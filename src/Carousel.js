@@ -17,6 +17,8 @@ export default class extends Component {
         this.currentPage = 0;
 
         this.offsetList = []; // 1024 length
+
+        this.onPageChanged = props.onPageChanged;
     }
 
     render() {
@@ -119,6 +121,9 @@ export default class extends Component {
 
         this._placeCritical(page);
         this.currentPage = page;
+
+        // console.log('Carousel._onScrollEnd, current page', page);
+        if (this.onPageChanged) this.onPageChanged(page);
     }
 
     _calculateCurrentPage = (offset) => {
@@ -241,6 +246,7 @@ export default class extends Component {
         let b = this.offsetList[this.offsetList.length - 2];
         let c = this.offsetList[this.offsetList.length - 1];
         let d = (a + b + c) / 3;
+
         return d;
     }
 

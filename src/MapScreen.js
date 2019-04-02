@@ -1,33 +1,66 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
-import { MapView, Constants } from 'expo';
+import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform } from 'react-native';
+// import { MapView, Constants } from 'expo';
+import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import autobind from "autobind-decorator";
 
+// initial region
+const { width, height } = Dimensions.get('window');
+const ASPECT_RATIO = width / height;
+const LATITUDE = 37.78825;
+const LONGITUDE = -122.4324;
+const LATITUDE_DELTA = 0.0922;
+const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
+
+// const SPACE = 0.01;
+
+const useGoogleMaps = Platform.OS === 'android' ? true : false;
+
 
 export default class MapScreen extends React.Component {
     state = {
+        // renderMap: false,
+
+        distance: '?', // ToDo: get geolocation of my location
+
         region: { // current region
-            latitude: -37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421
-        },
-        ready: false,
-        renderMap: false
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+        }
     };
+
+    constructor(props) {
+        super(props);
+
+        this.ready = false;
+    }
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        // ToDo
-        // this.getCurrentPosition();
+        const { post } = this.props.navigation.state.params;
+        const latitude = post.location.latitude;
+        const longitude = post.location.longitude;
 
+        const region = {
+            latitude,
+            longitude,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01 * ASPECT_RATIO
+        };
+
+        this.setState({ region });
+
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderMap: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -44,11 +77,6 @@ export default class MapScreen extends React.Component {
     }
 
     render() {
-        const { post } = this.props.navigation.state.params;
-
-        const latitude = post.location.latitude;
-        const longitude = post.location.longitude;
-
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -69,8 +97,7 @@ export default class MapScreen extends React.Component {
                         <Ionicons name='md-arrow-back' color="black" size={24} />
                     </TouchableOpacity>
 
-                    {/* ToDo: get geolocation of my location */}
-                    <Text style={styles.distance}>? kilometers away</Text>
+                    <Text style={styles.distance}>{this.state.distance + ' kilometers away'}</Text>
 
                     {/* gps button */}
                     <TouchableOpacity
@@ -89,26 +116,24 @@ export default class MapScreen extends React.Component {
                 </View>
 
                 {
-                    this.state.renderMap &&
+                    // this.state.renderMap &&
                     <MapView
                         ref={map => { this.map = map }}
+                        provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
                         style={styles.map}
-                        initialRegion={{
-                            latitude: latitude,
-                            longitude: longitude,
-                            latitudeDelta: 0.03,
-                            longitudeDelta: 0.03
-                        }}
+                        initialRegion={this.state.region}
                         showsUserLocation={true}
                         // showsMyLocationButton={true}
                         onMapReady={this.onMapReady}
-                        onRegionChange={this.onRegionChange}
-                        onRegionChangeComplete={this.onRegionChangeComplete}
+                    // onRegionChange={this.onRegionChange}
+                    // onRegionChangeComplete={this.onRegionChangeComplete}
                     >
                         <MapView.Marker
                             coordinate={{
-                                latitude: latitude,
-                                longitude: longitude
+                                // latitude: this.state.region.latitude + SPACE,
+                                // longitude: this.state.region.longitude + SPACE
+                                latitude: this.state.region.latitude,
+                                longitude: this.state.region.longitude
                             }}
                         // title={'title'}
                         // description={'description'}
@@ -121,60 +146,41 @@ export default class MapScreen extends React.Component {
 
     getCurrentPosition() {
         try {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const region = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01
-                    };
+            navigator.geolocation.getCurrentPosition((position) => {
+                const region = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01 * ASPECT_RATIO
+                };
 
-                    this.setRegion(region);
-                },
-                (error) => {
-                    //TODO: better design
-                    /*
-                    switch (error.code) {
-                        case 1:
-                            if (Platform.OS === "ios") {
-                                Alert.alert("", "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Privacidad - Localización");
-                            } else {
-                                Alert.alert("", "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Apps - ExampleApp - Localización");
-                            }
-                            break;
-                        default:
-                            Alert.alert("", "Error al detectar tu locación");
-                    }
-                    */
-                    console.log('getCurrentPosition() error', error);
-                }
-            );
+                this.moveRegion(region);
+            }, (error) => {
+                console.log('getCurrentPosition() error', error);
+            });
         } catch (e) {
-            alert(e.message || "");
+            console.log('getCurrentPosition() exception', e.message);
         }
-    }
-
-    setRegion(region) {
-        if (this.state.ready) {
-            setTimeout(() => this.map.animateToRegion(region), 10);
-        }
-
-        this.setState({ region });
     }
 
     onMapReady = (e) => {
-        if (!this.state.ready) {
-            this.setState({ ready: true });
+        if (!this.ready) {
+            this.ready = true;
         }
     };
 
+    moveRegion(region) {
+        if (this.ready) {
+            setTimeout(() => this.map.animateToRegion(region), 10);
+        }
+    }
+
     onRegionChange = (region) => {
-        // console.log('onRegionChange', region);
+        console.log('onRegionChange', region);
     };
 
     onRegionChangeComplete = (region) => {
-        // console.log('onRegionChangeComplete', region);
+        console.log('onRegionChangeComplete', region);
     };
 }
 
@@ -201,9 +207,6 @@ const styles = StyleSheet.create({
     },
     map: {
         flex: 1
-        /*
-        width: '100%',
-        height: '100%'
-        */
+        // ...StyleSheet.absoluteFillObject
     }
 });

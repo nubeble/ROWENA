@@ -170,25 +170,10 @@ export default class AdvertisementMain extends React.Component {
         "location": {
             "lat": 37.4851745,
             "lng": 127.0131415,
-            },
-            "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
+        },
+        "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
         }
         */
-        /*
-        type Location = {
-            description: string,
-            streetId: string, // place_id for street
-            longitude: number,
-            latitude: number
-        };
-        */
-        /*
-        const city = {
-            name: obj.formatted_address,
-            placeId: obj.place_id
-        };
-        */
-
         const location = {
             description: result1.description,
             streetId: result1.place_id,
@@ -196,56 +181,82 @@ export default class AdvertisementMain extends React.Component {
             latitude: result1.location.lat
         };
 
-        // const words = result1.description.split(', ');
-        const words2 = result2.name.split(', ');
-        // console.log('words', words.length, words); // 4, Myeong-dong, Jung-gu, Seoul, South Korea
-
         let street = null;
         let state = '';
         let city = '';
 
+        const words2 = result2.name.split(', '); // "23 Limslättsväg, 22920, Åland Islands"
+
         // get street text
-        const words1 = result1.description.split(', ');
+        const words1 = result1.description.split(', '); // "23 Limslättsväg, Åland Islands"
         const length = words1.length - words2.length;
 
-        street = '';
-        for (var i = 0; i < length; i++) {
-            street += words1[i];
+        if (length <= 0) {
+            if (words1.length === 0) {
+                // someting is wrong
+            } else if (words1.length === 1) {
+                // someting is wrong
+            } else if (words1.length === 2) {
+                street = words1[0];
+            } else if (words1.length === 3) {
+                street = words1[0];
+                city = words1[1];
+            } else if (words1.length === 4) {
+                street = words1[0];
+                city = words1[1];
+                state = words1[2];
+            } else {
+                street = '';
+                for (var i = 0; i < words1.length - 3; i++) {
+                    street += words1[i];
 
-            if (i !== length - 1) street += ', ';
-        }
+                    if (i !== words1.length - 3 - 1) street += ', ';
+                }
 
-        // get, state, city text
-        if (words2.length === 0) {
-            // someting is wrong
-        } else if (words2.length === 1) {
-            // someting is wrong
-        } else if (words2.length === 2) {
-            city = words2[0];
-        } else if (words2.length === 3) {
-            city = words2[0];
-            state = words2[1];
+                city = words1[words1.length - 3];
+                state = words1[words1.length - 2];
+            }
         } else {
-            /*
             street = '';
-            const length = words.length - 3;
             for (var i = 0; i < length; i++) {
-                street += words[i];
+                street += words1[i];
 
                 if (i !== length - 1) street += ', ';
             }
 
-            city = words[words.length - 3];
-            state = words[words.length - 2];
-            */
+            // get, state, city text
+            if (words2.length === 0) {
+                // someting is wrong
+            } else if (words2.length === 1) {
+                // someting is wrong
+            } else if (words2.length === 2) {
+                city = words2[0];
+            } else if (words2.length === 3) {
+                city = words2[0];
+                state = words2[1];
+            } else {
+                /*
+                street = '';
+                const length = words.length - 3;
+                for (var i = 0; i < length; i++) {
+                    street += words[i];
 
-            city = words2[words2.length - 3];
-            state = words2[words2.length - 2];
+                    if (i !== length - 1) street += ', ';
+                }
+
+                city = words[words.length - 3];
+                state = words[words.length - 2];
+                */
+
+                city = words2[words2.length - 3];
+                state = words2[words2.length - 2];
+            }
         }
 
         const cityInfo = {
             description: result2.name,
-            cityId: result2.placeId
+            cityId: result2.placeId,
+            location: result2.location
         };
 
         this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
@@ -479,6 +490,13 @@ export default class AdvertisementMain extends React.Component {
     }
 
     async post() {
+        // ToDo: test navigation
+        this.props.navigation.navigate("advertisementFinish");
+
+        return;
+
+
+
         if (this.state.onUploadingImage) return;
 
         // 1. check
@@ -613,7 +631,12 @@ export default class AdvertisementMain extends React.Component {
         data.image3Uri = uploadImage3Uri;
         data.image4Uri = uploadImage4Uri;
 
-        await this.createFeed(data);
+        const extra = {
+            lat: cityInfo.location.lat,
+            lng: cityInfo.location.lng
+        };
+
+        await this.createFeed(data, extra);
 
         this.removeItemFromList();
 
@@ -1163,6 +1186,8 @@ export default class AdvertisementMain extends React.Component {
                     </Text>
                     <TouchableOpacity
                         onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
@@ -1214,6 +1239,8 @@ export default class AdvertisementMain extends React.Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
@@ -1572,8 +1599,8 @@ export default class AdvertisementMain extends React.Component {
     }
 
     //// database ////
-    async createFeed(data) {
-        console.log('data', data);
+    async createFeed(data, extra) {
+        console.log('AdvertisementMain.createFeed', data, extra);
 
         // const feedId = Util.uid(); // create uuid
         // const userUid = Firebase.user().uid;
@@ -1612,9 +1639,9 @@ export default class AdvertisementMain extends React.Component {
         feed.weight = data.weight;
         feed.bust = data.bust;
 
-        console.log('feed', feed);
+        // console.log('feed', feed);
 
-        await Firebase.createFeed(feed);
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }

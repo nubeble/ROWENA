@@ -314,7 +314,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 13.7563309,
+            lng: 100.5017651
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -382,7 +387,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 12.9235557,
+            lng: 100.8824551
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -450,7 +460,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 10.8230989,
+            lng: 106.6296638
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -518,7 +533,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 21.0277644,
+            lng: 105.8341598
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -586,7 +606,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 14.5995124,
+            lng: 120.9842195
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -654,7 +679,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 10.3156992,
+            lng: 123.8854366
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -722,7 +752,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 17.9757058,
+            lng: 102.6331035
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -790,7 +825,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 11.5563738,
+            lng: 104.9282099
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -858,7 +898,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 22.1980994,
+            lng: 113.5435639
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -926,7 +971,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: -6.180495,
+            lng: 106.8283415
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }
@@ -994,7 +1044,12 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
 
-        await Firebase.createFeed(feed);
+        const extra = {
+            lat: 3.139003,
+            lng: 101.686855
+        };
+
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }

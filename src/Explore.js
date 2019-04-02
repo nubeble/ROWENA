@@ -38,10 +38,12 @@ export default class Explore extends React.Component<InjectedProps> {
         searchText: '',
         // cityName: '',
         feedSize: 0,
+        latitude: 0,
+        longitude: 0,
         renderFeed: false,
 
         scrollY: 0,
-        selectedOrderIndex: 2 // time
+        selectedOrderIndex: 2 // order by time
     };
 
     componentDidMount() {
@@ -64,7 +66,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
     init(place) {
         // this.setState({ searchText: place.description, cityName: place.city, feedSize: length });
-        this.setState({ searchText: place.name, feedSize: place.length });
+        this.setState({ searchText: place.name, feedSize: place.length, latitude: place.lat, longitude: place.lng });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
@@ -86,8 +88,11 @@ export default class Explore extends React.Component<InjectedProps> {
         const place = {
             name: result.description,
             place_id: result.place_id,
-            length: count
+            length: count,
+
             // location: result.location
+            lat: result.location.lat,
+            lng: result.location.lng
         }
 
         this.init(place);
@@ -587,9 +592,31 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     openMap() {
-        // ToDo: show map overview
-        // this.props.navigation.navigate("mapOverview", { post: post });
-        this.props.navigation.navigate("mapOverview");
+        const { feedStore } = this.props;
+
+        /*
+        let region = null;
+        if (feedStore) {
+            const { feed } = feedStore; // array
+            if (feed) {
+                if (feed.length > 0) {
+                    const post = feed[0].post;
+
+                    const latitude = post.location.latitude;
+                    const longitude = post.location.longitude;
+
+                    region = { latitude, longitude };
+                }
+            }
+        }
+        */
+
+        const region = {
+            latitude: this.state.latitude,
+            longitude: this.state.longitude
+        };
+
+        this.props.navigation.navigate("mapSearch", { region: region, store: feedStore });
     }
 }
 

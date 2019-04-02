@@ -357,6 +357,7 @@ import AdvertisementStart from './src/AdvertisementStart';
 import AdvertisementMain from './src/AdvertisementMain';
 import CountrySelection from './src/CountrySelection';
 import AdvertisementFinish from './src/AdvertisementFinish';
+import MapSearch from './src/MapSearch';
 import MapOverview from './src/MapOverview';
 import Admin from './src/Admin';
 
@@ -796,75 +797,6 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
 }
 // -- end of AdvertisementStackNavigatorWrapper
 
-// -- start of ProfileModalNavigatorWrapper
-const ProfileModalNavigator = createStackNavigator(
-    {
-        profileMain: { screen: ProfileMain },
-        edit: { screen: EditStackNavigatorWrapper },
-        check: { screen: CheckStackNavigatorWrapper },
-        advertisement: { screen: AdvertisementStackNavigatorWrapper }
-    },
-    {
-        mode: 'modal',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
-        })
-    }
-);
-
-class ProfileModalNavigatorWrapper extends React.Component {
-    static router = ProfileModalNavigator.router;
-
-    render() {
-        return (
-            <ProfileModalNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-/*
-ProfileModalNavigatorWrapper.navigationOptions = ({ navigation }) => {
-    const route = navigation.state.routes[1];
-
-    if (route && route.routeName === 'edit') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    if (route && route.routeName === 'check') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    if (route && route.routeName === 'advertisement') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    if (route && route.routeName === 'postPreview') {
-        return {
-            tabBarVisible: false
-        };
-    }
-
-    return {
-        tabBarVisible: true
-    };
-};
-*/
-// -- end of ProfileModalNavigatorWrapper
-
 // -- start of MainBottomTabNavigatorWrapper
 const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     style: {
@@ -898,7 +830,6 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         profile: {
-            // screen: ProfileModalNavigatorWrapper,
             screen: ProfileMain,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         }
@@ -1101,6 +1032,41 @@ class RootStackNavigatorWrapper extends React.Component {
 }
 // -- end of RootStackNavigatorWrapper
 
+// -- start of MapSearchStackNavigatorWrapper
+const MapSearchStackNavigator = createStackNavigator(
+    {
+        home: { screen: MapSearch },
+        post: { screen: Post },
+        mapOverview: { screen: MapOverview } // ToDo: test
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class MapSearchStackNavigatorWrapper extends React.Component {
+    static router = MapSearchStackNavigator.router;
+
+    render() {
+        return (
+            <MapSearchStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of MapSearchStackNavigatorWrapper
+
 // -- start of AdminNavigatorWrapper
 const AdminNavigator = createStackNavigator(
     {
@@ -1137,10 +1103,9 @@ class AdminNavigatorWrapper extends React.Component {
 // -- start of MainStackNavigatorWrapper
 const MainStackNavigator = createStackNavigator(
     {
-        // root: { screen: MainBottomTabNavigatorWrapper },
         root: { screen: RootStackNavigatorWrapper },
 
-        mapOverview: { screen: MapOverview },
+        mapSearch: { screen: MapSearchStackNavigatorWrapper },
 
         map: { screen: MapScreen },
         readReview: { screen: ReadAllReviewScreen },

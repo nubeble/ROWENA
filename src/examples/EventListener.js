@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
   },
   eventData: {
     fontSize: 10,
-    fontFamily: 'courier',
+    // fontFamily: 'courier',
     color: '#555',
   },
   eventName: {

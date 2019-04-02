@@ -216,7 +216,7 @@ export default class MapOverview extends React.Component {
                     /*
                     this.state.renderMap &&
                     <MapView
-                        ref={map => { this.map = map }}
+                        ref={map => { this.map = map; }}
                         style={styles.map}
                         initialRegion={{
                             latitude: latitude,
@@ -267,24 +267,26 @@ export default class MapOverview extends React.Component {
                 {
                     this.renderExamples([
                         // [<component>, <component description>, <Google compatible>, <Google add'l description>]
-                        [StaticMap, 'StaticMap', true],
+                        // [StaticMap, 'StaticMap', true],
                         [DisplayLatLng, 'Tracking Position', true, '(incomplete)'],
                         [ViewsAsMarkers, 'Arbitrary Views as Markers', true],
                         [EventListener, 'Events', true, '(incomplete)'],
-                        [MarkerTypes, 'Image Based Markers', true],
-                        [DraggableMarkers, 'Draggable Markers', true],
-                        [PolygonCreator, 'Polygon Creator', true],
-                        [PolylineCreator, 'Polyline Creator', true],
-                        [GradientPolylines, 'Gradient Polylines', true],
+                        // [MarkerTypes, 'Image Based Markers', true],
+                        // [DraggableMarkers, 'Draggable Markers', true],
+                        // [PolygonCreator, 'Polygon Creator', true],
+                        // [PolylineCreator, 'Polyline Creator', true],
+                        // [GradientPolylines, 'Gradient Polylines', true],
                         [AnimatedViews, 'Animating with MapViews'],
-                        [AnimatedMarkers, 'Animated Marker Position'],
-                        [Callouts, 'Custom Callouts', true],
+                        // [AnimatedMarkers, 'Animated Marker Position'],
+                        // [Callouts, 'Custom Callouts', true],
                         [Overlays, 'Circles, Polygons, and Polylines', true],
                         [DefaultMarkers, 'Default Markers', true],
                         [CustomMarkers, 'Custom Markers', true],
                         [TakeSnapshot, 'Take Snapshot', true, '(incomplete)'],
+
                         [CachedMap, 'Cached Map'],
                         [LoadingMap, 'Map with loading'],
+
                         [MapBoundaries, 'Get visible map boundaries', true],
                         [FitToSuppliedMarkers, 'Focus Map On Markers', true],
                         [FitToCoordinates, 'Fit Map To Coordinates', true],
@@ -299,10 +301,10 @@ export default class MapOverview extends React.Component {
                         [BugMarkerWontUpdate, 'BUG: Marker Won\'t Update (Android)', true],
                         [ImageOverlayWithAssets, 'Image Overlay Component with Assets', true],
                         [ImageOverlayWithURL, 'Image Overlay Component with URL', true],
-                        [AnimatedNavigation, 'Animated Map Navigation', true],
+                        // [AnimatedNavigation, 'Animated Map Navigation', true],
                         [OnPoiClick, 'On Poi Click', true],
-                        [IndoorMap, 'Indoor Map', true],
-                        [CameraControl, 'CameraControl', true],
+                        // [IndoorMap, 'Indoor Map', true],
+                        // [CameraControl, 'CameraControl', true],
                     ]
                         // Filter out examples that are not yet supported for Google Maps on iOS.
                         .filter(example => ANDROID || (IOS && (example[2] || !this.state.useGoogleMaps)))
@@ -315,41 +317,24 @@ export default class MapOverview extends React.Component {
 
     getCurrentPosition() {
         try {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const region = {
-                        latitude: position.coords.latitude,
-                        longitude: position.coords.longitude,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01
-                    };
+            navigator.geolocation.getCurrentPosition((position) => {
+                const region = {
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01 * ASPECT_RATIO
+                };
 
-                    this.setRegion(region);
-                },
-                (error) => {
-                    //TODO: better design
-                    /*
-                    switch (error.code) {
-                        case 1:
-                            if (Platform.OS === "ios") {
-                                Alert.alert("", "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Privacidad - Localización");
-                            } else {
-                                Alert.alert("", "Para ubicar tu locación habilita permiso para la aplicación en Ajustes - Apps - ExampleApp - Localización");
-                            }
-                            break;
-                        default:
-                            Alert.alert("", "Error al detectar tu locación");
-                    }
-                    */
-                    console.log('getCurrentPosition() error', error);
-                }
-            );
+                this.moveRegion(region);
+            }, (error) => {
+                console.log('getCurrentPosition() error', error);
+            });
         } catch (e) {
-            alert(e.message || "");
+            console.log('getCurrentPosition() exception', e.message);
         }
     }
 
-    setRegion(region) {
+    moveRegion(region) {
         if (this.state.ready) {
             setTimeout(() => this.map.animateToRegion(region), 10);
         }

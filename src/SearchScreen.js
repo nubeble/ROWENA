@@ -242,7 +242,7 @@ export default class SearchScreen extends React.Component {
                                     lat: location.lat,
                                     lng: location.lng
                                 }
-                            }
+                            };
 
                             // save the keyword to storage
                             // --
@@ -307,7 +307,11 @@ export default class SearchScreen extends React.Component {
 
                                     const city = {
                                         name: obj.formatted_address,
-                                        placeId: obj.place_id
+                                        placeId: obj.place_id,
+                                        location: {
+                                            lat: obj.geometry.location.lat,
+                                            lng: obj.geometry.location.lng
+                                        }
                                     };
 
                                     if (this.closed) return;
@@ -318,7 +322,7 @@ export default class SearchScreen extends React.Component {
                             } else {
                                 setTimeout(() => {
                                     if (this.closed) return;
-    
+
                                     this.props.navigation.state.params.initFromSearch(result);
                                     this.props.navigation.goBack();
                                 }, Cons.buttonTimeoutShort);

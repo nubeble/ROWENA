@@ -1,4 +1,3 @@
-
 type Location = {
     description: string,
     // streetId: string, // place_id for street

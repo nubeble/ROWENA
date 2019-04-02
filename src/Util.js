@@ -239,12 +239,28 @@ export default class Util extends React.Component {
                     callback(result);
                     */
 
+                    let result = null;
+
                     // console.log('getPlaceId pre results', responseJSON.results);
                     const filter = ['locality', 'administrative_area_level_3'];
                     const results = Util._filterResultsByTypes(responseJSON.results, filter);
                     // console.log('getPlaceId after results', results);
 
-                    const result = results[0];
+                    // add 'street_address' filter
+                    if (results.length != 0) {
+                        result = results[0];
+                    } else {
+                        const filter2 = ['street_address'];
+                        const results2 = Util._filterResultsByTypes(responseJSON.results, filter2);
+
+                        if (results2.length != 0) {
+                            result = results2[0];
+                        } else {
+                            // ToDo: just use original
+                            result = responseJSON.results[0];
+                        }
+                    }
+
                     callback(result);
                 }
 

@@ -221,7 +221,7 @@ export default class Firebase {
     }
     */
 
-    static async createFeed(feed) {
+    static async createFeed(feed, extra) {
         feed.likes = [];
         feed.reviewCount = 0;
         feed.averageRating = 0;
@@ -247,14 +247,16 @@ export default class Firebase {
 
             // 2. update the count & timestamp
             // transaction.update(placeRef, { count: Number(count + 1) });
-            transaction.set(placeRef, { count: Number(count + 1), timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn });
+            transaction.set(placeRef, { count: Number(count + 1), timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn,
+                lat: extra.lat, lng: extra.lng
+            });
 
             // 3. update profile (add fields to feeds in user profile)
             const data = {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
-                    picture: feed.pictures.one.uri, // ToDo: update this after changing
+                    picture: feed.pictures.one.uri, // ToDo: update this after changing post
                     valid: true // ToDo: update this after removing
                 })
             };

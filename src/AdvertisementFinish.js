@@ -53,7 +53,7 @@ export default class AdvertisementFinish extends React.Component {
                         onPress={() => {
                             // this.props.navigation.dispatch(NavigationActions.back());
                             setTimeout(() => {
-                                this.props.navigation.navigate("profile");
+                                this.props.navigation.navigate("profile"); // ToDo: test navigation
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -66,7 +66,7 @@ export default class AdvertisementFinish extends React.Component {
                         marginTop: Theme.spacing.tiny,
                         paddingHorizontal: 22,
                         fontSize: 28,
-                        lineHeight: 32, // ToDo: check ios!
+                        lineHeight: 32,
                         color: Theme.color.text2,
                         fontFamily: "Roboto-Medium",
                         // textAlign: 'center'
@@ -88,7 +88,7 @@ export default class AdvertisementFinish extends React.Component {
                         paddingHorizontal: Theme.spacing.base,
                         color: Theme.color.text3,
                         fontSize: 16,
-                        lineHeight: 24, // ToDo: check ios!
+                        lineHeight: 24,
                         fontFamily: "Roboto-Light",
                         textAlign: 'center'
                     }}>{contentText}</Text>
@@ -97,7 +97,7 @@ export default class AdvertisementFinish extends React.Component {
                 <View style={{ position: 'absolute', top: bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
-                            this.props.navigation.navigate("profile");
+                            this.props.navigation.navigate("profile"); // ToDo: test navigation
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Finish</Text>
