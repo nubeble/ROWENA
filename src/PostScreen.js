@@ -104,7 +104,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     async initFromWriteReview(result) { // back from rating
         // console.log('PostScreen.initFromWriteReview', result);
 
-        this.setState({ writeRating: 0 });
+        !this.closed && this.setState({ writeRating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
         // reload reviews
@@ -117,7 +117,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             // 1.
             const newPost = await this.reloadPost(post.placeId, post.id);
             const newChart = this.getChartInfo(newPost);
-            this.setState({ post: newPost, chartInfo: newChart });
+            !this.closed && this.setState({ post: newPost, chartInfo: newChart });
 
             // this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
         }
@@ -223,18 +223,18 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     init(post, extra) {
-        this.setState({ post });
+        !this.closed && this.setState({ post });
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
         const isOwner = this.isOwner(post.uid, Firebase.user().uid);
-        this.setState({ isOwner });
+        !this.closed && this.setState({ isOwner });
 
         // check liked
         const liked = this.checkLiked(post.likes);
         if (liked) {
-            this.setState({ liked: true });
+            !this.closed && this.setState({ liked: true });
         }
 
         // chart info
@@ -258,7 +258,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             ranking: ranking
         };
 
-        this.setState({ chartInfo: chart });
+        !this.closed && this.setState({ chartInfo: chart });
     }
 
     isOwner(uid1, uid2) {
@@ -333,7 +333,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         }
 
         if (!this.state.liked) {
-            this.setState({ liked: true });
+            !this.closed && this.setState({ liked: true });
 
             this.springValue.setValue(2);
 
@@ -346,7 +346,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             // toast
             this.refs["toast"].show('Thanks ❤', 500);
         } else {
-            this.setState({ liked: false });
+            !this.closed && this.setState({ liked: false });
 
             // toast
             this.refs["toast"].show('Oh...', 500);
@@ -383,7 +383,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         let newPost = post;
         newPost.likes = likes;
 
-        this.setState({ post: newPost });
+        !this.closed && this.setState({ post: newPost });
         // --
 
         this.toggling = false;
@@ -393,7 +393,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         Vars.postLikeButtonPressed = true;
 
         Vars.updatedPostsForIntro.push(newPost);
-        Vars.updatedPostsForLikes.push(newPost);
+        // Vars.updatedPostsForLikes.push(newPost);
     }
 
     checkLiked(likes) {
@@ -523,7 +523,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     this.state.renderList &&
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                            if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
                         }}
                     >
                         <FlatList
@@ -628,7 +628,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                 <View style={{ marginBottom: 9 }}>
                                                     <View style={{
                                                         marginLeft: 2,
-                                                        width: 100, height: 22, borderRadius: 3,
+                                                        width: 160, height: 22, borderRadius: 3,
                                                         backgroundColor: Theme.color.flashBackground,
                                                         justifyContent: 'center', alignItems: 'center'
                                                     }}>
@@ -1551,7 +1551,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         console.log('PostScreen._keyboardDidShow');
 
-        this.setState({ showKeyboard: true, bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
+        !this.closed && this.setState({ showKeyboard: true, bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
         if (!this.selectedItem) return;
 
@@ -1581,7 +1581,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         console.log('PostScreen._keyboardDidHide');
 
-        this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
+        !this.closed && this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
@@ -1597,7 +1597,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     openKeyboard(ref, index, owner) {
         if (this.state.showKeyboard) return;
 
-        this.setState({ showKeyboard: true }, () => {
+        !this.closed && this.setState({ showKeyboard: true }, () => {
             this._reply.focus();
         });
 
@@ -1611,7 +1611,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         this._showNotification = true;
 
-        this.setState({ notification: msg }, () => {
+        !this.closed && this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
                 Animated.sequence([
                     Animated.parallel([
@@ -1743,7 +1743,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         this.refs["toast"].show('Your reply has been submitted!', 500, async () => {
             if (!this.closed) {
                 // this._reply.blur();
-                if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+                if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
 
                 // reload reviews
                 // const { post } = this.props.navigation.state.params;
@@ -1754,7 +1754,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 // 2.
                 const newPost = await this.reloadPost(post.placeId, post.id);
                 const newChart = this.getChartInfo(newPost);
-                this.setState({ post: newPost, chartInfo: newChart });
+                !this.closed && this.setState({ post: newPost, chartInfo: newChart });
 
                 this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
             }
@@ -1807,7 +1807,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     // 3.
                     const newPost = await this.reloadPost(post.placeId, post.id);
                     const newChart = this.getChartInfo(newPost);
-                    this.setState({ post: newPost, chartInfo: newChart });
+                    !this.closed && this.setState({ post: newPost, chartInfo: newChart });
 
                     this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
                 }
@@ -1837,7 +1837,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     // 4.
                     const newPost = await this.reloadPost(post.placeId, post.id);
                     const newChart = this.getChartInfo(newPost);
-                    this.setState({ post: newPost, chartInfo: newChart });
+                    !this.closed && this.setState({ post: newPost, chartInfo: newChart });
 
                     this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
                 }
@@ -1846,7 +1846,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     openDialog(title, message, callback) {
-        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+        !this.closed && this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
 
         this.setDialogCallback(callback);
     }
@@ -1856,7 +1856,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     hideDialog() {
-        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+        if (this.state.dialogVisible) !this.closed && this.setState({ dialogVisible: false });
     }
 
     handleCancel() {

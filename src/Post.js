@@ -380,7 +380,7 @@ export default class Post extends React.Component<InjectedProps> {
         Vars.postLikeButtonPressed = true;
 
         Vars.updatedPostsForIntro.push(newPost);
-        Vars.updatedPostsForLikes.push(post);
+        // Vars.updatedPostsForLikes.push(newPost);
     }
 
     checkLiked(likes) {
