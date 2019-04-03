@@ -1635,73 +1635,8 @@ export default class AdvertisementMain extends React.Component {
         Vars.userFeedsChanged = true;
     }
 
-    // ToDo: test
+
     /*
-    async createFeed() {
-        const feedId = Util.uid(); // create uuid
-        const userUid = Firebase.user().uid;
-    
-        let placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
-        let placeName = 'Bangkok, Thailand';
-        const location = {
-            description: 'Soi Sukhumvit 19, Khlong Toei Nuea, Watthana, Bangkok, Thailand',
-            longitude: 100.5017651,
-            latitude: 13.7563309
-        };
-    
-        const note = 'note';
-    
-        const image1Uri = 'https://i.ytimg.com/vi/FLm-oBqOM24/maxresdefault.jpg';
-        const image2Uri = 'https://pbs.twimg.com/media/DiABjHdXUAEHCdN.jpg';
-        const image3Uri = 'https://i.ytimg.com/vi/jn2XzSxv4sU/maxresdefault.jpg';
-        const image4Uri = 'https://t1.daumcdn.net/cfile/tistory/994E373C5BF1FD440A';
-    
-        const name = 'name';
-        const birthday = '03111982';
-        const height = 166;
-        const weight = 50;
-        const bust = 'D';
-    
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-    
-        const pictures = {
-            one: {
-                // preview: null,
-                uri: image1Uri
-            },
-            two: {
-                // preview: null,
-                uri: image2Uri
-            },
-            three: {
-                // preview: null,
-                uri: image3Uri
-            },
-            four: {
-                // preview: null,
-                uri: image4Uri
-            }
-        };
-    
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.birthday = birthday;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-    
-        await Firebase.createFeed(feed);
-    
-        Vars.userFeedsChanged = true;
-    }
-    
     // ToDo: test
     async removeFeed() {
         const uid = Firebase.user().uid;

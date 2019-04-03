@@ -76,7 +76,7 @@ export default class ChatMain extends React.Component {
             const result = this.findChatRoom(roomId);
             if (result) { // found
 
-                // means already removed. doing nothing here.
+                // means already removed. nothing to do here.
 
             } else { // not found
                 // means need to remove here.

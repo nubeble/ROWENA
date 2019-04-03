@@ -204,7 +204,7 @@ export default class extends Component {
         // If the index has changed, we notify the parent via the onIndexChanged callback
         if (this.state.index !== nextState.index) this.props.onIndexChanged(nextState.index)
 
-        // ToDo
+        // for direction
         this._index = nextState.index;
     }
 
@@ -258,7 +258,7 @@ export default class extends Component {
             isScrolling: false
         };
 
-        // ToDo
+        // for direction
         this._index = initState.index;
         this._direction = this.props.autoplayDirection;
 
@@ -323,7 +323,6 @@ export default class extends Component {
 
         this.autoplayTimer && clearTimeout(this.autoplayTimer)
         this.autoplayTimer = setTimeout(() => {
-            // ToDo
             /*
             if (!this.props.loop && (
                 // this.props.autoplayDirection
