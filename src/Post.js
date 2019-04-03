@@ -53,7 +53,6 @@ const bodyInfoItemHeight = Dimensions.get('window').height / 12;
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
-// const useGoogleMaps = true;
 
 
 @inject("feedStore", "profileStore")
@@ -375,8 +374,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.toggling = false;
 
-        
-        
+
+
         Vars.postLikeButtonPressed = true;
 
         /*
@@ -571,21 +570,52 @@ export default class Post extends React.Component<InjectedProps> {
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
-                                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                <AirbnbRating
-                                                    count={5}
-                                                    readOnly={true}
-                                                    showRating={false}
-                                                    defaultRating={integer}
-                                                    size={16}
-                                                    margin={1}
-                                                />
-                                            </View>
-                                            <Text style={styles.rating}>{number}</Text>
-                                            <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                                            <Text style={styles.reviewCount}>{post.reviewCount}</Text>
-                                        </View>
+                                        {
+                                            post.reviewCount > 0 ?
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
+                                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                                        <AirbnbRating
+                                                            count={5}
+                                                            readOnly={true}
+                                                            showRating={false}
+                                                            defaultRating={integer}
+                                                            size={16}
+                                                            margin={1}
+                                                        />
+                                                    </View>
+                                                    <Text style={styles.rating}>{number}</Text>
+                                                    <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
+                                                    <Text style={styles.reviewCount}>{post.reviewCount}</Text>
+                                                </View>
+                                                :
+                                                /*
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                                    <View style={{
+                                                        marginLeft: 2,
+                                                        width: 36, height: 21, borderRadius: 3,
+                                                        backgroundColor: Theme.color.flashBackground,
+                                                        justifyContent: 'center', alignItems: 'center'
+                                                    }}>
+                                                        <Text style={styles.new}>new</Text>
+                                                    </View>
+                                                </View>
+                                                */
+                                                <View style={{ marginBottom: 9 }}>
+                                                    <View style={{
+                                                        marginLeft: 2,
+                                                        width: 100, height: 22, borderRadius: 3,
+                                                        backgroundColor: Theme.color.flashBackground,
+                                                        justifyContent: 'center', alignItems: 'center'
+                                                    }}>
+                                                        <Text style={{
+                                                            color: 'white',
+                                                            fontSize: 14,
+                                                            lineHeight: 14,
+                                                            fontFamily: "Roboto-Bold"
+                                                        }}>newly added</Text>
+                                                    </View>
+                                                </View>
+                                        }
 
                                         {
                                             post.note &&
@@ -2060,6 +2090,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
+        borderRadius: 4,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

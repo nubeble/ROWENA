@@ -1925,6 +1925,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
+        borderRadius: 4,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,
@@ -1952,6 +1953,7 @@ const styles = StyleSheet.create({
         // height: Cons.searchBarHeight,
         height: (8 + 34 + 8),
         position: "absolute",
+        borderRadius: 5,
         top: 0,
         backgroundColor: Theme.color.selection,
         zIndex: 10001,

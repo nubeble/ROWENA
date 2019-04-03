@@ -439,21 +439,41 @@ export default class MapSearch extends React.Component {
                 <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{post.name}</Text>
                     <Text style={styles.feedItemText}>{placeName}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
-                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                            <AirbnbRating
-                                count={5}
-                                readOnly={true}
-                                showRating={false}
-                                defaultRating={integer}
-                                size={12}
-                                margin={1}
-                            />
-                        </View>
-                        <Text style={styles.rating}>{number}</Text>
-                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                        <Text style={styles.reviewCount}>{post.reviewCount}</Text>
-                    </View>
+                    {
+                        post.reviewCount > 0 ?
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center',
+                                    marginLeft: 2,
+                                    width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                }}>
+                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                        <AirbnbRating
+                                            count={5}
+                                            readOnly={true}
+                                            showRating={false}
+                                            defaultRating={integer}
+                                            size={12}
+                                            margin={1}
+                                        />
+                                    </View>
+                                    <Text style={styles.rating}>{number}</Text>
+                                    <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                                    <Text style={styles.reviewCount}>{post.reviewCount}</Text>
+                                </View>
+                            </View>
+                            :
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                <View style={{
+                                    marginLeft: 2,
+                                    width: 36, height: 21, borderRadius: 3,
+                                    backgroundColor: Theme.color.flashBackground,
+                                    justifyContent: 'center', alignItems: 'center'
+                                }}>
+                                    <Text style={styles.new}>new</Text>
+                                </View>
+                            </View>
+                    }
                 </View>
             </TouchableOpacity>
         );
@@ -616,7 +636,13 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Regular",
         // paddingTop: Cons.ratingTextPaddingTop()
     },
-
+    new: {
+        color: 'white',
+        fontSize: 12,
+        lineHeight: 12,
+        fontFamily: "Roboto-Bold",
+        // backgroundColor: 'grey'
+    },
 
 
 

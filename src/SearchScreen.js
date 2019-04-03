@@ -305,6 +305,9 @@ export default class SearchScreen extends React.Component {
                                 Util.getPlaceId(input, key, (obj) => {
                                     console.log('Util.getPlaceId result', obj);
 
+                                    // ToDo: exception
+                                    if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+
                                     const city = {
                                         name: obj.formatted_address,
                                         placeId: obj.place_id,

@@ -883,6 +883,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
+        borderRadius: 4,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,
