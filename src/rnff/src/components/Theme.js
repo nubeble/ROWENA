@@ -29,7 +29,8 @@ type Theme = {
         buttonText: Color,
         flashBackground: Color,
         chartBarBackground: Color,
-        chartBar: Color
+        chartBar: Color,
+        notification: Color
     },
     palette: {
         primary: Color,
@@ -91,7 +92,8 @@ const theme: Theme = {
         flashBackground: "#FEBFD4",
         // chartBarBackground: 'rgba(226, 108, 12, 0.6)',
         chartBarBackground: "#7B7B7B",
-        chartBar: '#f1c40f'
+        chartBar: '#f1c40f',
+        notification: '#FFBB33'
     },
     palette: {
         primary: "#00AAFF",

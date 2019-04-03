@@ -367,7 +367,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         this.toggling = false;
 
-        Vars.postToggleButtonPressed = true;
+        // Vars.postToggleButtonPressed = true;
         const _post = {};
         _post.placeId = placeId;
         _post.feedId = feedId;
@@ -1568,12 +1568,12 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     Animated.parallel([
                         Animated.timing(this.state.opacity, {
                             toValue: 1,
-                            duration: 200,
+                            duration: 200
                         }),
                         Animated.timing(this.state.offset, {
                             toValue: 0,
-                            duration: 200,
-                        }),
+                            duration: 200
+                        })
                     ])
                 ]).start();
             });
@@ -1586,11 +1586,11 @@ export default class PostScreen extends React.Component<InjectedProps> {
                 Animated.parallel([
                     Animated.timing(this.state.opacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.offset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
@@ -2075,7 +2075,7 @@ const styles = StyleSheet.create({
         height: Constants.statusBarHeight + 10,
         position: "absolute",
         top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        backgroundColor: Theme.color.notification,
         zIndex: 10000,
 
         flexDirection: 'column',

@@ -79,9 +79,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
     onFocus() {
         Vars.currentScreenName = 'LikesMain';
 
-        if (Vars.postToggleButtonPressed) {
-            Vars.postToggleButtonPressed = false;
+        if (Vars.postLikeButtonPressed) {
             this.getSavedFeeds();
+            Vars.postToggleButtonPressed = false;
         }
 
         this.setState({ focused: true });
@@ -398,7 +398,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
             () => {
                 // if user moved to likes page before the Vars.postToggleButtonPressed updated to true.
                 // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
-                if (Vars.postToggleButtonPressed) Vars.postToggleButtonPressed = false;
+                if (Vars.postLikeButtonPressed) Vars.postLikeButtonPressed = false;
 
                 // reload from the start
                 this.lastChangedTime = 0;
@@ -467,10 +467,9 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium",
         paddingLeft: 2,
 
-        textShadowColor: "#3D3D3D",
-        // textShadowOffset: { width: 0.6, height: 0.6 },
-        // textShadowRadius: 4
-        textShadowOffset: { width: 0.2, height: 0.2 }
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

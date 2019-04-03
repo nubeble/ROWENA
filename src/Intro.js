@@ -194,7 +194,48 @@ export default class Intro extends React.Component {
     async onFocus() {
         Vars.currentScreenName = 'Intro';
 
+        // update
+        console.log('update Intro state post', Vars.updatedPostsForIntro.length);
+
+        for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
+            const newPost = Vars.updatedPostsForIntro[i];
+            // console.log('onFocus newPost', newPost.placeId, newPost.id);
+
+            // search (popular feeds)
+            let popularFeeds = [...this.state.popularFeeds];
+            if (popularFeeds.length === 0) {
+                popularFeeds = Intro.popularFeeds;
+            }
+
+            let index = popularFeeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
+            if (index !== -1) {
+                // set
+                popularFeeds[index] = newPost;
+                !this.closed && this.setState({ popularFeeds });
+                Intro.popularFeeds[index] = newPost;
+                // console.log('Intro.popularFeeds[index]', Intro.popularFeeds[index]);
+            }
+
+            // search (recent feeds)
+            let recentFeeds = [...this.state.recentFeeds];
+            if (recentFeeds.length === 0) {
+                recentFeeds = Intro.recentFeeds;
+            }
+
+            index = recentFeeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
+            if (index !== -1) {
+                // set
+                recentFeeds[index] = newPost;
+                !this.closed && this.setState({ recentFeeds });
+                Intro.recentFeeds[index] = newPost;
+                // console.log('Intro.recentFeeds[index]', Intro.recentFeeds[index]);
+            }
+        }
+
+        Vars.updatedPostsForIntro = []; // ToDo: pop, clean
+
         // -- update the post that user clicked a like button
+        /*
         const _post = Vars.toggleButtonPressedPost;
         if (_post) {
             // reload
@@ -229,13 +270,16 @@ export default class Intro extends React.Component {
 
             Vars.toggleButtonPressedPost = null;
         }
+        */
         // --
     }
 
     componentWillUnmount() {
-        // if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
+        console.log('Intro.componentWillUnmount');
 
         this.onFocusListener.remove();
+
+        // if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
 
         /*
         for (var i = 0; i < this.popularFeedsUnsubscribes.length; i++) {
@@ -427,8 +471,10 @@ export default class Intro extends React.Component {
                 if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
 
                 let _popularFeeds = [...this.state.popularFeeds];
-                let index = _popularFeeds.findIndex(item => item.id === feed.id); // snap.id
+                let index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+
                 if (index !== -1) {
+                    console.log('popularFeeds[', index, '] updated');
                     _popularFeeds[index] = newFeed;
                     !this.closed && this.setState({ popularFeeds: _popularFeeds });
                 }
@@ -495,11 +541,12 @@ export default class Intro extends React.Component {
 
             const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 // newFeed === undefined if removed
-                // if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
+                if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
 
                 let _recentFeeds = [...this.state.recentFeeds];
-                let index = _recentFeeds.findIndex(item => item.id === feed.id); // snap.id
+                let index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
                 if (index !== -1) {
+                    console.log('recentFeeds[', index, '] updated');
                     _recentFeeds[index] = newFeed;
                     !this.closed && this.setState({ recentFeeds: _recentFeeds });
                 }
@@ -644,8 +691,8 @@ export default class Intro extends React.Component {
                                 if (words.length > 1) {
                                     city = words[0];
                                     country = words[words.length - 1];
-
-                                    // name = city + ', ' + country;
+                                } else {
+                                    city = name;
                                 }
 
                                 imageUri = place.uri;
@@ -709,8 +756,10 @@ export default class Intro extends React.Component {
                                                 fontSize: 20,
                                                 fontFamily: "Roboto-Bold",
 
-                                                textShadowColor: "#3D3D3D",
-                                                textShadowOffset: { width: 0.6, height: 0.6 }
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1, height: 1 },
+                                                textShadowRadius: 1
+
                                             }}>{city}</Text>
                                             <Text style={{
                                                 marginTop: 8,
@@ -720,8 +769,9 @@ export default class Intro extends React.Component {
                                                 fontSize: 20,
                                                 fontFamily: "Roboto-Bold",
 
-                                                textShadowColor: "#3D3D3D",
-                                                textShadowOffset: { width: 0.6, height: 0.6 }
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1, height: 1 },
+                                                textShadowRadius: 1
                                             }}>{country}</Text>
 
                                             <Text style={{
@@ -732,8 +782,9 @@ export default class Intro extends React.Component {
                                                 fontSize: 14,
                                                 fontFamily: "Roboto-Medium",
 
-                                                textShadowColor: "black",
-                                                textShadowOffset: { width: 0.2, height: 0.2 }
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1, height: 1 },
+                                                textShadowRadius: 1
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
                                     </View>
@@ -1029,21 +1080,37 @@ export default class Intro extends React.Component {
                 <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{feed.name}</Text>
                     <Text style={styles.feedItemText}>{placeName}</Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
-                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                            <AirbnbRating
-                                count={5}
-                                readOnly={true}
-                                showRating={false}
-                                defaultRating={integer}
-                                size={12}
-                                margin={1}
-                            />
-                        </View>
-                        <Text style={styles.rating}>{number}</Text>
-                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                        <Text style={styles.reviewCount}>{feed.reviewCount}</Text>
-                    </View>
+
+                    {
+                        feed.reviewCount > 0 ?
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 1, paddingBottom: Theme.spacing.tiny }}>
+                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                    <AirbnbRating
+                                        count={5}
+                                        readOnly={true}
+                                        showRating={false}
+                                        defaultRating={integer}
+                                        size={12}
+                                        margin={1}
+                                    />
+                                </View>
+                                <Text style={styles.rating}>{number}</Text>
+                                <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                                <Text style={styles.reviewCount}>{feed.reviewCount}</Text>
+                            </View>
+                            :
+                            <View style={{ paddingLeft: 4, paddingTop: 2 }}>
+
+                                <View style={{
+                                    width: 34, height: 16, borderRadius: 3,
+                                    backgroundColor: Theme.color.flashBackground,
+                                    justifyContent: 'center', alignItems: 'center'
+                                }}>
+                                    <Text style={styles.new}>new</Text>
+                                </View>
+
+                            </View>
+                    }
                 </View>
             </TouchableOpacity>
         );
@@ -1168,10 +1235,9 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium",
         paddingLeft: 2,
 
-        textShadowColor: "#3D3D3D",
-        // textShadowOffset: { width: 0.6, height: 0.6 },
-        // textShadowRadius: 4
-        textShadowOffset: { width: 0.2, height: 0.2 }
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,
@@ -1186,5 +1252,12 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Regular",
         // paddingTop: Cons.ratingTextPaddingTop()
+    },
+    new: {
+        color: 'white',
+        fontSize: 12,
+        lineHeight: 12,
+        fontFamily: "Roboto-Bold",
+        // backgroundColor: 'grey'
     }
 });

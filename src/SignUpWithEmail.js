@@ -1,9 +1,8 @@
 import React from 'react';
 import {
     StyleSheet, View, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
-    Keyboard, Dimensions, Platform, StatusBar, TextInput
+    Keyboard, Dimensions, Platform, TextInput
 } from 'react-native';
-import { Header } from 'react-navigation';
 // import { Form, Item, Input, Label } from 'native-base';
 import { Constants } from "expo";
 import { Ionicons, AntDesign } from "react-native-vector-icons";
@@ -28,7 +27,7 @@ export default class SignUpWithEmail extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         invalid: true,
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)',
@@ -99,38 +98,19 @@ export default class SignUpWithEmail extends React.Component {
 
         this._showNotification = true;
 
-        StatusBar.setHidden(true);
-
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                // this.state.offset.setValue(height * -1);
-
                 Animated.sequence([
                     Animated.parallel([
                         Animated.timing(this.state.opacity, {
                             toValue: 1,
-                            duration: 200,
+                            duration: 200
                         }),
                         Animated.timing(this.state.offset, {
-                            toValue: 0,
-                            duration: 200,
-                        }),
-                    ]),
-
-                    /*
-                    Animated.delay(1500),
-
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 0,
-                            duration: 300,
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: height * -1,
-                            duration: 300,
-                        }),
-                    ]),
-                    */
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
+                    ])
                 ]).start();
             });
         });
@@ -142,17 +122,15 @@ export default class SignUpWithEmail extends React.Component {
                 Animated.parallel([
                     Animated.timing(this.state.opacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.offset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
         });
-
-        StatusBar.setHidden(false);
 
         this._showNotification = false;
     }
@@ -366,11 +344,7 @@ export default class SignUpWithEmail extends React.Component {
 
         const notificationStyle = {
             opacity: this.state.opacity,
-            transform: [
-                {
-                    translateY: this.state.offset
-                }
-            ]
+            transform: [{ translateY: this.state.offset }]
         };
 
         return (
@@ -413,7 +387,7 @@ export default class SignUpWithEmail extends React.Component {
                                 }
                             }}
                         >
-                            <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            <Ionicons name='md-close' color="white" size={20} />
                         </TouchableOpacity>
                     </Animated.View>
 
@@ -450,8 +424,8 @@ export default class SignUpWithEmail extends React.Component {
                             />
                             {/* to block shaking */}
                             {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={30} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={Theme.color.notification} size={30} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="white" size={30} />}
 
                             <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
@@ -484,8 +458,8 @@ export default class SignUpWithEmail extends React.Component {
                             />
                             {/* to block shaking */}
                             {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="transparent" size={28} />}
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={28} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color={Theme.color.notification} size={28} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="white" size={28} />}
                         </View>
                     </View>
 
@@ -537,7 +511,6 @@ const styles = StyleSheet.create({
     */
     searchBar: {
         height: Cons.searchBarHeight,
-        // paddingBottom: 8 + 4, // paddingBottom from searchBar
         paddingBottom: 8, // paddingBottom from searchBar
         justifyContent: 'flex-end',
         alignItems: 'center'
@@ -577,26 +550,27 @@ const styles = StyleSheet.create({
     },
     notification: {
         width: '100%',
-        height: Constants.statusBarHeight + 10,
+        height: (8 + 34 + 8) - 12,
         position: "absolute",
         top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        backgroundColor: Theme.color.notification,
         zIndex: 10000,
-
-        flexDirection: 'column',
-        // justifyContent: 'center'
-        justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     notificationText: {
-        alignSelf: 'center',
-        fontSize: 14,
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "#FFF",
-        paddingBottom: 2
+        color: "white",
+        textAlign: 'center'
     },
     notificationButton: {
-        position: 'absolute',
-        right: 18,
-        bottom: 2
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

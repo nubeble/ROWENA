@@ -5,7 +5,6 @@ import {
     StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList, BackHandler,
     ActivityIndicator, TouchableOpacity, Keyboard, TextInput, TouchableWithoutFeedback
 } from "react-native";
-import { Header, NavigationActions, StackActions } from 'react-navigation';
 import { Constants, Svg } from "expo";
 import { Text, Theme, Avatar } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
@@ -25,7 +24,7 @@ type FlatListItem<T> = {
     item: T
 };
 
-const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
 
 
 export default class ReadAllReviewScreen extends React.Component {
@@ -41,7 +40,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         refreshing: false,
 
@@ -136,11 +135,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const notificationStyle = {
             opacity: this.state.opacity,
-            transform: [
-                {
-                    translateY: this.state.offset
-                }
-            ]
+            transform: [{ translateY: this.state.offset }]
         };
 
         return (
@@ -152,9 +147,13 @@ export default class ReadAllReviewScreen extends React.Component {
                     <Text style={styles.notificationText}>{this.state.notification}</Text>
                     <TouchableOpacity
                         style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="white" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -616,22 +615,18 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this._showNotification = true;
 
-        StatusBar.setHidden(true);
-
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                // this.state.offset.setValue(height * -1);
-
                 Animated.sequence([
                     Animated.parallel([
                         Animated.timing(this.state.opacity, {
                             toValue: 1,
-                            duration: 200,
+                            duration: 200
                         }),
                         Animated.timing(this.state.offset, {
-                            toValue: 0,
-                            duration: 200,
-                        }),
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
                     ])
                 ]).start();
             });
@@ -644,20 +639,19 @@ export default class ReadAllReviewScreen extends React.Component {
                 Animated.parallel([
                     Animated.timing(this.state.opacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.offset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
         });
 
-        StatusBar.setHidden(false);
-
         this._showNotification = false;
     }
+
 
     onChangeText(text) {
         if (this._showNotification) {
@@ -752,7 +746,7 @@ export default class ReadAllReviewScreen extends React.Component {
     }
 
     refreshReviews(placeId, feedId, count) {
-        // ToDo: reload only the changed review
+        // reload whole reviews
         const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
         const { reviewStore } = this.props.navigation.state.params;
         reviewStore.init(query, count);
@@ -888,26 +882,27 @@ const styles = StyleSheet.create({
     },
     notification: {
         width: '100%',
-        height: Constants.statusBarHeight + 10,
+        height: (8 + 34 + 8) - 12,
         position: "absolute",
         top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        backgroundColor: Theme.color.notification,
         zIndex: 10000,
-
-        flexDirection: 'column',
-        // justifyContent: 'center'
-        justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     notificationText: {
-        alignSelf: 'center',
-        fontSize: 14,
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "#FFF",
-        paddingBottom: 2
+        color: "white",
+        textAlign: 'center'
     },
     notificationButton: {
-        position: 'absolute',
-        right: 18,
-        bottom: 2
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

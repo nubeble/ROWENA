@@ -259,6 +259,8 @@ export default class FeedStore {
     }
 
     updateFeed(post) {
+        if (!this.feed) return;
+
         this.feed.forEach((entry, index) => {
             if (entry.post.id === post.id) {
                 this.feed[index].post = post;

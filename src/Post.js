@@ -53,6 +53,7 @@ const bodyInfoItemHeight = Dimensions.get('window').height / 12;
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
+// const useGoogleMaps = true;
 
 
 @inject("feedStore", "profileStore")
@@ -74,7 +75,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         dialogVisible: false,
         dialogTitle: '',
@@ -125,8 +126,12 @@ export default class Post extends React.Component<InjectedProps> {
         if (postDoc.exists) {
             const post = postDoc.data();
 
+            // 1. update feedStore
             const { feedStore } = this.props;
             feedStore.updateFeed(post);
+
+            // 2. update Intro's state array
+            Vars.updatedPostsForIntro.push(post);
 
             return post;
         }
@@ -296,7 +301,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.toggling = true;
 
-        // const { post } = this.props.navigation.state.params;
         const post = this.state.post;
 
         // check if removed by the owner
@@ -352,13 +356,37 @@ export default class Post extends React.Component<InjectedProps> {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
         }
 
+        // update likes to state post
+        // --
+        console.log('update likes to state post');
+        let { likes } = post;
+        const idx = likes.indexOf(uid);
+        if (idx === -1) {
+            likes.push(uid);
+        } else {
+            likes.splice(idx, 1);
+        }
+
+        let newPost = post;
+        newPost.likes = likes;
+
+        this.setState({ post: newPost });
+        // --
+
         this.toggling = false;
 
-        Vars.postToggleButtonPressed = true;
+        
+        
+        Vars.postLikeButtonPressed = true;
+
+        /*
         const _post = {};
         _post.placeId = placeId;
         _post.feedId = feedId;
-        Vars.toggleButtonPressedPost = _post;
+        Vars.updatedPostsForIntro.push(_post);
+        */
+
+        Vars.updatedPostsForIntro.push(newPost);
     }
 
     checkLiked(likes) {
@@ -407,11 +435,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         const notificationStyle = {
             opacity: this.state.opacity,
-            transform: [
-                {
-                    translateY: this.state.offset
-                }
-            ]
+            transform: [{ translateY: this.state.offset }]
         };
 
         return (
@@ -461,9 +485,13 @@ export default class Post extends React.Component<InjectedProps> {
                     <Text style={styles.notificationText}>{this.state.notification}</Text>
                     <TouchableOpacity
                         style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="white" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -1528,22 +1556,18 @@ export default class Post extends React.Component<InjectedProps> {
 
         this._showNotification = true;
 
-        StatusBar.setHidden(true);
-
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                // this.state.offset.setValue(height * -1);
-
                 Animated.sequence([
                     Animated.parallel([
                         Animated.timing(this.state.opacity, {
                             toValue: 1,
-                            duration: 200,
+                            duration: 200
                         }),
                         Animated.timing(this.state.offset, {
-                            toValue: 0,
-                            duration: 200,
-                        }),
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
                     ])
                 ]).start();
             });
@@ -1556,17 +1580,15 @@ export default class Post extends React.Component<InjectedProps> {
                 Animated.parallel([
                     Animated.timing(this.state.opacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.offset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
         });
-
-        StatusBar.setHidden(false);
 
         this._showNotification = false;
     }
@@ -2037,27 +2059,28 @@ const styles = StyleSheet.create({
     },
     notification: {
         width: '100%',
-        height: Constants.statusBarHeight + 10,
+        height: (8 + 34 + 8) - 12,
         position: "absolute",
         top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        backgroundColor: Theme.color.notification,
         zIndex: 10000,
-
-        flexDirection: 'column',
-        // justifyContent: 'center'
-        justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     notificationText: {
-        alignSelf: 'center',
-        fontSize: 14,
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "#FFF",
-        paddingBottom: 2
+        color: "white",
+        textAlign: 'center'
     },
     notificationButton: {
-        position: 'absolute',
-        right: 18,
-        bottom: 2
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     ratingText1: {
         // height: 8,

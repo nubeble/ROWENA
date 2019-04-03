@@ -256,7 +256,7 @@ export default class Util extends React.Component {
                         if (results2.length != 0) {
                             result = results2[0];
                         } else {
-                            // ToDo: just use original
+                            // ToDo: just use the origin
                             result = responseJSON.results[0];
                         }
                     }

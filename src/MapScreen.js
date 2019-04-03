@@ -18,6 +18,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 // const SPACE = 0.01;
 
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
+// const useGoogleMaps = true;
 
 
 export default class MapScreen extends React.Component {
@@ -26,12 +27,15 @@ export default class MapScreen extends React.Component {
 
         distance: '?', // ToDo: get geolocation of my location
 
+        /*
         region: { // current region
             latitude: LATITUDE,
             longitude: LONGITUDE,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
         }
+        */
+        region: null
     };
 
     constructor(props) {
@@ -117,6 +121,7 @@ export default class MapScreen extends React.Component {
 
                 {
                     // this.state.renderMap &&
+                    this.state.region &&
                     <MapView
                         ref={map => { this.map = map }}
                         provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}

@@ -104,13 +104,14 @@ export default class AdvertisementMain extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         flashMessageTitle: '',
         flashMessageSubtitle: '',
         flashImage: null, // uri
         flashOpacity: new Animated.Value(0),
-        flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
+        // flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
+        flashOffset: new Animated.Value((8 + 34 + 8) * -1),
 
         showPicture1AlertIcon: false,
         showPicture2AlertIcon: false,
@@ -491,11 +492,8 @@ export default class AdvertisementMain extends React.Component {
 
     async post() {
         // ToDo: test navigation
-        this.props.navigation.navigate("advertisementFinish");
-
-        return;
-
-
+        // this.props.navigation.navigate("advertisementFinish");
+        // return;
 
         if (this.state.onUploadingImage) return;
 
@@ -687,20 +685,12 @@ export default class AdvertisementMain extends React.Component {
     render() {
         const notificationStyle = {
             opacity: this.state.opacity,
-            transform: [
-                {
-                    translateY: this.state.offset
-                }
-            ]
+            transform: [{ translateY: this.state.offset }]
         };
 
         const flashStyle = {
             opacity: this.state.flashOpacity,
-            transform: [
-                {
-                    translateY: this.state.flashOffset
-                }
-            ]
+            transform: [{ translateY: this.state.flashOffset }]
         };
 
         return (
@@ -745,11 +735,10 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                // this._showNotification = false;
                             }
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="white" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -765,7 +754,7 @@ export default class AdvertisementMain extends React.Component {
                         this.state.flashImage &&
                         <Image
                             // style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
-                            style={{ width: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.84 / 3 * 4, height: (Cons.searchBarHeight - Constants.statusBarHeight) * 0.84, borderRadius: 2 }}
+                            style={{ width: (8 + 34 + 8) * 0.9 / 3 * 4, height: (8 + 34 + 8) * 0.9, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }
@@ -928,7 +917,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showNameAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 2. birthday */}
@@ -977,7 +966,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showAgeAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 3. height */}
@@ -1012,7 +1001,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showHeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 4. weight */}
@@ -1047,7 +1036,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showWeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 5. breasts */}
@@ -1140,7 +1129,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showBreastsAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 7. note */}
@@ -1216,7 +1205,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showCountryAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* street */}
@@ -1280,7 +1269,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showStreetAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
 
@@ -1377,19 +1366,19 @@ export default class AdvertisementMain extends React.Component {
                     </TouchableOpacity>
                     {
                         number === 1 && this.state.showPicture1AlertIcon &&
-                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
                     {
                         number === 2 && this.state.showPicture2AlertIcon &&
-                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
                     {
                         number === 3 && this.state.showPicture3AlertIcon &&
-                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
                     {
                         number === 4 && this.state.showPicture4AlertIcon &&
-                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color="rgba(255, 184, 24, 0.8)" size={24} />
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
                     {
                         this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
@@ -1464,7 +1453,7 @@ export default class AdvertisementMain extends React.Component {
         if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
             let result = await ImagePicker.launchImageLibraryAsync({
                 allowsEditing: true,
-                aspect: [4, 3],
+                aspect: [4, 3], // ToDo: android only! (only square image in IOS)
                 quality: 1.0
             });
 
@@ -1796,24 +1785,18 @@ export default class AdvertisementMain extends React.Component {
 
         this._showNotification = true;
 
-        if (this._showFlash) this.hideFlash();
-
-        StatusBar.setHidden(true);
-
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                // this.state.offset.setValue(height * -1);
-
                 Animated.sequence([
                     Animated.parallel([
                         Animated.timing(this.state.opacity, {
                             toValue: 1,
-                            duration: 200,
+                            duration: 200
                         }),
                         Animated.timing(this.state.offset, {
-                            toValue: 0,
-                            duration: 200,
-                        }),
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
                     ])
                 ]).start();
             });
@@ -1826,17 +1809,15 @@ export default class AdvertisementMain extends React.Component {
                 Animated.parallel([
                     Animated.timing(this.state.opacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.offset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
         });
-
-        StatusBar.setHidden(false);
 
         this._showNotification = false;
     }
@@ -1873,24 +1854,22 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
                 this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    // this.state.flashOffset.setValue(height * -1);
-
                     Animated.sequence([
                         Animated.parallel([
                             Animated.timing(this.state.flashOpacity, {
                                 toValue: 1,
-                                duration: 200,
+                                duration: 200
                             }),
                             Animated.timing(this.state.flashOffset, {
-                                toValue: 0,
-                                duration: 200,
-                            }),
+                                toValue: Constants.statusBarHeight,
+                                duration: 200
+                            })
                         ])
                     ]).start();
                 });
             });
 
-            StatusBar.setHidden(true);
+            // StatusBar.setHidden(true);
         }
     };
 
@@ -1900,17 +1879,17 @@ export default class AdvertisementMain extends React.Component {
                 Animated.parallel([
                     Animated.timing(this.state.flashOpacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.flashOffset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
         });
 
-        StatusBar.setHidden(false);
+        // StatusBar.setHidden(false);
 
         this._showFlash = false;
     }
@@ -1945,41 +1924,42 @@ const styles = StyleSheet.create({
     },
     notification: {
         width: '100%',
-        height: Constants.statusBarHeight + 10,
+        height: (8 + 34 + 8) - 12,
         position: "absolute",
         top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        backgroundColor: Theme.color.notification,
         zIndex: 10000,
-
-        flexDirection: 'column',
-        // justifyContent: 'center'
-        justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     notificationText: {
-        alignSelf: 'center',
-        fontSize: 14,
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "#FFF",
-        paddingBottom: 2
+        color: "white",
+        textAlign: 'center'
     },
     notificationButton: {
-        position: 'absolute',
-        right: 18,
-        bottom: 2
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     flash: {
         width: '100%',
-        height: Cons.searchBarHeight,
+        // height: Cons.searchBarHeight,
+        height: (8 + 34 + 8),
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.selection,
-        zIndex: 9999,
-
+        zIndex: 10001,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: Theme.spacing.base,
-        paddingTop: Constants.statusBarHeight
+        paddingHorizontal: Theme.spacing.base
+        // paddingTop: Constants.statusBarHeight
     },
     flashMessageTitle: {
         fontSize: 16,

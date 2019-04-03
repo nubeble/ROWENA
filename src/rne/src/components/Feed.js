@@ -52,12 +52,12 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
     }
 
     startEditing() {
-        // ToDo: add animation
+        // add animation
         // alert('startEditing()');
     }
 
     leaveEditing() {
-        // ToDo: add animation
+        // add animation
         // alert('leaveEditing()');
     }
 

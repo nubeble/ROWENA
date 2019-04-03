@@ -63,7 +63,7 @@ export default class AdvertisementStart extends React.Component {
                         marginTop: Theme.spacing.tiny,
                         paddingHorizontal: 22,
                         fontSize: 28,
-                        lineHeight: 32,  // ToDo: check ios!
+                        lineHeight: 32,
                         color: 'black',
                         fontFamily: "Roboto-Medium",
                         // textAlign: 'center'
@@ -85,7 +85,7 @@ export default class AdvertisementStart extends React.Component {
                         paddingHorizontal: Theme.spacing.base,
                         color: 'black',
                         fontSize: 16,
-                        lineHeight: 24, // ToDo: check ios!
+                        lineHeight: 24,
                         fontFamily: "Roboto-Light",
                         textAlign: 'center'
                     }}>{contentText}</Text>

@@ -839,7 +839,7 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
-        const placeName = 'Macau, China';
+        const placeName = 'Macau, China'; // ToDo: exception
 
         const location = {
             description: "Macau Island, Macau",

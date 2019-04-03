@@ -27,6 +27,7 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 // const SPACE = 0.01;
 
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
+// const useGoogleMaps = true;
 
 // 3:2 image
 const itemWidth = Dimensions.get('window').width - 40;
@@ -597,10 +598,9 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium",
         paddingLeft: 2,
 
-        textShadowColor: "#3D3D3D",
-        // textShadowOffset: { width: 0.6, height: 0.6 },
-        // textShadowRadius: 4
-        textShadowOffset: { width: 0.2, height: 0.2 }
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

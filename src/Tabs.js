@@ -22,7 +22,7 @@ export default createBottomTabNavigator(
 		home: {
 			screen: Home,
 			// screen: Stacks,
-			tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+			tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
 				activeTintColor: 'tomato',
 				inactiveTintColor: 'grey'
 			},
@@ -41,7 +41,7 @@ export default createBottomTabNavigator(
 
 		messages: {
 			screen: Messages,
-			tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+			tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
 				activeTintColor: 'tomato',
 				inactiveTintColor: 'grey'
 			},
@@ -60,7 +60,7 @@ export default createBottomTabNavigator(
 
 		likes: {
 			screen: Likes,
-			tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+			tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
 				activeTintColor: 'tomato',
 				inactiveTintColor: 'grey'
 			},
@@ -79,7 +79,7 @@ export default createBottomTabNavigator(
 
 		me: {
 			screen: Me,
-			tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+			tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
 				activeTintColor: 'tomato',
 				inactiveTintColor: 'grey'
 			},
@@ -155,7 +155,7 @@ export default createBottomTabNavigator(
             },
         }),
 
-        tabBarOptions: { // ToDo: style (bar), labelStyle (label), tabStyle (tab)
+        tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
             showLabel: false,
             showIcon: true,
             // tintColor: 'red',

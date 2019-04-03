@@ -25,7 +25,7 @@ export default class WriteReviewScreen extends React.Component {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value((Constants.statusBarHeight + 10) * -1),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
 
     componentDidMount() {
@@ -168,11 +168,7 @@ export default class WriteReviewScreen extends React.Component {
 
         const notificationStyle = {
             opacity: this.state.opacity,
-            transform: [
-                {
-                    translateY: this.state.offset
-                }
-            ]
+            transform: [{ translateY: this.state.offset }]
         };
 
         return (
@@ -225,9 +221,13 @@ export default class WriteReviewScreen extends React.Component {
                     <Text style={styles.notificationText}>{this.state.notification}</Text>
                     <TouchableOpacity
                         style={styles.notificationButton}
-                        onPress={() => this.hideNotification()}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={20} />
+                        <Ionicons name='md-close' color="white" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -321,22 +321,18 @@ export default class WriteReviewScreen extends React.Component {
 
         this._showNotification = true;
 
-        StatusBar.setHidden(true);
-
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                // this.state.offset.setValue(height * -1);
-
                 Animated.sequence([
                     Animated.parallel([
                         Animated.timing(this.state.opacity, {
                             toValue: 1,
-                            duration: 200,
+                            duration: 200
                         }),
                         Animated.timing(this.state.offset, {
-                            toValue: 0,
-                            duration: 200,
-                        }),
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
                     ])
                 ]).start();
             });
@@ -349,17 +345,15 @@ export default class WriteReviewScreen extends React.Component {
                 Animated.parallel([
                     Animated.timing(this.state.opacity, {
                         toValue: 0,
-                        duration: 200,
+                        duration: 200
                     }),
                     Animated.timing(this.state.offset, {
                         toValue: height * -1,
-                        duration: 200,
+                        duration: 200
                     })
                 ])
             ]).start();
         });
-
-        StatusBar.setHidden(false);
 
         this._showNotification = false;
     }
@@ -424,27 +418,28 @@ const styles = StyleSheet.create({
     },
     notification: {
         width: '100%',
-        height: Constants.statusBarHeight + 10,
+        height: (8 + 34 + 8) - 12,
         position: "absolute",
         top: 0,
-        backgroundColor: "rgba(255, 184, 24, 0.8)",
+        backgroundColor: Theme.color.notification,
         zIndex: 10000,
-
-        flexDirection: 'column',
-        // justifyContent: 'center'
-        justifyContent: 'flex-end'
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
     },
     notificationText: {
-        alignSelf: 'center',
-        fontSize: 14,
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "#FFF",
-        paddingBottom: 2
+        color: "white",
+        textAlign: 'center'
     },
     notificationButton: {
-        position: 'absolute',
-        right: 18,
-        bottom: 2
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     post: {
         alignSelf: 'center',

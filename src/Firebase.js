@@ -148,7 +148,6 @@ export default class Firebase {
         return placeId;
     }
 
-    /*
     static subscribeToFeed(placeId, feedId, callback) {
         return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).onSnapshot(snap => {
             const feed = snap.data();
@@ -156,7 +155,6 @@ export default class Firebase {
             callback(feed);
         });
     }
-    */
 
     /*
     static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
@@ -350,13 +348,13 @@ export default class Firebase {
     */
 
     static async updateLikes(uid, placeId, feedId, name, placeName, averageRating, reviewCount, uri) {
-        // update count
+        // update count to post
         await Firebase.firestore.runTransaction(async transaction => {
             const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
             const postDoc = await transaction.get(feedRef);
             if (!postDoc.exists) throw 'Post document does not exist!';
 
-            const { likes } = postDoc.data();
+            let { likes } = postDoc.data();
             const idx = likes.indexOf(uid);
             if (idx === -1) {
                 likes.push(uid);
@@ -378,7 +376,7 @@ export default class Firebase {
             const userDoc = await transaction.get(userRef);
             if (!userDoc.exists) throw 'Profile document does not exist!';
 
-            const { likes } = userDoc.data();
+            let { likes } = userDoc.data();
             let _idx = -1;
 
             for (var i = 0; i < likes.length; i++) {
