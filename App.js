@@ -396,40 +396,6 @@ class AuthStackNavigatorWrapper extends React.Component {
 }
 // -- end of AuthStackNavigatorWrapper
 
-// -- start of IntroModalNavigator
-const IntroModalNavigator = createStackNavigator(
-    {
-        introMain: { screen: Intro },
-        introSearch: { screen: SearchScreen }
-    },
-    {
-        mode: 'modal',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
-        })
-    }
-);
-
-class IntroModalNavigatorWrapper extends React.Component {
-    static router = IntroModalNavigator.router;
-
-    render() {
-        return (
-            <IntroModalNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-// -- end of IntroModalNavigator
-
 // -- start of IntroStackNavigatorWrapper
 const IntroStackNavigator = createStackNavigator(
     {
@@ -465,40 +431,6 @@ class IntroStackNavigatorWrapper extends React.Component {
     }
 }
 // -- end of IntroStackNavigatorWrapper
-
-// -- start of ExploreStackNavigator
-const ExploreModalNavigator = createStackNavigator(
-    {
-        exploreMain: { screen: Explore },
-        exploreSearch: { screen: SearchScreen }
-    },
-    {
-        mode: 'modal',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
-        })
-    }
-);
-
-class ExploreModalNavigatorWrapper extends React.Component {
-    static router = ExploreModalNavigator.router;
-
-    render() {
-        return (
-            <ExploreModalNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-// -- end of ExploreStackNavigator
 
 // -- start of HomeStackNavigatorWrapper
 const HomeStackNavigator = createStackNavigator(

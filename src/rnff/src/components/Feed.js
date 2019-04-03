@@ -31,12 +31,6 @@ export default class Feed extends React.Component<FeedProps> {
         refreshing: false
     };
 
-    constructor(props) {
-        super(props);
-
-        this.onLoading = false;
-    }
-
     componentDidMount() {
         // const { feed } = this.props.store; // FeedStore
         // console.log('Feed.componentDidMount', feed);
@@ -49,8 +43,6 @@ export default class Feed extends React.Component<FeedProps> {
         console.log('Feed.onAddToFeedFinished');
 
         !this.closed && this.setState({ isLoadingFeed: false, refreshing: false });
-
-        this.onLoading = false;
     }
 
     componentWillUnmount() {
@@ -70,14 +62,11 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     loadMore() {
-        if (this.onLoading) return;
-
-        this.onLoading = true;
+        if (this.state.isLoadingFeed) return;
 
         if (this.props.store.allFeedsLoaded) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
+            // if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.onLoading = false;
             return;
         }
 
@@ -196,8 +185,9 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     handleRefresh = () => {
-        if (this.onLoading) return;
+        if (this.state.isLoadingFeed) return;
 
+        /*
         this.setState(
             {
                 refreshing: true
@@ -207,6 +197,12 @@ export default class Feed extends React.Component<FeedProps> {
                 this.props.store.loadFeedFromTheStart();
             }
         );
+        */
+
+        this.setState({ isLoadingFeed: true, refreshing: true });
+
+        // reload from the start
+        this.props.store.loadFeedFromTheStart();
     }
 }
 

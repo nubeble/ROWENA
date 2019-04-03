@@ -182,6 +182,13 @@ export default class AdvertisementMain extends React.Component {
             latitude: result1.location.lat
         };
 
+        const cityInfo = {
+            description: result2.name,
+            cityId: result2.placeId,
+            location: result2.location
+        };
+
+        /*
         let street = null;
         let state = '';
         let city = '';
@@ -225,7 +232,7 @@ export default class AdvertisementMain extends React.Component {
                 if (i !== length - 1) street += ', ';
             }
 
-            // get, state, city text
+            // get city, state
             if (words2.length === 0) {
                 // someting is wrong
             } else if (words2.length === 1) {
@@ -236,29 +243,23 @@ export default class AdvertisementMain extends React.Component {
                 city = words2[0];
                 state = words2[1];
             } else {
-                /*
-                street = '';
-                const length = words.length - 3;
-                for (var i = 0; i < length; i++) {
-                    street += words[i];
-
-                    if (i !== length - 1) street += ', ';
-                }
-
-                city = words[words.length - 3];
-                state = words[words.length - 2];
-                */
-
                 city = words2[words2.length - 3];
                 state = words2[words2.length - 2];
             }
         }
+        */
 
-        const cityInfo = {
-            description: result2.name,
-            cityId: result2.placeId,
-            location: result2.location
-        };
+        let street = null;
+        let state = '';
+        let city = '';
+
+        street = '';
+        const words1 = result1.description.split(', ');
+        const size = words1.length - 1;
+        for (var i = 0; i < size; i++) {
+            street += words1[i];
+            if (i != size - 1) street += ', ';
+        }
 
         this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
     }
@@ -909,7 +910,7 @@ export default class AdvertisementMain extends React.Component {
                         value={this.state.name}
                         onFocus={(e) => this.onFocusName()}
                     />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.nameY = y;
@@ -917,7 +918,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showNameAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 2. birthday */}
@@ -958,7 +959,7 @@ export default class AdvertisementMain extends React.Component {
                         {/* ToDo: add icon */}
 
                     </TouchableOpacity>
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.birthdayY = y;
@@ -966,7 +967,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showAgeAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 3. height */}
@@ -993,7 +994,7 @@ export default class AdvertisementMain extends React.Component {
                         placeholderTextColor={Theme.color.placeholder}
                         value={this.state.height}
                     />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.heightY = y;
@@ -1001,7 +1002,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showHeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 4. weight */}
@@ -1028,7 +1029,7 @@ export default class AdvertisementMain extends React.Component {
                         placeholderTextColor={Theme.color.placeholder}
                         value={this.state.weight}
                     />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.weightY = y;
@@ -1036,7 +1037,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showWeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 5. breasts */}
@@ -1121,7 +1122,7 @@ export default class AdvertisementMain extends React.Component {
                             return null;
                         }}
                     />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.breastsY = y;
@@ -1129,7 +1130,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showBreastsAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 7. note */}
@@ -1162,7 +1163,7 @@ export default class AdvertisementMain extends React.Component {
                     <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
                         {this.state.noteLength}
                     </Text>
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.noteY = y;
@@ -1197,7 +1198,7 @@ export default class AdvertisementMain extends React.Component {
                             }}
                         >{this.state.country ? this.state.country : "What country do you live in?"}</Text>
                     </TouchableOpacity>
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.countryY = y;
@@ -1205,7 +1206,7 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showCountryAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* street */}
@@ -1261,7 +1262,7 @@ export default class AdvertisementMain extends React.Component {
                             }}
                         >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
                     </TouchableOpacity>
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }}
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
                             this.streetY = y;
@@ -1269,12 +1270,11 @@ export default class AdvertisementMain extends React.Component {
                     />
                     {
                         this.state.showStreetAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
 
-
-                    {/* city */}
+                    {/*
                     <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'CITY'}
                     </Text>
@@ -1290,7 +1290,6 @@ export default class AdvertisementMain extends React.Component {
                         {this.state.city}
                     </Text>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-                    {/* state */}
                     <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                         {'STATE'}
                     </Text>
@@ -1306,7 +1305,7 @@ export default class AdvertisementMain extends React.Component {
                         {this.state.state}
                     </Text>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-
+                    */}
 
 
                 </View>
@@ -1860,7 +1859,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
-        borderRadius: 5,
+        borderRadius: 12,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,
@@ -1888,7 +1887,7 @@ const styles = StyleSheet.create({
         // height: Cons.searchBarHeight,
         height: (8 + 34 + 8),
         position: "absolute",
-        borderRadius: 5,
+        borderRadius: 16,
         top: 0,
         backgroundColor: Theme.color.selection,
         zIndex: 10001,

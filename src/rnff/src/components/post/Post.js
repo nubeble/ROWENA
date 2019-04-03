@@ -264,8 +264,8 @@ const styles = StyleSheet.create({
     },
     new: {
         color: 'white',
-        fontSize: 12,
-        lineHeight: 12,
+        fontSize: 13,
+        lineHeight: 13,
         fontFamily: "Roboto-Bold",
         // backgroundColor: 'grey'
     }

@@ -134,6 +134,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
             // 2. update Intro's state array
             Vars.updatedPostsForIntro.push(post);
+            Vars.updatedPostsForLikes.push(post);
 
             return post;
         }
@@ -284,7 +285,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         // ToDo: edit post
 
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     /*
@@ -391,14 +392,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         Vars.postLikeButtonPressed = true;
 
-        /*
-        const _post = {};
-        _post.placeId = placeId;
-        _post.feedId = feedId;
-        Vars.updatedPostsForIntro.push(_post);
-        */
-
         Vars.updatedPostsForIntro.push(newPost);
+        Vars.updatedPostsForLikes.push(newPost);
     }
 
     checkLiked(likes) {
@@ -639,8 +634,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                     }}>
                                                         <Text style={{
                                                             color: 'white',
-                                                            fontSize: 14,
-                                                            lineHeight: 14,
+                                                            fontSize: 13,
+                                                            lineHeight: 13,
                                                             fontFamily: "Roboto-Bold"
                                                         }}>newly added</Text>
                                                     </View>
@@ -2125,7 +2120,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
-        borderRadius: 5,
+        borderRadius: 12,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

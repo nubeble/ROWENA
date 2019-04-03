@@ -133,8 +133,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     getUserFeeds() {
         if (this.onLoading) return;
 
-        this.onLoading = true;
-
         const { profile } = this.props.profileStore;
         const feeds = profile.feeds;
         const length = feeds.length;
@@ -143,9 +141,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-            if (this.state.refreshing) this.setState({ refreshing: false });
+            // if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.onLoading = false;
             return;
         }
 
@@ -161,11 +158,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
+            // if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.onLoading = false;
             return;
         }
+
+        this.onLoading = true;
 
         console.log('ProfileMain', 'loading feeds...');
 
@@ -187,7 +185,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             const value = feeds[i];
 
-            if (!value.valid) continue;
+            // if (!value.valid) continue;
 
             newFeeds.push(value);
 
@@ -201,12 +199,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             this.setState({
                 // isLoadingFeeds: false, feeds: newFeeds, refreshing: false
-                feeds: newFeeds, refreshing: false
+                feeds: newFeeds, // refreshing: false
             });
         } else {
             this.setState({
                 // isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
-                feeds: [...this.state.feeds, ...newFeeds], refreshing: false
+                feeds: [...this.state.feeds, ...newFeeds], // refreshing: false
             });
         }
 
@@ -608,6 +606,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     } // end of render()
 
     handleRefresh = () => {
+        /*
         if (this.onLoading) return;
 
         this.setState(
@@ -622,6 +621,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 this.getUserFeeds();
             }
         );
+        */
+
+        if (this.state.isLoadingFeeds) return;
+
+        !this.closed && this.setState({ refreshing: true });
+
+        // reload from the start
+        this.lastChangedTime = 0;
+        this.getUserFeeds();
+
+        if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
+
+        !this.closed && this.setState({ refreshing: false });
     }
 
     // open admin menu

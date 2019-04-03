@@ -195,44 +195,47 @@ export default class Intro extends React.Component {
         Vars.currentScreenName = 'Intro';
 
         // update
-        console.log('update Intro state post', Vars.updatedPostsForIntro.length);
+        // console.log('update Intro state post', Vars.updatedPostsForIntro.length);
 
-        for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
-            const newPost = Vars.updatedPostsForIntro[i];
-            // console.log('onFocus newPost', newPost.placeId, newPost.id);
+        if (Vars.updatedPostsForIntro.length > 0) {
 
-            // search (popular feeds)
             let popularFeeds = [...this.state.popularFeeds];
             if (popularFeeds.length === 0) {
                 popularFeeds = Intro.popularFeeds;
             }
 
-            let index = popularFeeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
-            if (index !== -1) {
-                // set
-                popularFeeds[index] = newPost;
-                !this.closed && this.setState({ popularFeeds });
-                Intro.popularFeeds[index] = newPost;
-                // console.log('Intro.popularFeeds[index]', Intro.popularFeeds[index]);
-            }
-
-            // search (recent feeds)
             let recentFeeds = [...this.state.recentFeeds];
             if (recentFeeds.length === 0) {
                 recentFeeds = Intro.recentFeeds;
             }
 
-            index = recentFeeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
-            if (index !== -1) {
-                // set
-                recentFeeds[index] = newPost;
-                !this.closed && this.setState({ recentFeeds });
-                Intro.recentFeeds[index] = newPost;
-                // console.log('Intro.recentFeeds[index]', Intro.recentFeeds[index]);
-            }
-        }
+            for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
+                const newPost = Vars.updatedPostsForIntro[i];
+                // console.log('onFocus newPost', newPost.placeId, newPost.id);
 
-        Vars.updatedPostsForIntro = []; // for cleaning
+                // search (popular feeds)
+                let index = popularFeeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
+                if (index !== -1) {
+                    // set
+                    popularFeeds[index] = newPost;
+                    Intro.popularFeeds[index] = newPost;
+                    // console.log('Intro.popularFeeds[index]', Intro.popularFeeds[index]);
+                }
+
+                // search (recent feeds)
+                index = recentFeeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
+                if (index !== -1) {
+                    // set
+                    recentFeeds[index] = newPost;
+                    Intro.recentFeeds[index] = newPost;
+                    // console.log('Intro.recentFeeds[index]', Intro.recentFeeds[index]);
+                }
+            }
+
+            !this.closed && this.setState({ popularFeeds, recentFeeds });
+
+            Vars.updatedPostsForIntro = []; // for cleaning
+        }
 
         // -- update the post that user clicked a like button
         /*
@@ -1141,9 +1144,9 @@ export default class Intro extends React.Component {
         return count;
     }
 
-    handleRefresh = () => {
-        if (this.state.refreshing) return;
-
+    handleRefresh = async () => {
+        // if (this.state.refreshing) return;
+        /*
         this.setState(
             {
                 refreshing: true
@@ -1154,6 +1157,13 @@ export default class Intro extends React.Component {
                 !this.closed && this.setState({ refreshing: false });
             }
         );
+        */
+
+        !this.closed && this.setState({ refreshing: true });
+
+        await this.getPlaces();
+
+        !this.closed && this.setState({ refreshing: false });
     }
 }
 
@@ -1265,8 +1275,8 @@ const styles = StyleSheet.create({
     },
     new: {
         color: 'white',
-        fontSize: 12,
-        lineHeight: 12,
+        fontSize: 13,
+        lineHeight: 13,
         fontFamily: "Roboto-Bold",
         // backgroundColor: 'grey'
     }

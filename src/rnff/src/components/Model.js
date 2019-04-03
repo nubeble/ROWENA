@@ -31,12 +31,14 @@ type ReplyRef = {
 type LikeRef = {
     placeId: string,
     feedId: string,
+    /*
     name: string,
     placeName: string,
     averageRating: number,
     reviewCount: number,
     picture: string,
     valid: boolean
+    */
 };
 
 export type Profile = {

@@ -575,6 +575,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         left: 0,
+        width: '100%',
         // backgroundColor: 'transparent'
         backgroundColor: 'rgba(80, 80, 80, 0.4)'
     },
@@ -638,8 +639,8 @@ const styles = StyleSheet.create({
     },
     new: {
         color: 'white',
-        fontSize: 12,
-        lineHeight: 12,
+        fontSize: 13,
+        lineHeight: 13,
         fontFamily: "Roboto-Bold",
         // backgroundColor: 'grey'
     },

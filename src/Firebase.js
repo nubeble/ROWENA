@@ -245,7 +245,8 @@ export default class Firebase {
 
             // 2. update the count & timestamp
             // transaction.update(placeRef, { count: Number(count + 1) });
-            transaction.set(placeRef, { count: Number(count + 1), timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn,
+            transaction.set(placeRef, {
+                count: Number(count + 1), timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn,
                 lat: extra.lat, lng: extra.lng
             });
 
@@ -254,8 +255,10 @@ export default class Firebase {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
-                    picture: feed.pictures.one.uri, // ToDo: update this after changing post
-                    valid: true // ToDo: update this after removing
+                    // used in Profile tab (user created post)
+                    // ToDo: update this when the post changed
+                    picture: feed.pictures.one.uri,
+                    // valid: true // ToDo: update this after removing
                 })
             };
 
@@ -388,15 +391,17 @@ export default class Firebase {
             }
 
             if (_idx === -1) { // add
-                const data: LikeRef = {
+                const data = { // LikeRef
                     placeId,
                     feedId,
+                    /*
                     name,
                     placeName,
                     averageRating,
                     reviewCount,
                     picture: uri,
                     valid: true // ToDo: update this after removing
+                    */
                 }
                 likes.push(data);
             } else { // remove

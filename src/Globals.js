@@ -8,6 +8,7 @@ export var Vars = {
 
     // like button pressed, review updated, ...
     updatedPostsForIntro: [], // array
+    updatedPostsForLikes: [], // array
 
     userFeedsChanged: false, // added or removed, not updated
 

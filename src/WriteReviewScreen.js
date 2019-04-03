@@ -19,7 +19,7 @@ export default class WriteReviewScreen extends React.Component {
         showPostLoader: false,
 
         rating: 5,
-        invalid: false,
+        invalid: false, // ToDo: not used
         bottomPosition: Dimensions.get('window').height,
         postButtonTop: Dimensions.get('window').height - 80 - 50, // 80: bottom gap, 50: button height
 
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
-        borderRadius: 5,
+        borderRadius: 12,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

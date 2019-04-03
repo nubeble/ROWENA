@@ -22,7 +22,7 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const DEFAULT_FEED_COUNT = 10;
+const DEFAULT_FEED_COUNT = 4;
 
 // 600, 510
 const illustHeight = 300;
@@ -33,11 +33,11 @@ const illustWidth = 300 / 510 * 600;
 @observer
 export default class LikesMain extends React.Component<InjectedProps> {
     state = {
-        renderList: false,
+        // renderList: false,
         feeds: [],
         isLoadingFeeds: false,
         refreshing: false,
-        focused: false
+        // focused: false
     };
 
     constructor(props) {
@@ -51,19 +51,21 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.feedSizeList = new Map();
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         console.log('LikesMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
-        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        // this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        this.getSavedFeeds();
+        await this.getSavedFeeds();
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -76,21 +78,49 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     @autobind
-    onFocus() {
+    async onFocus() {
         Vars.currentScreenName = 'LikesMain';
 
         if (Vars.postLikeButtonPressed) {
-            this.getSavedFeeds();
-            Vars.postToggleButtonPressed = false;
+            await this.getSavedFeeds();
+            Vars.postLikeButtonPressed = false;
+
+            // already reload from the beginning. so pass this.
+            Vars.updatedPostsForLikes = [];
+        } else {
+            if (Vars.updatedPostsForLikes.length > 0) {
+                // this.onLoading = true;
+                // this.setState({ isLoadingFeeds: true });
+
+                let feeds = [...this.state.feeds];
+
+                for (var i = 0; i < Vars.updatedPostsForLikes.length; i++) {
+                    const newPost = Vars.updatedPostsForLikes[i];
+
+                    let index = feeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
+                    if (index !== -1) {
+                        feeds[index] = newPost;
+                    }
+                }
+
+                !this.closed && this.setState({ feeds });
+
+                // this.setState({ isLoadingFeeds: false });
+                // this.onLoading = false;
+
+                Vars.updatedPostsForLikes = [];
+            }
         }
 
-        this.setState({ focused: true });
+        // this.setState({ focused: true });
     }
 
+    /*
     @autobind
     onBlur() {
         this.setState({ focused: false });
     }
+    */
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         const threshold = 80;
@@ -102,24 +132,21 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
-        this.onBlurListener.remove();
+        // this.onBlurListener.remove();
 
         this.closed = true;
     }
 
-    getSavedFeeds() {
+    async getSavedFeeds() {
         if (this.onLoading) return;
-
-        this.onLoading = true;
 
         const { profile } = this.props.profileStore;
         const feeds = profile.likes;
         const length = feeds.length;
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-            if (this.state.refreshing) this.setState({ refreshing: false });
+            // if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.onLoading = false;
             return;
         }
 
@@ -135,13 +162,15 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
+            // if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.onLoading = false;
+            // this.onLoading = false;
             return;
         }
 
         console.log('LikesMain', 'loading feeds...');
+
+        this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
 
@@ -161,9 +190,16 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
             const value = feeds[i];
 
-            if (!value.valid) continue;
+            // if (!value.valid) continue;
 
-            newFeeds.push(value);
+            // newFeeds.push(value);
+
+            const placeId = value.placeId;
+            const feedId = value.feedId;
+            const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+            if (!feedDoc.exists) return;
+            const newFeed = feedDoc.data();
+            newFeeds.push(newFeed);
 
             this.lastLoadedFeedIndex = i;
 
@@ -173,16 +209,16 @@ export default class LikesMain extends React.Component<InjectedProps> {
         if (this.reload) {
             this.reload = false;
 
-            this.setState({
-                isLoadingFeeds: false, feeds: newFeeds, refreshing: false
-            });
+            this.setState({ feeds: newFeeds });
         } else {
-            this.setState({
-                isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
-            });
+            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
         }
 
         console.log('LikesMain', 'loading feeds done!');
+
+        this.setState({ isLoadingFeeds: false });
+
+        // if (this.state.refreshing) this.setState({ refreshing: false });
 
         this.onLoading = false;
     }
@@ -190,7 +226,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     async openPost(item) {
         // should get data from database
         const placeId = item.placeId;
-        const feedId = item.feedId;
+        const feedId = item.id;
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
@@ -240,7 +276,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 </View>
                 {
-                    this.state.renderList &&
+                    // this.state.renderList &&
                     <FlatList
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
@@ -254,12 +290,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         }
                         */
                         data={this.state.feeds}
-                        keyExtractor={item => item.feedId}
+                        keyExtractor={item => item.id}
                         renderItem={({ item, index }) => {
                             // placeName
                             let placeName = item.placeName;
                             const words = placeName.split(', ');
-                            if (words.length > 2) {
+                            if (words.length > 1) {
                                 const city = words[0];
                                 const country = words[words.length - 1];
                                 placeName = city + ', ' + country;
@@ -284,7 +320,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             style={styles.picture}
                                             showSpinner={false}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={item.picture}
+                                            // uri={item.picture}
+                                            uri={item.pictures.one.uri}
                                         />
                                         <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
@@ -331,9 +368,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         }}
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.handleScrollEnd}
-                        onScroll={({ nativeEvent }) => {
+                        onScroll={async ({ nativeEvent }) => {
                             if (this.isCloseToBottom(nativeEvent)) {
-                                this.getSavedFeeds();
+                                await this.getSavedFeeds();
                             }
                         }}
                         // scrollEventThrottle={1}
@@ -349,53 +386,51 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         }
 
                         ListEmptyComponent={
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{
-                                    color: Theme.color.text2,
-                                    fontSize: 24,
-                                    paddingTop: 4,
-                                    fontFamily: "Roboto-Medium"
-                                }}>No selected girls</Text>
+                            this.state.isLoadingFeeds ?
+                                /*
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <RefreshIndicator />
+                                </View>
+                                */
+                                <View style={{ width: '100%', height: '40%' }} />
+                                :
+                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                    <Text style={{
+                                        color: Theme.color.text2,
+                                        fontSize: 24,
+                                        paddingTop: 4,
+                                        fontFamily: "Roboto-Medium"
+                                    }}>No selected girls</Text>
 
-                                <Text style={{
-                                    marginTop: 10,
-                                    color: Theme.color.text3,
-                                    fontSize: 18,
-                                    fontFamily: "Roboto-Medium"
-                                }}>Start exploring girls for your next trip</Text>
+                                    <Text style={{
+                                        marginTop: 10,
+                                        color: Theme.color.text3,
+                                        fontSize: 18,
+                                        fontFamily: "Roboto-Medium"
+                                    }}>Start exploring girls for your next trip</Text>
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setTimeout(() => {
-                                            // ToDo: set scroll position 0
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setTimeout(() => {
+                                                // ToDo: set scroll position 0
 
-                                            this.props.navigation.navigate("intro");
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                    style={{ marginTop: 20 }}>
-                                    <Image
-                                        style={{
-                                            width: illustWidth,
-                                            height: illustHeight,
-                                            resizeMode: 'cover'
+                                                this.props.navigation.navigate("intro");
+                                            }, Cons.buttonTimeoutShort);
                                         }}
-                                        source={PreloadImage.find}
+                                        style={{ marginTop: 20 }}>
+                                        <Image
+                                            style={{
+                                                width: illustWidth,
+                                                height: illustHeight,
+                                                resizeMode: 'cover'
+                                            }}
+                                            source={PreloadImage.find}
 
-                                    />
-                                </TouchableOpacity>
-                            </View>
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                         }
                     />
-                }
-
-                {
-                    !this.state.focused &&
-                    <View style={{
-                        width: '100%',
-                        height: 100, // ToDo: get the height of tab bar
-                        // backgroundColor: 'green'
-                    }}>
-                    </View>
                 }
 
                 <Toast
@@ -408,23 +443,39 @@ export default class LikesMain extends React.Component<InjectedProps> {
         );
     }
 
-    handleRefresh = () => {
-        if (this.onLoading) return;
+    handleRefresh = async () => {
+        // if (this.onLoading) return;
 
+        /*
         this.setState(
             {
                 refreshing: true
             },
-            () => {
+            async () => {
                 // if user moved to likes page before the Vars.postToggleButtonPressed updated to true.
                 // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
                 if (Vars.postLikeButtonPressed) Vars.postLikeButtonPressed = false;
 
                 // reload from the start
                 this.lastChangedTime = 0;
-                this.getSavedFeeds();
+                await this.getSavedFeeds();
             }
         );
+        */
+
+        if (this.state.isLoadingFeeds) return;
+
+        !this.closed && this.setState({ refreshing: true });
+
+        // reload from the start
+        this.lastChangedTime = 0;
+        await this.getSavedFeeds();
+
+        // if user moved to likes page before the Vars.postToggleButtonPressed updated to true.
+        // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
+        if (Vars.postLikeButtonPressed) Vars.postLikeButtonPressed = false;
+
+        !this.closed && this.setState({ refreshing: false });
     }
 }
 
@@ -507,8 +558,8 @@ const styles = StyleSheet.create({
     },
     new: {
         color: 'white',
-        fontSize: 12,
-        lineHeight: 12,
+        fontSize: 13,
+        lineHeight: 13,
         fontFamily: "Roboto-Bold",
         // backgroundColor: 'grey'
     }

@@ -54,7 +54,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         this.itemHeights = [];
         this.lastItemIndex = 0;
-        this.onLoading = false;
+        // this.onLoading = false;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -92,7 +92,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         !this.closed && this.setState({ isLoadingReview: false, refreshing: false });
 
-        this.onLoading = false;
+        // this.onLoading = false;
     }
 
     @autobind
@@ -303,8 +303,9 @@ export default class ReadAllReviewScreen extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
-        if (this.onLoading) return;
+        // if (this.onLoading) return;
 
+        /*
         this.setState(
             {
                 refreshing: true
@@ -314,6 +315,14 @@ export default class ReadAllReviewScreen extends React.Component {
                 this.loadReviewFromTheStart();
             }
         );
+        */
+
+        if (this.state.isLoadingReview) return;
+
+        this.setState({ isLoadingReview: true, refreshing: true });
+
+        // reload from the start
+        this.loadReviewFromTheStart();
     }
 
     loadReviewFromTheStart() {
@@ -449,17 +458,17 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     loadMore() {
-        if (this.onLoading) return;
-
-        this.onLoading = true;
+        // if (this.onLoading) return;
+        if (this.state.isLoadingReview) return;
 
         const { reviewStore } = this.props.navigation.state.params;
         if (reviewStore.allReviewsLoaded) {
-            if (this.state.refreshing) this.setState({ refreshing: false });
+            // if (this.state.refreshing) this.setState({ refreshing: false });
 
-            this.onLoading = false;
             return;
         }
+
+        // this.onLoading = true;
 
         this.setState({ isLoadingReview: true });
 
@@ -883,7 +892,7 @@ const styles = StyleSheet.create({
     notification: {
         width: '100%',
         height: (8 + 34 + 8) - 12,
-        borderRadius: 5,
+        borderRadius: 12,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,
