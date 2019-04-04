@@ -40,7 +40,7 @@ export default class Explore extends React.Component<InjectedProps> {
         feedSize: 0,
         latitude: 0,
         longitude: 0,
-        renderFeed: false,
+        // renderFeed: false,
 
         scrollY: 0,
         selectedOrderIndex: 2 // order by time
@@ -59,9 +59,11 @@ export default class Explore extends React.Component<InjectedProps> {
 
         this.init(place);
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
+        */
     }
 
     init(place) {
@@ -70,6 +72,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
+
+        this._feed.disableScroll();
     }
 
     async initFromSearch(result) {
@@ -256,12 +260,11 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                             onPress={() => {
-                                //this._feed.disableScroll();
                                 this.orderByRatings();
+
                                 this.setState({ selectedOrderIndex: 0, scrollY: this.orderTabY });
 
                                 this._feed._scrollTo(this.orderTabY);
-                                // this._feed.enableScroll();
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
@@ -274,12 +277,11 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                             onPress={() => {
-                                // this._feed.disableScroll();
                                 this.orderByReviews();
+
                                 this.setState({ selectedOrderIndex: 1, scrollY: this.orderTabY });
 
                                 this._feed._scrollTo(this.orderTabY);
-                                // this._feed.enableScroll();
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
@@ -292,12 +294,11 @@ export default class Explore extends React.Component<InjectedProps> {
                         <TouchableOpacity
                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                             onPress={() => {
-                                // this._feed.disableScroll();
                                 this.orderByTime();
+
                                 this.setState({ selectedOrderIndex: 2, scrollY: this.orderTabY });
 
                                 this._feed._scrollTo(this.orderTabY);
-                                // this._feed.enableScroll();
                             }}
                         >
                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
@@ -339,20 +340,8 @@ export default class Explore extends React.Component<InjectedProps> {
                 </AnimatedSafeAreaView>
                 */}
 
-
-
                 {
-                    /*
-                                        !this.state.renderFeed ?
-                                            <ActivityIndicator
-                                                style={styles.activityIndicator}
-                                                animating={true}
-                                                size="large"
-                                                color='grey'
-                                            />
-                                            :
-                    */
-                    this.state.renderFeed &&
+                    // this.state.renderFeed &&
                     <Feed
                         ref={(feed) => this._feed = feed}
                         store={feedStore}
@@ -498,18 +487,15 @@ export default class Explore extends React.Component<InjectedProps> {
                                         const { y } = event.nativeEvent.layout;
                                         // this.orderTabY = y;
                                         if (!this.orderTabY) this.orderTabY = y;
-
-                                        // console.log('orderTaby', y);
                                     }}>
                                         <TouchableOpacity
                                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                                             onPress={() => {
-                                                //this._feed.disableScroll();
                                                 this.orderByRatings();
+
                                                 this.setState({ selectedOrderIndex: 0 });
 
                                                 this._feed._scrollTo(this.state.scrollY);
-                                                // this._feed.enableScroll();
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
@@ -522,12 +508,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <TouchableOpacity
                                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                                             onPress={() => {
-                                                // this._feed.disableScroll();
                                                 this.orderByReviews();
+
                                                 this.setState({ selectedOrderIndex: 1 });
 
                                                 this._feed._scrollTo(this.state.scrollY);
-                                                // this._feed.enableScroll();
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
@@ -540,12 +525,11 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <TouchableOpacity
                                             style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
                                             onPress={() => {
-                                                // this._feed.disableScroll();
                                                 this.orderByTime();
+
                                                 this.setState({ selectedOrderIndex: 2 });
 
                                                 this._feed._scrollTo(this.state.scrollY);
-                                                // this._feed.enableScroll();
                                             }}
                                         >
                                             <Text style={{ fontSize: 15, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
@@ -589,6 +573,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy(order, "desc");
         this.props.feedStore.init(query, order);
+
+        this._feed.disableScroll();
     }
 
     openMap() {

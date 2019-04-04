@@ -90,7 +90,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         } else {
             if (Vars.updatedPostsForLikes.length > 0) {
                 // this.onLoading = true;
-                // this.setState({ isLoadingFeeds: true });
+                this.setState({ isLoadingFeeds: true });
 
                 let feeds = [...this.state.feeds];
 
@@ -105,7 +105,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 !this.closed && this.setState({ feeds });
 
-                // this.setState({ isLoadingFeeds: false });
+                this.setState({ isLoadingFeeds: false });
                 // this.onLoading = false;
 
                 Vars.updatedPostsForLikes = [];
@@ -259,6 +259,16 @@ export default class LikesMain extends React.Component<InjectedProps> {
         return count;
     }
 
+    /*
+    enableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: true });
+    }
+
+    disableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: false });
+    }
+    */
+
     render() {
         return (
             <View style={styles.flex}>
@@ -278,6 +288,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 {
                     // this.state.renderList &&
                     <FlatList
+                        // ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         /*
@@ -354,7 +365,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                                         <View style={{
                                                             marginLeft: 2,
                                                             width: 36, height: 21, borderRadius: 3,
-                                                            backgroundColor: Theme.color.flashBackground,
+                                                            backgroundColor: Theme.color.new,
                                                             justifyContent: 'center', alignItems: 'center'
                                                         }}>
                                                             <Text style={styles.new}>new</Text>
@@ -387,12 +398,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                         ListEmptyComponent={
                             this.state.isLoadingFeeds ?
-                                /*
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <RefreshIndicator />
-                                </View>
-                                */
-                                <View style={{ width: '100%', height: '40%' }} />
+                                <View style={{ width: '100%', height: (Dimensions.get('window').height - Cons.searchBarHeight) / 2 - 30 / 2 - Theme.spacing.base - Cons.searchBarHeight / 2 }} />
                                 :
                                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                     <Text style={{

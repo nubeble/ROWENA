@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, TouchableOpacity, BackHandler, Platform } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableOpacity, BackHandler, Platform, Image } from 'react-native';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 // import { MapView, Constants } from 'expo';
 // import { Marker } from 'react-native-maps';
@@ -15,6 +15,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import { RefreshIndicator } from "./rnff/src/components";
 import Firebase from './Firebase';
 import { NavigationActions } from 'react-navigation';
+import PreloadImage from './PreloadImage';
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -81,19 +82,28 @@ export default class MapSearch extends React.Component {
                         longitude: LONGITUDE + 0.005
                     }
                 }
-            ]
+            ],
             */
+
+            feeds: []
         };
     }
 
     componentDidMount() {
+        // test
+        /*
+        const { store } = this.props.navigation.state.params;
+        const { feed } = store;
+        console.log('feed length', feed.length);
+        */
+
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const { region } = this.props.navigation.state.params;
         if (region) {
             const _region = {
                 // latitude: region.latitude,
-                latitude: region.latitude * 0.99, // push the map up
+                latitude: region.latitude * 0.99, // push the map up a little bit
                 longitude: region.longitude,
                 latitudeDelta: 1,
                 longitudeDelta: 1 * ASPECT_RATIO
@@ -102,8 +112,14 @@ export default class MapSearch extends React.Component {
             this.setState({ region: _region });
         }
 
-        // ToDo
-        // this.getCurrentPosition();
+        const { store } = this.props.navigation.state.params;
+        const { feed } = store; // array
+
+        this.setState({ feeds: feed });
+
+
+        // ToDo: get my location
+        // this.setState({ distance });
 
 
         setTimeout(() => {
@@ -126,15 +142,17 @@ export default class MapSearch extends React.Component {
     }
 
     render() {
+        /*
         const { store } = this.props.navigation.state.params;
         const { feed } = store; // array
+        */
         // const loading = feed === undefined;
 
         return (
             <View style={styles.flex}>
                 {
                     this.state.renderMap &&
-                    this.renderMapView(feed)
+                    this.renderMapView(this.state.feeds)
                 }
                 <View style={styles.searchBar}>
                     {/* close button */}
@@ -187,7 +205,7 @@ export default class MapSearch extends React.Component {
 
                     {
                         this.state.renderMap &&
-                        this.renderPosts(feed)
+                        this.renderPosts(this.state.feeds)
                     }
 
                     {/*
@@ -239,7 +257,7 @@ export default class MapSearch extends React.Component {
                     longitudeDelta: 0.01 * ASPECT_RATIO
                 };
 
-                this.moveRegion(region);
+                this.moveRegion(region, 10);
             }, (error) => {
                 console.log('getCurrentPosition() error', error);
             });
@@ -256,12 +274,27 @@ export default class MapSearch extends React.Component {
 
                 const latitude = post.location.latitude;
                 const longitude = post.location.longitude;
+                // const rating = Math.floor(post.averageRating);
+                // ToDo: test
+                // const rating = Math.floor(Math.random() * 6); // 0 ~ 5
+                const rating = i % 6;
+
+                let image = null;
+                switch (rating) {
+                    case 0: image = PreloadImage.emoji0; break;
+                    case 1: image = PreloadImage.emoji1; break;
+                    case 2: image = PreloadImage.emoji2; break;
+                    case 3: image = PreloadImage.emoji3; break;
+                    case 4: image = PreloadImage.emoji4; break;
+                    case 5: image = PreloadImage.emoji5; break;
+                }
 
                 const marker = {
                     coordinate: {
                         latitude,
                         longitude
-                    }
+                    },
+                    image
                 };
 
                 array.push(marker);
@@ -281,12 +314,38 @@ export default class MapSearch extends React.Component {
                     // image={carImage}
                     // title={'title'}
                     // description={'description'}
+                    /*
+                    image={marker.image}
+                    width={10}
+                    height={10}
+                    */
                     onPress={() => {
                         console.log('MapSearch.renderMapView, marker onpress');
+
+                        // ToDo: move carousel
                     }}
-                />
+                >
+                    <View style={{ width: 32, height: 50 }}>
+                        <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
+                        <Image source={marker.image} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                    </View>
+                </MapView.Marker>
             );
         }
+
+        // test
+        /*
+        markers.push(
+            <MapView.Marker
+                key={1111}
+                coordinate={{
+                    latitude: 14.623401,
+                    longitude: 120.971351
+                }}
+            />
+        );
+        */
+
 
         return (
             <MapView
@@ -295,20 +354,21 @@ export default class MapSearch extends React.Component {
                 // mapType={MAP_TYPES.TERRAIN}
                 style={styles.map}
                 initialRegion={this.state.region}
-                onRegionChange={region => this.onRegionChange(region)}
+                // onRegionChange={region => this.setState({ region })}
+
+                onRegionChangeComplete={(region) => {
+                    console.log(region);
+                    this.setState({ region });
+                }}
+
                 onMapReady={this.onMapReady}
             >
                 {
+                    markers.length > 0 &&
                     markers
                 }
             </MapView>
         );
-    }
-
-    onRegionChange(region) {
-        this.setState({ region });
-
-        // console.log('onRegionChange', region);
     }
 
     onMapReady = (e) => {
@@ -317,16 +377,16 @@ export default class MapSearch extends React.Component {
         }
     };
 
-    moveRegion(region) {
+    moveRegion(region, duration) {
         if (this.ready) {
-            setTimeout(() => this.map.animateToRegion(region), 10);
+            setTimeout(() => this.map.animateToRegion(region), duration);
         }
 
         // this.setState({ region });
     }
 
     renderPosts(feed) {
-        if (!feed) {
+        if (!feed) { // never happen
             return (
                 /*
                 <View style={{
@@ -347,6 +407,10 @@ export default class MapSearch extends React.Component {
                 */
                 <RefreshIndicator />
             );
+        }
+
+        if (feed.length === 0) {
+            return null;
         }
 
         let pictures = [];
@@ -385,13 +449,48 @@ export default class MapSearch extends React.Component {
             <View style={{ marginTop: 10 }}>
                 <Carousel
                     onPageChanged={(page) => {
-                        console.log('Intro.renderPopularFeeds, current page', page);
+                        console.log('MapSearch.renderPosts, current page', page);
+
+                        // move region
+                        const tmp = this.getRegion(page);
+
+                        const region = {
+                            latitude: tmp.latitude,
+                            longitude: tmp.longitude,
+                            latitudeDelta: this.state.region.latitudeDelta,
+                            longitudeDelta: this.state.region.longitudeDelta
+                        };
+
+                        this.moveRegion(region, 1);
                     }}
                 >
                     {pictures}
                 </Carousel>
             </View>
         );
+    }
+
+    getRegion(index) {
+        const { store } = this.props.navigation.state.params;
+        const { feed } = store; // array
+
+        if (feed) {
+            /*
+            for (var i = 0; i < feed.length; i++) {
+                const post = feed[i].post;
+
+                const latitude = post.location.latitude;
+                const longitude = post.location.longitude;
+            }
+            */
+            const post = feed[index].post;
+            const latitude = post.location.latitude;
+            const longitude = post.location.longitude;
+
+            return ({ latitude, longitude });
+        }
+
+        return null;
     }
 
     renderPost(post) {
@@ -467,7 +566,7 @@ export default class MapSearch extends React.Component {
                                 <View style={{
                                     marginLeft: 2,
                                     width: 36, height: 21, borderRadius: 3,
-                                    backgroundColor: Theme.color.flashBackground,
+                                    backgroundColor: Theme.color.new,
                                     justifyContent: 'center', alignItems: 'center'
                                 }}>
                                     <Text style={styles.new}>new</Text>

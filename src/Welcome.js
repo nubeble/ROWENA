@@ -9,8 +9,6 @@ const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const illustHeight = illustWidth / 16 * 9;
 
 const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
-const bottomPosition = Dimensions.get('window').height;
-const buttonGap = 80;
 
 
 export default class Welcome extends React.Component {
@@ -52,7 +50,7 @@ export default class Welcome extends React.Component {
                     }}>{contentText}</Text>
                 </View>
 
-                <View style={{ position: 'absolute', top: bottomPosition - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <View style={{ position: 'absolute', top: Dimensions.get('window').height - 80 - 45, justifyContent: 'center', alignItems: 'center', height: 45, width: '100%' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             this.props.navigation.navigate("mainStackNavigator");
@@ -70,7 +68,6 @@ const styles = StyleSheet.create({
     flex: {
         flex: 1,
         backgroundColor: '#8EC2EA'
-        // backgroundColor: Theme.color.flashBackground
     },
     searchBar: {
         height: Cons.searchBarHeight,

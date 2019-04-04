@@ -610,7 +610,7 @@ export default class AdvertisementMain extends React.Component {
 
         const location = {
             description: streetInfo.description,
-            // streetId: streetInfo.placeId,
+            // streetId: streetInfo.streetId,
             longitude: streetInfo.longitude,
             latitude: streetInfo.latitude
         };
@@ -1322,7 +1322,7 @@ export default class AdvertisementMain extends React.Component {
                 }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
 
                 <TouchableOpacity
-                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
+                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
                     onPress={async () => await this.post()}
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post an Advertisement</Text>
@@ -1518,7 +1518,8 @@ export default class AdvertisementMain extends React.Component {
         var ext = fileName.split('.').pop();
 
         if (!Util.isImage(ext)) {
-            alert('invalid image file!');
+            const msg = 'Invalid image file (' + ext + ').';
+            this.showNotification(msg);
             return;
         }
 

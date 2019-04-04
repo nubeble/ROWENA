@@ -9,6 +9,7 @@ type Color = string;
 
 type Theme = {
     color: {
+        splash: Color,
         background: Color,
         component: Color,
         highlight: Color,
@@ -27,10 +28,11 @@ type Theme = {
         skeleton2: Color,
         buttonBackground: Color,
         buttonText: Color,
-        flashBackground: Color,
+        new: Color,
         chartBarBackground: Color,
         chartBar: Color,
-        notification: Color
+        notification: Color,
+        marker: Color
     },
     palette: {
         primary: Color,
@@ -71,6 +73,7 @@ type Theme = {
 
 const theme: Theme = {
     color: {
+        splash: "#FEBFD4",
         background: "rgb(40, 40, 40)",
         component: "rgb(61, 61, 61)",
         highlight: "rgb(33, 33, 33)",
@@ -89,11 +92,11 @@ const theme: Theme = {
         skeleton2: "#606060",
         buttonBackground: "rgb(62, 165, 255)",
         buttonText: 'white',
-        // flashBackground: "#FEBFD4",
-        flashBackground: "rgb(247, 171, 173)",
+        new: "#FFB347",
         chartBarBackground: "#7B7B7B",
         chartBar: '#f1c40f',
-        notification: '#FFBB33'
+        notification: '#FFBB33',
+        marker: 'purple'
     },
     palette: {
         primary: "#00AAFF",

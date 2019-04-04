@@ -1,11 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform, Image } from 'react-native';
 // import { MapView, Constants } from 'expo';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Text } from "./rnff/src/components";
+import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import autobind from "autobind-decorator";
+import PreloadImage from './PreloadImage';
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -27,15 +28,13 @@ export default class MapScreen extends React.Component {
 
         distance: '?', // ToDo: get geolocation of my location
 
-        /*
+        // region: null
         region: { // current region
             latitude: LATITUDE,
             longitude: LONGITUDE,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
         }
-        */
-        region: null
     };
 
     constructor(props) {
@@ -81,6 +80,20 @@ export default class MapScreen extends React.Component {
     }
 
     render() {
+        const { post } = this.props.navigation.state.params;
+        const averageRating = post.averageRating;
+        const integer = Math.floor(averageRating);
+
+        let markerImage = null;
+        switch (integer) {
+            case 0: markerImage = PreloadImage.emoji0; break;
+            case 1: markerImage = PreloadImage.emoji1; break;
+            case 2: markerImage = PreloadImage.emoji2; break;
+            case 3: markerImage = PreloadImage.emoji3; break;
+            case 4: markerImage = PreloadImage.emoji4; break;
+            case 5: markerImage = PreloadImage.emoji5; break;
+        }
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -121,7 +134,6 @@ export default class MapScreen extends React.Component {
 
                 {
                     // this.state.renderMap &&
-                    this.state.region &&
                     <MapView
                         ref={map => { this.map = map }}
                         provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
@@ -142,7 +154,12 @@ export default class MapScreen extends React.Component {
                             }}
                         // title={'title'}
                         // description={'description'}
-                        />
+                        >
+                            <View style={{ width: 32, height: 50 }}>
+                                <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
+                                <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                            </View>
+                        </MapView.Marker>
                     </MapView>
                 }
             </View>

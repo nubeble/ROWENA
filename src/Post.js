@@ -426,6 +426,15 @@ export default class Post extends React.Component<InjectedProps> {
             }
         }
 
+        let markerImage = null;
+        switch (integer) {
+            case 0: markerImage = PreloadImage.emoji0; break;
+            case 1: markerImage = PreloadImage.emoji1; break;
+            case 2: markerImage = PreloadImage.emoji2; break;
+            case 3: markerImage = PreloadImage.emoji3; break;
+            case 4: markerImage = PreloadImage.emoji4; break;
+            case 5: markerImage = PreloadImage.emoji5; break;
+        }
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -588,7 +597,7 @@ export default class Post extends React.Component<InjectedProps> {
                                                     <View style={{
                                                         marginLeft: 2,
                                                         width: 36, height: 21, borderRadius: 3,
-                                                        backgroundColor: Theme.color.flashBackground,
+                                                        backgroundColor: Theme.color.new,
                                                         justifyContent: 'center', alignItems: 'center'
                                                     }}>
                                                         <Text style={styles.new}>new</Text>
@@ -599,7 +608,7 @@ export default class Post extends React.Component<InjectedProps> {
                                                     <View style={{
                                                         marginLeft: 2,
                                                         width: 160, height: 22, borderRadius: 3,
-                                                        backgroundColor: Theme.color.flashBackground,
+                                                        backgroundColor: Theme.color.new,
                                                         justifyContent: 'center', alignItems: 'center'
                                                     }}>
                                                         <Text style={{
@@ -659,7 +668,12 @@ export default class Post extends React.Component<InjectedProps> {
                                                         }}
                                                     // title={'title'}
                                                     // description={'description'}
-                                                    />
+                                                    >
+                                                        <View style={{ width: 32, height: 50 }}>
+                                                            <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
+                                                            <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                                                        </View>
+                                                    </MapView.Marker>
                                                 </MapView>
                                             </View>
                                         </TouchableOpacity>
@@ -701,7 +715,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
 
                                     <TouchableOpacity
-                                        style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.large }]}
+                                        style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
                                         onPress={async () => await this.contact()}
                                     >
                                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Start a Chat</Text>
@@ -927,6 +941,34 @@ export default class Post extends React.Component<InjectedProps> {
                             showSpinner={false}
                             // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                             uri={value}
+                        />
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+
+        // anonymous image
+        if (pictures.length === 0) {
+            pictures.push(
+                <View style={styles.slide} key={`zero`}>
+                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
+                        const imageW = Dimensions.get('window').width;
+                        const boundary = imageW / 2;
+                        const x = e.nativeEvent.locationX;
+
+                        if (x <= boundary) { // left
+                            this.swiper.scrollBy(-1, false);
+                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Success);
+                            else Vibration.vibrate(30);
+                        } else { // right
+                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                            else Vibration.vibrate(30);
+                        }
+                    }}
+                    >
+                        <Image
+                            style={[styles.item, { backgroundColor: 'black', tintColor: 'white', resizeMode: 'contain' }]}
+                            source={PreloadImage.user}
                         />
                     </TouchableOpacity>
                 </View>

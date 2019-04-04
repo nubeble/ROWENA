@@ -70,7 +70,7 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeManila()}
+                    <TouchableOpacity onPress={() => this.makeManila(0)}
                         style={styles.bottomButton}
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
@@ -114,7 +114,8 @@ export default class Admin extends React.Component {
             this.makeHanoi(); // 하노이
 
             // 3. 필리핀
-            this.makeManila();
+            // this.makeManila();
+            this.makeManila(i + 1); // 1 ~ 10
             this.makeCebu();
 
             // 4. 라오스
@@ -543,17 +544,100 @@ export default class Admin extends React.Component {
         Vars.userFeedsChanged = true;
     }
 
-    async makeManila() {
+    getRandomLocationManila(_number) {
+        let description = '';
+        let longitude = 0;
+        let latitude = 0;
+
+        let number = 0;
+        if (_number === 0) number = Math.floor(Math.random() * 10) + 1; // 1 ~ 10
+        else number = _number;
+
+        switch (number) {
+            case 1: {
+                description = 'Main Cathedral, General Luna St, Intramuros, Manila, 1002 Metro Manila, 필리핀';
+                latitude = 14.591799;
+                longitude = 120.973383;
+            } break;
+
+            case 2: {
+                description = '2597 Abad Santos Ave, Tondo, Manila, Metro Manila, 필리핀';
+                latitude = 14.626237;
+                longitude = 120.978308;
+            } break;
+
+            case 3: {
+                description = 'Banco De Oro, FFW Building, 1943 Taft Avenue, Malate, Malate, Manila, 1000, Metro Manila, 1004 Metro Manila, 필리핀';
+                latitude = 14.565525;
+                longitude = 120.994316;
+            } break;
+
+            case 4: {
+                description = 'Brgy. 630, 산타 메사 마닐라 마닐라 대도시 필리핀';
+                latitude = 14.599488;
+                longitude = 121.010702;
+            } break;
+
+            case 5: {
+                description = '38-58 N.S. Amoranto Sr. St, La Loma, Quezon City, Metro Manila, 필리핀';
+                latitude = 14.626239;
+                longitude = 120.991622;
+            } break;
+
+            case 6: {
+                description = '2647-2605 Pedro Guevarra St, Santa Cruz, Manila, Metro Manila, 필리핀';
+                latitude = 14.625564;
+                longitude = 120.985871;
+            } break;
+
+            case 7: {
+                description = '397 Lallana St, Tondo, Manila, 1013 Metro Manila, 필리핀';
+                latitude = 14.621151;
+                longitude = 120.966869;
+            } break;
+
+            case 8: {
+                description = '756-932 Yuseco St, Tondo, Manila, Metro Manila, 필리핀';
+                latitude = 14.620034;
+                longitude = 120.974110;
+            } break;
+
+            case 9: {
+                description = 'PLM Field, Victoria St, Intramuros, Manila, 1002 Metro Manila, 필리핀';
+                latitude = 14.586849;
+                longitude = 120.976437;
+            } break;
+
+            case 10: {
+                description = 'España Blvd, Sampaloc, Manila, 1008 Metro Manila, 필리핀';
+                latitude = 14.614661;
+                longitude = 120.998268;
+            } break;
+        }
+
+        const location = {
+            description,
+            longitude,
+            latitude
+        };
+
+        return location;
+    }
+
+    async makeManila(_number) {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk';
         const placeName = 'Manila, Metro Manila, Philippines';
 
+        /*
         const location = {
             description: "468 Epifanio de los Santos Avenue, East Grace Park, Caloocan, Metro Manila, Philippines",
             longitude: 120.9891925,
             latitude: 14.6569403
         };
+        */
+        const location = this.getRandomLocationManila(_number);
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
 

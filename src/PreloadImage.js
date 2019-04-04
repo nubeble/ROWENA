@@ -30,6 +30,15 @@ const chat = require('../assets/sample/chat.png');
 const wait = require('../assets/sample/wait.png');
 const keyboard = require('../assets/sample/keyboard.png');
 
+// emoji
+const pin = require('../assets/pin.png');
+const emoji0 = require('../assets/emoji/0.png');
+const emoji1 = require('../assets/emoji/1.png');
+const emoji2 = require('../assets/emoji/2.png');
+const emoji3 = require('../assets/emoji/3.png');
+const emoji4 = require('../assets/emoji/4.png');
+const emoji5 = require('../assets/emoji/5.png');
+
 
 export default class PreloadImage {
     static Splash = Splash;
@@ -60,6 +69,14 @@ export default class PreloadImage {
     static chat = chat;
     static wait = wait;
     static keyboard = keyboard;
+
+    static pin = pin;
+    static emoji0 = emoji0;
+    static emoji1 = emoji1;
+    static emoji2 = emoji2;
+    static emoji3 = emoji3;
+    static emoji4 = emoji4;
+    static emoji5 = emoji5;
 
 
     static downloadAsync(): Promise<*>[] {
@@ -93,9 +110,15 @@ export default class PreloadImage {
                 PreloadImage.find,
                 PreloadImage.chat,
                 PreloadImage.wait,
-                PreloadImage.keyboard
+                PreloadImage.keyboard,
 
-
+                PreloadImage.pin,
+                PreloadImage.emoji0,
+                PreloadImage.emoji1,
+                PreloadImage.emoji2,
+                PreloadImage.emoji3,
+                PreloadImage.emoji4,
+                PreloadImage.emoji5
             ])
         ];
     }

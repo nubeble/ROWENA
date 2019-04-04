@@ -27,7 +27,7 @@ type FeedProps = NavigationProps<> & {
 @observer
 export default class Feed extends React.Component<FeedProps> {
     state = {
-        isLoadingFeed: false,
+        isLoadingFeeds: false,
         refreshing: false
     };
 
@@ -42,7 +42,9 @@ export default class Feed extends React.Component<FeedProps> {
     onAddToFeedFinished() {
         console.log('Feed.onAddToFeedFinished');
 
-        !this.closed && this.setState({ isLoadingFeed: false, refreshing: false });
+        !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
+
+        this.enableScroll();
     }
 
     componentWillUnmount() {
@@ -62,7 +64,7 @@ export default class Feed extends React.Component<FeedProps> {
 
     @autobind
     loadMore() {
-        if (this.state.isLoadingFeed) return;
+        if (this.state.isLoadingFeeds) return;
 
         if (this.props.store.allFeedsLoaded) {
             // if (this.state.refreshing) this.setState({ refreshing: false });
@@ -70,7 +72,7 @@ export default class Feed extends React.Component<FeedProps> {
             return;
         }
 
-        this.setState({ isLoadingFeed: true });
+        this.setState({ isLoadingFeeds: true });
 
         console.log('Feed.loadMore');
 
@@ -93,15 +95,13 @@ export default class Feed extends React.Component<FeedProps> {
         this._flatList.scrollToOffset({ animated: false, offset: offset });
     }
 
-    /*
     enableScroll() {
-        this._flatList.setNativeProps({ scrollEnabled: true });
+        this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });
     }
 
     disableScroll() {
-        this._flatList.setNativeProps({ scrollEnabled: false });
+        this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
     }
-    */
 
     render(): React.Node {
         const { onScroll, store, navigation, bounce, ListHeaderComponent } = this.props;
@@ -113,7 +113,7 @@ export default class Feed extends React.Component<FeedProps> {
                 <FlatList
                     ref={(fl) => this._flatList = fl}
                     contentContainerStyle={styles.contentContainer}
-                    showsVerticalScrollIndicator
+                    // showsVerticalScrollIndicator
                     data={feed}
                     keyExtractor={this.keyExtractor}
                     renderItem={this.renderItem}
@@ -128,7 +128,7 @@ export default class Feed extends React.Component<FeedProps> {
                     }}
 
                     ListFooterComponent={
-                        this.state.isLoadingFeed &&
+                        this.state.isLoadingFeeds &&
                         <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <RefreshIndicator />
                         </View>
@@ -136,24 +136,27 @@ export default class Feed extends React.Component<FeedProps> {
 
                     ListEmptyComponent={
                         loading ?
-                            <View style={{ height: Dimensions.get('window').height, paddingTop: 50 }}>
+                            <View style={{ height: Dimensions.get('window').height, paddingTop: Dimensions.get('window').height / 12 }}>
                                 <RefreshIndicator />
                             </View>
                             :
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
-                                    color: Theme.color.text2,
+                                    // color: Theme.color.text2,
+                                    color: 'rgb(247, 178, 57)',
                                     fontSize: 24,
                                     paddingTop: 4,
                                     fontFamily: "Roboto-Medium"
                                 }}>No registered girls yet</Text>
 
+                                {/*
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 18,
                                     fontFamily: "Roboto-Medium"
                                 }}>Start exploring girls for your next trip</Text>
+                                */}
 
                                 <TouchableOpacity
                                     onPress={() => {
@@ -161,12 +164,12 @@ export default class Feed extends React.Component<FeedProps> {
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
-                                    style={{ marginTop: 10 }}>
+                                    style={{ marginTop: 6 }}>
 
                                     <Image
                                         style={{
-                                            width: 180,
-                                            height: 180,
+                                            width: 140,
+                                            height: 140,
                                             resizeMode: 'cover'
                                         }}
                                         source={PreloadImage.feed}
@@ -185,7 +188,7 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     handleRefresh = () => {
-        if (this.state.isLoadingFeed) return;
+        if (this.state.isLoadingFeeds) return;
 
         /*
         this.setState(
@@ -199,7 +202,7 @@ export default class Feed extends React.Component<FeedProps> {
         );
         */
 
-        this.setState({ isLoadingFeed: true, refreshing: true });
+        this.setState({ isLoadingFeeds: true, refreshing: true });
 
         // reload from the start
         this.props.store.loadFeedFromTheStart();

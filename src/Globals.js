@@ -30,6 +30,8 @@ export const Cons = {
     buttonTimeoutShort: 100,
     buttonTimeoutLong: 300,
 
+    // bottomTabBarHeight: Platform.isPad ? 49 : 29, // const DEFAULT_HEIGHT = 49; const COMPACT_HEIGHT = 29;
+
     // NOT USED
     submitButtonPaddingTop: () => {
         if (Platform.OS === 'ios') return 0;

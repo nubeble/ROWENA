@@ -180,7 +180,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                     <View style={{
                                         marginLeft: 2,
                                         width: 36, height: 21, borderRadius: 3,
-                                        backgroundColor: Theme.color.flashBackground,
+                                        backgroundColor: Theme.color.new,
                                         justifyContent: 'center', alignItems: 'center'
                                     }}>
                                         <Text style={styles.new}>new</Text>
