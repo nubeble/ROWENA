@@ -1306,7 +1306,7 @@ export default class Post extends React.Component<InjectedProps> {
 
             for (var i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
-                    <View key={i} style={{ paddingVertical: 4 }}>
+                    <View key={i} style={{ paddingVertical: 5 }}>
                         <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={120}>
                             <Svg.Circle
                                 cx={18 + 2}
@@ -2117,7 +2117,7 @@ const styles = StyleSheet.create({
     },
     contactButton: {
         width: '85%',
-        height: 45,
+        height: Cons.buttonHeight,
         alignSelf: 'center',
         backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,

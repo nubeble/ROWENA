@@ -21,7 +21,7 @@ export default class WriteReviewScreen extends React.Component {
         rating: 5,
         invalid: false, // ToDo: not used
         bottomPosition: Dimensions.get('window').height,
-        postButtonTop: Dimensions.get('window').height - 80 - 45, // 80: bottom gap, 45: button height
+        postButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight, // 80: bottom gap, 45: button height
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -78,7 +78,7 @@ export default class WriteReviewScreen extends React.Component {
         */
 
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
-        const postButtonTop = bottomPosition - 10 - 45; // 10: bottom gap, 45: button height
+        const postButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 10: bottom gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
@@ -86,7 +86,7 @@ export default class WriteReviewScreen extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const postButtonTop = bottomPosition - 80 - 45; // 80: bottom gap, 45: button height
+        const postButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: bottom gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     },
     signUpButton: {
         width: '85%',
-        height: 45,
+        height: Cons.buttonHeight,
         backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
         justifyContent: 'center',

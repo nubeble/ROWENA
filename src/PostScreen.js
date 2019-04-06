@@ -89,7 +89,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
         chartInfo: null,
 
         from: null,
-        viewMarginBottom: 0,
         disableContactButton: false
     };
 
@@ -173,10 +172,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         const { post, extra, from } = this.props.navigation.state.params;
         this.init(post, extra);
-
-        // view margin bottom
-        // ToDo: iphone x, iphone xr, iphone xs, ...
-        if (Platform.OS == 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') this.setState({ viewMarginBottom: 8 });
 
         console.log('PostScreen.componentDidMount', from);
         this.setState({ from });
@@ -455,7 +450,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         };
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -540,7 +535,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
                             ListHeaderComponent={
-                                <View style={{ paddingBottom: this.state.viewMarginBottom }}>
+                                <View>
                                     {/* profile pictures */}
                                     {
                                         this.renderSwiper(post)
@@ -1336,7 +1331,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
             for (var i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
-                    <View key={i} style={{ paddingVertical: 4 }}>
+                    <View key={i} style={{ paddingVertical: 5 }}>
                         <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={120}>
                             <Svg.Circle
                                 cx={18 + 2}
@@ -2152,7 +2147,7 @@ const styles = StyleSheet.create({
     },
     contactButton: {
         width: '85%',
-        height: 45,
+        height: Cons.buttonHeight,
         alignSelf: 'center',
         backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,

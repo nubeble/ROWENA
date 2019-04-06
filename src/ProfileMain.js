@@ -20,6 +20,8 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 12; // 3 x 4
 
+const avatarWidth = Dimensions.get('window').height / 11;
+
 
 @inject("profileStore")
 @observer
@@ -277,15 +279,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // if (!profile) return null;
 
-        const baselineTop = 0;
-
-        const avatarName = (profile.name) ? profile.name : 'Max Power';
+        const avatarName = (profile.name) ? profile.name : 'Max Power'; // ToDo: test
         // const uri = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
         const hasImage = !!profile.picture.uri;
         const imageUri = profile.picture.uri;
-        const avatarHeight = 70;
-        const bodyInfoItemWidth = Dimensions.get('window').width / 5;
-        // const bodyInfoItemHeight = bodyInfoItemWidth;
 
         return (
             <View style={styles.flex}>
@@ -324,9 +321,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }, Cons.buttonTimeoutShort);
                                         }}
                                     >
-                                        <View style={{ width: '100%', height: 100 }}>
+                                        <View style={{
+                                            width: '100%', height: Dimensions.get('window').height / 8,
+                                            flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+                                        }}>
+                                            <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
+                                                <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{avatarName}</Text>
+                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>View and edit profile</Text>
+                                            </View>
                                             <TouchableOpacity
-                                                style={{ width: avatarHeight, height: avatarHeight, position: "absolute", top: (100 - avatarHeight) / 2, right: 30 }}
+                                                style={{
+                                                    width: avatarWidth, height: avatarWidth,
+                                                    marginRight: 30, justifyContent: 'center', alignItems: 'center'
+                                                }}
                                                 onPress={() => {
                                                     setTimeout(() => {
                                                         // ToDo: open picture
@@ -337,22 +344,20 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 {
                                                     hasImage ?
                                                         <Image
-                                                            style={{ backgroundColor: 'black', width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1 }}
+                                                            style={{ backgroundColor: 'black', width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1 }}
                                                             source={{ uri: imageUri }}
                                                         />
                                                         :
                                                         <Image
                                                             style={{
-                                                                backgroundColor: 'black', tintColor: 'white', width: avatarHeight, height: avatarHeight,
-                                                                borderRadius: avatarHeight / 2, borderColor: 'black', borderWidth: 1,
+                                                                backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
+                                                                borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
                                                                 resizeMode: 'cover'
                                                             }}
                                                             source={PreloadImage.user}
                                                         />
                                                 }
                                             </TouchableOpacity>
-                                            <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium", position: "absolute", top: baselineTop + 20, left: 30 }}>{avatarName}</Text>
-                                            <Text style={{ color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light", position: "absolute", top: baselineTop + 56, left: 30 }}>View and edit profile</Text>
                                         </View>
                                     </TouchableHighlight>
 

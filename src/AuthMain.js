@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
         borderColor: "transparent",
         borderWidth: 0,
         width: '85%',
-        height: 45
+        height: Cons.buttonHeight
     },
     signUpWithEmailButton: {
         marginTop: 20,
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
         borderColor: "rgba(255, 255, 255, 0.8)",
         borderWidth: 2,
         width: '85%',
-        height: 45
+        height: Cons.buttonHeight
     },
     signUpWithMobileButton: {
         marginTop: 20,
@@ -294,6 +294,6 @@ const styles = StyleSheet.create({
         borderColor: "rgba(255, 255, 255, 0.8)",
         borderWidth: 2,
         width: '85%',
-        height: 45
+        height: Cons.buttonHeight
     }
 });

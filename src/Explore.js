@@ -579,6 +579,9 @@ export default class Explore extends React.Component<InjectedProps> {
 
     openMap() {
         const { feedStore } = this.props;
+        const { feed } = feedStore;
+
+        if (!feed) return;
 
         /*
         let region = null;

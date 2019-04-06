@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, AsyncStorage } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, AsyncStorage, Dimensions } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -1165,7 +1165,7 @@ const styles = StyleSheet.create({
     },
     bottomButton: {
         width: '85%',
-        height: 45,
+        height: Cons.buttonHeight,
         alignSelf: 'center',
 
         justifyContent: 'center',

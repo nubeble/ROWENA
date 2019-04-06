@@ -130,9 +130,7 @@ export default class AdvertisementMain extends React.Component {
         bottomPosition: Dimensions.get('window').height,
         */
         onNote: false,
-        keyboardTop: Dimensions.get('window').height,
-
-        viewMarginBottom: 0
+        keyboardTop: Dimensions.get('window').height
     };
 
     constructor(props) {
@@ -149,9 +147,6 @@ export default class AdvertisementMain extends React.Component {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-
-        // ToDo: iphone x, iphone xr, iphone xs, ...
-        if (Platform.OS === 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') this.setState({ viewMarginBottom: 8 });
     }
 
     initFromSelect(result) { // country
@@ -695,7 +690,7 @@ export default class AdvertisementMain extends React.Component {
         };
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom }]}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -823,7 +818,7 @@ export default class AdvertisementMain extends React.Component {
 
     renderContainer() {
         return (
-            <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: this.state.viewMarginBottom }}>
+            <View style={{ paddingTop: Theme.spacing.tiny }}>
                 {/* image editor view */}
                 <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium", paddingLeft: 18 }}>
                     {'PICTURES'}
@@ -1341,6 +1336,9 @@ export default class AdvertisementMain extends React.Component {
     }
 
     renderImage(number, uri) {
+        const iconButtonWidth = Dimensions.get('window').width / 14;
+        const iconButtonX = (iconButtonWidth / 2) * -1 + iconButtonWidth / 3;
+
         if (!uri) {
             return (
                 <View style={{ width: imageWidth, height: imageHeight }}>
@@ -1351,7 +1349,11 @@ export default class AdvertisementMain extends React.Component {
 
                     {/* icon button */}
                     <TouchableOpacity
-                        style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: Theme.color.selection, position: 'absolute', bottom: -14 + 10, right: -14 + 10, justifyContent: "center", alignItems: "center" }}
+                        style={{
+                            width: iconButtonWidth, height: iconButtonWidth, borderRadius: iconButtonWidth / 2,
+                            backgroundColor: Theme.color.selection, position: 'absolute',
+                            bottom: iconButtonX, right: iconButtonX, justifyContent: "center", alignItems: "center"
+                        }}
                         onPress={() => {
                             if (this._showNotification) {
                                 this.hideNotification();
@@ -1850,7 +1852,7 @@ const styles = StyleSheet.create({
     },
     contactButton: {
         width: '85%',
-        height: 45,
+        height: Cons.buttonHeight,
         alignSelf: 'center',
         backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,

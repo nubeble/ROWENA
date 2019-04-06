@@ -30,7 +30,13 @@ export const Cons = {
     buttonTimeoutShort: 100,
     buttonTimeoutLong: 300,
 
+    buttonHeight: Dimensions.get('window').height / 18,
+
     // bottomTabBarHeight: Platform.isPad ? 49 : 29, // const DEFAULT_HEIGHT = 49; const COMPACT_HEIGHT = 29;
+
+    // view margin bottom
+    // ToDo: iphone x, iphone xr, iphone xs, ...
+    viewMarginBottom: (Platform.OS == 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') ? 8 : 0,
 
     // NOT USED
     submitButtonPaddingTop: () => {

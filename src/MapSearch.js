@@ -27,6 +27,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 // const SPACE = 0.01;
 
+const UP = 1.02;
+
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
 // const useGoogleMaps = true;
 
@@ -85,7 +87,9 @@ export default class MapSearch extends React.Component {
             ],
             */
 
-            feeds: []
+            feeds: [],
+
+            selectedMarker: 0 // index
         };
     }
 
@@ -102,8 +106,7 @@ export default class MapSearch extends React.Component {
         const { region } = this.props.navigation.state.params;
         if (region) {
             const _region = {
-                // latitude: region.latitude,
-                latitude: region.latitude * 0.99, // push the map up a little bit
+                latitude: region.latitude,
                 longitude: region.longitude,
                 latitudeDelta: 1,
                 longitudeDelta: 1 * ASPECT_RATIO
@@ -173,7 +176,9 @@ export default class MapSearch extends React.Component {
                         <Ionicons name='md-arrow-back' color="black" size={24} />
                     </TouchableOpacity>
 
+                    {/*
                     <Text style={styles.distance}>{this.state.distance + ' kilometers away'}</Text>
+                    */}
 
                     {/* gps button */}
                     <TouchableOpacity
@@ -275,9 +280,7 @@ export default class MapSearch extends React.Component {
                 const latitude = post.location.latitude;
                 const longitude = post.location.longitude;
                 // const rating = Math.floor(post.averageRating);
-                // ToDo: test
-                // const rating = Math.floor(Math.random() * 6); // 0 ~ 5
-                const rating = i % 6;
+                const rating = i % 6; // ToDo: test
 
                 let image = null;
                 switch (rating) {
@@ -291,10 +294,11 @@ export default class MapSearch extends React.Component {
 
                 const marker = {
                     coordinate: {
-                        latitude,
+                        latitude: latitude,
                         longitude
                     },
-                    image
+                    image,
+                    index: i
                 };
 
                 array.push(marker);
@@ -314,20 +318,33 @@ export default class MapSearch extends React.Component {
                     // image={carImage}
                     // title={'title'}
                     // description={'description'}
-                    /*
-                    image={marker.image}
-                    width={10}
-                    height={10}
-                    */
-                    onPress={() => {
-                        console.log('MapSearch.renderMapView, marker onpress');
 
-                        // ToDo: move carousel
+                    // zIndex={this.state.selectedMarker === i ? array.length - 1 : 0}
+
+                    zIndex={this.state.selectedMarker === i ? array.length : marker.index}
+
+                    onPress={() => {
+                        console.log('MapSearch.renderMapView, marker onpress', marker.index);
+
+                        this.setState({ selectedMarker: marker.index });
+
+                        // ToDo: move region in ios (in android automatically moved)
+                        if (Platform.OS === 'ios') {
+                            this.moveMarker(marker.index);
+                        }
+
+                        // move carousel
+                        this.carousel.moveToPage(marker.index);
                     }}
                 >
                     <View style={{ width: 32, height: 50 }}>
-                        <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
-                        <Image source={marker.image} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                        <Image source={PreloadImage.pin} style={{
+                            tintColor: this.state.selectedMarker === i ? Theme.color.marker : 'darkgrey',
+                            width: 32, height: 50, position: 'absolute', top: 0, left: 0
+                        }} />
+                        <Image source={marker.image} style={{
+                            width: 22, height: 22, position: 'absolute', top: 5, left: 5
+                        }} />
                     </View>
                 </MapView.Marker>
             );
@@ -355,12 +372,10 @@ export default class MapSearch extends React.Component {
                 style={styles.map}
                 initialRegion={this.state.region}
                 // onRegionChange={region => this.setState({ region })}
-
                 onRegionChangeComplete={(region) => {
                     console.log(region);
                     this.setState({ region });
                 }}
-
                 onMapReady={this.onMapReady}
             >
                 {
@@ -448,26 +463,33 @@ export default class MapSearch extends React.Component {
         return (
             <View style={{ marginTop: 10 }}>
                 <Carousel
+                    ref={(carousel) => { this.carousel = carousel; }}
                     onPageChanged={(page) => {
                         console.log('MapSearch.renderPosts, current page', page);
 
+                        this.setState({ selectedMarker: page });
+
                         // move region
-                        const tmp = this.getRegion(page);
-
-                        const region = {
-                            latitude: tmp.latitude,
-                            longitude: tmp.longitude,
-                            latitudeDelta: this.state.region.latitudeDelta,
-                            longitudeDelta: this.state.region.longitudeDelta
-                        };
-
-                        this.moveRegion(region, 1);
+                        this.moveMarker(page);
                     }}
                 >
                     {pictures}
                 </Carousel>
             </View>
         );
+    }
+
+    moveMarker(index) {
+        const tmp = this.getRegion(index);
+
+        const region = {
+            latitude: tmp.latitude,
+            longitude: tmp.longitude,
+            latitudeDelta: this.state.region.latitudeDelta,
+            longitudeDelta: this.state.region.longitudeDelta
+        };
+
+        this.moveRegion(region, 0);
     }
 
     getRegion(index) {

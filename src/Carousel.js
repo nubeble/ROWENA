@@ -250,6 +250,13 @@ export default class extends Component {
         return d;
     }
 
+
+    moveToPage(index) {
+        // ToDo
+        console.log('Carousel.moveToPage', index);
+        this._placeCritical(index);
+    }
+
     /*
     _onMomentumScrollEnd = (event) => {
         Vibration.vibrate(1);

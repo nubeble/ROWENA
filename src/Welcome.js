@@ -50,7 +50,7 @@ export default class Welcome extends React.Component {
                     }}>{contentText}</Text>
                 </View>
 
-                <View style={{ position: 'absolute', top: Dimensions.get('window').height - 80 - 45, justifyContent: 'center', alignItems: 'center', height: 45, width: '100%' }}>
+                <View style={{ position: 'absolute', top: Dimensions.get('window').height - 80 - Cons.buttonHeight, justifyContent: 'center', alignItems: 'center', height: Cons.buttonHeight, width: '100%' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             this.props.navigation.navigate("mainStackNavigator");
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
     },
     signUpButton: {
         width: '85%',
-        height: 45,
+        height: Cons.buttonHeight,
         // backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
         backgroundColor: Theme.color.buttonBackground,
         borderRadius: 5,
