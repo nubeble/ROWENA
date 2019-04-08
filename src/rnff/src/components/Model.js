@@ -1,8 +1,11 @@
+import * as firebase from "firebase";
+
 type Location = {
     description: string,
     // streetId: string, // place_id for street
     longitude: number,
-    latitude: number
+    latitude: number,
+    gp: firebase.firestore.GeoPoint
 };
 
 export type Picture = {

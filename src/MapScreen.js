@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform, Image } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform, Image, StatusBar } from 'react-native';
 // import { MapView, Constants } from 'expo';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -24,17 +24,18 @@ const useGoogleMaps = Platform.OS === 'android' ? true : false;
 
 export default class MapScreen extends React.Component {
     state = {
-        // renderMap: false,
+        renderMap: false,
 
         distance: '?', // ToDo: get geolocation of my location
 
-        // region: null
         region: { // current region
             latitude: LATITUDE,
             longitude: LONGITUDE,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
-        }
+        },
+
+        markerImage: null
     };
 
     constructor(props) {
@@ -45,6 +46,8 @@ export default class MapScreen extends React.Component {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        StatusBar.setHidden(true);
 
         const { post } = this.props.navigation.state.params;
         const latitude = post.location.latitude;
@@ -59,28 +62,6 @@ export default class MapScreen extends React.Component {
 
         this.setState({ region });
 
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderMap: true });
-        }, 0);
-        */
-    }
-
-    @autobind
-    handleHardwareBackPress() {
-        this.props.navigation.goBack();
-
-        return true;
-    }
-
-    componentWillUnmount() {
-        this.hardwareBackPressListener.remove();
-
-        this.closed = true;
-    }
-
-    render() {
-        const { post } = this.props.navigation.state.params;
         const averageRating = post.averageRating;
         const integer = Math.floor(averageRating);
 
@@ -94,46 +75,33 @@ export default class MapScreen extends React.Component {
             case 5: markerImage = PreloadImage.emoji5; break;
         }
 
+        this.setState({ markerImage });
+
+        setTimeout(() => {
+            !this.closed && this.setState({ renderMap: true });
+        }, 0);
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        this.props.navigation.goBack();
+
+        return true;
+    }
+
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+
+        StatusBar.setHidden(false);
+
+        this.closed = true;
+    }
+
+    render() {
         return (
             <View style={styles.flex}>
-                <View style={styles.searchBar}>
-                    {/* close button */}
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            left: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => {
-                            this.props.navigation.goBack();
-                        }}
-                    >
-                        <Ionicons name='md-arrow-back' color="black" size={24} />
-                    </TouchableOpacity>
-
-                    <Text style={styles.distance}>{this.state.distance + ' kilometers away'}</Text>
-
-                    {/* gps button */}
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            right: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => this.getCurrentPosition()}
-                    >
-                        <MaterialIcons name='gps-fixed' color="black" size={24} />
-                    </TouchableOpacity>
-                </View>
-
                 {
-                    // this.state.renderMap &&
+                    this.state.renderMap &&
                     <MapView
                         ref={map => { this.map = map }}
                         provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
@@ -157,11 +125,77 @@ export default class MapScreen extends React.Component {
                         >
                             <View style={{ width: 32, height: 50 }}>
                                 <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
-                                <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                                <Image source={this.state.markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
                             </View>
                         </MapView.Marker>
                     </MapView>
                 }
+
+
+
+                {/* close button */}
+                <TouchableOpacity
+                    style={{
+                        width: 42,
+                        height: 42,
+                        position: 'absolute',
+                        top: 100,
+                        left: 10,
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                    onPress={() => {
+                        this.props.navigation.goBack();
+                    }}
+                >
+                    <View style={{
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                    }}>
+                        <Ionicons name='md-arrow-back' color='rgba(0, 0, 0, 0.8)' size={26} />
+                    </View>
+                </TouchableOpacity>
+
+                {/* search this area */}
+                <View
+                    style={{
+                        width: '60%',
+                        height: 30,
+                        position: 'absolute',
+                        top: 100 + 6,
+                        right: '20%',
+                        borderRadius: '16%',
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                >
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "black" }}>{this.state.distance + ' kilometers away'}</Text>
+                </View>
+
+                {/* gps button */}
+                <TouchableOpacity
+                    style={{
+                        width: 42,
+                        height: 42,
+                        position: 'absolute',
+                        top: 100,
+                        right: 10,
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                    onPress={() => {
+                        this.getCurrentPosition();
+                    }}
+                >
+                    <View style={{
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                    }}>
+                        <MaterialIcons name='gps-fixed' color='rgba(0, 0, 0, 0.8)' size={26} />
+                    </View>
+                </TouchableOpacity>
+
+
+
             </View>
         );
     }
@@ -176,7 +210,7 @@ export default class MapScreen extends React.Component {
                     longitudeDelta: 0.01 * ASPECT_RATIO
                 };
 
-                this.moveRegion(region);
+                this.moveRegion(region, 10);
             }, (error) => {
                 console.log('getCurrentPosition() error', error);
             });
@@ -186,15 +220,15 @@ export default class MapScreen extends React.Component {
     }
 
     onMapReady = (e) => {
-        if (!this.ready) {
-            this.ready = true;
-        }
+        this.ready = true;
     };
 
-    moveRegion(region) {
+    moveRegion(region, duration) {
         if (this.ready) {
-            setTimeout(() => this.map.animateToRegion(region), 10);
+            setTimeout(() => this.map.animateToRegion(region), duration);
         }
+
+        // this.setState({ region });
     }
 
     onRegionChange = (region) => {
@@ -210,25 +244,7 @@ const styles = StyleSheet.create({
     flex: {
         flex: 1
     },
-    searchBar: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: Cons.searchBarHeight,
-        // backgroundColor: 'red',
-        zIndex: 10000
-    },
-    distance: {
-        position: 'absolute',
-        bottom: 8 + 4 + 3, // paddingBottom from searchBar
-        alignSelf: 'center',
-        fontSize: 16,
-        fontFamily: "Roboto-Medium",
-        color: "black"
-    },
     map: {
-        flex: 1
-        // ...StyleSheet.absoluteFillObject
+        ...StyleSheet.absoluteFillObject
     }
 });

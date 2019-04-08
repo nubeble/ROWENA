@@ -578,10 +578,12 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     openMap() {
-        const { feedStore } = this.props;
+        // const { feedStore } = this.props;
+        /*
         const { feed } = feedStore;
 
         if (!feed) return;
+        */
 
         /*
         let region = null;
@@ -605,7 +607,12 @@ export default class Explore extends React.Component<InjectedProps> {
             longitude: this.state.longitude
         };
 
-        this.props.navigation.navigate("mapSearch", { region: region, store: feedStore });
+        const place = this.props.navigation.state.params.place;
+        const placeId = place.place_id;
+
+        const feedSize = this.state.feedSize;
+
+        this.props.navigation.navigate("mapSearch", { region: region, placeId, feedSize });
     }
 }
 

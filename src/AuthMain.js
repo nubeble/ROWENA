@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     },
     view: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
         justifyContent: 'center'
     },
     /*
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
         height: Cons.buttonHeight
     },
     signUpWithEmailButton: {
-        marginTop: 20,
+        marginTop: Dimensions.get('window').height / 40,
 
         justifyContent: 'center',
         alignItems: 'center',
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
         height: Cons.buttonHeight
     },
     signUpWithMobileButton: {
-        marginTop: 20,
+        marginTop: Dimensions.get('window').height / 40,
 
         justifyContent: 'center',
         alignItems: 'center',

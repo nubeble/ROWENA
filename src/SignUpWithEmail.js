@@ -356,7 +356,7 @@ export default class SignUpWithEmail extends React.Component {
                 source={PreloadImage.Background}
                 resizeMode='cover'
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
                     <View style={styles.searchBar}>
                         <TouchableOpacity
                             style={{
@@ -424,8 +424,8 @@ export default class SignUpWithEmail extends React.Component {
                             />
                             {/* to block shaking */}
                             {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={Theme.color.notification} size={30} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="white" size={30} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
 
                             <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
@@ -458,8 +458,8 @@ export default class SignUpWithEmail extends React.Component {
                             />
                             {/* to block shaking */}
                             {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="transparent" size={28} />}
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color={Theme.color.notification} size={28} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="white" size={28} />}
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={28} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                         </View>
                     </View>
 
@@ -515,24 +515,6 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
-    /*
-    signUpButton: {
-        // marginTop: 40,
-        position: 'absolute',
-        bottom: 10,
-
-        width: '85%',
-        height: 45,
-        alignSelf: 'center',
-
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
-        borderRadius: 5,
-        borderColor: "transparent",
-        borderWidth: 0
-    },
-    */
     signUpButton: {
         width: '85%',
         height: Cons.buttonHeight,
@@ -549,7 +531,10 @@ const styles = StyleSheet.create({
         position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
-        width: '100%',
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
         height: (8 + 34 + 8) - 12,
         borderRadius: 12,
         position: "absolute",

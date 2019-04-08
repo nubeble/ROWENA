@@ -8,6 +8,7 @@ import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
+import * as firebase from "firebase";
 import Util from './Util';
 
 
@@ -261,7 +262,8 @@ export default class Admin extends React.Component {
         const location = {
             description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
             longitude: 100.5368514,
-            latitude: 13.7236856
+            latitude: 13.7236856,
+            gp: new firebase.firestore.GeoPoint(13.7236856, 100.5368514)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -334,7 +336,8 @@ export default class Admin extends React.Component {
         const location = {
             description: '333 North Pattaya Road, Pattaya City, Amphoe Bang Lamung, Chon Buri, Thailand',
             longitude: 100.8933377,
-            latitude: 12.9503984
+            latitude: 12.9503984,
+            gp: new firebase.firestore.GeoPoint(12.9503984, 100.8933377)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -407,7 +410,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "125/51/25 Hẻm 47/52 Bùi Đình Túy, Ward Number 24, Bình Thạnh, Ho Chi Minh City, Vietnam",
             longitude: 106.7062009,
-            latitude: 10.8063619
+            latitude: 10.8063619,
+            gp: new firebase.firestore.GeoPoint(10.8063619, 106.7062009)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -480,7 +484,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "34 Hai Bà Trưng, Trang Tien, Hoàn Kiếm, Hanoi, Vietnam",
             longitude: 105.852382,
-            latitude: 21.0246754
+            latitude: 21.0246754,
+            gp: new firebase.firestore.GeoPoint(21.0246754, 105.852382)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -548,6 +553,7 @@ export default class Admin extends React.Component {
         let description = '';
         let longitude = 0;
         let latitude = 0;
+        let gp = null;
 
         let number = 0;
         if (_number === 0) number = Math.floor(Math.random() * 10) + 1; // 1 ~ 10
@@ -558,67 +564,78 @@ export default class Admin extends React.Component {
                 description = 'Main Cathedral, General Luna St, Intramuros, Manila, 1002 Metro Manila, 필리핀';
                 latitude = 14.591799;
                 longitude = 120.973383;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 2: {
                 description = '2597 Abad Santos Ave, Tondo, Manila, Metro Manila, 필리핀';
                 latitude = 14.626237;
                 longitude = 120.978308;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 3: {
                 description = 'Banco De Oro, FFW Building, 1943 Taft Avenue, Malate, Malate, Manila, 1000, Metro Manila, 1004 Metro Manila, 필리핀';
                 latitude = 14.565525;
                 longitude = 120.994316;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 4: {
                 description = 'Brgy. 630, 산타 메사 마닐라 마닐라 대도시 필리핀';
                 latitude = 14.599488;
                 longitude = 121.010702;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 5: {
                 description = '38-58 N.S. Amoranto Sr. St, La Loma, Quezon City, Metro Manila, 필리핀';
                 latitude = 14.626239;
                 longitude = 120.991622;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 6: {
                 description = '2647-2605 Pedro Guevarra St, Santa Cruz, Manila, Metro Manila, 필리핀';
                 latitude = 14.625564;
                 longitude = 120.985871;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 7: {
                 description = '397 Lallana St, Tondo, Manila, 1013 Metro Manila, 필리핀';
                 latitude = 14.621151;
                 longitude = 120.966869;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 8: {
                 description = '756-932 Yuseco St, Tondo, Manila, Metro Manila, 필리핀';
                 latitude = 14.620034;
                 longitude = 120.974110;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 9: {
                 description = 'PLM Field, Victoria St, Intramuros, Manila, 1002 Metro Manila, 필리핀';
                 latitude = 14.586849;
                 longitude = 120.976437;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
 
             case 10: {
                 description = 'España Blvd, Sampaloc, Manila, 1008 Metro Manila, 필리핀';
                 latitude = 14.614661;
                 longitude = 120.998268;
+                gp = new firebase.firestore.GeoPoint(latitude, longitude);
             } break;
         }
 
         const location = {
             description,
             longitude,
-            latitude
+            latitude,
+            gp
         };
 
         return location;
@@ -709,7 +726,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "37 Cebu Transcentral Highway, Cebu City, Cebu, Philippines",
             longitude: 123.9011798,
-            latitude: 10.3162864
+            latitude: 10.3162864,
+            gp: new firebase.firestore.GeoPoint(10.3162864, 123.9011798)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -782,7 +800,8 @@ export default class Admin extends React.Component {
         const location = {
             description: 'Crowne Plaza Vientiane, Vientiane, Laos',
             longitude: 102.5970396,
-            latitude: 17.9696983
+            latitude: 17.9696983,
+            gp: new firebase.firestore.GeoPoint(17.9696983, 102.5970396)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -855,7 +874,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "831c Preah Monivong Boulevard (93), Phnom Penh, Cambodia",
             longitude: 104.925715,
-            latitude: 11.530557
+            latitude: 11.530557,
+            gp: new firebase.firestore.GeoPoint(11.530557, 104.925715)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -928,7 +948,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "Macau Island, Macau",
             longitude: 113.5463889,
-            latitude: 22.1997222
+            latitude: 22.1997222,
+            gp: new firebase.firestore.GeoPoint(22.1997222, 113.5463889)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -1001,7 +1022,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia",
             longitude: 106.8400149,
-            latitude: -6.227615
+            latitude: -6.227615,
+            gp: new firebase.firestore.GeoPoint(-6.227615, 106.8400149)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
@@ -1074,7 +1096,8 @@ export default class Admin extends React.Component {
         const location = {
             description: "Central Market, Kuala Lumpur City Centre, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia",
             longitude: 101.695556,
-            latitude: 3.145832999999999
+            latitude: 3.145832999999999,
+            gp: new firebase.firestore.GeoPoint(3.145832999999999, 101.695556)
         };
 
         const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";

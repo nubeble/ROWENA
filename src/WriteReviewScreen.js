@@ -417,7 +417,10 @@ const styles = StyleSheet.create({
         paddingBottom: 8
     },
     notification: {
-        width: '100%',
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
         height: (8 + 34 + 8) - 12,
         borderRadius: 12,
         position: "absolute",

@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, TouchableOpacity, BackHandler, Platform, Image } from 'react-native';
+import { StyleSheet, View, Dimensions, TouchableOpacity, BackHandler, Platform, Image, StatusBar } from 'react-native';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-// import { MapView, Constants } from 'expo';
-// import { Marker } from 'react-native-maps';
+import { Constants } from 'expo';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
@@ -14,6 +13,7 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import { AirbnbRating } from './react-native-ratings/src';
 import { RefreshIndicator } from "./rnff/src/components";
 import Firebase from './Firebase';
+import * as firebase from "firebase";
 import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
 
@@ -27,29 +27,30 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 // const SPACE = 0.01;
 
-const UP = 1.02;
+// const UP = 1.02;
 
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
-// const useGoogleMaps = true;
 
 // 3:2 image
 const itemWidth = Dimensions.get('window').width - 40;
 const itemHeight = (Dimensions.get('window').width - 40) / 3 * 2;
 
 
-@observer
+// @observer
 export default class MapSearch extends React.Component {
+    feedStore = new FeedStore();
+
     constructor(props) {
         super(props);
 
         this.ready = false;
 
-        this.feedSizeList = new Map();
+        // this.feedSizeList = new Map();
 
         this.state = {
             renderMap: false,
 
-            distance: '?', // ToDo: get geolocation of my location
+            loading: false,
 
             region: { // current region
                 latitude: LATITUDE,
@@ -71,63 +72,60 @@ export default class MapSearch extends React.Component {
                         latitude: LATITUDE - 0.005,
                         longitude: LONGITUDE - 0.005
                     }
-                },
-                {
-                    coordinate: {
-                        latitude: LATITUDE + 0.005,
-                        longitude: LONGITUDE - 0.005
-                    }
-                },
-                {
-                    coordinate: {
-                        latitude: LATITUDE - 0.005,
-                        longitude: LONGITUDE + 0.005
-                    }
                 }
             ],
             */
 
-            feeds: [],
+            // feeds: [],
 
             selectedMarker: 0 // index
         };
     }
 
     componentDidMount() {
-        // test
-        /*
-        const { store } = this.props.navigation.state.params;
-        const { feed } = store;
-        console.log('feed length', feed.length);
-        */
-
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        this.feedStore.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
+
+        StatusBar.setHidden(true);
 
         const { region } = this.props.navigation.state.params;
         if (region) {
             const _region = {
                 latitude: region.latitude,
                 longitude: region.longitude,
-                latitudeDelta: 1,
-                longitudeDelta: 1 * ASPECT_RATIO
+                latitudeDelta: 0.5,
+                longitudeDelta: 0.5 * ASPECT_RATIO
             };
 
             this.setState({ region: _region });
         }
 
+        /*
         const { store } = this.props.navigation.state.params;
         const { feed } = store; // array
 
         this.setState({ feeds: feed });
+        */
 
 
-        // ToDo: get my location
-        // this.setState({ distance });
+        const { placeId } = this.props.navigation.state.params;
 
+        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc");
+        this.feedStore.init(query, 'averageRating');
+
+        this.setState({ loading: true });
 
         setTimeout(() => {
             !this.closed && this.setState({ renderMap: true });
         }, 0);
+    }
+
+    @autobind
+    onAddToFeedFinished() {
+        console.log('MapSearch.onAddToFeedFinished');
+
+        !this.closed && this.setState({ loading: false });
     }
 
     @autobind
@@ -141,112 +139,110 @@ export default class MapSearch extends React.Component {
     componentWillUnmount() {
         this.hardwareBackPressListener.remove();
 
+        StatusBar.setHidden(false);
+
         this.closed = true;
     }
 
     render() {
-        /*
-        const { store } = this.props.navigation.state.params;
-        const { feed } = store; // array
-        */
+        const { feedStore } = this;
+        const { feed } = feedStore; // array
         // const loading = feed === undefined;
 
         return (
             <View style={styles.flex}>
                 {
                     this.state.renderMap &&
-                    this.renderMapView(this.state.feeds)
+                    // this.renderMapView(this.state.feeds)
+                    this.renderMapView(feed)
                 }
-                <View style={styles.searchBar}>
-                    {/* close button */}
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            left: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => {
-                            // this.props.navigation.goBack();
-                            this.props.navigation.dispatch(NavigationActions.back());
-                        }}
-                    >
-                        <Ionicons name='md-arrow-back' color="black" size={24} />
-                    </TouchableOpacity>
 
-                    {/*
-                    <Text style={styles.distance}>{this.state.distance + ' kilometers away'}</Text>
-                    */}
 
-                    {/* gps button */}
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            right: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => {
-                            // this.getCurrentPosition();
-                            this.props.navigation.navigate("mapOverview");
-                        }}
-                    >
-                        <MaterialIcons name='gps-fixed' color="black" size={24} />
-                    </TouchableOpacity>
-                </View>
+
+                {/* close button */}
+                <TouchableOpacity
+                    style={{
+                        width: 42,
+                        height: 42,
+                        position: 'absolute',
+                        top: 100,
+                        left: 10,
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                    onPress={() => {
+                        // this.props.navigation.goBack();
+                        this.props.navigation.dispatch(NavigationActions.back());
+                    }}
+                >
+                    <View style={{
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                    }}>
+                        <Ionicons name='md-arrow-back' color='rgba(0, 0, 0, 0.8)' size={26} />
+                    </View>
+                </TouchableOpacity>
+
+                {/* search this area */}
+                <TouchableOpacity
+                    style={{
+                        width: '60%',
+                        // height: Dimensions.get('window').height / 28,
+                        height: 30,
+                        position: 'absolute',
+                        // top: Constants.statusBarHeight + 50,
+                        top: 100 + 6,
+                        right: '20%',
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                    onPress={() => {
+                        this.setState({ loading: true });
+                        this.reload();
+                    }}
+                >
+                    <View style={{
+                        width: '100%', height: '100%', borderRadius: 30 / 3, justifyContent: "center", alignItems: "center",
+                        backgroundColor: this.state.loading ? 'white' : Theme.color.selection
+                    }}>
+                        {
+                            this.state.loading ?
+                                <RefreshIndicator refreshing total={3} size={3} />
+                                :
+                                <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "Roboto-Medium" }}>{'Redo search in this area'}</Text>
+                        }
+                    </View>
+                </TouchableOpacity>
+
+                {/* gps button */}
+                <TouchableOpacity
+                    style={{
+                        width: 42,
+                        height: 42,
+                        position: 'absolute',
+                        top: 100,
+                        right: 10,
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                    onPress={() => {
+                        // this.getCurrentPosition();
+                        this.props.navigation.navigate("mapOverview");
+                    }}
+                >
+                    <View style={{
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                    }}>
+                        <MaterialIcons name='gps-fixed' color='rgba(0, 0, 0, 0.8)' size={26} />
+                    </View>
+                </TouchableOpacity>
+
+
 
                 <View style={styles.container}>
-                    {/*
-                    <View style={[styles.bubble, styles.latlng]}>
-                        <Text style={{ textAlign: 'center' }}>
-                            {this.state.region.latitude.toPrecision(7)}, {this.state.region.longitude.toPrecision(7)}
-                        </Text>
-                    </View>
-                    */}
-
                     {
                         this.state.renderMap &&
-                        this.renderPosts(this.state.feeds)
+                        // this.renderPosts(this.state.feeds)
+                        this.renderPosts(feed)
                     }
-
-                    {/*
-                    <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            onPress={() => this.jumpRandom()}
-                            style={[styles.bubble, styles.button]}
-                        >
-                            <Text style={styles.buttonText}>Jump</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => this.animateRandom()}
-                            style={[styles.bubble, styles.button]}
-                        >
-                            <Text style={styles.buttonText}>Animate (Region)</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => this.animateRandomCoordinate()}
-                            style={[styles.bubble, styles.button]}
-                        >
-                            <Text style={styles.buttonText}>Animate (Coordinate)</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => this.animateToRandomBearing()}
-                            style={[styles.bubble, styles.button]}
-                        >
-                            <Text style={styles.buttonText}>Animate (Bearing)</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => this.animateToRandomViewingAngle()}
-                            style={[styles.bubble, styles.button]}
-                        >
-                            <Text style={styles.buttonText}>Animate (View Angle)</Text>
-                        </TouchableOpacity>
-                    </View>
-                    */}
                 </View>
             </View>
         );
@@ -371,11 +367,13 @@ export default class MapSearch extends React.Component {
                 // mapType={MAP_TYPES.TERRAIN}
                 style={styles.map}
                 initialRegion={this.state.region}
-                // onRegionChange={region => this.setState({ region })}
+                onRegionChange={region => this.setState({ region })}
+                /*
                 onRegionChangeComplete={(region) => {
-                    console.log(region);
+                    // console.log(region);
                     this.setState({ region });
                 }}
+                */
                 onMapReady={this.onMapReady}
             >
                 {
@@ -387,9 +385,20 @@ export default class MapSearch extends React.Component {
     }
 
     onMapReady = (e) => {
-        if (!this.ready) {
-            this.ready = true;
-        }
+        this.ready = true;
+
+
+        // ToDo: set boundaries
+        /*
+        this.map.setMapBoundaries(
+            {
+                latitude: 14.562181, longitude:121.11852
+            },
+            {
+                latitude: 14.46491, longitude:121.0222239
+            }
+        );
+        */
     };
 
     moveRegion(region, duration) {
@@ -401,7 +410,7 @@ export default class MapSearch extends React.Component {
     }
 
     renderPosts(feed) {
-        if (!feed) { // never happen
+        if (!feed) {
             return (
                 /*
                 <View style={{
@@ -420,7 +429,8 @@ export default class MapSearch extends React.Component {
                     </SvgAnimatedLinearGradient>
                 </View>
                 */
-                <RefreshIndicator />
+                // <RefreshIndicator />
+                null
             );
         }
 
@@ -493,8 +503,8 @@ export default class MapSearch extends React.Component {
     }
 
     getRegion(index) {
-        const { store } = this.props.navigation.state.params;
-        const { feed } = store; // array
+        const { feedStore } = this;
+        const { feed } = feedStore; // array
 
         if (feed) {
             /*
@@ -539,10 +549,12 @@ export default class MapSearch extends React.Component {
 
         return (
             <TouchableOpacity activeOpacity={1.0}
-                onPress={async () => {
+                // onPress={async () => {
+                onPress={() => {
                     // console.log('onpress', post.placeId, post.id);
 
-                    const feedSize = await this.getFeedSize(post.placeId);
+                    // const feedSize = await this.getFeedSize(post.placeId);
+                    const { feedSize } = this.props.navigation.state.params;
 
                     const extra = {
                         feedSize: feedSize
@@ -600,6 +612,7 @@ export default class MapSearch extends React.Component {
         );
     }
 
+    /*
     async getFeedSize(placeId) {
         if (this.feedSizeList.has(placeId)) {
             return this.feedSizeList.get(placeId);
@@ -614,83 +627,89 @@ export default class MapSearch extends React.Component {
 
         return count;
     }
+    */
+
+    async reload() {
+        const { placeId } = this.props.navigation.state.params;
+        // const { feedStore } = this;
+        // const { feed } = feedStore; // array
+
+        console.log('placeId', placeId);
+        console.log(37.2596306, 127.042358);
+
+        const { region } = this.state;
+        // region.latitude, region.longitude
+
+        const l = region.latitude - (region.latitudeDelta / 2);
+        const r = region.latitude + (region.latitudeDelta / 2);
+        const t = region.longitude - (region.longitudeDelta / 2);
+        const b = region.longitude + (region.longitudeDelta / 2);
+
+        console.log(l, r, t, b);
+
+        /*
+        const leftTopLongitude = region.longitude - (region.longitudeDelta / 2);
+        const rightTopLongitude = region.longitude + (region.longitudeDelta / 2);
+        const leftTopLatitude = region.latitude + (region.latitudeDelta / 2);
+        const rightTopLatitude = region.latitude + (region.latitudeDelta / 2);
+
+        const leftBottomLongitude = region.longitude - (region.longitudeDelta / 2);
+
+        const rightBottomLongitude = region.longitude + (region.longitudeDelta / 2);
+
+        const leftBottomLatitude = region.latitude - (region.latitudeDelta / 2);
+
+        const rightBottomLatitude = region.latitude - (region.latitudeDelta / 2);
+        */
+
+        /*
+        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed")
+            .where("location.latitudeDelta", ">=", l)
+            .where("location.latitudeDelta", "<=", r)
+            .where("location.longitude", ">=", t)
+            .where("location.longitude", "<=", b);
+            // .orderBy("averageRating", "desc");
+
+        store.init(query, "averageRating");
+        */
 
 
 
+        let lesserGeopoint = new firebase.firestore.GeoPoint(l, t);
+        let greaterGeopoint = new firebase.firestore.GeoPoint(r, b);
 
+        // construct the Firestore query
+        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed")
+            .where('location.gp', '>', lesserGeopoint).where('location.gp', '<', greaterGeopoint);
 
+        this.feedStore.init(query, null);
 
+        // return a Promise that fulfills with the locations
+        /*
+        return query.get()
+            .then((snapshot) => {
+                const allLocs = []; // used to hold all the loc data
+                snapshot.forEach((loc) => {
+                    // get the data
+                    const data = loc.data();
+                    // calculate a distance from the center
+                    data.distanceFromCenter = utils.distance(area.center, data.location);
+                    // add to the array
+                    allLocs.push(data);
+                });
+                return allLocs;
+            })
+            .catch((err) => {
+                return new Error('Error while retrieving events');
+            });
+        */
 
-
-
-
-
-
-
-
-
-
-
-    jumpRandom() {
-        this.setState({ region: this.randomRegion() });
-    }
-
-    animateRandom() {
-        this.map.animateToRegion(this.randomRegion());
-    }
-
-    animateRandomCoordinate() {
-        this.map.animateCamera({ center: this.randomCoordinate() });
-    }
-
-    animateToRandomBearing() {
-        this.map.animateCamera({ heading: this.getRandomFloat(-360, 360) });
-    }
-
-    animateToRandomViewingAngle() {
-        this.map.animateCamera({ pitch: this.getRandomFloat(0, 90) });
-    }
-
-    getRandomFloat(min, max) {
-        return (Math.random() * (max - min)) + min;
-    }
-
-    randomCoordinate() {
-        const region = this.state.region;
-        return {
-            latitude: region.latitude + ((Math.random() - 0.5) * (region.latitudeDelta / 2)),
-            longitude: region.longitude + ((Math.random() - 0.5) * (region.longitudeDelta / 2)),
-        };
-    }
-
-    randomRegion() {
-        return {
-            ...this.state.region,
-            ...this.randomCoordinate(),
-        };
     }
 }
 
 const styles = StyleSheet.create({
     flex: {
         flex: 1
-    },
-    searchBar: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: Cons.searchBarHeight,
-        // backgroundColor: 'red',
-        // zIndex: 10000
-    },
-    distance: {
-        position: 'absolute',
-        bottom: 15,
-        alignSelf: 'center',
-        fontSize: 16,
-        fontFamily: "Roboto-Medium",
-        color: "black"
     },
     container: {
         position: 'absolute',
@@ -701,8 +720,6 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(80, 80, 80, 0.4)'
     },
     map: {
-        // flex: 1
-        // backgroundColor: 'transparent',
         ...StyleSheet.absoluteFillObject
     },
     view_front: {
@@ -764,40 +781,5 @@ const styles = StyleSheet.create({
         lineHeight: 13,
         fontFamily: "Roboto-Bold",
         // backgroundColor: 'grey'
-    },
-
-
-
-
-
-
-
-
-
-
-    bubble: {
-        backgroundColor: 'rgba(255,255,255,0.7)',
-        paddingHorizontal: 18,
-        paddingVertical: 12,
-        borderRadius: 20,
-    },
-    latlng: {
-        width: 200,
-        alignItems: 'stretch',
-    },
-    button: {
-        width: 100,
-        paddingHorizontal: 8,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginHorizontal: 5,
-    },
-    buttonContainer: {
-        flexDirection: 'row',
-        marginVertical: 20,
-        backgroundColor: 'transparent',
-    },
-    buttonText: {
-        textAlign: 'center',
     }
 });

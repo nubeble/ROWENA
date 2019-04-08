@@ -1331,8 +1331,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
             for (var i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
-                    <View key={i} style={{ paddingVertical: 5 }}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={120}>
+                    <View key={i} style={{ paddingVertical: 4 }}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={124}>
                             <Svg.Circle
                                 cx={18 + 2}
                                 cy={18 + 2}
@@ -2155,7 +2155,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     notification: {
-        width: '100%',
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
         height: (8 + 34 + 8) - 12,
         borderRadius: 12,
         position: "absolute",

@@ -135,6 +135,7 @@ export default class FeedStore {
         else if (this.order === 'averageRating') this.feed = _.orderBy(feed, entry => entry.post.averageRating, ["desc"]);
         else if (this.order === 'reviewCount') this.feed = _.orderBy(feed, entry => entry.post.reviewCount, ["desc"]);
         // else if (this.order === 'age') this.feed = _.orderBy(feed, entry => entry.post.age, ["desc"]);
+        else this.feed = feed;
     }
 
     async checkForNewEntriesInFeed(): Promise<void> {

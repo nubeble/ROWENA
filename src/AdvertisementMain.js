@@ -9,6 +9,7 @@ import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign, FontAwesome } from 'react-native-vector-icons';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
+import * as firebase from "firebase";
 import Util from './Util';
 import autobind from 'autobind-decorator';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -607,7 +608,8 @@ export default class AdvertisementMain extends React.Component {
             description: streetInfo.description,
             // streetId: streetInfo.streetId,
             longitude: streetInfo.longitude,
-            latitude: streetInfo.latitude
+            latitude: streetInfo.latitude,
+            gp: new firebase.firestore.GeoPoint(streetInfo.latitude, streetInfo.longitude)
         };
 
         data.location = location;
@@ -750,7 +752,7 @@ export default class AdvertisementMain extends React.Component {
                         this.state.flashImage &&
                         <Image
                             // style={{ width: (Cons.searchBarHeight * 0.7) / 3 * 4, height: Cons.searchBarHeight * 0.7, borderRadius: 2 }}
-                            style={{ width: (8 + 34 + 8) * 0.9 / 3 * 4, height: (8 + 34 + 8) * 0.9, borderRadius: 2 }}
+                            style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }
@@ -1860,7 +1862,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     notification: {
-        width: '100%',
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
         height: (8 + 34 + 8) - 12,
         borderRadius: 12,
         position: "absolute",
@@ -1886,7 +1891,10 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     flash: {
-        width: '100%',
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
         // height: Cons.searchBarHeight,
         height: (8 + 34 + 8),
         position: "absolute",
