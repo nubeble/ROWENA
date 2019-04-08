@@ -153,17 +153,22 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
-                            <EvilIcons style={{ position: 'absolute', left: 12, top: 6 }} name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
+                                <EvilIcons name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
+                            </View>
+
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
-                            {
-                                this.state.showFacebookLoader &&
-                                <ActivityIndicator
-                                    style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
-                                    animating={true}
-                                    size="small"
-                                    color='rgba(0, 0, 0, 0.6)'
-                                />
-                            }
+
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
+                                {
+                                    this.state.showFacebookLoader &&
+                                    <ActivityIndicator
+                                        animating={true}
+                                        size="small"
+                                        color='rgba(0, 0, 0, 0.6)'
+                                    />
+                                }
+                            </View>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -174,8 +179,13 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithEmailButton}
                         >
-                            <Ionicons style={{ position: 'absolute', left: 18, top: 9 }} name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
+                                <Ionicons name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
+                            </View>
+
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
+
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}></View>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -186,8 +196,13 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithMobileButton}
                         >
-                            <FontAwesome style={{ position: 'absolute', left: 19, top: 10 }} name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
+                                <FontAwesome name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </View>
+
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
+
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}></View>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
@@ -261,39 +276,40 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     signUpWithFacebookButton: {
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: "rgba(255, 255, 255, 0.6)",
         borderRadius: 5,
         borderColor: "transparent",
         borderWidth: 0,
         width: '85%',
-        height: Cons.buttonHeight
+        height: Cons.buttonHeight,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     signUpWithEmailButton: {
         marginTop: Dimensions.get('window').height / 40,
 
-        justifyContent: 'center',
-        alignItems: 'center',
-
         backgroundColor: "transparent",
         borderRadius: 5,
         borderColor: "rgba(255, 255, 255, 0.8)",
         borderWidth: 2,
         width: '85%',
-        height: Cons.buttonHeight
+        height: Cons.buttonHeight,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
     signUpWithMobileButton: {
         marginTop: Dimensions.get('window').height / 40,
 
-        justifyContent: 'center',
-        alignItems: 'center',
-
         backgroundColor: "transparent",
         borderRadius: 5,
         borderColor: "rgba(255, 255, 255, 0.8)",
         borderWidth: 2,
         width: '85%',
-        height: Cons.buttonHeight
+        height: Cons.buttonHeight,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between'
     }
 });

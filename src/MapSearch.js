@@ -631,21 +631,18 @@ export default class MapSearch extends React.Component {
 
     async reload() {
         const { placeId } = this.props.navigation.state.params;
-        // const { feedStore } = this;
-        // const { feed } = feedStore; // array
 
-        console.log('placeId', placeId);
-        console.log(37.2596306, 127.042358);
+        // console.log('placeId', placeId);
+        // console.log(37.2596306, 127.042358);
 
         const { region } = this.state;
-        // region.latitude, region.longitude
 
-        const l = region.latitude - (region.latitudeDelta / 2);
-        const r = region.latitude + (region.latitudeDelta / 2);
-        const t = region.longitude - (region.longitudeDelta / 2);
-        const b = region.longitude + (region.longitudeDelta / 2);
+        const s = region.latitude - (region.latitudeDelta / 2);
+        const n = region.latitude + (region.latitudeDelta / 2);
+        const w = region.longitude - (region.longitudeDelta / 2);
+        const e = region.longitude + (region.longitudeDelta / 2);
 
-        console.log(l, r, t, b);
+        console.log(s, n, w, e);
 
         /*
         const leftTopLongitude = region.longitude - (region.longitudeDelta / 2);
@@ -675,10 +672,9 @@ export default class MapSearch extends React.Component {
 
 
 
-        let lesserGeopoint = new firebase.firestore.GeoPoint(l, t);
-        let greaterGeopoint = new firebase.firestore.GeoPoint(r, b);
+        const lesserGeopoint = new firebase.firestore.GeoPoint(s, w); // SW
+        const greaterGeopoint = new firebase.firestore.GeoPoint(n, e); // NE
 
-        // construct the Firestore query
         const query = Firebase.firestore.collection("place").doc(placeId).collection("feed")
             .where('location.gp', '>', lesserGeopoint).where('location.gp', '<', greaterGeopoint);
 
@@ -703,7 +699,6 @@ export default class MapSearch extends React.Component {
                 return new Error('Error while retrieving events');
             });
         */
-
     }
 }
 

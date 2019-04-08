@@ -279,7 +279,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // if (!profile) return null;
 
-        const avatarName = (profile.name) ? profile.name : 'Max Power'; // ToDo: test
+        const avatarName = (profile.name) ? profile.name : 'Anonymous'; // ToDo: test
         // const uri = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
         const hasImage = !!profile.picture.uri;
         const imageUri = profile.picture.uri;

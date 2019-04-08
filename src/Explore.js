@@ -36,8 +36,8 @@ export default class Explore extends React.Component<InjectedProps> {
         // scrollAnimation: new Animated.Value(0),
 
         searchText: '',
-        // cityName: '',
         feedSize: 0,
+        placeId: null,
         latitude: 0,
         longitude: 0,
         // renderFeed: false,
@@ -54,9 +54,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
-
         const place = params.place;
-
         this.init(place);
 
         /*
@@ -67,8 +65,7 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     init(place) {
-        // this.setState({ searchText: place.description, cityName: place.city, feedSize: length });
-        this.setState({ searchText: place.name, feedSize: place.length, latitude: place.lat, longitude: place.lng });
+        this.setState({ searchText: place.name, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
@@ -567,11 +564,10 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     order(order) {
-        const params = this.props.navigation.state.params;
+        // const params = this.props.navigation.state.params;
+        // let place = params.place;
 
-        let place = params.place;
-
-        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy(order, "desc");
+        const query = Firebase.firestore.collection("place").doc(this.state.placeId).collection("feed").orderBy(order, "desc");
         this.props.feedStore.init(query, order);
 
         this._feed.disableScroll();
@@ -607,9 +603,12 @@ export default class Explore extends React.Component<InjectedProps> {
             longitude: this.state.longitude
         };
 
+        /*
         const place = this.props.navigation.state.params.place;
         const placeId = place.place_id;
+        */
 
+        const placeId = this.state.placeId;
         const feedSize = this.state.feedSize;
 
         this.props.navigation.navigate("mapSearch", { region: region, placeId, feedSize });

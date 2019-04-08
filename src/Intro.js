@@ -566,6 +566,12 @@ export default class Intro extends React.Component {
         */
     }
 
+    openSearch() {
+        setTimeout(() => {
+            this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
+        }, Cons.buttonTimeoutShort);
+    }
+
     render(): React.Node {
         // const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
@@ -582,9 +588,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', left: 2, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
-                                setTimeout(() => {
-                                    this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
-                                }, Cons.buttonTimeoutShort);
+                                this.openSearch();
                             }}
                         >
                             <FontAwesome name='search' color="rgb(160, 160, 160)" size={17} />
@@ -593,9 +597,7 @@ export default class Intro extends React.Component {
                         <TouchableOpacity
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
-                                setTimeout(() => {
-                                    this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
-                                }, Cons.buttonTimeoutShort);
+                                this.openSearch();
                             }}
                         >
                             <Text

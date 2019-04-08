@@ -536,7 +536,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         height: (8 + 34 + 8) - 12,
-        borderRadius: 12,
+        borderRadius: 15,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

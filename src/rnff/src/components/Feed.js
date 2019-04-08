@@ -62,7 +62,7 @@ export default class Feed extends React.Component<FeedProps> {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
-    @autobind
+    // @autobind
     loadMore() {
         if (this.state.isLoadingFeeds) return;
 

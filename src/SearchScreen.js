@@ -331,6 +331,7 @@ export default class SearchScreen extends React.Component {
                                 }, Cons.buttonTimeoutShort);
                             }
                         }}
+
                         getDefaultValue={() => ''}
                         query={
                             from === 'AdvertisementMain' ?

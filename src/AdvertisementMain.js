@@ -1867,7 +1867,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         height: (8 + 34 + 8) - 12,
-        borderRadius: 12,
+        borderRadius: 15,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,
@@ -1898,7 +1898,7 @@ const styles = StyleSheet.create({
         // height: Cons.searchBarHeight,
         height: (8 + 34 + 8),
         position: "absolute",
-        borderRadius: 16,
+        borderRadius: 15,
         top: 0,
         backgroundColor: Theme.color.selection,
         zIndex: 10001,
