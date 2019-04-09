@@ -1,6 +1,7 @@
 import * as firebase from "firebase";
 import "firebase/firestore";
 import Util from './Util';
+import { Geokit, LatLngLiteral } from 'geokit';
 
 const config = {
     apiKey: "AIzaSyCT1LV1HF5REJw_SePsUeUdwFalo5IzrsQ",
@@ -219,7 +220,7 @@ export default class Firebase {
     }
     */
 
-    static async createFeed(feed, extra) {
+    static async createPost(feed) {
         feed.likes = [];
         feed.reviewCount = 0;
         feed.averageRating = 0;
@@ -227,8 +228,45 @@ export default class Firebase {
         feed.timestamp = Firebase.getTimestamp();
         feed.rn = Util.getRandomNumber();
 
+
+        // 1. add location
+        const coordinates: LatLngLiteral = { lat: feed.location.latitude, lng: feed.location.longitude };
+        const hash: string = Geokit.hash(coordinates);
+
+        const gd = {
+            g: hash,
+            l: new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude),
+            d: {
+                post: feed
+            }
+        };
+
+        await Firebase.firestore.collection("location").doc(gd.g).set(gd);
+
+
+
+
+
+        /*
+        // 0. add geolocation
+        const coordinates: LatLngLiteral = { lat: feed.location.latitude, lng: feed.location.longitude };
+        const hash: string = Geokit.hash(coordinates);
+
+        const gd = {
+            g: hash,
+            l: new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude),
+            d: {
+                placeId: feed.placeId,
+                feedId: feed.id,
+                // coordinates: new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude)
+            }
+        };
+
+        await Firebase.firestore.collection("geolocation").doc(gd.g).set(gd);
+
         // 1. add feed
         await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
+        */
 
         const userRef = Firebase.firestore.collection("users").doc(feed.uid);
         const placeRef = Firebase.firestore.collection("place").doc(feed.placeId);

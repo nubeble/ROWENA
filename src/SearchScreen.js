@@ -237,7 +237,7 @@ export default class SearchScreen extends React.Component {
                             const location = details.geometry.location;
                             const result = {
                                 description: data.description,
-                                place_id: data.place_id,
+                                // place_id: data.place_id,
                                 location: {
                                     lat: location.lat,
                                     lng: location.lng
@@ -249,7 +249,7 @@ export default class SearchScreen extends React.Component {
                             if (from !== 'AdvertisementMain') {
                                 const item = {
                                     description: data.description,
-                                    place_id: data.place_id,
+                                    // place_id: data.place_id,
                                     geometry: {
                                         location: {
                                             lat: location.lat,
@@ -262,38 +262,7 @@ export default class SearchScreen extends React.Component {
                             }
                             // --
 
-                            // ToDo: get place_id for the city
                             /*
-                            let input = null;
-
-                            const isFederation = Util.isFederation(countryCode); // true: pick last 3 words (city, state, country), false: pick last 2 words (city, country)
-                            if (isFederation) {
-                                // pick last 3
-                                const address = data.description;
-                                const words = address.split(', ');
-                                if (words.length > 2) {
-                                    input = words[words.length - 3] + ',' + words[words.length - 2] + ',' + words[words.length - 1];
-                                } else {
-                                    input = address;
-                                }
-                            } else {
-                                // pick last 2
-                                const address = data.description;
-                                const words = address.split(', ');
-                                if (words.length > 1) {
-                                    input = words[words.length - 2] + ',' + words[words.length - 1];
-                                } else {
-                                    input = address;
-                                }
-                            }
-
-                            const _query = {
-                                key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
-                                language: 'en',
-                                types: ['(cities)']
-                            };
-                            */
-
                             if (from === 'AdvertisementMain') {
                                 const input = {
                                     lat: location.lat,
@@ -330,6 +299,13 @@ export default class SearchScreen extends React.Component {
                                     this.props.navigation.goBack();
                                 }, Cons.buttonTimeoutShort);
                             }
+                            */
+                            setTimeout(() => {
+                                if (this.closed) return;
+
+                                this.props.navigation.state.params.initFromSearch(result);
+                                this.props.navigation.goBack();
+                            }, Cons.buttonTimeoutShort);
                         }}
 
                         getDefaultValue={() => ''}

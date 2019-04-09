@@ -1,11 +1,11 @@
-import * as firebase from "firebase";
+// import * as firebase from "firebase";
 
 type Location = {
     description: string,
     // streetId: string, // place_id for street
     longitude: number,
     latitude: number,
-    gp: firebase.firestore.GeoPoint
+    // gp: firebase.firestore.GeoPoint
 };
 
 export type Picture = {
@@ -13,20 +13,24 @@ export type Picture = {
     uri: string
 };
 
+/*
 type FeedRef = {
     placeId: string,
     feedId: string
 };
+*/
 
 type ReviewRef = {
-    placeId: string,
-    feedId: string,
+    // placeId: string,
+    // feedId: string,
+    postId: string,
     reviewId: string
 };
 
 type ReplyRef = {
-    placeId: string,
-    feedId: string,
+    // placeId: string,
+    // feedId: string,
+    postId: string,
     reviewId: string,
     replyId: string
 };
@@ -54,10 +58,12 @@ export type Profile = {
     picture: Picture,
     // location: Location,
     about: string,
-    feeds: FeedRef[],
+    // feeds: FeedRef[],
+    posts: Array<string>, // location id array
     reviews: ReviewRef[],
     replies: ReplyRef[],
-    likes: LikeRef[]
+    // likes: LikeRef[]
+    likes: Array<string> // location id array
 };
 
 type Pictures = {
@@ -69,10 +75,10 @@ type Pictures = {
 
 // feed: user id, place id, feed id, pictures, location, note, reviews[review id], averageRating, name, age
 export type Post = {
-    uid: string,
+    uid: string, // user uid
     id: string,
-    placeId: string,
-    placeName: string,
+    // placeId: string,
+    // placeName: string,
     location: Location,
     note: string,
     pictures: Pictures,
@@ -81,7 +87,6 @@ export type Post = {
     reviewStats: Array<number>, // [0] - 5, [1] - 4, [2] - 3, [3] - 2, [4] - 1
     likes: Array<string>, // user uid list
     name: string,
-    // age: number,
     birthday: string, // DDMMYYYY
     height: number,
     weight: number,
@@ -90,6 +95,10 @@ export type Post = {
     rn: number // random number
 };
 
+
+
+
+/*
 type Reply = {
     comment: string,
     id: string,
@@ -106,15 +115,15 @@ export type Review = {
     comment: string,
     reply: Reply
 };
-
+*/
 
 export type FeedEntry = { post: Post, profile: Profile };
 export type Feed = FeedEntry[];
 
-
+/*
 export type ReviewEntry = { review: Review, profile: Profile };
 export type Reviews = ReviewEntry[];
-
+*/
 
 
 /*

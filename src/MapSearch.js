@@ -14,6 +14,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import { RefreshIndicator } from "./rnff/src/components";
 import Firebase from './Firebase';
 import * as firebase from "firebase";
+import { GeoCollectionReference, GeoFirestore, GeoQuery, GeoQuerySnapshot } from 'geofirestore';
 import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
 
@@ -38,7 +39,8 @@ const itemHeight = (Dimensions.get('window').width - 40) / 3 * 2;
 
 // @observer
 export default class MapSearch extends React.Component {
-    feedStore = new FeedStore();
+    // feedStore = new FeedStore();
+    gf = new GeoFirestore(Firebase.firestore);
 
     constructor(props) {
         super(props);
@@ -59,47 +61,34 @@ export default class MapSearch extends React.Component {
                 longitudeDelta: LONGITUDE_DELTA
             },
 
-            /*
-            markers: [
-                {
-                    coordinate: {
-                        latitude: LATITUDE + 0.005,
-                        longitude: LONGITUDE + 0.005
-                    }
-                },
-                {
-                    coordinate: {
-                        latitude: LATITUDE - 0.005,
-                        longitude: LONGITUDE - 0.005
-                    }
-                }
-            ],
-            */
-
-            // feeds: [],
+            feeds: [],
 
             selectedMarker: 0 // index
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.feedStore.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
+        // this.feedStore.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
 
         StatusBar.setHidden(true);
 
         const { region } = this.props.navigation.state.params;
+
+        let _region = null;
         if (region) {
-            const _region = {
+            _region = {
                 latitude: region.latitude,
                 longitude: region.longitude,
-                latitudeDelta: 0.5,
-                longitudeDelta: 0.5 * ASPECT_RATIO
+                latitudeDelta: 0.2,
+                longitudeDelta: 0.2 * ASPECT_RATIO
             };
-
-            this.setState({ region: _region });
         }
+
+        if (_region) this.setState({ region: _region });
+
+        this.setState({ renderMap: true });
 
         /*
         const { store } = this.props.navigation.state.params;
@@ -109,24 +98,80 @@ export default class MapSearch extends React.Component {
         */
 
 
+        /*
         const { placeId } = this.props.navigation.state.params;
 
         const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc");
         this.feedStore.init(query, 'averageRating');
 
         this.setState({ loading: true });
+        */
 
+
+        this.setState({ loading: true });
+
+        const feeds = await this.loadFeeds(_region);
+        // console.log('loadFeeds', feeds);
+        this.setState({ feeds: feeds });
+
+        this.setState({ loading: false });
+
+
+
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderMap: true });
         }, 0);
+        */
     }
 
+    async loadFeeds(region) {
+        let feeds = [];
+
+        const geocollection: GeoCollectionReference = this.gf.collection('geolocation');
+
+        // ToDo: radius, limit
+
+        // get kilometers by region
+        const oneDegreeOfLatitudeInMeters = 111.32;
+        const km = region.latitudeDelta / 2 * oneDegreeOfLatitudeInMeters;
+
+        const query: GeoQuery = geocollection.near({
+            center: new firebase.firestore.GeoPoint(region.latitude, region.longitude),
+            radius: km, // kilometers
+            // limit: 5
+        }).limit(8);
+
+        await query.get().then(async (value: GeoQuerySnapshot) => {
+            // console.log(value.docs); // All docs returned by GeoQuery
+
+            const docs = value.docs;
+            for (var i = 0; i < docs.length; i++) {
+                // const data = item.data();
+                const data = docs[i].data();
+
+                // ToDo: should change this!!!
+                
+                const feedDoc = await Firebase.firestore.collection("place").doc(data.placeId).collection("feed").doc(data.feedId).get();
+                if (feedDoc.exists) {
+                    const post = feedDoc.data();
+                    // console.log('feed', post);
+                    feeds.push(post);
+                }
+            }
+        });
+
+        return feeds;
+    }
+
+    /*
     @autobind
     onAddToFeedFinished() {
         console.log('MapSearch.onAddToFeedFinished');
 
         !this.closed && this.setState({ loading: false });
     }
+    */
 
     @autobind
     handleHardwareBackPress() {
@@ -145,16 +190,17 @@ export default class MapSearch extends React.Component {
     }
 
     render() {
+        /*
         const { feedStore } = this;
         const { feed } = feedStore; // array
         // const loading = feed === undefined;
+        */
 
         return (
             <View style={styles.flex}>
                 {
                     this.state.renderMap &&
-                    // this.renderMapView(this.state.feeds)
-                    this.renderMapView(feed)
+                    this.renderMapView()
                 }
 
 
@@ -240,8 +286,7 @@ export default class MapSearch extends React.Component {
                 <View style={styles.container}>
                     {
                         this.state.renderMap &&
-                        // this.renderPosts(this.state.feeds)
-                        this.renderPosts(feed)
+                        this.renderPosts()
                     }
                 </View>
             </View>
@@ -267,38 +312,39 @@ export default class MapSearch extends React.Component {
         }
     }
 
-    renderMapView(feed) {
+    renderMapView() {
+        const { feeds } = this.state;
+
         let array = [];
-        if (feed) {
-            for (var i = 0; i < feed.length; i++) {
-                const post = feed[i].post;
 
-                const latitude = post.location.latitude;
-                const longitude = post.location.longitude;
-                // const rating = Math.floor(post.averageRating);
-                const rating = i % 6; // ToDo: test
+        for (var i = 0; i < feeds.length; i++) {
+            const post = feeds[i];
 
-                let image = null;
-                switch (rating) {
-                    case 0: image = PreloadImage.emoji0; break;
-                    case 1: image = PreloadImage.emoji1; break;
-                    case 2: image = PreloadImage.emoji2; break;
-                    case 3: image = PreloadImage.emoji3; break;
-                    case 4: image = PreloadImage.emoji4; break;
-                    case 5: image = PreloadImage.emoji5; break;
-                }
+            const latitude = post.location.latitude;
+            const longitude = post.location.longitude;
+            // const rating = Math.floor(post.averageRating);
+            const rating = i % 6; // ToDo: test
 
-                const marker = {
-                    coordinate: {
-                        latitude: latitude,
-                        longitude
-                    },
-                    image,
-                    index: i
-                };
-
-                array.push(marker);
+            let image = null;
+            switch (rating) {
+                case 0: image = PreloadImage.emoji0; break;
+                case 1: image = PreloadImage.emoji1; break;
+                case 2: image = PreloadImage.emoji2; break;
+                case 3: image = PreloadImage.emoji3; break;
+                case 4: image = PreloadImage.emoji4; break;
+                case 5: image = PreloadImage.emoji5; break;
             }
+
+            const marker = {
+                coordinate: {
+                    latitude: latitude,
+                    longitude
+                },
+                image,
+                index: i
+            };
+
+            array.push(marker);
         }
 
         let markers = [];
@@ -409,10 +455,11 @@ export default class MapSearch extends React.Component {
         // this.setState({ region });
     }
 
-    renderPosts(feed) {
-        if (!feed) {
-            return (
-                /*
+    renderPosts() {
+        const { feeds } = this.state;
+
+        if (feeds.length === 0) {
+            /*
                 <View style={{
                     width: itemWidth, height: itemHeight, marginHorizontal: 20, borderRadius: 2,
                     marginBottom: Theme.spacing.base,
@@ -428,20 +475,15 @@ export default class MapSearch extends React.Component {
                         />
                     </SvgAnimatedLinearGradient>
                 </View>
-                */
-                // <RefreshIndicator />
-                null
-            );
-        }
-
-        if (feed.length === 0) {
+            */
+            // <RefreshIndicator />
             return null;
         }
 
         let pictures = [];
 
-        for (var i = 0; i < feed.length; i++) {
-            const post = feed[i].post;
+        for (var i = 0; i < feeds.length; i++) {
+            const post = feeds[i];
 
             if (i === 0) {
                 post && pictures.push(
@@ -451,7 +493,7 @@ export default class MapSearch extends React.Component {
                         }
                     </View>
                 );
-            } else if (i !== 0 && i === feed.length - 1) {
+            } else if (i !== 0 && i === feeds.length - 1) {
                 post && pictures.push(
                     <View key={post.id} style={styles.view_rear}>
                         {
@@ -491,38 +533,28 @@ export default class MapSearch extends React.Component {
 
     moveMarker(index) {
         const tmp = this.getRegion(index);
+        if (tmp) {
+            const region = {
+                latitude: tmp.latitude,
+                longitude: tmp.longitude,
+                latitudeDelta: this.state.region.latitudeDelta,
+                longitudeDelta: this.state.region.longitudeDelta
+            };
 
-        const region = {
-            latitude: tmp.latitude,
-            longitude: tmp.longitude,
-            latitudeDelta: this.state.region.latitudeDelta,
-            longitudeDelta: this.state.region.longitudeDelta
-        };
-
-        this.moveRegion(region, 0);
+            this.moveRegion(region, 0);
+        }
     }
 
     getRegion(index) {
-        const { feedStore } = this;
-        const { feed } = feedStore; // array
+        const { feeds } = this.state;
 
-        if (feed) {
-            /*
-            for (var i = 0; i < feed.length; i++) {
-                const post = feed[i].post;
+        if (feeds.length === 0) return null;
 
-                const latitude = post.location.latitude;
-                const longitude = post.location.longitude;
-            }
-            */
-            const post = feed[index].post;
-            const latitude = post.location.latitude;
-            const longitude = post.location.longitude;
+        const post = feeds[index];
+        const latitude = post.location.latitude;
+        const longitude = post.location.longitude;
 
-            return ({ latitude, longitude });
-        }
-
-        return null;
+        return ({ latitude, longitude });
     }
 
     renderPost(post) {
@@ -645,33 +677,6 @@ export default class MapSearch extends React.Component {
         console.log(s, n, w, e);
 
         /*
-        const leftTopLongitude = region.longitude - (region.longitudeDelta / 2);
-        const rightTopLongitude = region.longitude + (region.longitudeDelta / 2);
-        const leftTopLatitude = region.latitude + (region.latitudeDelta / 2);
-        const rightTopLatitude = region.latitude + (region.latitudeDelta / 2);
-
-        const leftBottomLongitude = region.longitude - (region.longitudeDelta / 2);
-
-        const rightBottomLongitude = region.longitude + (region.longitudeDelta / 2);
-
-        const leftBottomLatitude = region.latitude - (region.latitudeDelta / 2);
-
-        const rightBottomLatitude = region.latitude - (region.latitudeDelta / 2);
-        */
-
-        /*
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed")
-            .where("location.latitudeDelta", ">=", l)
-            .where("location.latitudeDelta", "<=", r)
-            .where("location.longitude", ">=", t)
-            .where("location.longitude", "<=", b);
-            // .orderBy("averageRating", "desc");
-
-        store.init(query, "averageRating");
-        */
-
-
-
         const lesserGeopoint = new firebase.firestore.GeoPoint(s, w); // SW
         const greaterGeopoint = new firebase.firestore.GeoPoint(n, e); // NE
 
@@ -679,26 +684,16 @@ export default class MapSearch extends React.Component {
             .where('location.gp', '>', lesserGeopoint).where('location.gp', '<', greaterGeopoint);
 
         this.feedStore.init(query, null);
-
-        // return a Promise that fulfills with the locations
-        /*
-        return query.get()
-            .then((snapshot) => {
-                const allLocs = []; // used to hold all the loc data
-                snapshot.forEach((loc) => {
-                    // get the data
-                    const data = loc.data();
-                    // calculate a distance from the center
-                    data.distanceFromCenter = utils.distance(area.center, data.location);
-                    // add to the array
-                    allLocs.push(data);
-                });
-                return allLocs;
-            })
-            .catch((err) => {
-                return new Error('Error while retrieving events');
-            });
         */
+
+
+        this.setState({ loading: true });
+
+        const feeds = await this.loadFeeds(region);
+        console.log('reload', feeds);
+        this.setState({ feeds: feeds });
+
+        this.setState({ loading: false });
     }
 }
 

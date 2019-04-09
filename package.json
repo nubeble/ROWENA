@@ -18,6 +18,8 @@
     "expo": "^31.0.0",
     "firebase": "^5.5.7",
     "flow": "^0.2.3",
+    "geofirestore": "^3.2.3",
+    "geokit": "^0.1.3",
     "lodash.isequal": "^4.5.0",
     "mobx": "^5.6.0",
     "mobx-react": "^5.3.6",
