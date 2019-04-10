@@ -191,7 +191,7 @@ export default class MapSearch extends React.Component {
             <View style={styles.flex}>
                 {
                     this.state.renderMap &&
-                    this.renderMapView()
+                    this.renderMap()
                 }
 
 
@@ -212,8 +212,7 @@ export default class MapSearch extends React.Component {
                     }}
                 >
                     <View style={{
-                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
-                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(255, 255, 255, 0.6)'
                     }}>
                         <Ionicons name='md-arrow-back' color='rgba(0, 0, 0, 0.8)' size={26} />
                     </View>
@@ -222,13 +221,13 @@ export default class MapSearch extends React.Component {
                 {/* search this area */}
                 <TouchableOpacity
                     style={{
-                        width: '60%',
+                        width: '50%',
                         // height: Dimensions.get('window').height / 28,
                         height: 30,
                         position: 'absolute',
                         // top: Constants.statusBarHeight + 50,
                         top: 100 + 6,
-                        right: '20%',
+                        right: '25%',
                         justifyContent: "center", alignItems: "center"
                     }}
                     onPress={() => {
@@ -261,12 +260,16 @@ export default class MapSearch extends React.Component {
                     }}
                     onPress={() => {
                         // this.getCurrentPosition();
-                        this.props.navigation.navigate("mapOverview");
+
+                        // test
+                        // this.props.navigation.navigate("mapOverview");
+
+                        // this.getCamera();
+                        this.setCamera();
                     }}
                 >
                     <View style={{
-                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
-                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(255, 255, 255, 0.6)'
                     }}>
                         <MaterialIcons name='gps-fixed' color='rgba(0, 0, 0, 0.8)' size={26} />
                     </View>
@@ -303,7 +306,7 @@ export default class MapSearch extends React.Component {
         }
     }
 
-    renderMapView() {
+    renderMap() {
         const { feeds } = this.state;
 
         let array = [];
@@ -344,7 +347,6 @@ export default class MapSearch extends React.Component {
 
             markers.push(
                 <MapView.Marker
-                    // ref={(ref) => this.map = ref}
                     key={i}
                     coordinate={marker.coordinate}
                     // anchor={{ x: 0.5, y: 0.5 }}

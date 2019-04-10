@@ -678,14 +678,15 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                     initialRegion={{
                                                         longitude: post.location.longitude,
                                                         latitude: post.location.latitude,
-                                                        latitudeDelta: 0.001,
-                                                        longitudeDelta: 0.001 * ASPECT_RATIO
+                                                        latitudeDelta: 0.008,
+                                                        longitudeDelta: 0.008 * ASPECT_RATIO
                                                     }}
                                                     scrollEnabled={false}
                                                     zoomEnabled={false}
                                                     rotateEnabled={false}
                                                     pitchEnabled={false}
                                                 >
+                                                    {/*
                                                     <MapView.Marker
                                                         coordinate={{
                                                             longitude: post.location.longitude,
@@ -699,6 +700,17 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                             <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
                                                         </View>
                                                     </MapView.Marker>
+                                                    */}
+                                                    <MapView.Circle
+                                                        center={{
+                                                            latitude: post.location.latitude,
+                                                            longitude: post.location.longitude
+                                                        }}
+                                                        radius={150} // m
+                                                        strokeWidth={2}
+                                                        strokeColor={Theme.color.selection}
+                                                        fillColor={'rgba(62, 165, 255, 0.6)'}
+                                                    />
                                                 </MapView>
                                             </View>
                                         </TouchableOpacity>

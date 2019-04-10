@@ -18,8 +18,9 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 // const SPACE = 0.01;
 
+// const UP = 1.02;
+
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
-// const useGoogleMaps = true;
 
 
 export default class MapScreen extends React.Component {
@@ -56,8 +57,8 @@ export default class MapScreen extends React.Component {
         const region = {
             latitude,
             longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01 * ASPECT_RATIO
+            latitudeDelta: 0.02,
+            longitudeDelta: 0.02 * ASPECT_RATIO
         };
 
         this.setState({ region });
@@ -113,6 +114,10 @@ export default class MapScreen extends React.Component {
                     // onRegionChange={this.onRegionChange}
                     // onRegionChangeComplete={this.onRegionChangeComplete}
                     >
+
+
+
+                        {/*
                         <MapView.Marker
                             coordinate={{
                                 // latitude: this.state.region.latitude + SPACE,
@@ -128,6 +133,25 @@ export default class MapScreen extends React.Component {
                                 <Image source={this.state.markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
                             </View>
                         </MapView.Marker>
+                        */}
+
+
+
+                        <MapView.Circle
+                            // key={(this.state.currentLongitude + this.state.currentLongitude).toString()}
+                            center={{
+                                latitude: this.state.region.latitude,
+                                longitude: this.state.region.longitude
+                            }}
+                            radius={150} // m
+                            strokeWidth={2}
+                            strokeColor={Theme.color.selection}
+                            fillColor={'rgba(62, 165, 255, 0.6)'}
+                        // onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
+                        />
+
+
+
                     </MapView>
                 }
 
@@ -148,8 +172,7 @@ export default class MapScreen extends React.Component {
                     }}
                 >
                     <View style={{
-                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
-                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(255, 255, 255, 0.6)'
                     }}>
                         <Ionicons name='md-arrow-back' color='rgba(0, 0, 0, 0.8)' size={26} />
                     </View>
@@ -163,7 +186,7 @@ export default class MapScreen extends React.Component {
                         position: 'absolute',
                         top: 100 + 6,
                         right: '20%',
-                        borderRadius: '16%',
+                        borderRadius: 42 / 2,
                         backgroundColor: 'rgba(255, 255, 255, 0.6)',
 
                         justifyContent: "center", alignItems: "center"
@@ -187,8 +210,7 @@ export default class MapScreen extends React.Component {
                     }}
                 >
                     <View style={{
-                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center",
-                        backgroundColor: 'rgba(255, 255, 255, 0.6)'
+                        width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(255, 255, 255, 0.6)'
                     }}>
                         <MaterialIcons name='gps-fixed' color='rgba(0, 0, 0, 0.8)' size={26} />
                     </View>
