@@ -100,7 +100,7 @@ export default class AdvertisementMain extends React.Component {
         city: '',
         state: '',
         streetInfo: null,
-        // cityInfo: null,
+        cityInfo: null,
 
 
         notification: '',
@@ -137,7 +137,7 @@ export default class AdvertisementMain extends React.Component {
     constructor(props) {
         super(props);
 
-        this.postId = null;
+        this.feedId = null;
 
         this.imageRefs = []; // for cleaning files in server
     }
@@ -155,12 +155,12 @@ export default class AdvertisementMain extends React.Component {
 
         this.setState({
             country: result.name, countryCode: result.code,
-            street: null, city: '', state: '', streetInfo: null, // cityInfo: null
+            street: null, city: '', state: '', streetInfo: null, cityInfo: null
         });
     }
 
-    initFromSearch(result1) { // street
-        // console.log('AdvertisementMain.initFromSearch', result1, result2);
+    initFromSearch(result1, result2) { // street
+        console.log('AdvertisementMain.initFromSearch', result1, result2);
 
         /*
         "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
@@ -178,13 +178,11 @@ export default class AdvertisementMain extends React.Component {
             latitude: result1.location.lat
         };
 
-        /*
         const cityInfo = {
             description: result2.name,
             cityId: result2.placeId,
             location: result2.location
         };
-        */
 
         /*
         let street = null;
@@ -259,9 +257,7 @@ export default class AdvertisementMain extends React.Component {
             if (i != size - 1) street += ', ';
         }
 
-        this.setState({ street: street, city: city, state: state, streetInfo: location,
-            // cityInfo: cityInfo
-        });
+        this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
     }
 
     @autobind
@@ -499,7 +495,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { name, birthday, height, weight, breasts, note, country, street, streetInfo, /*cityInfo,*/ uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const { name, birthday, height, weight, breasts, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -586,11 +582,10 @@ export default class AdvertisementMain extends React.Component {
 
         let data = {};
 
-        if (!this.postId) {
-            this.postId = Util.uid();
+        if (!this.feedId) {
+            this.feedId = Util.uid();
         }
-        // data.feedId = this.feedId;
-        data.postId = this.postId;
+        data.feedId = this.feedId;
 
         data.userUid = Firebase.user().uid;
 
@@ -606,15 +601,14 @@ export default class AdvertisementMain extends React.Component {
 
         // placeId, placeName, location
         // --
-        // data.placeId = cityInfo.cityId;
-        // data.placeName = cityInfo.description;
+        data.placeId = cityInfo.cityId;
+        data.placeName = cityInfo.description;
 
         const location = {
             description: streetInfo.description,
             // streetId: streetInfo.streetId,
             longitude: streetInfo.longitude,
-            latitude: streetInfo.latitude,
-            // gp: new firebase.firestore.GeoPoint(streetInfo.latitude, streetInfo.longitude)
+            latitude: streetInfo.latitude
         };
 
         data.location = location;
@@ -632,14 +626,12 @@ export default class AdvertisementMain extends React.Component {
         data.image3Uri = uploadImage3Uri;
         data.image4Uri = uploadImage4Uri;
 
-        /*
         const extra = {
             lat: cityInfo.location.lat,
             lng: cityInfo.location.lng
         };
-        */
 
-        await this.createPost(data);
+        await this.createFeed(data, extra);
 
         this.removeItemFromList();
 
@@ -1484,7 +1476,7 @@ export default class AdvertisementMain extends React.Component {
                         case 3: this.setState({ uploadImage4Uri: uri }); break;
                     }
 
-                    const ref = 'images/' + Firebase.user().uid + '/post/' + this.postId + '/' + result.uri.split('/').pop();
+                    const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
                     this.imageRefs.push(ref);
 
                     switch (index) {
@@ -1540,12 +1532,11 @@ export default class AdvertisementMain extends React.Component {
         const formData = new FormData();
         formData.append("type", "post"); // formData.append("type", "profile");
 
-        if (!this.postId) {
-            this.postId = Util.uid();
+        if (!this.feedId) {
+            this.feedId = Util.uid();
         }
 
-        // formData.append("feedId", this.postId);
-        formData.append("postId", this.postId);
+        formData.append("feedId", this.feedId);
 
         formData.append("image", {
             uri,
@@ -1600,19 +1591,19 @@ export default class AdvertisementMain extends React.Component {
     }
 
     //// database ////
-    async createPost(data) {
-        console.log('AdvertisementMain.createPost', data);
+    async createFeed(data, extra) {
+        console.log('AdvertisementMain.createFeed', data, extra);
 
         // const feedId = Util.uid(); // create uuid
         // const userUid = Firebase.user().uid;
 
-        let post = {};
-        post.uid = data.userUid;
-        post.id = data.feedId;
-        // post.placeId = data.placeId;
-        // post.placeName = data.placeName;
-        post.location = data.location;
-        post.note = data.note;
+        let feed = {};
+        feed.uid = data.userUid;
+        feed.id = data.feedId;
+        feed.placeId = data.placeId;
+        feed.placeName = data.placeName;
+        feed.location = data.location;
+        feed.note = data.note;
 
         const pictures = {
             one: {
@@ -1633,16 +1624,16 @@ export default class AdvertisementMain extends React.Component {
             }
         };
 
-        post.pictures = pictures;
-        post.name = data.name;
-        post.birthday = data.birthday;
-        post.height = data.height;
-        post.weight = data.weight;
-        post.bust = data.bust;
+        feed.pictures = pictures;
+        feed.name = data.name;
+        feed.birthday = data.birthday;
+        feed.height = data.height;
+        feed.weight = data.weight;
+        feed.bust = data.bust;
 
         // console.log('feed', feed);
 
-        await Firebase.createPost(post);
+        await Firebase.createFeed(feed, extra);
 
         Vars.userFeedsChanged = true;
     }

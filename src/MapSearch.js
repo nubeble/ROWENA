@@ -128,9 +128,8 @@ export default class MapSearch extends React.Component {
     async loadFeeds(region) {
         let feeds = [];
 
-        const geocollection: GeoCollectionReference = this.gf.collection('geolocation');
-
-        // ToDo: radius, limit
+        const { placeId } = this.props.navigation.state.params;
+        const geocollection: GeoCollectionReference = this.gf.collection("place").doc(placeId).collection("feed");
 
         // get kilometers by region
         const oneDegreeOfLatitudeInMeters = 111.32;
@@ -140,24 +139,16 @@ export default class MapSearch extends React.Component {
             center: new firebase.firestore.GeoPoint(region.latitude, region.longitude),
             radius: km, // kilometers
             // limit: 5
-        }).limit(8);
+        }).limit(8); // ToDo: limit
 
         await query.get().then(async (value: GeoQuerySnapshot) => {
             // console.log(value.docs); // All docs returned by GeoQuery
 
             const docs = value.docs;
             for (var i = 0; i < docs.length; i++) {
-                // const data = item.data();
                 const data = docs[i].data();
 
-                // ToDo: should change this!!!
-                
-                const feedDoc = await Firebase.firestore.collection("place").doc(data.placeId).collection("feed").doc(data.feedId).get();
-                if (feedDoc.exists) {
-                    const post = feedDoc.data();
-                    // console.log('feed', post);
-                    feeds.push(post);
-                }
+                feeds.push(data);
             }
         });
 
@@ -353,6 +344,7 @@ export default class MapSearch extends React.Component {
 
             markers.push(
                 <MapView.Marker
+                    // ref={(ref) => this.map = ref}
                     key={i}
                     coordinate={marker.coordinate}
                     // anchor={{ x: 0.5, y: 0.5 }}
@@ -690,7 +682,6 @@ export default class MapSearch extends React.Component {
         this.setState({ loading: true });
 
         const feeds = await this.loadFeeds(region);
-        console.log('reload', feeds);
         this.setState({ feeds: feeds });
 
         this.setState({ loading: false });

@@ -97,70 +97,70 @@ export default createBottomTabNavigator(
 		}
 	}
 	*/
-    {
-        // home: Home, // Test
-        home: Stacks,
-        // messages: Messages,
-        messages: Test,
-        // likes: Likes,
-        likes: SignIn,
-        // me: Me
-        me: SignUp
-    },
-    {
-        navigationOptions: ({ navigation }) => ({
-            // title: `${navigation.state.params.name}'s Profile!`,
-            title: 'Title',
-            tabBarLabel: navigation.state.routeName,
+	{
+		// home: Home, // Test
+		home: Stacks,
+		// messages: Messages,
+		messages: Test,
+		// likes: Likes,
+		likes: SignIn,
+		// me: Me
+		me: SignUp
+	},
+	{
+		navigationOptions: ({ navigation }) => ({
+			// title: `${navigation.state.params.name}'s Profile!`,
+			title: 'Title',
+			tabBarLabel: navigation.state.routeName,
 
-            tabBarIcon: ({ tintColor, focused }) => {
+			tabBarIcon: ({ tintColor, focused }) => {
 
-                // console.log('navigation:', navigation);
+				// console.log('navigation:', navigation);
 
-                // let iconName;
+				// let iconName;
 
-                if (navigation.state.routeName === 'home') {
+				if (navigation.state.routeName === 'home') {
 
-                    return <Ionicons
-                        name={focused ? 'ios-compass' : 'ios-compass-outline'}
-                        size={34}
-                        style={{ color: tintColor }}
-                    />;
+					return <Ionicons
+						name={focused ? 'ios-compass' : 'ios-compass-outline'}
+						size={34}
+						style={{ color: tintColor }}
+					/>;
 
-                } else if (navigation.state.routeName === 'messages') {
+				} else if (navigation.state.routeName === 'messages') {
 
-                    return <Ionicons
-                        name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
-                        size={32}
-                        style={{ color: tintColor }}
-                    />;
+					return <Ionicons
+						name={focused ? 'ios-chatbubbles' : 'ios-chatbubbles-outline'}
+						size={32}
+						style={{ color: tintColor }}
+					/>;
 
-                } else if (navigation.state.routeName === 'likes') {
+				} else if (navigation.state.routeName === 'likes') {
 
-                    return <Ionicons
-                        name={focused ? 'md-heart' : 'md-heart-outline'}
-                        size={30}
-                        style={{ color: tintColor }}
-                    />;
+					return <Ionicons
+						name={focused ? 'md-heart' : 'md-heart-outline'}
+						size={30}
+						style={{ color: tintColor }}
+					/>;
 
-                } else if (navigation.state.routeName === 'me') {
+				} else if (navigation.state.routeName === 'me') {
 
-                    return <MaterialIcons
-                        name={focused ? 'person' : 'person-outline'}
-                        size={34}
-                        style={{ color: tintColor }}
-                    />;
-                }
+					return <MaterialIcons
+						name={focused ? 'person' : 'person-outline'}
+						size={34}
+						style={{ color: tintColor }}
+					/>;
+				}
 
-            },
-        }),
+			},
+		}),
 
-        tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
-            showLabel: false,
-            showIcon: true,
-            // tintColor: 'red',
-            activeTintColor: 'black',
-            inactiveTintColor: 'dimgrey'
-        },
-    }
+		tabBarOptions: { // style (bar), labelStyle (label), tabStyle (tab)
+			showLabel: false,
+			showIcon: true,
+			// tintColor: 'red',
+			activeTintColor: 'black',
+			inactiveTintColor: 'dimgrey'
+		},
+	}
 );

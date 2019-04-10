@@ -18,16 +18,21 @@ export default class AuthMain extends React.Component {
     state = {
         showFacebookLoader: false,
 
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
+
+
         // loaded: false,
         // blurRadius: new Animated.Value(1),
         // offset: new Animated.Value(0)
 
         // opacity: new Animated.Value(0),
-        offset: new Animated.Value(height)
+        viewOffset: new Animated.Value(height)
     };
 
     componentDidMount() {
-        Animated.timing(this.state.offset, {
+        Animated.timing(this.state.viewOffset, {
             toValue: 0,
             duration: 500,
             useNativeDriver: true
@@ -74,6 +79,7 @@ export default class AuthMain extends React.Component {
                 console.log('signInAndRetrieveDataWithCredential error', error);
 
                 // ToDo: error handling - messagebox (please try again)
+                this.showNotification('An error occurred. Please try again.');
             }
         }
 
@@ -112,7 +118,7 @@ export default class AuthMain extends React.Component {
         const viewStyle = {
             transform: [
                 {
-                    translateY: this.state.offset
+                    translateY: this.state.viewOffset
                 }
             ]
         };
@@ -147,6 +153,10 @@ export default class AuthMain extends React.Component {
                     <View style={styles.contents}>
                         <TouchableOpacity
                             onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
+
                                 setTimeout(() => {
                                     this.continueWithFacebook();
                                 }, Cons.buttonTimeoutShort);
@@ -173,6 +183,10 @@ export default class AuthMain extends React.Component {
 
                         <TouchableOpacity
                             onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
+
                                 setTimeout(() => {
                                     this.signUpWithEmail();
                                 }, Cons.buttonTimeoutShort);
@@ -190,6 +204,10 @@ export default class AuthMain extends React.Component {
 
                         <TouchableOpacity
                             onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
+
                                 setTimeout(() => {
                                     this.signUpWithMobile();
                                 }, Cons.buttonTimeoutShort);
@@ -206,8 +224,14 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
-                        // ToDo: login
-                        // onPress={() => this.props.navigation.navigate("logIn")}
+                            onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
+
+                                // ToDo: login
+                                // this.props.navigation.navigate("logIn");
+                            }}
                         >
                             <Text>
                                 <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
@@ -224,17 +248,49 @@ export default class AuthMain extends React.Component {
         );
     }
 
+    showNotification(msg) {
+        if (this._showNotification) {
+            this.hideNotification();
+        }
 
+        this._showNotification = true;
 
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
+                    ])
+                ]).start();
+            });
+        });
+    };
 
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 200
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: height * -1,
+                        duration: 200
+                    })
+                ])
+            ]).start();
+        });
 
-    /*
-    async getUserToken() {
-        const userToken = await AsyncStorage.getItem('USER_TOKEN');
-
-        return userToken;
+        this._showNotification = false;
     }
-    */
 }
 
 const styles = StyleSheet.create({
@@ -311,5 +367,34 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between'
+    },
+    notification: {
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
+        height: (8 + 34 + 8) - 12,
+        borderRadius: 15,
+        position: "absolute",
+        top: 0,
+        backgroundColor: Theme.color.notification,
+        zIndex: 10000,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    notificationText: {
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
+        fontFamily: "Roboto-Medium",
+        color: "white",
+        textAlign: 'center'
+    },
+    notificationButton: {
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

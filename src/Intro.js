@@ -382,7 +382,7 @@ export default class Intro extends React.Component {
         const size = DEFAULT_PLACE_COUNT;
 
         const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
-        if (snap.docs.length > 0) {
+        if (snap.size > 0) {
             let places = [...this.state.places];
 
             var index = 0;
@@ -1214,7 +1214,6 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         borderRadius: 2,
-        // backgroundColor: "rgba(0, 0, 0, 0.3)",
         backgroundColor: "rgba(0, 0, 0, 0.4)",
         padding: Theme.spacing.small,
         flex: 1,
@@ -1258,8 +1257,8 @@ const styles = StyleSheet.create({
         paddingLeft: 2,
 
         textShadowColor: 'black',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 1
+        textShadowOffset: { width: -0.3, height: -0.3 },
+        textShadowRadius: 10
     },
     rating: {
         marginLeft: 5,

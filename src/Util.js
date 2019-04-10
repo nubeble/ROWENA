@@ -244,7 +244,7 @@ export default class Util extends React.Component {
                     // console.log('getPlaceId pre results', responseJSON.results);
                     const filter = ['locality', 'administrative_area_level_3'];
                     const results = Util._filterResultsByTypes(responseJSON.results, filter);
-                    // console.log('getPlaceId after results', results);
+                    console.log('getPlaceId after results', results);
 
                     // add 'street_address' filter
                     if (results.length != 0) {

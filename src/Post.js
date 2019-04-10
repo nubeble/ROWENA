@@ -1400,7 +1400,7 @@ export default class Post extends React.Component<InjectedProps> {
                         {/* ToDo: add profile image */}
 
                         <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
-                            <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Max Power'}</Text>
+                            <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Anonymous'}</Text>
                             <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                         </View>
 

@@ -1,11 +1,9 @@
-// import * as firebase from "firebase";
+import * as firebase from "firebase";
 
 type Location = {
     description: string,
-    // streetId: string, // place_id for street
     longitude: number,
-    latitude: number,
-    // gp: firebase.firestore.GeoPoint
+    latitude: number
 };
 
 export type Picture = {
@@ -13,24 +11,21 @@ export type Picture = {
     uri: string
 };
 
-/*
 type FeedRef = {
     placeId: string,
-    feedId: string
+    feedId: string,
+    picture: string // ToDo: update when the origin post changed
 };
-*/
 
 type ReviewRef = {
-    // placeId: string,
-    // feedId: string,
-    postId: string,
+    placeId: string,
+    feedId: string,
     reviewId: string
 };
 
 type ReplyRef = {
-    // placeId: string,
-    // feedId: string,
-    postId: string,
+    placeId: string,
+    feedId: string,
     reviewId: string,
     replyId: string
 };
@@ -58,12 +53,10 @@ export type Profile = {
     picture: Picture,
     // location: Location,
     about: string,
-    // feeds: FeedRef[],
-    posts: Array<string>, // location id array
+    feeds: FeedRef[],
     reviews: ReviewRef[],
     replies: ReplyRef[],
-    // likes: LikeRef[]
-    likes: Array<string> // location id array
+    likes: LikeRef[]
 };
 
 type Pictures = {
@@ -77,8 +70,8 @@ type Pictures = {
 export type Post = {
     uid: string, // user uid
     id: string,
-    // placeId: string,
-    // placeName: string,
+    placeId: string,
+    placeName: string,
     location: Location,
     note: string,
     pictures: Pictures,
@@ -92,7 +85,9 @@ export type Post = {
     weight: number,
     bust: string,
     timestamp: number,
-    rn: number // random number
+    rn: number, // random number
+    g: string,
+    l: firebase.firestore.GeoPoint
 };
 
 

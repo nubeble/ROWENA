@@ -303,7 +303,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
                             delete rowData.isLoading;
 
-                            if (rowData.description === 'Macau') rowData.description = 'Macau, China'; // ToDo: exception
+                            if (rowData.description === 'Macau') rowData.description = 'Macau, China'; // Consider: exception
 
                             this.props.onPress(rowData, details);
                         }
@@ -501,7 +501,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
                     if (typeof responseJSON.results !== 'undefined') {
                         if (!this.closed) {
-                            var results = [];
+                            let results = [];
                             if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
                                 console.log('_requestNearby GoogleReverseGeocoding pre results', responseJSON.results);
                                 results = this._filterResultsByTypes(responseJSON.results, this.props.filterReverseGeocodingByTypes);
@@ -725,7 +725,7 @@ export default class GooglePlacesAutocomplete extends Component {
         if (index === -1) {
             city = description;
 
-            if (city === 'Macau') state = 'China'; // ToDo: exception
+            if (city === 'Macau') state = 'China'; // Consider: exception
         } else {
             city = description.substring(0, index);
             state = description.substring(index + 2, description.length);

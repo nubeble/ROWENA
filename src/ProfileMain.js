@@ -201,19 +201,22 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             this.setState({
                 // isLoadingFeeds: false, feeds: newFeeds, refreshing: false
+                isLoadingFeeds: false,
                 feeds: newFeeds, // refreshing: false
             });
         } else {
             this.setState({
                 // isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
+                isLoadingFeeds: false,
                 feeds: [...this.state.feeds, ...newFeeds], // refreshing: false
             });
         }
 
-        // ToDo: check this!
+        /*
         setTimeout(() => {
             this.setState({ isLoadingFeeds: false });
         }, 1000);
+        */
 
         console.log('ProfileMain', 'loading feeds done!');
 

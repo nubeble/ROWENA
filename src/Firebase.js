@@ -55,14 +55,14 @@ export default class Firebase {
             /*
             location: {
                 description: null, // "Cebu, Philippines"
-                longitude: 0.0, // 경도
-                latitude: 0.0 // 위도
+                longitude: 0.0,
+                latitude: 0.0
             },
             */
             about: null,
 
-            feeds: [], // 내가 등록한 feed. ToDo: feed 삭제 시 배열에서 삭제
-            reviews: [], // 내가 남긴 리뷰. (collection)
+            feeds: [],
+            reviews: [], // review ref array
             replies: [],
             likes: []
         };
@@ -220,7 +220,7 @@ export default class Firebase {
     }
     */
 
-    static async createPost(feed) {
+    static async createFeed(feed, extra) {
         feed.likes = [];
         feed.reviewCount = 0;
         feed.averageRating = 0;
@@ -228,74 +228,49 @@ export default class Firebase {
         feed.timestamp = Firebase.getTimestamp();
         feed.rn = Util.getRandomNumber();
 
-
-        // 1. add location
         const coordinates: LatLngLiteral = { lat: feed.location.latitude, lng: feed.location.longitude };
         const hash: string = Geokit.hash(coordinates);
 
-        const gd = {
-            g: hash,
-            l: new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude),
-            d: {
-                post: feed
-            }
-        };
-
-        await Firebase.firestore.collection("location").doc(gd.g).set(gd);
-
-
-
-
-
-        /*
-        // 0. add geolocation
-        const coordinates: LatLngLiteral = { lat: feed.location.latitude, lng: feed.location.longitude };
-        const hash: string = Geokit.hash(coordinates);
-
-        const gd = {
-            g: hash,
-            l: new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude),
-            d: {
-                placeId: feed.placeId,
-                feedId: feed.id,
-                // coordinates: new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude)
-            }
-        };
-
-        await Firebase.firestore.collection("geolocation").doc(gd.g).set(gd);
+        feed.g = hash;
+        feed.l = new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude);
 
         // 1. add feed
         await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
-        */
 
+        // 2. update user profile & place
         const userRef = Firebase.firestore.collection("users").doc(feed.uid);
         const placeRef = Firebase.firestore.collection("place").doc(feed.placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
+            // 2-1. place
             const placeDoc = await transaction.get(placeRef);
-            let count = 0;
-            if (placeDoc.exists) {
+            if (!placeDoc.exists) {
+                // new
+                transaction.set(placeRef, {
+                    count: 1, timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn,
+                    lat: extra.lat, lng: extra.lng
+                });
+            } else {
+                // update
+                let count = 0;
                 let field = placeDoc.data().count;
-                if (field) count = field;
+                if (field) count = field; // never happen
+                count++;
+
+                transaction.update(placeRef, {
+                    count, timestamp: feed.timestamp,
+                    // name: feed.placeName, rn: feed.rn, lat: extra.lat, lng: extra.lng
+                });
             }
 
-            // console.log('count', count);
-
-            // 2. update the count & timestamp
-            // transaction.update(placeRef, { count: Number(count + 1) });
-            transaction.set(placeRef, {
-                count: Number(count + 1), timestamp: feed.timestamp, name: feed.placeName, rn: feed.rn,
-                lat: extra.lat, lng: extra.lng
-            });
-
-            // 3. update profile (add fields to feeds in user profile)
+            // 2-2. user profile (add fields to feeds in user profile)
             const data = {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
+
                     // used in Profile tab (user created post)
-                    // ToDo: update this when the post changed
-                    picture: feed.pictures.one.uri,
+                    picture: feed.pictures.one.uri, // ToDo: update this when the post changed
                     // valid: true // ToDo: update this after removing
                 })
             };
@@ -315,7 +290,6 @@ export default class Firebase {
 
             let count = placeDoc.data().count;
             console.log('Firebase.removeFeed', 'current count', count);
-
             transaction.update(placeRef, { count: Number(count - 1) });
 
             // 2. remove feed
@@ -888,7 +862,7 @@ export default class Firebase {
 
         if (user !== null) {
             name = user.displayName;
-            if (!name) name = 'Max Power'; // test
+            if (!name) name = 'Anonymous'; // test
             email = user.email;
             photoUrl = user.photoURL;
             if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // test

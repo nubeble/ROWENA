@@ -237,7 +237,7 @@ export default class SearchScreen extends React.Component {
                             const location = details.geometry.location;
                             const result = {
                                 description: data.description,
-                                // place_id: data.place_id,
+                                place_id: data.place_id,
                                 location: {
                                     lat: location.lat,
                                     lng: location.lng
@@ -249,7 +249,7 @@ export default class SearchScreen extends React.Component {
                             if (from !== 'AdvertisementMain') {
                                 const item = {
                                     description: data.description,
-                                    // place_id: data.place_id,
+                                    place_id: data.place_id,
                                     geometry: {
                                         location: {
                                             lat: location.lat,
@@ -262,7 +262,7 @@ export default class SearchScreen extends React.Component {
                             }
                             // --
 
-                            /*
+
                             if (from === 'AdvertisementMain') {
                                 const input = {
                                     lat: location.lat,
@@ -274,7 +274,7 @@ export default class SearchScreen extends React.Component {
                                 Util.getPlaceId(input, key, (obj) => {
                                     console.log('Util.getPlaceId result', obj);
 
-                                    // ToDo: exception
+                                    // Consider: exception
                                     if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                                     const city = {
@@ -299,13 +299,6 @@ export default class SearchScreen extends React.Component {
                                     this.props.navigation.goBack();
                                 }, Cons.buttonTimeoutShort);
                             }
-                            */
-                            setTimeout(() => {
-                                if (this.closed) return;
-
-                                this.props.navigation.state.params.initFromSearch(result);
-                                this.props.navigation.goBack();
-                            }, Cons.buttonTimeoutShort);
                         }}
 
                         getDefaultValue={() => ''}
