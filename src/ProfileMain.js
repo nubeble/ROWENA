@@ -64,8 +64,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         console.log('ProfileMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         this.getUserFeeds();
@@ -557,6 +556,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.onScrollHandler}
                         onScroll={({ nativeEvent }) => {
+                            if (!this.state.focused) return;
+
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.getUserFeeds();
                             }
@@ -578,12 +579,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 }
 
                 {
+                    /*
                     !this.state.focused &&
                     <View style={{
                         width: '100%',
                         height: 100, // Consider: get the height of tab bar
                         // backgroundColor: 'green'
                     }} />
+                    */
                 }
 
                 <Toast

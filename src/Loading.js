@@ -253,11 +253,14 @@ export default class Loading extends React.Component<InjectedProps> {
             } else {
                 Loading.isUserAutoAuthenticated = false;
 
-                Animated.timing(this.state.image2Opacity, {
-                    toValue: 1,
-                    duration: 3000,
-                    useNativeDriver: true
-                }).start(() => {
+                Animated.sequence([
+                    Animated.delay(2000),
+                    Animated.timing(this.state.image2Opacity, {
+                        toValue: 1,
+                        duration: 300,
+                        useNativeDriver: true
+                    })
+                ]).start(() => {
                     !this.closed && this.setState({ showIndicator: false });
 
                     console.log('move to auth main');

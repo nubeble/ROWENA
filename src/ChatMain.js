@@ -199,6 +199,7 @@ export default class ChatMain extends React.Component {
                         }
 
                         ListEmptyComponent={
+                            !this.state.isLoadingChat &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
@@ -351,24 +352,15 @@ export default class ChatMain extends React.Component {
     loadMore() {
         if (this.onLoading) return;
 
-        this.onLoading = true;
-
         // console.log('ChatMain.loadMore', this.isFocused);
 
-        if (!this.isFocused) {
-            this.onLoading = false;
-            return;
-        }
+        if (!this.isFocused) return;
 
-        if (this.state.chatRoomList.length <= 0) {
-            this.onLoading = false;
-            return;
-        }
+        if (this.state.chatRoomList.length <= 0) return;
 
-        if (this.allChatRoomsLoaded) {
-            this.onLoading = false;
-            return;
-        }
+        if (this.allChatRoomsLoaded) return;
+
+        this.onLoading = true;
 
         this.setState({ isLoadingChat: true });
 
@@ -457,19 +449,20 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        // paddingTop: Theme.spacing.small,
-        // paddingBottom: Theme.spacing.small,
+        paddingTop: Theme.spacing.small,
+        paddingBottom: Theme.spacing.small,
         paddingLeft: Theme.spacing.tiny,
         paddingRight: Theme.spacing.tiny
     },
     name: {
         color: Theme.color.text2,
-        fontSize: 17,
+        fontSize: 18,
         fontFamily: "Roboto-Medium"
     },
     contents: {
+        marginTop: Dimensions.get('window').height / 60,
         color: Theme.color.text3,
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: "Roboto-Regular"
     },
     time: {

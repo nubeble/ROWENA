@@ -1,5 +1,8 @@
 import React from 'react';
-import { StyleSheet, View, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList, TouchableOpacity, Platform } from 'react-native';
+import {
+    StyleSheet, View, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList,
+    TouchableOpacity, Platform, ActivityIndicator
+} from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import { Constants, Permissions, Linking, ImagePicker } from "expo";
 import PreloadImage from './PreloadImage';
@@ -36,8 +39,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
         // renderList: false,
         feeds: [],
         isLoadingFeeds: false,
+        loadingType: 0, // 0: none, 100: middle, 200: down
         refreshing: false,
-        // focused: false
+
+        focused: false
     };
 
     constructor(props) {
@@ -56,8 +61,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
-        // this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         await this.getSavedFeeds();
 
@@ -89,8 +93,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
             Vars.updatedPostsForLikes = [];
         } else {
             if (Vars.updatedPostsForLikes.length > 0) {
-                // this.onLoading = true;
-                this.setState({ isLoadingFeeds: true });
+                // this.setState({ isLoadingFeeds: true });
+                this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
                 let feeds = [...this.state.feeds];
 
@@ -105,22 +109,20 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 !this.closed && this.setState({ feeds });
 
-                this.setState({ isLoadingFeeds: false });
-                // this.onLoading = false;
+                // this.setState({ isLoadingFeeds: false });
+                this.setState({ isLoadingFeeds: false, loadingType: 0 });
 
                 Vars.updatedPostsForLikes = [];
             }
         }
 
-        // this.setState({ focused: true });
+        this.setState({ focused: true });
     }
 
-    /*
     @autobind
     onBlur() {
         this.setState({ focused: false });
     }
-    */
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         const threshold = 80;
@@ -145,7 +147,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
         const length = feeds.length;
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-            // if (this.state.refreshing) this.setState({ refreshing: false });
 
             return;
         }
@@ -161,26 +162,25 @@ export default class LikesMain extends React.Component<InjectedProps> {
         }
 
         // all loaded
-        if (this.lastLoadedFeedIndex === 0) {
-            // if (this.state.refreshing) this.setState({ refreshing: false });
-
-            // this.onLoading = false;
-            return;
-        }
+        if (this.lastLoadedFeedIndex === 0) return;
 
         console.log('LikesMain', 'loading feeds...');
 
         this.onLoading = true;
 
-        this.setState({ isLoadingFeeds: true });
+        // this.setState({ isLoadingFeeds: true });
 
         let newFeeds = [];
 
         let startIndex = 0;
         if (this.reload) {
             startIndex = length - 1;
+
+            this.setState({ isLoadingFeeds: true, loadingType: 100 });
         } else {
             startIndex = this.lastLoadedFeedIndex - 1;
+
+            this.setState({ isLoadingFeeds: true, loadingType: 200 });
         }
 
         let count = 0;
@@ -216,9 +216,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         console.log('LikesMain', 'loading feeds done!');
 
-        this.setState({ isLoadingFeeds: false });
-
-        // if (this.state.refreshing) this.setState({ refreshing: false });
+        // this.setState({ isLoadingFeeds: false });
+        this.setState({ isLoadingFeeds: false, loadingType: 0 });
 
         this.onLoading = false;
     }
@@ -380,6 +379,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.handleScrollEnd}
                         onScroll={async ({ nativeEvent }) => {
+                            if (!this.state.focused) return;
+
                             if (this.isCloseToBottom(nativeEvent)) {
                                 await this.getSavedFeeds();
                             }
@@ -390,53 +391,70 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         refreshing={this.state.refreshing}
 
                         ListFooterComponent={
-                            this.state.isLoadingFeeds &&
+                            // this.state.isLoadingFeeds &&
+                            this.state.isLoadingFeeds && this.state.loadingType === 200 &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                                 <RefreshIndicator />
                             </View>
                         }
 
                         ListEmptyComponent={
+                            /*
                             this.state.isLoadingFeeds ?
                                 <View style={{ width: '100%', height: (Dimensions.get('window').height - Cons.searchBarHeight) / 2 - 30 / 2 - Theme.spacing.base - Cons.searchBarHeight / 2 }} />
                                 :
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                    <Text style={{
-                                        color: Theme.color.text2,
-                                        fontSize: 24,
-                                        paddingTop: 4,
-                                        fontFamily: "Roboto-Medium"
-                                    }}>No selected girls</Text>
+                            */
 
-                                    <Text style={{
-                                        marginTop: 10,
-                                        color: Theme.color.text3,
-                                        fontSize: 18,
-                                        fontFamily: "Roboto-Medium"
-                                    }}>Start exploring girls for your next trip</Text>
+                            !this.state.isLoadingFeeds &&
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{
+                                    color: Theme.color.text2,
+                                    fontSize: 24,
+                                    paddingTop: 4,
+                                    fontFamily: "Roboto-Medium"
+                                }}>No selected girls</Text>
 
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            setTimeout(() => {
-                                                // ToDo: set scroll position 0
+                                <Text style={{
+                                    marginTop: 10,
+                                    color: Theme.color.text3,
+                                    fontSize: 18,
+                                    fontFamily: "Roboto-Medium"
+                                }}>Start exploring girls for your next trip</Text>
 
-                                                this.props.navigation.navigate("intro");
-                                            }, Cons.buttonTimeoutShort);
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTimeout(() => {
+                                            // ToDo: set scroll position 0
+
+                                            this.props.navigation.navigate("intro");
+                                        }, Cons.buttonTimeoutShort);
+                                    }}
+                                    style={{ marginTop: 20 }}>
+                                    <Image
+                                        style={{
+                                            width: illustWidth,
+                                            height: illustHeight,
+                                            resizeMode: 'cover'
                                         }}
-                                        style={{ marginTop: 20 }}>
-                                        <Image
-                                            style={{
-                                                width: illustWidth,
-                                                height: illustHeight,
-                                                resizeMode: 'cover'
-                                            }}
-                                            source={PreloadImage.find}
+                                        source={PreloadImage.find}
 
-                                        />
-                                    </TouchableOpacity>
-                                </View>
+                                    />
+                                </TouchableOpacity>
+                            </View>
                         }
                     />
+                }
+
+                {
+                    // this.state.isLoadingFeeds &&
+                    this.state.isLoadingFeeds && this.state.loadingType === 100 &&
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            // animating={true}
+                            size="large"
+                            color='white'
+                        />
+                    </View>
                 }
 
                 <Toast
@@ -450,27 +468,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     handleRefresh = async () => {
-        // if (this.onLoading) return;
-
-        /*
-        this.setState(
-            {
-                refreshing: true
-            },
-            async () => {
-                // if user moved to likes page before the Vars.postToggleButtonPressed updated to true.
-                // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
-                if (Vars.postLikeButtonPressed) Vars.postLikeButtonPressed = false;
-
-                // reload from the start
-                this.lastChangedTime = 0;
-                await this.getSavedFeeds();
-            }
-        );
-        */
-
-        if (this.state.isLoadingFeeds) return;
-
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start

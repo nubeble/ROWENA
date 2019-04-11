@@ -30,7 +30,8 @@ export const Cons = {
     buttonTimeoutShort: 100,
     buttonTimeoutLong: 300,
 
-    buttonHeight: Dimensions.get('window').height / 18,
+    // S9 (692): 40
+    buttonHeight: Dimensions.get('window').height / 17,
 
     // bottomTabBarHeight: Platform.isPad ? 49 : 29, // const DEFAULT_HEIGHT = 49; const COMPACT_HEIGHT = 29;
 

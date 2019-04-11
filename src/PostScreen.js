@@ -709,7 +709,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                         radius={150} // m
                                                         strokeWidth={2}
                                                         strokeColor={Theme.color.selection}
-                                                        fillColor={'rgba(62, 165, 255, 0.6)'}
+                                                        fillColor={'rgba(62, 165, 255, 0.5)'}
                                                     />
                                                 </MapView>
                                             </View>

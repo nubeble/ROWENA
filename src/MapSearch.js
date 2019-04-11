@@ -237,11 +237,12 @@ export default class MapSearch extends React.Component {
                 >
                     <View style={{
                         width: '100%', height: '100%', borderRadius: 30 / 3, justifyContent: "center", alignItems: "center",
-                        backgroundColor: this.state.loading ? 'white' : Theme.color.selection
+                        // backgroundColor: this.state.loading ? 'white' : Theme.color.selection
+                        backgroundColor: this.state.loading ? 'rgba(255, 255, 255, 0.9)' : 'rgba(62, 165, 255, 0.9)'
                     }}>
                         {
                             this.state.loading ?
-                                <RefreshIndicator refreshing total={3} size={3} />
+                                <RefreshIndicator refreshing color={'black'} total={3} size={3} />
                                 :
                                 <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "Roboto-Medium" }}>{'Redo search in this area'}</Text>
                         }
@@ -697,10 +698,11 @@ const styles = StyleSheet.create({
     container: {
         position: 'absolute',
         bottom: 0,
+        // bottom: -5,
         left: 0,
         width: '100%',
-        // backgroundColor: 'transparent'
-        backgroundColor: 'rgba(80, 80, 80, 0.4)'
+        backgroundColor: 'transparent'
+        // backgroundColor: 'rgba(80, 80, 80, 0.4)'
     },
     map: {
         ...StyleSheet.absoluteFillObject
