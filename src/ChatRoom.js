@@ -59,7 +59,10 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         this.onLoading = false;
 
-        this.postList = new Map();
+        this.feed = null;
+        this.feedCount = 0;
+
+        this.feedUnsubscribe = null;
     }
 
     componentDidMount() {
@@ -124,6 +127,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         const item = this.props.navigation.state.params.item;
         Firebase.chatOff(item.id);
+
+        if (this.feedUnsubscribe) this.feedUnsubscribe();
 
         this.closed = true;
     }
@@ -483,14 +488,19 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     */
 
     async openPost() {
-        const post = await this.getPost();
+        const item = this.props.navigation.state.params.item;
+
+        const post = await this.getPost(item);
 
         if (!post) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
+
+            // we skip here. NOT to close the chat room! (leave it to the user)
+
             return;
         }
 
-        const feedSize = await this.getFeedSize(placeId);
+        const feedSize = await this.getFeedSize(item.placeId);
 
         const extra = {
             feedSize: feedSize
@@ -501,13 +511,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         // }, Cons.buttonTimeoutShort);
     }
 
-    async getPost() {
-        const item = this.props.navigation.state.params.item;
+    async getPost(item) {
         const placeId = item.placeId;
         const feedId = item.feedId;
 
-        if (this.postList.has(feedId)) {
-            return this.postList.get(feedId);
+        if (this.feed) {
+            console.log('post from memory');
+            return this.feed;
         }
 
         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
@@ -515,18 +525,41 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         const post = feedDoc.data();
 
-        this.postList.set(feedId, post);
+        this.feed = post;
+
+        // subscribe
+        // --
+        const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+            if (newFeed === undefined) { // newFeed === undefined if removed
+                // console.log('!!!!! removed !!!!!!');
+
+                // Consider: we skip here. It'll update state feeds on onfocus event.
+
+                this.feed = null;
+
+                return; // ToDo: return
+            }
+
+            // add or update this.feedList
+            this.feed = newFeed;
+        });
+
+        this.feedUnsubscribe = instance;
+        // --
 
         return post;
     }
 
     async getFeedSize(placeId) {
-        if (this.feedSize) return this.feedSize;
+        if (this.feedCount) {
+            console.log('count from memory');
+            return this.feedCount;
+        }
 
         const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
         const count = placeDoc.data().count;
 
-        this.feedSize = count;
+        this.feedCount = count;
 
         return count;
     }
@@ -561,7 +594,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             }, Cons.buttonTimeoutShort);
             */
 
-            this.openPost();
+            await this.openPost();
         } else {
             // ToDo: check validation
 

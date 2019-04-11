@@ -336,7 +336,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makePattaya() {
@@ -418,7 +418,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeHCM() {
@@ -500,7 +500,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeHanoi() {
@@ -582,7 +582,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     getRandomLocationManila(_number) {
@@ -738,7 +738,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeCebu() {
@@ -820,7 +820,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeVientiane() {
@@ -902,7 +902,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makePP() {
@@ -984,7 +984,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeMacao() {
@@ -1066,7 +1066,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeJakarta() {
@@ -1148,7 +1148,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async makeKL() {
@@ -1230,7 +1230,7 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
     async clearStorage() {

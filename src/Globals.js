@@ -4,13 +4,15 @@ import {
 import { Constants } from "expo";
 
 export var Vars = {
-    postLikeButtonPressed: false,
+    // postLikeButtonPressed: false,
 
     // like button pressed, review updated, ...
-    updatedPostsForIntro: [], // array
-    updatedPostsForLikes: [], // array
+    // updatedPostsForIntro: [], // array
+    // updatedPostsForLikes: [], // array
 
-    userFeedsChanged: false, // added or removed, not updated
+    // userFeedsChanged: false, // added or removed, not updated
+
+
 
     currentScreenName: null, // string
 

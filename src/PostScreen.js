@@ -132,8 +132,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
             feedStore.updateFeed(post);
 
             // 2. update Intro's state array
-            Vars.updatedPostsForIntro.push(post);
-            Vars.updatedPostsForLikes.push(post);
+            this.addToUpdatedPostsForIntro(post);
+            this.addToUpdatedPostsForLikes(post);
 
             return post;
         }
@@ -385,10 +385,21 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
 
 
-        Vars.postLikeButtonPressed = true;
+        // Vars.postLikeButtonPressed = true;
 
-        Vars.updatedPostsForIntro.push(newPost);
-        // Vars.updatedPostsForLikes.push(newPost);
+        this.addToUpdatedPostsForIntro(newPost);
+    }
+
+    addToUpdatedPostsForIntro(post) {
+        for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
+            const item = Vars.updatedPostsForIntro[i];
+            if (item.placeId === post.placeId && item.id === post.id) {
+                console.log('already exists in Vars.updatedPostsForIntro');
+                return;
+            }
+        }
+
+        Vars.updatedPostsForIntro.push(post);
     }
 
     checkLiked(likes) {
@@ -1333,7 +1344,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('Post.renderReviews');
+        console.log('PostScreen.renderReviews');
 
         if (reviews === undefined) {
             // draw skeleton

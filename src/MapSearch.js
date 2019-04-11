@@ -47,8 +47,6 @@ export default class MapSearch extends React.Component {
 
         this.ready = false;
 
-        // this.feedSizeList = new Map();
-
         this.state = {
             renderMap: false,
 
@@ -580,7 +578,6 @@ export default class MapSearch extends React.Component {
                 onPress={() => {
                     // console.log('onpress', post.placeId, post.id);
 
-                    // const feedSize = await this.getFeedSize(post.placeId);
                     const { feedSize } = this.props.navigation.state.params;
 
                     const extra = {
@@ -638,23 +635,6 @@ export default class MapSearch extends React.Component {
             </TouchableOpacity>
         );
     }
-
-    /*
-    async getFeedSize(placeId) {
-        if (this.feedSizeList.has(placeId)) {
-            return this.feedSizeList.get(placeId);
-        }
-
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        if (!placeDoc.exists) return 0;
-
-        const count = placeDoc.data().count;
-
-        this.feedSizeList.set(placeId, count);
-
-        return count;
-    }
-    */
 
     async reload() {
         const { placeId } = this.props.navigation.state.params;

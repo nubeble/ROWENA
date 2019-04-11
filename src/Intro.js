@@ -55,6 +55,9 @@ export default class Intro extends React.Component {
     static popularFeeds = [];
     static recentFeeds = [];
 
+    static popularFeedsUnsubscribes = [];
+    static recentFeedsUnsubscribes = [];
+
     state = {
         renderList: false,
 
@@ -125,12 +128,7 @@ export default class Intro extends React.Component {
     constructor(props) {
         super(props);
 
-        /*
-        this.popularFeedsUnsubscribes = [];
-        this.recentFeedsUnsubscribes = [];
-        */
-
-        this.feedSizeList = new Map();
+        this.feedCountList = new Map();
     }
 
     async componentDidMount() {
@@ -197,6 +195,7 @@ export default class Intro extends React.Component {
         // update
         // console.log('update Intro state post', Vars.updatedPostsForIntro.length);
 
+        /*
         if (Vars.updatedPostsForIntro.length > 0) {
 
             let popularFeeds = [...this.state.popularFeeds];
@@ -236,6 +235,7 @@ export default class Intro extends React.Component {
 
             Vars.updatedPostsForIntro = []; // for cleaning
         }
+        */
 
         // -- update the post that user clicked a like button
         /*
@@ -281,20 +281,6 @@ export default class Intro extends React.Component {
         console.log('Intro.componentWillUnmount');
 
         this.onFocusListener.remove();
-
-        // if (this.unsubscribeToPlaceSize) this.unsubscribeToPlaceSize();
-
-        /*
-        for (var i = 0; i < this.popularFeedsUnsubscribes.length; i++) {
-            const instance = this.popularFeedsUnsubscribes[i];
-            instance();
-        }
-
-        for (var i = 0; i < this.recentFeedsUnsubscribes.length; i++) {
-            const instance = this.recentFeedsUnsubscribes[i];
-            instance();
-        }
-        */
 
         this.closed = true;
     }
@@ -471,27 +457,30 @@ export default class Intro extends React.Component {
         Intro.popularFeeds = popularFeeds;
 
         // subscribe
-        /*
         for (var i = 0; i < popularFeeds.length; i++) {
             const feed = popularFeeds[i];
 
             const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                // newFeed === undefined if removed
-                if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
+                if (newFeed === undefined) { // newFeed === undefined if removed
+                    console.log('!!!!! removed !!!!!!');
+
+                    // nothing to do here.
+                }
 
                 let _popularFeeds = [...this.state.popularFeeds];
                 let index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
 
                 if (index !== -1) {
-                    console.log('popularFeeds[', index, '] updated');
+                    console.log('popularFeeds[', index, '] changed.');
                     _popularFeeds[index] = newFeed;
                     !this.closed && this.setState({ popularFeeds: _popularFeeds });
+
+                    Intro.popularFeeds[index] = newFeed;
                 }
             });
 
-            this.popularFeedsUnsubscribes.push(instance);
+            Intro.popularFeedsUnsubscribes.push(instance);
         }
-        */
     }
 
     async getRecentFeeds() {
@@ -544,26 +533,29 @@ export default class Intro extends React.Component {
         Intro.recentFeeds = recentFeeds;
 
         // subscribe
-        /*
         for (var i = 0; i < recentFeeds.length; i++) {
             const feed = recentFeeds[i];
 
             const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                // newFeed === undefined if removed
-                if (newFeed === undefined) console.log('!!!!! removed !!!!!!');
+                if (newFeed === undefined) { // newFeed === undefined if removed
+                    console.log('!!!!! removed !!!!!!');
+
+                    // nothing to do here.
+                }
 
                 let _recentFeeds = [...this.state.recentFeeds];
                 let index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
                 if (index !== -1) {
-                    console.log('recentFeeds[', index, '] updated');
+                    console.log('recentFeeds[', index, '] changed.');
                     _recentFeeds[index] = newFeed;
                     !this.closed && this.setState({ recentFeeds: _recentFeeds });
+
+                    Intro.recentFeeds[index] = newFeed;
                 }
             });
 
-            this.recentFeedsUnsubscribes.push(instance);
+            Intro.recentFeedsUnsubscribes.push(instance);
         }
-        */
     }
 
     openSearch() {
@@ -1132,8 +1124,8 @@ export default class Intro extends React.Component {
     }
 
     async getFeedSize(placeId) {
-        if (this.feedSizeList.has(placeId)) {
-            return this.feedSizeList.get(placeId);
+        if (this.feedCountList.has(placeId)) {
+            return this.feedCountList.get(placeId);
         }
 
         const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
@@ -1141,7 +1133,7 @@ export default class Intro extends React.Component {
 
         const count = placeDoc.data().count;
 
-        this.feedSizeList.set(placeId, count);
+        this.feedCountList.set(placeId, count);
 
         return count;
     }

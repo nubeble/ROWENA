@@ -92,7 +92,7 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     _scrollTo(offset) {
-        this._flatList.scrollToOffset({ animated: false, offset: offset });
+        this._flatList.scrollToOffset({ offset: offset, animated: false });
     }
 
     enableScroll() {

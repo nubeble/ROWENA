@@ -82,12 +82,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         liked: false,
 
-        chartInfo: null,
-
-        /*
-        post: null,
-        profile: null
-        */
+        chartInfo: null
     };
 
     constructor(props) {
@@ -130,8 +125,7 @@ export default class Post extends React.Component<InjectedProps> {
             feedStore.updateFeed(post);
 
             // 2. update Intro's state array
-            Vars.updatedPostsForIntro.push(post);
-            Vars.updatedPostsForLikes.push(post);
+            // this.addToUpdatedPostsForIntro(post);
 
             return post;
         }
@@ -377,11 +371,24 @@ export default class Post extends React.Component<InjectedProps> {
 
 
 
-        Vars.postLikeButtonPressed = true;
+        // Vars.postLikeButtonPressed = true;
 
-        Vars.updatedPostsForIntro.push(newPost);
-        // Vars.updatedPostsForLikes.push(newPost);
+        // this.addToUpdatedPostsForIntro(newPost);
     }
+
+    /*
+    addToUpdatedPostsForIntro(post) {
+        for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
+            const item = Vars.updatedPostsForIntro[i];
+            if (item.placeId === post.placeId && item.id === post.id) {
+                console.log('already exists in Vars.updatedPostsForIntro');
+                return;
+            }
+        }
+
+        Vars.updatedPostsForIntro.push(post);
+    }
+    */
 
     checkLiked(likes) {
         let liked = false;

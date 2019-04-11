@@ -32,6 +32,10 @@ const DEFAULT_PROFILE: Profile = {
 export default class ProfileStore {
     lastChangedTime: number;
 
+    lastTimeFeedsUpdated: number;
+    lastTimeLikesUpdated: number;
+
+
     // @observable _profile: Profile = DEFAULT_PROFILE;
     @observable _profile: Profile;
 
@@ -45,9 +49,26 @@ export default class ProfileStore {
             if (snap.exists) {
                 console.log('ProfileStore, profile changed.');
 
-                this.profile = snap.data();
-
                 this.lastChangedTime = Date.now();
+
+                if (this.profile) {
+                    // 1. check if feeds changed
+                    const oldFeeds = this.profile.feeds;
+                    const newFeeds = snap.data().feeds;
+                    const resultFeeds = this.compareFeeds(oldFeeds, newFeeds);
+                    if (!resultFeeds) this.lastTimeFeedsUpdated = this.lastChangedTime;
+
+                    // 2. check if likes changed
+                    const oldLikes = this.profile.likes;
+                    const newLikes = snap.data().likes;
+                    const resultLikes = this.compareLikes(oldLikes, newLikes);
+                    if (!resultLikes) this.lastTimeLikesUpdated = this.lastChangedTime;
+                } else {
+                    this.lastTimeFeedsUpdated = this.lastChangedTime;
+                    this.lastTimeLikesUpdated = this.lastChangedTime;
+                }
+
+                this.profile = snap.data();
             } else {
                 console.log('ProfileStore, profile removed.');
 
@@ -59,5 +80,39 @@ export default class ProfileStore {
                 */
             }
         });
+    }
+
+    compareFeeds(oldFeeds, newFeeds) {
+        // 1. size
+        if (oldFeeds.length !== newFeeds.length) return false;
+
+        // 2. contents
+        for (var i = 0; i < oldFeeds.length; i++) {
+
+            const a = oldFeeds[i]; // LikeRef
+            const b = newFeeds[i]; // LikeRef
+
+            if (a.placeId !== b.placeId) return false;
+            if (a.feedId !== b.feedId) return false;
+        }
+
+        return true;
+    }
+
+    compareLikes(oldLikes, newLikes) {
+        // 1. size
+        if (oldLikes.length !== newLikes.length) return false;
+
+        // 2. contents
+        for (var i = 0; i < oldLikes.length; i++) {
+
+            const a = oldLikes[i]; // LikeRef
+            const b = newLikes[i]; // LikeRef
+
+            if (a.placeId !== b.placeId) return false;
+            if (a.feedId !== b.feedId) return false;
+        }
+
+        return true;
     }
 }

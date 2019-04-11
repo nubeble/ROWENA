@@ -1635,7 +1635,7 @@ export default class AdvertisementMain extends React.Component {
 
         await Firebase.createFeed(feed, extra);
 
-        Vars.userFeedsChanged = true;
+        // Vars.userFeedsChanged = true;
     }
 
 

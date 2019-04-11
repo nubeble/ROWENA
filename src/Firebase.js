@@ -309,20 +309,20 @@ export default class Firebase {
             if (!userDoc.exists) throw 'User document does not exist!';
 
             const { feeds } = userDoc.data();
-            let _idx = -1;
+            let index = -1;
 
             for (var i = 0; i < feeds.length; i++) {
                 const item = feeds[i];
                 if (item.placeId === placeId && item.feedId === feedId) {
-                    _idx = i;
+                    index = i;
                     break;
                 }
             }
 
-            if (_idx === -1) { // add
+            if (index === -1) { // add
                 // nothing to do
             } else { // remove
-                feeds.splice(_idx, 1);
+                feeds.splice(index, 1);
             }
 
             transaction.update(userRef, { feeds });

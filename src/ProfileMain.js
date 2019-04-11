@@ -57,7 +57,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.lastChangedTime = 0;
         this.onLoading = false;
 
-        this.feedSizeList = new Map();
+        // this.feedSizeList = new Map();
+        this.feedList = new Map();
+        this.feedCountList = new Map();
+
+        this.feedsUnsubscribes = [];
     }
 
     componentDidMount() {
@@ -91,6 +95,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     onFocus() {
         Vars.currentScreenName = 'ProfileMain';
 
+        const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
+        if (this.lastChangedTime !== lastChangedTime) {
+            // reload from the start
+            this.getUserFeeds();
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: true });
+        }
+
+        /*
         if (Vars.userFeedsChanged) {
             Vars.userFeedsChanged = false;
 
@@ -98,6 +112,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.lastChangedTime = 0;
             this.getUserFeeds();
         }
+        */
 
         this.setState({ focused: true });
     }
@@ -128,6 +143,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
+        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
+            const instance = this.feedsUnsubscribes[i];
+            instance();
+        }
+
         this.closed = true;
     }
 
@@ -142,13 +162,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-            // if (this.state.refreshing) this.setState({ refreshing: false });
 
             return;
         }
 
         // check update
-        const lastChangedTime = this.props.profileStore.lastChangedTime;
+        const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             this.lastChangedTime = lastChangedTime;
 
@@ -158,11 +177,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         }
 
         // all loaded
-        if (this.lastLoadedFeedIndex === 0) {
-            // if (this.state.refreshing) this.setState({ refreshing: false });
-
-            return;
-        }
+        if (this.lastLoadedFeedIndex === 0) return;
 
         this.onLoading = true;
 
@@ -223,55 +238,83 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async openPost(item) {
-        // should get data from database
-        const placeId = item.placeId;
-        const feedId = item.feedId;
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) {
+        const post = await this.getPost(item);
+
+        if (!post) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
+
+            // we skip here. It'll update state feeds on onfocus event.
+            /*
+            // reload from the start
+            this.lastChangedTime = 0;
+            this.getUserFeeds();
+            */
+
             return;
         }
 
-        const post = feedDoc.data();
-
-        const feedSize = await this.getFeedSize(placeId);
+        const feedSize = await this.getFeedSize(item.placeId);
 
         const extra = {
-            // cityName: this.state.searchText,
             feedSize: feedSize
         };
 
+        // setTimeout(async () => {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+        // }, Cons.buttonTimeoutShort);
+    }
+
+    async getPost(item) {
+        const placeId = item.placeId;
+        const feedId = item.feedId;
+
+        if (this.feedList.has(feedId)) {
+            console.log('post from memory');
+            return this.feedList.get(feedId);
+        }
+
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        if (!feedDoc.exists) return null;
+
+        const post = feedDoc.data();
+
+        this.feedList.set(feedId, post);
+
+        // subscribe
+        // --
+        const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+            if (newFeed === undefined) { // newFeed === undefined if removed
+                // console.log('!!!!! removed !!!!!!');
+
+                // Consider: we skip here. It'll update state feeds on onfocus event.
+
+                this.feedList.delete(feedId);
+
+                return; // ToDo: return
+            }
+
+            // add or update this.feedList
+            this.feedList.set(feedId, newFeed);
+        });
+
+        this.feedsUnsubscribes.push(instance);
+        // --
+
+        return post;
     }
 
     async getFeedSize(placeId) {
-        /*
-        for (item in this.feedSizeList) {
-            if (item.key === placeId) {
-                // found
-                return item.value;
-            }
-        }
-        */
-
-        if (this.feedSizeList.has(placeId)) {
-            return this.feedSizeList.get(placeId);
+        if (this.feedCountList.has(placeId)) {
+            console.log('count from memory');
+            return this.feedCountList.get(placeId);
         }
 
         const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        if (!placeDoc.exists) return 0;
+        // if (!placeDoc.exists) return 0; // never happen
 
         const count = placeDoc.data().count;
 
-        /*
-        const item = {
-            key: placeId,
-            value: count
-        };
-
-        this.feedSizeList.push(item);
-        */
-        this.feedSizeList.set(placeId, count);
+        this.feedCountList.set(placeId, count);
 
         return count;
     }
@@ -634,7 +677,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         );
         */
 
-        if (this.state.isLoadingFeeds) return;
+        // if (this.state.isLoadingFeeds) return;
 
         !this.closed && this.setState({ refreshing: true });
 
@@ -642,7 +685,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.lastChangedTime = 0;
         this.getUserFeeds();
 
-        if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
+        // if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
 
         !this.closed && this.setState({ refreshing: false });
     }
@@ -820,6 +863,4 @@ const styles = StyleSheet.create({
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.base
     }
-
-
 });

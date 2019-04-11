@@ -93,8 +93,8 @@ export default class ChatMain extends React.Component {
                     this.setState({ chatRoomList: array });
                 }
 
-                // move scroll on top
-                this._flatList.scrollToOffset({ animated: true, offset: 0 });
+                // move scroll top
+                this._flatList.scrollToOffset({ offset: 0, animated: true });
             }
         }
     }
