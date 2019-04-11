@@ -58,6 +58,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         super(props);
 
         this.onLoading = false;
+
+        this.postList = new Map();
     }
 
     componentDidMount() {
@@ -481,37 +483,59 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     */
 
     async openPost() {
-        const item = this.props.navigation.state.params.item;
+        const post = await this.getPost();
 
-        const placeId = item.placeId;
-        const feedId = item.feedId;
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) {
+        if (!post) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
-        setTimeout(async () => {
-            const post = feedDoc.data();
+        const feedSize = await this.getFeedSize(placeId);
 
-            if (!this.feedSize) {
-                const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-                this.feedSize = placeDoc.data().count;
-            }
+        const extra = {
+            feedSize: feedSize
+        };
 
-            const extra = {
-                // cityName: this.state.searchText,
-                feedSize: this.feedSize
-            };
+        // setTimeout(async () => {
+        this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
+        // }, Cons.buttonTimeoutShort);
+    }
 
-            this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
-        }, Cons.buttonTimeoutShort);
+    async getPost() {
+        const item = this.props.navigation.state.params.item;
+        const placeId = item.placeId;
+        const feedId = item.feedId;
+
+        if (this.postList.has(feedId)) {
+            return this.postList.get(feedId);
+        }
+
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        if (!feedDoc.exists) return null;
+
+        const post = feedDoc.data();
+
+        this.postList.set(feedId, post);
+
+        return post;
+    }
+
+    async getFeedSize(placeId) {
+        if (this.feedSize) return this.feedSize;
+
+        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        const count = placeDoc.data().count;
+
+        this.feedSize = count;
+
+        return count;
     }
 
     async openAvatar() {
         const item = this.props.navigation.state.params.item;
 
         if (item.owner === item.users[1].uid) {
+            /*
             const placeId = item.placeId;
             const feedId = item.feedId;
             const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
@@ -535,6 +559,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                 this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
             }, Cons.buttonTimeoutShort);
+            */
+
+            this.openPost();
         } else {
             // ToDo: check validation
 
