@@ -103,6 +103,20 @@ export default class Admin extends React.Component {
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Clear Storage</Text>
                     </TouchableOpacity>
+
+
+
+                    <TouchableOpacity onPress={() => this.addComment()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Add Comment</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => this.removeComment()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Remove Comment</Text>
+                    </TouchableOpacity>
                 </View>
 
             </View>
@@ -1239,6 +1253,23 @@ export default class Admin extends React.Component {
         } catch (error) {
             console.log('clearStorage clear error', error);
         }
+    }
+
+    addComment() {
+        Firebase.addComment(Firebase.user().uid, 'LSeANvOEWOVLGQ94N0ArEIJDW2i2', 'good!'); // writer, receiver (m1), message
+    }
+
+    removeComment() {
+        // const commentId = '81e2967f-4877-70ee-6304-dce6267ea7f5'; // test
+        // Firebase.removeComment(Firebase.user().uid, 'LSeANvOEWOVLGQ94N0ArEIJDW2i2', commentId); // m1
+
+
+        /*
+        const uid = Firebase.user().uid;
+        const db = Firebase.firestore.collection("users").doc(uid);
+        const path = "comments";
+        Firebase.deleteCollection(db, path, 10);
+        */
     }
 }
 

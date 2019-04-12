@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     },
     container: {
         position: 'absolute',
-        bottom: 0,
+        bottom: Cons.mapPostBottom(),
         // bottom: -5,
         left: 0,
         width: '100%',

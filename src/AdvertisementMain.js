@@ -691,7 +691,7 @@ export default class AdvertisementMain extends React.Component {
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom }]}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{

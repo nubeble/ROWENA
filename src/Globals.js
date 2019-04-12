@@ -4,19 +4,9 @@ import {
 import { Constants } from "expo";
 
 export var Vars = {
-    // postLikeButtonPressed: false,
-
-    // like button pressed, review updated, ...
-    // updatedPostsForIntro: [], // array
-    // updatedPostsForLikes: [], // array
-
-    // userFeedsChanged: false, // added or removed, not updated
-
-
-
     currentScreenName: null, // string
 
-    //// add here ////
+
 
 };
 
@@ -39,29 +29,31 @@ export const Cons = {
 
     // view margin bottom
     // ToDo: iphone x, iphone xr, iphone xs, ...
-    viewMarginBottom: (Platform.OS == 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') ? 8 : 0,
+    // viewMarginBottom: (Platform.OS == 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') ? 8 : 0,
+    viewMarginBottom: () => {
+        if (Platform.OS === 'android') return 0;
 
-    // NOT USED
-    submitButtonPaddingTop: () => {
-        if (Platform.OS === 'ios') return 0;
+        const model = Constants.platform.ios.model.toLowerCase();
 
-        return 5;
+        if (model === 'iphone x') return 8;
+        if (model === 'iphone xs') return 8;
+        if (model === 'iphone xs max') return 8;
+        if (model === 'iphone xr') return 8;
 
-        /*
-        const height = Dimensions.get('window').height;
-        const param = (height / 100);
+        return 0;
+    },
 
-        switch (param) {
-            case 5: return 3;
-            case 6: return 4; // Galaxy S7: 640, S9: 692
-            case 7: return 5; // Tango: 731
-            case 8: return 6;
-            case 9: return 7;
-        }
+    mapPostBottom: () => {
+        if (Platform.OS === 'android') return -12;
 
-        if (param < 5) return 3;
-        if (param > 9) return 7;
-        */
+        const model = Constants.platform.ios.model.toLowerCase();
+
+        if (model === 'iphone x') return -4;
+        if (model === 'iphone xs') return -4;
+        if (model === 'iphone xs max') return -4;
+        if (model === 'iphone xr') return -4;
+
+        return -12;
     },
 
     // alert dialog
@@ -75,81 +67,6 @@ export const Cons = {
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
 
-    // NOT USED
-    // search bar text padding
-    // iPhone X: 4, Tango: 7, S7: 8
-    searchBarPaddingTop: () => {
-        if (Platform.OS === 'ios') return 4;
-        if (Platform.OS === 'android') return 8;
 
-        /*
-        const height = Dimensions.get('window').height;
-        const param = (height / 100);
-
-        switch (param) {
-            case 6: return 8; // Galaxy S7: 640
-            case 7: return 7; // Tango: 731
-            case 8: return 6;
-        }
-
-        if (param < 6) return 8;
-        if (param > 8) return 6;
-        */
-    },
-
-    // NOT USED
-    // posting date text padding top
-    lastLogInDatePaddingTop: () => {
-        if (Platform.OS === 'ios') return 0;
-        if (Platform.OS === 'android') return 6;
-
-        /*
-        const height = Dimensions.get('window').height;
-        const param = (height / 100);
-
-        switch (param) {
-            case 5: return 1;
-            case 6: return 1; // Galaxy S7: 640
-            case 7: return 1; // Tango: 731
-            case 8: return 2;
-            case 9: return 2;
-        }
-
-        if (param < 5) return 1;
-        if (param > 9) return 2;
-        */
-    },
-
-    // NOT USED
-    // feed item info text padding top
-    ratingTextPaddingTop: () => {
-        if (Platform.OS === 'ios') return 1;
-        if (Platform.OS === 'android') return 8;
-    },
-
-    // NOT USED
-    // body info text padding top
-    bodyInfoTitlePaddingTop: () => {
-        if (Platform.OS === 'ios') return 3;
-        if (Platform.OS === 'android') return 7;
-
-        /*
-        const height = Dimensions.get('window').height;
-        const param = (height / 100);
-
-        switch (param) {
-            case 5: return 7;
-            case 6: return 8; // Galaxy S7: 640
-            case 7: return 9; // Tango: 731
-            case 8: return 10; // iphone X: 812
-            case 9: return 11;
-        }
-
-        if (param < 5) return 7;
-        if (param > 9) return 11;
-        */
-    },
-
-    //// add here ////
 
 };

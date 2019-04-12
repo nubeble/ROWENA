@@ -32,7 +32,7 @@ type ReplyRef = {
 
 type LikeRef = {
     placeId: string,
-    feedId: string,
+    feedId: string
     /*
     name: string,
     placeName: string,
@@ -41,6 +41,12 @@ type LikeRef = {
     picture: string,
     valid: boolean
     */
+};
+
+type CommentRef = {
+    userUid: string, // receiver
+    commentId: string
+    // comment: string
 };
 
 export type Profile = {
@@ -56,7 +62,9 @@ export type Profile = {
     feeds: FeedRef[],
     reviews: ReviewRef[],
     replies: ReplyRef[],
-    likes: LikeRef[]
+    likes: LikeRef[],
+    comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
+    receivedCommentCount: number // 내가 받은 comment 개수
 };
 
 type Pictures = {

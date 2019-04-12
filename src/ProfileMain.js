@@ -36,12 +36,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         totalFeedsSize: 0,
         focused: false,
 
-        uploadingImage: false,
-        uploadImage1: 'http://imgnews.naver.net/image/001/2017/05/20/PYH2017052019870001300_P2_20170520101607447.jpg',
-        uploadImage2: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage3: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-        uploadImage4: 'http://pocketnow.com/wp-content/uploads/2013/04/9MP-sample.jpg',
-
         dialogVisible: false,
         dialogTitle: '',
         dialogMessage: '',
@@ -290,7 +284,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                 this.feedList.delete(feedId);
 
-                return; // ToDo: return
+                return;
             }
 
             // add or update this.feedList
@@ -377,7 +371,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             <TouchableOpacity
                                                 style={{
                                                     width: avatarWidth, height: avatarWidth,
-                                                    marginRight: 30, justifyContent: 'center', alignItems: 'center'
+                                                    marginRight: 22, justifyContent: 'center', alignItems: 'center'
                                                 }}
                                                 onPress={() => {
                                                     setTimeout(() => {
@@ -467,7 +461,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         await Firebase.removeFeed(profile.uid, feed.placeId, feed.feedId);
                                                     }
 
-                                                    // 2. remove database (users)
+                                                    // 2. remove database (user profile & comments collection)
                                                     await Firebase.deleteProfile(profile.uid);
 
                                                     // 3. remove token
@@ -829,10 +823,8 @@ const styles = StyleSheet.create({
         marginBottom: 20
     },
     infoContainer: {
-        // backgroundColor: '#123456',
-        // borderBottomWidth: 1,
         flex: 1,
-        width: '100%',
+        // width: '100%',
         paddingBottom: Theme.spacing.tiny
     },
     /*

@@ -537,7 +537,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                 this.feed = null;
 
-                return; // ToDo: return
+                return;
             }
 
             // add or update this.feedList

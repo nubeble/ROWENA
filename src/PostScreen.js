@@ -132,8 +132,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
             feedStore.updateFeed(post);
 
             // 2. update Intro's state array
-            this.addToUpdatedPostsForIntro(post);
-            this.addToUpdatedPostsForLikes(post);
+            // this.addToUpdatedPostsForIntro(post);
 
             return post;
         }
@@ -387,9 +386,10 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         // Vars.postLikeButtonPressed = true;
 
-        this.addToUpdatedPostsForIntro(newPost);
+        // this.addToUpdatedPostsForIntro(newPost);
     }
 
+    /*
     addToUpdatedPostsForIntro(post) {
         for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
             const item = Vars.updatedPostsForIntro[i];
@@ -401,6 +401,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         Vars.updatedPostsForIntro.push(post);
     }
+    */
 
     checkLiked(likes) {
         let liked = false;
@@ -461,7 +462,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom }]}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity

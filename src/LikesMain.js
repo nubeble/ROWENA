@@ -25,7 +25,7 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const DEFAULT_FEED_COUNT = 3;
+const DEFAULT_FEED_COUNT = 5;
 
 // 600, 510
 const illustHeight = 300;
@@ -245,7 +245,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         }
                         // --
 
-                        return; // ToDo: return
+                        return;
                     }
 
                     // add or update this.feedList

@@ -744,7 +744,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // refresh UI
+                    // refresh all
                     this.refreshReviews(placeId, feedId, 6);
 
                     // move scroll top
