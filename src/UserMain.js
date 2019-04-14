@@ -492,7 +492,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                                             marginTop: Theme.spacing.small,
                                             marginBottom: Theme.spacing.small,
-                                            fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                                            fontSize: 14, fontFamily: "Roboto-Light",
+                                            color: Theme.color.placeholder,
                                             textAlign: 'center',
                                             // lineHeight: 24
                                         }}>Share your experience to help others</Text>
@@ -501,7 +502,8 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             style={[styles.contactButton,
                                             {
                                                 // marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small
-                                                marginBottom: Theme.spacing.tiny + Theme.spacing.small
+                                                marginBottom: Theme.spacing.tiny + Theme.spacing.small,
+                                                borderColor: this.state.showKeyboard ? 'black' : "rgba(255, 255, 255, 0.8)",
                                             }
                                             ]}
                                             onPress={() => {
@@ -519,7 +521,11 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                                             }}
                                         >
-                                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>{'Add a Review'}</Text>
+                                            <Text style={{
+                                                fontSize: 16, fontFamily: "Roboto-Medium",
+                                                // color: 'rgba(255, 255, 255, 0.8)'
+                                                color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
+                                            }}>{'Add a Review'}</Text>
                                         </TouchableOpacity>
 
                                         <View style={{
@@ -953,17 +959,6 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.base
     },
     contactButton: {
-        /*
-        width: '85%',
-        height: Cons.buttonHeight,
-        alignSelf: 'center',
-        backgroundColor: Theme.color.buttonBackground,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center'
-        */
-
-
         // width: '85%',
         width: Dimensions.get('window').width * 0.85,
         height: Cons.buttonHeight,
@@ -972,7 +967,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         borderColor: "rgba(255, 255, 255, 0.8)",
         borderWidth: 2,
-
 
         alignItems: 'center',
         justifyContent: 'center'
