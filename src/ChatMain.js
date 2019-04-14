@@ -273,8 +273,8 @@ export default class ChatMain extends React.Component {
         const update = this.checkUpdate(item.lastReadMessageId, item.mid);
         // const viewHeight = Dimensions.get('window').height / 10;
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
-        // const avatarHeight = viewHeight;
-        const avatarHeight = viewHeight * 0.8;
+        const avatarHeight = viewHeight;
+        // const avatarHeight = viewHeight * 0.8;
         const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
 
         return (
@@ -296,8 +296,12 @@ export default class ChatMain extends React.Component {
                             update &&
                             <View style={{
                                 position: 'absolute',
+                                /*
                                 top: 0 + viewHeight * 0.08,
                                 left: viewHeight - badgeWidth - viewHeight * 0.08,
+                                */
+                                top: 0,
+                                left: viewHeight,
 
                                 backgroundColor: 'red',
                                 borderRadius: badgeWidth / 2,
@@ -310,7 +314,7 @@ export default class ChatMain extends React.Component {
                     <View style={{
                         width: '46%', height: viewHeight,
                         // backgroundColor: 'green',
-                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
+                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10
                     }}>
                         <Text style={styles.name}>{user.name}</Text>
                         <Text style={styles.contents}>{contents}</Text>
@@ -463,7 +467,7 @@ const styles = StyleSheet.create({
     contents: {
         marginTop: Dimensions.get('window').height / 60,
         color: Theme.color.text3,
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: "Roboto-Regular"
     },
     time: {
