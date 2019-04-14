@@ -16,11 +16,6 @@ import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
 import Toast, { DURATION } from 'react-native-easy-toast';
 
-type InjectedProps = {
-    feedStore: FeedStore,
-    profileStore: ProfileStore
-};
-
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 const textInputPaddingTop = (Dimensions.get('window').height / 26);
 const textInputPaddingLeft = (Dimensions.get('window').width / 20);
@@ -35,6 +30,11 @@ const avatarHeight = Cons.searchBarHeight * 0.5;
 const bigImageWidth = postHeight * 0.7;
 // const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
 const smallImageWidth = postHeight * 0.7;
+
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
 
 
 @inject("feedStore", "profileStore")
@@ -61,8 +61,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         this.feed = null;
         this.feedCount = 0;
+        this.targetUser = null;
 
         this.feedUnsubscribe = null;
+        this.countUnsubscribe = null;
+        this.targetUserUnsubscribe = null;
     }
 
     componentDidMount() {
@@ -129,6 +132,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         Firebase.chatOff(item.id);
 
         if (this.feedUnsubscribe) this.feedUnsubscribe();
+        if (this.countUnsubscribe) this.countUnsubscribe();
+        if (this.targetUserUnsubscribe) this.targetUserUnsubscribe();
 
         this.closed = true;
     }
@@ -527,20 +532,16 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         this.feed = post;
 
-        // subscribe
+        // subscribe here
         // --
         const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
             if (newFeed === undefined) { // newFeed === undefined if removed
-                // console.log('!!!!! removed !!!!!!');
-
-                // Consider: we skip here. It'll update state feeds on onfocus event.
-
                 this.feed = null;
 
                 return;
             }
 
-            // add or update this.feedList
+            // update
             this.feed = newFeed;
         });
 
@@ -560,6 +561,22 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const count = placeDoc.data().count;
 
         this.feedCount = count;
+
+        // subscribe here
+        // --
+        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
+            if (newPlace === undefined) {
+                this.feedCount = 0;
+
+                return;
+            }
+
+            // update this.feedCount
+            this.feedCount = newPlace.count;
+        });
+
+        this.countUnsubscribe = instance;
+        // --
 
         return count;
     }
@@ -596,10 +613,72 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
             await this.openPost();
         } else {
-            // ToDo: check validation
+            const owner = item.users[0]; // girl
+            const customer = item.users[1]; // customer
+
+            const uid = customer.uid;
+
+            if (!this.targetUser) {
+                const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
+                if (!userDoc.exists) {
+                    this.refs["toast"].show('The user no longer exists.', 500);
+
+                    return;
+                }
+
+                const targetUser = userDoc.data();
+                this.targetUser = targetUser;
+
+                // subscribe here
+                // --
+                const instance = Firebase.subscribeToProfile(uid, user => {
+                    if (user === undefined) {
+                        this.targetUser = null;
+
+                        return;
+                    }
+
+                    // update
+                    this.targetUser = user;
+                });
+
+                this.targetUserUnsubscribe = instance;
+                // --
+            }
+
+            const { city, country, receivedCommentsCount } = this.targetUser; // customer
+
+            let count = receivedCommentsCount;
+            let address = null;
+            if (city && country) {
+                address = city + ', ' + country;
+            }
+
+            const user2 = {
+                uid: customer.uid,
+                name: customer.name,
+                picture: customer.picture,
+
+                address,
+                receivedCommentsCount: count
+            };
+
+            const user1 = {
+                uid: owner.uid,
+                name: owner.name,
+                picture: owner.picture
+            };
+
+            const _item = {
+                placeId: item.placeId,
+                feedId: item.feedId,
+
+                host: user1,
+                guest: user2
+            };
 
             setTimeout(() => {
-                this.props.navigation.navigate("user");
+                this.props.navigation.navigate("user", { item: _item });
             }, Cons.buttonTimeoutShort);
         }
     }

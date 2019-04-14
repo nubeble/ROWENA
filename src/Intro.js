@@ -17,6 +17,7 @@ import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
+import _ from 'lodash';
 import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 
@@ -55,8 +56,12 @@ export default class Intro extends React.Component {
     static popularFeeds = [];
     static recentFeeds = [];
 
-    static popularFeedsUnsubscribes = [];
-    static recentFeedsUnsubscribes = [];
+    static feedCountList = new Map();
+
+    static popularFeedsUnsubscribes = []; // Consider: unsubscribe?
+    static recentFeedsUnsubscribes = []; // Consider: unsubscribe?
+
+    static countsUnsubscribes = []; // Consider: unsubscribe?
 
     state = {
         renderList: false,
@@ -125,12 +130,6 @@ export default class Intro extends React.Component {
         refreshing: false
     };
 
-    constructor(props) {
-        super(props);
-
-        this.feedCountList = new Map();
-    }
-
     async componentDidMount() {
         console.log('Intro.componentDidMount');
         console.log('uid', Firebase.user().uid);
@@ -163,7 +162,7 @@ export default class Intro extends React.Component {
         }
         */
 
-        // load length from database
+        // load length from database (no need to subscribe!)
         const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
         let count = 0;
         if (placeDoc.exists) {
@@ -183,9 +182,9 @@ export default class Intro extends React.Component {
             lng: result.location.lng
         }
 
-        setTimeout(() => {
-            this.props.navigation.navigate("home", { place: place });
-        }, Cons.buttonTimeoutShort);
+        // setTimeout(() => {
+        this.props.navigation.navigate("home", { place: place });
+        // }, Cons.buttonTimeoutShort);
     }
 
     @autobind
@@ -456,15 +455,16 @@ export default class Intro extends React.Component {
         !this.closed && this.setState({ popularFeeds });
         Intro.popularFeeds = popularFeeds;
 
-        // subscribe
+        // subscribe here
         for (var i = 0; i < popularFeeds.length; i++) {
             const feed = popularFeeds[i];
 
             const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
-                    console.log('!!!!! removed !!!!!!');
+                    // console.log('!!!!! removed !!!!!!');
 
                     // nothing to do here.
+                    return;
                 }
 
                 let _popularFeeds = [...this.state.popularFeeds];
@@ -532,15 +532,16 @@ export default class Intro extends React.Component {
         !this.closed && this.setState({ recentFeeds });
         Intro.recentFeeds = recentFeeds;
 
-        // subscribe
+        // subscribe here
         for (var i = 0; i < recentFeeds.length; i++) {
             const feed = recentFeeds[i];
 
             const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
-                    console.log('!!!!! removed !!!!!!');
+                    // console.log('!!!!! removed !!!!!!');
 
                     // nothing to do here.
+                    return;
                 }
 
                 let _recentFeeds = [...this.state.recentFeeds];
@@ -739,10 +740,21 @@ export default class Intro extends React.Component {
 
                             return (
                                 <TouchableOpacity
-                                    onPress={() => {
-                                        setTimeout(() => {
-                                            this.props.navigation.navigate("home", { place: place });
-                                        }, Cons.buttonTimeoutShort);
+                                    onPress={async () => {
+                                        // load length from database (no need to subscribe!)
+                                        const placeDoc = await Firebase.firestore.collection("place").doc(place.place_id).get();
+                                        let count = 0;
+                                        if (placeDoc.exists) {
+                                            let field = placeDoc.data().count;
+                                            if (field) count = field;
+                                        }
+
+                                        let newPlace = _.clone(place);
+                                        newPlace.length = count;
+
+                                        // setTimeout(() => {
+                                        this.props.navigation.navigate("home", { place: newPlace });
+                                        // }, Cons.buttonTimeoutShort);
                                     }}
                                 >
                                     <View style={styles.pictureContainer}>
@@ -1124,8 +1136,8 @@ export default class Intro extends React.Component {
     }
 
     async getFeedSize(placeId) {
-        if (this.feedCountList.has(placeId)) {
-            return this.feedCountList.get(placeId);
+        if (Intro.feedCountList.has(placeId)) {
+            return Intro.feedCountList.get(placeId);
         }
 
         const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
@@ -1133,26 +1145,28 @@ export default class Intro extends React.Component {
 
         const count = placeDoc.data().count;
 
-        this.feedCountList.set(placeId, count);
+        Intro.feedCountList.set(placeId, count);
+
+        // subscribe here
+        // --
+        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
+            if (newPlace === undefined) {
+                Intro.feedCountList.delete(placeId);
+
+                return;
+            }
+
+            // update Intro.feedCountList
+            Intro.feedCountList.set(placeId, newPlace.count);
+        });
+
+        Intro.countsUnsubscribes.push(instance);
+        // --
 
         return count;
     }
 
     handleRefresh = async () => {
-        // if (this.state.refreshing) return;
-        /*
-        this.setState(
-            {
-                refreshing: true
-            },
-            async () => {
-                await this.getPlaces();
-
-                !this.closed && this.setState({ refreshing: false });
-            }
-        );
-        */
-
         !this.closed && this.setState({ refreshing: true });
 
         await this.getPlaces();

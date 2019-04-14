@@ -767,7 +767,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
                                         onPress={async () => await this.contact()}
                                     >
-                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Start a Chat</Text>
+                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -2184,7 +2184,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         height: (8 + 34 + 8) - 12,
-        borderRadius: 15,
+        borderRadius: 5,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

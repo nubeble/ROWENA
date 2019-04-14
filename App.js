@@ -179,12 +179,24 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.review: {
+                        // ToDo: mark on the post
 
                         // show badge
                         this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                     } break;
 
                     case Cons.pushNotification.reply: {
+                        // ToDo: mark on the post in the Posts You've Reviewed
+
+                        // show badge
+                        this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
+                    } break;
+
+                    case Cons.pushNotification.comment: {
+                        // ToDo: mark on the comment list in the Edit Profile
+
+                        // show badge
+                        this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                     } break;
                 }
             }
@@ -246,6 +258,9 @@ export default class App extends React.Component {
                         const post = feedDoc.data();
                         NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
                         */
+                    } break;
+
+                    case Cons.pushNotification.comment: {
                     } break;
                 }
             }
@@ -350,6 +365,7 @@ import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
+import WriteComment from './src/WriteComment';
 
 import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
@@ -545,6 +561,9 @@ const UserStackNavigator = createStackNavigator(
         userMain: {
             screen: UserMain
         },
+        writeComment: {
+            screen: WriteComment
+        }
         /*
         mapModal: {
             screen: MapScreen

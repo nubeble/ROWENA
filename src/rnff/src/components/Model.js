@@ -64,7 +64,7 @@ export type Profile = {
     replies: ReplyRef[],
     likes: LikeRef[],
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
-    receivedCommentCount: number // 내가 받은 comment 개수
+    receivedCommentsCount: number // 내가 받은 comment 개수
 };
 
 type Pictures = {
@@ -89,8 +89,10 @@ export type Post = {
     likes: Array<string>, // user uid list
     name: string,
     birthday: string, // DDMMYYYY
+    gender: string, // 'male', 'female'
     height: number,
     weight: number,
+    bodyType: string, // 'Skinny', Fit', 'Thick'
     bust: string,
     timestamp: number,
     rn: number, // random number
@@ -98,10 +100,9 @@ export type Post = {
     l: firebase.firestore.GeoPoint
 };
 
+export type FeedEntry = { post: Post, profile: Profile };
+export type Feed = FeedEntry[];
 
-
-
-/*
 type Reply = {
     comment: string,
     id: string,
@@ -118,15 +119,24 @@ export type Review = {
     comment: string,
     reply: Reply
 };
-*/
 
-export type FeedEntry = { post: Post, profile: Profile };
-export type Feed = FeedEntry[];
-
-/*
 export type ReviewEntry = { review: Review, profile: Profile };
 export type Reviews = ReviewEntry[];
-*/
+
+type Comment = {
+    uid: string, // boss's uid
+    comment: string,
+    id: string,
+    timestamp: string,
+
+    name: string,
+    place: string, // city, country
+    picture: string // uri
+};
+
+export type CommentEntry = { comment: Comment, profile: Profile };
+export type Comments = CommentEntry[];
+
 
 
 /*

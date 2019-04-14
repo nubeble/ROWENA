@@ -348,6 +348,9 @@ export default class Admin extends React.Component {
             lng: 100.5017651
         };
 
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
@@ -429,6 +432,9 @@ export default class Admin extends React.Component {
             lat: 12.9235557,
             lng: 100.8824551
         };
+
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
 
@@ -512,6 +518,9 @@ export default class Admin extends React.Component {
             lng: 106.6296638
         };
 
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
@@ -593,6 +602,9 @@ export default class Admin extends React.Component {
             lat: 21.0277644,
             lng: 105.8341598
         };
+
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
 
@@ -750,6 +762,9 @@ export default class Admin extends React.Component {
             lng: 120.9842195
         };
 
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
@@ -831,6 +846,9 @@ export default class Admin extends React.Component {
             lat: 10.3156992,
             lng: 123.8854366
         };
+
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
 
@@ -914,6 +932,9 @@ export default class Admin extends React.Component {
             lng: 102.6331035
         };
 
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
@@ -995,6 +1016,9 @@ export default class Admin extends React.Component {
             lat: 11.5563738,
             lng: 104.9282099
         };
+
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
 
@@ -1078,6 +1102,9 @@ export default class Admin extends React.Component {
             lng: 113.5435639
         };
 
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
@@ -1159,6 +1186,9 @@ export default class Admin extends React.Component {
             lat: -6.180495,
             lng: 106.8283415
         };
+
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
 
@@ -1242,6 +1272,9 @@ export default class Admin extends React.Component {
             lng: 101.686855
         };
 
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
@@ -1256,7 +1289,11 @@ export default class Admin extends React.Component {
     }
 
     addComment() {
-        Firebase.addComment(Firebase.user().uid, 'LSeANvOEWOVLGQ94N0ArEIJDW2i2', 'good!'); // writer, receiver (m1), message
+        // ToDo: test
+        const name = 'Max Power';
+        const place = 'Cebu, Philippines';
+        const uri = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';
+        Firebase.addComment(Firebase.user().uid, 'VUg2ZB2PgWfwCNXyXwa94FwErrZ2', 'wow!', name, place, uri); // writer, receiver (m1), message
     }
 
     removeComment() {

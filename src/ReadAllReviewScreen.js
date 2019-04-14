@@ -24,12 +24,10 @@ type FlatListItem<T> = {
     item: T
 };
 
-// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+const replyViewHeight = Dimensions.get('window').height / 9;
 
 
 export default class ReadAllReviewScreen extends React.Component {
-    replyViewHeight = Dimensions.get('window').height / 9;
-
     state = {
         renderReview: false,
         isLoadingReview: false,
@@ -37,6 +35,8 @@ export default class ReadAllReviewScreen extends React.Component {
         isOwner: false,
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
+
+        focused: false,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -57,13 +57,8 @@ export default class ReadAllReviewScreen extends React.Component {
         // this.onLoading = false;
     }
 
-    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-        const threshold = 80;
-        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
-    };
-
     componentDidMount() {
-        // console.log('ReadAllReviewScreen.componentDidMount');
+        console.log('ReadAllReviewScreen.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -72,13 +67,12 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const { reviewStore, isOwner } = this.props.navigation.state.params;
 
-        // console.log('reviews', reviewStore.reviews);
-
         this.setState({ isOwner });
 
         reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         // reviewStore.checkForNewEntries(); // do not use here!
+        // this.setState({ isLoadingReview: true });
         this.loadReviewFromTheStart();
 
         setTimeout(() => {
@@ -118,7 +112,18 @@ export default class ReadAllReviewScreen extends React.Component {
     onFocus() {
         Vars.currentScreenName = 'ReadAllReviewScreen';
 
+        this.setState({ focused: true });
     }
+
+    @autobind
+    onBlur() {
+        this.setState({ focused: false });
+    }
+
+    isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+        const threshold = 80;
+        return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
+    };
 
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
@@ -139,7 +144,7 @@ export default class ReadAllReviewScreen extends React.Component {
         };
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -188,6 +193,8 @@ export default class ReadAllReviewScreen extends React.Component {
                             // onEndReachedThreshold={0.5}
                             // onEndReached={this.loadMore}
                             onScroll={({ nativeEvent }) => {
+                                if (!this.state.focused) return;
+
                                 if (this.isCloseToBottom(nativeEvent)) {
                                     this.loadMore();
                                 }
@@ -200,7 +207,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             ListEmptyComponent={this.renderListEmptyComponent}
                             ListFooterComponent={
                                 this.state.isLoadingReview &&
-                                <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                                <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
                                     <RefreshIndicator />
                                 </View>
                             }
@@ -214,65 +221,63 @@ export default class ReadAllReviewScreen extends React.Component {
                 }
 
                 {
-                    this.state.showKeyboard && (
-                        <View style={{
-                            position: 'absolute',
-                            top: this.state.bottomPosition - this.replyViewHeight,
-                            height: this.replyViewHeight,
-                            width: '100%',
-                            flexDirection: 'row',
+                    this.state.showKeyboard &&
+                    <View style={{
+                        position: 'absolute',
+                        top: this.state.bottomPosition - replyViewHeight,
+                        height: replyViewHeight,
+                        width: '100%',
+                        flexDirection: 'row',
 
-                            flex: 1,
+                        flex: 1,
 
-                            paddingTop: 8,
-                            paddingBottom: 8,
-                            paddingLeft: 10,
-                            paddingRight: 0,
+                        paddingTop: 8,
+                        paddingBottom: 8,
+                        paddingLeft: 10,
+                        paddingRight: 0,
 
-                            borderTopWidth: 1,
-                            borderTopColor: Theme.color.line,
-                            backgroundColor: Theme.color.background
-                        }}>
-                            <TextInput
-                                // ref='reply'
-                                ref={(c) => { this._reply = c; }}
-                                multiline={true}
-                                numberOfLines={3}
-                                style={{
-                                    flex: 0.85,
+                        borderTopWidth: 1,
+                        borderTopColor: Theme.color.line,
+                        backgroundColor: Theme.color.background
+                    }}>
+                        <TextInput
+                            // ref='reply'
+                            ref={(c) => { this._reply = c; }}
+                            multiline={true}
+                            numberOfLines={3}
+                            style={{
+                                flex: 0.85,
 
-                                    paddingTop: 10,
-                                    paddingBottom: 10,
-                                    paddingLeft: 10,
-                                    paddingRight: 10,
+                                paddingTop: 10,
+                                paddingBottom: 10,
+                                paddingLeft: 10,
+                                paddingRight: 10,
 
-                                    borderRadius: 5,
-                                    fontSize: 14,
-                                    fontFamily: "Roboto-Regular",
-                                    color: "white", textAlign: 'justify',
-                                    textAlignVertical: 'top',
-                                    backgroundColor: '#212121'
-                                }}
-                                placeholder='Reply to a review...'
-                                placeholderTextColor={Theme.color.placeholder}
-                                onChangeText={(text) => this.onChangeText(text)}
-                                selectionColor={Theme.color.selection}
-                                // keyboardAppearance={'dark'}
-                                underlineColorAndroid="transparent"
-                                autoCorrect={false}
-                            />
-                            <TouchableOpacity style={{
-                                flex: 0.15,
-                                justifyContent: 'center',
-                                alignItems: 'center'
+                                borderRadius: 5,
+                                fontSize: 14,
+                                fontFamily: "Roboto-Regular",
+                                color: "white", textAlign: 'justify',
+                                textAlignVertical: 'top',
+                                backgroundColor: '#212121'
                             }}
-                                onPress={() => this.sendReply()}
-                            >
-                                <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
-                            </TouchableOpacity>
-
-                        </View>
-                    )
+                            placeholder='Reply to a review...'
+                            placeholderTextColor={Theme.color.placeholder}
+                            onChangeText={(text) => this.onChangeText(text)}
+                            selectionColor={Theme.color.selection}
+                            // keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                        />
+                        <TouchableOpacity style={{
+                            flex: 0.15,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                            onPress={() => this.sendReply()}
+                        >
+                            <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
+                        </TouchableOpacity>
+                    </View>
                 }
 
                 <Dialog.Container visible={this.state.dialogVisible}>
@@ -303,20 +308,6 @@ export default class ReadAllReviewScreen extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
-        // if (this.onLoading) return;
-
-        /*
-        this.setState(
-            {
-                refreshing: true
-            },
-            () => {
-                // reload from the start
-                this.loadReviewFromTheStart();
-            }
-        );
-        */
-
         if (this.state.isLoadingReview) return;
 
         this.setState({ isLoadingReview: true, refreshing: true });
@@ -458,17 +449,10 @@ export default class ReadAllReviewScreen extends React.Component {
 
     @autobind
     loadMore() {
-        // if (this.onLoading) return;
         if (this.state.isLoadingReview) return;
 
         const { reviewStore } = this.props.navigation.state.params;
-        if (reviewStore.allReviewsLoaded) {
-            // if (this.state.refreshing) this.setState({ refreshing: false });
-
-            return;
-        }
-
-        // this.onLoading = true;
+        if (reviewStore.allReviewsLoaded) return;
 
         this.setState({ isLoadingReview: true });
 
@@ -587,7 +571,7 @@ export default class ReadAllReviewScreen extends React.Component {
 
         const y = totalHeights;
 
-        const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
+        const gap = Dimensions.get('window').height - keyboardHeight - replyViewHeight - height - searchBarHeight;
 
         this._flatList.scrollToOffset({ offset: y - gap, animated: true });
     }
@@ -661,7 +645,6 @@ export default class ReadAllReviewScreen extends React.Component {
         this._showNotification = false;
     }
 
-
     onChangeText(text) {
         if (this._showNotification) {
             this.hideNotification();
@@ -688,8 +671,12 @@ export default class ReadAllReviewScreen extends React.Component {
                 this.setState({ showKeyboard: false });
 
                 // refresh all
+                /*
                 const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
                 this.refreshReviews(placeId, feedId, 6);
+                */
+                this.setState({ isLoadingReview: true });
+                this.loadReviewFromTheStart();
 
                 // move scroll top
                 this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -701,7 +688,7 @@ export default class ReadAllReviewScreen extends React.Component {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
         const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.user().uid; // 리뷰를 쓴 사람
+        const userUid = Firebase.user().uid; // writer
 
         await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
     };
@@ -723,7 +710,9 @@ export default class ReadAllReviewScreen extends React.Component {
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
                     // refresh all
-                    this.refreshReviews(placeId, feedId, 6);
+                    // this.refreshReviews(placeId, feedId, 6);
+                    this.setState({ isLoadingReview: true });
+                    this.loadReviewFromTheStart();
 
                     // move scroll top
                     this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -745,7 +734,9 @@ export default class ReadAllReviewScreen extends React.Component {
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
                     // refresh all
-                    this.refreshReviews(placeId, feedId, 6);
+                    // this.refreshReviews(placeId, feedId, 6);
+                    this.setState({ isLoadingReview: true });
+                    this.loadReviewFromTheStart();
 
                     // move scroll top
                     this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -754,12 +745,14 @@ export default class ReadAllReviewScreen extends React.Component {
         });
     }
 
+    /*
     refreshReviews(placeId, feedId, count) {
         // reload whole reviews
         const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
         const { reviewStore } = this.props.navigation.state.params;
         reviewStore.init(query, count);
     }
+    */
 
     openDialog(title, message, callback) {
         this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
@@ -895,7 +888,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         height: (8 + 34 + 8) - 12,
-        borderRadius: 15,
+        borderRadius: 5,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

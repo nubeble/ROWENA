@@ -51,11 +51,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.lastChangedTime = 0;
         this.onLoading = false;
 
-        // this.feedSizeList = new Map();
         this.feedList = new Map();
         this.feedCountList = new Map();
 
         this.feedsUnsubscribes = [];
+        this.countsUnsubscribes = [];
     }
 
     componentDidMount() {
@@ -95,18 +95,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.getUserFeeds();
 
             // move scroll top
-            this._flatList.scrollToOffset({ offset: 0, animated: true });
+            if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
-
-        /*
-        if (Vars.userFeedsChanged) {
-            Vars.userFeedsChanged = false;
-
-            // reload from the start
-            this.lastChangedTime = 0;
-            this.getUserFeeds();
-        }
-        */
 
         this.setState({ focused: true });
     }
@@ -139,6 +129,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
+            instance();
+        }
+
+        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
+            const instance = this.countsUnsubscribes[i];
             instance();
         }
 
@@ -238,11 +233,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
 
             // we skip here. It'll update state feeds on onfocus event.
-            /*
-            // reload from the start
-            this.lastChangedTime = 0;
-            this.getUserFeeds();
-            */
 
             return;
         }
@@ -274,20 +264,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.feedList.set(feedId, post);
 
-        // subscribe
+        // subscribe here
         // --
         const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
             if (newFeed === undefined) { // newFeed === undefined if removed
-                // console.log('!!!!! removed !!!!!!');
-
-                // Consider: we skip here. It'll update state feeds on onfocus event.
-
                 this.feedList.delete(feedId);
 
                 return;
             }
 
-            // add or update this.feedList
+            // update this.feedList
             this.feedList.set(feedId, newFeed);
         });
 
@@ -309,6 +295,22 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const count = placeDoc.data().count;
 
         this.feedCountList.set(placeId, count);
+
+        // subscribe here
+        // --
+        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
+            if (newPlace === undefined) {
+                this.feedCountList.delete(placeId);
+
+                return;
+            }
+
+            // update this.feedCountList
+            this.feedCountList.set(placeId, newPlace.count);
+        });
+
+        this.countsUnsubscribes.push(instance);
+        // --
 
         return count;
     }
@@ -346,6 +348,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 {
                     this.state.renderFeed &&
                     <FlatList
+                        ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={

@@ -15,7 +15,8 @@ export const Cons = {
     pushNotification: {
         chat: 1,
         review: 2,
-        reply: 3
+        reply: 3,
+        comment: 4
     },
 
     // button press short, long timeout

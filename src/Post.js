@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Constants, Svg, Haptic } from "expo";
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -42,13 +42,7 @@ const imageHeight = imageWidth / 3 * 2;
 const illustWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
 const illustHeight = illustWidth / 2321 * 1890;
 
-// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\n";
-const bodyInfoContainerPaddingHorizontal = Theme.spacing.small;
-const bodyInfoContainerPaddingVertical = Theme.spacing.small;
-// const bodyInfoItemWidth = Dimensions.get('window').width / 5;
-// const bodyInfoItemHeight = bodyInfoItemWidth;
-const bodyInfoItemHeight = Dimensions.get('window').height / 12;
+const bodyInfoItemHeight = Dimensions.get('window').height / 24;
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -421,6 +415,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         let integer = 0;
         let number = '';
+        let ageText = '';
         if (post) {
             const averageRating = post.averageRating;
 
@@ -430,6 +425,13 @@ export default class Post extends React.Component<InjectedProps> {
                 number = averageRating + '.0';
             } else {
                 number = averageRating.toString();
+            }
+
+            const age = Util.getAge(post.birthday);
+            if (age > 1) {
+                ageText = age.toString() + ' years old';
+            } else {
+                ageText = age.toString() + ' year old';
             }
         }
 
@@ -522,55 +524,112 @@ export default class Post extends React.Component<InjectedProps> {
                                     {
                                         this.renderSwiper(post)
                                     }
-
                                     <View style={styles.infoContainer}>
                                         <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                             <View style={styles.circle}></View>
                                             <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
                                         </View>
                                         <Text style={styles.name}>{post.name}</Text>
-                                        <View style={{
-                                            width: '100%',
-                                            flexDirection: 'row',
-                                            alignItems: 'center', justifyContent: 'center',
-                                            paddingVertical: bodyInfoContainerPaddingVertical,
-                                            paddingHorizontal: bodyInfoContainerPaddingHorizontal
-                                        }}>
+
+                                        <View style={{ paddingVertical: Theme.spacing.tiny, paddingHorizontal: Theme.spacing.tiny }}>
+                                            {/* 1 row */}
                                             <View style={{
-                                                width: '50%', height: bodyInfoItemHeight,
-                                                alignItems: 'flex-start', justifyContent: 'space-between'
+                                                width: '100%',
+                                                height: bodyInfoItemHeight,
+                                                flexDirection: 'row',
+                                                alignItems: 'center', justifyContent: 'center'
                                             }}>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <View style={{
+                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                                }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, tintColor: Theme.color.title }}
+                                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
                                                         source={PreloadImage.birth}
                                                     />
-                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
                                                 </View>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <View style={{
+                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                                }}>
+                                                    {/*
+                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
+                                                    */}
+                                                    <Text style={styles.bodyInfoTitle}>{ageText}</Text>
+                                                </View>
+                                                <View style={{
+                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                                }}>
+                                                    <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
+                                                </View>
+                                                <View style={{
+                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                                }}>
+                                                    <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
+                                                </View>
+                                            </View>
+
+                                            {/* 2 row */}
+                                            <View style={{
+                                                width: '100%',
+                                                height: bodyInfoItemHeight,
+                                                flexDirection: 'row',
+                                                alignItems: 'center', justifyContent: 'center'
+                                            }}>
+                                                <View style={{
+                                                    width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                                }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, marginTop: 2, tintColor: Theme.color.title }}
+                                                        style={{ width: 16, height: 16, tintColor: Theme.color.subtitle }}
+                                                        source={PreloadImage.ruler}
+                                                    />
+                                                </View>
+                                                <View style={{
+                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                                }}>
+                                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                                </View>
+                                                <View style={{
+                                                    width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                                }}>
+                                                    <Image
+                                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
                                                         source={PreloadImage.scale}
                                                     />
+                                                </View>
+                                                <View style={{
+                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                                }}>
                                                     <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                                                 </View>
                                             </View>
+
+                                            {/* 3 row */}
                                             <View style={{
-                                                width: '50%', height: bodyInfoItemHeight,
-                                                alignItems: 'flex-start', justifyContent: 'space-between'
+                                                width: '100%',
+                                                height: bodyInfoItemHeight,
+                                                flexDirection: 'row',
+                                                alignItems: 'center', justifyContent: 'center'
                                             }}>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
-                                                    <Image
-                                                        style={{ width: 20, height: 20, tintColor: Theme.color.title }}
-                                                        source={PreloadImage.ruler}
-                                                    />
-                                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                                <View style={{
+                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                                }}>
+                                                    <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
                                                 </View>
-                                                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start' }}>
+                                                <View style={{
+                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                                }}>
+                                                    <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
+                                                </View>
+                                                <View style={{
+                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                                }}>
                                                     <Image
-                                                        style={{ width: 20, height: 20, tintColor: Theme.color.title }}
+                                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
                                                         source={PreloadImage.bra}
                                                     />
+                                                </View>
+                                                <View style={{
+                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                                }}>
                                                     <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
                                                 </View>
                                             </View>
@@ -737,7 +796,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
                                         onPress={async () => await this.contact()}
                                     >
-                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Start a Chat</Text>
+                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
                                     </TouchableOpacity>
                                 </View>
                             }
@@ -2149,7 +2208,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         height: (8 + 34 + 8) - 12,
-        borderRadius: 15,
+        borderRadius: 5,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,

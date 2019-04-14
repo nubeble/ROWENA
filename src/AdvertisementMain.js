@@ -31,6 +31,32 @@ const imageViewHeight = imageViewWidth / 4 * 3;
 const imageWidth = imageViewWidth * 0.8;
 const imageHeight = imageViewHeight * 0.8;
 
+const genderItems = [
+    {
+        label: 'Male',
+        value: 'Male'
+    },
+    {
+        label: 'Female',
+        value: 'Female'
+    }
+];
+
+const bodyTypeItems = [
+    {
+        label: 'Skinny',
+        value: 'Skinny'
+    },
+    {
+        label: 'Fit',
+        value: 'Fit'
+    },
+    {
+        label: 'Thick',
+        value: 'Thick'
+    }
+];
+
 const braSizeItems = [
     {
         label: 'A cup',
@@ -86,10 +112,11 @@ export default class AdvertisementMain extends React.Component {
         datePickerTitle: null,
         datePickerDate: new Date(1990, 1, 1),
         birthday: null,
-
+        gender: null,
         height: '',
         weight: '',
-        breasts: '',
+        bodyType: null,
+        breasts: null,
         note: '',
         noteLength: 0,
 
@@ -120,8 +147,10 @@ export default class AdvertisementMain extends React.Component {
         showPicture4AlertIcon: false,
         showNameAlertIcon: false,
         showAgeAlertIcon: false,
+        showGenderAlertIcon: false,
         showHeightAlertIcon: false,
         showWeightAlertIcon: false,
+        showBodyTypeAlertIcon: false,
         showBreastsAlertIcon: false,
         showCountryAlertIcon: false,
         showStreetAlertIcon: false,
@@ -267,23 +296,17 @@ export default class AdvertisementMain extends React.Component {
         console.log('AdvertisementMain._keyboardDidShow');
 
         if (this.focusedItem === 'name') {
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
         } else if (this.focusedItem === 'height') {
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
         } else if (this.focusedItem === 'weight') {
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
         } else if (this.focusedItem === 'note') {
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
 
             if (!this.state.onNote) this.setState({ onNote: true });
         }
-
-
-        /*
-        if (this.noteFocused) {
-            if (!this.state.onNote) this.setState({ onNote: true });
-        }
-        */
 
         this.setState({ keyboardTop: Dimensions.get('window').height - e.endCoordinates.height });
     }
@@ -324,7 +347,6 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
 
             return true;
         }
@@ -383,22 +405,40 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
         }
 
+        // move scroll in keyboard show event
         this.focusedItem = 'name';
+    }
+
+    onFocusBirthday() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+    }
+
+    onFocusGender() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
     }
 
     onFocusHeight() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
         }
 
         // clear
         this.setState({ height: '' });
 
+        // move scroll in keyboard show event
         this.focusedItem = 'height';
     }
 
@@ -429,12 +469,12 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
         }
 
         // clear
         this.setState({ weight: '' });
 
+        // move scroll in keyboard show event
         this.focusedItem = 'weight';
     }
 
@@ -461,25 +501,33 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ weight: text });
     }
 
+    onFocusBodyType() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+    }
+
     onFocusBreasts() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
     }
 
     onFocusNote() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
         }
 
         if (!this.state.onNote) this.setState({ onNote: true });
 
+        // move scroll in keyboard show event
         this.focusedItem = 'note';
     }
 
@@ -495,7 +543,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { name, birthday, height, weight, breasts, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const { name, birthday, gender, height, weight, bodyType, breasts, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -512,7 +560,8 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showNameAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
 
             return;
         }
@@ -522,7 +571,19 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showAgeAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+
+            return;
+        }
+
+        if (!gender) {
+            this.showNotification('Please select your gender.');
+
+            this.setState({ showGenderAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
 
             return;
         }
@@ -532,7 +593,8 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showHeightAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
 
             return;
         }
@@ -542,17 +604,30 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showWeightAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + heightY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
 
             return;
         }
 
-        if (breasts === '') {
+        if (!bodyType) {
+            this.showNotification('Please select your bra size.');
+
+            this.setState({ showBodyTypeAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+
+            return;
+        }
+
+        if (!breasts) {
             this.showNotification('Please select your bra size.');
 
             this.setState({ showBreastsAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
 
             return;
         }
@@ -562,7 +637,8 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showCountryAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
 
             return;
         }
@@ -572,7 +648,8 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showStreetAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
 
             return;
         }
@@ -595,8 +672,10 @@ export default class AdvertisementMain extends React.Component {
         _birthday = Util.getBirthday(this.state.datePickerDate);
         data.birthday = _birthday;
 
+        data.gender = gender;
         data.height = Util.getHeight(height);
         data.weight = Util.getWeight(weight);
+        data.bodyType = bodyType;
         data.bust = Util.getBust(breasts);
 
         // placeId, placeName, location
@@ -763,7 +842,6 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                // this._showNotification = false;
                             }
                         }}
                     >
@@ -940,6 +1018,8 @@ export default class AdvertisementMain extends React.Component {
                     {/* picker */}
                     <TouchableOpacity
                         onPress={() => {
+                            this.onFocusBirthday();
+
                             this.showDateTimePicker('What is your date of birth?');
                         }}
                     >
@@ -964,6 +1044,73 @@ export default class AdvertisementMain extends React.Component {
                     {
                         this.state.showAgeAlertIcon &&
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* gender */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'GENDER'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <Select
+                        onOpen={() => this.onFocusGender()} // NOT work in Android
+                        placeholder={{
+                            label: "Select your gender",
+                            value: null
+                        }}
+                        items={genderItems}
+                        onValueChange={(value) => { // only for Android
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.setState({ gender: value });
+                        }}
+                        style={{
+                            iconContainer: {
+                                top: 5,
+                                right: 100
+                            }
+                        }}
+                        textInputProps={{
+                            style: {
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                color: this.state.gender === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }}
+                        useNativeAndroidPickerStyle={false}
+                        value={this.state.gender}
+
+                        Icon={() => {
+                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            return null;
+                        }}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.genderY = y;
+                        }}
+                    />
+                    {
+                        this.state.showGenderAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.genderY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 3. height */}
@@ -1036,6 +1183,73 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
+                    {/* body type */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'BODY TYPE'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <Select
+                        onOpen={() => this.onFocusBodyType()} // NOT work in Android
+                        placeholder={{
+                            label: "What's your body type?",
+                            value: null
+                        }}
+                        items={bodyTypeItems}
+                        onValueChange={(value) => { // only for Android
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.setState({ bodyType: value });
+                        }}
+                        style={{
+                            iconContainer: {
+                                top: 5,
+                                right: 100
+                            }
+                        }}
+                        textInputProps={{
+                            style: {
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                color: this.state.bodyType === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }}
+                        useNativeAndroidPickerStyle={false}
+                        value={this.state.bodyType}
+
+                        Icon={() => {
+                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            return null;
+                        }}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.bodyTypeY = y;
+                        }}
+                    />
+                    {
+                        this.state.showBodyTypeAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
                     {/* 5. breasts */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{
@@ -1072,12 +1286,10 @@ export default class AdvertisementMain extends React.Component {
                         // placeholderTextColor={Theme.color.placeholder}
 
                         items={braSizeItems}
-                        onValueChange={(value) => {
-                            // so, only for Android
+                        onValueChange={(value) => { // only for Android
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
-                                // this._showNotification = false;
                             }
 
                             this.setState({ breasts: value });
@@ -1107,7 +1319,7 @@ export default class AdvertisementMain extends React.Component {
                             style: {
                                 paddingHorizontal: 18,
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                color: (this.state.breasts === '') ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                color: this.state.breasts === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
                             }
                         }}
                         useNativeAndroidPickerStyle={false}
@@ -1179,6 +1391,9 @@ export default class AdvertisementMain extends React.Component {
                                 this.hideAlertIcon();
                             }
 
+                            // move scroll
+                            this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+
                             setTimeout(() => {
                                 this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
@@ -1238,10 +1453,14 @@ export default class AdvertisementMain extends React.Component {
 
                                 this.setState({ showCountryAlertIcon: true });
 
-                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY + 1, animated: true });
+                                // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+                                this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
 
                                 return;
                             }
+
+                            // move scroll
+                            this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
 
                             setTimeout(() => {
                                 this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
@@ -1627,8 +1846,10 @@ export default class AdvertisementMain extends React.Component {
         feed.pictures = pictures;
         feed.name = data.name;
         feed.birthday = data.birthday;
+        feed.gender = data.gender;
         feed.height = data.height;
         feed.weight = data.weight;
+        feed.bodyType = data.bodyType;
         feed.bust = data.bust;
 
         // console.log('feed', feed);
@@ -1660,7 +1881,6 @@ export default class AdvertisementMain extends React.Component {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
-            // this._showNotification = false;
         }
 
         this.setState({ datePickerTitle: title, showDatePicker: true });
@@ -1765,9 +1985,13 @@ export default class AdvertisementMain extends React.Component {
 
         if (this.state.showAgeAlertIcon) this.setState({ showAgeAlertIcon: false });
 
+        if (this.state.showGenderAlertIcon) this.setState({ showGenderAlertIcon: false });
+
         if (this.state.showHeightAlertIcon) this.setState({ showHeightAlertIcon: false });
 
         if (this.state.showWeightAlertIcon) this.setState({ showWeightAlertIcon: false });
+
+        if (this.state.showBodyTypeAlertIcon) this.setState({ showBodyTypeAlertIcon: false });
 
         if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
 
@@ -1866,7 +2090,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
 
         height: (8 + 34 + 8) - 12,
-        borderRadius: 15,
+        borderRadius: 5,
         position: "absolute",
         top: 0,
         backgroundColor: Theme.color.notification,
@@ -1897,7 +2121,7 @@ const styles = StyleSheet.create({
         // height: Cons.searchBarHeight,
         height: (8 + 34 + 8),
         position: "absolute",
-        borderRadius: 15,
+        borderRadius: 5,
         top: 0,
         backgroundColor: Theme.color.selection,
         zIndex: 10001,

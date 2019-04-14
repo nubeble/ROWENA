@@ -205,6 +205,33 @@ export default class Firebase {
         });
     }
 
+    static subscribeToPlace(placeId, callback) {
+        return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
+            /*
+            let count = 0;
+
+            if (snap.exists) {
+                const field = snap.data().count;
+                if (field) count = field;
+            }
+
+            callback(count);
+            */
+
+            const place = snap.data();
+            console.log('Firebase.subscribeToPlace, place changed.');
+            callback(place);
+        });
+    }
+
+    static subscribeToProfile(uid, callback) {
+        return Firebase.firestore.collection("users").doc(uid).onSnapshot(snap => {
+            const user = snap.data();
+            console.log('Firebase.subscribeToProfile, user changed.');
+            callback(user);
+        });
+    }
+
     /*
     static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
         let feed = null;
@@ -771,7 +798,7 @@ export default class Firebase {
 
     // comment
     // --
-    static async addComment(uid, targetUid, comment) { // uid: writer, targetUid: receiver, comment: string
+    static async addComment(uid, targetUid, comment, name, place, picture) { // uid: writer, targetUid: receiver, comment: string
         const id = Util.uid(); // comment id
         const timestamp = Firebase.getTimestamp();
 
@@ -779,7 +806,10 @@ export default class Firebase {
             uid,
             comment,
             id,
-            timestamp
+            timestamp,
+            name,
+            place,
+            picture
         };
 
         const writerRef = Firebase.firestore.collection("users").doc(uid); // writer (me)
@@ -795,7 +825,7 @@ export default class Firebase {
             // update reviewCount in user (receiver)
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
             if (!receivedCommentsCount) receivedCommentsCount = 0;
-            console.log('receivedCommentCount will be', receivedCommentsCount + 1);
+            console.log('receivedCommentsCount will be', receivedCommentsCount + 1);
 
             transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount + 1) });
 
@@ -839,7 +869,7 @@ export default class Firebase {
             if (!userDoc.exists) throw 'User document does not exist!';
 
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
-            console.log('receivedCommentCount will be', receivedCommentsCount - 1);
+            console.log('receivedCommentsCount will be', receivedCommentsCount - 1);
 
             transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount - 1) });
 

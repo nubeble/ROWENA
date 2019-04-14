@@ -66,11 +66,7 @@ export default class Feed extends React.Component<FeedProps> {
     loadMore() {
         if (this.state.isLoadingFeeds) return;
 
-        if (this.props.store.allFeedsLoaded) {
-            // if (this.state.refreshing) this.setState({ refreshing: false });
-
-            return;
-        }
+        if (this.props.store.allFeedsLoaded) return;
 
         this.setState({ isLoadingFeeds: true });
 
@@ -189,18 +185,6 @@ export default class Feed extends React.Component<FeedProps> {
 
     handleRefresh = () => {
         if (this.state.isLoadingFeeds) return;
-
-        /*
-        this.setState(
-            {
-                refreshing: true
-            },
-            () => {
-                // reload from the start
-                this.props.store.loadFeedFromTheStart();
-            }
-        );
-        */
 
         this.setState({ isLoadingFeeds: true, refreshing: true });
 

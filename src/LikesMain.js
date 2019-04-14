@@ -52,12 +52,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
         this.onLoading = false;
-        this.firstLoaded = false;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
 
         this.feedsUnsubscribes = [];
+        this.countsUnsubscribes = [];
     }
 
     async componentDidMount() {
@@ -158,6 +158,11 @@ export default class LikesMain extends React.Component<InjectedProps> {
             instance();
         }
 
+        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
+            const instance = this.countsUnsubscribes[i];
+            instance();
+        }
+
         this.closed = true;
     }
 
@@ -216,24 +221,25 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
             const placeId = value.placeId;
             const feedId = value.feedId;
-            const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-            if (!feedDoc.exists) return;
 
-            // subscribe here
-            // --
-            if (!this.firstLoaded) {
-                this.firstLoaded = true;
+            if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
+                console.log('post from memory');
+
+                const newFeed = this.feedList.get(feedId);
+                newFeeds.push(newFeed);
+            } else {
+                const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+                if (!feedDoc.exists) return;
+
+                const newFeed = feedDoc.data();
+                newFeeds.push(newFeed);
+
+                this.feedList.set(feedId, newFeed);
+
+                // subscribe here
+                // --
                 const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                     if (newFeed === undefined) { // newFeed === undefined if removed
-                        // console.log('!!!!! removed !!!!!!');
-
-                        // Consider: we skip here. It'll update state feeds on onfocus event.
-                        /*
-                        // reload from the start
-                        this.lastChangedTime = 0;
-                        await this.getSavedFeeds();
-                        */
-
                         this.feedList.delete(feedId);
 
                         // update state feed & UI
@@ -248,7 +254,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         return;
                     }
 
-                    // add or update this.feedList
+                    // update this.feedList
                     this.feedList.set(feedId, newFeed);
 
                     // update state feed & UI
@@ -264,11 +270,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 });
 
                 this.feedsUnsubscribes.push(instance);
+                // --
             }
-            // --
-
-            const newFeed = feedDoc.data();
-            newFeeds.push(newFeed);
 
             this.lastLoadedFeedIndex = i;
 
@@ -404,6 +407,22 @@ export default class LikesMain extends React.Component<InjectedProps> {
         const count = placeDoc.data().count;
 
         this.feedCountList.set(placeId, count);
+
+        // subscribe here
+        // --
+        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
+            if (newPlace === undefined) {
+                this.feedCountList.delete(placeId);
+
+                return;
+            }
+
+            // update this.feedCountList
+            this.feedCountList.set(placeId, newPlace.count);
+        });
+
+        this.countsUnsubscribes.push(instance);
+        // --
 
         return count;
     }
@@ -623,10 +642,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
         // reload from the start
         this.lastChangedTime = 0;
         await this.getSavedFeeds();
-
-        // if user moved to likes page before the Vars.postToggleButtonPressed updated to true.
-        // Then the user could update all feeds. In this case we need to change the Vars.postToggleButtonPressed to false manually to avoid rerendering on onfocus event.
-        // if (Vars.postLikeButtonPressed) Vars.postLikeButtonPressed = false;
 
         !this.closed && this.setState({ refreshing: false });
     }

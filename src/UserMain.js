@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
-    TouchableHighlight, TouchableWithoutFeedback
+    TouchableHighlight, TouchableWithoutFeedback, Animated, Keyboard, TextInput
 } from 'react-native';
 import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -11,57 +11,75 @@ import autobind from "autobind-decorator";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import { Cons, Vars } from "./Globals";
-import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { RefreshIndicator } from "./rnff/src/components";
 import Util from "./Util";
+import CommentStore from "./CommentStore";
+import ProfileStore from "./rnff/src/home/ProfileStore";
+import moment from "moment";
+import { Constants, Svg } from "expo";
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
+import Toast, { DURATION } from 'react-native-easy-toast';
+import { sendPushNotification } from './PushNotifications';
 
 const DEFAULT_REVIEW_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
+const profilePictureWidth = Dimensions.get('window').height / 12;
+const replyViewHeight = Dimensions.get('window').height / 9;
+
+const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
+
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
 
 
-export default class UserMain extends React.Component {
+@inject("feedStore", "profileStore")
+@observer // for commentStore
+export default class UserMain extends React.Component<InjectedProps> {
+    commentStore: CommentStore = new CommentStore();
+
     state = {
         renderFeed: false,
-        // showIndicator: false,
 
-        feeds: [],
         isLoadingFeeds: false,
         refreshing: false,
-        totalFeedsSize: 0,
+
+        host: null,
+        guest: null,
+
         focused: false,
 
-        dialogVisible: false,
-        dialogTitle: '',
-        dialogMessage: '',
-        dialogType: 'alert',
-        dialogPassword: ''
+        showKeyboard: false,
+        bottomPosition: Dimensions.get('window').height,
+
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
-
-    constructor(props) {
-        super(props);
-
-        this.reload = true;
-        this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
-        this.onLoading = false;
-
-        this.feedList = new Map();
-        this.feedCountList = new Map();
-
-        this.feedsUnsubscribes = [];
-    }
 
     componentDidMount() {
         console.log('UserMain.componentDidMount');
 
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        // ToDo
-        // this.getUserFeeds();
+        this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
+
+        const item = this.props.navigation.state.params.item;
+        const guest = item.guest;
+        const host = item.host;
+
+        const uid = guest.uid;
+        const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
+        this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+
+        this.setState({ guest: guest, host: host });
 
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
@@ -69,8 +87,24 @@ export default class UserMain extends React.Component {
     }
 
     @autobind
+    onAddToReviewFinished() {
+        console.log('UserMain.onAddToReviewFinished');
+
+        !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
+
+        // this.enableScroll();
+    }
+
+    @autobind
     handleHardwareBackPress() {
         console.log('UserMain.handleHardwareBackPress');
+
+        if (this._showNotification) {
+            this.hideNotification();
+
+            return true;
+        }
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -79,19 +113,6 @@ export default class UserMain extends React.Component {
     @autobind
     onFocus() {
         Vars.currentScreenName = 'UserMain';
-
-        /*
-        const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            // reload from the start
-
-            // ToDo
-            // this.getUserFeeds();
-
-            // move scroll top
-            this._flatList.scrollToOffset({ offset: 0, animated: true });
-        }
-        */
 
         this.setState({ focused: true });
     }
@@ -106,112 +127,241 @@ export default class UserMain extends React.Component {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
-    componentWillUnmount() {
-        console.log('UserMain.componentWillUnmount');
+    @autobind
+    keyboardDidShow(e) {
+        this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
+        /*
+        if (!this.selectedItem) return;
 
-        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
-            const instance = this.feedsUnsubscribes[i];
-            instance();
+        let totalHeights = 0;
+        for (var i = 0; i < this.selectedItemIndex; i++) {
+            var h = this.itemHeights[i];
+            if (h) {
+                totalHeights += h + 1; // separator width
+            }
         }
 
-        this.closed = true;
+        const height = this.itemHeights[this.selectedItemIndex];
+        const keyboardHeight = e.endCoordinates.height;
+        const searchBarHeight = Cons.searchBarHeight;
+
+        const y = totalHeights;
+
+        const gap = Dimensions.get('window').height - keyboardHeight - replyViewHeight - height - searchBarHeight;
+
+        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
+        */
     }
 
-    /*
-    getUserFeeds() {
-        if (this.onLoading) return;
+    @autobind
+    keyboardDidHide() {
+        this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
-        const { profile } = this.props.profileStore;
-        const feeds = profile.feeds;
-        const length = feeds.length;
+        /*
+        this.selectedItem = undefined;
+        this.selectedItemIndex = undefined;
+        this.owner = undefined;
+        */
 
-        this.setState({ totalFeedsSize: length });
+        /*
+        if (this._showNotification) {
+            this.hideNotification();
+        }
+        */
+    }
 
-        if (length === 0) {
-            if (this.state.feeds.length > 0) this.setState({ feeds: [] });
+    // openKeyboard(ref, index, owner) {
+    openKeyboard() {
+        if (this.state.showKeyboard) return;
+
+        this.setState({ showKeyboard: true }, () => {
+            this._reply.focus();
+        });
+
+        /*
+        this.selectedItem = ref;
+        this.selectedItemIndex = index;
+        this.owner = owner;
+        */
+    }
+
+    onChangeText(text) {
+        if (this._showNotification) {
+            this.hideNotification();
+        }
+    }
+
+    sendComment() {
+        const message = this._reply._lastNativeText;
+        console.log('UserMain.sendComment', message);
+
+        if (message === undefined || message === '') {
+            this.showNotification('Please enter a valid reply.');
 
             return;
         }
 
-        // check update
-        const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            this.lastChangedTime = lastChangedTime;
+        this.addComment(message);
 
-            // reload from the start
-            this.reload = true;
-            this.lastLoadedFeedIndex = -1;
-        }
+        this.sendPushNotification(message);
 
-        // all loaded
-        if (this.lastLoadedFeedIndex === 0) return;
+        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
+            if (!this.closed) {
+                // this._reply.blur();
+                this.setState({ showKeyboard: false });
 
-        this.onLoading = true;
+                // refresh
+                this.setState({ isLoadingFeeds: true });
+                this.commentStore.loadReviewFromTheStart();
 
-        console.log('ProfileMain', 'loading feeds...');
-
-        this.setState({ isLoadingFeeds: true });
-
-        let newFeeds = [];
-
-        let startIndex = 0;
-        if (this.reload) {
-            startIndex = length - 1;
-        } else {
-            startIndex = this.lastLoadedFeedIndex - 1;
-        }
-
-        let count = 0;
-
-        for (var i = startIndex; i >= 0; i--) {
-            if (count >= DEFAULT_FEED_COUNT) break;
-
-            const value = feeds[i];
-
-            // if (!value.valid) continue;
-
-            newFeeds.push(value);
-
-            this.lastLoadedFeedIndex = i;
-
-            count++;
-        }
-
-        if (this.reload) {
-            this.reload = false;
-
-            this.setState({
-                // isLoadingFeeds: false, feeds: newFeeds, refreshing: false
-                isLoadingFeeds: false,
-                feeds: newFeeds, // refreshing: false
-            });
-        } else {
-            this.setState({
-                // isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds], refreshing: false
-                isLoadingFeeds: false,
-                feeds: [...this.state.feeds, ...newFeeds], // refreshing: false
-            });
-        }
-
-        console.log('ProfileMain', 'loading feeds done!');
-
-        this.onLoading = false;
+                // move scroll top
+                // this._flatList.scrollToOffset({ offset: 0, animated: false });
+            }
+        });
     }
-    */
+
+    async addComment(message) {
+        /*
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+
+        const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
+        const userUid = Firebase.user().uid;
+
+        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
+        */
+
+        const { host, guest } = this.state;
+
+        const name = host.name;
+        const uri = host.picture;
+
+        const { profileStore } = this.props;
+        const profile = profileStore.profile;
+
+        // const name = profile.name;
+        // const uri = profile.picture.uri;
+
+        const city = profile.city;
+        const country = profile.country;
+        let place = null;
+        if (city && country) {
+            place = city + ', ' + country;
+        }
+
+        // ToDo: test
+        if (!place) place = 'Cebu, Philippines';
+
+        const targetUserUid = guest.uid;
+
+        Firebase.addComment(host.uid, targetUserUid, message, name, place, uri); // writer, receiver (m1), message
+    };
+
+    sendPushNotification(message) {
+        /*
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+
+        const sender = Firebase.user().uid;
+        const senderName = Firebase.user().name;
+        const receiver = this.owner;
+        const data = {
+            message: message,
+            placeId: placeId,
+            feedId, feedId
+        };
+        */
+
+        const { host, guest } = this.state;
+
+        const sender = host.uid;
+        const senderName = host.name;
+        const receiver = guest.uid;
+
+        // ToDo
+        const data = {
+            message: message,
+            // placeId: placeId,
+            // feedId, feedId
+        };
+
+        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.comment, data);
+    }
+
+    componentWillUnmount() {
+        console.log('UserMain.componentWillUnmount');
+
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        this.closed = true;
+    }
 
     render() {
-        const name = 'Anonymous';
-        const hasImage = false;
+        const { reviews } = this.commentStore;
 
+        const hasImage = false; // ToDo
+        let name = 'Anonymous';
+        let address = "No address registered";
+        let reviewText = 'loading...';
+        let labelText = null;
 
+        const { guest } = this.state; // undefined at loading
 
+        if (guest) {
+            // name
+            if (guest.name) name = guest.name;
+
+            // address
+            if (guest.address) address = guest.address;
+
+            const count = guest.receivedCommentsCount;
+
+            // reviewText
+            if (count === 0) {
+                reviewText = 'No host reviews yet';
+            } else if (count === 1) {
+                reviewText = ' 1 review';
+            } else {
+                reviewText = count.toString() + " reviews";
+            }
+
+            // labelText
+            if (count === 1) {
+                labelText = count.toString() + ' review from hosts';
+            } else if (count > 1) {
+                labelText = count.toString() + ' reviews from hosts';
+            }
+        }
+
+        const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
+
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [{ translateY: this.state.offset }]
+        };
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="white" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -246,20 +396,21 @@ export default class UserMain extends React.Component {
                 {
                     this.state.renderFeed &&
                     <FlatList
+                        ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
                             <View>
-
-
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
                                     <TouchableHighlight
                                         style={{ marginTop: 20 }}
                                         onPress={() => {
+                                            /*
                                             setTimeout(() => {
                                                 this.props.navigation.navigate("edit");
                                             }, Cons.buttonTimeoutShort);
+                                            */
                                         }}
                                     >
                                         <View style={{
@@ -268,7 +419,9 @@ export default class UserMain extends React.Component {
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
                                                 <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{name}</Text>
-                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>View and edit profile</Text>
+                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>
+                                                    Joined in September 26, 2018
+                                                </Text>
                                             </View>
                                             <TouchableOpacity
                                                 style={{
@@ -301,86 +454,194 @@ export default class UserMain extends React.Component {
 
                                     <View style={{ width: '100%', paddingHorizontal: 20 }}>
 
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
+                                            <Image
+                                                style={{ width: 20, height: 20, resizeMode: 'cover' }}
+                                                source={PreloadImage.home}
+                                            />
+                                            <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{address}</Text>
+                                        </View>
 
+                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
+                                            <Image
+                                                style={{ width: 22, height: 22, resizeMode: 'cover' }}
+                                                source={PreloadImage.comment}
+                                            />
+                                            <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{reviewText}</Text>
+                                        </View>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                            onLayout={(event) => {
+                                                const { x, y, width, height } = event.nativeEvent.layout;
+
+                                                console.log('onLayout', y);
+
+                                                this.borderY = y;
+                                            }}
+                                        />
+
+                                        <Text style={{
+                                            /*
+                                            color: Theme.color.placeholder,
+                                            textAlign: 'center',
+                                            fontSize: 16,
+                                            fontFamily: "Roboto-Light",
+                                            paddingTop: 10,
+                                            paddingBottom: 10
+                                            */
+
+                                            marginTop: Theme.spacing.small,
+                                            marginBottom: Theme.spacing.small,
+                                            fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                                            textAlign: 'center',
+                                            // lineHeight: 24
+                                        }}>Share your experience to help others</Text>
+
+                                        <TouchableOpacity
+                                            style={[styles.contactButton,
+                                            {
+                                                // marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small
+                                                marginBottom: Theme.spacing.tiny + Theme.spacing.small
+                                            }
+                                            ]}
+                                            onPress={() => {
+
+                                                setTimeout(() => {
+                                                    // this.props.navigation.navigate("writeComment");
+                                                    this.openKeyboard();
+
+                                                    // move scroll top
+                                                    // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
+                                                    // console.log('gap', gap);
+                                                    this._flatList.scrollToOffset({ offset: 0, animated: true });
+                                                    // this._flatList.scrollToOffset({ offset: gap, animated: true });
+                                                }, Cons.buttonTimeoutShort);
+
+                                            }}
+                                        >
+                                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>{'Add a Review'}</Text>
+                                        </TouchableOpacity>
+
+                                        <View style={{
+                                            borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny
+                                        }} />
                                     </View>
-
                                 </View>
-
+                                {
+                                    labelText &&
+                                    <View style={styles.titleContainer}>
+                                        <Text style={styles.title}>
+                                            {
+                                                labelText
+                                            }
+                                        </Text>
+                                    </View>
+                                }
 
                                 {
-                                    (this.state.totalFeedsSize > 0) &&
-                                    <View style={styles.titleContainer}>
-                                        <Text style={styles.title}>Your post ({this.state.totalFeedsSize})</Text>
-                                    </View>
+                                    labelText &&
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
                                 }
                             </View>
                         }
-                        columnWrapperStyle={styles.columnWrapperStyle}
-                        numColumns={3}
-                        data={this.state.feeds}
-                        keyExtractor={item => item.feedId}
-                        renderItem={({ item, index }) => {
-                            return (
-                                <TouchableWithoutFeedback
-                                    onPress={async () => await this.openPost(item)}
-                                >
-                                    <View style={styles.pictureContainer}>
-                                        <SmartImage
-                                            style={styles.picture}
-                                            showSpinner={false}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={item.picture}
-                                        />
+                        // columnWrapperStyle={styles.columnWrapperStyle}
+                        // numColumns={3}
+                        // data={this.state.feeds}
+                        // keyExtractor={item => item.feedId}
+                        data={reviews}
+                        keyExtractor={item => item.review.id}
+                        renderItem={this.renderItem}
 
-                                        {/*
-                                            <View style={styles.content}>
-                                                <Text style={{
-                                                    textAlign: 'center',
-                                                    fontWeight: '500',
-                                                    color: "white",
-                                                    fontSize: 21,
-                                                    // flexWrap: "wrap"
-                                                }}>{item.city}</Text>
-                                            </View>
-                                            */}
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            );
-                        }}
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.onScrollHandler}
                         onScroll={({ nativeEvent }) => {
                             if (!this.state.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
-                                this.getUserFeeds();
+                                this.loadMore();
                             }
                         }}
                         // scrollEventThrottle={1}
 
+                        ItemSeparatorComponent={this.itemSeparatorComponent}
+
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
 
-                    /*
-                    ListFooterComponent={
-                        this.state.isLoadingFeeds &&
-                        <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                            <RefreshIndicator />
-                        </View>
-                    }
-                    */
+                        ListFooterComponent={
+                            this.state.isLoadingFeeds &&
+                            <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                                <RefreshIndicator />
+                            </View>
+                        }
+
+                        ListEmptyComponent={this.renderListEmptyComponent}
                     />
                 }
 
                 {
-                    /*
-                    !this.state.focused &&
+                    this.state.showKeyboard &&
                     <View style={{
+                        position: 'absolute',
+
+                        top: this.state.bottomPosition - replyViewHeight,
+                        height: replyViewHeight,
+
+                        /*
+                         height: _replyViewHeight,
+                         top: this.state.bottomPosition - _replyViewHeight,
+                         */
                         width: '100%',
-                        height: 100, // Consider: get the height of tab bar
-                        // backgroundColor: 'green'
-                    }} />
-                    */
+                        flexDirection: 'row',
+
+                        flex: 1,
+
+                        paddingTop: 8,
+                        paddingBottom: 8,
+                        paddingLeft: 10,
+                        paddingRight: 0,
+
+                        borderTopWidth: 1,
+                        borderTopColor: Theme.color.line,
+                        backgroundColor: Theme.color.background
+                    }}>
+                        <TextInput
+                            ref={(c) => { this._reply = c; }}
+                            multiline={true}
+                            numberOfLines={3}
+                            style={{
+                                flex: 0.85,
+
+                                paddingTop: 10,
+                                paddingBottom: 10,
+                                paddingLeft: 10,
+                                paddingRight: 10,
+
+                                borderRadius: 5,
+                                fontSize: 14,
+                                fontFamily: "Roboto-Regular",
+                                color: "white", textAlign: 'justify',
+                                textAlignVertical: 'top',
+                                backgroundColor: '#212121'
+                            }}
+                            placeholder='Reply to a review...'
+                            placeholderTextColor={Theme.color.placeholder}
+                            onChangeText={(text) => this.onChangeText(text)}
+                            selectionColor={Theme.color.selection}
+                            // keyboardAppearance={'dark'}
+                            underlineColorAndroid="transparent"
+                            autoCorrect={false}
+                        />
+                        <TouchableOpacity style={{
+                            flex: 0.15,
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                            onPress={() => this.sendComment()}
+                        >
+                            <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
+                        </TouchableOpacity>
+                    </View>
                 }
 
                 <Toast
@@ -389,64 +650,208 @@ export default class UserMain extends React.Component {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-
-                <Dialog.Container visible={this.state.dialogVisible}>
-                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
-                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
-                    {
-                        this.state.dialogType === 'pad' &&
-                        <Dialog.Input
-                            keyboardType={'phone-pad'}
-                            // keyboardAppearance={'dark'}
-                            onChangeText={(text) => this.setState({ dialogPassword: text })}
-                            autoFocus={true}
-                            secureTextEntry={true}
-                        />
-                    }
-                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
-                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
-                </Dialog.Container>
             </View>
         );
     } // end of render()
 
-    handleRefresh = () => {
+    @autobind
+    renderItem({ item, index }: FlatListItem<CommentEntry>): React.Node {
+        // const _profile = item.profile; // boss's profile
+        const _review = item.review;
+
         /*
-        if (this.onLoading) return;
-
-        this.setState(
-            {
-                refreshing: true
-            },
-            () => {
-                if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
-
-                // reload from the start
-                this.lastChangedTime = 0;
-                this.getUserFeeds();
-            }
-        );
+        console.log ('profile', _profile.uid); // writer
+        console.log ('review', _review.id); // comment
         */
 
-        // if (this.state.isLoadingFeeds) return;
+        return (
+            <View style={{ paddingHorizontal: Theme.spacing.base, paddingVertical: Theme.spacing.small }}>
 
-        !this.closed && this.setState({ refreshing: true });
+                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                <Text style={styles.reviewText}>{_review.comment}</Text>
+                {/*}
+                <Text style={styles.reviewText}>{tmp}</Text>
+                */}
+
+                <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
+                    <Image
+                        style={{ backgroundColor: 'black', width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2, borderColor: 'black', borderWidth: 1 }}
+                        source={{ uri: _review.picture }}
+                    />
+                    <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
+                        <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
+                            {_review.name}</Text>
+                        <Text style={{
+                            marginTop: 4,
+                            color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
+                        }}>{_review.place}</Text>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    @autobind
+    loadMore() {
+        // console.log('loadMore');
+
+        if (this.state.isLoadingFeeds) return;
+
+        if (this.commentStore.allReviewsLoaded) return;
+
+        this.setState({ isLoadingFeeds: true });
+
+        this.commentStore.loadReview();
+    }
+
+    @autobind
+    itemSeparatorComponent() {
+        return (
+            <View style={{ alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2, borderBottomColor: Theme.color.line, borderBottomWidth: 1 }} />
+        );
+    }
+
+    @autobind
+    renderListEmptyComponent() {
+        // const { navigation } = this.props;
+
+        const { reviews } = this.commentStore;
+        const loading = reviews === undefined;
+
+        const width = Dimensions.get('window').width - Theme.spacing.base * 2;
+
+        let reviewArray = [];
+
+        for (var i = 0; i < 4; i++) {
+            reviewArray.push(
+                <View key={i}>
+                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
+                        <Svg.Circle
+                            cx={18 + 2}
+                            cy={18 + 2}
+                            r={18}
+                        />
+                        <Svg.Rect
+                            x={2 + 18 * 2 + 10}
+                            y={2 + 18 - 12}
+                            width={60}
+                            height={6}
+                        />
+                        <Svg.Rect
+                            x={2 + 18 * 2 + 10}
+                            y={2 + 18 + 6}
+                            width={100}
+                            height={6}
+                        />
+
+                        <Svg.Rect
+                            x={0}
+                            y={2 + 18 * 2 + 14}
+                            width={'100%'}
+                            height={6}
+                        />
+                        <Svg.Rect
+                            x={0}
+                            y={2 + 18 * 2 + 14 + 14}
+                            width={'100%'}
+                            height={6}
+                        />
+                        <Svg.Rect
+                            x={0}
+                            y={2 + 18 * 2 + 14 + 14 + 14}
+                            width={'80%'}
+                            height={6}
+                        />
+                    </SvgAnimatedLinearGradient>
+                </View>
+            );
+        }
+
+        return (
+            /*
+            loading ?
+                <View style={{ paddingVertical: Theme.spacing.small }}>
+                    {reviewArray}
+                </View>
+                :
+                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
+                    <FirstPost {...{ navigation }} />
+                </View>
+            */
+            loading &&
+            <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
+                {reviewArray}
+            </View>
+        );
+    }
+
+    handleRefresh = () => {
+        if (this.state.isLoadingFeeds) return;
+
+        this.setState({ isLoadingFeeds: true, refreshing: true });
+
+        // this.disableScroll();
 
         // reload from the start
-        this.lastChangedTime = 0;
-        this.getUserFeeds();
+        this.commentStore.loadReviewFromTheStart();
+    }
 
-        // if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
+    enableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });
+    }
 
-        !this.closed && this.setState({ refreshing: false });
+    disableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
+    }
+
+    showNotification(msg) {
+        if (this._showNotification) this.hideNotification();
+
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
+                    ])
+                ]).start();
+            });
+        });
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 200
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: height * -1,
+                        duration: 200
+                    })
+                ])
+            ]).start();
+        });
+
+        this._showNotification = false;
     }
 }
 
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        // backgroundColor: Theme.color.background
-        backgroundColor: 'green'
+        backgroundColor: Theme.color.background
+        // backgroundColor: 'green'
     },
     searchBar: {
         height: Cons.searchBarHeight,
@@ -546,5 +951,79 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Light",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.base
+    },
+    contactButton: {
+        /*
+        width: '85%',
+        height: Cons.buttonHeight,
+        alignSelf: 'center',
+        backgroundColor: Theme.color.buttonBackground,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+        */
+
+
+        // width: '85%',
+        width: Dimensions.get('window').width * 0.85,
+        height: Cons.buttonHeight,
+        alignSelf: 'center',
+        backgroundColor: "transparent",
+        borderRadius: 5,
+        borderColor: "rgba(255, 255, 255, 0.8)",
+        borderWidth: 2,
+
+
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    reviewName: {
+        color: 'white',
+        fontSize: 15,
+        fontFamily: "Roboto-Medium"
+    },
+    reviewDate: {
+        // color: 'grey',
+        color: Theme.color.text2,
+        fontSize: 13,
+        fontFamily: "Roboto-Thin"
+    },
+    reviewText: {
+        color: 'silver',
+        // color: Theme.color.text2,
+        fontSize: 15,
+        lineHeight: 22,
+        fontFamily: "Roboto-Regular",
+
+        paddingVertical: Theme.spacing.tiny
+    },
+    notification: {
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
+        height: (8 + 34 + 8) - 12,
+        borderRadius: 5,
+        position: "absolute",
+        top: 0,
+        backgroundColor: Theme.color.notification,
+        zIndex: 10000,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    notificationText: {
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
+        fontFamily: "Roboto-Medium",
+        color: "white",
+        textAlign: 'center'
+    },
+    notificationButton: {
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
