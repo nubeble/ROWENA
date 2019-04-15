@@ -21,6 +21,7 @@ import { Constants, Svg } from "expo";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { sendPushNotification } from './PushNotifications';
+import Dialog from "react-native-dialog";
 
 const DEFAULT_REVIEW_COUNT = 6;
 
@@ -155,6 +156,13 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         if (this._showNotification) {
             this.hideNotification();
+
+            return true;
+        }
+
+        if (this.state.dialogVisible) {
+            this.hideDialog();
+
             return true;
         }
 
@@ -729,6 +737,13 @@ export default class UserMain extends React.Component<InjectedProps> {
                         </TouchableOpacity>
                     </View>
                 }
+
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
 
                 <Toast
                     ref="toast"
