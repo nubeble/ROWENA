@@ -92,7 +92,7 @@ export default class AdvertisementFinish extends React.Component {
                     }}>{contentText}</Text>
                 </View>
 
-                <View style={{ position: 'absolute', top: Dimensions.get('window').height - 80 - Cons.buttonHeight, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <View style={{ position: 'absolute', top: Dimensions.get('window').height - 80 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             this.props.navigation.navigate("profile");

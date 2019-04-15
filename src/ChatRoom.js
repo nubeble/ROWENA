@@ -61,11 +61,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         this.feed = null;
         this.feedCount = 0;
-        this.targetUser = null;
+        this.opponentUser = null;
 
         this.feedUnsubscribe = null;
         this.countUnsubscribe = null;
-        this.targetUserUnsubscribe = null;
+        this.opponentUserUnsubscribe = null;
     }
 
     componentDidMount() {
@@ -133,7 +133,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         if (this.feedUnsubscribe) this.feedUnsubscribe();
         if (this.countUnsubscribe) this.countUnsubscribe();
-        if (this.targetUserUnsubscribe) this.targetUserUnsubscribe();
+        if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
 
         this.closed = true;
     }
@@ -618,7 +618,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
             const uid = customer.uid;
 
-            if (!this.targetUser) {
+            if (!this.opponentUser) {
                 const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
                 if (!userDoc.exists) {
                     this.refs["toast"].show('The user no longer exists.', 500);
@@ -626,27 +626,27 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                     return;
                 }
 
-                const targetUser = userDoc.data();
-                this.targetUser = targetUser;
+                const opponentUser = userDoc.data();
+                this.opponentUser = opponentUser;
 
                 // subscribe here
                 // --
                 const instance = Firebase.subscribeToProfile(uid, user => {
                     if (user === undefined) {
-                        this.targetUser = null;
+                        this.opponentUser = null;
 
                         return;
                     }
 
                     // update
-                    this.targetUser = user;
+                    this.opponentUser = user;
                 });
 
-                this.targetUserUnsubscribe = instance;
+                this.opponentUserUnsubscribe = instance;
                 // --
             }
 
-            const { city, country, receivedCommentsCount } = this.targetUser; // customer
+            const { city, country, receivedCommentsCount } = this.opponentUser; // customer
 
             let count = receivedCommentsCount;
             let address = null;

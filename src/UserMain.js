@@ -57,8 +57,20 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         notification: '',
         opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
+
+    constructor(props) {
+        super(props);
+
+        // this.opponentUser = null;
+
+        this.opponentUserUnsubscribe = null;
+    }
 
     componentDidMount() {
         console.log('UserMain.componentDidMount');
@@ -76,10 +88,52 @@ export default class UserMain extends React.Component<InjectedProps> {
         const host = item.host;
 
         const uid = guest.uid;
+
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
 
         this.setState({ guest: guest, host: host });
+
+
+        // ----
+        /*
+        const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
+        if (!userDoc.exists) {
+            this.refs["toast"].show('The user no longer exists.', 500);
+            return;
+        }
+
+        const opponentUser = userDoc.data();
+        this.opponentUser = opponentUser;
+        */
+
+        // subscribe here
+        // --
+        const instance = Firebase.subscribeToProfile(uid, user => {
+            /*
+            if (user === undefined) {
+                this.opponentUser = null;
+                return;
+            }
+
+            this.opponentUser = user;
+            */
+
+            if (user === undefined) {
+                this.refs["toast"].show('The user no longer exists.', 500);
+                this.setState({ guest: null });
+                return;
+            }
+
+            let { guest } = this.state;
+            guest.receivedCommentsCount = user.receivedCommentsCount;
+            this.setState({ guest });
+        });
+
+        this.opponentUserUnsubscribe = instance;
+        // --
+        // ----
+
 
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
@@ -101,7 +155,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         if (this._showNotification) {
             this.hideNotification();
-
             return true;
         }
 
@@ -198,7 +251,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
-
             return;
         }
 
@@ -252,10 +304,35 @@ export default class UserMain extends React.Component<InjectedProps> {
         // ToDo: test
         if (!place) place = 'Cebu, Philippines';
 
-        const targetUserUid = guest.uid;
+        const opponentUserUid = guest.uid;
 
-        Firebase.addComment(host.uid, targetUserUid, message, name, place, uri); // writer, receiver (m1), message
+        Firebase.addComment(host.uid, opponentUserUid, message, name, place, uri); // writer, receiver (m1), message
     };
+
+    async removeComment(index) {
+        this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
+            const { reviews } = this.commentStore;
+            const { host, guest } = this.state;
+
+            const commentId = reviews[index].review.id;
+            const result = await Firebase.removeComment(host.uid, guest.uid, commentId);
+            if (!result) {
+                this.refs["toast"].show('The user no longer exists.', 500);
+                return;
+            }
+
+            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
+                if (!this.closed) {
+                    // reload from the start
+                    this.setState({ isLoadingFeeds: true });
+                    this.loadReviewFromTheStart();
+
+                    // move scroll top
+                    // this._flatList.scrollToOffset({ offset: 0, animated: false });
+                }
+            });
+        });
+    }
 
     sendPushNotification(message) {
         /*
@@ -295,6 +372,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+
+        if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
 
         this.closed = true;
     }
@@ -435,7 +514,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                 {
                                                     hasImage ?
                                                         <Image
-                                                            style={{ backgroundColor: 'black', width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1 }}
+                                                            style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
                                                             source={{ uri: imageUri }}
                                                         />
                                                         :
@@ -507,6 +586,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             }
                                             ]}
                                             onPress={() => {
+                                                if (!this.state.guest) return;
 
                                                 setTimeout(() => {
                                                     // this.props.navigation.navigate("writeComment");
@@ -670,6 +750,11 @@ export default class UserMain extends React.Component<InjectedProps> {
         console.log ('review', _review.id); // comment
         */
 
+        let isMyComment = false;
+        if (_review.uid === Firebase.user().uid) {
+            isMyComment = true;
+        }
+
         return (
             <View style={{ paddingHorizontal: Theme.spacing.base, paddingVertical: Theme.spacing.small }}>
 
@@ -680,9 +765,11 @@ export default class UserMain extends React.Component<InjectedProps> {
                 */}
 
                 <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
-                    <Image
-                        style={{ backgroundColor: 'black', width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2, borderColor: 'black', borderWidth: 1 }}
-                        source={{ uri: _review.picture }}
+                    <SmartImage
+                        style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                        showSpinner={false}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={_review.picture}
                     />
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
@@ -693,6 +780,19 @@ export default class UserMain extends React.Component<InjectedProps> {
                         }}>{_review.place}</Text>
                     </View>
                 </View>
+
+                {
+                    isMyComment && (
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                onPress={() => this.removeComment(index)}
+                            >
+                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )
+                }
+
             </View>
         );
     }
@@ -850,6 +950,35 @@ export default class UserMain extends React.Component<InjectedProps> {
         });
 
         this._showNotification = false;
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

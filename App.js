@@ -561,18 +561,9 @@ const UserStackNavigator = createStackNavigator(
         userMain: {
             screen: UserMain
         },
+        /*
         writeComment: {
             screen: WriteComment
-        }
-        /*
-        mapModal: {
-            screen: MapScreen
-        },
-        readReviewModal: {
-            screen: ReadAllReviewScreen
-        },
-        writeReviewModal: {
-            screen: WriteReviewScreen
         }
         */
     },

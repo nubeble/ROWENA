@@ -21,7 +21,7 @@ export default class WriteReviewScreen extends React.Component {
         rating: 5,
         invalid: false, // ToDo: not used
         bottomPosition: Dimensions.get('window').height,
-        postButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight, // 80: bottom gap, 45: button height
+        postButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight, // 80: gap
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -78,7 +78,7 @@ export default class WriteReviewScreen extends React.Component {
         */
 
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
-        const postButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 10: bottom gap
+        const postButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 20: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
@@ -86,7 +86,7 @@ export default class WriteReviewScreen extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const postButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: bottom gap
+        const postButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
@@ -285,7 +285,7 @@ export default class WriteReviewScreen extends React.Component {
                     />
                 </View>
 
-                <View style={{ position: 'absolute', top: this.state.postButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                <View style={{ position: 'absolute', top: this.state.postButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post</Text>
                         {

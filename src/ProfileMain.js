@@ -386,7 +386,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 {
                                                     hasImage ?
                                                         <Image
-                                                            style={{ backgroundColor: 'black', width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1 }}
+                                                            style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
                                                             source={{ uri: imageUri }}
                                                         />
                                                         :

@@ -37,7 +37,7 @@ export default class SignUpWithEmail extends React.Component {
         secureText: 'Show',
 
         bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight // 80: bottom gap, 45: button height
+        signUpButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight // 80: gap
     };
 
     componentDidMount() {
@@ -77,7 +77,7 @@ export default class SignUpWithEmail extends React.Component {
     @autobind
     _keyboardDidShow(e) {
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
-        const signUpButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 20: bottom gap
+        const signUpButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 20: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
@@ -85,7 +85,7 @@ export default class SignUpWithEmail extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const signUpButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: bottom gap
+        const signUpButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
@@ -463,7 +463,7 @@ export default class SignUpWithEmail extends React.Component {
                         </View>
                     </View>
 
-                    <View style={{ position: 'absolute', top: this.state.signUpButtonTop, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
+                    <View style={{ position: 'absolute', top: this.state.signUpButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity onPress={() => this.signUp()} style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}>
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Sign up</Text>
                             {

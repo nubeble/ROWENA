@@ -24,7 +24,8 @@ export const Cons = {
     buttonTimeoutLong: 300,
 
     // S9 (692): 40
-    buttonHeight: Dimensions.get('window').height / 17,
+    // buttonHeight: Dimensions.get('window').height / 17,
+    buttonHeight: 40,
 
     // bottomTabBarHeight: Platform.isPad ? 49 : 29, // const DEFAULT_HEIGHT = 49; const COMPACT_HEIGHT = 29;
 
@@ -56,14 +57,6 @@ export const Cons = {
 
         return -12;
     },
-
-    // alert dialog
-    alertWidth: ((Dimensions.get('window').width) * 0.9),
-    alertHeight: ((Dimensions.get('window').height) / 24 * 7),
-    alertButtonWidth: (Dimensions.get('window').width * 0.32),
-    alertButtonHeight: ((Dimensions.get('window').width * 0.32) / 5 * 2),
-    alertButtonMarginBetween: (Dimensions.get('window').width * 0.03),
-    alertButtonPaddingTop: (Dimensions.get('window').height / 80),
 
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
