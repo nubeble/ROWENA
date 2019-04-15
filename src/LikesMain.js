@@ -215,12 +215,19 @@ export default class LikesMain extends React.Component<InjectedProps> {
         for (var i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
-            const value = feeds[i];
+            const feed = feeds[i];
 
-            // if (!value.valid) continue;
+            // if (!feed.valid) continue;
 
-            const placeId = value.placeId;
-            const feedId = value.feedId;
+            const placeId = feed.placeId;
+            const feedId = feed.feedId;
+
+            const picture = feed.picture;
+            const name = feed.name;
+            const placeName = feed.placeName;
+
+
+
 
             if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
                 console.log('post from memory');
@@ -228,6 +235,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 const newFeed = this.feedList.get(feedId);
                 newFeeds.push(newFeed);
             } else {
+                /*
                 const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
                 if (!feedDoc.exists) return;
 
@@ -235,11 +243,28 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 newFeeds.push(newFeed);
 
                 this.feedList.set(feedId, newFeed);
+                */
+                const newFeed = {
+                    name,
+                    placeName,
+                    placeId,
+                    id: feedId,
+                    pictures: {
+                        one: {
+                            uri: picture
+                        }
+                    },
+                    reviewCount: -1,
+                    averageRating: -1
+                };
+
+                newFeeds.push(newFeed);
 
                 // subscribe here
                 // --
                 const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                     if (newFeed === undefined) { // newFeed === undefined if removed
+                        // update this.feedList
                         this.feedList.delete(feedId);
 
                         // update state feed & UI
@@ -263,9 +288,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
                     if (index !== -1) {
                         feeds[index] = newFeed;
+                        !this.closed && this.setState({ feeds });
                     }
-
-                    !this.closed && this.setState({ feeds });
                     // --
                 });
 
@@ -481,64 +505,80 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             }
 
                             // defaultRating, averageRating
-                            const averageRating = item.averageRating;
-
-                            const integer = Math.floor(averageRating);
-
+                            let integer = 0;
                             let number = '';
-                            if (Number.isInteger(averageRating)) {
-                                number = averageRating + '.0';
-                            } else {
-                                number = averageRating.toString();
+
+                            const averageRating = item.averageRating;
+                            if (averageRating !== -1) {
+                                integer = Math.floor(averageRating);
+
+                                if (Number.isInteger(averageRating)) {
+                                    number = averageRating + '.0';
+                                } else {
+                                    number = averageRating.toString();
+                                }
                             }
 
                             return (
-                                <TouchableWithoutFeedback onPress={async () => await this.openPost(item, index)}>
+                                <TouchableWithoutFeedback
+                                    onPress={async () => {
+                                        if (averageRating !== -1 && item.reviewCount !== -1) await this.openPost(item, index);
+                                    }}
+                                >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={styles.picture}
                                             showSpinner={false}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            // uri={item.picture}
                                             uri={item.pictures.one.uri}
                                         />
                                         <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
                                             <Text style={styles.feedItemText}>{placeName}</Text>
                                             {
-                                                item.reviewCount > 0 ?
-                                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                        <View style={{
-                                                            flexDirection: 'row', alignItems: 'center',
-                                                            marginLeft: 2,
-                                                            width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
-                                                        }}>
-                                                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                                <AirbnbRating
-                                                                    count={5}
-                                                                    readOnly={true}
-                                                                    showRating={false}
-                                                                    defaultRating={integer}
-                                                                    size={12}
-                                                                    margin={1}
-                                                                />
-                                                            </View>
-                                                            <Text style={styles.rating}>{number}</Text>
-                                                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                                            <Text style={styles.reviewCount}>{item.reviewCount}</Text>
-                                                        </View>
+                                                item.reviewCount === -1 &&
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                                    <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'center' }}>
+                                                        <RefreshIndicator refreshing total={3} size={3} color={Theme.color.selection} />
                                                     </View>
-                                                    :
-                                                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                        <View style={{
-                                                            marginLeft: 2,
-                                                            width: 36, height: 21, borderRadius: 3,
-                                                            backgroundColor: Theme.color.new,
-                                                            justifyContent: 'center', alignItems: 'center'
-                                                        }}>
-                                                            <Text style={styles.new}>new</Text>
-                                                        </View>
+                                                </View>
+                                            }
+                                            {
+                                                item.reviewCount === 0 &&
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                                    <View style={{
+                                                        marginLeft: 2,
+                                                        width: 36, height: 21, borderRadius: 3,
+                                                        backgroundColor: Theme.color.new,
+                                                        justifyContent: 'center', alignItems: 'center'
+                                                    }}>
+                                                        <Text style={styles.new}>new</Text>
                                                     </View>
+                                                </View>
+                                            }
+                                            {
+                                                item.reviewCount > 0 &&
+                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                                    <View style={{
+                                                        flexDirection: 'row', alignItems: 'center',
+                                                        marginLeft: 2,
+                                                        width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                                    }}>
+                                                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                                            <AirbnbRating
+                                                                count={5}
+                                                                readOnly={true}
+                                                                showRating={false}
+                                                                defaultRating={integer}
+                                                                size={12}
+                                                                margin={1}
+                                                            />
+                                                        </View>
+                                                        <Text style={styles.rating}>{number}</Text>
+                                                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                                                        <Text style={styles.reviewCount}>{item.reviewCount}</Text>
+                                                    </View>
+                                                </View>
                                             }
                                         </View>
                                     </View>
@@ -563,7 +603,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             // this.state.isLoadingFeeds &&
                             this.state.isLoadingFeeds && this.state.loadingType === 200 &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
+                                <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
                             </View>
                         }
 
@@ -619,9 +659,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     this.state.isLoadingFeeds && this.state.loadingType === 100 &&
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator
-                            // animating={true}
+                            animating={true}
                             size="large"
-                            color='white'
+                            // color='white'
+                            color={Theme.color.splash}
                         />
                     </View>
                 }

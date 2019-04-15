@@ -443,7 +443,7 @@ export default class Firebase {
     }
     */
 
-    static async updateLikes(uid, placeId, feedId, name, placeName, averageRating, reviewCount, uri) {
+    static async updateLikes(uid, placeId, feedId, name, placeName, uri) {
         let result;
         // update count to post
         await Firebase.firestore.runTransaction(async transaction => {
@@ -491,6 +491,11 @@ export default class Firebase {
                 const data = { // LikeRef
                     placeId,
                     feedId,
+
+                    picture: uri,
+                    name,
+                    placeName,
+
                     /*
                     name,
                     placeName,

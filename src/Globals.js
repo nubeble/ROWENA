@@ -25,7 +25,8 @@ export const Cons = {
 
     // S9 (692): 40
     // buttonHeight: Dimensions.get('window').height / 17,
-    buttonHeight: 40,
+    // buttonHeight: 40,
+    buttonHeight: Dimensions.get('window').height / 100 * 2 + 28,
 
     // bottomTabBarHeight: Platform.isPad ? 49 : 29, // const DEFAULT_HEIGHT = 49; const COMPACT_HEIGHT = 29;
 

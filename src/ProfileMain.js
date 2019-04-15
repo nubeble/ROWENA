@@ -254,7 +254,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const placeId = item.placeId;
         const feedId = item.feedId;
 
-        if (this.feedList.has(feedId)) {
+        if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
             console.log('post from memory');
             return this.feedList.get(feedId);
         }
@@ -421,7 +421,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Posts You've Reviewed"}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Girls You've Reviewed"}</Text>
                                                 <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>

@@ -1616,7 +1616,7 @@ export default class AdvertisementMain extends React.Component {
                             position: 'absolute', top: 0, left: 0,
                             justifyContent: 'center', alignItems: 'center'
                         }}>
-                            <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} />
+                            <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} color={Theme.color.selection} />
                         </View>
                     }
                 </View>
@@ -1654,7 +1654,7 @@ export default class AdvertisementMain extends React.Component {
                         position: 'absolute', top: 0, left: 0,
                         justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} />
+                        <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} color={Theme.color.selection} />
                     </View>
                 }
             </View>

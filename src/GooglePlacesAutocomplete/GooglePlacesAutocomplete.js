@@ -672,7 +672,8 @@ export default class GooglePlacesAutocomplete extends Component {
             <ActivityIndicator
                 animating={true}
                 size="small"
-                color='grey'
+                // color='grey'
+                color={Theme.color.splash}
             />
         );
     }

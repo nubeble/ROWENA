@@ -469,7 +469,6 @@ export default class Intro extends React.Component {
 
                 let _popularFeeds = [...this.state.popularFeeds];
                 let index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
-
                 if (index !== -1) {
                     console.log('popularFeeds[', index, '] changed.');
                     _popularFeeds[index] = newFeed;

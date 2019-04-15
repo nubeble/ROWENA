@@ -276,7 +276,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                 this.commentStore.loadReviewFromTheStart();
 
                 // move scroll top
-                // this._flatList.scrollToOffset({ offset: 0, animated: false });
+                this._flatList.scrollToOffset({ offset: 0, animated: false });
             }
         });
     }
@@ -331,12 +331,12 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // reload from the start
+                    // refresh
                     this.setState({ isLoadingFeeds: true });
-                    this.loadReviewFromTheStart();
+                    this.commentStore.loadReviewFromTheStart();
 
                     // move scroll top
-                    // this._flatList.scrollToOffset({ offset: 0, animated: false });
+                    this._flatList.scrollToOffset({ offset: 0, animated: false });
                 }
             });
         });
@@ -665,7 +665,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
                             <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator />
+                                <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
                             </View>
                         }
 
