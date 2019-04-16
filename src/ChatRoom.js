@@ -362,7 +362,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                         <TouchableOpacity onPress={async () => await this.openPost()}>
                             <SmartImage
-                                style={{ width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2, marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                style={{
+                                    width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2,
+                                    marginTop: this.state.onKeyboard ? Theme.spacing.tiny : Theme.spacing.base,
+                                    marginBottom: Theme.spacing.tiny
+                                }}
                                 showSpinner={false}
                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                 uri={this.state.titleImageUri}

@@ -562,7 +562,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         </View>
                                         <Text style={styles.name}>{post.name}</Text>
 
-                                        <View style={{ paddingVertical: Theme.spacing.tiny, paddingHorizontal: Theme.spacing.tiny }}>
+                                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>
                                             {/* 1 row */}
                                             <View style={{
                                                 width: '100%',
@@ -666,7 +666,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                             </View>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.small }}>
                                             <MaterialIcons style={{ marginLeft: 1, marginTop: 2 }} name='location-on' color={Theme.color.title} size={16} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
@@ -758,7 +758,6 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                     rotateEnabled={false}
                                                     pitchEnabled={false}
                                                 >
-                                                    {/*
                                                     <MapView.Marker
                                                         coordinate={{
                                                             longitude: post.location.longitude,
@@ -772,7 +771,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                             <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
                                                         </View>
                                                     </MapView.Marker>
-                                                    */}
+                                                    {/*
                                                     <MapView.Circle
                                                         center={{
                                                             latitude: post.location.latitude,
@@ -783,6 +782,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                         strokeColor={Theme.color.selection}
                                                         fillColor={'rgba(62, 165, 255, 0.5)'}
                                                     />
+                                                    */}
                                                 </MapView>
                                             </View>
                                         </TouchableOpacity>

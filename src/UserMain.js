@@ -389,11 +389,11 @@ export default class UserMain extends React.Component<InjectedProps> {
     render() {
         const { reviews } = this.commentStore;
 
-        const hasImage = false; // ToDo
         let name = 'Anonymous';
         let address = "No address registered";
         let reviewText = 'loading...';
         let labelText = null;
+        let imageUri = null;
 
         const { guest } = this.state; // undefined at loading
 
@@ -421,6 +421,9 @@ export default class UserMain extends React.Component<InjectedProps> {
             } else if (count > 1) {
                 labelText = count.toString() + ' reviews from hosts';
             }
+
+            // image
+            if (guest.picture) imageUri = guest.picture;
         }
 
         const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
@@ -520,7 +523,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 {
-                                                    hasImage ?
+                                                    imageUri ?
                                                         <Image
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
                                                             source={{ uri: imageUri }}
@@ -665,7 +668,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         ListFooterComponent={
                             this.state.isLoadingFeeds &&
                             <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
+                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                             </View>
                         }
 

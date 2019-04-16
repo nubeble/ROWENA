@@ -97,7 +97,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
             await this.getSavedFeeds();
 
             // move scroll top
-            this._flatList.scrollToOffset({ offset: 0, animated: true });
+            // this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
 
         /*
@@ -603,7 +603,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             // this.state.isLoadingFeeds &&
                             this.state.isLoadingFeeds && this.state.loadingType === 200 &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
+                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                             </View>
                         }
 

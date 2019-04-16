@@ -97,7 +97,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.getUserFeeds();
 
             // move scroll top
-            if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
+            // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
 
         this.setState({ focused: true });
@@ -323,8 +323,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // if (!profile) return null;
 
         const avatarName = (profile.name) ? profile.name : 'Anonymous'; // ToDo: test
-        // const uri = (profile.picture.uri) ? profile.picture.uri : PreloadImage.user;
-        const hasImage = !!profile.picture.uri;
         const imageUri = profile.picture.uri;
 
         return (
@@ -386,7 +384,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 {
-                                                    hasImage ?
+                                                    imageUri ?
                                                         <Image
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
                                                             source={{ uri: imageUri }}

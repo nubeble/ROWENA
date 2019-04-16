@@ -14,7 +14,9 @@ export type Picture = {
 type FeedRef = {
     placeId: string,
     feedId: string,
-    picture: string // ToDo: update when the origin post changed
+    picture: string, // ToDo: update when the origin post changed
+
+    newReviewAdded: boolean
 };
 
 type ReviewRef = {

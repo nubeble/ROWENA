@@ -210,7 +210,7 @@ export default class ReadAllReviewScreen extends React.Component {
                             ListFooterComponent={
                                 this.state.isLoadingReview &&
                                 <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                    <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
+                                    <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                                 </View>
                             }
 

@@ -126,14 +126,14 @@ export default class Feed extends React.Component<FeedProps> {
                     ListFooterComponent={
                         this.state.isLoadingFeeds &&
                         <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                            <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
+                            <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                         </View>
                     }
 
                     ListEmptyComponent={
                         loading ?
                             <View style={{ height: Dimensions.get('window').height, paddingTop: Dimensions.get('window').height / 12 }}>
-                                <RefreshIndicator refreshing total={4} size={5} color={Theme.color.selection} />
+                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                             </View>
                             :
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

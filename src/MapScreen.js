@@ -114,10 +114,6 @@ export default class MapScreen extends React.Component {
                     // onRegionChange={this.onRegionChange}
                     // onRegionChangeComplete={this.onRegionChangeComplete}
                     >
-
-
-
-                        {/*
                         <MapView.Marker
                             coordinate={{
                                 // latitude: this.state.region.latitude + SPACE,
@@ -133,10 +129,7 @@ export default class MapScreen extends React.Component {
                                 <Image source={this.state.markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
                             </View>
                         </MapView.Marker>
-                        */}
-
-
-
+                        {/*
                         <MapView.Circle
                             // key={(this.state.currentLongitude + this.state.currentLongitude).toString()}
                             center={{
@@ -149,9 +142,7 @@ export default class MapScreen extends React.Component {
                             fillColor={'rgba(62, 165, 255, 0.6)'}
                         // onRegionChangeComplete={this.onRegionChangeComplete.bind(this)}
                         />
-
-
-
+                        */}
                     </MapView>
                 }
 

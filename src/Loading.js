@@ -210,17 +210,17 @@ export default class Loading extends React.Component<InjectedProps> {
                 // const likes = await this.checkUpdateOnLikes();
 
                 // 3. chat
-                const chat = await this.checkUpdateOnChat();
-                if (chat) {
+                const chatResult = await this.checkUpdateOnChat();
+                if (chatResult) {
                     // show badge
                     setTimeout(() => {
                         const screenProps = this.props.screenProps;
                         screenProps.changeBadgeOnChat(true, 0);
-                    }, 2000); // 2 sec
+                    }, 2000); // after 2 sec
                 }
 
                 // 4. profile
-                // const profile = await this.checkUpdateOnProfile();
+                // const profileResult = await this.checkUpdateOnProfile();
                 // owner: 내가 올린 post에 리뷰
                 // customer: 내가 올린 review에 답글
 

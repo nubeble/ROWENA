@@ -343,10 +343,9 @@ export default class Firebase {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
-
-                    // used in Profile tab (user created post)
                     picture: feed.pictures.one.uri, // ToDo: update this when the post changed
-                    // valid: true // ToDo: update this after removing
+
+                    newReviewAdded: false
                 })
             };
 
@@ -522,7 +521,7 @@ export default class Firebase {
         return true;
     }
 
-    static async addReview(placeId, feedId, userUid, comment, rating) {
+    static async addReview(ownerUid, placeId, feedId, userUid, comment, rating) {
         const id = Util.uid();
         const timestamp = Firebase.getTimestamp();
 
@@ -538,6 +537,7 @@ export default class Firebase {
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
+        const ownerRef = Firebase.firestore.collection("users").doc(ownerUid);
 
         let result;
 
@@ -616,6 +616,21 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
+
+
+
+            // ToDo: update newReviewAdded in owner user profile
+            /*
+
+            let ownerData = {
+                feeds: 
+            };
+
+            transaction.update(ownerRef, ownerData);
+            */
+
+
+
         }).then(() => {
             // console.log("Transaction successfully committed!");
             result = true;

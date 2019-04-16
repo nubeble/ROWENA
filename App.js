@@ -164,13 +164,6 @@ export default class App extends React.Component {
             if (data) {
                 switch (Number(data.type)) {
                     case Cons.pushNotification.chat: {
-                        /*
-                        const message = data.userData.message;
-                        const chatRoomId = data.userData.chatRoomId;
-                        */
-
-                        // console.log('Vars.currentScreenName', Vars.currentScreenName);
-
                         if (Vars.currentScreenName !== 'ChatMain') {
                             // show badge
                             // this.setState({ badgeOnChatCount: this.state.badgeOnChatCount + 1, showBadgeOnChat: true });
@@ -179,24 +172,28 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.review: {
-                        // ToDo: mark on the post
-
-                        // show badge
-                        this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
+                        if (Vars.currentScreenName !== 'ProfileMain') {
+                            // show badge
+                            this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
+                        }
                     } break;
 
                     case Cons.pushNotification.reply: {
-                        // ToDo: mark on the post in the Posts You've Reviewed
+                        if (Vars.currentScreenName !== 'ProfileMain') {
+                            // show badge
+                            this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
 
-                        // show badge
-                        this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
+                            // ToDo: mark on the post in the Posts You've Reviewed (process this in renderItem ProfileMain)
+                        }
                     } break;
 
                     case Cons.pushNotification.comment: {
-                        // ToDo: mark on the comment list in the Edit Profile
+                        if (Vars.currentScreenName !== 'ProfileMain') {
+                            // show badge
+                            this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
 
-                        // show badge
-                        this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
+                            // ToDo: mark on the comment list in the Edit Profile (process this in renderItem ProfileMain)
+                        }
                     } break;
                 }
             }
@@ -208,7 +205,6 @@ export default class App extends React.Component {
                         this.setState({ showBadgeOnChat: false, badgeOnChatCount: -1 });
 
                         const message = data.userData.message;
-
                         const chatRoomId = data.userData.chatRoomId;
 
                         const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
@@ -220,9 +216,10 @@ export default class App extends React.Component {
                         this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
 
                         const message = data.userData.message;
+                        const placeId = data.userData.placeId;
+                        const feedId = data.userData.feedId;
 
                         // move to detail
-                        const placeId = data.userData.placeId;
                         const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
                         if (!placeDoc.exists) return;
 
@@ -230,7 +227,6 @@ export default class App extends React.Component {
                             feedSize: placeDoc.data().count
                         };
 
-                        const feedId = data.userData.feedId;
                         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
                         if (!feedDoc.exists) return;
 
@@ -239,6 +235,7 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.reply: {
+                        // ToDo
                         /*
                         const message = data.userData.message;
 
@@ -261,6 +258,7 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.comment: {
+                        // ToDo
                     } break;
                 }
             }
@@ -365,8 +363,6 @@ import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewScreen from './src/ReadAllReviewScreen';
-import WriteComment from './src/WriteComment';
-
 import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
 import AdvertisementStart from './src/AdvertisementStart';
