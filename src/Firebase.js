@@ -344,7 +344,6 @@ export default class Firebase {
                     placeId: feed.placeId,
                     feedId: feed.id,
                     picture: feed.pictures.one.uri, // ToDo: update this when the post changed
-
                     newReviewAdded: false
                 })
             };
@@ -354,10 +353,10 @@ export default class Firebase {
     }
 
     static async removeFeed(uid, placeId, feedId) {
+        let result;
+
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
-
-        let result;
 
         await Firebase.firestore.runTransaction(async transaction => {
             // 1. update the count first!
@@ -444,9 +443,11 @@ export default class Firebase {
 
     static async updateLikes(uid, placeId, feedId, name, placeName, uri) {
         let result;
+
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+
         // update count to post
         await Firebase.firestore.runTransaction(async transaction => {
-            const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
             const postDoc = await transaction.get(feedRef);
             if (!postDoc.exists) throw 'Post document does not exist!';
 
@@ -521,7 +522,41 @@ export default class Firebase {
         return true;
     }
 
+    static async updateReviewChecked(uid, placeId, feedId, checked) {
+        let result;
+
+        const ownerRef = Firebase.firestore.collection("users").doc(uid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const ownerDoc = await transaction.get(ownerRef);
+            if (!ownerDoc.exists) throw 'Owner document does not exist!';
+
+            let { feeds } = ownerDoc.data();
+            for (var i = 0; i < feeds.length; i++) {
+                let feed = feeds[i];
+                if (feed.placeId === placeId && feed.feedId === feedId) {
+                    // update
+                    feed.newReviewAdded = checked;
+                    feeds[i] = feed;
+
+                    transaction.update(ownerRef, { feeds });
+
+                    break;
+                }
+            }
+        }).then(() => {
+            result = true;
+        }).catch((error) => {
+            console.log('Firebase.updateReviewChecked', error);
+            result = false;
+        });
+
+        return result;
+    }
+
     static async addReview(ownerUid, placeId, feedId, userUid, comment, rating) {
+        let result;
+
         const id = Util.uid();
         const timestamp = Firebase.getTimestamp();
 
@@ -534,12 +569,9 @@ export default class Firebase {
         };
 
         // update - averageRating, reviewCount, reviews, stats
-
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
-        const ownerRef = Firebase.firestore.collection("users").doc(ownerUid);
-
-        let result;
+        // const ownerRef = Firebase.firestore.collection("users").doc(ownerUid);
 
         await Firebase.firestore.runTransaction(async transaction => {
             const feedDoc = await transaction.get(feedRef);
@@ -619,20 +651,30 @@ export default class Firebase {
 
 
 
-            // ToDo: update newReviewAdded in owner user profile
+            // update newReviewAdded in owner user profile
             /*
+            const ownerDoc = await transaction.get(ownerRef);
+            if (!ownerDoc.exists) throw 'Owner document does not exist!';
 
-            let ownerData = {
-                feeds: 
-            };
+            let { feeds } = ownerDoc.data();
 
-            transaction.update(ownerRef, ownerData);
+            for (var i = 0; i < feeds.length; i++) {
+                let feed = feeds[i];
+                if (feed.placeId === placeId && feed.feedId === feedId) {
+                    // update
+                    feed.newReviewAdded = true;
+                    feeds[i] = feed;
+
+                    break;
+                }
+            }
+
+            transaction.update(ownerRef, { feeds });
             */
 
 
 
         }).then(() => {
-            // console.log("Transaction successfully committed!");
             result = true;
         }).catch((error) => {
             console.log('Firebase.addReview', error);
@@ -644,10 +686,15 @@ export default class Firebase {
         // add
         await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
-        return true;
+        // update owner profile
+        result = await Firebase.updateReviewChecked(ownerUid, placeId, feedId, true);
+
+        return result;
     };
 
     static async removeReview(placeId, feedId, reviewId, userUid) {
+        let result;
+
         // get review
         /*
         const reviewDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId).get();
@@ -663,7 +710,6 @@ export default class Firebase {
         if (!reviewDoc.exists) return false;
         const rating = reviewDoc.data().rating; // reviewDoc.data(): rating, comment, timestamp
 
-        let result;
         // update - averageRating, reviewCount, reviews
         await Firebase.firestore.runTransaction(async transaction => {
             const feedDoc = await transaction.get(feedRef);
@@ -819,6 +865,8 @@ export default class Firebase {
     // comment
     // --
     static async addComment(uid, targetUid, comment, name, place, picture) { // uid: writer, targetUid: receiver, comment: string
+        let result;
+
         const id = Util.uid(); // comment id
         const timestamp = Firebase.getTimestamp();
 
@@ -835,8 +883,6 @@ export default class Firebase {
         const writerRef = Firebase.firestore.collection("users").doc(uid); // writer (me)
         const receiverRef = Firebase.firestore.collection("users").doc(targetUid); // receiver
         const commentRef = receiverRef.collection("comments").doc(id);
-
-        let result;
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(receiverRef);
@@ -877,11 +923,11 @@ export default class Firebase {
     };
 
     static async removeComment(uid, targetUid, commentId) { // uid: writer, userUid: receiver
+        let result;
+
         const writerRef = Firebase.firestore.collection("users").doc(uid); // Me (writer)
         const receiverRef = Firebase.firestore.collection("users").doc(targetUid); // You (receiver)
         const commentRef = receiverRef.collection("comments").doc(commentId);
-
-        let result;
 
         await Firebase.firestore.runTransaction(async transaction => {
             // update reviewCount in user (receiver)

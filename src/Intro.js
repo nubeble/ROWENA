@@ -468,7 +468,7 @@ export default class Intro extends React.Component {
                 }
 
                 let _popularFeeds = [...this.state.popularFeeds];
-                let index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+                const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
                 if (index !== -1) {
                     console.log('popularFeeds[', index, '] changed.');
                     _popularFeeds[index] = newFeed;
@@ -544,7 +544,7 @@ export default class Intro extends React.Component {
                 }
 
                 let _recentFeeds = [...this.state.recentFeeds];
-                let index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+                const index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
                 if (index !== -1) {
                     console.log('recentFeeds[', index, '] changed.');
                     _recentFeeds[index] = newFeed;

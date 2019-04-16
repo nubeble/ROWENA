@@ -220,9 +220,14 @@ export default class Loading extends React.Component<InjectedProps> {
                 }
 
                 // 4. profile
-                // const profileResult = await this.checkUpdateOnProfile();
-                // owner: 내가 올린 post에 리뷰
-                // customer: 내가 올린 review에 답글
+                const profileResult = await this.checkUpdateOnProfile();
+                if (profileResult) {
+                    // show badge
+                    setTimeout(() => {
+                        const screenProps = this.props.screenProps;
+                        screenProps.changeBadgeOnProfile(true, 0);
+                    }, 2000); // after 2 sec
+                }
 
 
 
@@ -293,5 +298,34 @@ export default class Loading extends React.Component<InjectedProps> {
         }
 
         return true;
+    }
+
+    async checkUpdateOnProfile() {
+        // 1. owner의 경우, 내가 올린 post에 리뷰가 달린 경우
+        // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
+        // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우
+
+
+        // 1.
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+
+        if (profile) {
+            const feeds = profile.feeds;
+            for (var i = 0; i < feeds.length; i++) {
+                const feed = feeds[i];
+                if (feed.newReviewAdded) {
+                    return true;
+                }
+            }
+        } else {
+            console.log('Loading.checkUpdateOnProfile', 'profile is null!');
+        }
+
+        // ToDo: check 2, 3
+
+
+
+        return false;
     }
 }

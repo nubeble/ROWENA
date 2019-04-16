@@ -362,7 +362,7 @@ import Explore from './src/Explore';
 import Post from './src/Post';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
-import ReadAllReviewScreen from './src/ReadAllReviewScreen';
+import ReadAllReviewsScreen from './src/ReadAllReviewsScreen';
 import EditMain from './src/EditMain';
 import CheckMain from './src/CheckMain';
 import AdvertisementStart from './src/AdvertisementStart';
@@ -414,7 +414,7 @@ const IntroStackNavigator = createStackNavigator(
         // introHome: { screen: IntroModalNavigatorWrapper },
         introHome: { screen: Intro },
         introPost: { screen: Post },
-        // readReview: { screen: ReadAllReviewScreen }
+        // readReview: { screen: ReadAllReviewsScreen }
     },
     {
         mode: 'card',
@@ -450,7 +450,7 @@ const HomeStackNavigator = createStackNavigator(
         // home: { screen: ExploreModalNavigatorWrapper },
         home: { screen: Explore },
         detail: { screen: Post },
-        // readReview: { screen: ReadAllReviewScreen }
+        // readReview: { screen: ReadAllReviewsScreen }
     },
     {
         mode: 'card',
@@ -517,7 +517,7 @@ const PostStackNavigator = createStackNavigator(
             screen: MapScreen
         },
         readReviewModal: {
-            screen: ReadAllReviewScreen
+            screen: ReadAllReviewsScreen
         },
         writeReviewModal: {
             screen: WriteReviewScreen
@@ -1046,7 +1046,7 @@ const MainStackNavigator = createStackNavigator(
         mapSearch: { screen: MapSearchStackNavigatorWrapper },
 
         map: { screen: MapScreen },
-        readReview: { screen: ReadAllReviewScreen },
+        readReview: { screen: ReadAllReviewsScreen },
         writeReview: { screen: WriteReviewScreen },
         chatRoom: { screen: ChatRoomStackNavigatorWrapper },
 

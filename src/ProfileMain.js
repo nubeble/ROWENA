@@ -35,6 +35,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         refreshing: false,
         totalFeedsSize: 0,
         focused: false,
+        showPostIndicator: -1,
 
         dialogVisible: false,
         dialogTitle: '',
@@ -228,7 +229,35 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.onLoading = false;
     }
 
+    async postClick(item) {
+        if (item.newReviewAdded) {
+            // update newReviewAdded in user profile
+            const { profile } = this.props.profileStore;
+            // await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
+            Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
+
+            // update state
+            let feeds = [...this.state.feeds];
+            const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
+            if (index !== -1) {
+                let feed = feeds[index];
+                feed.newReviewAdded = false;
+                feeds[index] = feed;
+                !this.closed && this.setState({ feeds });
+            }
+        }
+
+        await this.openPost(item);
+    }
+
     async openPost(item) {
+        // show indicator
+        const feeds = [...this.state.feeds];
+        const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
+        if (index !== -1) {
+            !this.closed && this.setState({ showPostIndicator: index });
+        }
+
         const post = await this.getPost(item);
 
         if (!post) {
@@ -248,6 +277,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // setTimeout(async () => {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
+
+        // hide indicator
+        !this.closed && this.setState({ showPostIndicator: -1 });
     }
 
     async getPost(item) {
@@ -566,10 +598,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
+                            const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
+
                             return (
-                                <TouchableWithoutFeedback
-                                    onPress={async () => await this.openPost(item)}
-                                >
+                                <TouchableWithoutFeedback onPress={async () => await this.postClick(item)}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={styles.picture}
@@ -577,7 +609,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.picture}
                                         />
-
                                         {/*
                                             <View style={styles.content}>
                                                 <Text style={{
@@ -589,6 +620,27 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }}>{item.city}</Text>
                                             </View>
                                             */}
+                                        {
+                                            item.newReviewAdded &&
+                                            <View style={{
+                                                position: 'absolute',
+                                                top: 3,
+                                                right: 3,
+                                                backgroundColor: 'red',
+                                                borderRadius: badgeWidth / 2,
+                                                width: badgeWidth,
+                                                height: badgeWidth
+                                            }} />
+                                        }
+                                        {
+                                            this.state.showPostIndicator === index &&
+                                            <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: 'center', alignItems: 'center' }}>
+                                                <ActivityIndicator animating size={'small'} color={'white'} />
+                                                {/*
+                                                <RefreshIndicator refreshing total={3} size={4} />
+                                                */}
+                                            </View>
+                                        }
                                     </View>
                                 </TouchableWithoutFeedback>
                             );

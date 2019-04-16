@@ -37,7 +37,7 @@ export default class SignUpWithEmail extends React.Component {
         secureText: 'Show',
 
         bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight // 80: gap
+        signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight // 60: gap
     };
 
     componentDidMount() {
@@ -77,7 +77,7 @@ export default class SignUpWithEmail extends React.Component {
     @autobind
     _keyboardDidShow(e) {
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
-        const signUpButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 20: gap
+        const signUpButtonTop = bottomPosition - 10 - Cons.buttonHeight; // 10: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
@@ -85,7 +85,7 @@ export default class SignUpWithEmail extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const signUpButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: gap
+        const signUpButtonTop = bottomPosition - 60 - Cons.buttonHeight; // 60: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }

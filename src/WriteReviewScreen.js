@@ -21,7 +21,7 @@ export default class WriteReviewScreen extends React.Component {
         rating: 5,
         invalid: false, // ToDo: not used
         bottomPosition: Dimensions.get('window').height,
-        postButtonTop: Dimensions.get('window').height - 80 - Cons.buttonHeight, // 80: gap
+        postButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -78,7 +78,7 @@ export default class WriteReviewScreen extends React.Component {
         */
 
         const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
-        const postButtonTop = bottomPosition - 20 - Cons.buttonHeight; // 20: gap
+        const postButtonTop = bottomPosition - 10 - Cons.buttonHeight; // 10: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
@@ -86,7 +86,7 @@ export default class WriteReviewScreen extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const postButtonTop = bottomPosition - 80 - Cons.buttonHeight; // 80: gap
+        const postButtonTop = bottomPosition - 60 - Cons.buttonHeight; // 60: gap
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }

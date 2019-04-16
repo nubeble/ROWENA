@@ -93,20 +93,33 @@ export default class Post extends React.Component<InjectedProps> {
         !this.closed && this.setState({ writeRating: 0 });
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
-        // reload reviews
         if (result) {
-            // const { post } = this.props.navigation.state.params;
+            // 1. reload reviews
             const post = this.state.post;
             const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
             this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
-            // 1.
+            // 2. reload review count & calc chart
             const newPost = await this.reloadPost(post.placeId, post.id);
             const newChart = this.getChartInfo(newPost);
             !this.closed && this.setState({ post: newPost, chartInfo: newChart });
 
-            // this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
+            this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
         }
+    }
+
+    async initFromReadAllReviews() { // back from read all reviews
+        // 1. reload reviews
+        const post = this.state.post;
+        const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+        this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+
+        // 2. reload review count & calc chart
+        const newPost = await this.reloadPost(post.placeId, post.id);
+        const newChart = this.getChartInfo(newPost);
+        !this.closed && this.setState({ post: newPost, chartInfo: newChart });
+
+        this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
     }
 
     async reloadPost(placeId, feedId) {
@@ -1580,7 +1593,8 @@ export default class Post extends React.Component<InjectedProps> {
                                     reviewStore: this.reviewStore,
                                     isOwner: this.state.isOwner,
                                     placeId: this.props.navigation.state.params.post.placeId,
-                                    feedId: this.props.navigation.state.params.post.id
+                                    feedId: this.props.navigation.state.params.post.id,
+                                    initFromReadAllReviews: () => this.initFromReadAllReviews()
                                 });
                             // }, Cons.buttonTimeoutShort);
                         }}
@@ -1631,7 +1645,13 @@ export default class Post extends React.Component<InjectedProps> {
             }
             */
 
-            this.props.navigation.navigate("writeReview", { post: post, rating: rating, initFromWriteReview: (result) => this.initFromWriteReview(result) });
+            this.props.navigation.navigate("writeReview",
+                {
+                    post: post,
+                    rating: rating,
+                    initFromWriteReview: (result) => this.initFromWriteReview(result)
+                }
+            );
         }, Cons.buttonTimeoutLong);
     }
 
@@ -1830,13 +1850,12 @@ export default class Post extends React.Component<InjectedProps> {
                 // this._reply.blur();
                 if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
 
-                // reload reviews
-                // const { post } = this.props.navigation.state.params;
+                // 1. reload reviews
                 const post = this.state.post;
                 const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                 this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
-                // 2.
+                // 2. reload review count & calc chart
                 const newPost = await this.reloadPost(post.placeId, post.id);
                 const newChart = this.getChartInfo(newPost);
                 !this.closed && this.setState({ post: newPost, chartInfo: newChart });
@@ -1885,11 +1904,11 @@ export default class Post extends React.Component<InjectedProps> {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, async () => {
                 if (!this.closed) {
-                    // refresh UI
+                    // 1. reload reviews
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                     this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
-                    // 3.
+                    // 2. reload review count & calc chart
                     const newPost = await this.reloadPost(post.placeId, post.id);
                     const newChart = this.getChartInfo(newPost);
                     !this.closed && this.setState({ post: newPost, chartInfo: newChart });
@@ -1915,11 +1934,11 @@ export default class Post extends React.Component<InjectedProps> {
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, async () => {
                 if (!this.closed) {
-                    // refresh UI
+                    // 1. reload reviews
                     const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
                     this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
-                    // 4.
+                    // 2. reload review count & calc chart
                     const newPost = await this.reloadPost(post.placeId, post.id);
                     const newChart = this.getChartInfo(newPost);
                     !this.closed && this.setState({ post: newPost, chartInfo: newChart });
