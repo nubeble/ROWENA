@@ -90,7 +90,6 @@ const theme: Theme = {
         placeholder: "rgb(160, 160, 160)",
         skeleton1: "#505050",
         skeleton2: "#606060",
-        // buttonBackground: "rgb(62, 165, 255)",
         buttonBackground: "#CD5E77", // splash
         buttonText: 'white',
         new: "#CD5E77", // splash

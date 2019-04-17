@@ -640,7 +640,8 @@ export default class Firebase {
             const item = {
                 placeId: placeId,
                 feedId: feedId,
-                reviewId: id
+                reviewId: id,
+                replyAdded: false
             };
 
             let data = {

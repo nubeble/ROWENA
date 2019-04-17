@@ -203,8 +203,8 @@ export default class Loading extends React.Component<InjectedProps> {
                 // ToDo: check updates (chat first.. post, likes, review, reply later)
 
                 // 1. home
-                // const home = await this.checkUpdateOnHome();
                 // 새로 등록된 girls
+                // const home = await this.checkUpdateOnHome();
 
                 // 2. likes
                 // const likes = await this.checkUpdateOnLikes();
@@ -318,11 +318,22 @@ export default class Loading extends React.Component<InjectedProps> {
                     return true;
                 }
             }
-        } else {
-            console.log('Loading.checkUpdateOnProfile', 'profile is null!');
         }
 
-        // ToDo: check 2, 3
+        // ToDo: check 2
+        // replyAdded
+        if (profile) {
+            const reviews = profile.feeds;
+            for (var i = 0; i < reviews.length; i++) {
+                const review = reviews[i];
+                if (review.replyAdded) {
+                    return true;
+                }
+            }
+        }
+
+
+        // ToDo: check 3
 
 
 

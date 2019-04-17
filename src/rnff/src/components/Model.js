@@ -21,7 +21,8 @@ type FeedRef = {
 type ReviewRef = {
     placeId: string,
     feedId: string,
-    reviewId: string
+    reviewId: string,
+    replyAdded: boolean
 };
 
 type ReplyRef = {
@@ -61,7 +62,7 @@ export type Profile = {
     // location: Location,
     about: string,
     feeds: FeedRef[],
-    reviews: ReviewRef[],
+    reviews: ReviewRef[], // 내가 남긴 review
     replies: ReplyRef[],
     likes: LikeRef[],
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
