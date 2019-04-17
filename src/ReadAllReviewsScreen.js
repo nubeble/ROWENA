@@ -676,7 +676,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
-                // refresh all
+                // reload
                 /*
                 const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
                 this.refreshReviews(placeId, feedId, 6);
@@ -715,7 +715,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // refresh all
+                    // reload
                     // this.refreshReviews(placeId, feedId, 6);
                     this.setState({ isLoadingReview: true });
                     this.loadReviewFromTheStart();
@@ -739,7 +739,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // refresh all
+                    // reload
                     // this.refreshReviews(placeId, feedId, 6);
                     this.setState({ isLoadingReview: true });
                     this.loadReviewFromTheStart();
