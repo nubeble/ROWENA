@@ -73,8 +73,8 @@ type Theme = {
 
 const theme: Theme = {
     color: {
-        splash: "#FEBFD4",
-        background: "rgb(40, 40, 40)",
+        splash: "#CD5E77",
+        background: '#282828', // "rgb(40, 40, 40)"
         component: "rgb(61, 61, 61)",
         highlight: "rgb(33, 33, 33)",
         line: "rgb(62, 62, 62)",

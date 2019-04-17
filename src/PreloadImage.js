@@ -15,7 +15,7 @@ const Avatar8 = require('../assets/place/avatar8.jpg');
 const Avatar9 = require('../assets/place/avatar9.jpg');
 */
 
-const user = require('../assets/user.png');
+const user = require('../assets/icon/user.png');
 const birth = require('../assets/icon/birth.png');
 const bra = require('../assets/icon/bra.png');
 const ruler = require('../assets/icon/ruler.png');
@@ -33,7 +33,7 @@ const wait = require('../assets/sample/wait.png');
 const keyboard = require('../assets/sample/keyboard.png');
 
 // emoji
-const pin = require('../assets/pin.png');
+const pin = require('../assets/icon/pin.png');
 const emoji0 = require('../assets/emoji/0.png');
 const emoji1 = require('../assets/emoji/1.png');
 const emoji2 = require('../assets/emoji/2.png');
