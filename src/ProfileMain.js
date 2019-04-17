@@ -472,7 +472,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
-                                                <MaterialCommunityIcons name='square-edit-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                <Feather name='edit-3' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -515,7 +515,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
-                                                <Ionicons name='md-log-out' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                <AntDesign name='logout' color={Theme.color.text2} size={22} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 

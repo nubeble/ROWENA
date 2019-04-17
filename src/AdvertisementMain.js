@@ -6,7 +6,7 @@ import {
 import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import { Ionicons, AntDesign, FontAwesome } from 'react-native-vector-icons';
+import { Ionicons, AntDesign } from 'react-native-vector-icons';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
 import * as firebase from "firebase";
@@ -963,7 +963,7 @@ export default class AdvertisementMain extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up
                             }}>
-                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TextInput
@@ -1012,7 +1012,7 @@ export default class AdvertisementMain extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up
                             }}>
-                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     {/* picker */}
@@ -1063,7 +1063,7 @@ export default class AdvertisementMain extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up
                             }}>
-                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
@@ -1200,7 +1200,7 @@ export default class AdvertisementMain extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up
                             }}>
-                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
@@ -1267,7 +1267,7 @@ export default class AdvertisementMain extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up
                             }}>
-                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
@@ -1435,7 +1435,7 @@ export default class AdvertisementMain extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up
                             }}>
-                            <FontAwesome name='info-circle' color={Theme.color.text5} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity

@@ -90,9 +90,10 @@ const theme: Theme = {
         placeholder: "rgb(160, 160, 160)",
         skeleton1: "#505050",
         skeleton2: "#606060",
-        buttonBackground: "rgb(62, 165, 255)",
+        // buttonBackground: "rgb(62, 165, 255)",
+        buttonBackground: "#CD5E77", // splash
         buttonText: 'white',
-        new: "#FFB347",
+        new: "#CD5E77", // splash
         chartBarBackground: "#7B7B7B",
         chartBar: '#f1c40f',
         notification: '#FFBB33',

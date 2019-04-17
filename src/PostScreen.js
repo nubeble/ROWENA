@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Constants, Svg, Haptic } from "expo";
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -510,7 +510,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 }}
                                 onPress={() => this.edit()}
                             >
-                                <Ionicons name="md-create" color="rgba(255, 255, 255, 0.8)" size={24} />
+                                <Feather name="edit-3" color="rgba(255, 255, 255, 0.8)" size={24} />
                             </TouchableOpacity>
                             :
                             <TouchableWithoutFeedback onPress={this.toggle}>
