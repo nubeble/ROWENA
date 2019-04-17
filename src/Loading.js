@@ -106,7 +106,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 {
                     this.state.showIndicator &&
                     <View style={{
-                        position: 'absolute', top: Dimensions.get('window').height / 2 + 50,
+                        position: 'absolute', top: Dimensions.get('window').height / 2 + 68, // 68: icon height / 2
                         width: '100%', height: 30, justifyContent: 'center', alignItems: 'center'
                     }}>
                         <RefreshIndicator color='white' />
