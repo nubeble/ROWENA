@@ -287,7 +287,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 13.7236856;
         const LONGITUDE = 100.5368514;
         const location = {
-            description: 'RANDOM, Thung Maha Mek, Sathon, Bangkok, Thailand',
+            description: '?, Thung Maha Mek, Sathon, Bangkok, Thailand',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -372,7 +372,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 12.9503984;
         const LONGITUDE = 100.8933377;
         const location = {
-            description: 'RANDOM, 333 North Pattaya Road, Pattaya City, Amphoe Bang Lamung, Chon Buri, Thailand',
+            description: '?, 333 North Pattaya Road, Pattaya City, Amphoe Bang Lamung, Chon Buri, Thailand',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -457,7 +457,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 10.8063619;
         const LONGITUDE = 106.7062009;
         const location = {
-            description: 'RANDOM, 125/51/25 Hẻm 47/52 Bùi Đình Túy, Ward Number 24, Bình Thạnh, Ho Chi Minh City, Vietnam',
+            description: '?, 125/51/25 Hẻm 47/52 Bùi Đình Túy, Ward Number 24, Bình Thạnh, Ho Chi Minh City, Vietnam',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -542,7 +542,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 21.0246754;
         const LONGITUDE = 105.852382;
         const location = {
-            description: 'RANDOM, 34 Hai Bà Trưng, Trang Tien, Hoàn Kiếm, Hanoi, Vietnam',
+            description: '?, 34 Hai Bà Trưng, Trang Tien, Hoàn Kiếm, Hanoi, Vietnam',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -786,7 +786,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 10.3162864;
         const LONGITUDE = 123.9011798;
         const location = {
-            description: 'RANDOM, 37 Cebu Transcentral Highway, Cebu City, Cebu, Philippines',
+            description: '?, 37 Cebu Transcentral Highway, Cebu City, Cebu, Philippines',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -871,7 +871,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 17.9696983;
         const LONGITUDE = 102.5970396;
         const location = {
-            description: 'RANDOM, Crowne Plaza Vientiane, Vientiane, Laos',
+            description: '?, Crowne Plaza Vientiane, Vientiane, Laos',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -956,7 +956,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 11.530557;
         const LONGITUDE = 104.925715;
         const location = {
-            description: 'RANDOM, 831c Preah Monivong Boulevard (93), Phnom Penh, Cambodia',
+            description: '?, 831c Preah Monivong Boulevard (93), Phnom Penh, Cambodia',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -1041,7 +1041,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 22.1997222;
         const LONGITUDE = 113.5463889;
         const location = {
-            description: 'RANDOM, Macau Island, Macau',
+            description: '?, Macau Island, Macau',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -1126,7 +1126,7 @@ export default class Admin extends React.Component {
         const LATITUDE = -6.227615;
         const LONGITUDE = 106.8400149;
         const location = {
-            description: 'RANDOM, Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia',
+            description: '?, Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
@@ -1211,7 +1211,7 @@ export default class Admin extends React.Component {
         const LATITUDE = 3.145832999999999;
         const LONGITUDE = 101.695556;
         const location = {
-            description: 'RANDOM, Central Market, Kuala Lumpur City Centre, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia',
+            description: '?, Central Market, Kuala Lumpur City Centre, Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };

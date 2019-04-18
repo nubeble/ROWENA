@@ -31,6 +31,7 @@ const find = require('../assets/sample/find.png');
 const chat = require('../assets/sample/chat.png');
 const wait = require('../assets/sample/wait.png');
 const keyboard = require('../assets/sample/keyboard.png');
+const review = require('../assets/sample/review.png');
 
 // emoji
 const pin = require('../assets/icon/pin.png');
@@ -73,6 +74,7 @@ export default class PreloadImage {
     static chat = chat;
     static wait = wait;
     static keyboard = keyboard;
+    static review = review;
 
     static pin = pin;
     static emoji0 = emoji0;
@@ -117,6 +119,7 @@ export default class PreloadImage {
                 PreloadImage.chat,
                 PreloadImage.wait,
                 PreloadImage.keyboard,
+                PreloadImage.review,
 
                 PreloadImage.pin,
                 PreloadImage.emoji0,

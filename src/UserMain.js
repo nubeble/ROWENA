@@ -1115,7 +1115,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium"
     },
     reviewDate: {
-        color: Theme.color.text2,
+        color: Theme.color.text3,
         fontSize: 13,
         fontFamily: "Roboto-Light"
     },

@@ -343,7 +343,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     signUpWithEmailButton: {
-        marginTop: Dimensions.get('window').height / 40,
+        // marginTop: Dimensions.get('window').height / 40,
+        marginTop: 18,
 
         backgroundColor: "transparent",
         borderRadius: 5,
@@ -356,7 +357,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     signUpWithMobileButton: {
-        marginTop: Dimensions.get('window').height / 40,
+        // marginTop: Dimensions.get('window').height / 40,
+        marginTop: 18,
 
         backgroundColor: "transparent",
         borderRadius: 5,

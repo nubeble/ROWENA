@@ -1241,11 +1241,20 @@ export default class Post extends React.Component<InjectedProps> {
                     <Text style={{
                         // paddingLeft: 5,
                         color: Theme.color.text2,
-                        fontSize: 16,
+                        fontSize: 18,
                         lineHeight: 34,
                         fontFamily: "Roboto-Light",
                         // backgroundColor: 'green'
                     }}>{reviewCountText}</Text>
+                    {/*
+                    <Text style={{
+                        color: Theme.color.text2,
+                        paddingTop: 6,
+                        fontSize: 18,
+                        fontFamily: "Roboto-Light",
+                        // backgroundColor: 'green'
+                    }}>{reviewCountText}</Text>
+                    */}
                 </View>
 
                 <Text style={{
@@ -1531,7 +1540,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.removeReview(index)}
                                 >
-                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
+                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -1564,7 +1573,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -1577,7 +1586,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
-                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Reply</Text>
+                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -2186,7 +2195,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium",
     },
     reviewDate: {
-        color: Theme.color.text2,
+        color: Theme.color.text3,
         fontSize: 12,
         fontFamily: "Roboto-Light",
         marginLeft: 'auto'
@@ -2212,7 +2221,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-MediumItalic"
     },
     replyDate: {
-        color: Theme.color.text2,
+        color: Theme.color.text3,
         fontSize: 12,
         fontFamily: "Roboto-Light",
         marginLeft: 'auto'

@@ -49,18 +49,15 @@ export default class MapSearch extends React.Component {
 
         this.state = {
             renderMap: false,
-
+            showSearchButton: true,
             loading: false,
-
             region: { // current region
                 latitude: LATITUDE,
                 longitude: LONGITUDE,
                 latitudeDelta: LATITUDE_DELTA,
                 longitudeDelta: LONGITUDE_DELTA
             },
-
             feeds: [],
-
             selectedMarker: 0 // index
         };
     }
@@ -105,16 +102,14 @@ export default class MapSearch extends React.Component {
         this.setState({ loading: true });
         */
 
-
         this.setState({ loading: true });
 
         const feeds = await this.loadFeeds(_region);
-        // console.log('loadFeeds', feeds);
         this.setState({ feeds: feeds });
 
         this.setState({ loading: false });
 
-
+        this.setState({ showSearchButton: false });
 
         /*
         setTimeout(() => {
@@ -217,35 +212,37 @@ export default class MapSearch extends React.Component {
                 </TouchableOpacity>
 
                 {/* search this area */}
-                <TouchableOpacity
-                    style={{
-                        width: '50%',
-                        // height: Dimensions.get('window').height / 28,
-                        height: 30,
-                        position: 'absolute',
-                        // top: Constants.statusBarHeight + 50,
-                        top: 100 + 6,
-                        right: '25%',
-                        justifyContent: "center", alignItems: "center"
-                    }}
-                    onPress={() => {
-                        this.setState({ loading: true });
-                        this.reload();
-                    }}
-                >
-                    <View style={{
-                        width: '100%', height: '100%', borderRadius: 30 / 3, justifyContent: "center", alignItems: "center",
-                        // backgroundColor: this.state.loading ? 'white' : Theme.color.selection
-                        backgroundColor: this.state.loading ? 'rgba(255, 255, 255, 0.9)' : 'rgba(62, 165, 255, 0.9)'
-                    }}>
-                        {
-                            this.state.loading ?
-                                <RefreshIndicator refreshing color={'black'} total={3} size={3} />
-                                :
-                                <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "Roboto-Medium" }}>{'Redo search in this area'}</Text>
-                        }
-                    </View>
-                </TouchableOpacity>
+                {
+                    this.state.showSearchButton &&
+                    <TouchableOpacity
+                        style={{
+                            width: '50%',
+                            height: 30,
+                            position: 'absolute',
+                            right: '25%',
+                            // top: 100 + 6, // center
+                            top: Constants.statusBarHeight + 30,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            // this.setState({ loading: true });
+                            this.reload();
+                        }}
+                    >
+                        <View style={{
+                            width: '100%', height: '100%', borderRadius: 30 / 3, justifyContent: "center", alignItems: "center",
+                            // backgroundColor: this.state.loading ? 'white' : Theme.color.selection
+                            backgroundColor: this.state.loading ? 'rgba(255, 255, 255, 0.9)' : 'rgba(205, 94, 119, 0.9)'
+                        }}>
+                            {
+                                this.state.loading ?
+                                    <RefreshIndicator refreshing color={'black'} total={3} size={3} />
+                                    :
+                                    <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "Roboto-Medium" }}>{'Redo search in this area'}</Text>
+                            }
+                        </View>
+                    </TouchableOpacity>
+                }
 
                 {/* gps button */}
                 <TouchableOpacity
@@ -406,7 +403,11 @@ export default class MapSearch extends React.Component {
                 // mapType={MAP_TYPES.TERRAIN}
                 style={styles.map}
                 initialRegion={this.state.region}
-                onRegionChange={region => this.setState({ region })}
+                onRegionChange={(region) => {
+                    if (!this.state.showSearchButton) this.setState({ showSearchButton: true });
+
+                    this.setState({ region });
+                }}
                 /*
                 onRegionChangeComplete={(region) => {
                     // console.log(region);
@@ -668,6 +669,8 @@ export default class MapSearch extends React.Component {
         this.setState({ feeds: feeds });
 
         this.setState({ loading: false });
+
+        this.setState({ showSearchButton: false });
     }
 }
 

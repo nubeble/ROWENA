@@ -1,29 +1,21 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
+import {
+    StyleSheet, View, TouchableOpacity, BackHandler, Image,
+    Dimensions, FlatList, ActivityIndicator, TouchableWithoutFeedback
+} from "react-native";
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
-
-import moment from "moment";
-import {
-    Animated, Platform, Dimensions, StatusBar, FlatList,
-    ActivityIndicator, Keyboard, TextInput, TouchableWithoutFeedback
-} from "react-native";
-
-import { Constants, Svg } from "expo";
 import Firebase from './Firebase';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
-// import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
-// import { sendPushNotification } from './PushNotifications';
-import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
+import PreloadImage from './PreloadImage';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -31,14 +23,16 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 12; // 3 x 4
 
+// 1:1
+const illustHeight = 340;
+const illustWidth = 340;
+
 
 @inject("profileStore")
 @observer
-export default class CheckMain extends React.Component<InjectedProps> {
+export default class ReviewMain extends React.Component<InjectedProps> {
     state = {
         renderFeed: false,
-        // showIndicator: false,
-
         feeds: [],
         isLoadingFeeds: false,
         refreshing: false,
@@ -81,7 +75,7 @@ export default class CheckMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'CheckMain';
+        Vars.currentScreenName = 'ReviewMain';
 
         const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
@@ -102,7 +96,7 @@ export default class CheckMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('CheckMain.handleHardwareBackPress');
+        console.log('ReviewMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -132,8 +126,6 @@ export default class CheckMain extends React.Component<InjectedProps> {
     }
 
     render() {
-        // const { profile } = this.props.profileStore;
-
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -212,17 +204,52 @@ export default class CheckMain extends React.Component<InjectedProps> {
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
 
-
                         ListHeaderComponent={
                             (this.state.totalFeedsSize > 0) &&
                             <View>
                                 <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
+                                    <Text style={styles.title}>Your favorite girl ({this.state.totalFeedsSize})</Text>
                                 </View>
                             </View>
                         }
 
+                        ListEmptyComponent={
+                            !this.state.isLoadingFeeds &&
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                                <Text style={{
+                                    color: Theme.color.text2,
+                                    fontSize: 24,
+                                    paddingTop: 4,
+                                    fontFamily: "Roboto-Medium"
+                                }}>No reviewed girls</Text>
 
+                                <Text style={{
+                                    marginTop: 10,
+                                    color: Theme.color.text3,
+                                    fontSize: 18,
+                                    fontFamily: "Roboto-Medium"
+                                }}>Let's find some hot chicks</Text>
+
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        setTimeout(() => {
+                                            // ToDo: set scroll position 0
+
+                                            this.props.navigation.navigate("intro");
+                                        }, Cons.buttonTimeoutShort);
+                                    }}
+                                    style={{ marginTop: 20 }}>
+                                    <Image
+                                        style={{
+                                            width: illustWidth,
+                                            height: illustHeight,
+                                            resizeMode: 'cover'
+                                        }}
+                                        source={PreloadImage.review}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        }
                     />
                 }
 
@@ -283,7 +310,7 @@ export default class CheckMain extends React.Component<InjectedProps> {
 
         this.onLoading = true;
 
-        console.log('CheckMain', 'loading feeds...');
+        console.log('ReviewMain', 'loading feeds...');
 
         this.setState({ isLoadingFeeds: true });
 
@@ -318,7 +345,7 @@ export default class CheckMain extends React.Component<InjectedProps> {
             this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
         }
 
-        console.log('CheckMain', 'loading feeds done!');
+        console.log('ReviewMain', 'loading feeds done!');
 
         this.onLoading = false;
     }
@@ -330,7 +357,6 @@ export default class CheckMain extends React.Component<InjectedProps> {
             /*
             const result = await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
             if (!result) {
-                // ToDo: toast
                 this.refs["toast"].show('The user no longer exists.', 500);
 
                 return;

@@ -213,7 +213,7 @@ export default class ChatMain extends React.Component {
                                     color: Theme.color.text3,
                                     fontSize: 18,
                                     fontFamily: "Roboto-Medium"
-                                }}>Let's find some beautiful girls</Text>
+                                }}>Let's find some hot chicks</Text>
 
                                 <TouchableOpacity
                                     onPress={() => {
@@ -471,8 +471,8 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Regular"
     },
     time: {
-        color: 'grey',
-        fontSize: 12,
+        color: Theme.color.text3,
+        fontSize: 14,
         fontFamily: "Roboto-Regular"
     }
 });

@@ -235,12 +235,14 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.reply: {
-                        // ToDo
-                        /*
+                        // hide badge
+                        this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
+
                         const message = data.userData.message;
+                        const placeId = data.userData.placeId;
+                        const feedId = data.userData.feedId;
 
                         // move to detail
-                        const placeId = data.userData.placeId;
                         const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
                         if (!placeDoc.exists) return;
 
@@ -248,13 +250,11 @@ export default class App extends React.Component {
                             feedSize: placeDoc.data().count
                         };
 
-                        const feedId = data.userData.feedId;
                         const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
                         if (!feedDoc.exists) return;
 
                         const post = feedDoc.data();
                         NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
-                        */
                     } break;
 
                     case Cons.pushNotification.comment: {
@@ -364,7 +364,7 @@ import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewsScreen from './src/ReadAllReviewsScreen';
 import EditMain from './src/EditMain';
-import CheckMain from './src/CheckMain';
+import ReviewMain from './src/ReviewMain';
 import AdvertisementStart from './src/AdvertisementStart';
 import AdvertisementMain from './src/AdvertisementMain';
 import CountrySelection from './src/CountrySelection';
@@ -661,11 +661,11 @@ class EditStackNavigatorWrapper extends React.Component {
 }
 // -- end of EditStackNavigatorWrapper
 
-// -- start of CheckStackNavigatorWrapper
-const CheckStackNavigator = createStackNavigator(
+// -- start of ReviewStackNavigator
+const ReviewStackNavigator = createStackNavigator(
     {
-        checkMain: { screen: CheckMain },
-        // checkMain: { screen: HidingHeader },
+        main: { screen: ReviewMain },
+        // main: { screen: HidingHeader },
         reviewedPost: { screen: PostStackNavigatorWrapper }
     },
     {
@@ -680,12 +680,12 @@ const CheckStackNavigator = createStackNavigator(
     }
 );
 
-class CheckStackNavigatorWrapper extends React.Component {
-    static router = CheckStackNavigator.router;
+class ReviewStackNavigatorWrapper extends React.Component {
+    static router = ReviewStackNavigator.router;
 
     render() {
         return (
-            <CheckStackNavigator navigation={this.props.navigation}
+            <ReviewStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -694,7 +694,7 @@ class CheckStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// -- end of CheckStackNavigatorWrapper
+// -- end of ReviewStackNavigatorWrapper
 
 // -- start of AdvertisementStackNavigatorWrapper
 const AdvertisementStackNavigator = createStackNavigator(
@@ -1050,7 +1050,7 @@ const MainStackNavigator = createStackNavigator(
         chatRoom: { screen: ChatRoomStackNavigatorWrapper },
 
         edit: { screen: EditStackNavigatorWrapper },
-        check: { screen: CheckStackNavigatorWrapper },
+        check: { screen: ReviewStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
 
         admin: { screen: AdminNavigatorWrapper }

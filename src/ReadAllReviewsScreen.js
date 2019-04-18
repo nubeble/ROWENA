@@ -353,7 +353,6 @@ export default class ReadAllReviewsScreen extends React.Component {
                 </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny }}>
-                    {/* ToDo: draw stars based on averge rating & get review count */}
                     <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                         <AirbnbRating
                             count={5}
@@ -380,7 +379,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeReview(index)}
                             >
-                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
+                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Delete</Text>
                             </TouchableOpacity>
                         </View>
                     )
@@ -413,7 +412,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )
@@ -429,7 +428,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
-                                    <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Reply</Text>
+                                    <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
                         )
@@ -843,44 +842,44 @@ const styles = StyleSheet.create({
     },
     reviewName: {
         color: Theme.color.title,
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: "Roboto-Medium"
     },
     reviewDate: {
-        color: Theme.color.text2,
-        fontSize: 13,
+        color: Theme.color.text3,
+        fontSize: 14,
         fontFamily: "Roboto-Light",
         marginLeft: 'auto'
     },
     reviewRating: {
         marginLeft: 4,
         color: '#f1c40f',
-        fontSize: 15,
+        fontSize: 16,
         // lineHeight: 15,
         fontFamily: "Roboto-Regular",
         // paddingTop: Theme.spacing.xSmall
     },
     reviewText: {
         color: Theme.color.text2,
-        fontSize: 15,
+        fontSize: 16,
         lineHeight: 22,
         fontFamily: "Roboto-Regular"
     },
     replyOwner: {
         // color: "#E5E5E5",
         color: Theme.color.title,
-        fontSize: 15,
+        fontSize: 16,
         fontFamily: "Roboto-MediumItalic"
     },
     replyDate: {
         color: Theme.color.text2,
-        fontSize: 13,
+        fontSize: 14,
         fontFamily: "Roboto-Light",
         marginLeft: 'auto'
     },
     replyComment: {
         color: Theme.color.title,
-        fontSize: 15,
+        fontSize: 16,
         lineHeight: 22,
         fontFamily: "Roboto-Italic"
     },
