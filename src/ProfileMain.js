@@ -93,13 +93,24 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     onFocus() {
         Vars.currentScreenName = 'ProfileMain';
 
-        const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            // reload from the start
+        // check updates here
+        // --
+        const result = this.checkUpdateOnProfile();
+        if (result) {
+            this.lastChangedTime = 0;
             this.getUserFeeds();
+        } else {
+            //--
 
-            // move scroll top
-            // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
+            const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
+            if (this.lastChangedTime !== lastChangedTime) {
+                // reload from the start
+                this.getUserFeeds();
+
+                // move scroll top
+                // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+
         }
 
         this.setState({ focused: true });
@@ -797,6 +808,45 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
+    }
+
+    // copied from Loading.js
+    checkUpdateOnProfile() {
+        // 1. owner의 경우, 내가 올린 post에 리뷰가 달린 경우
+        // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
+        // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우
+
+
+        // 1.
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+
+        if (profile) {
+            const feeds = profile.feeds;
+            for (var i = 0; i < feeds.length; i++) {
+                const feed = feeds[i];
+                if (feed.newReviewAdded) {
+                    return true;
+                }
+            }
+        }
+
+        // check 2
+        if (profile) {
+            const reviews = profile.reviews;
+            for (var i = 0; i < reviews.length; i++) {
+                const review = reviews[i];
+                if (review.replyAdded) {
+                    return true;
+                }
+            }
+        }
+
+        // ToDo: check 3
+
+
+
+        return false;
     }
 }
 

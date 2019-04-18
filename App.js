@@ -666,17 +666,16 @@ const CheckStackNavigator = createStackNavigator(
     {
         checkMain: { screen: CheckMain },
         // checkMain: { screen: HidingHeader },
-
-
+        reviewedPost: { screen: PostStackNavigatorWrapper }
     },
     {
-        mode: 'card',
+        mode: 'modal',
         headerMode: 'none',
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+            screenInterpolator: StackViewStyleInterpolator.forVertical
         })
     }
 );

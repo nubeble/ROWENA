@@ -60,6 +60,9 @@ export default class CheckMain extends React.Component<InjectedProps> {
         this.lastChangedTime = 0;
         this.onLoading = false;
 
+        this.feedList = new Map();
+        this.feedCountList = new Map();
+
         this.feedsUnsubscribes = [];
         this.countsUnsubscribes = [];
     }
@@ -374,7 +377,7 @@ export default class CheckMain extends React.Component<InjectedProps> {
         };
 
         // setTimeout(async () => {
-        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+        this.props.navigation.navigate("reviewedPost", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
 
         // hide indicator
@@ -473,7 +476,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        paddingTop: Theme.spacing.base,
+        // paddingTop: Theme.spacing.base,
         // paddingBottom: Theme.spacing.small,
     },
     pictureContainer: {

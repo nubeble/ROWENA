@@ -221,7 +221,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 }
 
                 // 4. profile
-                const profileResult = await this.checkUpdateOnProfile();
+                const profileResult = this.checkUpdateOnProfile();
                 if (profileResult) {
                     // show badge
                     setTimeout(() => {
@@ -301,7 +301,7 @@ export default class Loading extends React.Component<InjectedProps> {
         return true;
     }
 
-    async checkUpdateOnProfile() {
+    checkUpdateOnProfile() {
         // 1. owner의 경우, 내가 올린 post에 리뷰가 달린 경우
         // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
         // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우
@@ -321,8 +321,7 @@ export default class Loading extends React.Component<InjectedProps> {
             }
         }
 
-        // ToDo: check 2
-        // replyAdded
+        // check 2
         if (profile) {
             const reviews = profile.reviews;
             for (var i = 0; i < reviews.length; i++) {
@@ -332,7 +331,6 @@ export default class Loading extends React.Component<InjectedProps> {
                 }
             }
         }
-
 
         // ToDo: check 3
 

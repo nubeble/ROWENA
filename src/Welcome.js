@@ -82,8 +82,8 @@ const styles = StyleSheet.create({
     signUpButton: {
         width: '85%',
         height: Cons.buttonHeight,
-        // backgroundColor: "rgba(255, 255, 255, 0.3)", // "transparent"
-        backgroundColor: Theme.color.buttonBackground,
+        // backgroundColor: Theme.color.buttonBackground,
+        backgroundColor: Theme.color.selection,
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
