@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { Constants, Svg } from "expo";
 import { Text, Theme, Avatar } from "./rnff/src/components";
-import type { ScreenProps } from "./rnff/src/components/Types";
+// import type { ScreenProps } from "./rnff/src/components/Types";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Firebase from './Firebase';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
@@ -693,10 +693,14 @@ export default class ReadAllReviewsScreen extends React.Component {
     async addReply(message) {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
+        const reviewOwnerUid = reviewStore.reviews[this.selectedItemIndex].profile.uid;
         const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.user().uid; // writer
+        const userUid = Firebase.user().uid;
 
-        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
+        const result = await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
+        if (!result) {
+            // ToDo: toast
+        }
     };
 
     async removeReview(index) {

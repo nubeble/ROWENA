@@ -282,15 +282,6 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     async addComment(message) {
-        /*
-        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-
-        const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.user().uid;
-
-        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
-        */
-
         const { host, guest } = this.state;
 
         const name = host.name;

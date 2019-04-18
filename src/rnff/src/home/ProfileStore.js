@@ -28,6 +28,7 @@ export default class ProfileStore {
 
     lastTimeFeedsUpdated: number;
     lastTimeLikesUpdated: number;
+    lastTimeReviewsUpdated: number;
 
 
     // @observable _profile: Profile = DEFAULT_PROFILE;
@@ -57,9 +58,16 @@ export default class ProfileStore {
                     const newLikes = snap.data().likes;
                     const resultLikes = this.compareLikes(oldLikes, newLikes);
                     if (!resultLikes) this.lastTimeLikesUpdated = this.lastChangedTime;
+
+                    // 3. check if reviews changed
+                    const oldReviews = this.profile.reviews;
+                    const newReviews = snap.data().reviews;
+                    const resultReviews = this.compareReviews(oldReviews, newReviews);
+                    if (!resultReviews) this.lastTimeReviewsUpdated = this.lastChangedTime;
                 } else {
                     this.lastTimeFeedsUpdated = this.lastChangedTime;
                     this.lastTimeLikesUpdated = this.lastChangedTime;
+                    this.lastTimeReviewsUpdated = this.lastChangedTime;
                 }
 
                 this.profile = snap.data();
@@ -105,6 +113,24 @@ export default class ProfileStore {
 
             if (a.placeId !== b.placeId) return false;
             if (a.feedId !== b.feedId) return false;
+        }
+
+        return true;
+    }
+
+    compareReviews(oldReviews, newReviews) {
+        // 1. size
+        if (oldReviews.length !== newReviews.length) return false;
+
+        // 2. contents
+        for (var i = 0; i < oldReviews.length; i++) {
+
+            const a = oldReviews[i]; // LikeRef
+            const b = newReviews[i]; // LikeRef
+
+            if (a.placeId !== b.placeId) return false;
+            if (a.feedId !== b.feedId) return false;
+            if (a.reviewId !== b.reviewId) return false;
         }
 
         return true;

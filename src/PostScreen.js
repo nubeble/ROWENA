@@ -1906,10 +1906,14 @@ export default class PostScreen extends React.Component<InjectedProps> {
 
         const placeId = post.placeId;
         const feedId = post.id;
+        const reviewOwnerUid = this.reviewStore.reviews[this.selectedItemIndex].profile.uid;
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
-        const userUid = Firebase.user().uid; // 리뷰를 쓴 사람
+        const userUid = Firebase.user().uid;
 
-        await Firebase.addReply(placeId, feedId, reviewId, userUid, message);
+        const result = await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
+        if (!result) {
+            // ToDo: toast
+        }
     };
 
     async removeReview(index) {

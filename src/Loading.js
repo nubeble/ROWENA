@@ -8,6 +8,7 @@ import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
 import { registerExpoPushToken } from './PushNotifications';
 import { RefreshIndicator } from "./rnff/src/components";
+import ProfileStore from "./rnff/src/home/ProfileStore";
 
 // $FlowFixMe
 /*
@@ -106,10 +107,10 @@ export default class Loading extends React.Component<InjectedProps> {
                 {
                     this.state.showIndicator &&
                     <View style={{
-                        position: 'absolute', top: Dimensions.get('window').height / 2 + 68, // 68: icon height / 2
+                        position: 'absolute', top: Dimensions.get('window').height / 2 - 100,
                         width: '100%', height: 30, justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <RefreshIndicator color='white' />
+                        <RefreshIndicator refreshing total={3} size={5} color='white' />
                     </View>
                 }
                 <Animated.Image
@@ -323,7 +324,7 @@ export default class Loading extends React.Component<InjectedProps> {
         // ToDo: check 2
         // replyAdded
         if (profile) {
-            const reviews = profile.feeds;
+            const reviews = profile.reviews;
             for (var i = 0; i < reviews.length; i++) {
                 const review = reviews[i];
                 if (review.replyAdded) {

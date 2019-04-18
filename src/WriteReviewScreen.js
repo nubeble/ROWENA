@@ -120,7 +120,7 @@ export default class WriteReviewScreen extends React.Component {
 
         this.setState({ showPostLoader: true });
 
-        const result = await this.addReview(post.uid, post.placeId, post.id, Firebase.user().uid, comment, this.state.rating);
+        const result = await Firebase.addReview(post.uid, post.placeId, post.id, Firebase.user().uid, comment, this.state.rating, post.pictures.one.uri);
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
@@ -391,11 +391,6 @@ export default class WriteReviewScreen extends React.Component {
         });
     }
     */
-
-    async addReview(ownerUid, placeId, feedId, userUid, comment, rating) {
-        return await Firebase.addReview(ownerUid, placeId, feedId, userUid, comment, rating);
-    };
-
 }
 
 const styles = StyleSheet.create({

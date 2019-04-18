@@ -502,7 +502,7 @@ export default class Firebase {
                     averageRating,
                     reviewCount,
                     picture: uri,
-                    valid: true // ToDo: update this after removing
+                    valid: true // ToDo: update this when the post removed
                     */
                 }
                 likes.push(data);
@@ -554,7 +554,7 @@ export default class Firebase {
         return result;
     }
 
-    static async addReview(ownerUid, placeId, feedId, userUid, comment, rating) {
+    static async addReview(ownerUid, placeId, feedId, userUid, comment, rating, picture) {
         let result;
 
         const id = Util.uid();
@@ -641,7 +641,8 @@ export default class Firebase {
                 placeId: placeId,
                 feedId: feedId,
                 reviewId: id,
-                replyAdded: false
+                replyAdded: false,
+                picture
             };
 
             let data = {
@@ -781,24 +782,44 @@ export default class Firebase {
 
         await reviewRef.delete();
 
+        // Consider: just leave the newReviewAdded value in host's user profile
+
         return true;
     }
 
-    /*
-    static async getReviewsSize(placeId, feedId) {
-        let size = -1;
+    static async updateReplyChecked(placeId, feedId, uid, reviewId, checked) {
+        let result;
 
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (feedDoc.exists) {
-            const field = feedDoc.data().reviewCount;
-            size = field;
-        }
+        const userRef = Firebase.firestore.collection("users").doc(uid);
 
-        return size;
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+            let { reviews } = userDoc.data();
+            for (var i = 0; i < reviews.length; i++) {
+                let review = reviews[i];
+                if (review.placeId === placeId && review.feedId === feedId && review.reviewId === reviewId) {
+                    // update
+                    review.replyAdded = checked;
+                    reviews[i] = review;
+
+                    transaction.update(userRef, { reviews });
+
+                    break;
+                }
+            }
+        }).then(() => {
+            result = true;
+        }).catch((error) => {
+            console.log('Firebase.updateReplyChecked', error);
+            result = false;
+        });
+
+        return result;
     }
-    */
 
-    static async addReply(placeId, feedId, reviewId, userUid, message) {
+    static async addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message) {
         const id = Util.uid(); // reply id
         const timestamp = Firebase.getTimestamp();
 
@@ -814,9 +835,9 @@ export default class Firebase {
         // add reply ref in profile (userUid)
         let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
+        // let reviewOwnerRef = Firebase.firestore.collection("users").doc(reviewOwnerUid);
 
-        await Firebase.firestore.runTransaction(transaction => {
-            // return new Promise(resolve => {
+        await Firebase.firestore.runTransaction(async transaction => {
             transaction.update(reviewRef, replyData);
 
             const item = {
@@ -832,9 +853,33 @@ export default class Firebase {
 
             transaction.update(userRef, userData);
 
-            // resolve(true);
-            // });
+
+
+            /*
+            const guestDoc = await transaction.get(guestRef);
+            if (!guestDoc.exists) throw 'Guest document does not exist!';
+
+            let { reviews } = guestDoc.data();
+
+            for (var i = 0; i < reviews.length; i++) {
+                let review = reviews[i];
+                if (review.placeId === placeId && review.feedId === feedId && review.reviewId === reviewId) {
+                    // update
+                    review.replyAdded = true;
+                    reviews[i] = review;
+
+                    break;
+                }
+            }
+
+            transaction.update(guestRef, { reviews });
+            */
+
+
+
         });
+
+        return await Firebase.updateReplyChecked(placeId, feedId, reviewOwnerUid, reviewId, true);
     };
 
     static async removeReply(placeId, feedId, reviewId, replyId, userUid) {
@@ -842,7 +887,6 @@ export default class Firebase {
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(transaction => {
-            // return new Promise(resolve => {
             transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
 
             const item = {
@@ -857,10 +901,9 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
-
-            // resolve(true);
-            // });
         });
+
+        // Consider: just leave the replyAdded value in guest's user profile
     }
 
     // comment

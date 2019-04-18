@@ -22,7 +22,8 @@ type ReviewRef = {
     placeId: string,
     feedId: string,
     reviewId: string,
-    replyAdded: boolean
+    replyAdded: boolean,
+    picture: string // ToDo: update when the origin post changed
 };
 
 type ReplyRef = {
@@ -52,6 +53,7 @@ type CommentRef = {
 };
 
 export type Profile = {
+    // uid: string, // login ID
     uid: string,
     name: string,
     country: string,

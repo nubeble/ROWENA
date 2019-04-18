@@ -13,6 +13,7 @@ import PreloadImage from './PreloadImage';
 import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
 import Util from "./Util";
+import ProfileStore from "./rnff/src/home/ProfileStore";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -234,7 +235,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             // update newReviewAdded in user profile
             const { profile } = this.props.profileStore;
             // await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
-            Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
+            const result = Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
+            if (!result) {
+                // ToDo: toast
+                return;
+            }
 
             // update state
             let feeds = [...this.state.feeds];
@@ -352,8 +357,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     render() {
         const { profile } = this.props.profileStore;
 
-        // if (!profile) return null;
-
         const avatarName = (profile.name) ? profile.name : 'Anonymous'; // ToDo: test
         const imageUri = profile.picture.uri;
 
@@ -381,7 +384,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     this.state.renderFeed &&
                     <FlatList
                         ref={(fl) => this._flatList = fl}
-                        contentContainerStyle={styles.contentContainer}
+                        contentContainerStyle={{ flexGrow: 1 }}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
                             <View>
@@ -670,17 +673,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     />
                 }
 
-                {
-                    /*
-                    !this.state.focused &&
-                    <View style={{
-                        width: '100%',
-                        height: 100, // Consider: get the height of tab bar
-                        // backgroundColor: 'green'
-                    }} />
-                    */
-                }
-
                 <Toast
                     ref="toast"
                     position='top'
@@ -816,24 +808,6 @@ const styles = StyleSheet.create({
         paddingBottom: 4,
         flexDirection: 'column',
         justifyContent: 'flex-end'
-    },
-    container: {
-        flexGrow: 1,
-        paddingBottom: Theme.spacing.small,
-        // backgroundColor: 'black'
-    },
-    ad: {
-        width: (Dimensions.get('window').width),
-        height: (Dimensions.get('window').width) / 21 * 9,
-        marginTop: Theme.spacing.tiny,
-        marginBottom: Theme.spacing.tiny
-    },
-    activityIndicator: {
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0, right: 0
-    },
-    contentContainer: {
-        flexGrow: 1
     },
     columnWrapperStyle: {
         flex: 1,

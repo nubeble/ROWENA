@@ -7,7 +7,7 @@ import { Header } from 'react-navigation';
 import { Svg } from "expo";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { inject, observer } from "mobx-react/native";
-import ProfileStore from "./rnff/src/home/ProfileStore";
+// import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import { FontAwesome, AntDesign } from 'react-native-vector-icons';
