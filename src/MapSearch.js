@@ -723,8 +723,8 @@ const styles = StyleSheet.create({
         paddingLeft: 2,
 
         textShadowColor: 'black',
-        textShadowOffset: { width: 1, height: 1 },
-        textShadowRadius: 1
+        textShadowOffset: { width: -0.3, height: -0.3 },
+        textShadowRadius: Platform.OS === 'android' ? 10 : 4
     },
     rating: {
         marginLeft: 5,

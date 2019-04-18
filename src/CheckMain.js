@@ -312,12 +312,16 @@ export default class CheckMain extends React.Component<InjectedProps> {
         if (item.replyAdded) {
             // update replyAdded in user profile
             const { profile } = this.props.profileStore;
-            // await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
-            const result = Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
+            /*
+            const result = await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
             if (!result) {
                 // ToDo: toast
+                this.refs["toast"].show('The user no longer exists.', 500);
+
                 return;
             }
+            */
+            Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
 
             // update state
             let feeds = [...this.state.feeds];
@@ -449,7 +453,7 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        backgroundColor: '#123456',
+        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',

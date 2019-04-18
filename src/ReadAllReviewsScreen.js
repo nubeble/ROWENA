@@ -54,7 +54,6 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         this.itemHeights = [];
         this.lastItemIndex = 0;
-        // this.onLoading = false;
     }
 
     componentDidMount() {
@@ -85,8 +84,6 @@ export default class ReadAllReviewsScreen extends React.Component {
         // console.log('onAddToReviewFinished');
 
         !this.closed && this.setState({ isLoadingReview: false, refreshing: false });
-
-        // this.onLoading = false;
     }
 
     @autobind
@@ -383,7 +380,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeReview(index)}
                             >
-                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
+                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
                             </TouchableOpacity>
                         </View>
                     )
@@ -416,7 +413,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 )
@@ -432,7 +429,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
-                                    <Text style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Reply</Text>
+                                    <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
                         )
@@ -697,10 +694,13 @@ export default class ReadAllReviewsScreen extends React.Component {
         const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
         const userUid = Firebase.user().uid;
 
+        /*
         const result = await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
         if (!result) {
-            // ToDo: toast
+            this.refs["toast"].show('The user no longer exists.', 500);
         }
+        */
+        await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
     };
 
     async removeReview(index) {
@@ -842,14 +842,14 @@ const styles = StyleSheet.create({
         // backgroundColor: 'yellow',
     },
     reviewName: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 15,
         fontFamily: "Roboto-Medium"
     },
     reviewDate: {
-        color: 'grey',
+        color: Theme.color.text2,
         fontSize: 13,
-        fontFamily: "Roboto-Thin",
+        fontFamily: "Roboto-Light",
         marginLeft: 'auto'
     },
     reviewRating: {
@@ -861,31 +861,28 @@ const styles = StyleSheet.create({
         // paddingTop: Theme.spacing.xSmall
     },
     reviewText: {
-        color: 'silver',
+        color: Theme.color.text2,
         fontSize: 15,
         lineHeight: 22,
-        fontFamily: "Roboto-Light"
+        fontFamily: "Roboto-Regular"
     },
     replyOwner: {
-        // color: "rgb(170, 170, 170)",
-        color: "#E5E5E5",
+        // color: "#E5E5E5",
+        color: Theme.color.title,
         fontSize: 15,
-        // lineHeight: 22,
-        // fontFamily: "SuisseIntl-ThinItalic"
         fontFamily: "Roboto-MediumItalic"
     },
     replyDate: {
-        color: 'grey',
+        color: Theme.color.text2,
         fontSize: 13,
-        fontFamily: "Roboto-Thin",
+        fontFamily: "Roboto-Light",
         marginLeft: 'auto'
     },
     replyComment: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 15,
         lineHeight: 22,
-        // fontFamily: "SuisseIntl-ThinItalic"
-        fontFamily: "Roboto-LightItalic"
+        fontFamily: "Roboto-Italic"
     },
     bottomIndicator: {
         marginTop: 20,

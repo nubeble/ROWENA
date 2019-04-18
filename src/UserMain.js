@@ -796,7 +796,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeComment(index)}
                             >
-                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
+                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
                             </TouchableOpacity>
                         </View>
                     )
@@ -1115,14 +1115,12 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium"
     },
     reviewDate: {
-        // color: 'grey',
         color: Theme.color.text2,
         fontSize: 13,
-        fontFamily: "Roboto-Thin"
+        fontFamily: "Roboto-Light"
     },
     reviewText: {
-        color: 'silver',
-        // color: Theme.color.text2,
+        color: 'grey',
         fontSize: 15,
         lineHeight: 22,
         fontFamily: "Roboto-Regular",

@@ -394,19 +394,19 @@ export default class SignUpWithEmail extends React.Component {
                     <View style={{ paddingTop: Theme.spacing.tiny }}>
                         <Text style={{
                             marginLeft: 22,
-                            color: 'rgba(255, 255, 255, 0.8)',
+                            color: Theme.color.text2,
                             fontSize: 28,
                             fontFamily: "Roboto-Medium",
                             paddingTop: 8
                         }}>What's your email?</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
-                            <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'EMAIL ADDRESS'}
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 keyboardType={'email-address'}
                                 onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                 onChangeText={(text) => this.validateEmail(text)}
@@ -427,7 +427,7 @@ export default class SignUpWithEmail extends React.Component {
                             {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
                             {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
 
-                            <Text style={{ marginTop: 16, paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            <Text style={{ marginTop: 16, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
                             </Text>
                             <TextInput
@@ -448,7 +448,7 @@ export default class SignUpWithEmail extends React.Component {
                                 // style={{ position: 'absolute', top: 94, right: Dimensions.get('window').width / 2, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}
                             >
-                                <Text style={{ fontSize: 13, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>{this.state.secureText}</Text>
+                                <Text style={{ fontSize: 13, fontFamily: "Roboto-Medium", color: Theme.color.text2 }}>{this.state.secureText}</Text>
                             </TouchableOpacity>
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {

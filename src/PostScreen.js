@@ -1195,6 +1195,13 @@ export default class PostScreen extends React.Component<InjectedProps> {
             number = averageRating.toString();
         }
 
+        let reviewCountText = '';
+        if (reviewCount > 1) {
+            reviewCountText = "(" + reviewCount.toString() + " reviews)";
+        } else {
+            reviewCountText = "(" + reviewCount.toString() + " review)";
+        }
+
         return (
             <View>
                 {/*
@@ -1263,12 +1270,12 @@ export default class PostScreen extends React.Component<InjectedProps> {
                     </View>
                     <Text style={{
                         // paddingLeft: 5,
-                        color: Theme.color.text4,
+                        color: Theme.color.text2,
                         fontSize: 16,
                         lineHeight: 34,
                         fontFamily: "Roboto-Light",
                         // backgroundColor: 'green'
-                    }}>{"(" + reviewCount.toString() + " reviews)"}</Text>
+                    }}>{reviewCountText}</Text>
                 </View>
 
                 <Text style={{
@@ -1554,7 +1561,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.removeReview(index)}
                                 >
-                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
+                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -1587,7 +1594,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Delete</Text>
+                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -1600,7 +1607,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
-                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Thin", color: "silver" }}>Reply</Text>
+                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Reply</Text>
                                 </TouchableOpacity>
                             </View>
                         }
@@ -1910,10 +1917,13 @@ export default class PostScreen extends React.Component<InjectedProps> {
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
         const userUid = Firebase.user().uid;
 
+        /*
         const result = await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
         if (!result) {
-            // ToDo: toast
+            this.refs["toast"].show('The user no longer exists.', 500);
         }
+        */
+        await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
     };
 
     async removeReview(index) {
@@ -2078,11 +2088,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        // paddingTop: Cons.lastLogInDatePaddingTop(),
         marginLeft: 8,
+        color: Theme.color.text2,
         fontSize: 14,
-        fontFamily: "Roboto-Thin",
-        color: Theme.color.placeholder
+        fontFamily: "Roboto-Light"
     },
     name: {
         color: Theme.color.title,
@@ -2212,9 +2221,9 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium",
     },
     reviewDate: {
-        color: 'grey',
+        color: Theme.color.text2,
         fontSize: 12,
-        fontFamily: "Roboto-Thin",
+        fontFamily: "Roboto-Light",
         marginLeft: 'auto'
     },
     reviewRating: {
@@ -2227,29 +2236,27 @@ const styles = StyleSheet.create({
         // paddingTop: 1
     },
     reviewText: {
-        color: 'silver',
+        color: Theme.color.text2,
         fontSize: 14,
         lineHeight: 18,
-        fontFamily: "Roboto-Light"
+        fontFamily: "Roboto-Regular"
     },
     replyOwner: {
-        color: "#E5E5E5",
+        color: Theme.color.title,
         fontSize: 14,
-        // fontFamily: "SuisseIntl-ThinItalic"
         fontFamily: "Roboto-MediumItalic"
     },
     replyDate: {
-        color: 'grey',
+        color: Theme.color.text2,
         fontSize: 12,
-        fontFamily: "Roboto-Thin",
+        fontFamily: "Roboto-Light",
         marginLeft: 'auto'
     },
     replyComment: {
-        color: Theme.color.title,
+        color: Theme.color.text2,
         fontSize: 14,
         lineHeight: 18,
-        // fontFamily: "SuisseIntl-ThinItalic"
-        fontFamily: "Roboto-LightItalic"
+        fontFamily: "Roboto-Italic"
     },
     contactButton: {
         width: '85%',

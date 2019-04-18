@@ -234,12 +234,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (item.newReviewAdded) {
             // update newReviewAdded in user profile
             const { profile } = this.props.profileStore;
-            // await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
-            const result = Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
+            /*
+            const result = await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
             if (!result) {
-                // ToDo: toast
+                this.refs["toast"].show('The user no longer exists.', 500);
+                
                 return;
             }
+            */
+            Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
 
             // update state
             let feeds = [...this.state.feeds];

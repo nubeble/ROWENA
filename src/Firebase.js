@@ -571,7 +571,6 @@ export default class Firebase {
         // update - averageRating, reviewCount, reviews, stats
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
-        // const ownerRef = Firebase.firestore.collection("users").doc(ownerUid);
 
         await Firebase.firestore.runTransaction(async transaction => {
             const feedDoc = await transaction.get(feedRef);
@@ -650,32 +649,6 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
-
-
-
-            // update newReviewAdded in owner user profile
-            /*
-            const ownerDoc = await transaction.get(ownerRef);
-            if (!ownerDoc.exists) throw 'Owner document does not exist!';
-
-            let { feeds } = ownerDoc.data();
-
-            for (var i = 0; i < feeds.length; i++) {
-                let feed = feeds[i];
-                if (feed.placeId === placeId && feed.feedId === feedId) {
-                    // update
-                    feed.newReviewAdded = true;
-                    feeds[i] = feed;
-
-                    break;
-                }
-            }
-
-            transaction.update(ownerRef, { feeds });
-            */
-
-
-
         }).then(() => {
             result = true;
         }).catch((error) => {
@@ -689,7 +662,12 @@ export default class Firebase {
         await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
         // update owner profile
+        /*
         result = await Firebase.updateReviewChecked(ownerUid, placeId, feedId, true);
+
+        return result;
+        */
+        Firebase.updateReviewChecked(ownerUid, placeId, feedId, true);
 
         return result;
     };
@@ -835,7 +813,6 @@ export default class Firebase {
         // add reply ref in profile (userUid)
         let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
-        // let reviewOwnerRef = Firebase.firestore.collection("users").doc(reviewOwnerUid);
 
         await Firebase.firestore.runTransaction(async transaction => {
             transaction.update(reviewRef, replyData);
@@ -852,34 +829,10 @@ export default class Firebase {
             };
 
             transaction.update(userRef, userData);
-
-
-
-            /*
-            const guestDoc = await transaction.get(guestRef);
-            if (!guestDoc.exists) throw 'Guest document does not exist!';
-
-            let { reviews } = guestDoc.data();
-
-            for (var i = 0; i < reviews.length; i++) {
-                let review = reviews[i];
-                if (review.placeId === placeId && review.feedId === feedId && review.reviewId === reviewId) {
-                    // update
-                    review.replyAdded = true;
-                    reviews[i] = review;
-
-                    break;
-                }
-            }
-
-            transaction.update(guestRef, { reviews });
-            */
-
-
-
         });
 
-        return await Firebase.updateReplyChecked(placeId, feedId, reviewOwnerUid, reviewId, true);
+        // return await Firebase.updateReplyChecked(placeId, feedId, reviewOwnerUid, reviewId, true);
+        Firebase.updateReplyChecked(placeId, feedId, reviewOwnerUid, reviewId, true);
     };
 
     static async removeReply(placeId, feedId, reviewId, replyId, userUid) {
