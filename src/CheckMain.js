@@ -155,7 +155,7 @@ export default class CheckMain extends React.Component<InjectedProps> {
                     this.state.renderFeed &&
                     <FlatList
                         ref={(fl) => this._flatList = fl}
-                        contentContainerStyle={{ flexGrow: 1 }}
+                        contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
 
                         columnWrapperStyle={{ flex: 1, justifyContent: 'flex-start' }}
@@ -208,6 +208,18 @@ export default class CheckMain extends React.Component<InjectedProps> {
                         }}
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
+
+
+                        ListHeaderComponent={
+                            (this.state.totalFeedsSize > 0) &&
+                            <View>
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
+                                </View>
+                            </View>
+                        }
+
+
                     />
                 }
 
@@ -459,7 +471,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
-
+    contentContainer: {
+        flexGrow: 1,
+        paddingTop: Theme.spacing.base,
+        // paddingBottom: Theme.spacing.small,
+    },
     pictureContainer: {
         width: (Dimensions.get('window').width - 2 * 6) / 3,
         height: (Dimensions.get('window').width - 2 * 6) / 3,
@@ -472,55 +488,12 @@ const styles = StyleSheet.create({
         height: '100%',
         borderRadius: 2
     },
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        padding: Theme.spacing.small,
-        flex: 1,
-        justifyContent: 'center',
-
-        borderRadius: 2,
-    },
-
-
-
-
-
-
-
-    header: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#ff9a9a',
-        justifyContent: 'center',
-        alignItems: 'center'
+    titleContainer: {
+        padding: Theme.spacing.small
     },
     title: {
-        width: '100%',
-        height: '20%',
-        backgroundColor: '#9aa9ff',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    content: {
-        flex: 1,
-        backgroundColor: '#d6ca1a',
-
-        // justifyContent: 'center',
-        alignItems: 'stretch',
-        padding: 10
-    },
-    footer: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#1ad657',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
-
+        color: Theme.color.title,
+        fontSize: 18,
+        fontFamily: "Roboto-Medium"
+    }
 });

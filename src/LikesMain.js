@@ -724,22 +724,9 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 18,
         fontFamily: "Roboto-Medium"
-    },
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        padding: Theme.spacing.small,
-        flex: 1,
-        justifyContent: 'center',
-
-        borderRadius: 2,
     },
     feedItemText: {
         color: Theme.color.title,

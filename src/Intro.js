@@ -1196,7 +1196,7 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: Theme.color.text2,
+        color: Theme.color.title,
         fontSize: 18,
         fontFamily: "Roboto-Medium"
     },

@@ -846,7 +846,7 @@ const styles = StyleSheet.create({
         padding: Theme.spacing.small
     },
     title: {
-        color: 'white',
+        color: Theme.color.title,
         fontSize: 18,
         fontFamily: "Roboto-Medium"
     },
