@@ -44,13 +44,9 @@ let expo = new Expo();
 
 
 
-
-
-
-
-
 // Take the text parameter passed to this HTTP endpoint and insert it into the
 // Realtime Database under the path /messages/:pushId/original
+/*
 exports.addMessage = functions.https.onRequest((req, res) => {
     // Grab the text parameter.
     const original = req.query.text;
@@ -61,9 +57,11 @@ exports.addMessage = functions.https.onRequest((req, res) => {
         return res.redirect(303, snapshot.ref.toString());
     });
 });
+*/
 
 // Listens for new messages added to /messages/:pushId/original and creates an
 // uppercase version of the message to /messages/:pushId/uppercase
+/*
 exports.makeUppercase = functions.database.ref('/messages/{pushId}/original').onCreate((snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
     const original = snapshot.val();
@@ -76,6 +74,9 @@ exports.makeUppercase = functions.database.ref('/messages/{pushId}/original').on
     // Setting an "uppercase" sibling in the Realtime Database returns a Promise.
     return snapshot.ref.parent.child('uppercase').set(uppercase);
 });
+*/
+
+
 
 /*
 {
