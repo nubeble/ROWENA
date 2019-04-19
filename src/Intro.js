@@ -612,7 +612,12 @@ export default class Intro extends React.Component {
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
                             <View>
+                                {/*
                                 <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
+                                    <Text style={styles.title}>{'Popular destinations'}</Text>
+                                </View>
+                                */}
+                                <View style={{ paddingHorizontal: Theme.spacing.small, paddingBottom: 12 }}>
                                     <Text style={styles.title}>{'Popular destinations'}</Text>
                                 </View>
                             </View>
