@@ -19,7 +19,7 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const DEFAULT_FEED_COUNT = 12; // 3 x 4
+const DEFAULT_FEED_COUNT = 9; // 3 x 3
 
 const avatarWidth = Dimensions.get('window').height / 11;
 
@@ -404,7 +404,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                             <View>
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
-                                    <TouchableHighlight
+                                    <TouchableOpacity
                                         style={{ marginTop: 20 }}
                                         onPress={() => {
                                             setTimeout(() => {
@@ -450,7 +450,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }
                                             </TouchableOpacity>
                                         </View>
-                                    </TouchableHighlight>
+                                    </TouchableOpacity>
 
                                     <View style={{ width: '100%', paddingHorizontal: 20 }}>
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
@@ -488,7 +488,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Advertise Yourself or Your Friends'}</Text>
                                                 <Feather name='edit-3' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>

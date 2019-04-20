@@ -1409,7 +1409,8 @@ export default class Post extends React.Component<InjectedProps> {
             // draw skeleton
 
             let reviewArray = [];
-            const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
+            // const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
+            const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 2;
 
             for (var i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
@@ -1456,21 +1457,6 @@ export default class Post extends React.Component<InjectedProps> {
                 );
             }
 
-            /*
-            reviewArray.push(
-                <ActivityIndicator
-                    key={'indicator'}
-                    style={{
-                        marginTop: 20,
-                        marginBottom: 20
-                    }}
-                    animating={true}
-                    size="large"
-                    color='grey'
-                />
-            );
-            */
-
             return (
                 <View style={styles.reviewContainer}>
                     {reviewArray}
@@ -1480,10 +1466,6 @@ export default class Post extends React.Component<InjectedProps> {
             if (reviews.length === 0) {
                 return null;
             }
-
-            // console.log('reviews length', reviews.length);
-
-            // const { post } = this.props.navigation.state.params;
             const post = this.state.post;
 
             let reviewArray = [];
@@ -2186,7 +2168,7 @@ const styles = StyleSheet.create({
         paddingRight: Theme.spacing.small,
     },
     reviewContainer: {
-        marginHorizontal: 10,
+        // marginHorizontal: 10,
         padding: 10,
     },
     reviewName: {

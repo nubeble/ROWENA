@@ -25,7 +25,7 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const DEFAULT_FEED_COUNT = 5;
+const DEFAULT_FEED_COUNT = 6;
 
 // 600, 510
 const illustHeight = 300;
