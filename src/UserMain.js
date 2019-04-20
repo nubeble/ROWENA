@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
-    TouchableHighlight, TouchableWithoutFeedback, Animated, Keyboard, TextInput
+    StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, FlatList, Image,
+    Animated, Keyboard, TextInput
 } from 'react-native';
 import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -484,15 +484,8 @@ export default class UserMain extends React.Component<InjectedProps> {
                             <View>
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
-                                    <TouchableHighlight
+                                    <View
                                         style={{ marginTop: 20 }}
-                                        onPress={() => {
-                                            /*
-                                            setTimeout(() => {
-                                                this.props.navigation.navigate("edit");
-                                            }, Cons.buttonTimeoutShort);
-                                            */
-                                        }}
                                     >
                                         <View style={{
                                             width: '100%', height: Dimensions.get('window').height / 8,
@@ -504,13 +497,10 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                     Joined in September 26, 2018
                                                 </Text>
                                             </View>
-                                            <TouchableOpacity
+                                            <View
                                                 style={{
                                                     width: avatarWidth, height: avatarWidth,
                                                     marginRight: 22, justifyContent: 'center', alignItems: 'center'
-                                                }}
-                                                onPress={() => {
-                                                    // nothing to do
                                                 }}
                                             >
                                                 {
@@ -529,9 +519,9 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                             source={PreloadImage.user}
                                                         />
                                                 }
-                                            </TouchableOpacity>
+                                            </View>
                                         </View>
-                                    </TouchableHighlight>
+                                    </View>
 
                                     <View style={{ width: '100%', paddingHorizontal: 20 }}>
 
@@ -540,7 +530,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                 style={{ width: 20, height: 20, resizeMode: 'cover' }}
                                                 source={PreloadImage.home}
                                             />
-                                            <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{address}</Text>
+                                            <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
                                         </View>
 
                                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
@@ -548,7 +538,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                 style={{ width: 22, height: 22, resizeMode: 'cover' }}
                                                 source={PreloadImage.comment}
                                             />
-                                            <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{reviewText}</Text>
+                                            <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{reviewText}</Text>
                                         </View>
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
@@ -712,7 +702,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                 textAlignVertical: 'top',
                                 backgroundColor: '#212121'
                             }}
-                            placeholder='Reply to a review...'
+                            placeholder='Add a Review'
                             placeholderTextColor={Theme.color.placeholder}
                             onChangeText={(text) => this.onChangeText(text)}
                             selectionColor={Theme.color.selection}
@@ -796,7 +786,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeComment(index)}
                             >
-                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver" }}>Delete</Text>
+                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
                             </TouchableOpacity>
                         </View>
                     )
@@ -1109,23 +1099,23 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     },
-    reviewName: {
-        color: 'white',
-        fontSize: 15,
-        fontFamily: "Roboto-Medium"
-    },
     reviewDate: {
         color: Theme.color.text3,
         fontSize: 13,
         fontFamily: "Roboto-Light"
     },
     reviewText: {
-        color: 'grey',
+        color: Theme.color.text2,
         fontSize: 15,
         lineHeight: 22,
         fontFamily: "Roboto-Regular",
 
         paddingVertical: Theme.spacing.tiny
+    },
+    reviewName: {
+        color: Theme.color.text2,
+        fontSize: 15,
+        fontFamily: "Roboto-Medium",
     },
     notification: {
         // width: '100%',

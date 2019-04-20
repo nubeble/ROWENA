@@ -68,7 +68,8 @@ export type Profile = {
     replies: ReplyRef[],
     likes: LikeRef[],
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
-    receivedCommentsCount: number // 내가 받은 comment 개수
+    receivedCommentsCount: number, // 내가 받은 comment 개수
+    timestamp: number
 };
 
 type Pictures = {

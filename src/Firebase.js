@@ -107,7 +107,8 @@ export default class Firebase {
             replies: [],
             likes: [],
             comments: [],
-            receivedCommentsCount: 0
+            receivedCommentsCount: 0,
+            timestamp: Firebase.getTimestamp()
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);

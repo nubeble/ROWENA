@@ -1,6 +1,6 @@
 import autobind from "autobind-decorator";
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableHighlight, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";

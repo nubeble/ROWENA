@@ -263,7 +263,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                                 textAlignVertical: 'top',
                                 backgroundColor: '#212121'
                             }}
-                            placeholder='Reply to a review...'
+                            placeholder='Reply to a review'
                             placeholderTextColor={Theme.color.placeholder}
                             onChangeText={(text) => this.onChangeText(text)}
                             selectionColor={Theme.color.selection}
