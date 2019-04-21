@@ -364,6 +364,7 @@ import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewsScreen from './src/ReadAllReviewsScreen';
 import EditMain from './src/EditMain';
+import EditProfile from './src/EditProfile';
 import ReviewMain from './src/ReviewMain';
 import AdvertisementStart from './src/AdvertisementStart';
 import AdvertisementMain from './src/AdvertisementMain';
@@ -630,8 +631,7 @@ class ChatRoomStackNavigatorWrapper extends React.Component {
 const EditStackNavigator = createStackNavigator(
     {
         editMain: { screen: EditMain },
-
-
+        editProfile: { screen: EditProfile }
     },
     {
         mode: 'card',

@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
 import { Svg, Constants } from 'expo';
 import { NavigationActions } from 'react-navigation';
@@ -29,7 +29,7 @@ const DEFAULT_REVIEW_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
 const profilePictureWidth = Dimensions.get('window').height / 12;
-const replyViewHeight = Dimensions.get('window').height / 9;
+// const replyViewHeight = Dimensions.get('window').height / 9;
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -243,7 +243,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     {/*
@@ -257,6 +257,20 @@ export default class EditMain extends React.Component<InjectedProps> {
                         }}
                     >{post.name}</Text>
                     */}
+
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => this.props.navigation.navigate("editProfile")}
+                    >
+                        <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
                 </View>
 
                 {
@@ -269,9 +283,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                             <View>
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
-                                    <View
-                                        style={{ marginTop: 20 }}
-                                    >
+                                    <View style={{ marginTop: 20 }}>
                                         <View style={{
                                             width: '100%', height: Dimensions.get('window').height / 8,
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
@@ -309,7 +321,6 @@ export default class EditMain extends React.Component<InjectedProps> {
                                     </View>
 
                                     <View style={{ width: '100%', paddingHorizontal: 20 }}>
-
                                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
                                             <Image
                                                 style={{ width: 20, height: 20, resizeMode: 'cover' }}
@@ -340,11 +351,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                 {
                                     labelText &&
                                     <View style={styles.titleContainer}>
-                                        <Text style={styles.title}>
-                                            {
-                                                labelText
-                                            }
-                                        </Text>
+                                        <Text style={styles.title}>{labelText}</Text>
                                     </View>
                                 }
 

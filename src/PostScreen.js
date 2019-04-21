@@ -510,7 +510,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 }}
                                 onPress={() => this.edit()}
                             >
-                                <Feather name="edit-3" color="rgba(255, 255, 255, 0.8)" size={24} />
+                                <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
                             </TouchableOpacity>
                             :
                             <TouchableWithoutFeedback onPress={this.toggle}>

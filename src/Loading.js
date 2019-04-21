@@ -201,7 +201,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
 
 
-                // ToDo: check updates (chat first.. post, likes, review, reply later)
+                // check updates (chat first.. post, likes, review, reply later)
 
                 // 1. home
                 // const home = await this.checkUpdateOnHome();
