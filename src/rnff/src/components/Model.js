@@ -53,9 +53,13 @@ type CommentRef = {
 };
 
 export type Profile = {
-    // uid: string, // login ID
+    // logInId: string, // log in ID
     uid: string,
     name: string,
+
+    birthday: string, // DDMMYYYY
+    gender: string,
+
     country: string,
     city: string,
     email: string,
@@ -63,10 +67,10 @@ export type Profile = {
     picture: Picture,
     // location: Location,
     about: string,
-    feeds: FeedRef[],
+    feeds: FeedRef[], // 내가 만든 feed
     reviews: ReviewRef[], // 내가 남긴 review
-    replies: ReplyRef[],
-    likes: LikeRef[],
+    replies: ReplyRef[], // 내가 남긴 reply
+    likes: LikeRef[], // 내가 초이스한 feed
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
     receivedCommentsCount: number, // 내가 받은 comment 개수
     timestamp: number

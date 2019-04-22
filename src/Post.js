@@ -649,7 +649,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.small }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 2 }} name='location-on' color={Theme.color.title} size={16} />
+                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
@@ -686,16 +686,16 @@ export default class Post extends React.Component<InjectedProps> {
                                                 <View style={{ marginBottom: 9 }}>
                                                     <View style={{
                                                         marginLeft: 2,
-                                                        width: 160, height: 22, borderRadius: 3,
-                                                        backgroundColor: Theme.color.new,
-                                                        justifyContent: 'center', alignItems: 'center'
+                                                        width: 160, height: 22,
+                                                        justifyContent: 'center',
+                                                        paddingLeft: 1
                                                     }}>
                                                         <Text style={{
-                                                            color: 'white',
-                                                            fontSize: 13,
-                                                            lineHeight: 13,
-                                                            fontFamily: "Roboto-Bold"
-                                                        }}>newly added</Text>
+                                                            color: '#f1c40f',
+                                                            fontSize: 18,
+                                                            lineHeight: 18,
+                                                            fontFamily: "Roboto-LightItalic"
+                                                        }}>newly posted</Text>
                                                     </View>
                                                 </View>
                                         }
