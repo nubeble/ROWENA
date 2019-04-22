@@ -53,13 +53,11 @@ type CommentRef = {
 };
 
 export type Profile = {
-    // logInId: string, // log in ID
+    // logInId: string, // ToDo: log in ID
     uid: string,
     name: string,
-
     birthday: string, // DDMMYYYY
     gender: string,
-
     country: string,
     city: string,
     email: string,

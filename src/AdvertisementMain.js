@@ -577,7 +577,7 @@ export default class AdvertisementMain extends React.Component {
             return;
         }
 
-        if (!gender) {
+        if (gender === null) {
             this.showNotification('Please select your gender.');
 
             this.setState({ showGenderAlertIcon: true });
@@ -2070,7 +2070,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     searchBarTitle: {
-        fontSize: 20,
+        fontSize: 18,
         fontFamily: "Roboto-Medium",
         color: 'rgba(255, 255, 255, 0.8)',
         paddingBottom: 8

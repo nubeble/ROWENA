@@ -22,7 +22,9 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-@inject("feedStore", "profileStore") @observer
+
+@inject("feedStore", "profileStore")
+@observer
 export default class Explore extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
     state = {
         scrollAnimation: new Animated.Value(0)

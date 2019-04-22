@@ -234,7 +234,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-
+                    {/* icon + text */}
                     <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={async () => await this.openPost()}>
                         <SmartImage
                             // style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
@@ -254,7 +254,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             }}
                         >{this.state.titleName}</Text>
                     </TouchableOpacity>
-
 
                     {/* leave button */}
                     <TouchableOpacity
