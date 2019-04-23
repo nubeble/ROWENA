@@ -38,10 +38,10 @@ export const Cons = {
 
         const model = Constants.platform.ios.model.toLowerCase();
 
-        if (model === 'iphone x') return 8;
-        if (model === 'iphone xs') return 8;
-        if (model === 'iphone xs max') return 8;
-        if (model === 'iphone xr') return 8;
+        if (model === 'iphone x') return 10;
+        if (model === 'iphone xs') return 10;
+        if (model === 'iphone xs max') return 10;
+        if (model === 'iphone xr') return 10;
 
         return 0;
     },

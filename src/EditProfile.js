@@ -53,9 +53,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
         showPostLoader: false,
 
         onUploadingImage: false,
-        uploadImageUri: null,
-
         refreshing: true,
+
+        uploadImageUri: null,
 
         name: '',
 
@@ -118,6 +118,22 @@ export default class EditProfile extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        const { profile } = this.props.profileStore;
+
+        // uid: string,
+        const name = profile.name;
+        const birthday = profile.birthday;
+        const gender = profile.gender;
+        const country = profile.country;
+        const countryCode = Util.getCountyCode(country);
+        const city = profile.city;
+        const email = profile.email;
+        const phoneNumber = profile.phoneNumber;
+        const imageUri = profile.picture.uri;
+        const about = profile.about;
+
+        this.setState({ uploadImageUri: imageUri, name, birthday, gender, country, countryCode, city, note: about, email, phoneNumber });
     }
 
     initFromSelect(result) { // country
@@ -526,9 +542,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     render() {
-        const { profile } = this.props.profileStore;
+        const imageUri = this.stgate.uploadImageUri;
 
-        const imageUri = profile.picture.uri;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -542,7 +557,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
 
         return (
-            <View style={[styles.flex, { marginBottom: Cons.viewMarginBottom() }]}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -575,8 +590,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            // this.props.navigation.dispatch(NavigationActions.back());
                             // ToDo
+                            // this.updateProfile
                         }}
                     >
                         <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
@@ -656,7 +671,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                             // ToDo
                                         }}
                                     >
-                                        <Text style={{ color: 'rgba(62, 165, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Regular" }}>{'Change Profile Photo'}</Text>
+                                        <Text style={{ color: 'rgba(62, 165, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Regular" }}>{'Change Profile Picture'}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>

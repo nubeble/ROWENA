@@ -97,14 +97,12 @@ export default class AdvertisementMain extends React.Component {
 
         onUploadingImage: false,
         uploadingImageNumber: 0, // 1,2,3,4
+        refreshing: true,
 
-        // uploadImage1Uri: 'https://image.fmkorea.com/files/attach/new/20181018/3655109/1279820040/1330243115/88e28dc9c5ec7b43e428a0569f365429.jpg',
         uploadImage1Uri: null,
         uploadImage2Uri: null,
         uploadImage3Uri: null,
         uploadImage4Uri: null,
-
-        refreshing: true,
 
         name: '',
 
