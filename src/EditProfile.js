@@ -66,22 +66,13 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         gender: null,
 
-        country: null,
-        countryCode: null,
-
-        street: null,
-        city: '',
-        state: '',
-        streetInfo: null,
-        cityInfo: null,
+        place: null,
 
         note: '',
         noteLength: 0,
 
         email: null,
         phoneNumber: null,
-
-
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -97,8 +88,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         showNameAlertIcon: false,
         showAgeAlertIcon: false,
         showGenderAlertIcon: false,
-        showCountryAlertIcon: false,
-        showStreetAlertIcon: false,
+        showPlaceAlertIcon: false,
 
         onNote: false,
         keyboardTop: Dimensions.get('window').height
@@ -106,8 +96,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
     constructor(props) {
         super(props);
-
-        this.feedId = null;
 
         this.imageRefs = []; // for cleaning files in server
     }
@@ -122,140 +110,45 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const { profile } = this.props.profileStore;
 
         // uid: string,
+        /*
         const name = profile.name;
-        const birthday = profile.birthday;
+        const birthday = Util.getBirthdayText(profile.birthday);
+        const datePickerDate = Util.getDate(profile.birthday);
         const gender = profile.gender;
-        const country = profile.country;
-        const countryCode = Util.getCountyCode(country);
-        const city = profile.city;
+        const place = profile.place;
         const email = profile.email;
         const phoneNumber = profile.phoneNumber;
         const imageUri = profile.picture.uri;
         const about = profile.about;
+        */
+        // ToDo: test
+        const name = 'Jay Kim';
+        const birthday = Util.getBirthdayText('03111982'); // DDMMYYYY
+        const datePickerDate = new Date(1982, 11, 3);
+        const gender = 'Male';
+        const place = 'Manila, Philippines';
+        const email = 'jdub.kim@gmail.com';
+        const phoneNumber = '821093088300';
+        const imageUri = profile.picture.uri;
+        const about = 'hi~';
 
-        this.setState({ uploadImageUri: imageUri, name, birthday, gender, country, countryCode, city, note: about, email, phoneNumber });
+        this.setState({ uploadImageUri: imageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength: about.length, email, phoneNumber });
     }
 
-    initFromSelect(result) { // country
-        console.log('AdvertisementMain.initFromSelect', result);
-
-        this.setState({
-            country: result.name, countryCode: result.code,
-            street: null, city: '', state: '', streetInfo: null, cityInfo: null
-        });
-    }
-
-    initFromSearch(result1, result2) { // street
-        console.log('AdvertisementMain.initFromSearch', result1, result2);
-
-        /*
-        "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
-        "location": {
-            "lat": 37.4851745,
-            "lng": 127.0131415,
-        },
-        "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
-        }
-        */
-        const location = {
-            description: result1.description,
-            // streetId: result1.place_id,
-            longitude: result1.location.lng,
-            latitude: result1.location.lat
-        };
-
-        const cityInfo = {
-            description: result2.name,
-            cityId: result2.placeId,
-            location: result2.location
-        };
-
-        /*
-        let street = null;
-        let state = '';
-        let city = '';
-
-        const words2 = result2.name.split(', '); // "23 Limslättsväg, 22920, Åland Islands"
-
-        // get street text
-        const words1 = result1.description.split(', '); // "23 Limslättsväg, Åland Islands"
-        const length = words1.length - words2.length;
-
-        if (length <= 0) {
-            if (words1.length === 0) {
-                // someting is wrong
-            } else if (words1.length === 1) {
-                // someting is wrong
-            } else if (words1.length === 2) {
-                street = words1[0];
-            } else if (words1.length === 3) {
-                street = words1[0];
-                city = words1[1];
-            } else if (words1.length === 4) {
-                street = words1[0];
-                city = words1[1];
-                state = words1[2];
-            } else {
-                street = '';
-                for (var i = 0; i < words1.length - 3; i++) {
-                    street += words1[i];
-
-                    if (i !== words1.length - 3 - 1) street += ', ';
-                }
-
-                city = words1[words1.length - 3];
-                state = words1[words1.length - 2];
-            }
-        } else {
-            street = '';
-            for (var i = 0; i < length; i++) {
-                street += words1[i];
-
-                if (i !== length - 1) street += ', ';
-            }
-
-            // get city, state
-            if (words2.length === 0) {
-                // someting is wrong
-            } else if (words2.length === 1) {
-                // someting is wrong
-            } else if (words2.length === 2) {
-                city = words2[0];
-            } else if (words2.length === 3) {
-                city = words2[0];
-                state = words2[1];
-            } else {
-                city = words2[words2.length - 3];
-                state = words2[words2.length - 2];
-            }
-        }
-        */
-
-        let street = null;
-        let state = '';
-        let city = '';
-
-        street = '';
-        const words1 = result1.description.split(', ');
-        const size = words1.length - 1;
-        for (var i = 0; i < size; i++) {
-            street += words1[i];
-            if (i != size - 1) street += ', ';
-        }
-
-        this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
+    initFromSearch(result) { // 'Cebu, Philippines'
+        this.setState({ place: result });
     }
 
     @autobind
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        console.log('AdvertisementMain._keyboardDidShow');
+        console.log('EditProfile._keyboardDidShow');
 
         if (this.focusedItem === 'name') {
-            this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
         } else if (this.focusedItem === 'note') {
-            this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.placeY, animated: true });
 
             if (!this.state.onNote) this.setState({ onNote: true });
         }
@@ -267,7 +160,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
     _keyboardDidHide() {
         if (!this.focused) return;
 
-        console.log('AdvertisementMain._keyboardDidHide');
+        console.log('EditProfile._keyboardDidHide');
 
         if (this.state.onNote) this.setState({ onNote: false });
 
@@ -282,7 +175,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'AdvertisementMain';
+        Vars.currentScreenName = 'EditProfile';
 
         this.focused = true;
     }
@@ -367,7 +260,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
     }
 
     onFocusGender() {
@@ -376,7 +269,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
     }
 
     onFocusNote() {
@@ -399,7 +292,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { uploadImageUri, name, birthday, gender, country, street, streetInfo, cityInfo, note } = this.state;
+        const { uploadImageUri, name, birthday, gender, place, note, email, phoneNumber } = this.state;
 
         /*
         if (uploadImageUri === null) {
@@ -418,8 +311,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showNameAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
 
             return;
         }
@@ -429,8 +321,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showAgeAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
 
             return;
         }
@@ -440,43 +331,27 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showGenderAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
 
             return;
         }
 
-        if (country === null) {
-            this.showNotification('Please enter your country.');
+        if (place === null) {
+            this.showNotification('Please enter your place.');
 
-            this.setState({ showCountryAlertIcon: true });
+            this.setState({ showPlaceAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-
-            return;
-        }
-
-        if (street === null) {
-            this.showNotification('Please enter your city.');
-
-            this.setState({ showStreetAlertIcon: true });
-
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
 
             return;
         }
 
-        // 2. upload
+        // ToDo: check email, phoneNumber
+
+        // 2. update
         this.setState({ showPostLoader: true });
 
         let data = {};
-
-        if (!this.feedId) {
-            this.feedId = Util.uid();
-        }
-        data.feedId = this.feedId;
 
         data.userUid = Firebase.user().uid;
 
@@ -488,45 +363,29 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         data.gender = gender;
 
-        // placeId, placeName, location
-        // --
-        data.placeId = cityInfo.cityId;
-        data.placeName = cityInfo.description;
-
-        const location = {
-            description: streetInfo.description,
-            // streetId: streetInfo.streetId,
-            longitude: streetInfo.longitude,
-            latitude: streetInfo.latitude
-        };
-
-        data.location = location;
-        // --
+        data.place = place;
 
         let _note = null;
         if (note !== '') {
             _note = note;
         }
-
         data.note = _note;
 
         data.imageUri = uploadImageUri;
 
-        const extra = {
-            lat: cityInfo.location.lat,
-            lng: cityInfo.location.lng
-        };
+        data.email = email;
+        data.phoneNumber = phoneNumber;
 
-        await this.updateProfile(data, extra);
+        await this.updateProfile(data);
 
         this.removeItemFromList();
 
-        // 3. move to finish page
+        // 3. go back
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
             this.setState({ showPostLoader: false });
 
             if (!this.closed) {
-                // this.props.navigation.navigate("advertisementFinish");
+                this.props.navigation.dispatch(NavigationActions.back());
             }
         });
     }
@@ -542,9 +401,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     render() {
-        const imageUri = this.stgate.uploadImageUri;
-
-
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
@@ -554,7 +410,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
             opacity: this.state.flashOpacity,
             transform: [{ translateY: this.state.flashOffset }]
         };
-
 
         return (
             <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
@@ -589,9 +444,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             right: 2,
                             justifyContent: "center", alignItems: "center"
                         }}
-                        onPress={() => {
-                            // ToDo
-                            // this.updateProfile
+                        onPress={async () => {
+                            await this.save();
                         }}
                     >
                         <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
@@ -638,399 +492,474 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     ref="flatList"
                     contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={
-                        <View>
-                            <View style={{
-                                borderTopColor: Theme.color.line, borderTopWidth: 1,
-                                // borderBottomColor: Theme.color.line, borderBottomWidth: 1,
-                                // backgroundColor: 'rgb(50, 50, 50)'
-                            }}>
-
-                                <View style={{ marginTop: 12, marginBottom: 8, justifyContent: 'center', alignItems: 'center' }}>
-                                    {
-                                        imageUri ?
-                                            <Image
-                                                style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                source={{ uri: imageUri }}
-                                            />
-                                            :
-                                            <Image
-                                                style={{
-                                                    backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                                    borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
-                                                    resizeMode: 'cover'
-                                                }}
-                                                source={PreloadImage.user}
-                                            />
-                                    }
-                                </View>
-
-                                <View style={{ marginBottom: 12, justifyContent: 'center', alignItems: 'center' }}>
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            // ToDo
-                                        }}
-                                    >
-                                        <Text style={{ color: 'rgba(62, 165, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Regular" }}>{'Change Profile Picture'}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View style={{ marginTop: Theme.spacing.small }}>
-                                {/* 1. name */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                        {'NAME'}
-                                    </Text>
-                                </View>
-                                <TextInput
-                                    style={{
-                                        paddingLeft: 18, paddingRight: 32,
-                                        width: '80%',
-                                        height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                                    }}
-                                    // keyboardType={'email-address'}
-                                    // keyboardAppearance='dark'
-                                    onChangeText={(text) => this.validateName(text)}
-                                    selectionColor={Theme.color.selection}
-                                    underlineColorAndroid="transparent"
-                                    autoCorrect={false}
-                                    autoCapitalize="words"
-                                    placeholder="Selena Gomez"
-                                    placeholderTextColor={Theme.color.placeholder}
-                                    value={this.state.name}
-                                    onFocus={(e) => this.onFocusName()}
-                                />
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.nameY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showNameAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-
-                                {/* 2. birthday */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{
-                                        paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
-                                    }}>
-                                        {'AGE (BIRTHDAY)'}
-                                    </Text>
-                                </View>
-                                {/* picker */}
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        this.onFocusBirthday();
-
-                                        this.showDateTimePicker('What is your date of birth?');
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            paddingHorizontal: 18,
-                                            width: '80%',
-                                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
-                                            paddingTop: 7
-                                        }}
-                                    >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
-
-                                    {/* ToDo: add icon */}
-
-                                </TouchableOpacity>
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.birthdayY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showAgeAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-
-                                {/* 3. gender */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{
-                                        paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
-                                    }}>
-                                        {'GENDER'}
-                                    </Text>
-                                </View>
-                                <Select
-                                    onOpen={() => this.onFocusGender()} // NOT work in Android
-                                    placeholder={{
-                                        label: "Select your gender",
-                                        value: null
-                                    }}
-                                    items={genderItems}
-                                    onValueChange={(value) => { // only for Android
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        this.setState({ gender: value });
-                                    }}
-                                    style={{
-                                        iconContainer: {
-                                            top: 5,
-                                            right: 100
-                                        }
-                                    }}
-                                    textInputProps={{
-                                        style: {
-                                            paddingHorizontal: 18,
-                                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                            color: this.state.gender === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                                        }
-                                    }}
-                                    useNativeAndroidPickerStyle={false}
-                                    value={this.state.gender}
-
-                                    Icon={() => {
-                                        // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
-                                        return null;
-                                    }}
-                                />
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.genderY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showGenderAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.genderY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-
-                                {/* 4. country */}
-                                <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                    {'COUNTRY'}
-                                </Text>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.onUploadingImage) return;
-
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        // move scroll
-                                        this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-
-                                        setTimeout(() => {
-                                            // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            paddingHorizontal: 18,
-                                            // height: textInputHeight,
-                                            minHeight: textInputHeight,
-                                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
-                                            paddingTop: 7
-                                        }}
-                                    >{this.state.country ? this.state.country : "What country do you live in?"}</Text>
-                                </TouchableOpacity>
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.countryY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showCountryAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-
-                                {/* 5. street */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                        {'STREET'}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.onUploadingImage) return;
-
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        // check the country is filled
-                                        if (!this.state.country) {
-                                            this.showNotification('Please enter your country.');
-
-                                            this.setState({ showCountryAlertIcon: true });
-
-                                            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-                                            this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-
-                                            return;
-                                        }
-
-                                        // move scroll
-                                        this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
-
-                                        setTimeout(() => {
-                                            // this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            paddingHorizontal: 18,
-                                            // height: textInputHeight,
-                                            minHeight: textInputHeight,
-                                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
-                                            paddingTop: 7
-                                        }}
-                                    >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
-                                </TouchableOpacity>
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.streetY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showStreetAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-
-                                {/* 6. note */}
-                                <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                    {'NOTE'}
-                                </Text>
-                                <TextInput
-                                    style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
-                                    placeholder='More information about you'
-                                    placeholderTextColor={Theme.color.placeholder}
-                                    onChangeText={(text) => {
-                                        this.setState({ note: text, noteLength: text.length });
-                                    }}
-                                    selectionColor={Theme.color.selection}
-
-                                    // keyboardType='default'
-                                    // returnKeyType='done'
-                                    // keyboardAppearance='dark'
-                                    underlineColorAndroid="transparent"
-                                    autoCorrect={false}
-                                    // autoCapitalize="none"
-                                    maxLength={200}
-                                    multiline={true}
-                                    numberOfLines={4}
-                                    onFocus={(e) => {
-                                        this.onFocusNote();
-                                    }}
-                                    onBlur={(e) => this.onBlurNote()}
-                                />
-                                <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
-                                    {this.state.noteLength}
-                                </Text>
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.noteY = y;
-                                    }}
-                                />
-
-                                {/* 7. email */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                        {'EMAIL ADDRESS'}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.onUploadingImage) return;
-
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        // move scroll
-                                        this.refs.flatList.scrollToOffset({ offset: this.emailY, animated: true });
-
-                                        setTimeout(() => {
-                                            // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            paddingHorizontal: 18,
-                                            // height: textInputHeight,
-                                            minHeight: textInputHeight,
-                                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.email ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
-                                            paddingTop: 7
-                                        }}
-                                    >{this.state.country ? this.state.email : "email address"}</Text>
-                                </TouchableOpacity>
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.emailY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showEmailAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.emailY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-
-                                {/* 7. phone */}
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                        {'PHONE NUMBER'}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        if (this.state.onUploadingImage) return;
-
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        // move scroll
-                                        this.refs.flatList.scrollToOffset({ offset: this.phoneNumberY, animated: true });
-
-                                        setTimeout(() => {
-                                            // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            paddingHorizontal: 18,
-                                            // height: textInputHeight,
-                                            minHeight: textInputHeight,
-                                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.phoneNumber ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
-                                            paddingTop: 7
-                                        }}
-                                    >{this.state.country ? this.state.phoneNumber : "phone number"}</Text>
-                                </TouchableOpacity>
-                                <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                                    onLayout={(e) => {
-                                        const { y } = e.nativeEvent.layout;
-                                        this.phoneNumberY = y;
-                                    }}
-                                />
-                                {
-                                    this.state.showPhoneNumberAlertIcon &&
-                                    <AntDesign style={{ position: 'absolute', right: 22, top: this.phoneNumberY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                                }
-                            </View>
-                        </View>
-                    }
+                    ListHeaderComponent={this.renderContainer()}
                 />
+
+                <DateTimePicker
+                    isVisible={this.state.showDatePicker}
+                    onConfirm={this._handleDatePicked}
+                    onCancel={this._hideDateTimePicker}
+                    date={this.state.datePickerDate}
+                    titleIOS={this.state.datePickerTitle}
+                />
+
+                {
+                    this.state.onNote &&
+                    <View style={{
+                        width: '100%', height: doneButtonViewHeight, backgroundColor: '#D0D0D0',
+                        // borderTopColor: '#3B3B3B', borderTopWidth: 1,
+                        position: 'absolute', top: this.state.keyboardTop - doneButtonViewHeight,
+                        justifyContent: "center", alignItems: "flex-end", paddingRight: 15
+                    }}>
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => this.noteDone()}
+                        >
+                            <Text style={styles.done}>Done</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2}
+                    opacity={0.6}
+                />
+            </View>
+        );
+    }
+
+    renderContainer() {
+        const { uploadImageUri } = this.state;
+
+        return (
+            <View>
+                <View style={{
+                    borderTopColor: Theme.color.line, borderTopWidth: 1,
+                    // borderBottomColor: Theme.color.line, borderBottomWidth: 1,
+                    // backgroundColor: 'rgb(50, 50, 50)'
+                }}>
+
+                    <View style={{ marginTop: 12, marginBottom: 8, justifyContent: 'center', alignItems: 'center' }}>
+                        {
+                            uploadImageUri ?
+                                <Image
+                                    style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                    source={{ uri: uploadImageUri }}
+                                />
+                                :
+                                <Image
+                                    style={{
+                                        backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
+                                        borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                        resizeMode: 'cover'
+                                    }}
+                                    source={PreloadImage.user}
+                                />
+                        }
+                    </View>
+
+                    <View style={{ marginBottom: 12, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity
+                            onPress={() => {
+                                this.uploadPicture();
+                            }}
+                        >
+                            <Text style={{ color: 'rgba(62, 165, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Regular" }}>{'Change Profile Picture'}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={{ marginTop: Theme.spacing.small, paddingHorizontal: 4 }}
+                    onLayout={(e) => {
+                        const { y } = e.nativeEvent.layout;
+                        this.inputViewY = y;
+                    }}
+                >
+                    {/* 1. name */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'NAME'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput
+                        style={{
+                            paddingLeft: 18, paddingRight: 32,
+                            width: '80%',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                        // keyboardType={'email-address'}
+                        // keyboardAppearance='dark'
+                        onChangeText={(text) => this.validateName(text)}
+                        value={this.state.name}
+                        selectionColor={Theme.color.selection}
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="words"
+                        placeholder="Selena Gomez"
+                        placeholderTextColor={Theme.color.placeholder}
+                        onFocus={(e) => this.onFocusName()}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.nameY = y;
+                        }}
+                    />
+                    {
+                        this.state.showNameAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 2. birthday */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'AGE (BIRTHDAY)'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    {/* picker */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.onFocusBirthday();
+
+                            this.showDateTimePicker('What is your date of birth?');
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                width: '80%',
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
+
+                        {/* ToDo: add icon */}
+
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.birthdayY = y;
+                        }}
+                    />
+                    {
+                        this.state.showAgeAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 3. gender */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'GENDER'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <Select
+                        onOpen={() => this.onFocusGender()} // NOT work in Android
+                        placeholder={{
+                            label: "Select your gender",
+                            value: null
+                        }}
+                        items={genderItems}
+                        onValueChange={(value) => { // only for Android
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.setState({ gender: value });
+                        }}
+                        style={{
+                            iconContainer: {
+                                top: 5,
+                                right: 100
+                            }
+                        }}
+                        textInputProps={{
+                            style: {
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                color: this.state.gender === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }}
+                        useNativeAndroidPickerStyle={false}
+                        value={this.state.gender}
+
+                        Icon={() => {
+                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            return null;
+                        }}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.genderY = y;
+                        }}
+                    />
+                    {
+                        this.state.showGenderAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.genderY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 4. place */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'LOCATION'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+
+                            setTimeout(() => {
+                                // this.props.navigation.navigate("advertisementSearch", { from: 'EditProfile', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
+                            }, Cons.buttonTimeoutShort);
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                // height: textInputHeight,
+                                minHeight: textInputHeight,
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.place ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.place ? this.state.place : "What are you from?"}</Text>
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.placeY = y;
+                        }}
+                    />
+                    {
+                        this.state.showPlaceAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.placeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 6. note */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'NOTE'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput
+                        style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
+                        placeholder='More information about you'
+                        placeholderTextColor={Theme.color.placeholder}
+                        onChangeText={(text) => {
+                            this.setState({ note: text, noteLength: text.length });
+                        }}
+                        value={this.state.note}
+                        selectionColor={Theme.color.selection}
+
+                        // keyboardType='default'
+                        // returnKeyType='done'
+                        // keyboardAppearance='dark'
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        // autoCapitalize="none"
+                        maxLength={200}
+                        multiline={true}
+                        numberOfLines={4}
+                        onFocus={(e) => {
+                            this.onFocusNote();
+                        }}
+                        onBlur={(e) => this.onBlurNote()}
+                    />
+                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
+                        {this.state.noteLength}
+                    </Text>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.noteY = y;
+                        }}
+                    />
+
+                    {/* 7. email */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'EMAIL ADDRESS'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+
+                            setTimeout(() => {
+                                // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                            }, Cons.buttonTimeoutShort);
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                // height: textInputHeight,
+                                minHeight: textInputHeight,
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.email ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.place ? this.state.email : "email address"}</Text>
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.emailY = y;
+                        }}
+                    />
+                    {
+                        this.state.showEmailAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.emailY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 7. phone */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'PHONE NUMBER'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY, animated: true });
+
+                            setTimeout(() => {
+                                // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                            }, Cons.buttonTimeoutShort);
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                // height: textInputHeight,
+                                minHeight: textInputHeight,
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.phoneNumber ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.phoneNumber ? this.state.phoneNumber : "phone number"}</Text>
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.phoneNumberY = y;
+                        }}
+                    />
+                    {
+                        this.state.showPhoneNumberAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.phoneNumberY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+                </View>
             </View>
         );
     }
@@ -1065,8 +994,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 this.uploadImage(result.uri, index, (uri) => {
                     this.setState({ uploadImageUri: uri });
 
-
-                    const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
+                    const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
                     this.imageRefs.push(ref);
 
                     this.uploadImageRef = ref;
@@ -1099,13 +1027,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // console.log('file type:', type);
 
         const formData = new FormData();
-        formData.append("type", "post"); // formData.append("type", "profile");
-
-        if (!this.feedId) {
-            this.feedId = Util.uid();
-        }
-
-        formData.append("feedId", this.feedId);
+        formData.append("type", "profile"); // ToDo: formData.append("type", "profile");
 
         formData.append("image", {
             uri,
@@ -1113,7 +1035,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             type: type
         });
         formData.append("userUid", Firebase.user().uid);
-        formData.append("pictureIndex", index); // ToDo
+        // formData.append("pictureIndex", index);
 
         try {
             let response = await fetch(SERVER_ENDPOINT + "uploadFile/images",
@@ -1142,52 +1064,26 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.setState({ refreshing: false });
 
             // show alert icon
-            // this.setState({ showPictureAlertIcon: true });
+            this.setState({ showPictureAlertIcon: true });
         }
     }
 
-    async updateProfile(data, extra) {
-        // const feedId = Util.uid(); // create uuid
-        // const userUid = Firebase.user().uid;
-
-        let feed = {};
-        feed.uid = data.userUid;
-        feed.id = data.feedId;
-        feed.placeId = data.placeId;
-        feed.placeName = data.placeName;
-        feed.location = data.location;
-        feed.note = data.note;
-
-        const pictures = {
-            one: {
-                preview: null,
-                uri: data.image1Uri
-            },
-            two: {
-                preview: null,
-                uri: data.image2Uri
-            },
-            three: {
-                preview: null,
-                uri: data.image3Uri
-            },
-            four: {
-                preview: null,
-                uri: data.image4Uri
-            }
+    async updateProfile(data) {
+        let profile = {};
+        profile.uid = data.userUid;
+        profile.name = data.name;
+        profile.birthday = data.birthday;
+        profile.gender = data.gender;
+        profile.place = data.place;
+        profile.about = data.note;
+        profile.picture = {
+            preview: null,
+            uri: imageUri
         };
+        profile.email = data.email;
+        profile.phoneNumber = data.phoneNumber;
 
-        feed.pictures = pictures;
-        feed.name = data.name;
-        feed.birthday = data.birthday;
-        feed.gender = data.gender;
-
-        // console.log('feed', feed);
-
-        // await Firebase.createFeed(feed, extra);
-        Firebase.updateProfile()
-
-        // Vars.userFeedsChanged = true;
+        await Firebase.updateProfile(profile.uid, profile);
     }
 
     showDateTimePicker(title) {
@@ -1295,8 +1191,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
     hideAlertIcon() {
         if (this.state.showNameAlertIcon) this.setState({ showNameAlertIcon: false });
-
-        // ToDo
+        if (this.state.showAgeAlertIcon) this.setState({ showAgeAlertIcon: false });
+        if (this.state.showGenderAlertIcon) this.setState({ showGenderAlertIcon: false });
+        if (this.state.showPlaceAlertIcon) this.setState({ showPlaceAlertIcon: false });
     }
 
     showFlash(title, subtitle, image) {

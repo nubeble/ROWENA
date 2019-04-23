@@ -183,13 +183,24 @@ app.post("/images", function (req, res) {
                 let url = signedUrl[0];
                 // console.log('getSignedUrl', url);
 
-                // update database - write command in realtime database
-                admin.database().ref('/users').push({
-                    command: 'addPicture',
-                    userUid: req.field.userUid,
-                    pictureIndex: req.field.pictureIndex,
-                    uri: url
-                }).then((snapshot) => {
+                if (req.field.type === 'profile') {
+                    // update database - write command in realtime database
+                    admin.database().ref('/users').push({
+                        command: 'addPicture',
+                        userUid: req.field.userUid,
+                        pictureIndex: req.field.pictureIndex,
+                        uri: url
+                    }).then((snapshot) => {
+                        resolve(); // then
+
+                        // return response
+                        let result = {
+                            downloadUrl: url
+                        };
+
+                        res.status(200).send(result);
+                    });
+                } else { // 'post'
                     resolve(); // then
 
                     // return response
@@ -198,7 +209,7 @@ app.post("/images", function (req, res) {
                     };
 
                     res.status(200).send(result);
-                });
+                }
             });
         }).catch(error => {
             console.error('uploadImageToStorage error', error);
@@ -275,33 +286,6 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
 
                     reject(error);
                 });
-
-                // --
-                /*
-                let data = makeData(pictureIndex, uri);
-                var query = admin.firestore().collection('users');
-                query = query.where('uid', '==', userUid);
-                query.get().then((querySnapshot) => {
-                    if (!querySnapshot.size) {
-                        console.log("No such a user!");
-                    } else {
-                        querySnapshot.forEach((queryDocumentSnapshot) => {
-                            // console.log(queryDocumentSnapshot.id, queryDocumentSnapshot.data());
-                            admin.firestore().collection('users').doc(queryDocumentSnapshot.id).update(data).then(() => {
-                                console.log("User info updated.");
-
-                                // remove
-                                admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
-                                    console.log("Database removed.");
-                                });
-
-                                resolve();
-                            });
-                        });
-                    }
-                });
-                */
-                // --
             }
         }).catch(error => {
             console.error('once error', error);
@@ -313,6 +297,7 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
 });
 
 const makeData = (index, url) => {
+    /*
     let key;
     switch (index) {
         case '0': key = 'one'; break;
@@ -324,6 +309,8 @@ const makeData = (index, url) => {
     }
 
     let data = { [`pictures.${key}.uri`]: url };
+    */
+    let data = { [`picture.uri`]: url };
 
     return data;
 }
@@ -335,12 +322,12 @@ const saveToken = async(function () {
     // console.log('Done parsing form.', fields);
 
     /*
-            const data = {
-                token: fields.token,
-                uid: fields.uid,
-                name: fields.name
-            };
-            */
+    const data = {
+        token: fields.token,
+        uid: fields.uid,
+        name: fields.name
+    };
+    */
 
     console.log('Done parsing form.', fields);
 

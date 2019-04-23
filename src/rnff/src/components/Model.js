@@ -58,8 +58,9 @@ export type Profile = {
     name: string,
     birthday: string, // DDMMYYYY
     gender: string,
-    country: string,
-    city: string,
+    // country: string,
+    // city: string,
+    place: string, // Bangkok, Thailand
     email: string,
     phoneNumber: string,
     picture: Picture,

@@ -293,15 +293,18 @@ export default class UserMain extends React.Component<InjectedProps> {
         // const name = profile.name;
         // const uri = profile.picture.uri;
 
+        /*
         const city = profile.city;
         const country = profile.country;
         let place = null;
         if (city && country) {
             place = city + ', ' + country;
         }
+        */
+        let place = null;
+        if (profile.place) place = profile.place;
 
-        // ToDo: test
-        if (!place) place = 'Cebu, Philippines';
+        if (!place) place = 'Cebu, Philippines'; // ToDo: test
 
         const opponentUserUid = guest.uid;
 

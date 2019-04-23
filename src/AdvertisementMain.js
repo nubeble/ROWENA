@@ -294,14 +294,17 @@ export default class AdvertisementMain extends React.Component {
         console.log('AdvertisementMain._keyboardDidShow');
 
         if (this.focusedItem === 'name') {
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
         } else if (this.focusedItem === 'height') {
-            this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
         } else if (this.focusedItem === 'weight') {
-            this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
         } else if (this.focusedItem === 'note') {
-            this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY, animated: true });
 
             if (!this.state.onNote) this.setState({ onNote: true });
         }
@@ -415,7 +418,8 @@ export default class AdvertisementMain extends React.Component {
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+        // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
     }
 
     onFocusGender() {
@@ -424,7 +428,8 @@ export default class AdvertisementMain extends React.Component {
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+        // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
     }
 
     onFocusHeight() {
@@ -505,7 +510,8 @@ export default class AdvertisementMain extends React.Component {
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+        // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
     }
 
     onFocusBreasts() {
@@ -514,7 +520,8 @@ export default class AdvertisementMain extends React.Component {
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+        // this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
     }
 
     onFocusNote() {
@@ -559,7 +566,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showNameAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
 
             return;
         }
@@ -570,7 +578,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showAgeAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
 
             return;
         }
@@ -581,7 +590,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showGenderAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
 
             return;
         }
@@ -592,7 +602,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showHeightAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
 
             return;
         }
@@ -603,7 +614,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showWeightAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + heightY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
 
             return;
         }
@@ -614,7 +626,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showBodyTypeAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
 
             return;
         }
@@ -625,7 +638,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showBreastsAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
 
             return;
         }
@@ -636,7 +650,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showCountryAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
             return;
         }
@@ -647,7 +662,8 @@ export default class AdvertisementMain extends React.Component {
             this.setState({ showStreetAlertIcon: true });
 
             // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
 
             return;
         }
@@ -695,7 +711,6 @@ export default class AdvertisementMain extends React.Component {
         if (note !== '') {
             _note = note;
         }
-
         data.note = _note;
 
         data.image1Uri = uploadImage1Uri;
@@ -973,13 +988,13 @@ export default class AdvertisementMain extends React.Component {
                         // keyboardType={'email-address'}
                         // keyboardAppearance='dark'
                         onChangeText={(text) => this.validateName(text)}
+                        value={this.state.name}
                         selectionColor={Theme.color.selection}
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="words"
                         placeholder="Selena Gomez"
                         placeholderTextColor={Theme.color.placeholder}
-                        value={this.state.name}
                         onFocus={(e) => this.onFocusName()}
                     />
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
@@ -1044,7 +1059,7 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* gender */}
+                    {/* 3. gender */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
@@ -1111,10 +1126,24 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.genderY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* 3. height */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                        {'HEIGHT'}
-                    </Text>
+                    {/* 4. height */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'HEIGHT'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
@@ -1127,13 +1156,13 @@ export default class AdvertisementMain extends React.Component {
                         onFocus={(e) => this.onFocusHeight()}
                         onBlur={(e) => this.onBlurHeight()}
                         onChangeText={(text) => this.validateHeight(text)}
+                        value={this.state.height}
                         selectionColor={Theme.color.selection}
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="none"
                         placeholder='164 cm'
                         placeholderTextColor={Theme.color.placeholder}
-                        value={this.state.height}
                     />
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -1146,10 +1175,24 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* 4. weight */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                        {'WEIGHT'}
-                    </Text>
+                    {/* 5. weight */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'WEIGHT'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={{
                             paddingLeft: 18, paddingRight: 32,
@@ -1162,13 +1205,13 @@ export default class AdvertisementMain extends React.Component {
                         onFocus={(e) => this.onFocusWeight()}
                         onBlur={(e) => this.onBlurWeight()}
                         onChangeText={(text) => this.validateWeight(text)}
+                        value={this.state.weight}
                         selectionColor={Theme.color.selection}
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="none"
                         placeholder='45 kg'
                         placeholderTextColor={Theme.color.placeholder}
-                        value={this.state.weight}
                     />
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -1181,7 +1224,7 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* body type */}
+                    {/* 6. body type */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
@@ -1248,7 +1291,7 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* 5. breasts */}
+                    {/* 7. breasts */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
@@ -1339,10 +1382,24 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* 7. note */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                        {'NOTE'}
-                    </Text>
+                    {/* 8. note */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'NOTE'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <TextInput
                         style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
                         placeholder='More information about you'
@@ -1350,6 +1407,7 @@ export default class AdvertisementMain extends React.Component {
                         onChangeText={(text) => {
                             this.setState({ note: text, noteLength: text.length });
                         }}
+                        value={this.state.note}
                         selectionColor={Theme.color.selection}
 
                         // keyboardType='default'
@@ -1376,10 +1434,24 @@ export default class AdvertisementMain extends React.Component {
                         }}
                     />
 
-                    {/* country */}
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                        {'COUNTRY'}
-                    </Text>
+                    {/* 9. country */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'COUNTRY'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
                     <TouchableOpacity
                         onPress={() => {
                             if (this.state.onUploadingImage) return;
@@ -1389,8 +1461,8 @@ export default class AdvertisementMain extends React.Component {
                                 this.hideAlertIcon();
                             }
 
-                            // move scroll
-                            this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+                            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
                             setTimeout(() => {
                                 this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
@@ -1418,7 +1490,7 @@ export default class AdvertisementMain extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.countryY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* street */}
+                    {/* 10. street */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'STREET'}
@@ -1452,13 +1524,14 @@ export default class AdvertisementMain extends React.Component {
                                 this.setState({ showCountryAlertIcon: true });
 
                                 // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-                                this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+                                // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
                                 return;
                             }
 
-                            // move scroll
-                            this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
+                            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
 
                             setTimeout(() => {
                                 this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
@@ -1485,42 +1558,6 @@ export default class AdvertisementMain extends React.Component {
                         this.state.showStreetAlertIcon &&
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
-
-
-                    {/*
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                        {'CITY'}
-                    </Text>
-                    <Text
-                        style={{
-                            paddingHorizontal: 18,
-                            height: textInputHeight,
-                            // minHeight: textInputHeight,
-                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                            paddingTop: 7
-                        }}
-                    >
-                        {this.state.city}
-                    </Text>
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-                    <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                        {'STATE'}
-                    </Text>
-                    <Text
-                        style={{
-                            paddingHorizontal: 18,
-                            height: textInputHeight,
-                            // minHeight: textInputHeight,
-                            fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
-                            paddingTop: 7
-                        }}
-                    >
-                        {this.state.state}
-                    </Text>
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginBottom: Theme.spacing.small }} />
-                    */}
-
-
                 </View>
 
                 {/*
@@ -1761,7 +1798,7 @@ export default class AdvertisementMain extends React.Component {
             type: type
         });
         formData.append("userUid", Firebase.user().uid);
-        formData.append("pictureIndex", index);
+        // formData.append("pictureIndex", index);
 
         try {
             let response = await fetch(SERVER_ENDPOINT + "uploadFile/images",
@@ -1856,7 +1893,6 @@ export default class AdvertisementMain extends React.Component {
 
         // Vars.userFeedsChanged = true;
     }
-
 
     /*
     // ToDo: test

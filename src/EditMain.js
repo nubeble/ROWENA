@@ -173,9 +173,12 @@ export default class EditMain extends React.Component<InjectedProps> {
         if (!name) name = 'Anonymous'; // test
 
         let address = "No address registered";
+        /*
         if (profile.city && profile.country) {
             address = profile.city + ', ' + profile.country;
         }
+        */
+        if (profile.place) address = profile.place;
 
         const count = profile.receivedCommentsCount;
 

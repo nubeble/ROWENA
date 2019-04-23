@@ -120,6 +120,40 @@ export default class Util extends React.Component {
         return birthday;
     }
 
+    static getBirthdayText(date) { // '03111982' -> '03 NOV 1982'
+        const _day = date.substring(0, 2);
+        const month = parseInt(date.substring(2, 4));
+        const _year = date.substring(4, 8);
+
+        let _month = '';
+        switch (month) {
+            case 0: _month = 'JAN'; break;
+            case 1: _month = 'FEB'; break;
+            case 2: _month = 'MAR'; break;
+            case 3: _month = 'APR'; break;
+            case 4: _month = 'MAY'; break;
+            case 5: _month = 'JUN'; break;
+            case 6: _month = 'JUL'; break;
+            case 7: _month = 'AUG'; break;
+            case 8: _month = 'SEP'; break;
+            case 9: _month = 'OCT'; break;
+            case 10: _month = 'NOV'; break;
+            case 11: _month = 'DEC'; break;
+        }
+
+        const text = _day + ' ' + _month + ' ' + _year;
+
+        return text;
+    }
+
+    static getDate(date) { // '03111982' -> new Date(1982, 11, 3)
+        const day = parseInt(date.substring(0, 2));
+        const month = parseInt(date.substring(2, 4));
+        const year = parseInt(date.substring(4, 8));
+
+        return new Date(year, month, day);
+    }
+
     static getBust(breats) {
         let bust = '';
 
@@ -333,6 +367,7 @@ export default class Util extends React.Component {
         return str;
     }
 
+    /*
     static getCountyCode(country) {
         let code = null;
 
@@ -1369,4 +1404,5 @@ export default class Util extends React.Component {
 
         return code;
     }
+    */
 }
