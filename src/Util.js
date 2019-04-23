@@ -78,6 +78,31 @@ export default class Util extends React.Component {
         return time;
     }
 
+    static getJoinedDate(timestamp) { // 'Joined in September 26, 2018'
+        const date = new Date(timestamp);
+        const y = date.getFullYear();
+        const m = date.getMonth();
+        const d = date.getDate();
+
+        let _month = '';
+        switch (m) {
+            case 0: _month = 'January'; break;
+            case 1: _month = 'February'; break;
+            case 2: _month = 'March'; break;
+            case 3: _month = 'April'; break;
+            case 4: _month = 'May'; break;
+            case 5: _month = 'June'; break;
+            case 6: _month = 'July'; break;
+            case 7: _month = 'August'; break;
+            case 8: _month = 'September'; break;
+            case 9: _month = 'October'; break;
+            case 10: _month = 'November'; break;
+            case 11: _month = 'December'; break;
+        }
+
+        return 'Joined in ' + _month + ' ' + d.toString() + ', ' + y.toString();
+    }
+
     static getRandomNumber() {
         const max = Number.MIN_SAFE_INTEGER;
         const min = Number.MAX_SAFE_INTEGER;

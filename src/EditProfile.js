@@ -537,34 +537,61 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         return (
             <View>
-                <View style={{
-                    borderTopColor: Theme.color.line, borderTopWidth: 1,
-                    // borderBottomColor: Theme.color.line, borderBottomWidth: 1,
-                    // backgroundColor: 'rgb(50, 50, 50)'
-                }}>
-
+                <View style={{ borderTopColor: Theme.color.line, borderTopWidth: 1 }}>
                     <View style={{ marginTop: 12, marginBottom: 8, justifyContent: 'center', alignItems: 'center' }}>
+                        <TouchableOpacity onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.uploadPicture();
+                        }}>
+                            {
+                                uploadImageUri ?
+                                    <SmartImage
+                                        style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                        showSpinner={false}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={uploadImageUri}
+                                    />
+                                    :
+                                    <Image
+                                        style={{
+                                            backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
+                                            borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                            resizeMode: 'cover'
+                                        }}
+                                        source={PreloadImage.user}
+                                    />
+                            }
+                        </TouchableOpacity>
                         {
-                            uploadImageUri ?
-                                <Image
-                                    style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                    source={{ uri: uploadImageUri }}
-                                />
-                                :
-                                <Image
-                                    style={{
-                                        backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                        borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
-                                        resizeMode: 'cover'
-                                    }}
-                                    source={PreloadImage.user}
-                                />
+                            this.state.showPictureAlertIcon &&
+                            <AntDesign style={{ position: 'absolute', left: Dimensions.get('window').width / 2 - 12, top: avatarWidth / 2 - 12 }}
+                                name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        }
+
+                        {
+                            this.state.onUploadingImage &&
+                            <View style={{
+                                width: Dimensions.get('window').width, height: avatarWidth,
+                                position: 'absolute', top: 0, left: 0,
+                                justifyContent: 'center', alignItems: 'center'
+                            }}>
+                                <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} color={Theme.color.selection} />
+                            </View>
                         }
                     </View>
 
                     <View style={{ marginBottom: 12, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity
                             onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcon();
+                                }
+
                                 this.uploadPicture();
                             }}
                         >
@@ -572,6 +599,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         </TouchableOpacity>
                     </View>
                 </View>
+
                 <View style={{ marginTop: Theme.spacing.small, paddingHorizontal: 4 }}
                     onLayout={(e) => {
                         const { y } = e.nativeEvent.layout;
@@ -773,7 +801,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
 
                             setTimeout(() => {
-                                // this.props.navigation.navigate("advertisementSearch", { from: 'EditProfile', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
+                                this.props.navigation.navigate("editSearch",
+                                    { from: 'EditProfile', initFromSearch: (result) => this.initFromSearch(result) }); // ToDo
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -1078,7 +1107,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         profile.about = data.note;
         profile.picture = {
             preview: null,
-            uri: imageUri
+            uri: data.imageUri
         };
         profile.email = data.email;
         profile.phoneNumber = data.phoneNumber;

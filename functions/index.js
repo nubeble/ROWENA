@@ -169,7 +169,6 @@ app.post("/images", function (req, res) {
     }
 
     return new Promise((resolve, reject) => {
-
         uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
             console.log('metadata', metadata);
 
@@ -183,12 +182,13 @@ app.post("/images", function (req, res) {
                 let url = signedUrl[0];
                 // console.log('getSignedUrl', url);
 
+                /*
                 if (req.field.type === 'profile') {
                     // update database - write command in realtime database
                     admin.database().ref('/users').push({
                         command: 'addPicture',
                         userUid: req.field.userUid,
-                        pictureIndex: req.field.pictureIndex,
+                        // pictureIndex: req.field.pictureIndex,
                         uri: url
                     }).then((snapshot) => {
                         resolve(); // then
@@ -210,6 +210,16 @@ app.post("/images", function (req, res) {
 
                     res.status(200).send(result);
                 }
+                */
+
+                resolve(); // then
+
+                // return response
+                let result = {
+                    downloadUrl: url
+                };
+
+                res.status(200).send(result);
             });
         }).catch(error => {
             console.error('uploadImageToStorage error', error);
@@ -218,7 +228,6 @@ app.post("/images", function (req, res) {
 
             res.status(500).send(error);
         });
-
     });
 });
 
@@ -256,6 +265,7 @@ const runtimeOpts = {
 // exports.uploadFile = functions.https.onRequest(app);
 exports.uploadFile = functions.runWith(runtimeOpts).https.onRequest(app);
 
+/*
 exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCreate((snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
     const command = snapshot.val();
@@ -263,14 +273,20 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
     return new Promise((resolve, reject) => {
 
         admin.database().ref('/users/' + context.params.pushId).once('value').then((dataSnapshot) => {
-            var userUid = (dataSnapshot.val() && dataSnapshot.val().userUid) || 'Anonymous';
-            var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex) || 'Anonymous';
-            var uri = (dataSnapshot.val() && dataSnapshot.val().uri) || 'Anonymous';
+            var userUid = (dataSnapshot.val() && dataSnapshot.val().userUid);
+            // var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex);
+            var uri = (dataSnapshot.val() && dataSnapshot.val().uri);
 
             // console.log('Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
 
             if (command === 'addPicture') {
-                let data = makeData(pictureIndex, uri);
+                // let data = makeData(pictureIndex, uri);
+                const data = {
+                    picture: {
+                        preview: null,
+                        uri: uri
+                    }
+                };
 
                 admin.firestore().collection('users').doc(userUid).update(data).then(() => {
                     console.log("User info updated.");
@@ -297,23 +313,12 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
 });
 
 const makeData = (index, url) => {
-    /*
-    let key;
-    switch (index) {
-        case '0': key = 'one'; break;
-        case '1': key = 'two'; break;
-        case '2': key = 'three'; break;
-        case '3': key = 'four'; break;
-        case '4': key = 'five'; break;
-        case '5': key = 'six'; break;
-    }
-
-    let data = { [`pictures.${key}.uri`]: url };
-    */
     let data = { [`picture.uri`]: url };
 
     return data;
 }
+*/
+
 
 const saveToken = async(function () {
     const params = this;

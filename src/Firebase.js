@@ -86,24 +86,18 @@ export default class Firebase {
         const profile = {
             uid: uid,
             name: name,
-            country: null,
-            city: null,
+            birthday: null,
+            gender: null,
+            place: null,
             email: email,
             phoneNumber: phoneNumber,
             picture: {
                 preview: null,
                 uri: null
             },
-            /*
-            location: {
-                description: null, // "Cebu, Philippines"
-                longitude: 0.0,
-                latitude: 0.0
-            },
-            */
             about: null,
             feeds: [],
-            reviews: [], // review ref array
+            reviews: [],
             replies: [],
             likes: [],
             comments: [],

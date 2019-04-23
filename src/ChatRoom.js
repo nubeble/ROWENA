@@ -649,13 +649,10 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 // --
             }
 
-            const { city, country, receivedCommentsCount } = this.opponentUser; // customer
+            const { place, receivedCommentsCount, timestamp, birthday, gender, about } = this.opponentUser; // customer
 
             let count = receivedCommentsCount;
-            let address = null;
-            if (city && country) {
-                address = city + ', ' + country;
-            }
+            let address = place;
 
             const user2 = {
                 uid: customer.uid,
@@ -663,7 +660,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 picture: customer.picture,
 
                 address,
-                receivedCommentsCount: count
+                receivedCommentsCount: count,
+                timestamp, birthday, gender, about
             };
 
             const user1 = {

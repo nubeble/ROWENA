@@ -388,6 +388,10 @@ export default class UserMain extends React.Component<InjectedProps> {
         let reviewText = 'loading...';
         let labelText = null;
         let imageUri = null;
+        let dateText = 'Joined in September 26, 2018';
+        let age = '20';
+        let gender = 'Female';
+        let note = 'hi';
 
         const { guest } = this.state; // undefined at loading
 
@@ -418,6 +422,14 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             // image
             if (guest.picture) imageUri = guest.picture;
+
+            // date
+            dateText = Util.getJoinedDate(guest.timestamp);
+
+            // ToDo: use birthday, gender, about
+            if (guest.birthday) age = Util.getAge(guest.birthday);
+            if (guest.gender) gender = guest.gender;
+            if (guest.about) note = guest.about;
         }
 
         const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
@@ -497,7 +509,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
                                                 <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{name}</Text>
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>
-                                                    Joined in September 26, 2018
+                                                    {dateText}
                                                 </Text>
                                             </View>
                                             <View
@@ -547,8 +559,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                             onLayout={(event) => {
                                                 const { x, y, width, height } = event.nativeEvent.layout;
-
-                                                console.log('onLayout', y);
 
                                                 this.borderY = y;
                                             }}

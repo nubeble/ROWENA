@@ -631,7 +631,8 @@ class ChatRoomStackNavigatorWrapper extends React.Component {
 const EditStackNavigator = createStackNavigator(
     {
         editMain: { screen: EditMain },
-        editProfile: { screen: EditProfile }
+        editProfile: { screen: EditProfile },
+        editSearch: { screen: SearchScreen }
     },
     {
         mode: 'card',

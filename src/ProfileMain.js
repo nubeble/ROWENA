@@ -434,9 +434,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             >
                                                 {
                                                     imageUri ?
-                                                        <Image
+                                                        <SmartImage
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                            source={{ uri: imageUri }}
+                                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                            uri={imageUri}
+                                                            showSpinner={false}
                                                         />
                                                         :
                                                         <Image

@@ -200,8 +200,18 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         const imageUri = profile.picture.uri;
 
-        let dateText = 'Joined in September 26, 2018';
-        const date = profile.timestamp; // ToDo: Joined in September 26, 2018
+        // const dateText = 'Joined in September 26, 2018';
+        const dateText = Util.getJoinedDate(profile.timestamp);
+
+
+
+        // ToDo: use birthday, gender, about
+        let age = '20';
+        let gender = 'Female';
+        let note = 'hi';
+        if (profile.birthday) age = Util.getAge(profile.birthday);
+        if (profile.gender) gender = profile.gender;
+        if (profile.about) note = profile.about;
 
 
 
@@ -305,9 +315,11 @@ export default class EditMain extends React.Component<InjectedProps> {
                                             >
                                                 {
                                                     imageUri ?
-                                                        <Image
+                                                        <SmartImage
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                            source={{ uri: imageUri }}
+                                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                            uri={imageUri}
+                                                            showSpinner={false}
                                                         />
                                                         :
                                                         <Image
@@ -343,8 +355,6 @@ export default class EditMain extends React.Component<InjectedProps> {
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                             onLayout={(event) => {
                                                 const { x, y, width, height } = event.nativeEvent.layout;
-
-                                                console.log('onLayout', y);
 
                                                 this.borderY = y;
                                             }}

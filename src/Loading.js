@@ -233,7 +233,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 if (Loading.isUserAutoAuthenticated) {
                     // update user info to database
-
+                    /*
                     const profile = {
                         name: user.displayName,
                         email: user.email,
@@ -246,6 +246,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     const uid = Firebase.user().uid;
                     await Firebase.updateProfile(uid, profile);
+                    */
 
                     console.log('move to main');
                     StatusBar.setHidden(false);
