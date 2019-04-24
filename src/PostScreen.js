@@ -1650,8 +1650,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             // borderBottomWidth: 1,
                             // borderColor: 'rgb(34, 34, 34)'
                         }}>
-                            <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {post.reviewCount}+ reviews</Text>
-                            <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 0 }} />
+                            <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular", paddingLeft: 10 }}>Read all {post.reviewCount}+ reviews</Text>
+                            <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 10 }} />
                         </View>
                     </TouchableOpacity>
 
