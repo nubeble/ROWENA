@@ -44,7 +44,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
-        this.enableScroll();
+        !this.closed && this.enableScroll();
     }
 
     componentWillUnmount() {

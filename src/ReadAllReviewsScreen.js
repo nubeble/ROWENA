@@ -13,7 +13,7 @@ import Firebase from './Firebase';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 // import ReadMore from "./ReadMore";
-import Ionicons from "react-native-vector-icons/Ionicons";
+import { Ionicons, MaterialIcons } from "react-native-vector-icons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Dialog from "react-native-dialog";
 import { Cons, Vars } from "./Globals";
@@ -379,7 +379,10 @@ export default class ReadAllReviewsScreen extends React.Component {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeReview(index)}
                             >
+                                {/*
                                 <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Delete</Text>
+                                */}
+                                <MaterialIcons name='close' color={'silver'} size={20} />
                             </TouchableOpacity>
                         </View>
                     )
@@ -412,7 +415,10 @@ export default class ReadAllReviewsScreen extends React.Component {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
+                                            {/*
                                             <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Delete</Text>
+                                            */}
+                                            <MaterialIcons name='close' color={'silver'} size={20} />
                                         </TouchableOpacity>
                                     </View>
                                 )
@@ -428,7 +434,10 @@ export default class ReadAllReviewsScreen extends React.Component {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
+                                    {/*
                                     <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Reply</Text>
+                                    */}
+                                    <MaterialIcons name='reply' color={'silver'} size={20} />
                                 </TouchableOpacity>
                             </View>
                         )

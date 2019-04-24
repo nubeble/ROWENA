@@ -724,7 +724,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                             color: '#f1c40f',
                                                             fontSize: 18,
                                                             lineHeight: 18,
-                                                            fontFamily: "Roboto-LightItalic"
+                                                            fontFamily: "Roboto-Italic"
                                                         }}>newly posted</Text>
                                                     </View>
                                                 </View>
@@ -1552,7 +1552,10 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.removeReview(index)}
                                 >
+                                    {/*
                                     <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
+                                    */}
+                                    <MaterialIcons name='close' color={'silver'} size={20} />
                                 </TouchableOpacity>
                             </View>
                         }
@@ -1585,7 +1588,10 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
+                                            {/*
                                             <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
+                                            */}
+                                            <MaterialIcons name='close' color={'silver'} size={20} />
                                         </TouchableOpacity>
                                     </View>
                                 }
@@ -1598,7 +1604,10 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                 <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                     onPress={() => this.openKeyboard(ref, index, _profile.uid)}
                                 >
+                                    {/*
                                     <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Reply</Text>
+                                    */}
+                                    <MaterialIcons name='reply' color={'silver'} size={20} />
                                 </TouchableOpacity>
                             </View>
                         }
@@ -1609,7 +1618,12 @@ export default class PostScreen extends React.Component<InjectedProps> {
             } // end of for
 
             return (
-                <View style={styles.reviewContainer}>
+                <View style={styles.reviewContainer}
+                    onLayout={(e) => {
+                        const { y } = e.nativeEvent.layout;
+                        this.reviewContainerY = y;
+                    }}
+                >
                     {reviewArray}
 
                     {/* Read all ??? reviews button */}
@@ -1636,7 +1650,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                             // borderBottomWidth: 1,
                             // borderColor: 'rgb(34, 34, 34)'
                         }}>
-                            <Text style={{ fontSize: 16, color: '#f1c40f', fontFamily: "Roboto-Light" }}>Read all {post.reviewCount}+ reviews</Text>
+                            <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {post.reviewCount}+ reviews</Text>
                             <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 12 }} />
 
                         </View>
@@ -1701,16 +1715,13 @@ export default class PostScreen extends React.Component<InjectedProps> {
             }
         }
 
-        const chartHeight = Theme.spacing.tiny + 140 + 10; // OK
-        const y = this.reviewsContainerY + chartHeight + totalHeights; // OK
-
-        const height = this.itemHeights[this.selectedItemIndex]; // OK
-        const keyboardHeight = e.endCoordinates.height; // OK
-        const searchBarHeight = Cons.searchBarHeight; // OK
-
+        const y = this.reviewsContainerY + this.reviewContainerY + totalHeights;
+        const height = this.itemHeights[this.selectedItemIndex];
+        const keyboardHeight = e.endCoordinates.height;
+        const searchBarHeight = Cons.searchBarHeight;
         const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
 
-        this._flatList.scrollToOffset({ offset: y - gap, animated: true }); // precisely fit!
+        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
     }
 
     @autobind

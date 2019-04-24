@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import { Ionicons, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons, Feather, MaterialCommunityIcons, MaterialIcons } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
 import { Svg, Constants } from 'expo';
 import { NavigationActions } from 'react-navigation';
@@ -465,7 +465,10 @@ export default class EditMain extends React.Component<InjectedProps> {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeComment(index)}
                             >
+                                {/*
                                 <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
+                                */}
+                                <MaterialIcons name='close' color={'silver'} size={20} />
                             </TouchableOpacity>
                         </View>
                     )

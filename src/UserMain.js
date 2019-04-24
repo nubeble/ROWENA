@@ -6,7 +6,7 @@ import {
 import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { NavigationActions } from 'react-navigation';
-import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, Feather, MaterialCommunityIcons, MaterialIcons } from "react-native-vector-icons";
 import autobind from "autobind-decorator";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
@@ -799,7 +799,10 @@ export default class UserMain extends React.Component<InjectedProps> {
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                 onPress={() => this.removeComment(index)}
                             >
+                                {/*
                                 <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
+                                */}
+                                <MaterialIcons name='close' color={'silver'} size={20} />
                             </TouchableOpacity>
                         </View>
                     )
