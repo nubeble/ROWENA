@@ -679,7 +679,7 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.small }}>
-                                            <MaterialIcons style={{ marginLeft: 0, marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
+                                            <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
@@ -714,17 +714,14 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                 </View>
                                                 */
                                                 <View style={{ marginBottom: 9 }}>
-                                                    <View style={{
-                                                        marginLeft: 2,
-                                                        width: 160, height: 22,
-                                                        justifyContent: 'center',
-                                                        paddingLeft: 1
-                                                    }}>
+                                                    <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
+                                                        <AntDesign style={{ marginTop: 2 }} name='staro' color={'#f1c40f'} size={19} />
                                                         <Text style={{
                                                             color: '#f1c40f',
                                                             fontSize: 18,
-                                                            lineHeight: 18,
-                                                            fontFamily: "Roboto-Italic"
+                                                            fontFamily: "Roboto-Italic",
+                                                            paddingLeft: 5,
+                                                            paddingTop: 2
                                                         }}>newly posted</Text>
                                                     </View>
                                                 </View>
