@@ -666,7 +666,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             </View>
                         }
 
-                        ListEmptyComponent={this.renderListEmptyComponent}
+                        // ListEmptyComponent={this.renderListEmptyComponent}
                     />
                 }
 

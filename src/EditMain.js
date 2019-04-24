@@ -397,7 +397,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                             </View>
                         }
 
-                        ListEmptyComponent={this.renderListEmptyComponent}
+                        // ListEmptyComponent={this.renderListEmptyComponent}
                     />
                 }
 
@@ -495,8 +495,6 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     renderListEmptyComponent() {
-        // const { navigation } = this.props;
-
         const { reviews } = this.commentStore;
         const loading = reviews === undefined;
 
@@ -550,16 +548,6 @@ export default class EditMain extends React.Component<InjectedProps> {
         }
 
         return (
-            /*
-            loading ?
-                <View style={{ paddingVertical: Theme.spacing.small }}>
-                    {reviewArray}
-                </View>
-                :
-                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    <FirstPost {...{ navigation }} />
-                </View>
-            */
             loading &&
             <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
                 {reviewArray}
