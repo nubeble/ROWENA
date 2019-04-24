@@ -147,7 +147,7 @@ export default class Util extends React.Component {
 
     static getBirthdayText(date) { // '03111982' -> '03 NOV 1982'
         const _day = date.substring(0, 2);
-        const month = parseInt(date.substring(2, 4));
+        const month = parseInt(date.substring(2, 4)) - 1;
         const _year = date.substring(4, 8);
 
         let _month = '';
@@ -173,7 +173,7 @@ export default class Util extends React.Component {
 
     static getDate(date) { // '03111982' -> new Date(1982, 11, 3)
         const day = parseInt(date.substring(0, 2));
-        const month = parseInt(date.substring(2, 4));
+        const month = parseInt(date.substring(2, 4)) - 1;
         const year = parseInt(date.substring(4, 8));
 
         return new Date(year, month, day);

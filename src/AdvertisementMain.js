@@ -1784,7 +1784,8 @@ export default class AdvertisementMain extends React.Component {
         // console.log('file type:', type);
 
         const formData = new FormData();
-        formData.append("type", "post"); // formData.append("type", "profile");
+        // formData.append("type", "profile");
+        formData.append("type", "post");
 
         if (!this.feedId) {
             this.feedId = Util.uid();

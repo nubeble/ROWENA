@@ -205,7 +205,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
 
 
-        // ToDo: use birthday, gender, about
+        // ToDo: use age, gender, note
         let age = '20';
         let gender = 'Female';
         let note = 'hi';

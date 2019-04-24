@@ -426,7 +426,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             // date
             dateText = Util.getJoinedDate(guest.timestamp);
 
-            // ToDo: use birthday, gender, about
+            // ToDo: use age, gender, note
             if (guest.birthday) age = Util.getAge(guest.birthday);
             if (guest.gender) gender = guest.gender;
             if (guest.about) note = guest.about;

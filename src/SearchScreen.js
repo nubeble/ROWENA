@@ -27,7 +27,7 @@ export default class SearchScreen extends React.Component {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         const from = this.props.navigation.state.params.from;
-        if (from !== 'AdvertisementMain') await this.loadHistory();
+        if (from !== 'AdvertisementMain' && from !== 'EditProfile') await this.loadHistory();
 
         /*
         setTimeout(() => {
@@ -64,43 +64,26 @@ export default class SearchScreen extends React.Component {
         const components = 'country:' + countryCode;
 
         let predefinedPlaces = null;
-        if (from !== 'AdvertisementMain') {
-            if (!this.state.history) {
-                predefinedPlaces = [Bangkok, Manila, HoChiMinh, Vientiane];
-                predefinedPlaces[0].icon = 'predefined';
-                predefinedPlaces[1].icon = 'predefined';
-                predefinedPlaces[2].icon = 'predefined';
-                predefinedPlaces[3].icon = 'predefined';
-            } else {
-                // predefinedPlaces = [Bangkok, Manila, HoChiMinh, Vientiane];
-                predefinedPlaces = [];
 
-                for (var i = 0; i < this.state.history.length; i++) {
-                    let item = this.state.history[i];
-                    if (item) {
-                        item.icon = 'saved';
-                        predefinedPlaces.push(item);
-                    }
-                }
-
-                if (predefinedPlaces.length < 4) {
-                    const predefinedList = [];
-                    predefinedList.push(Bangkok);
-                    predefinedList.push(Manila);
-                    predefinedList.push(HoChiMinh);
-                    predefinedList.push(Vientiane);
-
-                    const startIndex = predefinedPlaces.length;
-                    for (var i = startIndex; i < 4; i++) {
-                        predefinedPlaces.push(predefinedList[i]);
-                    }
-                }
-
-                // console.log('predefinedPlaces', predefinedPlaces);
-            }
-        } else {
+        if (from === 'EditProfile') {
+            // use predefined
+            predefinedPlaces = this.getPredefinedPlaces();
+        } else if (from === 'AdvertisementMain') {
             predefinedPlaces = [];
+        } else {
+            if (!this.state.history) {
+                // use predefined
+                predefinedPlaces = this.getPredefinedPlaces();
+            } else {
+                // use history
+                predefinedPlaces = this.getSavedPlaces();
+            }
         }
+
+        let placeholder = '';
+        if (from === 'EditProfile') placeholder = 'Where are you from?';
+        else if (from === 'AdvertisementMain') placeholder = 'Where do you live?';
+        else placeholder = 'Where to?';
 
         return (
             <View style={styles.flex}>
@@ -118,7 +101,7 @@ export default class SearchScreen extends React.Component {
                             this.props.navigation.goBack();
                         }}
                     >
-                        <Ionicons name={from === 'AdvertisementMain' ? 'md-arrow-back' : 'md-close'} color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name={from === 'AdvertisementMain' || from === 'EditProfile' ? 'md-arrow-back' : 'md-close'} color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
 
@@ -221,7 +204,7 @@ export default class SearchScreen extends React.Component {
                             }
                         }}
                         enablePoweredByContainer={false}
-                        placeholder={from === 'AdvertisementMain' ? 'Where do you live?' : 'Where to?'}
+                        placeholder={placeholder}
                         placeholderTextColor={Theme.color.placeholder}
                         minLength={2} // minimum length of text to search
                         autoFocus={false}
@@ -246,7 +229,7 @@ export default class SearchScreen extends React.Component {
 
                             // save the keyword to storage
                             // --
-                            if (from !== 'AdvertisementMain') {
+                            if (from !== 'AdvertisementMain' && from !== 'EditProfile') {
                                 const item = {
                                     description: data.description,
                                     place_id: data.place_id,
@@ -261,7 +244,6 @@ export default class SearchScreen extends React.Component {
                                 await this.saveHistory(JSON.stringify(item));
                             }
                             // --
-
 
                             if (from === 'AdvertisementMain') {
                                 const input = {
@@ -369,6 +351,43 @@ export default class SearchScreen extends React.Component {
                 }
             </View>
         );
+    }
+
+    getPredefinedPlaces() {
+        const predefinedPlaces = [Bangkok, Manila, HoChiMinh, Vientiane];
+        predefinedPlaces[0].icon = 'predefined';
+        predefinedPlaces[1].icon = 'predefined';
+        predefinedPlaces[2].icon = 'predefined';
+        predefinedPlaces[3].icon = 'predefined';
+
+        return predefinedPlaces;
+    }
+
+    getSavedPlaces() {
+        const predefinedPlaces = [];
+
+        for (var i = 0; i < this.state.history.length; i++) {
+            let item = this.state.history[i];
+            if (item) {
+                item.icon = 'saved';
+                predefinedPlaces.push(item);
+            }
+        }
+
+        if (predefinedPlaces.length < 4) {
+            const predefinedList = [];
+            predefinedList.push(Bangkok);
+            predefinedList.push(Manila);
+            predefinedList.push(HoChiMinh);
+            predefinedList.push(Vientiane);
+
+            const startIndex = predefinedPlaces.length;
+            for (var i = startIndex; i < 4; i++) {
+                predefinedPlaces.push(predefinedList[i]);
+            }
+        }
+
+        return predefinedPlaces;
     }
 
     async loadHistory() {

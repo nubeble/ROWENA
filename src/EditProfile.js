@@ -84,7 +84,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         flashOpacity: new Animated.Value(0),
         flashOffset: new Animated.Value((8 + 34 + 8) * -1),
 
-        // showPictureAlertIcon: false,
+        showPictureAlertIcon: false,
         showNameAlertIcon: false,
         showAgeAlertIcon: false,
         showGenderAlertIcon: false,
@@ -124,7 +124,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // ToDo: test
         const name = 'Jay Kim';
         const birthday = Util.getBirthdayText('03111982'); // DDMMYYYY
-        const datePickerDate = new Date(1982, 11, 3);
+        const datePickerDate = new Date(1982, 10, 3);
         const gender = 'Male';
         const place = 'Manila, Philippines';
         const email = 'jdub.kim@gmail.com';
@@ -136,7 +136,18 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     initFromSearch(result) { // 'Cebu, Philippines'
-        this.setState({ place: result });
+        /*
+        Object {
+            "description": "Suwon, Gyeonggi-do, South Korea",
+            "location": Object {
+                "lat": 37.2635727,
+                "lng": 127.0286009,
+            },
+            "place_id": "ChIJEUZ2IApDezURybRd7gIwN_E",
+        }
+        */
+
+        this.setState({ place: result.description });
     }
 
     @autobind
@@ -1056,7 +1067,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // console.log('file type:', type);
 
         const formData = new FormData();
-        formData.append("type", "profile"); // ToDo: formData.append("type", "profile");
+        // formData.append("type", "post");
+        formData.append("type", "profile");
 
         formData.append("image", {
             uri,
