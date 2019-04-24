@@ -649,7 +649,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         </View>
 
                                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.small }}>
-                                            <MaterialIcons style={{ marginLeft: 1, marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
+                                            <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                                             <Text style={styles.distance}>{distance}</Text>
                                         </View>
 
@@ -684,17 +684,14 @@ export default class Post extends React.Component<InjectedProps> {
                                                 </View>
                                                 */
                                                 <View style={{ marginBottom: 9 }}>
-                                                    <View style={{
-                                                        marginLeft: 2,
-                                                        width: 160, height: 22,
-                                                        justifyContent: 'center',
-                                                        paddingLeft: 1
-                                                    }}>
+                                                    <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
+                                                        <AntDesign style={{ marginTop: 2 }} name='staro' color={'#f1c40f'} size={19} />
                                                         <Text style={{
                                                             color: '#f1c40f',
                                                             fontSize: 18,
-                                                            lineHeight: 18,
-                                                            fontFamily: "Roboto-Italic"
+                                                            fontFamily: "Roboto-Italic",
+                                                            paddingLeft: 5,
+                                                            paddingTop: 2
                                                         }}>newly posted</Text>
                                                     </View>
                                                 </View>
@@ -1620,8 +1617,8 @@ export default class Post extends React.Component<InjectedProps> {
                             // borderBottomWidth: 1,
                             // borderColor: 'rgb(34, 34, 34)'
                         }}>
-                            <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular", paddingLeft: 10 }}>Read all {post.reviewCount}+ reviews</Text>
-                            <FontAwesome name='chevron-right' color="#f1c40f" size={16} style={{ position: 'absolute', right: 10 }} />
+                            <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {post.reviewCount}+ reviews</Text>
+                            <FontAwesome name='chevron-right' color="#f1c40f" size={20} style={{ position: 'absolute', right: 0 }} />
                         </View>
                     </TouchableOpacity>
 
