@@ -9,6 +9,8 @@ import Star from './react-native-ratings/src/Star';
 import { registerExpoPushToken } from './PushNotifications';
 import { RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
+import { Cons, Vars } from './Globals';
+import { Text } from './rnff/src/components';
 
 // $FlowFixMe
 /*
@@ -113,6 +115,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         <RefreshIndicator refreshing total={3} size={5} color='white' />
                     </View>
                 }
+                <Text style={{ position: 'absolute', bottom: 10, right: 10, fontSize: 14, color: 'white' }}>{Cons.buildNumber}</Text>
                 <Animated.Image
                     style={{
                         position: 'absolute',

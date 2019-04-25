@@ -1,5 +1,3 @@
-// ToDo: add flash
-
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, Dimensions, BackHandler, Animated,
@@ -21,8 +19,6 @@ import CommentStore from "./CommentStore";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
-import Toast, { DURATION } from 'react-native-easy-toast';
-import Dialog from "react-native-dialog";
 
 const DEFAULT_REVIEW_COUNT = 6;
 
@@ -50,30 +46,11 @@ export default class EditMain extends React.Component<InjectedProps> {
         host: null,
         guest: null,
 
-        focused: false,
-
-        // showKeyboard: false,
-        // bottomPosition: Dimensions.get('window').height,
-
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
-
-        dialogVisible: false,
-        dialogTitle: '',
-        dialogMessage: '',
-
-        flashMessageTitle: '',
-        flashMessageSubtitle: '',
-        flashImage: null, // uri
-        flashOpacity: new Animated.Value(0),
-        flashOffset: new Animated.Value(Cons.searchBarHeight * -1)
+        focused: false
     };
 
     constructor(props) {
         super(props);
-
-        // this.opponentUser = null;
 
         this.opponentUserUnsubscribe = null;
     }
@@ -81,8 +58,6 @@ export default class EditMain extends React.Component<InjectedProps> {
     componentDidMount() {
         console.log('EditMain.componentDidMount');
 
-        // this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
-        // this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
@@ -114,18 +89,6 @@ export default class EditMain extends React.Component<InjectedProps> {
     handleHardwareBackPress() {
         console.log('EditMain.handleHardwareBackPress');
 
-        if (this._showNotification) {
-            this.hideNotification();
-
-            return true;
-        }
-
-        if (this.state.dialogVisible) {
-            this.hideDialog();
-
-            return true;
-        }
-
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -148,15 +111,7 @@ export default class EditMain extends React.Component<InjectedProps> {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
-    onChangeText(text) {
-        if (this._showNotification) {
-            this.hideNotification();
-        }
-    }
-
     componentWillUnmount() {
-        // this.keyboardDidShowListener.remove();
-        // this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
@@ -194,10 +149,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         const imageUri = profile.picture.uri;
 
-        // const dateText = 'Joined in September 26, 2018';
-        const dateText = Util.getJoinedDate(profile.timestamp);
-
-
+        const dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
 
         // ToDo: use age, gender, note
         let age = '20';
@@ -207,34 +159,10 @@ export default class EditMain extends React.Component<InjectedProps> {
         if (profile.gender) gender = profile.gender;
         if (profile.about) note = profile.about;
 
-
-
         const { reviews } = this.commentStore;
-
-        const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
-        };
 
         return (
             <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
-                        }}
-                    >
-                        <Ionicons name='md-close' color="black" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
-
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -394,20 +322,6 @@ export default class EditMain extends React.Component<InjectedProps> {
                         ListEmptyComponent={this.renderListEmptyComponent}
                     />
                 }
-
-                <Dialog.Container visible={this.state.dialogVisible}>
-                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
-                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
-                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
-                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
-                </Dialog.Container>
-
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
             </View>
         );
     }
@@ -574,77 +488,6 @@ export default class EditMain extends React.Component<InjectedProps> {
     disableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
     }
-
-    showNotification(msg) {
-        if (this._showNotification) this.hideNotification();
-
-        this._showNotification = true;
-
-        this.setState({ notification: msg }, () => {
-            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.sequence([
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 1,
-                            duration: 200
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: Constants.statusBarHeight + 6,
-                            duration: 200
-                        })
-                    ])
-                ]).start();
-            });
-        });
-    };
-
-    hideNotification() {
-        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
-        });
-
-        this._showNotification = false;
-    }
-
-    openDialog(title, message, callback) {
-        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
-
-        this.setDialogCallback(callback);
-    }
-
-    setDialogCallback(callback) {
-        this.dialogCallback = callback;
-    }
-
-    hideDialog() {
-        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
-    }
-
-    handleCancel() {
-        if (this.dialogCallback) this.dialogCallback = undefined;
-
-        this.hideDialog();
-    }
-
-    handleConfirm() {
-        if (this.dialogCallback) {
-            this.dialogCallback();
-            this.dialogCallback = undefined;
-        }
-
-        this.hideDialog();
-    }
 }
 
 const styles = StyleSheet.create({
@@ -659,21 +502,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
-    container: {
-        flexGrow: 1,
-        paddingBottom: Theme.spacing.small,
-        // backgroundColor: 'black'
-    },
-    ad: {
-        width: (Dimensions.get('window').width),
-        height: (Dimensions.get('window').width) / 21 * 9,
-        marginTop: Theme.spacing.tiny,
-        marginBottom: Theme.spacing.tiny
-    },
-    activityIndicator: {
-        position: 'absolute',
-        top: 0, bottom: 0, left: 0, right: 0
-    },
     contentContainer: {
         flexGrow: 1
     },
@@ -681,31 +509,6 @@ const styles = StyleSheet.create({
         flex: 1,
         // justifyContent: 'center'
         justifyContent: 'flex-start'
-    },
-    pictureContainer: {
-        width: (Dimensions.get('window').width - 2 * 6) / 3,
-        height: (Dimensions.get('window').width - 2 * 6) / 3,
-        marginVertical: 2,
-        marginHorizontal: 2,
-        borderRadius: 2
-    },
-    picture: {
-        width: '100%',
-        height: '100%',
-        borderRadius: 2
-    },
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.4)",
-        padding: Theme.spacing.small,
-        flex: 1,
-        justifyContent: 'center',
-
-        borderRadius: 2,
     },
     titleContainer: {
         padding: Theme.spacing.small
@@ -715,55 +518,10 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: "Roboto-Medium"
     },
-    bottomIndicator: {
-        marginTop: 20,
-        marginBottom: 20
-    },
     infoContainer: {
         flex: 1,
         // width: '100%',
         paddingBottom: Theme.spacing.tiny
-    },
-    /*
-    bodyInfoTitle: {
-        color: 'white',
-        fontSize: 14,
-        fontFamily: "Roboto-Medium",
-        paddingTop: Theme.spacing.base
-    },
-    bodyInfoContent: {
-        color: 'white',
-        fontSize: 18,
-        fontFamily: "Roboto-Bold",
-        paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.base
-    },
-    */
-    infoText1: {
-        color: Theme.color.text2,
-        fontSize: 17,
-        fontFamily: "Roboto-Medium",
-        paddingTop: Theme.spacing.base
-    },
-    infoText2: {
-        color: Theme.color.text3,
-        fontSize: 15,
-        fontFamily: "Roboto-Light",
-        paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.base
-    },
-    contactButton: {
-        // width: '85%',
-        width: Dimensions.get('window').width * 0.85,
-        height: Cons.buttonHeight,
-        alignSelf: 'center',
-        backgroundColor: "transparent",
-        borderRadius: 5,
-        borderColor: "rgba(255, 255, 255, 0.8)",
-        borderWidth: 2,
-
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     reviewDate: {
         color: Theme.color.text3,
@@ -777,39 +535,5 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Regular",
 
         paddingVertical: Theme.spacing.tiny
-    },
-    reviewName: {
-        color: Theme.color.text2,
-        fontSize: 15,
-        fontFamily: "Roboto-Medium",
-    },
-    notification: {
-        // width: '100%',
-        width: '94%',
-        alignSelf: 'center',
-
-        height: (8 + 34 + 8) - 12,
-        borderRadius: 5,
-        position: "absolute",
-        top: 0,
-        backgroundColor: Theme.color.notification,
-        zIndex: 10000,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        alignItems: 'center'
-    },
-    notificationText: {
-        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
-        fontSize: 15,
-        fontFamily: "Roboto-Medium",
-        color: "black",
-        textAlign: 'center'
-    },
-    notificationButton: {
-        marginRight: 12,
-        width: 24,
-        height: 24,
-        justifyContent: 'center',
-        alignItems: 'center'
     }
 });

@@ -11,6 +11,8 @@ export var Vars = {
 };
 
 export const Cons = {
+    buildNumber: '0.0.1',
+
     // push notification type
     pushNotification: {
         chat: 1,

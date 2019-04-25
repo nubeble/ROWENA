@@ -25,7 +25,7 @@ const illustWidth = 300;
 export default class ChatMain extends React.Component {
     state = {
         name: '',
-        renderChat: false,
+        // renderChat: false,
         isLoadingChat: false,
         chatRoomList: []
     }
@@ -46,18 +46,24 @@ export default class ChatMain extends React.Component {
 
         const uid = Firebase.user().uid;
 
+        this.setState({ isLoadingChat: true });
+
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
             console.log('ChatMain, loadChatRoom, updating list', list);
 
             this.setState({ chatRoomList: list });
 
+            this.setState({ isLoadingChat: false });
+
             this.allChatRoomsLoaded = false;
         });
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderChat: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -173,7 +179,7 @@ export default class ChatMain extends React.Component {
                 </View>
 
                 {
-                    this.state.renderChat &&
+                    // this.state.renderChat &&
                     <FlatList
                         ref={(fl) => this._flatList = fl}
                         data={this.state.chatRoomList}
@@ -191,12 +197,14 @@ export default class ChatMain extends React.Component {
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
 
+                        /*
                         ListFooterComponent={
                             this.state.isLoadingChat &&
                             <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                                 <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                             </View>
                         }
+                        */
 
                         ListEmptyComponent={
                             !this.state.isLoadingChat &&
