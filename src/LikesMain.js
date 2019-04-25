@@ -262,7 +262,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 // subscribe here (post)
                 // --
-                const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+                const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                     if (newFeed === undefined) { // newFeed === undefined if removed
                         // update this.feedList
                         this.feedList.delete(feedId);
@@ -293,17 +293,26 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     // --
                 });
 
-                this.feedsUnsubscribes.push(instance);
+                this.feedsUnsubscribes.push(fi);
                 // --
 
-                // ToDo: subscribe here (count)
+                // subscribe here (count)
+                // --
+                const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                    if (newPlace === undefined) {
+                        this.feedCountList.delete(placeId);
 
+                        return;
+                    }
 
+                    console.log('count subscribed');
 
+                    // update this.feedCountList
+                    this.feedCountList.set(placeId, newPlace.count);
+                });
 
-
-
-
+                this.countsUnsubscribes.push(ci);
+                // --
             }
 
             this.lastLoadedFeedIndex = i;
@@ -338,7 +347,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
             return;
         }
 
-        const feedSize = await this.getFeedSize(item.placeId);
+        const feedSize = this.getFeedSize(item.placeId);
+        if (feedSize === 0) {
+            this.refs["toast"].show('Please try again.', 500);
+
+            return;
+        }
 
         const extra = {
             feedSize: feedSize
@@ -347,7 +361,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'LikesMain' });
     }
 
-    async getFeedSize(placeId) {
+    getFeedSize(placeId) {
+        /*
         if (this.feedCountList.has(placeId)) {
             console.log('count from memory');
             return this.feedCountList.get(placeId);
@@ -375,6 +390,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         this.countsUnsubscribes.push(instance);
         // --
+        */
+
+        let count = 0;
+        if (this.feedCountList.has(placeId)) {
+            count = this.feedCountList.get(placeId);
+        }
 
         return count;
     }

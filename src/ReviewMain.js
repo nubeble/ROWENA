@@ -338,9 +338,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
 
 
-
-
-            // subscribe here (feed)
+            // subscribe here (post)
             // --
             const placeId = review.placeId;
             const feedId = review.feedId;
@@ -386,22 +384,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
             this.countsUnsubscribes.push(ci);
             // --
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

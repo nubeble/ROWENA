@@ -205,30 +205,58 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             const feed = feeds[i];
 
             // if (!feed.valid) continue;
+            newFeeds.push(feed);
 
 
 
-
-
-            // ToDo: subscribe here
-            /*
+            // subscribe here (post)
+            // --
             const placeId = feed.placeId;
             const feedId = feed.feedId;
 
-            const picture = feed.picture;
-            const name = feed.name;
-            const placeName = feed.placeName;
-            */
+            const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+                if (newFeed === undefined) {
+                    this.feedList.delete(feedId);
+
+                    return;
+                }
+
+                console.log('feed subscribed');
+
+                // update this.feedList
+                this.feedList.set(feedId, newFeed);
+
+                // update picture
+                let feeds = [...this.state.feeds];
+                const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
+                if (index !== -1) {
+                    feeds[index].picture = newFeed.pictures.one.uri;
+                    !this.closed && this.setState({ feeds });
+                }
+            });
+
+            this.feedsUnsubscribes.push(fi);
+            // --
+
+            // subscribe here (count)
+            // --
+            const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                if (newPlace === undefined) {
+                    this.feedCountList.delete(placeId);
+
+                    return;
+                }
+
+                console.log('count subscribed');
+
+                // update this.feedCountList
+                this.feedCountList.set(placeId, newPlace.count);
+            });
+
+            this.countsUnsubscribes.push(ci);
+            // --
 
 
-
-
-
-
-
-
-
-            newFeeds.push(feed);
 
             this.lastLoadedFeedIndex = i;
 
@@ -306,8 +334,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ showPostIndicator: index });
 
-        const post = await this.getPost(item);
-
+        const post = this.getPost(item);
         if (!post) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
 
@@ -316,7 +343,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return;
         }
 
-        const feedSize = await this.getFeedSize(item.placeId);
+        const feedSize = this.getFeedSize(item.placeId);
+        if (feedSize === 0) {
+            this.refs["toast"].show('Please try again.', 500);
+
+            return;
+        }
 
         const extra = {
             feedSize: feedSize
@@ -334,6 +366,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const placeId = item.placeId;
         const feedId = item.feedId;
 
+        /*
         if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
             console.log('post from memory');
             return this.feedList.get(feedId);
@@ -361,11 +394,18 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.feedsUnsubscribes.push(instance);
         // --
+        */
+
+        let post = null;
+        if (this.feedList.has(feedId)) {
+            post = this.feedList.get(feedId);
+        }
 
         return post;
     }
 
     async getFeedSize(placeId) {
+        /*
         if (this.feedCountList.has(placeId)) {
             console.log('count from memory');
             return this.feedCountList.get(placeId);
@@ -393,6 +433,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.countsUnsubscribes.push(instance);
         // --
+        */
+
+        let count = 0;
+        if (this.feedCountList.has(placeId)) {
+            count = this.feedCountList.get(placeId);
+        }
 
         return count;
     }

@@ -77,6 +77,42 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         const item = this.props.navigation.state.params.item;
 
+
+
+        // subscribe here (post)
+        // --
+        const fi = Firebase.subscribeToFeed(item.placeId, item.feedId, newFeed => {
+            if (newFeed === undefined) {
+                this.feed = null;
+
+                return;
+            }
+
+            // update this.feed
+            this.feed = newFeed;
+        });
+
+        this.feedUnsubscribe = fi;
+        // --
+
+        // subscribe here (count)
+        // --
+        const ci = Firebase.subscribeToPlace(item.placeId, newPlace => {
+            if (newPlace === undefined) {
+                this.feedCount = 0;
+
+                return;
+            }
+
+            // update this.feedCount
+            this.feedCount = newPlace.count;
+        });
+
+        this.countUnsubscribe = ci;
+        // --
+
+
+
         let titleImageUri = null;
         let titleName = null;
 
@@ -498,8 +534,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     async openPost() {
         const item = this.props.navigation.state.params.item;
 
-        const post = await this.getPost(item);
-
+        const post = this.getPost(item);
         if (!post) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
 
@@ -508,7 +543,12 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             return;
         }
 
-        const feedSize = await this.getFeedSize(item.placeId);
+        const feedSize = this.getFeedSize(item.placeId);
+        if (feedSize === 0) {
+            this.refs["toast"].show('Please try again.', 500);
+
+            return;
+        }
 
         const extra = {
             feedSize: feedSize
@@ -519,7 +559,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         // }, Cons.buttonTimeoutShort);
     }
 
-    async getPost(item) {
+    getPost(item) {
+        /*
         const placeId = item.placeId;
         const feedId = item.feedId;
 
@@ -550,11 +591,15 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         this.feedUnsubscribe = instance;
         // --
+        */
+
+        const post = this.feed;
 
         return post;
     }
 
-    async getFeedSize(placeId) {
+    getFeedSize(placeId) {
+        /*
         if (this.feedCount) {
             console.log('count from memory');
             return this.feedCount;
@@ -580,6 +625,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         this.countUnsubscribe = instance;
         // --
+        */
+
+        const count = this.feedCount;
 
         return count;
     }

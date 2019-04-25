@@ -20,6 +20,7 @@ import autobind from "autobind-decorator";
 import _ from 'lodash';
 import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 /*
 type ExploreState = {
@@ -455,11 +456,11 @@ export default class Intro extends React.Component {
         !this.closed && this.setState({ popularFeeds });
         Intro.popularFeeds = popularFeeds;
 
-        // subscribe here
+        // subscribe here (post)
         for (var i = 0; i < popularFeeds.length; i++) {
             const feed = popularFeeds[i];
 
-            const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+            const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
                     // console.log('!!!!! removed !!!!!!');
 
@@ -478,7 +479,23 @@ export default class Intro extends React.Component {
                 }
             });
 
-            Intro.popularFeedsUnsubscribes.push(instance);
+            Intro.popularFeedsUnsubscribes.push(fi);
+
+            // subscribe here (count)
+            // --
+            const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                if (newPlace === undefined) {
+                    Intro.feedCountList.delete(feed.placeId);
+
+                    return;
+                }
+
+                // update Intro.feedCountList
+                Intro.feedCountList.set(feed.placeId, newPlace.count);
+            });
+
+            Intro.countsUnsubscribes.push(ci);
+            // --
         }
     }
 
@@ -531,11 +548,11 @@ export default class Intro extends React.Component {
         !this.closed && this.setState({ recentFeeds });
         Intro.recentFeeds = recentFeeds;
 
-        // subscribe here
+        // subscribe here (post)
         for (var i = 0; i < recentFeeds.length; i++) {
             const feed = recentFeeds[i];
 
-            const instance = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+            const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
                     // console.log('!!!!! removed !!!!!!');
 
@@ -554,7 +571,23 @@ export default class Intro extends React.Component {
                 }
             });
 
-            Intro.recentFeedsUnsubscribes.push(instance);
+            Intro.recentFeedsUnsubscribes.push(fi);
+
+            // subscribe here (count)
+            // --
+            const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                if (newPlace === undefined) {
+                    Intro.feedCountList.delete(feed.placeId);
+
+                    return;
+                }
+
+                // update Intro.feedCountList
+                Intro.feedCountList.set(feed.placeId, newPlace.count);
+            });
+
+            Intro.countsUnsubscribes.push(ci);
+            // --
         }
     }
 
@@ -832,6 +865,12 @@ export default class Intro extends React.Component {
                         refreshing={this.state.refreshing}
                     />
                 }
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
             </View>
         );
     } // end of render()
@@ -1079,9 +1118,14 @@ export default class Intro extends React.Component {
         return (
             <TouchableOpacity activeOpacity={1.0}
                 onPress={async () => {
-                    console.log('onpress', feed.placeId, feed.id);
+                    // console.log('onpress', feed.placeId, feed.id);
 
-                    const feedSize = await this.getFeedSize(feed.placeId);
+                    const feedSize = this.getFeedSize(feed.placeId);
+                    if (feedSize === 0) {
+                        this.refs["toast"].show('Please try again.', 500);
+
+                        return;
+                    }
 
                     const extra = {
                         feedSize: feedSize
@@ -1139,7 +1183,8 @@ export default class Intro extends React.Component {
         );
     }
 
-    async getFeedSize(placeId) {
+    getFeedSize(placeId) {
+        /*
         if (Intro.feedCountList.has(placeId)) {
             return Intro.feedCountList.get(placeId);
         }
@@ -1166,6 +1211,12 @@ export default class Intro extends React.Component {
 
         Intro.countsUnsubscribes.push(instance);
         // --
+        */
+
+        let count = 0;
+        if (Intro.feedCountList.has(placeId)) {
+            count = Intro.feedCountList.get(placeId);
+        }
 
         return count;
     }
