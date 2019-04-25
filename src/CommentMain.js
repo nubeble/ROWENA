@@ -152,10 +152,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.commentId}
                         renderItem={({ item, index }) => {
-
-                            // red dot
-                            // const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
-
                             return (
                                 <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
                                     <View style={styles.pictureContainer}>

@@ -318,7 +318,7 @@ export default class Loading extends React.Component<InjectedProps> {
             const feeds = profile.feeds;
             for (var i = 0; i < feeds.length; i++) {
                 const feed = feeds[i];
-                if (feed.newReviewAdded) {
+                if (feed.reviewAdded) {
                     return true;
                 }
             }
@@ -335,9 +335,10 @@ export default class Loading extends React.Component<InjectedProps> {
             }
         }
 
-        // ToDo: check 3
-
-
+        // check 3
+        if (profile) {
+            if (profile.commentAdded) return true;
+        }
 
         return false;
     }

@@ -102,6 +102,7 @@ export default class Firebase {
             likes: [],
             comments: [],
             receivedCommentsCount: 0,
+            commentAdded: false,
             timestamp: Firebase.getTimestamp()
         };
 
@@ -339,7 +340,7 @@ export default class Firebase {
                     placeId: feed.placeId,
                     feedId: feed.id,
                     picture: feed.pictures.one.uri, // ToDo: update this when the post changed
-                    newReviewAdded: false
+                    reviewAdded: false
                 })
             };
 
@@ -528,7 +529,7 @@ export default class Firebase {
                 let feed = feeds[i];
                 if (feed.placeId === placeId && feed.feedId === feedId) {
                     // update
-                    feed.newReviewAdded = checked;
+                    feed.reviewAdded = checked;
                     feeds[i] = feed;
 
                     transaction.update(ownerRef, { feeds });
@@ -752,7 +753,7 @@ export default class Firebase {
 
         await reviewRef.delete();
 
-        // Consider: just leave the newReviewAdded value in host's user profile
+        // Consider: just leave the reviewAdded value in host's user profile
 
         return true;
     }
@@ -882,7 +883,7 @@ export default class Firebase {
             if (!receivedCommentsCount) receivedCommentsCount = 0;
             console.log('receivedCommentsCount will be', receivedCommentsCount + 1);
 
-            transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount + 1) });
+            transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount + 1), commentAdded: true });
 
             // update comments array in user (writer)
             const item = {
@@ -914,6 +915,14 @@ export default class Firebase {
 
         return true;
     };
+
+    static async updateCommentChecked(uid, checked) {
+        const profile = {
+            commentAdded: checked
+        };
+
+        await Firebase.firestore.collection('users').doc(uid).update(profile);
+    }
 
     static async removeComment(uid, targetUid, commentId) { // uid: writer, userUid: receiver
         let result;

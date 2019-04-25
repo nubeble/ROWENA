@@ -217,8 +217,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
             const feed = feeds[i];
 
-            // if (!feed.valid) continue;
-
             const placeId = feed.placeId;
             const feedId = feed.feedId;
 

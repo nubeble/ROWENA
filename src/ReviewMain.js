@@ -26,6 +26,9 @@ const DEFAULT_FEED_COUNT = 12; // 3 x 4
 const illustHeight = 340;
 const illustWidth = 340;
 
+// red dot
+const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
+
 
 @inject("profileStore")
 @observer
@@ -160,10 +163,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.reviewId}
                         renderItem={({ item, index }) => {
-
-                            // red dot
-                            const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
-
                             return (
                                 <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
                                     <View style={styles.pictureContainer}>

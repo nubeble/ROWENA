@@ -22,6 +22,9 @@ const DEFAULT_FEED_COUNT = 9; // 3 x 3
 
 const avatarWidth = Dimensions.get('window').height / 11;
 
+// red dot
+const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
+
 
 @inject("profileStore")
 @observer
@@ -51,6 +54,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
         this.onLoading = false;
+
+        this.lastCommentsUpdatedTime = 0;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -92,15 +97,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     onFocus() {
         Vars.currentScreenName = 'ProfileMain';
 
-        // check updates here
-        // --
-        const result = this.checkUpdateOnProfile();
-        if (result) {
+        // check user feed updates
+        if (this.checkUpdateOnUserFeed() === true) {
             this.lastChangedTime = 0;
             this.getUserFeeds();
         } else {
-            //--
-
             const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
             if (this.lastChangedTime !== lastChangedTime) {
                 // reload from the start
@@ -109,7 +110,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 // move scroll top
                 // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
             }
-
         }
 
         this.setState({ focused: true });
@@ -204,7 +204,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             const feed = feeds[i];
 
-            // if (!feed.valid) continue;
             newFeeds.push(feed);
 
 
@@ -291,8 +290,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async postClick(item) {
-        if (item.newReviewAdded) {
-            // update newReviewAdded in user profile
+        if (item.reviewAdded) {
+            // update reviewAdded in user profile
             const { profile } = this.props.profileStore;
             /*
             const result = await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
@@ -314,7 +313,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             }
 
             let feed = feeds[index];
-            feed.newReviewAdded = false;
+            feed.reviewAdded = false;
             feeds[index] = feed;
             !this.closed && this.setState({ feeds });
         }
@@ -448,12 +447,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     render() {
         const { profile } = this.props.profileStore;
 
-        const avatarName = (profile.name) ? profile.name : 'Anonymous'; // ToDo: test
-        const imageUri = profile.picture.uri;
+        const { uid, name, picture, comments, commentAdded } = profile;
 
-        const { comments } = profile;
-
-
+        const avatarName = name ? name : 'Anonymous'; // ToDo: test
+        const imageUri = picture.uri;
 
         return (
             <View style={styles.flex}>
@@ -489,6 +486,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         style={{ marginTop: 20 }}
                                         onPress={() => {
                                             setTimeout(() => {
+                                                Firebase.updateCommentChecked(uid, false);
+
                                                 this.props.navigation.navigate("edit");
                                             }, Cons.buttonTimeoutShort);
                                         }}
@@ -500,6 +499,18 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
                                                 <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{avatarName}</Text>
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>View and edit profile</Text>
+                                                {
+                                                    commentAdded &&
+                                                    <View style={{
+                                                        position: 'absolute',
+                                                        top: 4 - 3,
+                                                        left: 22 - 3,
+                                                        backgroundColor: 'red',
+                                                        borderRadius: badgeWidth / 2,
+                                                        width: badgeWidth,
+                                                        height: badgeWidth
+                                                    }} />
+                                                }
                                             </View>
                                             <TouchableOpacity
                                                 style={{
@@ -748,7 +759,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             </View>
                                             */}
                                         {
-                                            item.newReviewAdded &&
+                                            item.reviewAdded &&
                                             <View style={{
                                                 position: 'absolute',
                                                 top: 3,
@@ -919,11 +930,24 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hideDialog();
     }
 
+    checkUpdateOnCustomerReview() {
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+
+        if (profile) {
+            if (profile.commentAdded) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // copied from Loading.js
-    checkUpdateOnProfile() {
+    checkUpdateOnUserFeed() { // User Feed 업데이트만 체크!
         // 1. owner의 경우, 내가 올린 post에 리뷰가 달린 경우
         // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
-        // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우
+        // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우 - skip here!
 
 
         // 1.
@@ -934,7 +958,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             const feeds = profile.feeds;
             for (var i = 0; i < feeds.length; i++) {
                 const feed = feeds[i];
-                if (feed.newReviewAdded) {
+                if (feed.reviewAdded) {
                     return true;
                 }
             }
@@ -950,10 +974,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 }
             }
         }
-
-        // ToDo: check 3
-
-
 
         return false;
     }

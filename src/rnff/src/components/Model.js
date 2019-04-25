@@ -15,7 +15,7 @@ type FeedRef = {
     placeId: string,
     feedId: string,
     picture: string, // ToDo: update when the origin post changed
-    newReviewAdded: boolean
+    reviewAdded: boolean
 };
 
 type ReviewRef = {
@@ -39,11 +39,6 @@ type LikeRef = {
     picture: string,
     name: string,
     placeName: string
-    /*
-    averageRating: number,
-    reviewCount: number,
-    valid: boolean
-    */
 };
 
 type CommentRef = {
@@ -76,6 +71,7 @@ export type Profile = {
     likes: LikeRef[], // 내가 초이스한 feed
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
     receivedCommentsCount: number, // 내가 받은 comment 개수
+    commentAdded: boolean,
     timestamp: number
 };
 
