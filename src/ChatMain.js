@@ -50,13 +50,15 @@ export default class ChatMain extends React.Component {
 
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
-            console.log('ChatMain, loadChatRoom, updating list', list);
+            if (list) {
+                console.log('ChatMain, loadChatRoom, updating list', list);
 
-            this.setState({ chatRoomList: list });
+                this.setState({ chatRoomList: list });
+
+                this.allChatRoomsLoaded = false;
+            }
 
             this.setState({ isLoadingChat: false });
-
-            this.allChatRoomsLoaded = false;
         });
 
         /*

@@ -1013,6 +1013,8 @@ export default class Firebase {
                 });
 
                 callback(list);
+            } else {
+                callback(null);
             }
         });
     }
