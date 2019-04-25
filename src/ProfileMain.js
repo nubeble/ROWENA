@@ -35,7 +35,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         refreshing: false,
         totalFeedsSize: 0,
         focused: false,
-        showPostIndicator: -1,
+        // showPostIndicator: -1,
 
         dialogVisible: false,
         dialogTitle: '',
@@ -221,7 +221,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     return;
                 }
 
-                console.log('feed subscribed');
+                console.log('feed subscribed', newFeed);
 
                 // update this.feedList
                 this.feedList.set(feedId, newFeed);
@@ -332,13 +332,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return;
         }
 
-        !this.closed && this.setState({ showPostIndicator: index });
+        // !this.closed && this.setState({ showPostIndicator: index });
 
         const post = this.getPost(item);
-        if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-
+        if (!post) { // never happen!
+            // this.refs["toast"].show('The post has been removed by its owner.', 500);
             // we skip here. It'll update state feeds on onfocus event.
+
+            this.refs["toast"].show('Please try again.', 500);
 
             return;
         }
@@ -354,15 +355,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             feedSize: feedSize
         };
 
+        console.log('post', post);
         // setTimeout(async () => {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
 
         // hide indicator
-        !this.closed && this.setState({ showPostIndicator: -1 });
+        // !this.closed && this.setState({ showPostIndicator: -1 });
     }
 
-    async getPost(item) {
+    getPost(item) {
         const placeId = item.placeId;
         const feedId = item.feedId;
 
@@ -397,7 +399,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         */
 
         let post = null;
-        if (this.feedList.has(feedId)) {
+        if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
             post = this.feedList.get(feedId);
         }
 
@@ -580,7 +582,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         {/* Customers You've Reviewed */}
                                         {
-                                            // comments.length > 0 &&
+                                            comments.length > 0 &&
                                             <TouchableOpacity
                                                 onPress={() => {
                                                     setTimeout(() => {
@@ -599,7 +601,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             </TouchableOpacity>
                                         }
                                         {
-                                            // comments.length > 0 &&
+                                            comments.length > 0 &&
                                             <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                         }
 
@@ -758,13 +760,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }} />
                                         }
                                         {
+                                            /*
                                             this.state.showPostIndicator === index &&
                                             <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: 'center', alignItems: 'center' }}>
                                                 <ActivityIndicator animating size={'small'} color={'white'} />
-                                                {/*
-                                                <RefreshIndicator refreshing total={3} size={4} />
-                                                */}
                                             </View>
+                                            */
                                         }
                                     </View>
                                 </TouchableWithoutFeedback>
