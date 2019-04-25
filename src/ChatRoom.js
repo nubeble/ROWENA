@@ -536,7 +536,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         const post = this.getPost(item);
         if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.refs["toast"].show('The post has been removed by its owner.', 500); // or NOT subscribed yet!
 
             // we skip here. NOT to close the chat room! (leave it to the user)
 

@@ -451,7 +451,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         const post = this.getPost(item);
         if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.refs["toast"].show('The post has been removed by its owner.', 500); // or NOT subscribed yet!
 
             // we skip here. It'll update state feeds on onfocus event.
 

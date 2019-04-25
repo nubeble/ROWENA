@@ -335,8 +335,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // !this.closed && this.setState({ showPostIndicator: index });
 
         const post = this.getPost(item);
-        if (!post) { // never happen!
-            // this.refs["toast"].show('The post has been removed by its owner.', 500);
+        if (!post) {
+            // this.refs["toast"].show('The post has been removed by its owner.', 500); // never happen!
             // we skip here. It'll update state feeds on onfocus event.
 
             this.refs["toast"].show('Please try again.', 500);
