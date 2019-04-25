@@ -35,21 +35,25 @@ type ReplyRef = {
 
 type LikeRef = {
     placeId: string,
-    feedId: string
-    /*
+    feedId: string,
+    picture: string,
     name: string,
-    placeName: string,
+    placeName: string
+    /*
     averageRating: number,
     reviewCount: number,
-    picture: string,
     valid: boolean
     */
 };
 
 type CommentRef = {
     userUid: string, // receiver
-    commentId: string
+    commentId: string,
     // comment: string
+
+    name: string,
+    placeName: string,
+    picture: string
 };
 
 export type Profile = {

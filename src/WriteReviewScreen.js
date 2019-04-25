@@ -227,7 +227,7 @@ export default class WriteReviewScreen extends React.Component {
                             }
                         }}
                     >
-                        <Ionicons name='md-close' color="white" size={20} />
+                        <Ionicons name='md-close' color="black" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -430,7 +430,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "white",
+        color: "black",
         textAlign: 'center'
     },
     notificationButton: {

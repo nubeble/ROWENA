@@ -22,7 +22,6 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import Toast, { DURATION } from 'react-native-easy-toast';
-import { sendPushNotification } from './PushNotifications';
 import Dialog from "react-native-dialog";
 
 const DEFAULT_REVIEW_COUNT = 6;
@@ -43,7 +42,7 @@ export default class EditMain extends React.Component<InjectedProps> {
     commentStore: CommentStore = new CommentStore();
 
     state = {
-        renderFeed: false,
+        // renderFeed: false,
 
         isLoadingFeeds: false,
         refreshing: false,
@@ -89,10 +88,7 @@ export default class EditMain extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { profile } = this.props.profileStore;
-        // const feeds = profile.feeds;
-        // const length = feeds.length;
         const uid = profile.uid;
-
         const receivedCommentsCount = profile.receivedCommentsCount;
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
@@ -100,9 +96,11 @@ export default class EditMain extends React.Component<InjectedProps> {
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -170,14 +168,10 @@ export default class EditMain extends React.Component<InjectedProps> {
         const { profile } = this.props.profileStore;
 
         let name = profile.name;
-        if (!name) name = 'Anonymous'; // test
+        if (!name) name = 'Anonymous'; // ToDo: test
 
         let address = "No address registered";
-        /*
-        if (profile.city && profile.country) {
-            address = profile.city + ', ' + profile.country;
-        }
-        */
+
         if (profile.place) address = profile.place;
 
         const count = profile.receivedCommentsCount;
@@ -237,7 +231,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                             }
                         }}
                     >
-                        <Ionicons name='md-close' color="white" size={20} />
+                        <Ionicons name='md-close' color="black" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -287,7 +281,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                 </View>
 
                 {
-                    this.state.renderFeed &&
+                    // this.state.renderFeed &&
                     <FlatList
                         ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.contentContainer}
@@ -397,7 +391,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                             </View>
                         }
 
-                        // ListEmptyComponent={this.renderListEmptyComponent}
+                        ListEmptyComponent={this.renderListEmptyComponent}
                     />
                 }
 
@@ -498,6 +492,10 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     renderListEmptyComponent() {
+        const { profile } = this.props.profileStore;
+        const receivedCommentsCount = profile.receivedCommentsCount;
+        if (receivedCommentsCount === 0) return null;
+
         const { reviews } = this.commentStore;
         const loading = reviews === undefined;
 
@@ -804,7 +802,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "white",
+        color: "black",
         textAlign: 'center'
     },
     notificationButton: {

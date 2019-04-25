@@ -115,12 +115,13 @@ export default class AuthMain extends React.Component {
     }
 
     render() {
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [{ translateY: this.state.offset }]
+        };
+
         const viewStyle = {
-            transform: [
-                {
-                    translateY: this.state.viewOffset
-                }
-            ]
+            transform: [{ translateY: this.state.viewOffset }]
         };
 
         return (
@@ -135,6 +136,23 @@ export default class AuthMain extends React.Component {
                     source={PreloadImage.Background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
+
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
 
                 <Animated.View style={[styles.view, viewStyle]}>
                     <View style={styles.logo}>
@@ -389,7 +407,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "white",
+        color: "black",
         textAlign: 'center'
     },
     notificationButton: {

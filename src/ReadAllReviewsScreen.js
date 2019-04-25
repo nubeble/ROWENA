@@ -158,7 +158,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             }
                         }}
                     >
-                        <Ionicons name='md-close' color="white" size={20} />
+                        <Ionicons name='md-close' color="black" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -489,11 +489,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     @autobind
     renderListEmptyComponent() {
-
-        // block the bottom indicator rendering
-        // if (this.state.isLoadingReview) this.setState({ isLoadingReview: false });
-
-        const { navigation } = this.props;
+        const { navigation } = this.props; // ToDo: remove FirstPost
 
         const { reviewStore } = this.props.navigation.state.params;
         const { reviews } = reviewStore;
@@ -916,7 +912,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "white",
+        color: "black",
         textAlign: 'center'
     },
     notificationButton: {

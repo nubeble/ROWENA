@@ -60,14 +60,14 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.countsUnsubscribes = [];
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log('LikesMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        await this.getSavedFeeds();
+        this.getSavedFeeds();
 
         /*
         setTimeout(() => {
@@ -86,7 +86,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     @autobind
-    async onFocus() {
+    onFocus() {
         console.log('LikesMain.onFocus');
 
         Vars.currentScreenName = 'LikesMain';
@@ -94,7 +94,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             // reload from the start
-            await this.getSavedFeeds();
+            this.getSavedFeeds();
 
             // move scroll top
             // this._flatList.scrollToOffset({ offset: 0, animated: true });
@@ -166,7 +166,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.closed = true;
     }
 
-    async getSavedFeeds() {
+    getSavedFeeds() {
         if (this.onLoading) return;
 
         const { profile } = this.props.profileStore;
@@ -260,7 +260,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 newFeeds.push(newFeed);
 
-                // subscribe here
+                // subscribe here (post)
                 // --
                 const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                     if (newFeed === undefined) { // newFeed === undefined if removed
@@ -295,6 +295,15 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 this.feedsUnsubscribes.push(instance);
                 // --
+
+                // ToDo: subscribe here (count)
+
+
+
+
+
+
+
             }
 
             this.lastLoadedFeedIndex = i;
@@ -317,87 +326,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         this.onLoading = false;
     }
-
-    /*
-    async openPost(item) {
-        // should get data from database
-        const placeId = item.placeId;
-        const feedId = item.id;
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-            return;
-        }
-
-        const post = feedDoc.data();
-
-        const feedSize = await this.getFeedSize(placeId);
-
-        const extra = {
-            feedSize: feedSize
-        };
-
-        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'LikesMain' });
-    }
-
-    async getFeedSize(placeId) {
-        if (this.feedSizeList.has(placeId)) {
-            return this.feedSizeList.get(placeId);
-        }
-
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        if (!placeDoc.exists) return 0;
-
-        const count = placeDoc.data().count;
-
-        this.feedSizeList.set(placeId, count);
-
-        return count;
-    }
-    */
-
-
-    /*
-    async openPost(item) {
-        // load data from database
-        const post = await this.getPost(item);
-
-        if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-            return;
-        }
-
-        const feedSize = await this.getFeedSize(item.placeId);
-
-        const extra = {
-            feedSize: feedSize
-        };
-
-        // setTimeout(async () => {
-        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'LikesMain' });
-        // }, Cons.buttonTimeoutShort);
-    }
-
-    async getPost(item) {
-        const placeId = item.placeId;
-        const feedId = item.id;
-
-        if (this.feedList.has(feedId)) {
-            console.log('post from memory');
-            return this.feedList.get(feedId);
-        }
-
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) return null;
-
-        const post = feedDoc.data();
-
-        this.feedList.set(feedId, post);
-
-        return post;
-    }
-    */
-
 
     async openPost(item, index) {
         const post = this.state.feeds[index];
@@ -539,7 +467,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                                 item.reviewCount === -1 &&
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
                                                     <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'center' }}>
-                                                        <RefreshIndicator refreshing total={3} size={3} color={Theme.color.selection} />
+                                                        <ActivityIndicator animating={true} size={18} color={Theme.color.selection} />
                                                     </View>
                                                 </View>
                                             }
@@ -587,11 +515,11 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         }}
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.handleScrollEnd}
-                        onScroll={async ({ nativeEvent }) => {
+                        onScroll={({ nativeEvent }) => {
                             if (!this.state.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
-                                await this.getSavedFeeds();
+                                this.getSavedFeeds();
                             }
                         }}
                         // scrollEventThrottle={1}
@@ -677,12 +605,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
         );
     }
 
-    handleRefresh = async () => {
+    handleRefresh = () => {
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
         this.lastChangedTime = 0;
-        await this.getSavedFeeds();
+        this.getSavedFeeds();
 
         !this.closed && this.setState({ refreshing: false });
     }

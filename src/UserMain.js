@@ -43,7 +43,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     commentStore: CommentStore = new CommentStore();
 
     state = {
-        renderFeed: false,
+        // renderFeed: false,
 
         isLoadingFeeds: false,
         refreshing: false,
@@ -136,9 +136,11 @@ export default class UserMain extends React.Component<InjectedProps> {
         // ----
 
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -356,11 +358,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         const senderName = host.name;
         const receiver = guest.uid;
 
-        // ToDo
         const data = {
-            message: message,
-            // placeId: placeId,
-            // feedId, feedId
+            message: message
         };
 
         sendPushNotification(sender, senderName, receiver, Cons.pushNotification.comment, data);
@@ -454,7 +453,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             }
                         }}
                     >
-                        <Ionicons name='md-close' color="white" size={20} />
+                        <Ionicons name='md-close' color="black" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
 
@@ -490,7 +489,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                 </View>
 
                 {
-                    this.state.renderFeed &&
+                    // this.state.renderFeed &&
                     <FlatList
                         ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.contentContainer}
@@ -635,10 +634,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                                 }
                             </View>
                         }
-                        // columnWrapperStyle={styles.columnWrapperStyle}
-                        // numColumns={3}
-                        // data={this.state.feeds}
-                        // keyExtractor={item => item.feedId}
                         data={reviews}
                         keyExtractor={item => item.review.id}
                         renderItem={this.renderItem}
@@ -666,7 +661,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             </View>
                         }
 
-                        // ListEmptyComponent={this.renderListEmptyComponent}
+                        ListEmptyComponent={this.renderListEmptyComponent}
                     />
                 }
 
@@ -834,6 +829,10 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     renderListEmptyComponent() {
+        const { guest } = this.state;
+        if (!guest) return null;
+        if (guest.receivedCommentsCount === 0) return null;
+
         // const { navigation } = this.props;
 
         const { reviews } = this.commentStore;
@@ -1152,7 +1151,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "white",
+        color: "black",
         textAlign: 'center'
     },
     notificationButton: {

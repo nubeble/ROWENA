@@ -492,11 +492,8 @@ export default class Firebase {
                     placeName,
 
                     /*
-                    name,
-                    placeName,
                     averageRating,
                     reviewCount,
-                    picture: uri,
                     valid: true // ToDo: update this when the post removed
                     */
                 }
@@ -890,7 +887,11 @@ export default class Firebase {
             // update comments array in user (writer)
             const item = {
                 userUid: targetUid,
-                commentId: id
+                commentId: id,
+
+                name: userDoc.data().name,
+                placeName: userDoc.data().place,
+                picture: userDoc.data().picture.uri
             };
 
             let data = {

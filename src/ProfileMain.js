@@ -1,7 +1,6 @@
 import autobind from "autobind-decorator";
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
-import { NavigationActions } from 'react-navigation';
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
 import { inject, observer } from "mobx-react/native";
@@ -203,11 +202,33 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         for (var i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
-            const value = feeds[i];
+            const feed = feeds[i];
 
-            // if (!value.valid) continue;
+            // if (!feed.valid) continue;
 
-            newFeeds.push(value);
+
+
+
+
+            // ToDo: subscribe here
+            /*
+            const placeId = feed.placeId;
+            const feedId = feed.feedId;
+
+            const picture = feed.picture;
+            const name = feed.name;
+            const placeName = feed.placeName;
+            */
+
+
+
+
+
+
+
+
+
+            newFeeds.push(feed);
 
             this.lastLoadedFeedIndex = i;
 
@@ -258,12 +279,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             // update state
             let feeds = [...this.state.feeds];
             const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
-            if (index !== -1) {
-                let feed = feeds[index];
-                feed.newReviewAdded = false;
-                feeds[index] = feed;
-                !this.closed && this.setState({ feeds });
+            if (index === -1) {
+                this.refs["toast"].show('The post does not exist.', 500);
+
+                return;
             }
+
+            let feed = feeds[index];
+            feed.newReviewAdded = false;
+            feeds[index] = feed;
+            !this.closed && this.setState({ feeds });
         }
 
         await this.openPost(item);
@@ -273,9 +298,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // show indicator
         const feeds = [...this.state.feeds];
         const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
-        if (index !== -1) {
-            !this.closed && this.setState({ showPostIndicator: index });
+        if (index === -1) {
+            this.refs["toast"].show('The post does not exist.', 500);
+
+            return;
         }
+
+        !this.closed && this.setState({ showPostIndicator: index });
 
         const post = await this.getPost(item);
 
@@ -374,6 +403,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const avatarName = (profile.name) ? profile.name : 'Anonymous'; // ToDo: test
         const imageUri = profile.picture.uri;
 
+        const { comments } = profile;
+
+
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -458,10 +491,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
                                         {/* See my ratings & reviews */}
+
+                                        {/* Girls You've Reviewed */}
                                         <TouchableOpacity
                                             onPress={() => {
                                                 setTimeout(() => {
-                                                    this.props.navigation.navigate("check");
+                                                    this.props.navigation.navigate("checkReview");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
                                         >
@@ -477,7 +512,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
-                                        {/* Advertise myself or my friends */}
+                                        {/* Advertise Yourself or Your Friends */}
                                         <TouchableOpacity
                                             onPress={() => {
                                                 setTimeout(() => {
@@ -496,6 +531,31 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         </TouchableOpacity>
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+
+                                        {/* Customers You've Reviewed */}
+                                        {
+                                            // comments.length > 0 &&
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setTimeout(() => {
+                                                        this.props.navigation.navigate("checkComment");
+                                                    }, Cons.buttonTimeoutShort);
+                                                }}
+                                            >
+                                                <View style={{
+                                                    width: '100%', height: Dimensions.get('window').height / 14,
+                                                    justifyContent: 'center',
+                                                    paddingLeft: 2
+                                                }}>
+                                                    <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Customers You've Reviewed"}</Text>
+                                                    <MaterialCommunityIcons name='comment-text-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                </View>
+                                            </TouchableOpacity>
+                                        }
+                                        {
+                                            // comments.length > 0 &&
+                                            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                                        }
 
                                         {/* Log out */}
                                         <TouchableOpacity

@@ -29,10 +29,10 @@ const illustWidth = 340;
 
 @inject("profileStore")
 @observer
-export default class ReviewMain extends React.Component<InjectedProps> {
+export default class CommentMain extends React.Component<InjectedProps> {
     state = {
         // renderFeed: false,
-        feeds: [],
+        feeds: [], // customers profile
         isLoadingFeeds: false,
         refreshing: false,
         totalFeedsSize: 0,
@@ -54,11 +54,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.lastChangedTime = 0;
         this.onLoading = false;
 
-        this.feedList = new Map();
-        this.feedCountList = new Map();
-
-        this.feedsUnsubscribes = [];
-        this.countsUnsubscribes = [];
+        this.customerList = new Map();
+        this.customersUnsubscribes = [];
     }
 
     componentDidMount() {
@@ -66,7 +63,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.getReviewedFeeds();
+        this.getCommentedFeeds();
 
         /*
         setTimeout(() => {
@@ -77,12 +74,12 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'ReviewMain';
+        Vars.currentScreenName = 'CommentMain';
 
-        const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
+        const lastChangedTime = this.props.profileStore.lastTimeCommentsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             // reload from the start
-            this.getReviewedFeeds();
+            this.getCommentedFeeds();
 
             // move scroll top
             // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
@@ -98,7 +95,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('ReviewMain.handleHardwareBackPress');
+        console.log('CommentMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -114,13 +111,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.onBlurListener.remove();
         this.hardwareBackPressListener.remove();
 
-        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
-            const instance = this.feedsUnsubscribes[i];
-            instance();
-        }
-
-        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
-            const instance = this.countsUnsubscribes[i];
+        for (var i = 0; i < this.customersUnsubscribes.length; i++) {
+            const instance = this.customersUnsubscribes[i];
             instance();
         }
 
@@ -158,32 +150,30 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         columnWrapperStyle={{ flex: 1, justifyContent: 'flex-start' }}
                         numColumns={3}
                         data={this.state.feeds}
-                        keyExtractor={item => item.reviewId}
+                        keyExtractor={item => item.commentId}
                         renderItem={({ item, index }) => {
 
                             // red dot
-                            const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
+                            // const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
 
                             return (
                                 <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
                                     <View style={styles.pictureContainer}>
-                                        <SmartImage
-                                            style={styles.picture}
-                                            showSpinner={false}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={item.picture}
-                                        />
                                         {
-                                            item.replyAdded &&
-                                            <View style={{
-                                                position: 'absolute',
-                                                top: 3,
-                                                right: 3,
-                                                backgroundColor: 'red',
-                                                borderRadius: badgeWidth / 2,
-                                                width: badgeWidth,
-                                                height: badgeWidth
-                                            }} />
+                                            item.picture.uri ?
+                                                <SmartImage
+                                                    style={styles.picture}
+                                                    showSpinner={false}
+                                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                    uri={item.picture.uri}
+                                                />
+                                                :
+                                                <Image
+                                                    style={[styles.picture, {
+                                                        backgroundColor: 'black', tintColor: 'white', resizeMode: 'cover'
+                                                    }]}
+                                                    source={PreloadImage.user}
+                                                />
                                         }
                                         {
                                             /*
@@ -202,7 +192,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                             if (!this.state.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
-                                this.getReviewedFeeds();
+                                this.getCommentedFeeds();
                             }
                         }}
                         onRefresh={this.handleRefresh}
@@ -212,7 +202,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                             (this.state.totalFeedsSize > 0) &&
                             <View>
                                 <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
+                                    <Text style={styles.title}>Your customers ({this.state.totalFeedsSize})</Text>
                                 </View>
                             </View>
                         }
@@ -284,12 +274,12 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         );
     }
 
-    getReviewedFeeds() {
+    getCommentedFeeds() {
         if (this.onLoading) return;
 
         const { profile } = this.props.profileStore;
-        const reviews = profile.reviews;
-        const length = reviews.length;
+        const comments = profile.comments;
+        const length = comments.length;
 
         this.setState({ totalFeedsSize: length });
 
@@ -300,7 +290,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         }
 
         // check update
-        const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
+        const lastChangedTime = this.props.profileStore.lastTimeCommentsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             this.lastChangedTime = lastChangedTime;
 
@@ -314,7 +304,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         this.onLoading = true;
 
-        console.log('ReviewMain', 'loading feeds...');
+        console.log('CommentMain', 'loading feeds...');
 
         this.setState({ isLoadingFeeds: true });
 
@@ -332,76 +322,73 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         for (var i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
-            const review = reviews[i];
+            const comment = comments[i];
 
-            newFeeds.push(review);
-
-
+            // newFeeds.push(comment);
 
 
 
-            // subscribe here (feed)
-            // --
-            const placeId = review.placeId;
-            const feedId = review.feedId;
+            const userUid = comment.userUid;
+            const commentId = comment.commentId;
+            const name = comment.name;
+            const placeName = comment.placeName;
+            const uri = comment.picture;
 
-            const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
-                if (newFeed === undefined) {
-                    this.feedList.delete(feedId);
+            if (this.customerList.has(userUid)) {
+                console.log('customer from memory');
 
-                    return;
-                }
+                const customer = this.customerList.get(userUid);
+                newFeeds.push(customer);
+            } else {
+                const customer = {
+                    uid: userUid,
+                    name,
+                    place: placeName,
+                    picture: {
+                        uri
+                    }
+                };
 
-                console.log('feed subscribed');
+                newFeeds.push(customer);
 
-                // update this.feedList
-                this.feedList.set(feedId, newFeed);
+                // subscribe here
+                // --
+                const instance = Firebase.subscribeToProfile(userUid, user => {
+                    if (user === undefined) {
+                        // update this.customerList
+                        this.customerList.delete(userUid);
 
-                // update picture
-                let feeds = [...this.state.feeds];
-                const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
-                if (index !== -1) {
-                    feeds[index].picture = newFeed.pictures.one.uri;
-                    !this.closed && this.setState({ feeds });
-                }
-            });
+                        // update state feed & UI
+                        /*
+                        let feeds = [...this.state.feeds];
+                        const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
+                        if (index !== -1) {
+                            feeds.splice(index, 1);
+                        }
+                        */
 
-            this.feedsUnsubscribes.push(fi);
-            // --
+                        return;
+                    }
 
-            // subscribe here (count)
-            // --
-            const ci = Firebase.subscribeToPlace(placeId, newPlace => {
-                if (newPlace === undefined) {
-                    this.feedCountList.delete(placeId);
+                    console.log('subscribeToProfile userUid', userUid);
 
-                    return;
-                }
+                    // update this.customerList
+                    this.customerList.set(userUid, user);
 
-                console.log('count subscribed');
+                    // update state feed & UI
+                    /*
+                    let feeds = [...this.state.feeds];
+                    const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
+                    if (index !== -1) {
+                        feeds[index] = newFeed;
+                        !this.closed && this.setState({ feeds });
+                    }
+                    */
+                });
 
-                // update this.feedCountList
-                this.feedCountList.set(placeId, newPlace.count);
-            });
-
-            this.countsUnsubscribes.push(ci);
-            // --
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                this.customersUnsubscribes.push(instance);
+                // --
+            }
 
 
 
@@ -418,162 +405,65 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
         }
 
-        console.log('ReviewMain', 'loading feeds done!');
+        console.log('CommentMain', 'loading feeds done!');
 
         this.onLoading = false;
     }
 
     postClick(item) {
-        if (item.replyAdded) {
-            // update replyAdded in user profile
-            const { profile } = this.props.profileStore;
-            /*
-            const result = await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
-            if (!result) {
-                this.refs["toast"].show('The user no longer exists.', 500);
-
-                return;
-            }
-            */
-            Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
-
-            // update state
-            let feeds = [...this.state.feeds];
-            const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId && el.reviewId === item.reviewId);
-            if (index === -1) {
-                this.refs["toast"].show('The post does not exist.', 500);
-
-                return;
-            }
-
-            let feed = feeds[index];
-            feed.replyAdded = false;
-            feeds[index] = feed;
-            !this.closed && this.setState({ feeds });
-        }
-
         this.openPost(item);
     }
 
     openPost(item) {
         // show indicator
         const feeds = [...this.state.feeds];
-        const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
+        const index = feeds.findIndex(el => el.uid === item.uid);
         if (index === -1) {
-            this.refs["toast"].show('The post does not exist.', 500);
+            this.refs["toast"].show('The user does not exist.', 500);
 
             return;
         }
 
         // !this.closed && this.setState({ showPostIndicator: index });
 
-        const post = this.getPost(item);
-        if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+        const { profile } = this.props.profileStore;
 
-            // we skip here. It'll update state feeds on onfocus event.
+        const host = {
+            uid: profile.uid,
+            name: profile.name,
+            picture: profile.picture
+        };
 
-            return;
-        }
-
-        const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === 0) {
+        const customer = this.customerList.get(item.uid);
+        if (!customer) {
             this.refs["toast"].show('Please try again.', 500);
 
             return;
         }
 
-        const extra = {
-            feedSize: feedSize
+        const { place, receivedCommentsCount, timestamp, birthday, gender, about } = customer;
+
+        const guest = {
+            uid: customer.uid,
+            name: customer.name,
+            picture: customer.picture.uri,
+            address: place,
+            receivedCommentsCount,
+            timestamp, birthday, gender, about
         };
 
-        // setTimeout(async () => {
-        this.props.navigation.navigate("reviewPost", { post: post, extra: extra, from: 'Profile' });
-        // }, Cons.buttonTimeoutShort);
+        const _item = {
+            host,
+            guest
+        };
+
+        setTimeout(async () => {
+            this.props.navigation.navigate("userPost", { item: _item });
+        }, Cons.buttonTimeoutShort);
+
 
         // hide indicator
         // !this.closed && this.setState({ showPostIndicator: -1 });
-    }
-
-    getPost(item) {
-        const placeId = item.placeId;
-        const feedId = item.feedId;
-
-        /*
-        if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
-            console.log('post from memory');
-            return this.feedList.get(feedId);
-        }
-
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) return null;
-
-        const post = feedDoc.data();
-
-        this.feedList.set(feedId, post);
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
-            if (newFeed === undefined) {
-                this.feedList.delete(feedId);
-
-                return;
-            }
-
-            // update this.feedList
-            this.feedList.set(feedId, newFeed);
-        });
-
-        this.feedsUnsubscribes.push(instance);
-        // --
-        */
-
-        let post = null;
-        if (this.feedList.has(feedId)) {
-            post = this.feedList.get(feedId);
-        }
-
-        return post;
-    }
-
-    getFeedSize(placeId) {
-        /*
-        if (this.feedCountList.has(placeId)) {
-            console.log('count from memory');
-            return this.feedCountList.get(placeId);
-        }
-
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        // if (!placeDoc.exists) return 0; // never happen
-
-        const count = placeDoc.data().count;
-
-        this.feedCountList.set(placeId, count);
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
-            if (newPlace === undefined) {
-                this.feedCountList.delete(placeId);
-
-                return;
-            }
-
-            // update this.feedCountList
-            this.feedCountList.set(placeId, newPlace.count);
-        });
-
-        this.countsUnsubscribes.push(instance);
-        // --
-        */
-
-        let count = 0;
-        if (this.feedCountList.has(placeId)) {
-            count = this.feedCountList.get(placeId);
-        }
-
-        return count;
     }
 
     handleRefresh = () => {
@@ -581,7 +471,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         // reload from the start
         this.lastChangedTime = 0;
-        this.getReviewedFeeds();
+        this.getCommentedFeeds();
 
         !this.closed && this.setState({ refreshing: false });
     }

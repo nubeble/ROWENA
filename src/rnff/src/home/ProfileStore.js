@@ -29,6 +29,7 @@ export default class ProfileStore {
     lastTimeFeedsUpdated: number;
     lastTimeLikesUpdated: number;
     lastTimeReviewsUpdated: number;
+    lastTimeCommentsUpdated: number;
 
 
     // @observable _profile: Profile = DEFAULT_PROFILE;
@@ -64,10 +65,18 @@ export default class ProfileStore {
                     const newReviews = snap.data().reviews;
                     const resultReviews = this.compareReviews(oldReviews, newReviews);
                     if (!resultReviews) this.lastTimeReviewsUpdated = this.lastChangedTime;
+
+                    // 4. check if comments changed
+                    const oldComments = this.profile.comments;
+                    const newComments = snap.data().comments;
+                    const resultComments = this.compareComments(oldComments, newComments);
+                    if (!resultComments) this.lastTimeCommentsUpdated = this.lastChangedTime;
+
                 } else {
                     this.lastTimeFeedsUpdated = this.lastChangedTime;
                     this.lastTimeLikesUpdated = this.lastChangedTime;
                     this.lastTimeReviewsUpdated = this.lastChangedTime;
+                    this.lastTimeCommentsUpdated = this.lastChangedTime;
                 }
 
                 this.profile = snap.data();
@@ -131,6 +140,22 @@ export default class ProfileStore {
             if (a.placeId !== b.placeId) return false;
             if (a.feedId !== b.feedId) return false;
             if (a.reviewId !== b.reviewId) return false;
+        }
+
+        return true;
+    }
+
+    compareComments(oldComments, newComments) {
+        // 1. size
+        if (oldComments.length !== newComments.length) return false;
+
+        // 2. contents
+        for (var i = 0; i < oldComments.length; i++) {
+
+            const a = oldComments[i]; // CommentRef
+            const b = newComments[i]; // CommentRef
+
+            if (a.commentId !== b.commentId) return false;
         }
 
         return true;

@@ -370,6 +370,7 @@ import AdvertisementStart from './src/AdvertisementStart';
 import AdvertisementMain from './src/AdvertisementMain';
 import CountrySelection from './src/CountrySelection';
 import AdvertisementFinish from './src/AdvertisementFinish';
+import CommentMain from './src/CommentMain';
 import MapSearch from './src/MapSearch';
 import MapOverview from './src/MapOverview';
 import Admin from './src/Admin';
@@ -667,7 +668,7 @@ const ReviewStackNavigator = createStackNavigator(
     {
         main: { screen: ReviewMain },
         // main: { screen: HidingHeader },
-        reviewedPost: { screen: PostStackNavigatorWrapper }
+        reviewPost: { screen: PostStackNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -734,6 +735,41 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
     }
 }
 // -- end of AdvertisementStackNavigatorWrapper
+
+// -- start of CommentStackNavigatorWrapper
+const CommentStackNavigator = createStackNavigator(
+    {
+        main: { screen: CommentMain },
+        // commentPost: { screen: PostStackNavigatorWrapper }
+        userPost: { screen: UserStackNavigatorWrapper }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
+    }
+);
+
+class CommentStackNavigatorWrapper extends React.Component {
+    static router = CommentStackNavigator.router;
+
+    render() {
+        return (
+            <CommentStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// -- end of CommentStackNavigatorWrapper
 
 // -- start of MainBottomTabNavigatorWrapper
 const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
@@ -1051,8 +1087,9 @@ const MainStackNavigator = createStackNavigator(
         chatRoom: { screen: ChatRoomStackNavigatorWrapper },
 
         edit: { screen: EditStackNavigatorWrapper },
-        check: { screen: ReviewStackNavigatorWrapper },
+        checkReview: { screen: ReviewStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
+        checkComment: { screen: CommentStackNavigatorWrapper },
 
         admin: { screen: AdminNavigatorWrapper }
     },

@@ -329,9 +329,13 @@ export default class SignUpWithEmail extends React.Component {
             // save user info to database
             await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
         } catch (error) {
-            console.log('error', error);
+            console.log('error', error.code, error.message);
 
-            this.showNotification('An error occurred. Please try again.');
+            if (error.code === 'auth/email-already-in-use') {
+                this.showNotification('The email address is already in use.');
+            } else {
+                this.showNotification('An error occurred. Please try again.');
+            }
         }
 
         // close indicator
@@ -387,7 +391,7 @@ export default class SignUpWithEmail extends React.Component {
                                 }
                             }}
                         >
-                            <Ionicons name='md-close' color="white" size={20} />
+                            <Ionicons name='md-close' color="black" size={20} />
                         </TouchableOpacity>
                     </Animated.View>
 
@@ -549,7 +553,7 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
         fontFamily: "Roboto-Medium",
-        color: "white",
+        color: "black",
         textAlign: 'center'
     },
     notificationButton: {
