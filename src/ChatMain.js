@@ -385,29 +385,31 @@ export default class ChatMain extends React.Component {
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
         Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => { // load 10 rooms
-            console.log('loadMoreChatRoom', list);
+            if (list) {
+                console.log('loadMoreChatRoom', list);
 
-            if (list.length === 0) {
-                this.allChatRoomsLoaded = true;
-            } else {
-                /*
-                this.setState(prevState => ({
-                    chatRoomList: [...prevState.chatRoomList, list]
-                }))
-                */
-
-                // check duplication
-                const result = this.hasItem(list);
-                if (result) {
+                if (list.length === 0) {
                     this.allChatRoomsLoaded = true;
                 } else {
-                    this.addItem(list);
+                    /*
+                    this.setState(prevState => ({
+                        chatRoomList: [...prevState.chatRoomList, list]
+                    }))
+                    */
+
+                    // check duplication
+                    const result = this.hasItem(list);
+                    if (result) {
+                        this.allChatRoomsLoaded = true;
+                    } else {
+                        this.addItem(list);
+                    }
                 }
             }
 
-            this.setState({ isLoadingChat: false });
-
             this.onLoading = false;
+
+            this.setState({ isLoadingChat: false });
         });
     }
 
