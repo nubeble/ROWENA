@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert } from 'react-native';
+import { StyleSheet, Animated, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, TouchableOpacity } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
 import _ from 'lodash';
 import { configure } from 'mobx';
 import { Provider } from "mobx-react/native";
-import { FeedStore, Theme } from './src/rnff/src/components';
+import { FeedStore, Theme, Text } from './src/rnff/src/components';
 import { ProfileStore } from "./src/rnff/src/home";
 import autobind from "autobind-decorator";
 import { Notifications } from 'expo';
@@ -336,6 +336,7 @@ export default class App extends React.Component {
         this.setState({ showBadgeOnProfile: show, badgeOnProfileCount: count });
     }
 }
+
 
 
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";

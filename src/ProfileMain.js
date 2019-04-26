@@ -624,6 +624,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // ToDo: block now
                                                     return;
 
+                                                    // user profile & auth
+                                                    // feeds
+                                                    // comment store
+                                                    //// reviews, comments
+                                                    // token
+
                                                     // 1. remove all created feeds (place - feed)
                                                     const { profile } = this.props.profileStore;
                                                     const feeds = profile.feeds;

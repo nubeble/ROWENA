@@ -715,14 +715,14 @@ export default class PostScreen extends React.Component<InjectedProps> {
                                                 */
                                                 <View style={{ marginBottom: 9 }}>
                                                     <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
-                                                        <AntDesign style={{ marginTop: 2 }} name='staro' color={'#f1c40f'} size={19} />
+                                                        <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
                                                         <Text style={{
                                                             color: '#f1c40f',
                                                             fontSize: 18,
                                                             fontFamily: "Roboto-Italic",
                                                             paddingLeft: 5,
                                                             paddingTop: 2
-                                                        }}>newly posted</Text>
+                                                        }}>Newly posted</Text>
                                                     </View>
                                                 </View>
                                         }
