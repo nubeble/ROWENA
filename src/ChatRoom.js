@@ -15,6 +15,7 @@ import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import Util from './Util';
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 const textInputPaddingTop = (Dimensions.get('window').height / 26);
@@ -51,7 +52,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         dialogMessage: '',
 
         onKeyboard: false,
-        renderPost: false
+        renderPost: false,
+
+        opponentLeft: false
     };
 
     constructor(props) {
@@ -147,11 +150,17 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 }
             }
 
+            // check if the leave message arrived
+            if (message.system && message.text.indexOf(" has left the chat room.") !== -1) {
+                this.setState({ opponentLeft: true });
+            }
+
             !this.closed && this.setState(previousState => ({
                 messages: GiftedChat.append(previousState.messages, message)
             }));
         });
 
+        // show center post avatar
         if (item.contents === '') {
             this.setState({ renderPost: true });
         }
@@ -185,21 +194,38 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             return true;
         }
 
-        this.moveToChat();
+        this.moveToChatMain();
 
         return true;
     }
 
-    moveToChat() {
-        // save the last message to chat main
-        if (this.state.messages.length > 1) {
-            const lastMessage = this.state.messages[0];
-            const mid = lastMessage._id;
-
+    moveToChatMain() {
+        const message = this.getLastMessage();
+        if (message) {
+            const mid = message._id;
             Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
         }
 
         this.props.navigation.navigate("chat");
+    }
+
+    getLastMessage() {
+        if (this.state.messages.length === 1) return null; // system message
+
+        let lastMessage = null;
+
+        const { messages } = this.state;
+
+        for (let i = 1; i < messages.length; i++) {
+            const message = messages[i];
+
+            if (!message.system) {
+                lastMessage = message;
+                break;
+            }
+        }
+
+        return lastMessage;
     }
 
     @autobind
@@ -264,7 +290,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            this.moveToChat();
+                            this.moveToChatMain();
                         }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -320,11 +346,24 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                         // forceGetKeyboardHeight={Platform.OS === 'android' && Platform.Version < 21}
                         messages={this.state.messages}
-                        placeholder={'Write a message'}
+                        placeholder={this.state.opponentLeft ? "Can't type a message" : 'Type a message'}
                         placeholderTextColor={Theme.color.placeholder}
                         user={this.user}
                         onSend={async (messages) => {
-                            await this.sendMessage(messages[0]);
+                            if (this.state.opponentLeft) return;
+
+                            let isSameDay = true;
+                            /*
+                            if (messages.length > 1) {
+                                const dateOld = new Date(messages[1].createdAt);
+                                const dateNew = new Date(messages[0].createdAt);
+
+                                const result = Util.isSameDay(dateOld, dateNew);
+                                isSameDay = result;
+                            }
+                            */
+
+                            await this.sendMessage(isSameDay, messages[0]);
                             // await this.saveUnreadChatRoomId();
                         }}
                         onPressAvatar={async () => await this.openAvatar()}
@@ -347,7 +386,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             },
                             onBlur: () => {
                                 this.setState({ onKeyboard: false });
-                            }
+                            },
+                            editable: !this.state.opponentLeft
                         }}
                         renderSend={this.renderSend}
                         renderInputToolbar={this.renderInputToolbar}
@@ -460,11 +500,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         });
     }
 
-    async sendMessage(message) {
+    async sendMessage(isSameDay, message) {
         const item = this.props.navigation.state.params.item;
 
         // save the message to database & update UI
-        await Firebase.sendMessage(this.state.id, message, item);
+        await Firebase.sendMessage(this.state.id, message, isSameDay, item);
 
         // send push notification
         const notificationType = Cons.pushNotification.chat;
@@ -737,7 +777,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         return (
             <Send {...props} containerStyle={{ marginBottom: textInputMarginBottom + sendButtonMarginBottom }}>
                 <View style={styles.sendButton}>
-                    <Ionicons name='ios-send' color={Theme.color.selection} size={28} />
+                    <Ionicons name='ios-send' color={this.state.opponentLeft ? Theme.color.placeholder : Theme.color.selection} size={28} />
 
                     {/*
                     <Image source={require('../../assets/send.png')} resizeMode={'center'}/>
@@ -758,10 +798,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
     handleLeave() {
         const item = this.props.navigation.state.params.item;
+        const myUid = item.users[0].uid;
+        const myName = item.users[0].name;
+        const opponentUid = item.users[1].uid;
         const labelName = item.users[1].name;
 
         this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
-            await Firebase.deleteChatRoom(Firebase.user().uid, item.id);
+            await Firebase.deleteChatRoom(myUid, myName, opponentUid, item.id);
             // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
             this.props.navigation.navigate("chat", { roomId: item.id });
         });

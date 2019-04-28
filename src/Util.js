@@ -1430,4 +1430,17 @@ export default class Util extends React.Component {
         return code;
     }
     */
+
+    isSameDay(date1, date2) {
+        const y1 = date1.getFullYear();
+        const d1 = date1.getDate();
+
+        const y2 = date2.getFullYear();
+        const d2 = date2.getDate();
+
+        if (y1 !== y2) return false;
+        if (d1 !== d2) return false;
+
+        return true;
+    }
 }

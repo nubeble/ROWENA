@@ -994,7 +994,7 @@ export default class Firebase {
             const message = {
                 text,
                 timestamp: timestamp,
-                _system: true
+                system: true
             };
 
             await Firebase.database.ref('contents').child(id).push(message);
@@ -1041,17 +1041,17 @@ export default class Firebase {
 
     // parse a received message
     static parseChild = snapshot => {
-        const { timestamp: numberStamp, text, user, _system } = snapshot.val();
+        const { timestamp: numberStamp, text, user, system } = snapshot.val();
         const { key: _id } = snapshot;
         const createdAt = new Date(numberStamp);
-        const system = _system !== undefined;
+        const _system = system !== undefined;
 
-        if (system) {
+        if (_system) {
             const message = {
                 _id,
                 text,
                 createdAt,
-                system
+                system: true
             };
 
             return message;
@@ -1076,17 +1076,17 @@ export default class Firebase {
             const value = item.val();
 
             if (key !== id) {
-                const { timestamp: numberStamp, text, user, _system } = value;
+                const { timestamp: numberStamp, text, user, system } = value;
                 const _id = key;
                 const createdAt = new Date(numberStamp);
-                const system = _system !== undefined;
+                const _system = system !== undefined;
 
                 const message = {
                     _id,
                     text,
                     createdAt,
                     user,
-                    system
+                    system: _system
                 };
 
                 array.push(message);
@@ -1160,16 +1160,27 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static async sendMessage(id, message, post) {
+    static async sendMessage(id, message, isSameDay, post) {
         const { text, user } = message;
 
         let _user = {};
         _user._id = user._id; // save only _id
 
-        // if (!text || text.length === 0) continue;
         if (!text || text.length === 0) return;
 
         const timestamp = Firebase.timestamp();
+
+        /*
+        if (!isSameDay) {
+            const dateData = {
+                text: "",
+                timestamp: timestamp,
+                system: true
+            };
+
+            await Firebase.database.ref('contents').child(id).push(dateData);
+        }
+        */
 
         const pushData = {
             text,
@@ -1345,18 +1356,30 @@ export default class Firebase {
         return room;
     }
 
-    static async deleteChatRoom(myUid, postId) {
+    static async deleteChatRoom(myUid, myName, opponentUid, postId) {
         // 1. delete room (realtime database)
         await Firebase.database.ref('chat').child(myUid).child(postId).remove();
 
-        // 2. delete chat contents
-        // await Firebase.database.ref('contents').child(postId).remove();
+        // check if the opponent exists
+        var opponentExists = false;
+        await Firebase.database.ref('chat').child(opponentUid).child(postId).once('value').then(snapshot => {
+            if (snapshot.exists()) opponentExists = true;
+        });
 
-        // ToDo: add message (000님이 방을 나갔습니다.)
+        if (opponentExists) {
+            // 2. add a system message
+            const text = myName + " has left the chat room.";
+            const timestamp = Firebase.timestamp();
+            const message = {
+                text,
+                timestamp: timestamp,
+                system: true
+            };
 
-
+            await Firebase.database.ref('contents').child(postId).push(message);
+        } else {
+            // 3. delete chat contents if all the users have left
+            await Firebase.database.ref('contents').child(postId).remove();
+        }
     }
-
-
-
 }
