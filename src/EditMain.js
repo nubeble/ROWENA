@@ -63,13 +63,15 @@ export default class EditMain extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { profile } = this.props.profileStore;
-        const uid = profile.uid;
-        const receivedCommentsCount = profile.receivedCommentsCount;
+        if (profile) {
+            const uid = profile.uid;
+            const receivedCommentsCount = profile.receivedCommentsCount;
 
-        this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
+            this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
-        const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
-        this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+            const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
+            this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+        }
 
         /*
         setTimeout(() => {
@@ -122,16 +124,28 @@ export default class EditMain extends React.Component<InjectedProps> {
     render() {
         const { profile } = this.props.profileStore;
 
-        let name = profile.name;
-        if (!name) name = 'Anonymous'; // ToDo: test
-
+        let name = 'Anonymous'; // ToDo: test
         let address = "No address registered";
+        let count = 0;
+        let imageUri = null;
+        let dateText = null;
+        // ToDo: use age, gender, note
+        let age = '20';
+        let gender = 'Female';
+        let note = 'hi';
 
-        if (profile.place) address = profile.place;
+        if (profile) {
+            name = profile.name;
+            if (profile.place) address = profile.place;
+            count = profile.receivedCommentsCount;
+            imageUri = profile.picture.uri;
+            dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
+            if (profile.birthday) age = Util.getAge(profile.birthday);
+            gender = profile.gender;
+            note = profile.about;
+        }
 
-        const count = profile.receivedCommentsCount;
-
-        let reviewText = 'loading...';
+        let reviewText = '';
         if (count === 0) {
             reviewText = 'No host reviews yet';
         } else if (count === 1) {
@@ -141,23 +155,13 @@ export default class EditMain extends React.Component<InjectedProps> {
         }
 
         let labelText = null;
-        if (count === 1) {
+        if (count === 0) {
+            labelText = count.toString() + 'no reviews from hosts';
+        } else if (count === 1) {
             labelText = count.toString() + ' review from hosts';
         } else if (count > 1) {
             labelText = count.toString() + ' reviews from hosts';
         }
-
-        const imageUri = profile.picture.uri;
-
-        const dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
-
-        // ToDo: use age, gender, note
-        let age = '20';
-        let gender = 'Female';
-        let note = 'hi';
-        if (profile.birthday) age = Util.getAge(profile.birthday);
-        if (profile.gender) gender = profile.gender;
-        if (profile.about) note = profile.about;
 
         const { reviews } = this.commentStore;
 
@@ -407,6 +411,7 @@ export default class EditMain extends React.Component<InjectedProps> {
     @autobind
     renderListEmptyComponent() {
         const { profile } = this.props.profileStore;
+        if (!profile) return null;
         const receivedCommentsCount = profile.receivedCommentsCount;
         if (receivedCommentsCount === 0) return null;
 

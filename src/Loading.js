@@ -6,7 +6,6 @@ import Firebase from './Firebase';
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
-import { registerExpoPushToken } from './PushNotifications';
 import { RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Cons, Vars } from './Globals';
@@ -57,7 +56,8 @@ type InjectedProps = {
 @inject("feedStore", "profileStore")
 @observer
 export default class Loading extends React.Component<InjectedProps> {
-    static isUserAutoAuthenticated = true;
+    static userAutoAuthenticated = true;
+    static userSignedIn = false;
 
     state = {
         isReady: false,
@@ -115,7 +115,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         <RefreshIndicator refreshing total={3} size={5} color='white' />
                     </View>
                 }
-                <Text style={{ position: 'absolute', bottom: 10, right: 10, fontSize: 14, color: 'white' }}>{Cons.buildNumber}</Text>
+                <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{Cons.buildNumber}</Text>
                 <Animated.Image
                     style={{
                         position: 'absolute',
@@ -184,11 +184,52 @@ export default class Loading extends React.Component<InjectedProps> {
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
 
+
+
             const isUserAuthenticated = !!user;
 
-            if (isUserAuthenticated) {
+            if (!isUserAuthenticated) { // user == null (first time or sign out)
+                if (Loading.userSignedIn) { // signed out
+                    Loading.userSignedIn = false;
 
-                registerExpoPushToken();
+                    // move to login page
+                    console.log('move to auth main');
+                    // StatusBar.setHidden(false);
+                    navigation.navigate("authStackNavigator");
+                } else {
+                    Loading.userAutoAuthenticated = false;
+
+                    Animated.sequence([
+                        Animated.delay(2000),
+                        Animated.timing(this.state.image2Opacity, {
+                            toValue: 1,
+                            duration: 300,
+                            useNativeDriver: true
+                        })
+                    ]).start(() => {
+                        !this.closed && this.setState({ showIndicator: false });
+
+                        console.log('move to auth main');
+                        // StatusBar.setHidden(false);
+                        navigation.navigate("authStackNavigator");
+                    });
+                }
+            } else {
+                Loading.userSignedIn = true;
+
+                // check existance
+                let profile = await Firebase.getProfile(user.uid);
+                if (profile) {
+                    // update
+                    profile.name = user.displayName;
+                    profile.email = user.email;
+                    profile.phoneNumber = user.phoneNumber;
+                    await Firebase.updateProfile(user.uid, profile);
+                } else {
+                    // create
+                    // save user info to database
+                    await Firebase.createProfile(user.uid, user.displayName, user.email, user.phoneNumber);
+                }
 
                 // const { uid } = Firebase.auth.currentUser;
                 /*
@@ -202,54 +243,8 @@ export default class Loading extends React.Component<InjectedProps> {
                 */
                 profileStore.init();
 
-
-
-                // check updates (chat first.. post, likes, review, reply later)
-
-                // 1. home
-                // const home = await this.checkUpdateOnHome();
-
-                // 2. likes
-                // const likes = await this.checkUpdateOnLikes();
-
-                // 3. chat
-                const chatResult = await this.checkUpdateOnChat();
-                if (chatResult) {
-                    // show badge
-                    setTimeout(() => {
-                        const screenProps = this.props.screenProps;
-                        screenProps.changeBadgeOnChat(true, 0);
-                    }, 2000); // after 2 sec
-                }
-
-                // 4. profile
-                const profileResult = this.checkUpdateOnProfile();
-                if (profileResult) {
-                    // show badge
-                    setTimeout(() => {
-                        const screenProps = this.props.screenProps;
-                        screenProps.changeBadgeOnProfile(true, 0);
-                    }, 2000); // after 2 sec
-                }
-
-
-
-                if (Loading.isUserAutoAuthenticated) {
-                    // update user info to database
-                    /*
-                    const profile = {
-                        name: user.displayName,
-                        email: user.email,
-                        phoneNumber: user.phoneNumber,
-                        picture: {
-                            preview: null,
-                            uri: user.photoURL
-                        }
-                    };
-
-                    const uid = Firebase.user().uid;
-                    await Firebase.updateProfile(uid, profile);
-                    */
+                if (Loading.userAutoAuthenticated) {
+                    await this.checkUpdates();
 
                     console.log('move to main');
                     StatusBar.setHidden(false);
@@ -259,25 +254,38 @@ export default class Loading extends React.Component<InjectedProps> {
                     StatusBar.setHidden(false);
                     navigation.navigate("welcome");
                 }
-            } else {
-                Loading.isUserAutoAuthenticated = false;
-
-                Animated.sequence([
-                    Animated.delay(2000),
-                    Animated.timing(this.state.image2Opacity, {
-                        toValue: 1,
-                        duration: 300,
-                        useNativeDriver: true
-                    })
-                ]).start(() => {
-                    !this.closed && this.setState({ showIndicator: false });
-
-                    console.log('move to auth main');
-                    // StatusBar.setHidden(false);
-                    navigation.navigate("authStackNavigator");
-                });
             }
         });
+    }
+
+    async checkUpdates() {
+        // check updates (chat first.. post, likes, review, reply later)
+
+        // 1. home
+        // const home = await this.checkUpdateOnHome();
+
+        // 2. likes
+        // const likes = await this.checkUpdateOnLikes();
+
+        // 3. chat
+        const chatResult = await this.checkUpdateOnChat();
+        if (chatResult) {
+            // show badge
+            setTimeout(() => {
+                const screenProps = this.props.screenProps;
+                screenProps.changeBadgeOnChat(true, 0);
+            }, 2000); // after 2 sec
+        }
+
+        // 4. profile
+        const profileResult = this.checkUpdateOnProfile();
+        if (profileResult) {
+            // show badge
+            setTimeout(() => {
+                const screenProps = this.props.screenProps;
+                screenProps.changeBadgeOnProfile(true, 0);
+            }, 2000); // after 2 sec
+        }
     }
 
     async checkUpdateOnChat() {

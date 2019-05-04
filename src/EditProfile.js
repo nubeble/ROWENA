@@ -382,7 +382,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
         }
         data.note = _note;
 
-        data.imageUri = uploadImageUri;
+        data.image = {
+            uri: uploadImageUri,
+            ref: this.uploadImageRef
+        };
 
         data.email = email;
         data.phoneNumber = phoneNumber;
@@ -1118,8 +1121,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
         profile.place = data.place;
         profile.about = data.note;
         profile.picture = {
-            preview: null,
-            uri: data.imageUri
+            // preview: null,
+            uri: data.image.uri,
+            ref: data.image.ref
         };
         profile.email = data.email;
         profile.phoneNumber = data.phoneNumber;

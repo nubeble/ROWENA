@@ -12,6 +12,7 @@ import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
+import { registerExpoPushToken } from './PushNotifications';
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -326,13 +327,36 @@ export default class SignUpWithEmail extends React.Component {
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
             console.log('user', user);
 
-            // save user info to database
-            await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
+            // save token
+            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+                registerExpoPushToken(user.user.uid, user.user.displayName);
+            }
+
+            /*
+            // check existance
+            const profile = await Firebase.getProfile(user.user.uid);
+            if (profile) {
+                // update
+                const data = {
+                    name: user.user.displayName,
+                    email: user.user.email,
+                    phoneNumber: user.user.phoneNumber
+                };
+
+                await Firebase.updateProfile(user.user.uid, data);
+            } else {
+                // create
+                // save user info to database
+                await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
+            }
+            */
         } catch (error) {
             console.log('error', error.code, error.message);
 
             if (error.code === 'auth/email-already-in-use') {
                 this.showNotification('The email address is already in use.');
+            } else if (error.code === 'auth/network-request-failed') {
+                this.showNotification('A network error occurred. Please try again.');
             } else {
                 this.showNotification('An error occurred. Please try again.');
             }

@@ -8,7 +8,7 @@ const gcs = new Storage({
     projectId: projectId,
 });
 */
-const bucketName = 'rowena-88cfd.appspot.com';
+const BUCKET_NAME = 'rowena-88cfd.appspot.com';
 
 // The Firebase Admin SDK to access the Firebase Realtime Database.
 const admin = require('firebase-admin');
@@ -16,7 +16,7 @@ var serviceAccount = require("./rowena-88cfd-firebase-adminsdk-nfrft-dbcfc156b6.
 // admin.initializeApp();
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
-    storageBucket: bucketName,
+    storageBucket: BUCKET_NAME,
     databaseURL: "https://rowena-88cfd.firebaseio.com"
 });
 
@@ -174,7 +174,7 @@ app.post("/images", function (req, res) {
 
             // get download URL
             const storage = admin.storage();
-            storage.bucket(bucketName).file(fileDir).getSignedUrl({
+            storage.bucket(BUCKET_NAME).file(fileDir).getSignedUrl({
                 action: 'read',
                 // expires: '03-09-2491'
                 expires: '03-09-2200'
@@ -236,7 +236,7 @@ const uploadImageToStorage = (file, fileDir) => {
     // const destBucket = gcs.bucket('rowena-88cfd.appspot.com');
 
     let prom = new Promise((resolve, reject) => {
-        const fileUpload = storage.bucket(bucketName).file(fileDir);
+        const fileUpload = storage.bucket(BUCKET_NAME).file(fileDir);
         // const fileUpload = destBucket.file(file.originalname);
 
         const blobStream = fileUpload.createWriteStream({
@@ -686,7 +686,7 @@ const deleteFiles = async(function () {
 
         // console.log(key, value);
 
-        const fileRef = storage.bucket(bucketName).file(value);
+        const fileRef = storage.bucket(BUCKET_NAME).file(value);
         // await(fileRef.delete());
         fileRef.delete().then(function () {
             // File deleted successfully

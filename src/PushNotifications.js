@@ -7,7 +7,7 @@ import { Cons } from './Globals';
 const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
 
-export async function registerExpoPushToken() {
+export async function registerExpoPushToken(uid, name) {
     const { status: existingStatus } = await Permissions.getAsync(
         Permissions.NOTIFICATIONS
     );
@@ -36,12 +36,14 @@ export async function registerExpoPushToken() {
 
     console.log("token", token);
 
-    const user = Firebase.user();
+    // const user = Firebase.user();
 
     const formData = new FormData();
     formData.append("token", token);
-    formData.append("uid", user.uid);
-    formData.append("name", user.name);
+    // formData.append("uid", user.uid);
+    // formData.append("name", user.name);
+    formData.append("uid", uid);
+    formData.append("name", name);
 
     // POST the token to your backend server from where you can retrieve it to send push notifications.
     return fetch(PUSH_ENDPOINT + "setToken", {

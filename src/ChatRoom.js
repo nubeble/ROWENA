@@ -707,10 +707,8 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             const owner = item.users[0]; // girl
             const customer = item.users[1]; // customer
 
-            const uid = customer.uid;
-
             if (!this.opponentUser) {
-                const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
+                const userDoc = await Firebase.firestore.collection("users").doc(customer.uid).get();
                 if (!userDoc.exists) {
                     this.refs["toast"].show('The user no longer exists.', 500);
 
@@ -722,7 +720,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                 // subscribe here
                 // --
-                const instance = Firebase.subscribeToProfile(uid, user => {
+                const instance = Firebase.subscribeToProfile(customer.uid, user => {
                     if (user === undefined) {
                         this.opponentUser = null;
 

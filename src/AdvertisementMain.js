@@ -713,10 +713,22 @@ export default class AdvertisementMain extends React.Component {
         }
         data.note = _note;
 
-        data.image1Uri = uploadImage1Uri;
-        data.image2Uri = uploadImage2Uri;
-        data.image3Uri = uploadImage3Uri;
-        data.image4Uri = uploadImage4Uri;
+        data.image1 = {
+            uri: uploadImage1Uri,
+            ref: this.uploadImage1Ref
+        };
+        data.image2 = {
+            uri: uploadImage2Uri,
+            ref: this.uploadImage2Ref
+        };
+        data.image3 = {
+            uri: uploadImage3Uri,
+            ref: this.uploadImage3Ref
+        };
+        data.image4 = {
+            uri: uploadImage4Uri,
+            ref: this.uploadImage4Ref
+        };
 
         const extra = {
             lat: cityInfo.location.lat,
@@ -1862,24 +1874,28 @@ export default class AdvertisementMain extends React.Component {
 
         const pictures = {
             one: {
-                preview: null,
-                uri: data.image1Uri
+                // preview: null,
+                uri: data.image1.uri ? data.image1.uri : null,
+                ref: data.image1.ref ? data.image1.ref : null
             },
             two: {
-                preview: null,
-                uri: data.image2Uri
+                // preview: null,
+                uri: data.image2.uri ? data.image2.uri : null,
+                ref: data.image2.ref ? data.image2.ref : null
             },
             three: {
-                preview: null,
-                uri: data.image3Uri
+                // preview: null,
+                uri: data.image3.uri ? data.image3.uri : null,
+                ref: data.image3.ref ? data.image3.ref : null
             },
             four: {
-                preview: null,
-                uri: data.image4Uri
+                // preview: null,
+                uri: data.image4.uri ? data.image4.uri : null,
+                ref: data.image4.ref ? data.image4.ref : null
             }
         };
-
         feed.pictures = pictures;
+
         feed.name = data.name;
         feed.birthday = data.birthday;
         feed.gender = data.gender;

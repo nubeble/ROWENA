@@ -41,7 +41,7 @@ export default class ProfileStore {
     async init(): Promise<void> {
         // Load Profile
         const uid = Firebase.user().uid;
-        Firebase.firestore.collection("users").doc(uid).onSnapshot(async snap => {
+        this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(async snap => {
             if (snap.exists) {
                 console.log('ProfileStore, profile changed.');
 
@@ -91,6 +91,10 @@ export default class ProfileStore {
                 */
             }
         });
+    }
+
+    final() {
+        if (this.instance) this.instance();
     }
 
     compareFeeds(oldFeeds, newFeeds) {

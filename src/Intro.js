@@ -65,7 +65,7 @@ export default class Intro extends React.Component {
     static countsUnsubscribes = []; // Consider: unsubscribe?
 
     state = {
-        renderList: false,
+        // renderList: false,
 
         // set the initial places (DEFAULT_PLACE_COUNT)
         places: [
@@ -139,9 +139,11 @@ export default class Intro extends React.Component {
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
         }, 0);
+        */
 
         if (Intro.places.length === 0) this.getPlaces();
 
@@ -374,28 +376,30 @@ export default class Intro extends React.Component {
             var index = 0;
 
             snap.forEach(async (doc) => {
-                // console.log(doc.id, '=>', doc.data());
+                if (doc.exists) {
+                    // console.log(doc.id, '=>', doc.data());
+                    const data = doc.data();
+                    if (data.count > 0) {
+                        const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
 
-                const data = doc.data();
+                        places[index] = {
+                            // ...places[index],
+                            place_id: doc.id,
+                            length: data.count,
+                            name: data.name,
+                            uri,
+                            lat: data.lat,
+                            lng: data.lng,
+                            key: doc.id
+                        };
 
-                const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
+                        index++;
 
-                places[index] = {
-                    // ...places[index],
-                    place_id: doc.id,
-                    length: data.count,
-                    name: data.name,
-                    uri,
-                    lat: data.lat,
-                    lng: data.lng,
-                    key: doc.id
-                };
-
-                index++;
-
-                if (index === snap.docs.length) {
-                    Intro.places = places;
-                    !this.closed && this.setState({ places });
+                        if (index === snap.docs.length) {
+                            Intro.places = places;
+                            !this.closed && this.setState({ places });
+                        }
+                    }
                 }
             });
         }
@@ -422,6 +426,7 @@ export default class Intro extends React.Component {
 
         for (var i = 0; i < placeList.length; i++) {
             const item = placeList[i]; // placeId
+            if (!item) continue;
 
             if (item === prevItem) {
                 array[item]++;
@@ -462,7 +467,7 @@ export default class Intro extends React.Component {
 
             const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
-                    // console.log('!!!!! removed !!!!!!');
+                    // console.log('!!!!! post removed !!!!!!');
 
                     // nothing to do here.
                     return;
@@ -514,6 +519,7 @@ export default class Intro extends React.Component {
         let array = {};
         for (var i = 0; i < placeList.length; i++) {
             const item = placeList[i];
+            if (!item) continue;
 
             if (item === prevItem) {
                 array[item]++;
@@ -554,7 +560,7 @@ export default class Intro extends React.Component {
 
             const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
-                    // console.log('!!!!! removed !!!!!!');
+                    // console.log('!!!!! post removed !!!!!!');
 
                     // nothing to do here.
                     return;
@@ -639,7 +645,7 @@ export default class Intro extends React.Component {
                 </View>
 
                 {
-                    this.state.renderList &&
+                    // this.state.renderList &&
                     <FlatList
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
@@ -746,12 +752,14 @@ export default class Intro extends React.Component {
                                     name = place.name;
 
                                     // get city, country
-                                    const words = name.split(', ');
-                                    if (words.length > 1) {
-                                        city = words[0];
-                                        country = words[words.length - 1];
-
-                                        // name = city + ', ' + country;
+                                    if (name) {
+                                        const words = name.split(', ');
+                                        if (words.length > 1) {
+                                            city = words[0];
+                                            country = words[words.length - 1];
+                                        } else {
+                                            city = name;
+                                        }
                                     }
 
                                     imageUri = place.uri;

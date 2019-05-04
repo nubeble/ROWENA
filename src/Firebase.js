@@ -21,13 +21,15 @@ export default class Firebase {
     static database: firebase.database.Database;
 
     static init() {
-        firebase.initializeApp(config);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(config);
 
-        Firebase.auth = firebase.auth();
-        Firebase.firestore = firebase.firestore();
-        Firebase.firestore.settings({ timestampsInSnapshots: true }); // Consider: remove
-        Firebase.storage = firebase.storage();
-        Firebase.database = firebase.database();
+            Firebase.auth = firebase.auth();
+            Firebase.firestore = firebase.firestore();
+            Firebase.firestore.settings({ timestampsInSnapshots: true }); // Consider: remove
+            Firebase.storage = firebase.storage();
+            Firebase.database = firebase.database();
+        }
     }
 
 
@@ -92,7 +94,7 @@ export default class Firebase {
             email: email,
             phoneNumber: phoneNumber,
             picture: {
-                preview: null,
+                // preview: null,
                 uri: null
             },
             about: null,
@@ -110,7 +112,7 @@ export default class Firebase {
     }
 
     static async updateProfile(uid, profile) {
-        await Firebase.firestore.collection('users').doc(uid).update(profile);
+        await Firebase.firestore.collection("users").doc(uid).update(profile);
 
         // ToDo: update firebase auth
         /*
@@ -126,12 +128,55 @@ export default class Firebase {
     }
 
     static async deleteProfile(uid) {
+        let result;
+
         // remove comments collection
         const db = Firebase.firestore.collection("users").doc(uid);
         const path = "comments";
         Firebase.deleteCollection(db, path, 10);
 
-        await Firebase.firestore.collection("users").doc(uid).delete();
+        // await Firebase.firestore.collection("users").doc(uid).delete();
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(db);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+            const picture = userDoc.data().picture;
+            if (picture.ref) {
+                ref.delete();
+            }
+
+            transaction.delete(db);
+        }).then(() => {
+            // console.log("Transaction successfully committed!");
+            result = true;
+        }).catch((error) => {
+            console.log('Firebase.deleteProfile', error);
+            result = false;
+        });
+
+        if (!result) return false;
+
+        // delete firebase auth user
+        var user = Firebase.auth.currentUser;
+        await user.delete().then(function () {
+            // User deleted.
+            console.log('User deleted.');
+        }).catch(function (error) {
+            // An error happened.
+            console.log('An error happened.', error);
+
+            result = false;
+        });
+
+        if (!result) return false;
+
+        await Firebase.auth.signOut();
+
+        return result;
+    }
+
+    static async deleteToken(uid) {
+        await Firebase.firestore.collection("tokens").doc(uid).delete();
     }
 
     static async getPlaceRandomFeedImage(placeId) {
@@ -176,17 +221,23 @@ export default class Firebase {
         if (snap1.docs.length === 0) {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
-                // this should never happen!
+                // nothing to do here
             } else {
                 snap2.forEach((doc) => {
                     // console.log(doc.id, '=>', doc.data());
-                    placeId = doc.id;
+                    if (doc.exists) {
+                        const data = doc.data();
+                        if (data.count > 0) placeId = doc.id;
+                    }
                 });
             }
         } else {
             snap1.forEach((doc) => {
                 // console.log(doc.id, '=>', doc.data());
-                placeId = doc.id;
+                if (doc.exists) {
+                    const data = doc.data();
+                    if (data.count > 0) placeId = doc.id;
+                }
             });
         }
 
@@ -355,6 +406,35 @@ export default class Firebase {
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
+
+
+
+            // delete file in storage
+            // --
+            const feedDoc = await transaction.get(feedRef);
+            if (!feedDoc.exists) throw 'Feed document does not exist!';
+
+            const pictures = feedDoc.data().pictures;
+            if (pictures.one.ref) {
+                // await Firebase.storage.refFromURL(pictures.one.uri).delete();
+                Firebase.storage.ref(pictures.one.ref).delete();
+            }
+
+            if (pictures.two.ref) {
+                Firebase.storage.ref(pictures.two.ref).delete();
+            }
+
+            if (pictures.three.ref) {
+                Firebase.storage.ref(pictures.three.ref).delete();
+            }
+
+            if (pictures.four.ref) {
+                Firebase.storage.ref(pictures.four.ref).delete();
+            }
+            // --
+
+
+
             // 1. update the count first!
             const placeDoc = await transaction.get(placeRef);
             if (!placeDoc.exists) throw 'Place document does not exist!';
@@ -490,13 +570,7 @@ export default class Firebase {
 
                     picture: uri,
                     name,
-                    placeName,
-
-                    /*
-                    averageRating,
-                    reviewCount,
-                    valid: true // ToDo: update this when the post removed
-                    */
+                    placeName
                 }
                 likes.push(data);
             } else { // remove
@@ -921,7 +995,7 @@ export default class Firebase {
             commentAdded: checked
         };
 
-        await Firebase.firestore.collection('users').doc(uid).update(profile);
+        await Firebase.firestore.collection("users").doc(uid).update(profile);
     }
 
     static async removeComment(uid, targetUid, commentId) { // uid: writer, userUid: receiver
@@ -1298,7 +1372,11 @@ export default class Firebase {
     static async findChatRoomByPostId(myUid, postId) {
         let room = null;
 
+        let result;
+
         await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
+            if (!snapshot.exists()) throw 'Chat - uid data does not exist!';
+
             var BreakException = {};
 
             try {
@@ -1324,7 +1402,14 @@ export default class Firebase {
             } catch (e) {
                 if (e !== BreakException) throw e;
             }
+        }).then(() => {
+            result = true;
+        }).catch((error) => {
+            console.log('Firebase.findChatRoomByPostId', error);
+            result = false;
         });
+
+        if (!result) return null;
 
         return room;
     }
@@ -1382,4 +1467,39 @@ export default class Firebase {
             await Firebase.database.ref('contents').child(postId).remove();
         }
     }
+
+    static async deleteChatRooms(myUid) {
+        let result;
+
+        await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
+            if (!snapshot.exists()) throw 'Chat - uid data does not exist.';
+
+            snapshot.forEach(async item => {
+                // console.log(item.key, item.val());
+
+                // const key = item.key;
+                const value = item.val();
+
+                const users = value.users;
+                const feedId = value.feedId;
+
+                const myUid = users[0].uid;
+                const myName = users[0].name;
+                const opponentUid = users[1].uid;
+
+                await Firebase.deleteChatRoom(myUid, myName, opponentUid, feedId);
+            });
+
+        }).then(() => {
+            result = true;
+        }).catch((error) => {
+            console.log('Firebase.deleteChatRooms', error);
+            result = false;
+        });
+
+        return result;
+    }
+
+
+
 }

@@ -158,6 +158,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (this.onLoading) return;
 
         const { profile } = this.props.profileStore;
+        if (!profile) return;
+
         const feeds = profile.feeds;
         const length = feeds.length;
 
@@ -293,6 +295,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (item.reviewAdded) {
             // update reviewAdded in user profile
             const { profile } = this.props.profileStore;
+            if (!profile) return;
             /*
             const result = await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
             if (!result) {
@@ -447,10 +450,25 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     render() {
         const { profile } = this.props.profileStore;
 
-        const { uid, name, picture, comments, commentAdded } = profile;
+        let uid = null;
+        let name = null;
+        let picture = null;
+        let comments = null;
+        let commentAdded = false;
 
-        const avatarName = name ? name : 'Anonymous'; // ToDo: test
-        const imageUri = picture.uri;
+        let avatarName = 'Anonymous'; // ToDo: test
+        let imageUri = null;
+
+        if (profile) {
+            uid = profile.uid;
+            name = profile.name;
+            picture = profile.picture;
+            comments = profile.comments;
+            commentAdded = profile.commentAdded;
+
+            if (name) avatarName = name;
+            if (picture) picture.uri;
+        }
 
         return (
             <View style={styles.flex}>
@@ -485,6 +503,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                     <TouchableOpacity
                                         style={{ marginTop: 20 }}
                                         onPress={() => {
+                                            if (!profile) return;
+
                                             setTimeout(() => {
                                                 Firebase.updateCommentChecked(uid, false);
 
@@ -518,6 +538,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     marginRight: 22, justifyContent: 'center', alignItems: 'center'
                                                 }}
                                                 onPress={() => {
+                                                    if (!profile) return;
+
                                                     setTimeout(() => {
                                                         // ToDo: open picture
 
@@ -554,6 +576,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         {/* Girls You've Reviewed */}
                                         <TouchableOpacity
                                             onPress={() => {
+                                                if (!profile) return;
+
                                                 setTimeout(() => {
                                                     this.props.navigation.navigate("checkReview");
                                                 }, Cons.buttonTimeoutShort);
@@ -574,6 +598,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         {/* Advertise Yourself or Your Friends */}
                                         <TouchableOpacity
                                             onPress={() => {
+                                                if (!profile) return;
+
                                                 setTimeout(() => {
                                                     this.props.navigation.navigate("advertisement");
                                                 }, Cons.buttonTimeoutShort);
@@ -593,9 +619,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         {/* Customers You've Reviewed */}
                                         {
-                                            comments.length > 0 &&
+                                            comments && comments.length > 0 &&
                                             <TouchableOpacity
                                                 onPress={() => {
+                                                    if (!profile) return;
+
                                                     setTimeout(() => {
                                                         this.props.navigation.navigate("checkComment");
                                                     }, Cons.buttonTimeoutShort);
@@ -612,26 +640,32 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             </TouchableOpacity>
                                         }
                                         {
-                                            comments.length > 0 &&
+                                            comments && comments.length > 0 &&
                                             <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                         }
 
                                         {/* Log out */}
                                         <TouchableOpacity
                                             onPress={() => {
+                                                if (!profile) return;
+
                                                 this.openDialog('alert', 'Log out', 'Are you sure you want to remove all data from this device?', async () => {
 
-                                                    // ToDo: block now
-                                                    return;
-
-                                                    // user profile & auth
                                                     // feeds
+                                                    // storage
+                                                    // user profile & auth
+
                                                     // comment store
                                                     //// reviews, comments
+
+                                                    // chat
                                                     // token
 
-                                                    // 1. remove all created feeds (place - feed)
-                                                    const { profile } = this.props.profileStore;
+
+                                                    // 0. unsubscribe profile first!
+                                                    this.props.profileStore.final();
+
+                                                    // 1. remove all the created feeds (place - feed)
                                                     const feeds = profile.feeds;
                                                     const length = feeds.length;
 
@@ -640,15 +674,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         await Firebase.removeFeed(profile.uid, feed.placeId, feed.feedId);
                                                     }
 
-                                                    // 2. remove database (user profile & comments collection)
+                                                    // 3. delete all the chat rooms
+                                                    await Firebase.deleteChatRooms(profile.uid);
+
+                                                    //// 2. delete storage
+
+                                                    // 4. remove token (tokens - uid)
+                                                    await Firebase.deleteToken(profile.uid);
+
+                                                    // 5. remove all the received comments (users - user - comments - all the documents)
+                                                    // 6. remove database (user profile & remove auth)
                                                     await Firebase.deleteProfile(profile.uid);
 
-                                                    // 3. remove token
-
-                                                    // 4. remove auth
-
-                                                    // 5. move to auth main
-
+                                                    //// 7. move to auth main
                                                 });
 
                                             }}
@@ -960,24 +998,22 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const { profileStore } = this.props;
         const { profile } = profileStore;
 
-        if (profile) {
-            const feeds = profile.feeds;
-            for (var i = 0; i < feeds.length; i++) {
-                const feed = feeds[i];
-                if (feed.reviewAdded) {
-                    return true;
-                }
+        if (!profile) return false;
+
+        const feeds = profile.feeds;
+        for (var i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+            if (feed.reviewAdded) {
+                return true;
             }
         }
 
         // check 2
-        if (profile) {
-            const reviews = profile.reviews;
-            for (var i = 0; i < reviews.length; i++) {
-                const review = reviews[i];
-                if (review.replyAdded) {
-                    return true;
-                }
+        const reviews = profile.reviews;
+        for (var i = 0; i < reviews.length; i++) {
+            const review = reviews[i];
+            if (review.replyAdded) {
+                return true;
             }
         }
 

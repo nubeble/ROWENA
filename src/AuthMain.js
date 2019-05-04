@@ -10,6 +10,7 @@ import * as firebase from "firebase";
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
+import { registerExpoPushToken } from './PushNotifications';
 
 const height = Dimensions.get('window').height;
 
@@ -69,12 +70,29 @@ export default class AuthMain extends React.Component {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
                 console.log('user', user);
 
+                // save token
+                if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+                    registerExpoPushToken(user.user.uid, user.user.displayName);
+                }
+
+                /*
                 // check existance
-                const profile = await Firebase.getProfile(Firebase.user().uid);
-                if (!profile) {
+                const profile = await Firebase.getProfile(user.user.uid);
+                if (profile) {
+                    // update
+                    const data = {
+                        name: user.user.displayName,
+                        email: user.user.email,
+                        phoneNumber: user.user.phoneNumber
+                    };
+
+                    await Firebase.updateProfile(user.user.uid, data);
+                } else {
+                    // create
                     // save user info to database
                     await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
                 }
+                */
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
 

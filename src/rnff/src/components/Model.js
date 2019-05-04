@@ -7,8 +7,9 @@ type Location = {
 };
 
 export type Picture = {
-    preview: string,
-    uri: string
+    // preview: string,
+    uri: string,
+    ref: string
 };
 
 type FeedRef = {

@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TouchableOpacity, Dimensions } from 'react-native';
+import { StyleSheet, View, Image, Button, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
+import autobind from 'autobind-decorator';
 
 // const titlePosition = Dimensions.get('window').height / 8;
 const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
@@ -12,6 +13,22 @@ const contentText = "Woke up to the sound of pouring rain\nThe wind would whispe
 
 
 export default class Welcome extends React.Component {
+    componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+    }
+
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+
+        this.closed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+
+        return true;
+    }
+
     render() {
         return (
             <View style={styles.flex}>
