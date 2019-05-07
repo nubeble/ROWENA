@@ -666,25 +666,26 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     this.props.profileStore.final();
 
                                                     // 1. remove all the created feeds (place - feed)
+                                                    const uid = profile.uid;
                                                     const feeds = profile.feeds;
                                                     const length = feeds.length;
 
                                                     for (var i = 0; i < length; i++) {
                                                         const feed = feeds[i];
-                                                        await Firebase.removeFeed(profile.uid, feed.placeId, feed.feedId);
+                                                        await Firebase.removeFeed(uid, feed.placeId, feed.feedId);
                                                     }
 
                                                     // 3. delete all the chat rooms
-                                                    await Firebase.deleteChatRooms(profile.uid);
+                                                    await Firebase.deleteChatRooms(uid);
 
                                                     //// 2. delete storage
 
                                                     // 4. remove token (tokens - uid)
-                                                    await Firebase.deleteToken(profile.uid);
+                                                    await Firebase.deleteToken(uid);
 
                                                     // 5. remove all the received comments (users - user - comments - all the documents)
                                                     // 6. remove database (user profile & remove auth)
-                                                    await Firebase.deleteProfile(profile.uid);
+                                                    await Firebase.deleteProfile(uid);
 
                                                     //// 7. move to auth main
                                                 });

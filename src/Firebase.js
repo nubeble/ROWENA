@@ -135,7 +135,6 @@ export default class Firebase {
         const path = "comments";
         Firebase.deleteCollection(db, path, 10);
 
-        // await Firebase.firestore.collection("users").doc(uid).delete();
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(db);
             if (!userDoc.exists) throw 'User document does not exist!';
@@ -406,9 +405,6 @@ export default class Firebase {
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
-
-
-
             // delete file in storage
             // --
             const feedDoc = await transaction.get(feedRef);
@@ -432,8 +428,6 @@ export default class Firebase {
                 Firebase.storage.ref(pictures.four.ref).delete();
             }
             // --
-
-
 
             // 1. update the count first!
             const placeDoc = await transaction.get(placeRef);

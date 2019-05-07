@@ -1609,7 +1609,13 @@ export default class AdvertisementMain extends React.Component {
         if (!uri) {
             return (
                 <View style={{ width: imageWidth, height: imageHeight }}>
-                    <View style={{ width: '100%', height: '100%', borderRadius: 2, borderColor: '#707070', borderWidth: 2, borderStyle: 'dashed', backgroundColor: '#505050' }} />
+                    <View style={{
+                        width: '100%', height: '100%', borderRadius: 2, borderColor: '#707070', borderWidth: 2, borderStyle: 'dashed', backgroundColor: '#505050',
+                        justifyContent: "center", alignItems: "center"
+                    }}>
+                        {/* center icon */}
+                        <Ionicons name='md-person' color={Theme.color.component} size={40} />
+                    </View>
 
                     {/* number */}
                     <Text style={{ fontFamily: "Roboto-Medium", fontSize: 18, color: 'rgba(255, 255, 255, 0.8)', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
