@@ -1,6 +1,8 @@
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
 
+// const rp = require('request-promise');
+
 /*
 const { Storage } = require('@google-cloud/storage');
 const projectId = 'rowena-88cfd';
@@ -700,3 +702,31 @@ const deleteFiles = async(function () {
 
     res.status(200).send(fields);
 });
+
+/*
+exports.checkRecaptcha = functions.https.onRequest((req, res) => {
+    const response = req.query.response;
+    console.log("recaptcha response", response);
+
+    rp({
+        uri: 'https://recaptcha.google.com/recaptcha/api/siteverify',
+        method: 'POST',
+        formData: {
+            secret: '6Lf1T6IUAAAAANKvDWYi72sEYW56YmJQDPT_iL0c',
+            response: response
+        },
+        json: true
+    }).then(result => {
+        console.log("recaptcha result", result)
+        if (result.success) {
+            res.send("You're good to go, human.")
+        }
+        else {
+            res.send("Recaptcha verification failed. Are you a robot?")
+        }
+    }).catch(reason => {
+        console.log("Recaptcha request failure", reason)
+        res.send("Recaptcha request failed.")
+    });
+});
+*/

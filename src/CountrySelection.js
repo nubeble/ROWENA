@@ -15,8 +15,15 @@ const sectionItemTextHeight = (Dimensions.get('window').height - Cons.searchBarH
 
 
 export default class CountrySelection extends React.Component {
+    state = {
+        from: '' // check only if SignUpWithMobileMain
+    };
+
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+
+        const params = this.props.navigation.state.params;
+        if (params.from) this.setState({ from: params.from });
     }
 
     @autobind
@@ -62,20 +69,25 @@ export default class CountrySelection extends React.Component {
                             if (this.cellClicked) return;
                             this.cellClicked = true;
 
-                            /*
-                            const code = this.getCountryCode(cellObject.name);
-                            console.log('country code', code);
-                            */
-
-                            const result = {
-                                name: cellObject.name,
-                                code: cellObject.code
-                            };
-
                             setTimeout(() => {
                                 if (this.closed) return;
 
-                                this.props.navigation.state.params.initFromSelect(result);
+                                if (this.state.from === 'SignUpWithMobileMain') {
+                                    const result = {
+                                        name: cellObject.name,
+                                        dial: cellObject.dial
+                                    };
+
+                                    this.props.navigation.state.params.initFromSelect(result);
+                                } else {
+                                    const result = {
+                                        name: cellObject.name,
+                                        code: cellObject.code
+                                    };
+
+                                    this.props.navigation.state.params.initFromSelect(result);
+                                }
+
                                 this.props.navigation.dispatch(NavigationActions.back());
                             }, Cons.buttonTimeoutShort);
                         }}

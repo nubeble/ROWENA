@@ -179,7 +179,7 @@ export default class Loading extends React.Component<InjectedProps> {
         Firebase.init();
 
         Firebase.auth.onAuthStateChanged(async (user) => {
-            console.log('onAuthStateChanged', user);
+            console.log('Loading.onAuthStateChanged', user);
 
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
@@ -195,7 +195,8 @@ export default class Loading extends React.Component<InjectedProps> {
                     // move to login page
                     console.log('move to auth main');
                     // StatusBar.setHidden(false);
-                    navigation.navigate("authStackNavigator");
+                    // navigation.navigate("authStackNavigator");
+                    navigation.navigate("authMain");
                 } else {
                     Loading.userAutoAuthenticated = false;
 
@@ -211,7 +212,8 @@ export default class Loading extends React.Component<InjectedProps> {
 
                         console.log('move to auth main');
                         // StatusBar.setHidden(false);
-                        navigation.navigate("authStackNavigator");
+                        // navigation.navigate("authStackNavigator");
+                        navigation.navigate("authMain");
                     });
                 }
             } else {

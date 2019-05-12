@@ -16,6 +16,8 @@ const height = Dimensions.get('window').height;
 
 
 export default class AuthMain extends React.Component {
+    static loaded = false;
+
     state = {
         showFacebookLoader: false,
 
@@ -33,13 +35,25 @@ export default class AuthMain extends React.Component {
     };
 
     componentDidMount() {
-        Animated.timing(this.state.viewOffset, {
-            toValue: 0,
-            duration: 500,
-            useNativeDriver: true
-        }).start(() => {
-            StatusBar.setHidden(false);
-        });
+        if (!AuthMain.loaded) {
+            AuthMain.loaded = true;
+
+            Animated.timing(this.state.viewOffset, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: true
+            }).start(() => {
+                StatusBar.setHidden(false);
+            });
+        } else {
+            Animated.timing(this.state.viewOffset, {
+                toValue: 0,
+                duration: 0,
+                useNativeDriver: true
+            }).start(() => {
+                // StatusBar.setHidden(false);
+            });
+        }
     }
 
     componentWillUnmount() {

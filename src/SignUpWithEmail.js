@@ -70,7 +70,7 @@ export default class SignUpWithEmail extends React.Component {
             return true;
         }
 
-        this.props.navigation.goBack();
+        this.props.navigation.navigate("authMain");
 
         return true;
     }
@@ -395,7 +395,9 @@ export default class SignUpWithEmail extends React.Component {
                                 left: 2,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => this.props.navigation.goBack()}
+                            onPress={() => {
+                                this.props.navigation.navigate("authMain");
+                            }}
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
@@ -424,6 +426,7 @@ export default class SignUpWithEmail extends React.Component {
                             marginLeft: 22,
                             color: Theme.color.text2,
                             fontSize: 28,
+                            lineHeight: 32, // ToDo: check in ios
                             fontFamily: "Roboto-Medium",
                             paddingTop: 8
                         }}>What's your email?</Text>
