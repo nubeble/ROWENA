@@ -426,7 +426,7 @@ export default class SignUpWithEmail extends React.Component {
                             marginLeft: 22,
                             color: Theme.color.text2,
                             fontSize: 28,
-                            lineHeight: 32, // ToDo: check in ios
+                            lineHeight: 32,
                             fontFamily: "Roboto-Medium",
                             paddingTop: 8
                         }}>What's your email?</Text>
@@ -579,6 +579,7 @@ const styles = StyleSheet.create({
     notificationText: {
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
+        lineHeight: 17,
         fontFamily: "Roboto-Medium",
         color: "black",
         textAlign: 'center'

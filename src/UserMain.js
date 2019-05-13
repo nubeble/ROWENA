@@ -1150,6 +1150,7 @@ const styles = StyleSheet.create({
     notificationText: {
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
+        lineHeight: 17,
         fontFamily: "Roboto-Medium",
         color: "black",
         textAlign: 'center'

@@ -421,13 +421,13 @@ export default class SignUpWithMobileMain extends React.Component {
                     </Animated.View>
 
                     {
-                        !this.state.confirmationResult ?
+                        this.state.mode === 'PHONE' ?
                             <View style={{ paddingTop: Theme.spacing.tiny }}>
                                 <Text style={{
                                     marginLeft: 22,
                                     color: Theme.color.text2,
                                     fontSize: 28,
-                                    lineHeight: 32, // ToDo: check in ios
+                                    lineHeight: 32,
                                     fontFamily: "Roboto-Medium",
                                     paddingTop: 8
                                 }}>What's your mobile number?</Text>
@@ -459,13 +459,12 @@ export default class SignUpWithMobileMain extends React.Component {
                                         keyboardType={'phone-pad'}
                                         // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                         onChangeText={(text) => this.validateNumber(text)}
+                                        value={this.state.phone}
                                         selectionColor={Theme.color.selection}
                                         // keyboardAppearance={'dark'}
                                         underlineColorAndroid="transparent"
                                         autoCorrect={false}
                                         autoCapitalize="none"
-
-                                    // value={this.state.email}
                                     />
 
                                     <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
@@ -486,7 +485,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                     marginLeft: 22,
                                     color: Theme.color.text2,
                                     fontSize: 28,
-                                    lineHeight: 32, // ToDo: check in ios
+                                    lineHeight: 32,
                                     fontFamily: "Roboto-Medium",
                                     paddingTop: 8
                                 }}>Enter verification code</Text>
@@ -661,9 +660,8 @@ export default class SignUpWithMobileMain extends React.Component {
                     mode: 'VERIFICATION',
                     invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)'
                 });
-
             } catch (error) {
-                console.log('error', error.code, error.message);
+                console.log('onPhoneComplete error', error.code, error.message);
 
                 // ToDo: error handling
                 if (error.code === 'auth/too-many-requests') {
@@ -685,23 +683,25 @@ export default class SignUpWithMobileMain extends React.Component {
 
         try {
             await confirmationResult.confirm(code);
-        } catch (e) {
-            console.warn(e);
+        } catch (error) {
+            console.log('onSignIn error', error.code, error.message);
 
-            this.refs.codeInput.clear();
+            // ToDo: error handling
+            if (error.code === 'auth/invalid-verification-code') {
+                // The SMS verification code used to create the phone auth credential is invalid. Please resend the verification code sms and be sure use the verification code provided by the user
+                this.showNotification('The SMS verification code is invalid. Please resend the verification code.');
+            } else {
+                this.showNotification('An error occurred. Please try again.');
+            }
 
-            // ToDo: focus
+            // reset
+            this.setState({
+                confirmationResult: undefined,
+                code: '',
+                // phone: '',
+                mode: 'PHONE'
+            });
         }
-
-        this.reset();
-    }
-
-    reset = () => {
-        this.setState({
-            confirmationResult: undefined,
-            code: '',
-            phone: ''
-        });
     }
 
     buttonClick() {
@@ -715,7 +715,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
 
             this.onPhoneComplete();
-        } else if (this.state.buttonText === 'VERIFICATION') {
+        } else if (this.state.mode === 'VERIFICATION') {
 
 
             this.onSignIn();
@@ -725,6 +725,9 @@ export default class SignUpWithMobileMain extends React.Component {
     checkCode(code) {
         console.log('checkCode', code);
         this.setState({ code });
+
+        // enable
+        this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
 
 
         // this.refs.codeInput.clear();
@@ -776,6 +779,7 @@ const styles = StyleSheet.create({
     notificationText: {
         width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
         fontSize: 15,
+        lineHeight: 17,
         fontFamily: "Roboto-Medium",
         color: "black",
         textAlign: 'center'
