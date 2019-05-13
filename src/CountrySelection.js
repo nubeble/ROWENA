@@ -131,15 +131,21 @@ export default class CountrySelection extends React.Component {
                             fontFamily: "Roboto-Regular"
                         }}
 
-                        cellLabelStyle={{ // country number
-                            width: 0, // hide
-                            // backgroundColor: 'grey',
+                        cellLabelStyle={
+                            this.state.from === 'SignUpWithMobileMain' ?
+                                { // country number
+                                    // backgroundColor: 'grey',
 
-                            fontSize: 16,
-                            paddingTop: 2,
-                            color: Theme.color.text2,
-                            fontFamily: "Roboto-Regular"
-                        }}
+                                    fontSize: 16,
+                                    paddingTop: 2,
+                                    color: Theme.color.text2,
+                                    fontFamily: "Roboto-Regular"
+                                }
+                                :
+                                {
+                                    width: 0, height: 0
+                                }
+                        }
                     />
                 </View>
             </View>

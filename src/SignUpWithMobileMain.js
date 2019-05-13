@@ -12,6 +12,7 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
+
 // https://github.com/ttdung11t2/react-native-confirmation-code-input
 import CodeInput from 'react-native-confirmation-code-input';
 
@@ -34,7 +35,6 @@ export default class SignUpWithMobileMain extends React.Component {
         dialCode: null, // +1
 
 
-        // phone: '01093088300', // ToDo: test
         phone: '',
         // password: '',
 
@@ -202,8 +202,6 @@ export default class SignUpWithMobileMain extends React.Component {
             this.hideAlertIcons();
         }
 
-        this.setState({ code: text });
-
         // enable/disable signup button
         if (text === '') {
             // disable
@@ -212,6 +210,8 @@ export default class SignUpWithMobileMain extends React.Component {
             // enable
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
+
+        this.setState({ code: text });
     }
 
     moveToPassword(text) {
@@ -261,25 +261,6 @@ export default class SignUpWithMobileMain extends React.Component {
         } else {
             return 'Must have at least one symbol or number.';
         }
-    }
-
-    toggleSecureText() {
-        if (this.state.secureText === 'Show') {
-            console.log('toggleSecureText', 'show -> hide');
-            this.setState({ secureText: 'Hide', securePwInput: false });
-        } else {
-            console.log('toggleSecureText', 'hide -> show');
-            this.setState({ secureText: 'Show', securePwInput: true });
-        }
-
-        // ToDo: don't need this in ios, not working in android!
-        /*
-        if (Platform.OS === 'android') {
-            this.refs['pwInput'].setNativeProps(
-                { selection: { start: this.state.password.length - 1, end: this.state.password.length - 1 } }
-            );
-        }
-        */
     }
 
     signUp() {
@@ -434,7 +415,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
                                 <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
                                     <TouchableOpacity
-                                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                                        style={{ flexDirection: 'row' }}
                                         onPress={() => {
                                             if (this._showNotification) {
                                                 this.hideNotification();
@@ -450,13 +431,13 @@ export default class SignUpWithMobileMain extends React.Component {
                                         <Text style={{ marginBottom: 10, paddingLeft: 18, color: Theme.color.text2, fontSize: 16, fontFamily: "Roboto-Regular" }}>
                                             {this.state.countryText ? this.state.countryText : 'Select your country'}
                                         </Text>
-                                        <Ionicons style={{ paddingLeft: 6, paddingBottom: 10 }} name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={16} />
+                                        <Ionicons style={{ paddingLeft: 6, paddingTop: 3 }} name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={16} />
                                     </TouchableOpacity>
 
                                     <TextInput
                                         ref='emailInput'
                                         style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
-                                        keyboardType={'phone-pad'}
+                                        // keyboardType={'phone-pad'}
                                         // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                         onChangeText={(text) => this.validateNumber(text)}
                                         value={this.state.phone}
@@ -466,6 +447,21 @@ export default class SignUpWithMobileMain extends React.Component {
                                         autoCorrect={false}
                                         autoCapitalize="none"
                                     />
+                                    {
+                                        this.state.phone.length > 0 &&
+                                        <TouchableOpacity
+                                            style={{
+                                                // backgroundColor: 'green',
+                                                width: 40, height: 40, justifyContent: "center", alignItems: "center",
+                                                position: 'absolute', right: 24, top: 32
+                                            }}
+                                            onPress={() => {
+                                                this.setState({ phone: '' });
+                                            }}
+                                        >
+                                            <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
+                                        </TouchableOpacity>
+                                    }
 
                                     <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                         onLayout={(e) => {
@@ -491,12 +487,24 @@ export default class SignUpWithMobileMain extends React.Component {
                                 }}>Enter verification code</Text>
 
                                 <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
+
                                     <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
                                         {"We've sent a text message with your verification code to "}
-                                        <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                             {this.state.dialCode + this.state.phone}
                                         </Text>
                                     </Text>
+
+                                    <TouchableOpacity
+                                        style={{ marginTop: 4, marginBottom: 12 }}
+                                        onPress={() => {
+                                            // ToDo
+                                        }}
+                                    >
+                                        <Text style={{ paddingHorizontal: 18, color: Theme.color.text1, fontSize: 14, fontFamily: "Roboto-Bold" }}>
+                                            {"RESEND"}
+                                        </Text>
+                                    </TouchableOpacity>
 
                                     {/*
                                     <TextInput
@@ -521,8 +529,6 @@ export default class SignUpWithMobileMain extends React.Component {
                                     />
                                     */}
 
-
-
                                     <CodeInput
                                         ref="codeInput"
                                         codeLength={6}
@@ -533,42 +539,8 @@ export default class SignUpWithMobileMain extends React.Component {
                                         // secureTextEntry
                                         keyboardType="numeric"
                                         onFulfill={(code) => this.checkCode(code)}
-                                        codeInputStyle={{ fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                        codeInputStyle={{ fontSize: 22, fontFamily: "Roboto-Medium", color: Theme.color.text2 }}
                                     />
-                                    {/*
-                                    <CodeInput
-                                        ref="codeInputRef2"
-                                        secureTextEntry
-                                        compareWithCode='AsDW2'
-                                        activeColor='rgba(49, 180, 4, 1)'
-                                        inactiveColor='rgba(49, 180, 4, 1.3)'
-                                        autoFocus={false}
-                                        ignoreCase={true}
-                                        inputPosition='center'
-                                        size={50}
-                                        onFulfill={(isValid) => this._onFinishCheckingCode1(isValid)}
-                                        containerStyle={{ marginTop: 30 }}
-                                        codeInputStyle={{ borderWidth: 1.5 }}
-                                    />
-
-                                    <CodeInput
-                                        ref="codeInputRef2"
-                                        keyboardType="numeric"
-                                        codeLength={5}
-                                        className='border-circle'
-                                        compareWithCode='12345'
-                                        autoFocus={false}
-                                        codeInputStyle={{ fontWeight: '800' }}
-                                        onFulfill={(isValid, code) => this._onFinishCheckingCode2(isValid, code)}
-                                    />
-*/}
-
-
-
-
-
-
-
                                 </View>
                             </View>
                     }
@@ -704,22 +676,27 @@ export default class SignUpWithMobileMain extends React.Component {
         }
     }
 
-    buttonClick() {
+    async buttonClick() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcons();
         }
 
+        // show indicator
+        this.setState({ showSignUpLoader: true });
+
         if (this.state.mode === 'PHONE') {
             // ToDo: validation check
 
-
-            this.onPhoneComplete();
+            await this.onPhoneComplete();
         } else if (this.state.mode === 'VERIFICATION') {
+            // ToDo: validation check
 
-
-            this.onSignIn();
+            await this.onSignIn();
         }
+
+        // close indicator
+        !this.closed && this.setState({ showSignUpLoader: false });
     }
 
     checkCode(code) {
@@ -757,9 +734,6 @@ const styles = StyleSheet.create({
         */
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    activityIndicator: {
-        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
         // width: '100%',

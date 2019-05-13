@@ -82,6 +82,7 @@ export default class CountryCodeList extends React.Component {
                     {this.renderClearButton()}
                 </View>
                 <AlphabetListView
+                    keyboardShouldPersistTaps={'handled'}
                     enableEmptySections={true}
                     data={this.state.data}
                     cell={this.renderCell}
@@ -165,9 +166,11 @@ export default class CountryCodeList extends React.Component {
                     onPress={() => { this.props.onClickCell(rowData.item) }}
                     style={[styles.cell, this.props.cellStyle, { height: this.props.cellHeight - 0.5 }]}>
                     <Text numberOfLines={1} style={[styles.cellTitle, this.props.cellTitleStyle]}>{rowData.item.name}</Text>
+
                     {/*
                     <Text style={[styles.cellLabel, this.props.cellLabelStyle]}>{rowData.item.code}</Text>
                     */}
+                    <Text style={[styles.cellLabel, this.props.cellLabelStyle]}>{rowData.item.dial}</Text>
                 </TouchableOpacity>
                 <View style={styles.separator} />
             </View>
