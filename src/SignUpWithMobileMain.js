@@ -498,42 +498,21 @@ export default class SignUpWithMobileMain extends React.Component {
                                             {this.state.dialCode + this.state.phone}
                                         </Text>
                                     </Text>
-
+                                    {/*
                                     <TouchableOpacity
                                         style={{ marginTop: 6, marginBottom: 12 }}
                                         onPress={() => {
-                                            // ToDo
+                                            // ToDo: resend code
                                         }}
                                     >
                                         <Text style={{ paddingHorizontal: 18, color: Theme.color.text1, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                             {"RESEND"}
                                         </Text>
                                     </TouchableOpacity>
-
-                                    {/*
-                                    <TextInput
-                                        ref='codeInput'
-                                        style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
-                                        keyboardType={"numeric"}
-                                        value={this.state.code}
-                                        onChangeText={(text) => this.validateCode(text)}
-                                        // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
-                                        selectionColor={Theme.color.selection}
-                                        // keyboardAppearance={'dark'}
-                                        underlineColorAndroid="transparent"
-                                        autoCorrect={false}
-                                        autoCapitalize="none"
-                                    />
-
-                                    <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
-                                        onLayout={(e) => {
-                                            const { y } = e.nativeEvent.layout;
-                                            this.emailY = y;
-                                        }}
-                                    />
                                     */}
 
                                     <CodeInput
+                                        containerStyle={{ marginTop: 12 }}
                                         ref="codeInput"
                                         codeLength={6}
                                         inputPosition='center'
@@ -650,7 +629,7 @@ export default class SignUpWithMobileMain extends React.Component {
     }
 
     onCodeChange = (code) => {
-        this.setState({ code })
+        this.setState({ code });
     }
 
     onSignIn = async () => {
