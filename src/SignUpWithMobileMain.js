@@ -512,7 +512,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                     */}
 
                                     <CodeInput
-                                        containerStyle={{ marginTop: 12 }}
+                                        containerStyle={{ marginTop: 60 }}
                                         ref="codeInput"
                                         codeLength={6}
                                         inputPosition='center'
@@ -628,12 +628,10 @@ export default class SignUpWithMobileMain extends React.Component {
         }
     }
 
-    onCodeChange = (code) => {
-        this.setState({ code });
-    }
-
     onSignIn = async () => {
         const { confirmationResult, code } = this.state;
+
+        console.log('onSignIn code', code);
 
         try {
             await confirmationResult.confirm(code);
@@ -644,6 +642,9 @@ export default class SignUpWithMobileMain extends React.Component {
             if (error.code === 'auth/invalid-verification-code') {
                 // The SMS verification code used to create the phone auth credential is invalid. Please resend the verification code sms and be sure use the verification code provided by the user
                 this.showNotification('The SMS verification code is invalid. Please resend the verification code.');
+            } else if (error.code === 'auth/missing-verification-code') {
+                // The phone auth credential was created with an empty SMS verification code.
+                this.showNotification('Empty SMS verification code. Please resend the verification code.');
             } else {
                 this.showNotification('An error occurred. Please try again.');
             }
@@ -683,7 +684,9 @@ export default class SignUpWithMobileMain extends React.Component {
 
     checkCode(code) {
         console.log('checkCode', code);
-        this.setState({ code });
+        this.setState({ code }, () => {
+            this.buttonClick();
+        });
 
         // enable
         this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
