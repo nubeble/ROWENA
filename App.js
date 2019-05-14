@@ -461,7 +461,7 @@ const SignUpWithMobileSwitchNavigator = createSwitchNavigator(
     {
         // signUpWithMobileMain: { screen: SignUpWithMobileMain },
         signUpWithMobileMain: { screen: SignUpWithMobileMainStackNavigatorWrapper },
-        signUpWithMobileCode: { screen: SignUpWithMobileCode }
+        // signUpWithMobileCode: { screen: SignUpWithMobileCode }
     }
 );
 

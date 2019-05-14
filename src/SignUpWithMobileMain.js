@@ -176,24 +176,27 @@ export default class SignUpWithMobileMain extends React.Component {
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
 
-        this.setState({ phone: text });
+        // check number
+        let result = true;
+        let newText = '';
+        let numbers = '0123456789';
+        for (var i = 0; i < text.length; i++) {
+            if (numbers.indexOf(text[i]) > -1) {
+                newText = newText + text[i];
+            } else {
+                /*
+                this.showNotification('Please enter numbers only.');
 
-        // ToDo: check number
-        /*
-        let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                // show icon
+                this.setState({ emailIcon: 1 });
+                */
 
-        if (reg.test(String(text).toLowerCase()) === false) {
-            // console.log('Please enter a valid email address.');
-
-            // show icon
-            this.setState({ emailIcon: 0 });
-        } else {
-            console.log("Email is Correct");
-
-            // show icon
-            this.setState({ emailIcon: 2 });
+                result = false;
+                break;
+            }
         }
-        */
+
+        if (result) this.setState({ phone: newText });
     }
 
     validateCode(text) {
@@ -437,7 +440,8 @@ export default class SignUpWithMobileMain extends React.Component {
                                     <TextInput
                                         ref='emailInput'
                                         style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
-                                        // keyboardType={'phone-pad'}
+                                        keyboardType={"numeric"}
+                                        maxLength={20}
                                         // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
                                         onChangeText={(text) => this.validateNumber(text)}
                                         value={this.state.phone}
@@ -496,12 +500,12 @@ export default class SignUpWithMobileMain extends React.Component {
                                     </Text>
 
                                     <TouchableOpacity
-                                        style={{ marginTop: 4, marginBottom: 12 }}
+                                        style={{ marginTop: 6, marginBottom: 12 }}
                                         onPress={() => {
                                             // ToDo
                                         }}
                                     >
-                                        <Text style={{ paddingHorizontal: 18, color: Theme.color.text1, fontSize: 14, fontFamily: "Roboto-Bold" }}>
+                                        <Text style={{ paddingHorizontal: 18, color: Theme.color.text1, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                             {"RESEND"}
                                         </Text>
                                     </TouchableOpacity>
@@ -510,7 +514,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                     <TextInput
                                         ref='codeInput'
                                         style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
-                                        keyboardType="numeric"
+                                        keyboardType={"numeric"}
                                         value={this.state.code}
                                         onChangeText={(text) => this.validateCode(text)}
                                         // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
@@ -537,7 +541,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                         space={8}
                                         className={'border-b'}
                                         // secureTextEntry
-                                        keyboardType="numeric"
+                                        keyboardType={"numeric"}
                                         onFulfill={(code) => this.checkCode(code)}
                                         codeInputStyle={{ fontSize: 22, fontFamily: "Roboto-Medium", color: Theme.color.text2 }}
                                     />
@@ -575,9 +579,8 @@ export default class SignUpWithMobileMain extends React.Component {
     }
 
     hideAlertIcons() {
-        if (this.state.emailIcon !== 0) this.setState({ emailIcon: 0 });
-
-        if (this.state.pwIcon !== 0) this.setState({ pwIcon: 0 });
+        this.hideEmailIcon();
+        this.hidePasswordIcon();
     }
 
     hideActiveAlertIcons() { // hide only alert icon
