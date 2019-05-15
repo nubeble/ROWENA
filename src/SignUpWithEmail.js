@@ -329,7 +329,7 @@ export default class SignUpWithEmail extends React.Component {
 
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                registerExpoPushToken(user.user.uid, user.user.displayName);
+                registerExpoPushToken(user.user.uid, user.user.email);
             }
 
             /*
@@ -362,7 +362,7 @@ export default class SignUpWithEmail extends React.Component {
             }
         }
 
-        // close indicator
+        // hide indicator
         !this.closed && this.setState({ showSignUpLoader: false });
     }
 

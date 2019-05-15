@@ -1094,7 +1094,7 @@ export default class AdvertisementMain extends React.Component {
                     <Select
                         onOpen={() => this.onFocusGender()} // NOT work in Android
                         placeholder={{
-                            label: "Select your gender",
+                            label: "Female",
                             value: null
                         }}
                         items={genderItems}
@@ -1259,7 +1259,7 @@ export default class AdvertisementMain extends React.Component {
                     <Select
                         onOpen={() => this.onFocusBodyType()} // NOT work in Android
                         placeholder={{
-                            label: "What's your body type?",
+                            label: "Fit",
                             value: null
                         }}
                         items={bodyTypeItems}
@@ -1331,7 +1331,7 @@ export default class AdvertisementMain extends React.Component {
                         */
                         onOpen={() => this.onFocusBreasts()} // NOT work in Android
                         placeholder={{
-                            label: "What's your bra size?",
+                            label: "C cup",
                             value: null,
                             // color: '#9EA0A4'
                             // color: 'green'
@@ -1414,7 +1414,8 @@ export default class AdvertisementMain extends React.Component {
                     </View>
                     <TextInput
                         style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
-                        placeholder='More information about you'
+                        // placeholder='More information about you'
+                        placeholder="I know I can't be your only match, but at least I'm the hottest."
                         placeholderTextColor={Theme.color.placeholder}
                         onChangeText={(text) => {
                             this.setState({ note: text, noteLength: text.length });
@@ -1489,7 +1490,7 @@ export default class AdvertisementMain extends React.Component {
                                 fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.country ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.country ? this.state.country : "What country do you live in?"}</Text>
+                        >{this.state.country ? this.state.country : "Thailand"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -1558,7 +1559,7 @@ export default class AdvertisementMain extends React.Component {
                                 fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.street ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.street ? this.state.street : "What city do you live in?"}</Text>
+                        >{this.state.street ? this.state.street : "Thong Lo, Phra Khanong, Khlong Toei, Bangkok"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {

@@ -28,7 +28,7 @@ export default class ChatMain extends React.Component {
         // renderChat: false,
         isLoadingChat: false,
         chatRoomList: []
-    }
+    };
 
     constructor(props) {
         super(props);

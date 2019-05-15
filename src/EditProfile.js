@@ -61,7 +61,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         showDatePicker: false,
         datePickerTitle: null,
-        datePickerDate: new Date(1990, 1, 1),
+        datePickerDate: new Date(1990, 0, 1), // 1990.01.01
         birthday: null,
 
         gender: null,
@@ -109,19 +109,25 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         const { profile } = this.props.profileStore;
 
-        // uid: string,
-        /*
+        // const uid = profile.uid;
         const name = profile.name;
-        const birthday = Util.getBirthdayText(profile.birthday);
-        const datePickerDate = Util.getDate(profile.birthday);
+        let birthday = null;
+        let datePickerDate = new Date(1990, 0, 1);
+        if (profile.birthday) {
+            birthday = Util.getBirthdayText(profile.birthday);
+            datePickerDate = Util.getDate(profile.birthday);
+        }
+
         const gender = profile.gender;
         const place = profile.place;
         const email = profile.email;
         const phoneNumber = profile.phoneNumber;
         const imageUri = profile.picture.uri;
         const about = profile.about;
-        */
+        let noteLength = 0;
+        if (about) noteLength = about.length;
         // ToDo: test
+        /*
         const name = 'Jay Kim';
         const birthday = Util.getBirthdayText('03111982'); // DDMMYYYY
         const datePickerDate = new Date(1982, 10, 3);
@@ -131,8 +137,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const phoneNumber = '821093088300';
         const imageUri = profile.picture.uri;
         const about = 'hi~';
+        const noteLength = about.length;
+        */
 
-        this.setState({ uploadImageUri: imageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength: about.length, email, phoneNumber });
+        this.setState({ uploadImageUri: imageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength: noteLength, email, phoneNumber });
     }
 
     initFromSearch(result) { // 'Cebu, Philippines'
@@ -652,7 +660,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         underlineColorAndroid="transparent"
                         autoCorrect={false}
                         autoCapitalize="words"
-                        placeholder="Selena Gomez"
+                        placeholder="Enter your name"
                         placeholderTextColor={Theme.color.placeholder}
                         onFocus={(e) => this.onFocusName()}
                     />
@@ -702,7 +710,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
+                        >{this.state.birthday ? this.state.birthday : "Select your birthday"}</Text>
 
                         {/* ToDo: add icon */}
 
@@ -828,7 +836,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.place ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.place ? this.state.place : "What are you from?"}</Text>
+                        >{this.state.place ? this.state.place : "Select your location"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -935,7 +943,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.email ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.place ? this.state.email : "email address"}</Text>
+                        >{this.state.place ? this.state.email : "Enter your email address"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -990,7 +998,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.phoneNumber ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.phoneNumber ? this.state.phoneNumber : "phone number"}</Text>
+                        >{this.state.phoneNumber ? this.state.phoneNumber : "Enter your phone number"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {

@@ -124,22 +124,37 @@ export default class EditMain extends React.Component<InjectedProps> {
     render() {
         const { profile } = this.props.profileStore;
 
-        let name = 'Anonymous'; // ToDo: test
+        let avatarName = 'Anonymous';
         let address = "No address registered";
         let count = 0;
-        let imageUri = null;
+        let picture = null;
         let dateText = null;
+
         // ToDo: use age, gender, note
         let age = '20';
         let gender = 'Female';
         let note = 'hi';
 
         if (profile) {
-            name = profile.name;
+            const name = profile.name;
+            const email = profile.email;
+            const phoneNumber = profile.phoneNumber;
+            if (name) {
+                avatarName = name;
+            } else {
+                if (email) {
+                    avatarName = email;
+                } else {
+                    if (phoneNumber) {
+                        avatarName = phoneNumber;
+                    }
+                }
+            }
             if (profile.place) address = profile.place;
             count = profile.receivedCommentsCount;
-            imageUri = profile.picture.uri;
+            picture = profile.picture.uri;
             dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
+
             if (profile.birthday) age = Util.getAge(profile.birthday);
             gender = profile.gender;
             note = profile.about;
@@ -156,7 +171,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         let labelText = null;
         if (count === 0) {
-            labelText = count.toString() + 'no reviews from hosts';
+            labelText = 'no reviews from hosts';
         } else if (count === 1) {
             labelText = count.toString() + ' review from hosts';
         } else if (count > 1) {
@@ -228,7 +243,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{name}</Text>
+                                                <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{avatarName}</Text>
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>
                                                     {dateText}
                                                 </Text>
@@ -240,11 +255,11 @@ export default class EditMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 {
-                                                    imageUri ?
+                                                    picture ?
                                                         <SmartImage
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
                                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                            uri={imageUri}
+                                                            uri={picture}
                                                             showSpinner={false}
                                                         />
                                                         :

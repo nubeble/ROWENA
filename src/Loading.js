@@ -63,7 +63,7 @@ export default class Loading extends React.Component<InjectedProps> {
         isReady: false,
         showIndicator: false,
         image2Opacity: new Animated.Value(0)
-    }
+    };
 
     constructor(props) {
         super(props);
@@ -75,10 +75,14 @@ export default class Loading extends React.Component<InjectedProps> {
 
     componentDidMount() {
         this._cacheResourcesAsync().then(() => {
-            this.setState({ isReady: true });
+            !this.closed && this.setState({ isReady: true });
 
             // this.init();
         }).catch(error => console.error(`Unexpected error thrown when loading: ${error.stack}`));
+    }
+
+    componentWillUnmount() {
+        this.closed = true;
     }
 
     render() {
@@ -100,7 +104,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
                         SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
 
-                        this.setState({ showIndicator: true });
+                        !this.closed && this.setState({ showIndicator: true });
 
                         this.init();
                     }}

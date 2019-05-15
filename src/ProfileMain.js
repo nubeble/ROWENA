@@ -452,22 +452,34 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         let uid = null;
         let name = null;
+        let email = null;
+        let phoneNumber = null;
         let picture = null;
         let comments = null;
         let commentAdded = false;
 
-        let avatarName = 'Anonymous'; // ToDo: test
-        let imageUri = null;
+        let avatarName = 'Anonymous';
 
         if (profile) {
             uid = profile.uid;
             name = profile.name;
-            picture = profile.picture;
+            email = profile.email;
+            phoneNumber = profile.phoneNumber;
+            picture = profile.picture.uri;
             comments = profile.comments;
             commentAdded = profile.commentAdded;
 
-            if (name) avatarName = name;
-            if (picture) picture.uri;
+            if (name) {
+                avatarName = name;
+            } else {
+                if (email) {
+                    avatarName = email;
+                } else {
+                    if (phoneNumber) {
+                        avatarName = phoneNumber;
+                    }
+                }
+            }
         }
 
         return (
@@ -547,11 +559,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 {
-                                                    imageUri ?
+                                                    picture ?
                                                         <SmartImage
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
                                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                            uri={imageUri}
+                                                            uri={picture}
                                                             showSpinner={false}
                                                         />
                                                         :

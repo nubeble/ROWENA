@@ -381,7 +381,7 @@ export default class SignUpWithMobileCode extends React.Component {
             }
         }
 
-        // close indicator
+        // hide indicator
         !this.closed && this.setState({ showSignUpLoader: false });
     }
 

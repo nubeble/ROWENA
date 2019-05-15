@@ -64,26 +64,26 @@ export default class SignUpWithMobileMain extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-
-        setTimeout(() => {
-            !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
-        }, Cons.buttonTimeoutLong);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
     }
 
     initFromSelect(result) { // country
         const countryText = result.name + ' (' + result.dial + ')';
         this.setState({ countryText, dialCode: result.dial });
-
-        // set focus
-        // !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
     }
 
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
 
         this.closed = true;
+    }
+
+    @autobind
+    onFocus() {
+        if (this.refs['emailInput']) this.refs['emailInput'].focus();
     }
 
     @autobind
@@ -345,7 +345,7 @@ export default class SignUpWithMobileMain extends React.Component {
             }
         }
 
-        // close indicator
+        // hide indicator
         !this.closed && this.setState({ showSignUpLoader: false });
     }
 
@@ -631,10 +631,15 @@ export default class SignUpWithMobileMain extends React.Component {
     onSignIn = async () => {
         const { confirmationResult, code } = this.state;
 
-        console.log('onSignIn code', code);
-
         try {
-            await confirmationResult.confirm(code);
+            const user = await confirmationResult.confirm(code);
+            console.log('user', user);
+
+            // save token
+            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+                // registerExpoPushToken(user.user.uid, user.user.displayName);
+                registerExpoPushToken(user.user.uid, user.user.phoneNumber);
+            }
         } catch (error) {
             console.log('onSignIn error', error.code, error.message);
 
@@ -678,7 +683,7 @@ export default class SignUpWithMobileMain extends React.Component {
             await this.onSignIn();
         }
 
-        // close indicator
+        // hide indicator
         !this.closed && this.setState({ showSignUpLoader: false });
     }
 

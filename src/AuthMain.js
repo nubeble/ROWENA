@@ -61,10 +61,10 @@ export default class AuthMain extends React.Component {
     }
 
     async continueWithFacebook() {
-        // ToDo: disable buttons
-
         // show indicator
         this.setState({ showFacebookLoader: true });
+
+        // ToDo: disable buttons
 
         const {
             type,
@@ -99,7 +99,7 @@ export default class AuthMain extends React.Component {
                         email: user.user.email,
                         phoneNumber: user.user.phoneNumber
                     };
-
+    
                     await Firebase.updateProfile(user.user.uid, data);
                 } else {
                     // create
@@ -115,10 +115,10 @@ export default class AuthMain extends React.Component {
             }
         }
 
-        // close indicator
-        !this.closed && this.setState({ showFacebookLoader: false });
-
         // ToDo: enable buttons
+
+        // hide indicator
+        !this.closed && this.setState({ showFacebookLoader: false });
     }
 
     isStandaloneApp = () => {
