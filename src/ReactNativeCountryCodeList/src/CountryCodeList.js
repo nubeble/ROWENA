@@ -33,6 +33,7 @@ export default class CountryCodeList extends React.Component {
     }
 
     componentDidMount() {
+        // Consider: move to onFocus
         setTimeout(() => {
             !this.closed && this.refs.textInput && this.refs.textInput.focus();
         }, Cons.buttonTimeoutLong);

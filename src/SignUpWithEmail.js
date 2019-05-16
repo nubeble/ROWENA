@@ -13,6 +13,7 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
+import { NavigationActions } from 'react-navigation';
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -47,18 +48,27 @@ export default class SignUpWithEmail extends React.Component {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
+        /*
         setTimeout(() => {
             !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
         }, Cons.buttonTimeoutLong);
+        */
     }
 
     componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
 
         this.closed = true;
+    }
+
+    @autobind
+    onFocus() {
+        if (this.refs['emailInput']) this.refs['emailInput'].focus();
     }
 
     @autobind
@@ -70,7 +80,8 @@ export default class SignUpWithEmail extends React.Component {
             return true;
         }
 
-        this.props.navigation.navigate("authMain");
+        // this.props.navigation.navigate("authMain");
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }

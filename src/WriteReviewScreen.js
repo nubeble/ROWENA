@@ -38,6 +38,7 @@ export default class WriteReviewScreen extends React.Component {
         this.setState({ rating });
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
 
+        // Consider: move to onFocus
         setTimeout(() => {
             !this.closed && this.refs['comment'] && this.refs['comment'].focus();
         }, Cons.buttonTimeoutLong);

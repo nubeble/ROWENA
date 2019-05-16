@@ -12,6 +12,7 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
+import { NavigationActions } from 'react-navigation';
 
 // https://github.com/ttdung11t2/react-native-confirmation-code-input
 import CodeInput from 'react-native-confirmation-code-input';
@@ -95,7 +96,8 @@ export default class SignUpWithMobileMain extends React.Component {
             return true;
         }
 
-        this.props.navigation.navigate("authMain");
+        // this.props.navigation.navigate("authMain");
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }
@@ -461,6 +463,9 @@ export default class SignUpWithMobileMain extends React.Component {
                                             }}
                                             onPress={() => {
                                                 this.setState({ phone: '' });
+
+                                                // disable
+                                                this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
                                             }}
                                         >
                                             <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
