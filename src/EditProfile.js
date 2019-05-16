@@ -943,7 +943,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.email ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.place ? this.state.email : "Enter your email address"}</Text>
+                        >{this.state.email ? this.state.email : "Enter your email address"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {

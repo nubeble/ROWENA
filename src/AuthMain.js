@@ -13,11 +13,12 @@ import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
 import { registerExpoPushToken } from './PushNotifications';
 
-const height = Dimensions.get('window').height;
+const HEIGHT = Dimensions.get('window').height;
 
 
 export default class AuthMain extends React.Component {
-    static loaded = false;
+    // static loaded = false;
+    static animation = true;
 
     state = {
         showFacebookLoader: false,
@@ -32,10 +33,17 @@ export default class AuthMain extends React.Component {
         // offset: new Animated.Value(0)
 
         // opacity: new Animated.Value(0),
-        viewOffset: new Animated.Value(height)
+        viewOffset: new Animated.Value(HEIGHT)
     };
 
+    /*
+    componentWillMount() {
+        if (!AuthMain.animation) this.setState({ viewOffset: 0 });
+    }
+    */
+
     componentDidMount() {
+        /*
         if (!AuthMain.loaded) {
             AuthMain.loaded = true;
 
@@ -54,6 +62,21 @@ export default class AuthMain extends React.Component {
             }).start(() => {
                 // StatusBar.setHidden(false);
             });
+        }
+        */
+
+        if (AuthMain.animation) {
+            Animated.timing(this.state.viewOffset, {
+                toValue: 0,
+                duration: 500,
+                useNativeDriver: true
+            }).start(() => {
+                StatusBar.setHidden(false);
+            });
+
+            AuthMain.animation = false;
+        } else {
+            this.setState({ viewOffset: 0 });
         }
     }
 

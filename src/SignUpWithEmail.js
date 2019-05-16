@@ -13,7 +13,6 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
-import { NavigationActions } from 'react-navigation';
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -80,8 +79,7 @@ export default class SignUpWithEmail extends React.Component {
             return true;
         }
 
-        // this.props.navigation.navigate("authMain");
-        this.props.navigation.dispatch(NavigationActions.back());
+        this.props.navigation.navigate("authMain");
 
         return true;
     }
@@ -439,7 +437,7 @@ export default class SignUpWithEmail extends React.Component {
                             fontSize: 28,
                             lineHeight: 32,
                             fontFamily: "Roboto-Medium",
-                            paddingTop: 8
+                            paddingTop: 2
                         }}>What's your email?</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>

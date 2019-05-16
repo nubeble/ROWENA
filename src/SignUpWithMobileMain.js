@@ -12,7 +12,6 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
-import { NavigationActions } from 'react-navigation';
 
 // https://github.com/ttdung11t2/react-native-confirmation-code-input
 import CodeInput from 'react-native-confirmation-code-input';
@@ -96,8 +95,7 @@ export default class SignUpWithMobileMain extends React.Component {
             return true;
         }
 
-        // this.props.navigation.navigate("authMain");
-        this.props.navigation.dispatch(NavigationActions.back());
+        this.props.navigation.navigate("authMain");
 
         return true;
     }
@@ -415,7 +413,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                     fontSize: 28,
                                     lineHeight: 32,
                                     fontFamily: "Roboto-Medium",
-                                    paddingTop: 8
+                                    paddingTop: 2
                                 }}>What's your mobile number?</Text>
 
                                 <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
@@ -492,7 +490,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                     fontSize: 28,
                                     lineHeight: 32,
                                     fontFamily: "Roboto-Medium",
-                                    paddingTop: 8
+                                    paddingTop: 2
                                 }}>Enter verification code</Text>
 
                                 <View style={{ marginTop: 24, paddingHorizontal: 4 }}>

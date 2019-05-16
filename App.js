@@ -351,7 +351,6 @@ import Welcome from './src/Welcome';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithMobileMain from './src/SignUpWithMobileMain';
-import SignUpWithMobileCode from './src/SignUpWithMobileCode';
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import PostScreen from './src/PostScreen';
@@ -376,53 +375,6 @@ import CommentMain from './src/CommentMain';
 import MapSearch from './src/MapSearch';
 // import MapOverview from './src/MapOverview';
 import Admin from './src/Admin';
-
-// -- start of AuthStackNavigatorWrapper
-/*
-const AuthStackNavigator = createStackNavigator(
-    {
-        authMain: { screen: AuthMain },
-        email: { screen: SignUpWithEmail },
-        mobile: { screen: SignUpWithMobile }
-    },
-    {
-        mode: 'card',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
-    }
-);
-*/
-const AuthStackNavigator = createSwitchNavigator(
-    {
-        authMain: { screen: AuthMain },
-        email: { screen: SignUpWithEmail },
-        // mobile: { screen: SignUpWithMobile }
-    }
-);
-
-class AuthStackNavigatorWrapper extends React.Component {
-    static router = AuthStackNavigator.router;
-
-    render() {
-        return (
-            <AuthStackNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-// -- end of AuthStackNavigatorWrapper
-
-
-
 
 
 const SignUpWithMobileMainStackNavigator = createStackNavigator(
@@ -457,20 +409,31 @@ class SignUpWithMobileMainStackNavigatorWrapper extends React.Component {
     }
 }
 
-const SignUpWithMobileSwitchNavigator = createSwitchNavigator(
+// -- start of AuthStackNavigatorWrapper
+const AuthStackNavigator = createStackNavigator(
     {
-        // signUpWithMobileMain: { screen: SignUpWithMobileMain },
-        signUpWithMobileMain: { screen: SignUpWithMobileMainStackNavigatorWrapper },
-        // signUpWithMobileCode: { screen: SignUpWithMobileCode }
+        authMain: { screen: AuthMain },
+        email: { screen: SignUpWithEmail },
+        mobile: { screen: SignUpWithMobileMainStackNavigatorWrapper }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
     }
 );
 
-class SignUpWithMobileSwitchNavigatorWrapper extends React.Component {
-    static router = SignUpWithMobileSwitchNavigator.router;
+class AuthStackNavigatorWrapper extends React.Component {
+    static router = AuthStackNavigator.router;
 
     render() {
         return (
-            <SignUpWithMobileSwitchNavigator navigation={this.props.navigation}
+            <AuthStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -479,10 +442,7 @@ class SignUpWithMobileSwitchNavigatorWrapper extends React.Component {
         );
     }
 }
-
-
-
-
+// -- end of AuthStackNavigatorWrapper
 
 // -- start of IntroStackNavigatorWrapper
 const IntroStackNavigator = createStackNavigator(
@@ -1200,12 +1160,12 @@ const MainSwitchNavigator = createSwitchNavigator(
     {
         loading: { screen: Loading },
 
-        // authStackNavigator: { screen: AuthStackNavigatorWrapper },
+        authStackNavigator: { screen: AuthStackNavigatorWrapper },
+        /*
         authMain: { screen: AuthMain },
-        email: { screen: SignUpWithEmail }, // ToDo: change to SwitchNavigator
-
-
+        email: { screen: SignUpWithEmail },
         mobile: { screen: SignUpWithMobileSwitchNavigatorWrapper },
+        */
 
 
 
