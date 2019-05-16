@@ -1022,45 +1022,57 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     async pickImage() {
-        const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
-        const { status: cameraRollPermission } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const { status: existingCameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
+        const { status: existingCameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
 
-        if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
-                aspect: [4, 3], // ToDo: android only! (only square image in IOS)
-                quality: 1.0
-            });
-
-            console.log('result of launchImageLibraryAsync:', result);
-
-            if (!result.cancelled) {
-                this.setState({ onUploadingImage: true });
-
-                // show indicator & progress bar
-                this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
-
-                // upload image
-                const index = 0;
-                this.uploadImage(result.uri, index, (uri) => {
-                    this.setState({ uploadImageUri: uri });
-
-                    const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
-                    this.imageRefs.push(ref);
-
-                    this.uploadImageRef = ref;
-
-                    // hide indicator & progress bar
-                    this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
-                    setTimeout(() => {
-                        !this.closed && this.hideFlash();
-
-                        this.setState({ onUploadingImage: false });
-                    }, 1500);
-                });
+        if (existingCameraStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA);
+            if (status !== 'granted') {
+                Linking.openURL('app-settings:');
+                return;
             }
-        } else {
-            Linking.openURL('app-settings:');
+        }
+
+        if (existingCameraRollStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                Linking.openURL('app-settings:');
+                return;
+            }
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3], // ToDo: android only! (only square image in IOS)
+            quality: 1.0
+        });
+
+        console.log('result of launchImageLibraryAsync:', result);
+
+        if (!result.cancelled) {
+            this.setState({ onUploadingImage: true });
+
+            // show indicator & progress bar
+            this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+
+            // upload image
+            const index = 0;
+            this.uploadImage(result.uri, index, (uri) => {
+                this.setState({ uploadImageUri: uri });
+
+                const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
+                this.imageRefs.push(ref);
+
+                this.uploadImageRef = ref;
+
+                // hide indicator & progress bar
+                this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+                setTimeout(() => {
+                    !this.closed && this.hideFlash();
+
+                    this.setState({ onUploadingImage: false });
+                }, 1500);
+            });
         }
     }
 

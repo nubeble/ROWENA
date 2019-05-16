@@ -5,6 +5,7 @@ import { Constants } from "expo";
 
 export var Vars = {
     currentScreenName: null, // string
+    location: null, // Location
 
 
 

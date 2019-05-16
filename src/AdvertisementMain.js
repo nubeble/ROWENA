@@ -1722,70 +1722,82 @@ export default class AdvertisementMain extends React.Component {
     }
 
     async pickImage(index) {
-        const { status: cameraPermission } = await Permissions.askAsync(Permissions.CAMERA);
-        const { status: cameraRollPermission } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const { status: existingCameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
+        const { status: existingCameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
 
-        if (cameraPermission === 'granted' && cameraRollPermission === 'granted') {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: true,
-                aspect: [4, 3], // ToDo: android only! (only square image in IOS)
-                quality: 1.0
-            });
-
-            console.log('result of launchImageLibraryAsync:', result);
-
-            if (!result.cancelled) {
-                this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
-
-                // show indicator & progress bar
-                this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
-
-                // upload image
-                this.uploadImage(result.uri, index, (uri) => {
-                    switch (index) {
-                        case 0: this.setState({ uploadImage1Uri: uri }); break;
-                        case 1: this.setState({ uploadImage2Uri: uri }); break;
-                        case 2: this.setState({ uploadImage3Uri: uri }); break;
-                        case 3: this.setState({ uploadImage4Uri: uri }); break;
-                    }
-
-                    const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
-                    this.imageRefs.push(ref);
-
-                    switch (index) {
-                        case 0: this.uploadImage1Ref = ref; break;
-                        case 1: this.uploadImage2Ref = ref; break;
-                        case 2: this.uploadImage3Ref = ref; break;
-                        case 3: this.uploadImage4Ref = ref; break;
-                    }
-
-                    // save to database
-                    /*
-                        var data = {
-                        pictures: {
-                            uri: uri
-                        }
-                    };
-                    this.updateUser(Firebase.user().uid, data);
-                    */
-
-                    /*
-                    const fileName = result.uri.split('/').pop();
-                    const url = await firebase.storage().ref(fileName).getDownloadURL();
-                    console.log('download URL:', url);
-                    */
-
-                    // hide indicator & progress bar
-                    this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
-                    setTimeout(() => {
-                        !this.closed && this.hideFlash();
-
-                        this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
-                    }, 1500);
-                });
+        if (existingCameraStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA);
+            if (status !== 'granted') {
+                Linking.openURL('app-settings:');
+                return;
             }
-        } else {
-            Linking.openURL('app-settings:');
+        }
+
+        if (existingCameraRollStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                Linking.openURL('app-settings:');
+                return;
+            }
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3], // ToDo: android only! (only square image in IOS)
+            quality: 1.0
+        });
+
+        console.log('result of launchImageLibraryAsync:', result);
+
+        if (!result.cancelled) {
+            this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
+
+            // show indicator & progress bar
+            this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+
+            // upload image
+            this.uploadImage(result.uri, index, (uri) => {
+                switch (index) {
+                    case 0: this.setState({ uploadImage1Uri: uri }); break;
+                    case 1: this.setState({ uploadImage2Uri: uri }); break;
+                    case 2: this.setState({ uploadImage3Uri: uri }); break;
+                    case 3: this.setState({ uploadImage4Uri: uri }); break;
+                }
+
+                const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
+                this.imageRefs.push(ref);
+
+                switch (index) {
+                    case 0: this.uploadImage1Ref = ref; break;
+                    case 1: this.uploadImage2Ref = ref; break;
+                    case 2: this.uploadImage3Ref = ref; break;
+                    case 3: this.uploadImage4Ref = ref; break;
+                }
+
+                // save to database
+                /*
+                    var data = {
+                    pictures: {
+                        uri: uri
+                    }
+                };
+                this.updateUser(Firebase.user().uid, data);
+                */
+
+                /*
+                const fileName = result.uri.split('/').pop();
+                const url = await firebase.storage().ref(fileName).getDownloadURL();
+                console.log('download URL:', url);
+                */
+
+                // hide indicator & progress bar
+                this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+                setTimeout(() => {
+                    !this.closed && this.hideFlash();
+
+                    this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
+                }, 1500);
+            });
         }
     }
 

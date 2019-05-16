@@ -3,6 +3,7 @@ import {
     StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator,
     Animated, Dimensions, Platform, Image
 } from 'react-native';
+import { Constants } from 'expo';
 import { EvilIcons, Ionicons, FontAwesome } from "react-native-vector-icons";
 import Firebase from './Firebase';
 import * as firebase from "firebase";
@@ -122,7 +123,7 @@ export default class AuthMain extends React.Component {
     }
 
     isStandaloneApp = () => {
-        if (Expo.Constants.appOwnership === 'expo') {
+        if (Constants.appOwnership === 'expo') {
             console.log('Expo ownership app');
 
             if (Platform.OS === 'android') return true;
@@ -135,7 +136,7 @@ export default class AuthMain extends React.Component {
             return true;
         }
 
-        // return !(Platform.OS === 'ios' && Expo.Constants.appOwnership === 'expo');
+        // return !(Platform.OS === 'ios' && Constants.appOwnership === 'expo');
     }
 
     signUpWithEmail() {

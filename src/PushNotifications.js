@@ -1,4 +1,4 @@
-import { Permissions, Notifications } from 'expo';
+import { Permissions, Notifications, Linking } from 'expo';
 import Firebase from './Firebase';
 import { Cons } from './Globals';
 
@@ -8,9 +8,7 @@ const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
 
 export async function registerExpoPushToken(uid, name) {
-    const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-    );
+    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
 
     // console.log("existingStatus", existingStatus);
@@ -28,12 +26,12 @@ export async function registerExpoPushToken(uid, name) {
 
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
+        Linking.openURL('app-settings:');
         return;
     }
 
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
-
     console.log("token", token);
 
     // const user = Firebase.user();

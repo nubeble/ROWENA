@@ -9,7 +9,7 @@ import { Provider } from "mobx-react/native";
 import { FeedStore, Theme, Text } from './src/rnff/src/components';
 import { ProfileStore } from "./src/rnff/src/home";
 import autobind from "autobind-decorator";
-import { Notifications } from 'expo';
+import { Notifications, Constants } from 'expo';
 import Firebase from './src/Firebase';
 import { Cons, Vars } from './src/Globals';
 
@@ -96,7 +96,7 @@ export default class App extends React.Component {
         }
 
         // check the releaseChannel
-        const channel = this.getApiUrl(Expo.Constants.manifest.releaseChannel);
+        const channel = this.getApiUrl(Constants.manifest.releaseChannel);
         console.log('channel', channel);
     }
 

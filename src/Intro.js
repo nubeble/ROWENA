@@ -4,7 +4,7 @@ import {
     StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform
 } from "react-native";
 import { Header } from 'react-navigation';
-import { Svg } from "expo";
+import { Svg, Constants, Location, Permissions, Linking } from "expo";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { inject, observer } from "mobx-react/native";
 // import ProfileStore from "./rnff/src/home/ProfileStore";
@@ -130,6 +130,36 @@ export default class Intro extends React.Component {
         searchText: '',
         refreshing: false
     };
+
+    // --
+    componentWillMount() {
+        if (Platform.OS === 'android' && !Constants.isDevice) {
+            console.log('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
+        } else {
+            this._getLocationAsync();
+        }
+    }
+
+    _getLocationAsync = async () => {
+        console.log('Intro._getLocationAsync');
+        const { status: existingStatus } = await Permissions.getAsync(Permissions.LOCATION);
+        // console.log('Intro._getLocationAsync, existingStatus', existingStatus);
+        if (existingStatus !== "granted") {
+            const { status } = await Permissions.askAsync(Permissions.LOCATION);
+            // console.log('Intro._getLocationAsync, status', status);
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied.');
+                Linking.openURL('app-settings:');
+                return;
+            }
+        }
+
+        let location = await Location.getCurrentPositionAsync({});
+        console.log('Intro._getLocationAsync, location', JSON.stringify(location));
+        // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
+        Vars.location = location;
+    };
+    // --
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');

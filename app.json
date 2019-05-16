@@ -36,7 +36,14 @@
             "package": "com.nubeble.rowena",
             "googleServicesFile": "./google-services.json",
             "versionCode": 1,
-            "icon": "./assets/icon_android.png"
+            "icon": "./assets/icon_android.png",
+            "permissions": [
+                "CAMERA",
+                "READ_EXTERNAL_STORAGE",
+                "WRITE_EXTERNAL_STORAGE",
+                "ACCESS_COARSE_LOCATION",
+                "ACCESS_FINE_LOCATION"
+            ]
         },
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",

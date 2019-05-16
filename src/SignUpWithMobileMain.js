@@ -637,7 +637,6 @@ export default class SignUpWithMobileMain extends React.Component {
 
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                // registerExpoPushToken(user.user.uid, user.user.displayName);
                 registerExpoPushToken(user.user.uid, user.user.phoneNumber);
             }
         } catch (error) {
@@ -661,6 +660,8 @@ export default class SignUpWithMobileMain extends React.Component {
                 // phone: '',
                 mode: 'PHONE'
             });
+
+            // this.refs.codeInput.clear();
         }
     }
 
@@ -695,9 +696,6 @@ export default class SignUpWithMobileMain extends React.Component {
 
         // enable
         this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
-
-
-        // this.refs.codeInput.clear();
     }
 }
 
