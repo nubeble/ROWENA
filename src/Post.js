@@ -418,13 +418,8 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
 
         // ToDo: calc distance (get my location)
-        let distance = '12 km away';
-        /*
-        const location = post.location;
-        location.longitude
-        location.latitude
-        */
-
+        const distance = '12 km away';
+        // const distance = Util.getDistance(post.location, Vars.location);
 
         let integer = 0;
         let number = '';

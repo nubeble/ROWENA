@@ -10,9 +10,10 @@ import FeedStore from "../FeedStore";
 import { Theme } from "../Theme";
 import SmartImage from "../SmartImage";
 import Text from "../Text";
-import Avatar from "../Avatar";
-import LikesAndComments from "./LikesAndComments";
+// import Avatar from "../Avatar";
+// import LikesAndComments from "./LikesAndComments";
 import { Cons, Vars } from "../../../../Globals";
+import Util from "../../../../Util";
 
 import type { Post, Profile } from "../Model";
 import type { NavigationProps } from "../Types";
@@ -105,12 +106,8 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         */
 
         // ToDo: get distance
-        let distance = '18 km away';
-        /*
-        const location = post.location;
-        location.longitude
-        location.latitude
-        */
+        const distance = '18 km away';
+        // const distance = Util.getDistance(post.location, Vars.location);
 
         const averageRating = post.averageRating;
 

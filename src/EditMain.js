@@ -171,7 +171,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         let labelText = null;
         if (count === 0) {
-            labelText = 'no reviews from hosts';
+            labelText = 'No reviews from hosts';
         } else if (count === 1) {
             labelText = count.toString() + ' review from hosts';
         } else if (count > 1) {

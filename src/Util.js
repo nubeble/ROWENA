@@ -1443,4 +1443,15 @@ export default class Util extends React.Component {
 
         return true;
     }
+
+    static getDistance(location1, location2) {
+        // ToDo
+        /*
+        location.longitude
+        location.latitude
+        */
+
+
+
+    }
 }
