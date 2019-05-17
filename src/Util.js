@@ -1431,7 +1431,8 @@ export default class Util extends React.Component {
     }
     */
 
-    isSameDay(date1, date2) {
+    /*
+    static isSameDay(date1, date2) {
         const y1 = date1.getFullYear();
         const d1 = date1.getDate();
 
@@ -1443,15 +1444,61 @@ export default class Util extends React.Component {
 
         return true;
     }
+    */
 
     static getDistance(location1, location2) {
-        // ToDo
+        // location1
+        // location1.longitude, location1.latitude
+
+        // location2
+        // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
+
+        let distance = '38 km away';
+
+        if (!location2) return distance;
+
+        let lat1, lon1, lat2, lon2, unit;
+        lat1 = location1.latitude;
+        lon1 = location1.longitude;
+        lat2 = location2.coords.latitude;
+        lon2 = location2.coords.longitude;
+        unit = "K";
+
         /*
-        location.longitude
-        location.latitude
+        var radlat1 = Math.PI * lat1 / 180;
+        var radlat2 = Math.PI * lat2 / 180;
+        var theta = lon1 - lon2;
+        var radtheta = Math.PI * theta / 180;
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515;
+        if (unit === "K") {
+            dist = dist * 1.609344;
+            distance = dist + ' km away';
+        } else if (unit === "M") {
+            dist = dist * 0.8684;
+            distance = dist + ' m away';
+        }
         */
 
+        var R = 6371; // Radius of the earth in km
+        var dLat = Util.deg2rad(lat2 - lat1);
+        var dLon = Util.deg2rad(lon2 - lon1);
+        var a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(Util.deg2rad(lat1)) * Math.cos(Util.deg2rad(lat2)) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2)
+            ;
+        var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        var d = R * c; // Distance in km
 
+        distance = d.toFixed(0).toString() + ' km away';
 
+        return distance;
+    }
+
+    static deg2rad(deg) {
+        return deg * (Math.PI / 180);
     }
 }

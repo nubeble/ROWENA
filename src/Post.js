@@ -414,17 +414,16 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     render() {
-        // const { post } = this.props.navigation.state.params;
         const post = this.state.post;
 
-        // ToDo: calc distance (get my location)
-        const distance = '12 km away';
-        // const distance = Util.getDistance(post.location, Vars.location);
-
+        let distance = '';
         let integer = 0;
         let number = '';
         let ageText = '';
+
         if (post) {
+            distance = Util.getDistance(post.location, Vars.location);
+
             const averageRating = post.averageRating;
 
             integer = Math.floor(averageRating);

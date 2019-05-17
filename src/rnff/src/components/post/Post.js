@@ -106,8 +106,8 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         */
 
         // ToDo: get distance
-        const distance = '18 km away';
-        // const distance = Util.getDistance(post.location, Vars.location);
+        // const distance = '18 km away';
+        const distance = Util.getDistance(post.location, Vars.location);
 
         const averageRating = post.averageRating;
 
