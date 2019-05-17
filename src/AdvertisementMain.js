@@ -1045,7 +1045,7 @@ export default class AdvertisementMain extends React.Component {
                         onPress={() => {
                             this.onFocusBirthday();
 
-                            this.showDateTimePicker('What is your date of birth?');
+                            this.showDateTimePicker('Select your date of birth');
                         }}
                     >
                         <Text
@@ -1055,7 +1055,7 @@ export default class AdvertisementMain extends React.Component {
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.birthday ? this.state.birthday : "22 JUL 1992"}</Text>
+                        >{this.state.birthday ? this.state.birthday : "When is your birthday?"}</Text>
 
                         {/* ToDo: add icon */}
 
@@ -1094,7 +1094,8 @@ export default class AdvertisementMain extends React.Component {
                     <Select
                         onOpen={() => this.onFocusGender()} // NOT work in Android
                         placeholder={{
-                            label: "Female",
+                            // label: "Female",
+                            label: "Select your gender",
                             value: null
                         }}
                         items={genderItems}
@@ -1259,7 +1260,8 @@ export default class AdvertisementMain extends React.Component {
                     <Select
                         onOpen={() => this.onFocusBodyType()} // NOT work in Android
                         placeholder={{
-                            label: "Fit",
+                            // label: "Fit",
+                            label: "What's your body type?",
                             value: null
                         }}
                         items={bodyTypeItems}
@@ -1331,10 +1333,9 @@ export default class AdvertisementMain extends React.Component {
                         */
                         onOpen={() => this.onFocusBreasts()} // NOT work in Android
                         placeholder={{
-                            label: "C cup",
-                            value: null,
-                            // color: '#9EA0A4'
-                            // color: 'green'
+                            // label: "C cup",
+                            label: "What's your bra size?",
+                            value: null
                         }}
                         // placeholderTextColor={Theme.color.placeholder}
 

@@ -435,6 +435,8 @@ export default class PostScreen extends React.Component<InjectedProps> {
         let ageText = '';
 
         if (post) {
+            distance = Util.getDistance(post.location, Vars.location);
+
             const averageRating = post.averageRating;
 
             integer = Math.floor(averageRating);
