@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Constants, Svg, Haptic } from "expo";
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -59,7 +59,6 @@ export default class Post extends React.Component<InjectedProps> {
     state = {
         post: null,
 
-        writeRating: 0,
         renderList: false,
         isOwner: false,
 
@@ -74,9 +73,12 @@ export default class Post extends React.Component<InjectedProps> {
         dialogTitle: '',
         dialogMessage: '',
 
+        writeRating: 0,
         liked: false,
+        chartInfo: null,
 
-        chartInfo: null
+        isModal: false,
+        disableContactButton: false
     };
 
     constructor(props) {
@@ -163,8 +165,18 @@ export default class Post extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        const { post, extra } = this.props.navigation.state.params;
+        const { post, extra, from } = this.props.navigation.state.params;
         this.init(post, extra);
+
+        console.log('Post.componentDidMount', from);
+        if (from === 'Profile' || from === 'ChatRoom') {
+            this.setState({ isModal: true });
+        } else {
+            this.setState({ isModal: false });
+        }
+
+        // show contact button
+        if (from === 'ChatRoom') this.setState({ disableContactButton: true });
 
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
@@ -446,13 +458,16 @@ export default class Post extends React.Component<InjectedProps> {
             case 5: markerImage = PreloadImage.emoji5; break;
         }
 
+        let paddingBottom = 0;
+        if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
+
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
         };
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingBottom }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -468,7 +483,12 @@ export default class Post extends React.Component<InjectedProps> {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        {
+                            this.state.isModal ?
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                                :
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        }
                     </TouchableOpacity>
 
                     {/* like button */}
@@ -489,6 +509,22 @@ export default class Post extends React.Component<InjectedProps> {
                             }
                         </View>
                     </TouchableWithoutFeedback>
+                    {/* edit button (only in modal from Profile) */}
+                    {/*
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => this.edit()}
+                    >
+                        <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+                    */}
                 </View>
 
                 <Animated.View
@@ -1641,13 +1677,17 @@ export default class Post extends React.Component<InjectedProps> {
             }
             */
 
-            this.props.navigation.navigate("writeReview",
-                {
-                    post: post,
-                    rating: rating,
-                    initFromWriteReview: (result) => this.initFromWriteReview(result)
-                }
-            );
+            const param = {
+                post: post,
+                rating: rating,
+                initFromWriteReview: (result) => this.initFromWriteReview(result)
+            };
+
+            if (this.state.isModal) {
+                this.props.navigation.navigate("writeReviewModal", param);
+            } else {
+                this.props.navigation.navigate("writeReview", param);
+            }
         }, Cons.buttonTimeoutLong);
     }
 
@@ -1760,6 +1800,11 @@ export default class Post extends React.Component<InjectedProps> {
     async contact() {
         if (this.state.isOwner) {
             this.refs["toast"].show('Sorry, this is your post.', 500);
+            return;
+        }
+
+        if (this.state.disableContactButton) {
+            this.refs["toast"].show('Sorry, You have already opened a chatroom.', 500);
             return;
         }
 

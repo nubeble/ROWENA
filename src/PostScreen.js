@@ -1,7 +1,3 @@
-/*
-    Copied from Post.js
-*/
-
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,

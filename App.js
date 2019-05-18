@@ -353,7 +353,6 @@ import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithMobileMain from './src/SignUpWithMobileMain';
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
-import PostScreen from './src/PostScreen';
 import UserMain from './src/UserMain';
 import LikesMain from './src/LikesMain';
 import ProfileMain from './src/ProfileMain';
@@ -547,7 +546,7 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 const PostStackNavigator = createStackNavigator(
     {
         postModal: {
-            screen: PostScreen
+            screen: Post
         },
         mapModal: {
             screen: MapScreen
