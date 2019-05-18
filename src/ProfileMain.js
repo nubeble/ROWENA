@@ -22,9 +22,6 @@ const DEFAULT_FEED_COUNT = 9; // 3 x 3
 
 const avatarWidth = Dimensions.get('window').height / 11;
 
-// red dot
-const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
-
 
 @inject("profileStore")
 @observer
@@ -529,20 +526,27 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{avatarName}</Text>
+
+                                                <View style={{ flexDirection: 'row' }}>
+                                                    <View style={{ marginTop: Cons.badgeWidth / 2, alignSelf: 'flex-start' }}>
+                                                        <Text style={{ paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                            {avatarName}
+                                                        </Text>
+                                                    </View>
+                                                    {
+                                                        commentAdded &&
+                                                        <View style={{
+                                                            marginLeft: Cons.badgeWidth / 2,
+                                                            backgroundColor: 'red',
+                                                            borderRadius: Cons.badgeWidth / 2,
+                                                            width: Cons.badgeWidth,
+                                                            height: Cons.badgeWidth
+                                                        }} />
+                                                    }
+                                                </View>
+
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>View and edit profile</Text>
-                                                {
-                                                    commentAdded &&
-                                                    <View style={{
-                                                        position: 'absolute',
-                                                        top: 4 - 3,
-                                                        left: 22 - 3,
-                                                        backgroundColor: 'red',
-                                                        borderRadius: badgeWidth / 2,
-                                                        width: badgeWidth,
-                                                        height: badgeWidth
-                                                    }} />
-                                                }
+
                                             </View>
                                             <TouchableOpacity
                                                 style={{
@@ -793,8 +797,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
-                            const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
-
                             return (
                                 <TouchableWithoutFeedback onPress={async () => await this.postClick(item)}>
                                     <View style={styles.pictureContainer}>
@@ -822,9 +824,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 top: 3,
                                                 right: 3,
                                                 backgroundColor: 'red',
-                                                borderRadius: badgeWidth / 2,
-                                                width: badgeWidth,
-                                                height: badgeWidth
+                                                borderRadius: Cons.badgeWidth / 2,
+                                                width: Cons.badgeWidth,
+                                                height: Cons.badgeWidth
                                             }} />
                                         }
                                         {

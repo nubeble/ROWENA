@@ -707,7 +707,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         <FontAwesome style={{ width: 20 }} name='location-arrow' color={Theme.color.selection} size={16} />
                         <Text
                             style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
-                            { fontSize: 15, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: 2 }
+                            { fontSize: 16, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: 2 }
                             ]}
                         >
                             {rowData.description}
@@ -756,12 +756,13 @@ export default class GooglePlacesAutocomplete extends Component {
                         <View style={{ marginLeft: 14, marginRight: 20 }}>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "Roboto-Medium" }
+                                this.props.styles.predefinedPlacesDescription,
+                                { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 2 }
                                 ]}
                             >{city}</Text>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "Roboto-Regular" }
+                                this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }
                                 ]}
                                 numberOfLines={this.props.numberOfLines}
                             >{state}</Text>

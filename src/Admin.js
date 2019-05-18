@@ -1289,7 +1289,7 @@ export default class Admin extends React.Component {
     }
 
     addComment() {
-        // ToDo: test
+        // test
         const name = 'Max Power';
         const place = 'Cebu, Philippines';
         const uri = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';

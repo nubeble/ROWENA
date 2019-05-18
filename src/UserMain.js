@@ -382,7 +382,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     render() {
         const { reviews } = this.commentStore;
 
-        let name = 'Anonymous';
+        let avatarName = 'Anonymous';
         let address = "No address registered";
         let reviewText = 'loading...';
         let labelText = null;
@@ -396,7 +396,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         if (guest) {
             // name
-            if (guest.name) name = guest.name;
+            if (guest.name) avatarName = guest.name;
 
             // address
             if (guest.address) address = guest.address;
@@ -506,8 +506,10 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ paddingTop: 4, color: Theme.color.text2, fontSize: 24, fontFamily: "Roboto-Medium" }}>{name}</Text>
-                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>
+                                                <Text style={{ marginTop: Cons.badgeWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                    {avatarName}
+                                                </Text>
+                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
                                                     {dateText}
                                                 </Text>
                                             </View>

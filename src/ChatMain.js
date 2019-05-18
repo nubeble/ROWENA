@@ -228,7 +228,7 @@ export default class ChatMain extends React.Component {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
-                                            // ToDo: set scroll position 0
+                                            // Consider: set scroll position 0
 
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
@@ -285,7 +285,6 @@ export default class ChatMain extends React.Component {
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
         // const avatarHeight = viewHeight * 0.8;
-        const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
 
         return (
             <TouchableHighlight onPress={() => this.props.navigation.navigate("chatRoom", { item: item })}>
@@ -308,15 +307,15 @@ export default class ChatMain extends React.Component {
                                 position: 'absolute',
                                 /*
                                 top: 0 + viewHeight * 0.08,
-                                left: viewHeight - badgeWidth - viewHeight * 0.08,
+                                left: viewHeight - Cons.badgeWidth - viewHeight * 0.08,
                                 */
                                 top: 0,
                                 left: viewHeight,
 
                                 backgroundColor: 'red',
-                                borderRadius: badgeWidth / 2,
-                                width: badgeWidth,
-                                height: badgeWidth
+                                borderRadius: Cons.badgeWidth / 2,
+                                width: Cons.badgeWidth,
+                                height: Cons.badgeWidth
                             }} />
                         }
                     </View>
@@ -473,13 +472,13 @@ const styles = StyleSheet.create({
     },
     name: {
         color: Theme.color.text2,
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: "Roboto-Medium"
     },
     contents: {
         marginTop: Dimensions.get('window').height / 60,
         color: Theme.color.text3,
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: "Roboto-Regular"
     },
     time: {

@@ -22,6 +22,9 @@ export const Cons = {
         comment: 4
     },
 
+    // red dot badge
+    redDotWidth: Math.round(Dimensions.get('window').height / 100) + 1,
+
     // button press short, long timeout
     buttonTimeoutShort: 100,
     buttonTimeoutLong: 300,

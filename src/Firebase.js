@@ -112,19 +112,25 @@ export default class Firebase {
     }
 
     static async updateProfile(uid, profile) {
+        console.log('Firebase.updateProfile');
         await Firebase.firestore.collection("users").doc(uid).update(profile);
 
-        // ToDo: update firebase auth
-        /*
-        Firebase.auth.currentUser.updateProfile({
-            displayName: "Jane Q. User",
-            photoURL: "https://example.com/jane-q-user/profile.jpg"
-        }).then(function () {
-            // Update successful.
-        }).catch(function (error) {
-            // An error happened.
-        });
-        */
+        // update firebase auth
+        if (profile.name && profile.picture && profile.picture.uri) {
+            const user = Firebase.auth.currentUser;
+            await user.updateProfile({
+                // displayName: "Jane Q. User",
+                // photoURL: "https://example.com/jane-q-user/profile.jpg"
+                displayName: profile.name,
+                photoURL: profile.picture.uri
+            }).then(function () {
+                // Update successful.
+                console.log('Firebase.updateProfile', 'update successful.');
+            }).catch(function (error) {
+                // An error happened.
+                console.log('Firebase.updateProfile', error);
+            });
+        }
     }
 
     static async deleteProfile(uid) {
@@ -155,19 +161,20 @@ export default class Firebase {
 
         if (!result) return false;
 
-        // delete firebase auth user
+        // Consider: delete firebase auth
+        /*
         var user = Firebase.auth.currentUser;
         await user.delete().then(function () {
             // User deleted.
             console.log('User deleted.');
         }).catch(function (error) {
             // An error happened.
-            console.log('An error happened.', error);
-
+            console.log('Firebase.deleteProfile', error);
             result = false;
         });
 
         if (!result) return false;
+        */
 
         await Firebase.auth.signOut();
 
@@ -403,13 +410,20 @@ export default class Firebase {
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
+        const userRef = Firebase.firestore.collection("users").doc(uid);
 
         await Firebase.firestore.runTransaction(async transaction => {
-            // delete file in storage
-            // --
             const feedDoc = await transaction.get(feedRef);
             if (!feedDoc.exists) throw 'Feed document does not exist!';
 
+            const placeDoc = await transaction.get(placeRef);
+            if (!placeDoc.exists) throw 'Place document does not exist!';
+
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+
+            // 1. delete storage
             const pictures = feedDoc.data().pictures;
             if (pictures.one.ref) {
                 // await Firebase.storage.refFromURL(pictures.one.uri).delete();
@@ -427,18 +441,34 @@ export default class Firebase {
             if (pictures.four.ref) {
                 Firebase.storage.ref(pictures.four.ref).delete();
             }
-            // --
 
-            // 1. update the count first!
-            const placeDoc = await transaction.get(placeRef);
-            if (!placeDoc.exists) throw 'Place document does not exist!';
-
+            // 2. update the count first!
             let count = placeDoc.data().count;
             console.log('Firebase.removeFeed', 'current count', count);
             transaction.update(placeRef, { count: Number(count - 1) });
 
-            // 2. remove feed
+            // 3. remove feed
             transaction.delete(feedRef);
+
+            // 4. update profile (remove fields to feeds in user profile)
+            const { feeds } = userDoc.data();
+            let index = -1;
+
+            for (var i = 0; i < feeds.length; i++) {
+                const item = feeds[i];
+                if (item.placeId === placeId && item.feedId === feedId) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index === -1) { // add
+                // nothing to do
+            } else { // remove
+                feeds.splice(index, 1);
+            }
+
+            transaction.update(userRef, { feeds });
         }).then(() => {
             // console.log("Transaction successfully committed!");
             result = true;
@@ -447,8 +477,9 @@ export default class Firebase {
             result = false;
         });
 
-        if (!result) return false;
+        // if (!result) return false;
 
+        /*
         // 3. update profile (remove fields to feeds in user profile)
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
@@ -481,6 +512,7 @@ export default class Firebase {
             console.log('Firebase.removeFeed', error);
             result = false;
         });
+        */
 
         return result;
     }
@@ -515,12 +547,18 @@ export default class Firebase {
         let result;
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const userRef = Firebase.firestore.collection("users").doc(uid);
 
         // update count to post
         await Firebase.firestore.runTransaction(async transaction => {
             const postDoc = await transaction.get(feedRef);
             if (!postDoc.exists) throw 'Post document does not exist!';
 
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'Profile document does not exist!';
+
+
+            // 1.
             let { likes } = postDoc.data();
             const idx = likes.indexOf(uid);
             if (idx === -1) {
@@ -530,17 +568,45 @@ export default class Firebase {
             }
 
             transaction.update(feedRef, { likes });
+
+            // 2.
+            let { likes: userLikes } = userDoc.data();
+            let _idx = -1;
+
+            for (var i = 0; i < userLikes.length; i++) {
+                const item = userLikes[i];
+                if (item.placeId === placeId && item.feedId === feedId) {
+                    _idx = i;
+                    break;
+                }
+            }
+
+            if (_idx === -1) { // add
+                const data = { // LikeRef
+                    placeId,
+                    feedId,
+                    picture: uri,
+                    name,
+                    placeName
+                }
+                userLikes.push(data);
+            } else { // remove
+                userLikes.splice(_idx, 1);
+            }
+
+            transaction.update(userRef, { likes: userLikes });
         }).then(() => {
             // console.log("Transaction successfully committed!");
             result = true;
         }).catch((error) => {
             console.log('Firebase.updateLikes', error);
-            result = true;
+            result = false;
         });
 
         if (!result) return false;
 
         // save to user profile
+        /*
         await Firebase.firestore.runTransaction(async transaction => {
             const userRef = Firebase.firestore.collection("users").doc(uid);
             const userDoc = await transaction.get(userRef);
@@ -579,6 +645,7 @@ export default class Firebase {
             console.log('Firebase.updateLikes', error);
             result = false;
         });
+        */
 
         return true;
     }
@@ -591,6 +658,7 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             const ownerDoc = await transaction.get(ownerRef);
             if (!ownerDoc.exists) throw 'Owner document does not exist!';
+
 
             let { feeds } = ownerDoc.data();
             for (var i = 0; i < feeds.length; i++) {
@@ -756,6 +824,10 @@ export default class Firebase {
             const feedDoc = await transaction.get(feedRef);
             if (!feedDoc.exists) throw 'Post document does not exist!';
 
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+
             // 1. reviewCount
             const reviewCount = feedDoc.data().reviewCount;
             console.log('reviewCount will be', reviewCount - 1);
@@ -798,10 +870,15 @@ export default class Firebase {
             );
 
             // remove review item (map) in reviews (array)
+            /*
             const item = {
                 placeId: placeId,
                 feedId: feedId,
-                reviewId: reviewId
+                reviewId: reviewId,
+
+
+                picture,
+                replyAdded,
             };
 
             const data = {
@@ -809,6 +886,19 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
+            */
+            const { reviews } = userDoc.data();
+            let index = -1;
+            for (var i = 0; i < reviews.length; i++) {
+                const item = reviews[i];
+                if (item.reviewId === reviewId) {
+                    index = i;
+                    break;
+                }
+            }
+
+            reviews.splice(index, 1);
+            transaction.update(userRef, { reviews });
         }).then(() => {
             // console.log("Transaction successfully committed!");
             result = true;
@@ -834,6 +924,7 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
             if (!userDoc.exists) throw 'User document does not exist!';
+
 
             let { reviews } = userDoc.data();
             for (var i = 0; i < reviews.length; i++) {
@@ -900,9 +991,14 @@ export default class Firebase {
         let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
-        await Firebase.firestore.runTransaction(transaction => {
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+
             transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
 
+            /*
             const item = {
                 placeId: placeId,
                 feedId: feedId,
@@ -915,6 +1011,19 @@ export default class Firebase {
             };
 
             transaction.update(userRef, data);
+            */
+            const { replies } = userDoc.data();
+            let index = -1;
+            for (var i = 0; i < replies.length; i++) {
+                const item = replies[i];
+                if (item.replyId === replyId) {
+                    index = i;
+                    break;
+                }
+            }
+
+            replies.splice(index, 1);
+            transaction.update(userRef, { replies });
         });
 
         // Consider: just leave the replyAdded value in guest's user profile
@@ -945,6 +1054,7 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(receiverRef);
             if (!userDoc.exists) throw 'User document does not exist!';
+
 
             // update reviewCount in user (receiver)
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
@@ -1004,22 +1114,25 @@ export default class Firebase {
             const userDoc = await transaction.get(receiverRef);
             if (!userDoc.exists) throw 'User document does not exist!';
 
+
+            // 1. receivedCommentsCount
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
             console.log('receivedCommentsCount will be', receivedCommentsCount - 1);
 
-            transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount - 1) });
+            // 2. comments
+            const { comments } = userDoc.data();
+            let index = -1;
+            for (var i = 0; i < comments.length; i++) {
+                const item = comments[i];
+                if (item.commentId === commentId) {
+                    index = i;
+                    break;
+                }
+            }
 
-            // update comments array in user (writer)
-            const item = {
-                userUid: targetUid,
-                commentId: commentId
-            };
+            comments.splice(index, 1);
 
-            let data = {
-                comments: firebase.firestore.FieldValue.arrayRemove(item)
-            };
-
-            transaction.update(writerRef, data);
+            transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount - 1), comments });
         }).then(() => {
             // console.log("Transaction successfully committed!");
             result = true;
@@ -1294,6 +1407,8 @@ export default class Firebase {
     };
 
     static async saveLastReadMessageId(uid, id, mid) {
+        console.log('Firebase.saveLastReadMessageId');
+
         const updateData = {
             lastReadMessageId: mid
         };

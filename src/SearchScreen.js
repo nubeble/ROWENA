@@ -176,17 +176,21 @@ export default class SearchScreen extends React.Component {
                             },
 
                             predefinedPlacesDescription: {
+                                /*
                                 fontSize: 14,
                                 color: Theme.color.text2,
                                 fontFamily: "Roboto-Light",
+                                */
                                 // height: 30,
 
                                 // backgroundColor: 'green'
                             },
                             description: {
+                                /*
                                 fontSize: 14,
                                 color: Theme.color.text2,
                                 fontFamily: "Roboto-Light",
+                                */
                                 // height: 30,
 
                                 // backgroundColor: 'blue'

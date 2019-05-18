@@ -5,7 +5,7 @@ import { Constants } from 'expo';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import { observer } from "mobx-react/native";
 import Carousel from './Carousel';
@@ -17,6 +17,7 @@ import * as firebase from "firebase";
 import { GeoCollectionReference, GeoFirestore, GeoQuery, GeoQuerySnapshot } from 'geofirestore';
 import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
+import Util from "./Util";
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -312,12 +313,12 @@ export default class MapSearch extends React.Component {
 
             const latitude = post.location.latitude;
             const longitude = post.location.longitude;
-            // const rating = Math.floor(post.averageRating);
-            const rating = i % 6; // ToDo: test
+            const rating = Math.floor(post.averageRating);
+            // const rating = i % 6; // ToDo: test
 
             let image = null;
             switch (rating) {
-                case 0: image = PreloadImage.emoji0; break;
+                case 0: image = PreloadImage.emoji0; break; // new
                 case 1: image = PreloadImage.emoji1; break;
                 case 2: image = PreloadImage.emoji2; break;
                 case 3: image = PreloadImage.emoji3; break;
@@ -553,6 +554,7 @@ export default class MapSearch extends React.Component {
 
     renderPost(post) {
         // placeName
+        /*
         let placeName = post.placeName;
         const words = placeName.split(', ');
         if (words.length > 2) {
@@ -560,6 +562,8 @@ export default class MapSearch extends React.Component {
             const country = words[words.length - 1];
             placeName = city + ', ' + country;
         }
+        */
+        const placeName = Util.getDistance(post.location, Vars.location);
 
         // defaultRating, averageRating
         const averageRating = post.averageRating;

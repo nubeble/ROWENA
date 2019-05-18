@@ -19,7 +19,7 @@ export default class WriteReviewScreen extends React.Component {
         showPostLoader: false,
 
         rating: 5,
-        invalid: false, // ToDo: not used
+        invalid: false, // Consider: not used
         bottomPosition: Dimensions.get('window').height,
         postButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
 

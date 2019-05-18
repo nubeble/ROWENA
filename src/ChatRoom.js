@@ -200,10 +200,16 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     }
 
     moveToChatMain() {
+        const item = this.props.navigation.state.params.item;
+        const lastReadMessageId = item.lastReadMessageId;
+
         const message = this.getLastMessage();
         if (message) {
             const mid = message._id;
-            Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+
+            if (lastReadMessageId !== mid) {
+                Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+            }
         }
 
         this.props.navigation.navigate("chat");
@@ -216,13 +222,13 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
         const { messages } = this.state;
 
-        for (let i = 1; i < messages.length; i++) {
+        for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
 
-            if (!message.system) {
-                lastMessage = message;
-                break;
-            }
+            if (message.system) continue;
+
+            lastMessage = message;
+            break;
         }
 
         return lastMessage;
@@ -426,7 +432,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 }
 
                 {
-                    // ToDo: apply fade in animation
+                    // Consider: apply fade in animation
                     this.state.renderPost && showPost &&
                     <View style={[styles.post, { top: _postTop }]}>
                         <Text>

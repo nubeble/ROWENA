@@ -94,21 +94,15 @@ export default class Post extends React.Component<InjectedProps> {
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
         if (result) {
-            // 1. reload reviews
-            const post = this.state.post;
-            const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-            this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
-
-            // 2. reload review count & calc chart
-            const newPost = await this.reloadPost(post.placeId, post.id);
-            const newChart = this.getChartInfo(newPost);
-            !this.closed && this.setState({ post: newPost, chartInfo: newChart });
-
-            this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
+            await this.reloadReviews();
         }
     }
 
     async initFromReadAllReviews() { // back from read all reviews
+        await this.reloadReviews();
+    }
+
+    async reloadReviews() {
         // 1. reload reviews
         const post = this.state.post;
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
@@ -144,7 +138,7 @@ export default class Post extends React.Component<InjectedProps> {
         const chart = this.state.chartInfo;
 
         // 2) ranking
-        // ToDo: calc ranking
+        // ToDo: calc ranking by averageRating
         const ranking = 2;
 
         const newChart = {

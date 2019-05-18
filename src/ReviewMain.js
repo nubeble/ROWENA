@@ -26,9 +26,6 @@ const DEFAULT_FEED_COUNT = 12; // 3 x 4
 const illustHeight = 340;
 const illustWidth = 340;
 
-// red dot
-const badgeWidth = Math.round(Dimensions.get('window').height / 100) + 1;
-
 
 @inject("profileStore")
 @observer
@@ -179,9 +176,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                                 top: 3,
                                                 right: 3,
                                                 backgroundColor: 'red',
-                                                borderRadius: badgeWidth / 2,
-                                                width: badgeWidth,
-                                                height: badgeWidth
+                                                borderRadius: Cons.badgeWidth / 2,
+                                                width: Cons.badgeWidth,
+                                                height: Cons.badgeWidth
                                             }} />
                                         }
                                         {
