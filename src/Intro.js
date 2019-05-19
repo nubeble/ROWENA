@@ -141,7 +141,7 @@ export default class Intro extends React.Component {
     }
 
     _getLocationAsync = async () => {
-        console.log('Intro._getLocationAsync');
+        // console.log('Intro._getLocationAsync');
         const { status: existingStatus } = await Permissions.getAsync(Permissions.LOCATION);
         // console.log('Intro._getLocationAsync, existingStatus', existingStatus);
         if (existingStatus !== "granted") {
@@ -149,7 +149,13 @@ export default class Intro extends React.Component {
             // console.log('Intro._getLocationAsync, status', status);
             if (status !== 'granted') {
                 console.log('Permission to access location was denied.');
-                Linking.openURL('app-settings:');
+                /*
+                const url = 'app-settings:';
+                const supported = await Linking.canOpenURL(url);
+                if (supported) {
+                    Linking.openURL(url);
+                }
+                */
                 return;
             }
         }

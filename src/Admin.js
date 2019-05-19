@@ -61,7 +61,7 @@ export default class Admin extends React.Component {
                         onPress={() => this.makeDummyData()}
                         style={styles.bottomButton}
                     >
-                        <Text style={{ fontSize: 16, color: 'white' }}>☆ Make Dummy Data ★</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 cities) 🔥</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => this.makeBangkok()}
@@ -104,8 +104,6 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Clear Storage</Text>
                     </TouchableOpacity>
 
-
-
                     <TouchableOpacity onPress={() => this.addComment()}
                         style={styles.bottomButton}
                     >
@@ -123,7 +121,7 @@ export default class Admin extends React.Component {
         );
     }
 
-    async makeDummyData() {
+    async makeDummyData() { // 11 cities
         for (var i = 0; i < 10; i++) {
             // 1. 태국
             this.makeBangkok(); // 방콕

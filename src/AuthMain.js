@@ -9,7 +9,7 @@ import Firebase from './Firebase';
 import * as firebase from "firebase";
 // import { SaveStorage, LoadStorage, RemoveStorage } from './Storage';
 import PreloadImage from './PreloadImage';
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
 import { registerExpoPushToken } from './PushNotifications';
 
@@ -85,6 +85,8 @@ export default class AuthMain extends React.Component {
     }
 
     async continueWithFacebook() {
+        Vars.signUpType = 'FACEBOOK';
+
         // show indicator
         this.setState({ showFacebookLoader: true });
 
@@ -163,11 +165,15 @@ export default class AuthMain extends React.Component {
     }
 
     signUpWithEmail() {
-        this.props.navigation.navigate("email");
+        Vars.signUpType = 'EMAIL';
+
+        this.props.navigation.navigate("email", { from: 'email' });
     }
 
     signUpWithMobile() {
-        this.props.navigation.navigate("mobile");
+        Vars.signUpType = 'MOBILE';
+
+        this.props.navigation.navigate("mobile", { from: 'mobile' });
     }
 
     render() {

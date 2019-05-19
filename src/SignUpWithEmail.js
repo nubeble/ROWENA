@@ -13,6 +13,7 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
+import { NavigationActions } from 'react-navigation';
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -62,6 +63,9 @@ export default class SignUpWithEmail extends React.Component {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
+        // unsubscribe
+        // if (this.instance) this.instance();
+
         this.closed = true;
     }
 
@@ -79,7 +83,7 @@ export default class SignUpWithEmail extends React.Component {
             return true;
         }
 
-        this.props.navigation.navigate("authMain");
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }
@@ -148,8 +152,8 @@ export default class SignUpWithEmail extends React.Component {
     validateEmail(text) {
         this.setState({ email: text });
 
-        console.log('email', text);
-        console.log('password', this.state.password);
+        // console.log('email', text);
+        // console.log('password', this.state.password);
 
         // enable/disable signup button
         if (text === '' || this.state.password === '') {
@@ -165,18 +169,16 @@ export default class SignUpWithEmail extends React.Component {
             this.hideEmailIcon();
         }
 
+        // check completion
         let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-        if (reg.test(String(text).toLowerCase()) === false) {
-            // console.log('Please enter a valid email address.');
-
-            // show icon
-            this.setState({ emailIcon: 0 });
-        } else {
-            console.log("Email is Correct");
+        if (reg.test(String(text).toLowerCase())) {
+            console.log('validateEmail', "Email is Correct");
 
             // show icon
             this.setState({ emailIcon: 2 });
+        } else {
+            // show icon
+            this.setState({ emailIcon: 0 });
         }
     }
 
@@ -228,7 +230,6 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         if (/\d/.test(text) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(text)) {
-
             console.log("Email is Correct");
 
             // show icon
@@ -282,7 +283,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ secureText: 'Show', securePwInput: true });
         }
 
-        // ToDo: don't need this in ios, not working in android!
+        // Not need this in ios, not working in android!
         /*
         if (Platform.OS === 'android') {
             this.refs['pwInput'].setNativeProps(
@@ -329,36 +330,32 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     async processSignUp() {
+
+        /*
+        this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
+            console.log('SignUpWithEmail.onAuthStateChanged', user);
+
+            if (user) this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email });
+        });
+        */
+
         // show indicator
         this.setState({ showSignUpLoader: true });
 
         try {
+            Firebase.auth.languageCode = 'en';
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
             console.log('user', user);
 
+            // skip here
+            /*
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
                 registerExpoPushToken(user.user.uid, user.user.email);
             }
-
-            /*
-            // check existance
-            const profile = await Firebase.getProfile(user.user.uid);
-            if (profile) {
-                // update
-                const data = {
-                    name: user.user.displayName,
-                    email: user.user.email,
-                    phoneNumber: user.user.phoneNumber
-                };
-
-                await Firebase.updateProfile(user.user.uid, data);
-            } else {
-                // create
-                // save user info to database
-                await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
-            }
             */
+
+            this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email });
         } catch (error) {
             console.log('error', error.code, error.message);
 
@@ -405,7 +402,7 @@ export default class SignUpWithEmail extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                this.props.navigation.navigate("authMain");
+                                this.props.navigation.dispatch(NavigationActions.back());
                             }}
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />

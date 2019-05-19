@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Image, Button, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import { Constants } from "expo";
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
@@ -33,6 +34,22 @@ export default class Welcome extends React.Component {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
+                    <View style={{
+                        position: 'absolute',
+                        top: Constants.statusBarHeight,
+                        width: '100%',
+                        height: 3,
+                        backgroundColor: "rgba(62, 165, 255, 0.4)"
+                    }}>
+                        <View style={{
+                            position: 'absolute',
+                            top: 0,
+                            left: '75%',
+                            width: '25%',
+                            height: 3,
+                            backgroundColor: "rgb(62, 165, 255)"
+                        }} />
+                    </View>
                 </View>
 
                 <View style={styles.container}>
@@ -70,6 +87,7 @@ export default class Welcome extends React.Component {
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
+                            console.log('move to main');
                             this.props.navigation.navigate("mainStackNavigator");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>

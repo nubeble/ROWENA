@@ -2,12 +2,12 @@ import { Permissions, Notifications, Linking } from 'expo';
 import Firebase from './Firebase';
 import { Cons } from './Globals';
 
-// const PUSH_ENDPOINT = 'https://your-server.com/users/push-token';
-// const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/setToken";
-const PUSH_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
+const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
 
 export async function registerExpoPushToken(uid, name) {
+    console.log('registerExpoPushToken', uid, name);
+
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
 
@@ -26,7 +26,14 @@ export async function registerExpoPushToken(uid, name) {
 
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
-        Linking.openURL('app-settings:');
+        console.log('Permission to access notifications was denied.');
+        /*
+        const url = 'app-settings:';
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            Linking.openURL(url);
+        }
+        */
         return;
     }
 
@@ -44,7 +51,7 @@ export async function registerExpoPushToken(uid, name) {
     formData.append("name", name);
 
     // POST the token to your backend server from where you can retrieve it to send push notifications.
-    return fetch(PUSH_ENDPOINT + "setToken", {
+    return fetch(SERVER_ENDPOINT + "setToken", {
         method: "POST",
         headers: {
             Accept: "application/json",
@@ -103,7 +110,7 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
         formData.append("message", data.message);
     }
 
-    return fetch(PUSH_ENDPOINT + "sendPushNotification", {
+    return fetch(SERVER_ENDPOINT + "sendPushNotification", {
         method: "POST",
         headers: {
             Accept: "application/json",

@@ -1453,7 +1453,7 @@ export default class Util extends React.Component {
         // location2
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
 
-        let distance = '38 km away';
+        let distance = '? km away';
 
         if (!location2) return distance;
 

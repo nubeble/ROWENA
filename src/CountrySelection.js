@@ -44,21 +44,40 @@ export default class CountrySelection extends React.Component {
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {/* close button */}
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            left: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => {
-                            this.props.navigation.dispatch(NavigationActions.back());
-                        }}
-                    >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
+                    {
+                        this.state.from === 'SignUpWithMobileMain' ?
+                            <TouchableOpacity
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    left: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    this.props.navigation.dispatch(NavigationActions.back());
+                                }}
+                            >
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+                            :
+                            <TouchableOpacity
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    left: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    this.props.navigation.dispatch(NavigationActions.back());
+                                }}
+                            >
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+                    }
                 </View>
 
                 <View style={styles.container}>
@@ -153,19 +172,19 @@ export default class CountrySelection extends React.Component {
     }
 
     /*
-    getCountryCode(name) {
-        const length = countryCodes.length;
-
-        for (var i = 0; i < length; i++) {
-            const item = countryCodes[i];
-            if (item.Name === name) {
-                return item.Code;
-            }
-        }
-
-        return null;
+getCountryCode(name) {
+const length = countryCodes.length;
+ 
+for (var i = 0; i < length; i++) {
+    const item = countryCodes[i];
+    if (item.Name === name) {
+        return item.Code;
     }
-    */
+}
+
+return null;
+}
+*/
 }
 
 const styles = StyleSheet.create({

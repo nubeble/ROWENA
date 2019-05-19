@@ -12,6 +12,7 @@ import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
 import { Cons } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
+import { NavigationActions } from 'react-navigation';
 
 // https://github.com/ttdung11t2/react-native-confirmation-code-input
 import CodeInput from 'react-native-confirmation-code-input';
@@ -25,7 +26,6 @@ const captchaUrl = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=$
 export default class SignUpWithMobileMain extends React.Component {
     state = {
         mode: 'PHONE', // 'PHONE', 'VERIFICATION'
-        buttonText: 'Next',
 
         // user: undefined,
         confirmationResult: undefined,
@@ -33,6 +33,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
         countryText: null, // United State (+1)
         dialCode: null, // +1
+        countryTextColor: Theme.color.text2,
 
 
         phone: '',
@@ -78,6 +79,9 @@ export default class SignUpWithMobileMain extends React.Component {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
+        // unsubscribe
+        // if (this.instance) this.instance();
+
         this.closed = true;
     }
 
@@ -95,7 +99,18 @@ export default class SignUpWithMobileMain extends React.Component {
             return true;
         }
 
-        this.props.navigation.navigate("authMain");
+        if (this.state.mode === 'PHONE') {
+            this.props.navigation.dispatch(NavigationActions.back());
+        } else if (this.state.mode === 'VERIFICATION') {
+            this.setState(
+                {
+                    mode: 'PHONE',
+                    confirmationResult: undefined,
+                    code: '',
+                    invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)"
+                }
+            );
+        }
 
         return true;
     }
@@ -379,11 +394,39 @@ export default class SignUpWithMobileMain extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                this.props.navigation.navigate("authMain");
+                                if (this.state.mode === 'PHONE') {
+                                    this.props.navigation.dispatch(NavigationActions.back());
+                                } else if (this.state.mode === 'VERIFICATION') {
+                                    this.setState(
+                                        {
+                                            mode: 'PHONE',
+                                            confirmationResult: undefined,
+                                            code: '',
+                                            invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)"
+                                        }
+                                    );
+                                }
                             }}
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
+
+                        <View style={{
+                            position: 'absolute',
+                            top: Constants.statusBarHeight,
+                            width: '100%',
+                            height: 3,
+                            backgroundColor: "rgba(62, 165, 255, 0.4)"
+                        }}>
+                            <View style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: this.state.mode === 'PHONE' ? '25%' : '50%',
+                                width: '25%',
+                                height: 3,
+                                backgroundColor: "rgb(62, 165, 255)"
+                            }} />
+                        </View>
                     </View>
 
                     <Animated.View
@@ -431,10 +474,10 @@ export default class SignUpWithMobileMain extends React.Component {
                                             });
                                         }}
                                     >
-                                        <Text style={{ marginBottom: 10, paddingLeft: 18, color: Theme.color.text2, fontSize: 16, fontFamily: "Roboto-Regular" }}>
+                                        <Text style={{ marginBottom: 10, paddingLeft: 18, color: this.state.countryTextColor, fontSize: 16, fontFamily: "Roboto-Regular" }}>
                                             {this.state.countryText ? this.state.countryText : 'Select your country'}
                                         </Text>
-                                        <Ionicons style={{ paddingLeft: 6, paddingTop: 3 }} name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={16} />
+                                        <Ionicons style={{ paddingLeft: 6, paddingTop: 3 }} name='md-arrow-dropdown' color={this.state.countryTextColor} size={16} />
                                     </TouchableOpacity>
 
                                     <TextInput
@@ -494,7 +537,6 @@ export default class SignUpWithMobileMain extends React.Component {
                                 }}>Enter verification code</Text>
 
                                 <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
-
                                     <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
                                         {"We've sent a text message with your verification code to "}
                                         <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
@@ -552,23 +594,20 @@ export default class SignUpWithMobileMain extends React.Component {
         );
     }
 
-    hideEmailIcon() {
-        if (this.state.emailIcon !== 0) this.setState({ emailIcon: 0 });
-    }
-
-    hidePasswordIcon() {
-        if (this.state.pwIcon !== 0) this.setState({ pwIcon: 0 });
-    }
-
     hideAlertIcons() {
-        this.hideEmailIcon();
-        this.hidePasswordIcon();
+        if (this.state.emailIcon !== 0) this.setState({ emailIcon: 0 });
+
+        if (this.state.pwIcon !== 0) this.setState({ pwIcon: 0 });
+
+        if (this.state.countryTextColor !== Theme.color.text2) this.setState({ countryTextColor: Theme.color.text2 });
     }
 
     hideActiveAlertIcons() { // hide only alert icon
         if (this.state.emailIcon === 1) this.setState({ emailIcon: 0 });
 
         if (this.state.pwIcon === 1) this.setState({ pwIcon: 0 });
+
+        if (this.state.countryTextColor !== Theme.color.text2) this.setState({ countryTextColor: Theme.color.text2 });
     }
 
     onPhoneChange = (phone) => {
@@ -579,6 +618,12 @@ export default class SignUpWithMobileMain extends React.Component {
 
     onPhoneComplete = async () => {
         console.log('SignUpWithMobileMain.onPhoneComplete');
+
+        if (!this.state.dialCode) {
+            this.showNotification('Please select your country calling code.');
+            this.setState({ countryTextColor: Theme.color.notification });
+            return;
+        }
 
         let token = null;
         const listener = ({ url }) => {
@@ -607,7 +652,7 @@ export default class SignUpWithMobileMain extends React.Component {
             };
 
             try {
-                // Firebase.auth.languageCode = 'en';
+                Firebase.auth.languageCode = 'en';
                 const confirmationResult = await Firebase.auth.signInWithPhoneNumber(number, captchaVerifier);
 
                 console.log('confirmationResult', confirmationResult);
@@ -632,6 +677,15 @@ export default class SignUpWithMobileMain extends React.Component {
     }
 
     onSignIn = async () => {
+
+        /*
+        this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
+            console.log('SignUpWithMobileMain.onAuthStateChanged', user);
+
+            this.props.navigation.navigate("signUpWithMobilePassword");
+        });
+        */
+
         const { confirmationResult, code } = this.state;
 
         try {

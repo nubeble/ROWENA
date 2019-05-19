@@ -216,9 +216,9 @@ export default class GooglePlacesAutocomplete extends Component {
         console.log('GooglePlacesAutocomplete.getCurrentLocation');
 
         if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
-            // ToDo: get current location street
+            // ToDo: get current location (street)
         } else {
-            // ToDo: get current location city
+            // ToDo: get current location (city)
         }
 
 
@@ -707,11 +707,8 @@ export default class GooglePlacesAutocomplete extends Component {
                         <FontAwesome style={{ width: 20 }} name='location-arrow' color={Theme.color.selection} size={16} />
                         <Text
                             style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
-                            { fontSize: 16, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: 2 }
-                            ]}
-                        >
-                            {rowData.description}
-                        </Text>
+                            { fontSize: 16, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: 2 }]}
+                        >{rowData.description}</Text>
                     </View>
                 </View>
             );
@@ -757,13 +754,12 @@ export default class GooglePlacesAutocomplete extends Component {
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
                                 this.props.styles.predefinedPlacesDescription,
-                                { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 2 }
-                                ]}
+                                { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 2 }]}
                             >{city}</Text>
                             <Text
                                 style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }
-                                ]}
+                                this.props.styles.predefinedPlacesDescription,
+                                { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
                                 numberOfLines={this.props.numberOfLines}
                             >{state}</Text>
                         </View>
@@ -779,13 +775,13 @@ export default class GooglePlacesAutocomplete extends Component {
                     <View style={{ marginLeft: 14, marginRight: 20 }}>
                         <Text
                             style={[defaultStyles.description, this.props.styles.description,
-                            this.props.styles.predefinedPlacesDescription, { fontSize: 15, color: Theme.color.text2, fontFamily: "Roboto-Medium" }
-                            ]}
+                            this.props.styles.predefinedPlacesDescription,
+                            { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 2 }]}
                         >{city}</Text>
                         <Text
                             style={[defaultStyles.description, this.props.styles.description,
-                            this.props.styles.predefinedPlacesDescription, { fontSize: 14, color: Theme.color.text3, fontFamily: "Roboto-Light" }
-                            ]}
+                            this.props.styles.predefinedPlacesDescription,
+                            { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Light" }]}
                             numberOfLines={this.props.numberOfLines}
                         >{state}</Text>
                     </View>

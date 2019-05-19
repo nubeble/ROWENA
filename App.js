@@ -350,7 +350,13 @@ import Loading from './src/Loading';
 import Welcome from './src/Welcome';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
+import SignUpWithEmailVerification from './src/SignUpWithEmailVerification';
+
+import SignUpWithMobileName from './src/SignUpWithMobileName';
 import SignUpWithMobileMain from './src/SignUpWithMobileMain';
+import SignUpWithMobilePassword from './src/SignUpWithMobilePassword';
+import SignUpWithMobileBirthday from './src/SignUpWithMobileBirthday';
+
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import UserMain from './src/UserMain';
@@ -375,6 +381,40 @@ import MapSearch from './src/MapSearch';
 // import MapOverview from './src/MapOverview';
 import Admin from './src/Admin';
 
+
+const SignUpWithEmailStackNavigator = createStackNavigator(
+    {
+        signUpWithEmailName: { screen: SignUpWithMobileName },
+        signUpWithEmailMain: { screen: SignUpWithEmail },
+        signUpWithEmailVerification: { screen: SignUpWithEmailVerification }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class SignUpWithEmailStackNavigatorWrapper extends React.Component {
+    static router = SignUpWithEmailStackNavigator.router;
+
+    render() {
+        return (
+            <SignUpWithEmailStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// ----
 
 const SignUpWithMobileMainStackNavigator = createStackNavigator(
     {
@@ -408,12 +448,54 @@ class SignUpWithMobileMainStackNavigatorWrapper extends React.Component {
     }
 }
 
+const SignUpWithMobileStackNavigator = createStackNavigator(
+    {
+        signUpWithMobileName: { screen: SignUpWithMobileName },
+        signUpWithMobileMain: { screen: SignUpWithMobileMainStackNavigatorWrapper },
+        // signUpWithMobilePassword: { screen: SignUpWithMobilePassword },
+        // signUpWithMobileBirthday: { screen: SignUpWithMobileBirthday }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class SignUpWithMobileStackNavigatorWrapper extends React.Component {
+    static router = SignUpWithMobileStackNavigator.router;
+
+    render() {
+        return (
+            <SignUpWithMobileStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+
+
+
+
+
+
+
 // -- start of AuthStackNavigatorWrapper
 const AuthStackNavigator = createStackNavigator(
     {
         authMain: { screen: AuthMain },
-        email: { screen: SignUpWithEmail },
-        mobile: { screen: SignUpWithMobileMainStackNavigatorWrapper }
+        // email: { screen: SignUpWithEmail },
+        email: { screen: SignUpWithEmailStackNavigatorWrapper },
+        mobile: { screen: SignUpWithMobileStackNavigatorWrapper }
     },
     {
         mode: 'card',

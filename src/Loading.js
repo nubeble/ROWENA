@@ -82,6 +82,9 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
+        // unsubscribe
+        // if (this.instance) this.instance();
+
         this.closed = true;
     }
 
@@ -182,8 +185,21 @@ export default class Loading extends React.Component<InjectedProps> {
 
         Firebase.init();
 
-        Firebase.auth.onAuthStateChanged(async (user) => {
+        this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
             console.log('Loading.onAuthStateChanged', user);
+
+            if (Vars.signUpType === 'EMAIL') {
+                console.log('skip to save profile for EMAIL sign up.');
+
+                Loading.userAutoAuthenticated = false;
+
+                Vars.signUpType = null;
+                return;
+            }
+
+            Vars.signUpType = null;
+
+
 
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
@@ -192,14 +208,15 @@ export default class Loading extends React.Component<InjectedProps> {
 
             const isUserAuthenticated = !!user;
 
-            if (!isUserAuthenticated) { // user == null (first time or sign out)
-                if (Loading.userSignedIn) { // signed out
+            if (!isUserAuthenticated) { // user == null (first time or sign out, delete account)
+                if (Loading.userSignedIn) { // signed out, delete account
                     Loading.userSignedIn = false;
+
+                    Loading.userAutoAuthenticated = true;
 
                     // move to login page
                     console.log('move to auth main');
                     // StatusBar.setHidden(false);
-                    // navigation.navigate("authStackNavigator");
                     navigation.navigate("authMain");
                 } else {
                     Loading.userAutoAuthenticated = false;
@@ -216,25 +233,32 @@ export default class Loading extends React.Component<InjectedProps> {
 
                         console.log('move to auth main');
                         // StatusBar.setHidden(false);
-                        // navigation.navigate("authStackNavigator");
                         navigation.navigate("authMain");
                     });
                 }
             } else {
                 Loading.userSignedIn = true;
 
+                // save profile
+                let name = Vars.signUpName;
+                Vars.signUpName = null;
+
+                if (!name) name = user.displayName;
+                const email = user.email;
+                const mobile = user.phoneNumber;
+
                 // check existance
                 let profile = await Firebase.getProfile(user.uid);
                 if (profile) {
                     // update
-                    profile.name = user.displayName;
-                    profile.email = user.email;
-                    profile.phoneNumber = user.phoneNumber;
+                    profile.name = name;
+                    profile.email = email;
+                    profile.phoneNumber = mobile;
                     await Firebase.updateProfile(user.uid, profile);
                 } else {
                     // create
                     // save user info to database
-                    await Firebase.createProfile(user.uid, user.displayName, user.email, user.phoneNumber);
+                    await Firebase.createProfile(user.uid, name, email, mobile);
                 }
 
                 // const { uid } = Firebase.auth.currentUser;
@@ -247,17 +271,29 @@ export default class Loading extends React.Component<InjectedProps> {
                 const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc"); // 내가 올린 feed
                 userFeedStore.init(userFeedQuery);
                 */
-                profileStore.init();
+                await profileStore.init();
 
                 if (Loading.userAutoAuthenticated) {
                     await this.checkUpdates();
 
-                    console.log('move to main');
                     StatusBar.setHidden(false);
+
+                    console.log('move to main');
                     navigation.navigate("mainStackNavigator");
                 } else {
+                    /*
+                    if (Vars.signUpType === 'FACEBOOK' || Vars.signUpType === 'MOBILE') {
+                        console.log('move to welcome');
+                        navigation.navigate("welcome");
+                    } else if (Vars.signUpType === 'EMAIL') {
+                        // nothing to do here
+                    } else {
+                    }
+
+                    Vars.signUpType = null; // sign up process finished
+                    */
+
                     console.log('move to welcome');
-                    StatusBar.setHidden(false);
                     navigation.navigate("welcome");
                 }
             }

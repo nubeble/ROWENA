@@ -233,7 +233,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
-                                            // ToDo: set scroll position 0
+                                            // Consider: set scroll position 0
 
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);

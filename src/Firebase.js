@@ -14,6 +14,9 @@ const config = {
 
 // Firebase.instance = new Firebase();
 
+const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
+
+
 export default class Firebase {
     static auth: firebase.auth.Auth;
     static firestore: firebase.firestore.Firestore;
@@ -161,8 +164,7 @@ export default class Firebase {
 
         if (!result) return false;
 
-        // Consider: delete firebase auth
-        /*
+        // delete firebase auth
         var user = Firebase.auth.currentUser;
         await user.delete().then(function () {
             // User deleted.
@@ -173,12 +175,29 @@ export default class Firebase {
             result = false;
         });
 
-        if (!result) return false;
-        */
+        // if (!result) return false;
 
-        await Firebase.auth.signOut();
+        // await Firebase.auth.signOut();
 
         return result;
+    }
+
+    static async signOut(uid) {
+        await Firebase.auth.signOut();
+
+
+        // sign out all users
+        const formData = new FormData();
+        formData.append("uid", uid);
+
+        await fetch(SERVER_ENDPOINT + "signOutUsers", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "multipart/form-data"
+            },
+            body: formData
+        });
     }
 
     static async deleteToken(uid) {

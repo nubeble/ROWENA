@@ -730,3 +730,51 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
     });
 });
 */
+
+
+const signOut = async(function () {
+    const params = this;
+    const fields = params.fields;
+    const res = params.res;
+
+    const uid = fields.uid;
+
+    // Revoke all refresh tokens for a specified user for whatever reason.
+    // Retrieve the timestamp of the revocation, in seconds since the epoch.
+    await(admin.auth().revokeRefreshTokens(uid).then(() => {
+        return admin.auth().getUser(uid);
+    }).then((userRecord) => {
+        return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
+    }).then((timestamp) => {
+        console.log("Tokens revoked at: ", timestamp);
+    }));
+
+    res.status(200).send(fields);
+});
+
+exports.signOutUsers = functions.https.onRequest((req, res) => {
+    if (req.method === "POST" && req.headers["content-type"].startsWith("multipart/form-data")) {
+        const busboy = new Busboy({ headers: req.headers });
+
+        const fields = {};
+
+        busboy.on("field", (fieldname, val) => {
+            // console.log('Field [' + fieldname + ']: value: ' + val);
+
+            fields[fieldname] = val;
+        });
+
+        const params = {};
+        params.fields = fields;
+        params.res = res;
+
+        busboy.on("finish", signOut.bind(params));
+
+        busboy.end(req.rawBody);
+    } else {
+        // Return a "method not allowed" error
+        const error = 'only POST message acceptable.';
+
+        res.status(405).end(error);
+    }
+});

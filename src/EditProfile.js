@@ -1028,7 +1028,13 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                Linking.openURL('app-settings:');
+                /*
+                const url = 'app-settings:';
+                const supported = await Linking.canOpenURL(url);
+                if (supported) {
+                    Linking.openURL(url);
+                }
+                */
                 return;
             }
         }
@@ -1036,7 +1042,13 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                Linking.openURL('app-settings:');
+                /*
+                const url = 'app-settings:';
+                const supported = await Linking.canOpenURL(url);
+                if (supported) {
+                    Linking.openURL(url);
+                }
+                */
                 return;
             }
         }

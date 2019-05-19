@@ -35,6 +35,8 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 const DEFAULT_REVIEW_COUNT = 3;
 
+const replyViewHeight = Dimensions.get('window').height / 9;
+
 // 3:2 image
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
@@ -53,8 +55,6 @@ const useGoogleMaps = Platform.OS === 'android' ? true : false;
 @observer // for reviewStore
 export default class Post extends React.Component<InjectedProps> {
     reviewStore: ReviewStore = new ReviewStore();
-
-    replyViewHeight = Dimensions.get('window').height / 9;
 
     state = {
         post: null,
@@ -842,8 +842,8 @@ export default class Post extends React.Component<InjectedProps> {
                     this.state.showKeyboard &&
                     <View style={{
                         position: 'absolute',
-                        top: this.state.bottomPosition - this.replyViewHeight,
-                        height: this.replyViewHeight,
+                        top: this.state.bottomPosition - replyViewHeight,
+                        height: replyViewHeight,
                         width: '100%',
                         flexDirection: 'row',
                         // justifyContent: 'center',
@@ -1713,7 +1713,7 @@ export default class Post extends React.Component<InjectedProps> {
         const height = this.itemHeights[this.selectedItemIndex];
         const keyboardHeight = e.endCoordinates.height;
         const searchBarHeight = Cons.searchBarHeight;
-        const gap = Dimensions.get('window').height - keyboardHeight - this.replyViewHeight - height - searchBarHeight;
+        const gap = Dimensions.get('window').height - keyboardHeight - replyViewHeight - height - searchBarHeight;
 
         this._flatList.scrollToOffset({ offset: y - gap, animated: true });
     }

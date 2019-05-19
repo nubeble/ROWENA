@@ -229,7 +229,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
                 if (index !== -1) {
                     feeds[index].picture = newFeed.pictures.one.uri;
-                    !this.closed && this.setState({ feeds });
+                    this.setState({ feeds });
                 }
             });
 
@@ -315,7 +315,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             let feed = feeds[index];
             feed.reviewAdded = false;
             feeds[index] = feed;
-            !this.closed && this.setState({ feeds });
+            this.setState({ feeds });
         }
 
         await this.openPost(item);
@@ -331,7 +331,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return;
         }
 
-        // !this.closed && this.setState({ showPostIndicator: index });
+        // this.setState({ showPostIndicator: index });
 
         const post = this.getPost(item);
         if (!post) {
@@ -360,7 +360,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // }, Cons.buttonTimeoutShort);
 
         // hide indicator
-        // !this.closed && this.setState({ showPostIndicator: -1 });
+        // this.setState({ showPostIndicator: -1 });
     }
 
     getPost(item) {
@@ -526,7 +526,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-
                                                 <View style={{ flexDirection: 'row' }}>
                                                     <View style={{ marginTop: Cons.badgeWidth / 2, alignSelf: 'flex-start' }}>
                                                         <Text style={{ paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
@@ -544,9 +543,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         }} />
                                                     }
                                                 </View>
-
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>View and edit profile</Text>
-
                                             </View>
                                             <TouchableOpacity
                                                 style={{
@@ -665,8 +662,18 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 if (!profile) return;
 
-                                                this.openDialog('alert', 'Log out', 'Are you sure you want to remove all data from this device?', async () => {
+                                                this.openDialog('alert', 'Log out', 'Are you sure you want to logout?', () => {
+                                                    // 1. unsubscribe profile first!
+                                                    this.props.profileStore.final();
 
+                                                    // ToDo: wait 0.5 sec
+                                                    setTimeout(async () => {
+                                                        await Firebase.signOut(profile.uid);
+                                                    }, 500);
+                                                });
+
+                                                /*
+                                                this.openDialog('alert', 'Log out', 'Are you sure you want to remove all data from this device?', async () => {
                                                     // feeds
                                                     // storage
                                                     // user profile & auth
@@ -678,10 +685,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // token
 
 
-                                                    // 0. unsubscribe profile first!
+                                                    // 1. unsubscribe profile first!
                                                     this.props.profileStore.final();
 
-                                                    // 1. remove all the created feeds (place - feed)
+                                                    // 2. remove all the created feeds (place - feed)
                                                     const uid = profile.uid;
                                                     const feeds = profile.feeds;
                                                     const length = feeds.length;
@@ -694,17 +701,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // 3. delete all the chat rooms
                                                     await Firebase.deleteChatRooms(uid);
 
-                                                    //// 2. delete storage
-
                                                     // 4. remove token (tokens - uid)
                                                     await Firebase.deleteToken(uid);
 
                                                     // 5. remove all the received comments (users - user - comments - all the documents)
                                                     // 6. remove database (user profile & remove auth)
                                                     await Firebase.deleteProfile(uid);
-
-                                                    //// 7. move to auth main
                                                 });
+                                                */
 
                                             }}
                                         >
@@ -913,7 +917,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // if (this.state.isLoadingFeeds) return;
 
-        !this.closed && this.setState({ refreshing: true });
+        this.setState({ refreshing: true });
 
         // reload from the start
         this.lastChangedTime = 0;
@@ -921,7 +925,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
 
-        !this.closed && this.setState({ refreshing: false });
+        this.setState({ refreshing: false });
     }
 
     // open admin menu

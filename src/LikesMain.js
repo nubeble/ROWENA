@@ -488,7 +488,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                                 item.reviewCount === -1 &&
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
                                                     <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'center' }}>
-                                                        <ActivityIndicator animating={true} size={18} color={Theme.color.selection} />
+                                                        <ActivityIndicator animating={true} size={'small'} color={Theme.color.selection} />
                                                     </View>
                                                 </View>
                                             }
@@ -582,7 +582,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
-                                            // ToDo: set scroll position 0
+                                            // Consider: set scroll position 0
 
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
