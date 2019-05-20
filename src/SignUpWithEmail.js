@@ -294,6 +294,11 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     signUp() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcons();
+        }
+
         if (this.state.emailIcon !== 2) {
             // console.log('Please enter a valid email address.');
 
@@ -360,7 +365,7 @@ export default class SignUpWithEmail extends React.Component {
             console.log('error', error.code, error.message);
 
             if (error.code === 'auth/email-already-in-use') {
-                this.showNotification('The email address is already in use.');
+                this.showNotification('The email address is already in use. Please try another email address.');
             } else if (error.code === 'auth/network-request-failed') {
                 this.showNotification('A network error occurred. Please try again.');
             } else {
@@ -407,6 +412,23 @@ export default class SignUpWithEmail extends React.Component {
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
+
+                        <View style={{
+                            position: 'absolute',
+                            top: Constants.statusBarHeight,
+                            width: '100%',
+                            height: 3,
+                            backgroundColor: "rgba(62, 165, 255, 0.4)"
+                        }}>
+                            <View style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: '25%',
+                                width: '25%',
+                                height: 3,
+                                backgroundColor: "rgb(62, 165, 255)"
+                            }} />
+                        </View>
                     </View>
 
                     <Animated.View

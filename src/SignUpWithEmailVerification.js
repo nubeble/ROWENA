@@ -11,7 +11,7 @@ import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
-import CodeInput from 'react-native-confirmation-code-input';
+import * as Progress from 'react-native-progress';
 
 
 export default class SignUpWithEmailVerification extends React.Component {
@@ -30,7 +30,10 @@ export default class SignUpWithEmailVerification extends React.Component {
         name: '',
         nameIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
-        emailVerificationState: 0 // 0: disappeared, 1: waiting, 2: checked
+        emailVerificationState: 0, // 0: disappeared, 1: waiting, 2: checked
+
+        // timer
+        timer: 60
     };
 
     componentDidMount() {
@@ -40,12 +43,17 @@ export default class SignUpWithEmailVerification extends React.Component {
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         var user = Firebase.auth.currentUser;
-        user.sendEmailVerification().then(function () {
+        user.sendEmailVerification().then(() => {
             // Email sent.
             console.log('Email sent.');
 
             // show hourglass
-            this.setState({ emailVerificationState: 0 });
+            this.setState({ emailVerificationState: 1 });
+
+            // timer
+            setTimeout(() => {
+                this.startTimer();
+            }, 500);
 
             let interval = null;
             interval = setInterval(() => {
@@ -81,7 +89,7 @@ export default class SignUpWithEmailVerification extends React.Component {
                     }
                 });
             }, 1000);
-        }).catch(function (error) {
+        }).catch((error) => {
             // An error happened.
             console.log('An error happened.', error);
 
@@ -94,6 +102,9 @@ export default class SignUpWithEmailVerification extends React.Component {
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
+
+        // timer
+        if (this.clockCall) clearInterval(this.clockCall);
 
         this.closed = true;
     }
@@ -132,6 +143,22 @@ export default class SignUpWithEmailVerification extends React.Component {
     onFocus() {
         // if (this.refs['nameInput']) this.refs['nameInput'].focus();
     }
+
+    // timer
+    startTimer = () => {
+        this.clockCall = setInterval(() => {
+            this.decrementClock();
+        }, 1000);
+    }
+
+    decrementClock = () => {
+        if (this.state.timer === 0) {
+            clearInterval(this.clockCall);
+            return;
+        }
+
+        this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
+    };
 
     showNotification(msg) {
         if (this._showNotification) {
@@ -183,6 +210,11 @@ export default class SignUpWithEmailVerification extends React.Component {
     }
 
     render() {
+        // timer
+        // const timer = 30; // 60 ~ 0;
+        const timer = this.state.timer;
+        const progress = 1 - timer / 60;
+
         const email = this.props.navigation.state.params.email;
         const user = this.props.navigation.state.params.user;
 
@@ -265,34 +297,37 @@ export default class SignUpWithEmailVerification extends React.Component {
                             lineHeight: 32,
                             fontFamily: "Roboto-Medium",
                             paddingTop: 2
-                        }}>Enter verification code</Text>
+                        }}>Almost done!</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
                             <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
-                                {"We've sent a text message with your verification code to "}
+                                {"Please check your email account for "}
                                 <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                     {email}
                                 </Text>
+                                {' and click the "Verify" link inside.'}
                             </Text>
 
-                            {/*
-                            <CodeInput
-                                containerStyle={{ marginTop: 60 }}
-                                ref="codeInput"
-                                codeLength={6}
-                                inputPosition='center'
-                                size={40}
-                                space={8}
-                                className={'border-b'}
-                                // secureTextEntry
-                                keyboardType={"numeric"}
-                                onFulfill={(code) => this.checkCode(code)}
-                                codeInputStyle={{ fontSize: 22, fontFamily: "Roboto-Medium", color: Theme.color.text2 }}
-                            />
-                            */}
                             {
-                                this.state.emailVerificationState &&
-                                <View>
+                                this.state.emailVerificationState === 1 &&
+                                <View style={{
+                                    height: 240,
+                                    // backgroundColor: 'green',
+                                    alignItems: "center",
+                                    justifyContent: "center"
+                                }}>
+                                    <Progress.Circle
+                                        textStyle={{
+                                            fontSize: 48,
+                                            fontFamily: "Roboto-Medium"
+                                        }}
+                                        // formatText={progress => `${Math.round(progress * 100)}%`}
+                                        formatText={progress => { // 0 ~ 1
+
+                                            // return `${Math.round(progress * 100)}%`;
+                                            return timer;
+                                        }}
+                                        showsText={true} size={120} color={Theme.color.text2} borderWidth={1} progress={progress} />
                                 </View>
                             }
                         </View>

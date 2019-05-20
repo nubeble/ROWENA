@@ -352,7 +352,7 @@ export default class SignUpWithMobileMain extends React.Component {
             console.log('error', error.code, error.message);
 
             if (error.code === 'auth/email-already-in-use') {
-                this.showNotification('The email address is already in use.');
+                this.showNotification('The email address is already in use. Please try another email address.');
             } else if (error.code === 'auth/network-request-failed') {
                 this.showNotification('A network error occurred. Please try again.');
             } else {
