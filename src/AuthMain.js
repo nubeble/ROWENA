@@ -14,7 +14,7 @@ import { Text, Theme } from "./rnff/src/components";
 import { registerExpoPushToken } from './PushNotifications';
 import autobind from "autobind-decorator";
 
-// const AnimatedImage = Animated.createAnimatedComponent(Image);
+const AnimatedImage = Animated.createAnimatedComponent(Image);
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const HEIGHT = Dimensions.get('window').height;
@@ -41,7 +41,6 @@ export default class AuthMain extends React.Component {
         viewOffset: new Animated.Value(HEIGHT),
 
         // blurRadius: new Animated.Value(0),
-        blurRadius: new Animated.Value(0),
     };
 
     componentDidMount() {
@@ -79,6 +78,7 @@ export default class AuthMain extends React.Component {
         */
 
         if (AuthMain.animation) {
+            /*
             Animated.timing(this.state.viewOffset, {
                 toValue: 0,
                 duration: 300,
@@ -86,7 +86,14 @@ export default class AuthMain extends React.Component {
             }).start(() => {
                 StatusBar.setHidden(false);
             });
-
+            */
+            Animated.spring(this.state.viewOffset, {
+                toValue: 0,
+                bounciness: 12,
+                useNativeDriver: true
+            }).start(() => {
+                StatusBar.setHidden(false);
+            });
 
             // ToDo: screen blinking issue on blur animation
             /*
@@ -96,7 +103,14 @@ export default class AuthMain extends React.Component {
             });
             */
 
-
+            /*
+            setTimeout(() => {
+                Animated.sequence([
+                    Animated.timing(this.state.blurRadius, { toValue: 3, duration: 2000 }),
+                    Animated.timing(this.state.viewOffset, { toValue: 0, duration: 300 })
+                ]).start();
+            }, 3000);
+            */
 
             AuthMain.animation = false;
         } else {
@@ -228,7 +242,6 @@ export default class AuthMain extends React.Component {
                     }}
                     source={PreloadImage.Background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
-                    // blurRadius={1}
                     blurRadius={this.state.blurRadius}
                 />
                 */}

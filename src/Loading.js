@@ -219,12 +219,13 @@ export default class Loading extends React.Component<InjectedProps> {
                     Loading.userAutoAuthenticated = false;
 
                     Animated.sequence([
-                        Animated.delay(2000),
+                        Animated.delay(3000),
                         Animated.timing(this.state.image2Opacity, {
                             toValue: 1,
-                            duration: 300,
+                            duration: 500,
                             useNativeDriver: true
-                        })
+                        }),
+                        Animated.delay(1000)
                     ]).start(() => {
                         !this.closed && this.setState({ showIndicator: false });
 
