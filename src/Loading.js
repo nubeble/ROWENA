@@ -132,6 +132,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         opacity: this.state.image2Opacity
                     }}
                     source={PreloadImage.Background}
+                    blurRadius={1}
                 />
             </View>
         );
@@ -225,7 +226,7 @@ export default class Loading extends React.Component<InjectedProps> {
                             duration: 500,
                             useNativeDriver: true
                         }),
-                        Animated.delay(1000)
+                        // Animated.delay(1000)
                     ]).start(() => {
                         !this.closed && this.setState({ showIndicator: false });
 

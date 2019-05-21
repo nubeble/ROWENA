@@ -87,11 +87,14 @@ export default class AuthMain extends React.Component {
                 StatusBar.setHidden(false);
             });
             */
-            Animated.spring(this.state.viewOffset, {
-                toValue: 0,
-                bounciness: 12,
-                useNativeDriver: true
-            }).start(() => {
+            Animated.sequence([
+                Animated.delay(1000),
+                Animated.spring(this.state.viewOffset, {
+                    toValue: 0,
+                    bounciness: 12,
+                    useNativeDriver: true
+                })
+            ]).start(() => {
                 StatusBar.setHidden(false);
             });
 
@@ -220,6 +223,7 @@ export default class AuthMain extends React.Component {
 
         return (
             <View style={styles.container}>
+                {/*
                 <Image
                     style={{
                         position: 'absolute',
@@ -231,7 +235,16 @@ export default class AuthMain extends React.Component {
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                     blurRadius={1}
                 />
-
+                */}
+                <ImageBackground
+                    style={{
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height
+                    }}
+                    source={PreloadImage.Background}
+                    resizeMode='cover'
+                    blurRadius={1}
+                />
                 {/*
                 <AnimatedImage
                     style={{
