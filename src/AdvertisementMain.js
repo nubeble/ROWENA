@@ -1876,7 +1876,7 @@ export default class AdvertisementMain extends React.Component {
         } catch (error) {
             console.error(error);
 
-            this.showNotification('An error occurred. Please try again.');
+            this.showNotification('An error happened. Please try again.');
 
             // stop indicator
             this.setState({ refreshing: false });

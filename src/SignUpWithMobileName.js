@@ -146,8 +146,9 @@ export default class SignUpWithMobileName extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
+                blurRadius={1}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <View style={styles.searchBar}>
                         {/* close button */}
                         <TouchableOpacity

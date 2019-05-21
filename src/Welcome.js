@@ -87,7 +87,7 @@ export default class Welcome extends React.Component {
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
-                            console.log('move to main');
+                            console.log('move to main.');
                             this.props.navigation.navigate("mainStackNavigator");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>

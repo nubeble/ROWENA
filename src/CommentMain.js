@@ -11,7 +11,6 @@ import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
 import Toast, { DURATION } from 'react-native-easy-toast';
-import Dialog from "react-native-dialog";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
@@ -38,12 +37,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
         totalFeedsSize: 0,
         focused: false,
         // showPostIndicator: -1,
-
-        dialogVisible: false,
-        dialogTitle: '',
-        dialogMessage: '',
-        dialogType: 'alert',
-        dialogPassword: ''
     };
 
     constructor(props) {
@@ -249,23 +242,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-
-                <Dialog.Container visible={this.state.dialogVisible}>
-                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
-                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
-                    {
-                        this.state.dialogType === 'pad' &&
-                        <Dialog.Input
-                            keyboardType={'phone-pad'}
-                            // keyboardAppearance={'dark'}
-                            onChangeText={(text) => this.setState({ dialogPassword: text })}
-                            autoFocus={true}
-                            secureTextEntry={true}
-                        />
-                    }
-                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
-                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
-                </Dialog.Container>
             </View>
         );
     }
@@ -453,7 +429,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             guest
         };
 
-        setTimeout(async () => {
+        setTimeout(() => {
             this.props.navigation.navigate("userPost", { item: _item });
         }, Cons.buttonTimeoutShort);
 

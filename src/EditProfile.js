@@ -1134,7 +1134,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         } catch (error) {
             console.error(error);
 
-            this.showNotification('An error occurred. Please try again.');
+            this.showNotification('An error happened. Please try again.');
 
             // stop indicator
             this.setState({ refreshing: false });

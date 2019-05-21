@@ -600,7 +600,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             feedSize: feedSize
         };
 
-        // setTimeout(async () => {
+        // setTimeout(() => {
         this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
         // }, Cons.buttonTimeoutShort);
     }

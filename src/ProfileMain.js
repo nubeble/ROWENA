@@ -355,7 +355,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         };
 
         console.log('post', post);
-        // setTimeout(async () => {
+        // setTimeout(() => {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
 
@@ -666,10 +666,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // 1. unsubscribe profile first!
                                                     this.props.profileStore.final();
 
-                                                    // ToDo: wait 0.5 sec
+                                                    // Consider: should wait
                                                     setTimeout(async () => {
                                                         await Firebase.signOut(profile.uid);
-                                                    }, 500);
+                                                    }, 500); // 0.5 sec
                                                 });
 
                                                 /*

@@ -11,7 +11,7 @@ export async function LoadStorage(key: string) {
 
         return result;
     } catch (error) {
-        console.log('LoadStorage, error occured', error);
+        console.log('LoadStorage, error occurred', error);
 
         return null;
     }
@@ -28,7 +28,7 @@ export async function SaveStorage(key: string, value: Object) {
 
             return result;
         } catch (error) {
-            console.log('SaveStorage, error occured', error);
+            console.log('SaveStorage, error occurred', error);
     
             return null;
         }
@@ -45,7 +45,7 @@ export async function RemoveStorage(key: string) {
 
         return result;
     } catch (error) {
-        console.log('RemoveStorage, error occured', error);
+        console.log('RemoveStorage, error occurred', error);
 
         return null;
     }

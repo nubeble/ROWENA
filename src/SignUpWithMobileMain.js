@@ -331,7 +331,6 @@ export default class SignUpWithMobileMain extends React.Component {
             }
 
             /*
-            // check existance
             const profile = await Firebase.getProfile(user.user.uid);
             if (profile) {
                 // update
@@ -344,7 +343,6 @@ export default class SignUpWithMobileMain extends React.Component {
                 await Firebase.updateProfile(user.user.uid, data);
             } else {
                 // create
-                // save user info to database
                 await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
             }
             */
@@ -354,9 +352,9 @@ export default class SignUpWithMobileMain extends React.Component {
             if (error.code === 'auth/email-already-in-use') {
                 this.showNotification('The email address is already in use. Please try another email address.');
             } else if (error.code === 'auth/network-request-failed') {
-                this.showNotification('A network error occurred. Please try again.');
+                this.showNotification('A network error happened. Please try again.');
             } else {
-                this.showNotification('An error occurred. Please try again.');
+                this.showNotification('An error happened. Please try again.');
             }
         }
 
@@ -381,8 +379,9 @@ export default class SignUpWithMobileMain extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
+                blurRadius={1}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <View style={styles.searchBar}>
                         <TouchableOpacity
                             style={{
@@ -670,7 +669,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     // this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
                     this.showNotification('Unusual activity. Please try again later.');
                 } else {
-                    this.showNotification('An error occurred. Please try again.');
+                    this.showNotification('An error happened. Please try again.');
                 }
             }
         }
@@ -707,7 +706,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 // The phone auth credential was created with an empty SMS verification code.
                 this.showNotification('Empty SMS verification code. Please resend the verification code.');
             } else {
-                this.showNotification('An error occurred. Please try again.');
+                this.showNotification('An error happened. Please try again.');
             }
 
             // reset

@@ -350,26 +350,23 @@ export default class SignUpWithEmail extends React.Component {
         try {
             Firebase.auth.languageCode = 'en';
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
-            console.log('user', user);
+            console.log('SignUpWithEmail.processSignUp, user', user);
 
-            // skip here
-            /*
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
                 registerExpoPushToken(user.user.uid, user.user.email);
             }
-            */
 
-            this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email });
+            this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email, from: 'EmailVerificationMain' });
         } catch (error) {
             console.log('error', error.code, error.message);
 
             if (error.code === 'auth/email-already-in-use') {
                 this.showNotification('The email address is already in use. Please try another email address.');
             } else if (error.code === 'auth/network-request-failed') {
-                this.showNotification('A network error occurred. Please try again.');
+                this.showNotification('A network error happened. Please try again.');
             } else {
-                this.showNotification('An error occurred. Please try again.');
+                this.showNotification('An error happened. Please try again.');
             }
         }
 
@@ -394,8 +391,9 @@ export default class SignUpWithEmail extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
+                blurRadius={1}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.4)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <View style={styles.searchBar}>
                         <TouchableOpacity
                             style={{

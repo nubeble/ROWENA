@@ -186,36 +186,33 @@ export default class Loading extends React.Component<InjectedProps> {
         Firebase.init();
 
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
-            console.log('Loading.onAuthStateChanged', user);
+            console.log('Loading.onAuthStateChanged, user', user);
 
+            /*
             if (Vars.signUpType === 'EMAIL') {
                 console.log('skip to save profile for EMAIL sign up.');
 
                 Loading.userAutoAuthenticated = false;
-
                 Vars.signUpType = null;
-                return;
+                 return;
             }
 
             Vars.signUpType = null;
-
-
+            */
 
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
 
-
-
             const isUserAuthenticated = !!user;
 
-            if (!isUserAuthenticated) { // user == null (first time or sign out, delete account)
+            if (!isUserAuthenticated) { // user == null (first join or sign out, delete account)
                 if (Loading.userSignedIn) { // signed out, delete account
                     Loading.userSignedIn = false;
 
                     Loading.userAutoAuthenticated = true;
 
                     // move to login page
-                    console.log('move to auth main');
+                    console.log('[sign out / delete account] move to auth main');
                     // StatusBar.setHidden(false);
                     navigation.navigate("authMain");
                 } else {
@@ -231,7 +228,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     ]).start(() => {
                         !this.closed && this.setState({ showIndicator: false });
 
-                        console.log('move to auth main');
+                        console.log('[first join] move to auth main.');
                         // StatusBar.setHidden(false);
                         navigation.navigate("authMain");
                     });
@@ -240,14 +237,13 @@ export default class Loading extends React.Component<InjectedProps> {
                 Loading.userSignedIn = true;
 
                 // save profile
+                console.log('Loading.onAuthStateChanged, Vars.signUpName', Vars.signUpName);
                 let name = Vars.signUpName;
-                Vars.signUpName = null;
 
                 if (!name) name = user.displayName;
                 const email = user.email;
                 const mobile = user.phoneNumber;
 
-                // check existance
                 let profile = await Firebase.getProfile(user.uid);
                 if (profile) {
                     // update
@@ -257,7 +253,6 @@ export default class Loading extends React.Component<InjectedProps> {
                     await Firebase.updateProfile(user.uid, profile);
                 } else {
                     // create
-                    // save user info to database
                     await Firebase.createProfile(user.uid, name, email, mobile);
                 }
 
@@ -274,11 +269,30 @@ export default class Loading extends React.Component<InjectedProps> {
                 await profileStore.init();
 
                 if (Loading.userAutoAuthenticated) {
-                    await this.checkUpdates();
+                    if (Vars.signUpType === null) { // for the auto sign in
 
-                    StatusBar.setHidden(false);
 
-                    console.log('move to main');
+                        // ToDo: check verification if EMAIL user
+                        if (user.email && !user.emailVerified) {
+                            console.log('email user is not verified. move to email verification.');
+                            StatusBar.setHidden(false);
+                            navigation.navigate("emailVerification", { email: user.email, user: user, from: 'Loading' });
+                            return;
+                        } else {
+                            await this.checkUpdates();
+
+                            StatusBar.setHidden(false);
+                        }
+                    } else { // for the resign after sign out / delete account
+
+                        if (Vars.signUpType === 'EMAIL') return;
+
+                        // sign up finished
+                        Vars.signUpType = null;
+                        Vars.signUpName = null;
+                    }
+
+                    console.log('[auto sign in OR resign after sign out / delete account] move to main.');
                     navigation.navigate("mainStackNavigator");
                 } else {
                     /*
@@ -293,11 +307,17 @@ export default class Loading extends React.Component<InjectedProps> {
                     Vars.signUpType = null; // sign up process finished
                     */
 
-                    console.log('move to welcome');
+                    if (Vars.signUpType === 'EMAIL') return;
+
+                    // sign up finished
+                    Vars.signUpType = null;
+                    Vars.signUpName = null;
+
+                    console.log('[first join] move to welcome.');
                     navigation.navigate("welcome");
                 }
             }
-        });
+        }); // end of onAuthStateChanged
     }
 
     async checkUpdates() {

@@ -112,6 +112,22 @@ export default class Firebase {
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);
+
+        // update firebase auth
+        let picture = null;
+        const user = Firebase.auth.currentUser;
+        await user.updateProfile({
+            // displayName: "Jane Q. User",
+            // photoURL: "https://example.com/jane-q-user/profile.jpg"
+            displayName: name,
+            photoURL: picture
+        }).then(function () {
+            // Update successful.
+            console.log('Firebase.updateProfile', 'update successful.');
+        }).catch(function (error) {
+            // An error happened.
+            console.log('Firebase.updateProfile', error);
+        });
     }
 
     static async updateProfile(uid, profile) {
@@ -119,21 +135,22 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).update(profile);
 
         // update firebase auth
-        if (profile.name && profile.picture && profile.picture.uri) {
-            const user = Firebase.auth.currentUser;
-            await user.updateProfile({
-                // displayName: "Jane Q. User",
-                // photoURL: "https://example.com/jane-q-user/profile.jpg"
-                displayName: profile.name,
-                photoURL: profile.picture.uri
-            }).then(function () {
-                // Update successful.
-                console.log('Firebase.updateProfile', 'update successful.');
-            }).catch(function (error) {
-                // An error happened.
-                console.log('Firebase.updateProfile', error);
-            });
-        }
+        const name = profile.name;
+        let picture = null;
+        if (profile.picture && profile.picture.uri) picture = profile.picture.uri;
+        const user = Firebase.auth.currentUser;
+        await user.updateProfile({
+            // displayName: "Jane Q. User",
+            // photoURL: "https://example.com/jane-q-user/profile.jpg"
+            displayName: name,
+            photoURL: picture
+        }).then(function () {
+            // Update successful.
+            console.log('Firebase.updateProfile', 'update successful.');
+        }).catch(function (error) {
+            // An error happened.
+            console.log('Firebase.updateProfile', error);
+        });
     }
 
     static async deleteProfile(uid) {
@@ -148,14 +165,17 @@ export default class Firebase {
             const userDoc = await transaction.get(db);
             if (!userDoc.exists) throw 'User document does not exist!';
 
+            // remove storage
             const picture = userDoc.data().picture;
             if (picture.ref) {
                 ref.delete();
             }
 
+            // remove user document
             transaction.delete(db);
         }).then(() => {
             // console.log("Transaction successfully committed!");
+            console.log("User document successfully deleted.");
             result = true;
         }).catch((error) => {
             console.log('Firebase.deleteProfile', error);
@@ -168,7 +188,7 @@ export default class Firebase {
         var user = Firebase.auth.currentUser;
         await user.delete().then(function () {
             // User deleted.
-            console.log('User deleted.');
+            console.log('Firebase auth deleted.');
         }).catch(function (error) {
             // An error happened.
             console.log('Firebase.deleteProfile', error);

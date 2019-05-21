@@ -351,11 +351,12 @@ import Welcome from './src/Welcome';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithEmailVerification from './src/SignUpWithEmailVerification';
-
 import SignUpWithMobileName from './src/SignUpWithMobileName';
 import SignUpWithMobileMain from './src/SignUpWithMobileMain';
 import SignUpWithMobilePassword from './src/SignUpWithMobilePassword';
 import SignUpWithMobileBirthday from './src/SignUpWithMobileBirthday';
+// import EmailVerificationIntro from './src/EmailVerificationIntro';
+import EmailVerificationMain from './src/EmailVerificationMain';
 
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
@@ -386,7 +387,8 @@ const SignUpWithEmailStackNavigator = createStackNavigator(
     {
         signUpWithEmailName: { screen: SignUpWithMobileName },
         signUpWithEmailMain: { screen: SignUpWithEmail },
-        signUpWithEmailVerification: { screen: SignUpWithEmailVerification }
+        // signUpWithEmailVerification: { screen: SignUpWithEmailVerification }
+        signUpWithEmailVerification: { screen: EmailVerificationMain }
     },
     {
         mode: 'card',
@@ -414,7 +416,6 @@ class SignUpWithEmailStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// ----
 
 const SignUpWithMobileMainStackNavigator = createStackNavigator(
     {
@@ -482,6 +483,40 @@ class SignUpWithMobileStackNavigatorWrapper extends React.Component {
     }
 }
 
+// ----
+const EmailVerificationStackNavigator = createStackNavigator(
+    {
+        // emailVerificationIntro: { screen: EmailVerificationIntro },
+        main: { screen: EmailVerificationMain },
+        // 
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class EmailVerificationStackNavigatorWrapper extends React.Component {
+    static router = EmailVerificationStackNavigator.router;
+
+    render() {
+        return (
+            <EmailVerificationStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+// ----
 
 
 
@@ -1240,18 +1275,12 @@ class MainStackNavigatorWrapper extends React.Component {
 const MainSwitchNavigator = createSwitchNavigator(
     {
         loading: { screen: Loading },
-
         authStackNavigator: { screen: AuthStackNavigatorWrapper },
-        /*
-        authMain: { screen: AuthMain },
-        email: { screen: SignUpWithEmail },
-        mobile: { screen: SignUpWithMobileSwitchNavigatorWrapper },
-        */
-
-
-
         welcome: { screen: Welcome }, // Consider: welcome & guile
-        mainStackNavigator: { screen: MainStackNavigatorWrapper }
+        mainStackNavigator: { screen: MainStackNavigatorWrapper },
+
+        // emailVerification: { screen: EmailVerificationStackNavigatorWrapper }
+        emailVerification: { screen: EmailVerificationMain }
     },
     {
         // initialRouteName: 'loading'

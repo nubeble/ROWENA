@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator,
+    StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator, ImageBackground,
     Animated, Dimensions, Platform, Image
 } from 'react-native';
 import { Constants } from 'expo';
@@ -12,6 +12,10 @@ import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
 import { registerExpoPushToken } from './PushNotifications';
+import autobind from "autobind-decorator";
+
+// const AnimatedImage = Animated.createAnimatedComponent(Image);
+// const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const HEIGHT = Dimensions.get('window').height;
 
@@ -29,20 +33,29 @@ export default class AuthMain extends React.Component {
 
 
         // loaded: false,
-        // blurRadius: new Animated.Value(1),
+
         // offset: new Animated.Value(0)
+        // intensity: new Animated.Value(0),
 
         // opacity: new Animated.Value(0),
-        viewOffset: new Animated.Value(HEIGHT)
+        viewOffset: new Animated.Value(HEIGHT),
+
+        // blurRadius: new Animated.Value(0),
+        blurRadius: new Animated.Value(0),
     };
 
-    /*
-    componentWillMount() {
-        if (!AuthMain.animation) this.setState({ viewOffset: 0 });
-    }
-    */
-
     componentDidMount() {
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+    }
+
+    componentWillUnmount() {
+        this.onFocusListener.remove();
+
+        this.closed = true;
+    }
+
+    @autobind
+    onFocus() {
         /*
         if (!AuthMain.loaded) {
             AuthMain.loaded = true;
@@ -68,20 +81,27 @@ export default class AuthMain extends React.Component {
         if (AuthMain.animation) {
             Animated.timing(this.state.viewOffset, {
                 toValue: 0,
-                duration: 500,
+                duration: 300,
                 useNativeDriver: true
             }).start(() => {
                 StatusBar.setHidden(false);
             });
 
+
+            // ToDo: screen blinking issue on blur animation
+            /*
+            console.log('animation start');
+            Animated.timing(this.state.blurRadius, { duration: 3000, toValue: 5, useNativeDriver: true }).start(() => {
+                // add code here
+            });
+            */
+
+
+
             AuthMain.animation = false;
         } else {
             this.setState({ viewOffset: 0 });
         }
-    }
-
-    componentWillUnmount() {
-        this.closed = true;
     }
 
     async continueWithFacebook() {
@@ -116,7 +136,6 @@ export default class AuthMain extends React.Component {
                 }
 
                 /*
-                // check existance
                 const profile = await Firebase.getProfile(user.user.uid);
                 if (profile) {
                     // update
@@ -129,15 +148,14 @@ export default class AuthMain extends React.Component {
                     await Firebase.updateProfile(user.user.uid, data);
                 } else {
                     // create
-                    // save user info to database
                     await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
                 }
                 */
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
 
-                // ToDo: error handling - messagebox (please try again)
-                this.showNotification('An error occurred. Please try again.');
+                // ToDo: error handling
+                this.showNotification('An error happened. Please try again.');
             }
         }
 
@@ -197,7 +215,35 @@ export default class AuthMain extends React.Component {
                     }}
                     source={PreloadImage.Background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
+                    blurRadius={1}
                 />
+
+                {/*
+                <AnimatedImage
+                    style={{
+                        position: 'absolute',
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height,
+                        resizeMode: 'cover'
+                    }}
+                    source={PreloadImage.Background}
+                    fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
+                    // blurRadius={1}
+                    blurRadius={this.state.blurRadius}
+                />
+                */}
+
+                {/*
+                <ImageBackground
+                    style={{
+                        width: Dimensions.get('window').width,
+                        height: Dimensions.get('window').height
+                    }}
+                    source={PreloadImage.Background}
+                    resizeMode='cover'
+                    blurRadius={1}
+                />
+                */}
 
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
@@ -376,11 +422,11 @@ export default class AuthMain extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Theme.color.splash
+        // backgroundColor: Theme.color.splash
     },
     view: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center'
     },
     /*

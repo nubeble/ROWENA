@@ -109,7 +109,7 @@ export default class Explore extends React.Component<InjectedProps> {
         // this.props.navigation.goBack(); // not working
         // this.props.navigation.dispatch(NavigationActions.back()); // not working
 
-        console.log('move to Intro');
+        console.log('move to Intro.');
         // this.props.screenProps.rootNavigation.navigate("intro");
         this.props.navigation.navigate("intro");
 
@@ -203,7 +203,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             style={{ position: 'absolute', left: 0, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    console.log('move to Intro');
+                                    console.log('move to Intro.');
                                     this.props.navigation.navigate("intro");
                                 }, Cons.buttonTimeoutShort);
                             }}
