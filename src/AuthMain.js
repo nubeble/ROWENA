@@ -223,7 +223,6 @@ export default class AuthMain extends React.Component {
 
         return (
             <View style={styles.container}>
-                {/*
                 <Image
                     style={{
                         position: 'absolute',
@@ -235,7 +234,7 @@ export default class AuthMain extends React.Component {
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                     blurRadius={1}
                 />
-                */}
+                {/*
                 <ImageBackground
                     style={{
                         width: Dimensions.get('window').width,
@@ -245,6 +244,7 @@ export default class AuthMain extends React.Component {
                     resizeMode='cover'
                     blurRadius={1}
                 />
+                */}
                 {/*
                 <AnimatedImage
                     style={{
