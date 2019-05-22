@@ -1,5 +1,3 @@
-/* copied from SignUpWithEmailVerification */
-
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
@@ -45,6 +43,10 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         // show resend button
         showResend: false,
 
+        invalid: true,
+        signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
+        signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
+
         dialogVisible: false,
         dialogTitle: '',
         dialogMessage: '',
@@ -81,12 +83,8 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         // show check hourglass
                         this.setState({ emailVerificationState: 2 });
 
-                        // save token here
-                        /*
-                        if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                            registerExpoPushToken(user.user.uid, user.user.email);
-                        }
-                        */
+                        // enable button
+                        this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
 
                         // move to next
                         setTimeout(() => {
@@ -113,6 +111,9 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
                         // hide hourglass
                         this.setState({ emailVerificationState: 0 });
+
+                        // disable
+                        this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
 
                         // show message box
                         this.showNotification('An error happened. Please try again.');
@@ -186,7 +187,8 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             return true;
         }
 
-        this.props.navigation.dispatch(NavigationActions.back());
+        // this.props.navigation.dispatch(NavigationActions.back());
+        this.goBack();
 
         return true;
     }
@@ -279,6 +281,8 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     }
 
     render() {
+        // const from = this.props.navigation.state.params.from;
+
         // timer
         // const timer = 30; // 60 ~ 0;
         const timer = this.state.timer;
@@ -302,11 +306,10 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-                blurRadius={1}
+            // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <View style={styles.searchBar}>
-                        {/*
                         <TouchableOpacity
                             style={{
                                 width: 48,
@@ -317,12 +320,18 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                this.props.navigation.dispatch(NavigationActions.back());
+                                // this.props.navigation.dispatch(NavigationActions.back());
+
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcon();
+                                }
+
+                                this.goBack();
                             }}
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
-                        */}
 
                         <View style={{
                             position: 'absolute',
@@ -382,132 +391,106 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                                 </Text>
                                 {' and click the "Verify" link inside.'}
                             </Text>
-                            {
-                                this.state.emailVerificationState === 0 &&
-                                <View style={{
-                                    height: 240,
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }}>
-                                    <Progress.Circle
-                                        showsText={false} size={120} color={Theme.color.text2} borderWidth={1} progress={0} />
 
+                            <View style={{ width: '100%', height: Dimensions.get('window').height / 2, justifyContent: 'center' }}>
+                                {
+                                    this.state.emailVerificationState === 0 &&
                                     <View style={{
-                                        position: 'absolute',
-                                        width: '100%',
                                         height: 240,
-                                        alignItems: "center", justifyContent: "center"
+                                        alignItems: "center",
+                                        justifyContent: "center"
                                     }}>
-                                        <AntDesign name='lock' color={Theme.color.text2} size={64} />
-                                        {
-                                            this.state.showResend &&
-                                            <TouchableOpacity
-                                                style={{
-                                                    // backgroundColor: 'green',
-                                                    position: 'absolute',
-                                                    top: 200,
-                                                    alignSelf: 'center',
-                                                }}
-                                                onPress={() => {
-                                                    if (this._showNotification) {
-                                                        this.hideNotification();
-                                                        this.hideAlertIcon();
-                                                    }
+                                        <Progress.Circle
+                                            showsText={false} size={120} color={Theme.color.text2} borderWidth={1} progress={0} />
 
-                                                    this.setState({ timer: 60 });
+                                        <View style={{
+                                            position: 'absolute',
+                                            width: '100%',
+                                            height: 240,
+                                            alignItems: "center", justifyContent: "center"
+                                        }}>
+                                            <AntDesign name='lock' color={Theme.color.text2} size={64} />
+                                            {
+                                                this.state.showResend &&
+                                                <TouchableOpacity
+                                                    style={{
+                                                        // backgroundColor: 'green',
+                                                        position: 'absolute',
+                                                        top: 200,
+                                                        alignSelf: 'center',
+                                                    }}
+                                                    onPress={() => {
+                                                        if (this._showNotification) {
+                                                            this.hideNotification();
+                                                            this.hideAlertIcon();
+                                                        }
 
-                                                    this.sendVerificationEmail();
-                                                }}
-                                            >
-                                                <Text style={{ fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>Resend verification email</Text>
-                                            </TouchableOpacity>
-                                        }
+                                                        this.setState({ timer: 60 });
+
+                                                        this.sendVerificationEmail();
+                                                    }}
+                                                >
+                                                    <Text style={{ fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>Resend verification email</Text>
+                                                </TouchableOpacity>
+                                            }
+                                        </View>
                                     </View>
-                                </View>
-                            }
-                            {
-                                this.state.emailVerificationState === 1 &&
-                                <View style={{
-                                    height: 240,
-                                    // backgroundColor: 'green',
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }}>
-                                    <Progress.Circle
-                                        textStyle={{
-                                            fontSize: 48,
-                                            fontFamily: "Roboto-Medium"
-                                        }}
-                                        // formatText={progress => `${Math.round(progress * 100)}%`}
-                                        formatText={progress => { // 0 ~ 1
-
-                                            // return `${Math.round(progress * 100)}%`;
-                                            return timer;
-                                        }}
-                                        showsText={true} size={120} color={Theme.color.text2} borderWidth={1} progress={progress} />
-                                </View>
-                            }
-                            {
-                                this.state.emailVerificationState === 2 &&
-                                <View style={{
-                                    height: 240,
-                                    alignItems: "center",
-                                    justifyContent: "center"
-                                }}>
-                                    <Progress.Circle
-                                        showsText={false} size={120} color={Theme.color.text2} borderWidth={1} progress={1} />
-
+                                }
+                                {
+                                    this.state.emailVerificationState === 1 &&
                                     <View style={{
-                                        position: 'absolute',
-                                        width: '100%',
                                         height: 240,
-                                        alignItems: "center", justifyContent: "center"
+                                        // backgroundColor: 'green',
+                                        alignItems: "center",
+                                        justifyContent: "center"
                                     }}>
-                                        <AntDesign name='check' color={Theme.color.text2} size={64} />
+                                        <Progress.Circle
+                                            textStyle={{
+                                                fontSize: 48,
+                                                fontFamily: "Roboto-Medium"
+                                            }}
+                                            // formatText={progress => `${Math.round(progress * 100)}%`}
+                                            formatText={progress => { // 0 ~ 1
+
+                                                // return `${Math.round(progress * 100)}%`;
+                                                return timer;
+                                            }}
+                                            showsText={true} size={120} color={Theme.color.text2} borderWidth={1} progress={progress} />
                                     </View>
-                                </View>
-                            }
+                                }
+                                {
+                                    this.state.emailVerificationState === 2 &&
+                                    <View style={{
+                                        height: 240,
+                                        alignItems: "center",
+                                        justifyContent: "center"
+                                    }}>
+                                        <Progress.Circle
+                                            showsText={false} size={120} color={Theme.color.text2} borderWidth={1} progress={1} />
+
+                                        <View style={{
+                                            position: 'absolute',
+                                            width: '100%',
+                                            height: 240,
+                                            alignItems: "center", justifyContent: "center"
+                                        }}>
+                                            <AntDesign name='check' color={Theme.color.text2} size={64} />
+                                        </View>
+                                    </View>
+                                }
+                            </View>
+
                         </View>
                     </View>
 
+
+
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity style={styles.signUpButton}
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                    this.hideAlertIcon();
-                                }
-
-                                setTimeout(() => {
-                                    this.openDialog('alert', 'New account', 'Are you sure you want to stop email verification and create new account?', async () => {
-                                        // stop timer
-                                        clearInterval(this.clockCall);
-                                        this.clockCall = null;
-
-                                        // stop reload
-                                        clearInterval(this.reloadInterval);
-                                        this.reloadInterval = null;
-
-                                        // ToDo: delete auth, delete token, user
-                                        // --
-                                        // 1. unsubscribe profile first!
-                                        this.props.profileStore.final();
-
-                                        const { profile } = this.props.profileStore;
-
-                                        // 2. remove token (tokens - uid)
-                                        await Firebase.deleteToken(profile.uid);
-
-                                        // 3. remove user (& received comments)
-                                        await Firebase.deleteProfile(profile.uid);
-                                        // --
-
-                                        this.props.navigation.navigate("authMain");
-                                    });
-                                }, Cons.buttonTimeoutShort);
-                            }}
+                        <TouchableOpacity
+                            style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]}
+                            disabled={this.state.invalid}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Create new account</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -518,8 +501,47 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                     </Dialog.Container>
                 </View>
-            </ImageBackground>
+            </ImageBackground >
         );
+    }
+
+    goBack() {
+        this.openDialog('alert', 'New account', 'Are you sure you want to stop email verification and create new account?', async () => {
+            // stop timer
+            clearInterval(this.clockCall);
+            this.clockCall = null;
+
+            // stop reload
+            clearInterval(this.reloadInterval);
+            this.reloadInterval = null;
+
+            // delete auth, delete token, user
+            // --
+            // 1. unsubscribe profile first!
+            this.props.profileStore.final();
+
+            const { profile } = this.props.profileStore;
+
+            // 2. remove token (tokens - uid)
+            await Firebase.deleteToken(profile.uid);
+
+            // 3. remove user (& received comments)
+            const result = await Firebase.deleteProfile(profile.uid);
+            // --
+
+            // Consider: if user cancel verification at first join, authentication error will happen.
+            // This operation is sensitive and requires recent authentication. Log in again before retrying this request
+            // Loading.onAuthStateChanged not called. manually move to auth main.
+            // ToDo: fist email account still remain!
+            if (!result) {
+                const from = this.props.navigation.state.params.from;
+                if (from === 'Loading') {
+                    this.props.navigation.navigate("authMain");
+                } else if (from === 'SignUpWithEmail') {
+                    this.props.navigation.dispatch(NavigationActions.back());
+                }
+            }
+        });
     }
 
     openDialog(type, title, message, callback) {
@@ -568,6 +590,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // backgroundColor: 'black'
     },
+    /*
     signUpButton: {
         width: '85%',
         height: Cons.buttonHeight,
@@ -577,6 +600,16 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         alignItems: 'center',
         justifyContent: 'center'
+    },
+    */
+    signUpButton: {
+        width: '85%',
+        height: Cons.buttonHeight,
+        // backgroundColor: Theme.color.buttonBackground,
+        backgroundColor: Theme.color.selection,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     activityIndicator: {
         position: 'absolute', top: 0, bottom: 0, left: 0, right: 0

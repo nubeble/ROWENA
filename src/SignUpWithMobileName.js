@@ -23,7 +23,7 @@ export default class SignUpWithMobileName extends React.Component {
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         invalid: true,
-        signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)',
+        signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
         signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
 
         name: '',
@@ -146,7 +146,7 @@ export default class SignUpWithMobileName extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-                blurRadius={1}
+                // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <View style={styles.searchBar}>
@@ -269,7 +269,7 @@ export default class SignUpWithMobileName extends React.Component {
         // enable/disable signup button
         if (text === '') {
             // disable
-            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.8)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
         } else {
             // enable
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });

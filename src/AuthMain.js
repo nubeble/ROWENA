@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator, ImageBackground,
-    Animated, Dimensions, Platform, Image
+    Animated, Dimensions, Platform, Image, BackHandler
 } from 'react-native';
 import { Constants } from 'expo';
 import { EvilIcons, Ionicons, FontAwesome } from "react-native-vector-icons";
@@ -44,13 +44,27 @@ export default class AuthMain extends React.Component {
     };
 
     componentDidMount() {
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
     }
 
     componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
         this.closed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcons();
+
+            return true;
+        }
+
+        return true;
     }
 
     @autobind
@@ -88,10 +102,10 @@ export default class AuthMain extends React.Component {
             });
             */
             Animated.sequence([
-                Animated.delay(1000),
+                Animated.delay(500),
                 Animated.spring(this.state.viewOffset, {
                     toValue: 0,
-                    bounciness: 12,
+                    bounciness: 10,
                     useNativeDriver: true
                 })
             ]).start(() => {
@@ -232,7 +246,7 @@ export default class AuthMain extends React.Component {
                     }}
                     source={PreloadImage.Background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
-                    blurRadius={1}
+                    // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
                 {/*
                 <ImageBackground

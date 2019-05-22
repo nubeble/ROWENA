@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Animated, Dimensions, View, StatusBar, Image } from 'react-native';
+import { StyleSheet, Animated, Dimensions, View, StatusBar, Image, Platform } from 'react-native';
 import { Font, AppLoading, SplashScreen, Asset, FileSystem } from 'expo';
 // import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
@@ -132,7 +132,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         opacity: this.state.image2Opacity
                     }}
                     source={PreloadImage.Background}
-                    blurRadius={1}
+                    // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
             </View>
         );
@@ -225,8 +225,7 @@ export default class Loading extends React.Component<InjectedProps> {
                             toValue: 1,
                             duration: 500,
                             useNativeDriver: true
-                        }),
-                        // Animated.delay(1000)
+                        })
                     ]).start(() => {
                         !this.closed && this.setState({ showIndicator: false });
 
