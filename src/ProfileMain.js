@@ -79,12 +79,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     handleHardwareBackPress() {
         console.log('ProfileMain.handleHardwareBackPress');
 
-        if (this.state.dialogVisible) {
-            this.hideDialog();
-
-            return true;
-        }
-
         this.props.navigation.navigate("intro");
 
         return true;

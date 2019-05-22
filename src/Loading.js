@@ -238,12 +238,12 @@ export default class Loading extends React.Component<InjectedProps> {
                 Loading.userSignedIn = true;
 
                 // save profile
-                console.log('Loading.onAuthStateChanged, Vars.signUpName', Vars.signUpName);
                 let name = Vars.signUpName;
 
                 if (!name) name = user.displayName;
                 const email = user.email;
                 const mobile = user.phoneNumber;
+                const picture = user.photoURL;
 
                 let profile = await Firebase.getProfile(user.uid);
                 if (profile) {
@@ -251,10 +251,14 @@ export default class Loading extends React.Component<InjectedProps> {
                     profile.name = name;
                     profile.email = email;
                     profile.phoneNumber = mobile;
+                    if (!profile.picture.uri) { // if only profile picture NOT exists then save it!
+                        profile.picture.uri = picture;
+                    }
+
                     await Firebase.updateProfile(user.uid, profile);
                 } else {
                     // create
-                    await Firebase.createProfile(user.uid, name, email, mobile);
+                    await Firebase.createProfile(user.uid, name, email, mobile, picture);
                 }
 
                 // const { uid } = Firebase.auth.currentUser;
@@ -273,15 +277,21 @@ export default class Loading extends React.Component<InjectedProps> {
                     if (Vars.signUpType === null) { // for the auto sign in
 
 
-                        // ToDo: check verification if EMAIL user
-                        if (user.email && !user.emailVerified) {
-                            console.log('email user is not verified. move to email verification.');
-                            StatusBar.setHidden(false);
-                            navigation.navigate("emailVerification", { email: user.email, user: user, from: 'Loading' });
-                            return;
+                        // check verification if EMAIL user
+                        if (user.email && !user.emailVerified && user) {
+
+                            if (user.providerData && user.providerData.length > 0 && user.providerData[0].providerId === "facebook.com") {
+                                console.log('email user is not verified. but facebook user NOT need to email verification.');
+                                await this.checkUpdates();
+                                StatusBar.setHidden(false);
+                            } else {
+                                console.log('email user is not verified. move to email verification.');
+                                StatusBar.setHidden(false);
+                                navigation.navigate("emailVerification", { email: user.email, user: user, from: 'Loading' });
+                                return;
+                            }
                         } else {
                             await this.checkUpdates();
-
                             StatusBar.setHidden(false);
                         }
                     } else { // for the resign after sign out / delete account

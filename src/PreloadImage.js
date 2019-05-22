@@ -1,6 +1,7 @@
 import { Asset } from "expo";
 
 const Splash = require('../assets/splash.png');
+const Title = require('../assets/title.png');
 const Background = require('../assets/background.png');
 
 /*
@@ -45,6 +46,7 @@ const emoji5 = require('../assets/emoji/5.png');
 
 export default class PreloadImage {
     static Splash = Splash;
+    static Title = Title;
     static Background = Background;
 
     /*
@@ -90,6 +92,7 @@ export default class PreloadImage {
             // Asset.loadAsync(Images.logo)
             Asset.loadAsync([
                 PreloadImage.Splash,
+                PreloadImage.Title,
                 PreloadImage.Background,
 
                 /*

@@ -188,12 +188,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         console.log('ChatRoom.handleHardwareBackPress');
         // this.goBack(); // works best when the goBack is async
 
-        if (this.state.dialogVisible) {
-            this.hideDialog();
-
-            return true;
-        }
-
         this.moveToChatMain();
 
         return true;

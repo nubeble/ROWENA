@@ -188,6 +188,10 @@ export default class AuthMain extends React.Component {
                 // ToDo: error handling
                 this.showNotification('An error happened. Please try again.');
             }
+        } else {
+            console.log('Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
+            const str = type + ' ' + permissions + ' ' + declinedPermissions;
+            this.showNotification(str);
         }
 
         // ToDo: enable buttons
@@ -307,10 +311,18 @@ export default class AuthMain extends React.Component {
                         <Text style={{
                             fontFamily: "FriendlySchoolmates-Regular",
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 42,
-                            paddingTop: 22,
+                            fontSize: 48,
+                            paddingTop: 30,
                             textAlign: 'center'
                         }}>ROWENA</Text>
+                        <Image
+                            style={{
+                                tintColor: 'rgba(255, 255, 255, 0.8)',
+                                width: 60, height: 60,
+                                resizeMode: 'cover'
+                            }}
+                            source={PreloadImage.Title}
+                        />
                     </View>
 
                     <View style={styles.empty}>
@@ -329,13 +341,13 @@ export default class AuthMain extends React.Component {
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
                                 <EvilIcons name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
                             </View>
 
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
 
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
                                 {
                                     this.state.showFacebookLoader &&
                                     <ActivityIndicator
@@ -354,18 +366,18 @@ export default class AuthMain extends React.Component {
                                 }
 
                                 setTimeout(() => {
-                                    this.signUpWithEmail();
+                                    this.signUpWithMobile();
                                 }, Cons.buttonTimeoutShort);
                             }}
-                            style={styles.signUpWithEmailButton}
+                            style={styles.signUpWithMobileButton}
                         >
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
-                                <Ionicons name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
+                                <FontAwesome name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
                             </View>
 
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
 
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}></View>
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -375,18 +387,18 @@ export default class AuthMain extends React.Component {
                                 }
 
                                 setTimeout(() => {
-                                    this.signUpWithMobile();
+                                    this.signUpWithEmail();
                                 }, Cons.buttonTimeoutShort);
                             }}
-                            style={styles.signUpWithMobileButton}
+                            style={styles.signUpWithEmailButton}
                         >
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}>
-                                <FontAwesome name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
+                                <Ionicons name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
                             </View>
 
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
 
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignContent: 'center', justifyContent: 'center' }}></View>
+                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
@@ -483,6 +495,7 @@ const styles = StyleSheet.create({
     logo: {
         width: '100%',
         height: '35%',
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center'
     },

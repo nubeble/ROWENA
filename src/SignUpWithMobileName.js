@@ -249,7 +249,7 @@ export default class SignUpWithMobileName extends React.Component {
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Next</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

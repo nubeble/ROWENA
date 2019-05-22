@@ -181,12 +181,6 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             return true;
         }
 
-        if (this.state.dialogVisible) {
-            this.hideDialog();
-
-            return true;
-        }
-
         // this.props.navigation.dispatch(NavigationActions.back());
         this.goBack();
 

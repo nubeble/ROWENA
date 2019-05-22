@@ -162,12 +162,6 @@ export default class UserMain extends React.Component<InjectedProps> {
             return true;
         }
 
-        if (this.state.dialogVisible) {
-            this.hideDialog();
-
-            return true;
-        }
-
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;

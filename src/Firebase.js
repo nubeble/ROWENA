@@ -87,7 +87,7 @@ export default class Firebase {
         return null;
     }
 
-    static async createProfile(uid, name, email, phoneNumber) {
+    static async createProfile(uid, name, email, phoneNumber, picture) {
         const profile = {
             uid: uid,
             name: name,
@@ -98,7 +98,7 @@ export default class Firebase {
             phoneNumber: phoneNumber,
             picture: {
                 // preview: null,
-                uri: null
+                uri: picture
             },
             about: null,
             feeds: [],
@@ -114,7 +114,6 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).set(profile);
 
         // update firebase auth
-        let picture = null;
         const user = Firebase.auth.currentUser;
         await user.updateProfile({
             // displayName: "Jane Q. User",
@@ -123,15 +122,14 @@ export default class Firebase {
             photoURL: picture
         }).then(function () {
             // Update successful.
-            console.log('Firebase.updateProfile', 'update successful.');
+            console.log('Firebase.createProfile', 'update successful.');
         }).catch(function (error) {
             // An error happened.
-            console.log('Firebase.updateProfile', error);
+            console.log('Firebase.createProfile', error);
         });
     }
 
     static async updateProfile(uid, profile) {
-        console.log('Firebase.updateProfile');
         await Firebase.firestore.collection("users").doc(uid).update(profile);
 
         // update firebase auth

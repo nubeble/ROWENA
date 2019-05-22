@@ -96,12 +96,6 @@ export default class ReadAllReviewsScreen extends React.Component {
             return true;
         }
 
-        if (this.state.dialogVisible) {
-            this.hideDialog();
-
-            return true;
-        }
-
         this.props.navigation.state.params.initFromReadAllReviews();
         this.props.navigation.goBack();
 
