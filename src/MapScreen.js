@@ -4,9 +4,10 @@ import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform, 
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text, Theme } from "./rnff/src/components";
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
+import Util from './Util';
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -27,7 +28,7 @@ export default class MapScreen extends React.Component {
     state = {
         renderMap: false,
 
-        distance: '?', // ToDo: get geolocation of my location
+        distance: '',
 
         region: { // current region
             latitude: LATITUDE,
@@ -54,14 +55,14 @@ export default class MapScreen extends React.Component {
         const latitude = post.location.latitude;
         const longitude = post.location.longitude;
 
+        const distance = Util.getDistance(post.location, Vars.location);
+
         const region = {
             latitude,
             longitude,
             latitudeDelta: 0.02,
             longitudeDelta: 0.02 * ASPECT_RATIO
         };
-
-        this.setState({ region });
 
         const averageRating = post.averageRating;
         const integer = Math.floor(averageRating);
@@ -76,7 +77,7 @@ export default class MapScreen extends React.Component {
             case 5: markerImage = PreloadImage.emoji5; break;
         }
 
-        this.setState({ markerImage });
+        this.setState({ distance, region, markerImage });
 
         setTimeout(() => {
             !this.closed && this.setState({ renderMap: true });
@@ -183,7 +184,7 @@ export default class MapScreen extends React.Component {
                         justifyContent: "center", alignItems: "center"
                     }}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "black" }}>{this.state.distance + ' kilometers away'}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "black" }}>{this.state.distance}</Text>
                 </View>
 
                 {/* gps button */}

@@ -75,6 +75,26 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         }, 0);
     }
 
+    componentWillUnmount() {
+        console.log('ProfileMain.componentWillUnmount');
+
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
+            const instance = this.feedsUnsubscribes[i];
+            instance();
+        }
+
+        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
+            const instance = this.countsUnsubscribes[i];
+            instance();
+        }
+
+        this.closed = true;
+    }
+
     @autobind
     handleHardwareBackPress() {
         console.log('ProfileMain.handleHardwareBackPress');
@@ -124,26 +144,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
-
-    componentWillUnmount() {
-        console.log('ProfileMain.componentWillUnmount');
-
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-
-        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
-            const instance = this.feedsUnsubscribes[i];
-            instance();
-        }
-
-        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
-            const instance = this.countsUnsubscribes[i];
-            instance();
-        }
-
-        this.closed = true;
-    }
 
     getUserFeeds() {
         if (this.onLoading) return;
@@ -657,13 +657,28 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 if (!profile) return;
 
                                                 this.openDialog('alert', 'Log out', 'Are you sure you want to logout?', () => {
-                                                    // 1. unsubscribe profile first!
+                                                    // 1. unsubscribe all the feeds, place
+                                                    for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
+                                                        const instance = this.feedsUnsubscribes[i];
+                                                        instance();
+                                                    }
+
+                                                    this.feedsUnsubscribes = [];
+
+                                                    for (var i = 0; i < this.countsUnsubscribes.length; i++) {
+                                                        const instance = this.countsUnsubscribes[i];
+                                                        instance();
+                                                    }
+
+                                                    this.countsUnsubscribes = [];
+
+                                                    // 2. unsubscribe profile first!
                                                     this.props.profileStore.final();
 
                                                     // Consider: should wait
                                                     setTimeout(async () => {
                                                         await Firebase.signOut(profile.uid);
-                                                    }, 500); // 0.5 sec
+                                                    }, 1000);
                                                 });
 
                                                 /*

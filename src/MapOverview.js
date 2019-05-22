@@ -3,7 +3,7 @@ import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
 import { MapView, Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import { Marker } from 'react-native-maps';
 
@@ -166,12 +166,8 @@ export default class MapOverview extends React.Component {
     }
 
     render() {
-        /*
         const { post } = this.props.navigation.state.params;
-
-        const latitude = post.location.latitude;
-        const longitude = post.location.longitude;
-        */
+        const distance = Util.getDistance(post.location, Vars.location);
 
         return (
             <View style={styles.flex}>
@@ -194,7 +190,7 @@ export default class MapOverview extends React.Component {
                     </TouchableOpacity>
 
                     {/* ToDo: get geolocation of my location */}
-                    <Text style={styles.distance}>? kilometers away</Text>
+                    <Text style={styles.distance}>{distance}</Text>
 
                     {/* gps button */}
                     <TouchableOpacity

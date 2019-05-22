@@ -308,21 +308,25 @@ export default class AuthMain extends React.Component {
 
                 <Animated.View style={[styles.view, viewStyle]}>
                     <View style={styles.logo}>
-                        <Text style={{
-                            fontFamily: "FriendlySchoolmates-Regular",
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 48,
-                            paddingTop: 30,
-                            textAlign: 'center'
-                        }}>ROWENA</Text>
                         <Image
                             style={{
                                 tintColor: 'rgba(255, 255, 255, 0.8)',
-                                width: 60, height: 60,
+                                width: 56, height: 56,
                                 resizeMode: 'cover'
                             }}
                             source={PreloadImage.Title}
                         />
+                        <Text style={{
+                            // backgroundColor: 'green',
+                            marginLeft: -6,
+
+                            fontFamily: "FriendlySchoolmates-Regular",
+                            color: 'rgba(255, 255, 255, 0.8)',
+                            fontSize: 42,
+                            paddingTop: 22,
+                            paddingBottom: 2,
+                            textAlign: 'center'
+                        }}>ROWENA</Text>
                     </View>
 
                     <View style={styles.empty}>

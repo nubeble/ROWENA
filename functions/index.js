@@ -217,7 +217,7 @@ app.post("/images", function (req, res) {
                 resolve(); // then
 
                 // return response
-                let result = {
+                const result = {
                     downloadUrl: url
                 };
 
@@ -355,11 +355,11 @@ const saveToken = async(function () {
     */
 
 
-    await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
+    const result = await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
 
     console.log('Done saving to database.');
 
-    res.status(200).send(fields);
+    res.status(200).send(result);
 });
 
 exports.setToken = functions.https.onRequest((req, res) => {
@@ -680,6 +680,8 @@ const deleteFiles = async(function () {
 
     const storage = admin.storage();
 
+    let refs = [];
+
     const length = Object.keys(fields).length;
     for (var i = 0; i < length; i++) {
         const number = i + 1;
@@ -696,11 +698,13 @@ const deleteFiles = async(function () {
             // Uh-oh, an error occurred!
             res.status(405).end(error + fileRef);
         });
+
+        refs.push(fileRef);
     }
 
     console.log('Done deleting files in database.');
 
-    res.status(200).send(fields);
+    res.status(200).send(refs);
 });
 
 /*
@@ -737,19 +741,39 @@ const signOut = async(function () {
     const fields = params.fields;
     const res = params.res;
 
+    // console.log('Done parsing form.', fields);
+
     const uid = fields.uid;
 
     // Revoke all refresh tokens for a specified user for whatever reason.
     // Retrieve the timestamp of the revocation, in seconds since the epoch.
     await(admin.auth().revokeRefreshTokens(uid).then(() => {
+        console.log('revoke success.', uid);
         return admin.auth().getUser(uid);
     }).then((userRecord) => {
+        console.log('userRecord.tokensValidAfterTime', userRecord.tokensValidAfterTime);
         return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
     }).then((timestamp) => {
         console.log("Tokens revoked at: ", timestamp);
+
+        // ToDo: send timestamp
+        // res.status(200).send(timestamp);
+        /*
+            Unhandled rejection
+
+            RangeError: Invalid status code: 1558548684
+            at ServerResponse.writeHead (_http_server.js:193:11)
+            at ServerResponse._implicitHeader (_http_server.js:158:8)
+            at ServerResponse.OutgoingMessage.end (_http_outgoing.js:586:10)
+            at ServerResponse.send (/var/tmp/worker/node_modules/express/lib/response.js:221:10)
+            at Object.<anonymous> (/user_code/index.js:763:21)
+            at tryBlock (/user_code/node_modules/asyncawait/src/async/fiberManager.js:39:33)
+            at runInFiber (/user_code/node_modules/asyncawait/src/async/fiberManager.js:26:9)
+        */
     }));
 
-    res.status(200).send(fields);
+    const msg = 'revokeRefreshTokens success.';
+    res.status(200).send(msg);
 });
 
 exports.signOutUsers = functions.https.onRequest((req, res) => {

@@ -201,21 +201,27 @@ export default class Firebase {
     }
 
     static async signOut(uid) {
-        await Firebase.auth.signOut();
-
-
         // sign out all users
         const formData = new FormData();
         formData.append("uid", uid);
 
-        await fetch(SERVER_ENDPOINT + "signOutUsers", {
-            method: "POST",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data"
-            },
-            body: formData
-        });
+        try {
+            let response = await fetch(SERVER_ENDPOINT + "signOutUsers", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+
+            console.log('Firebase.signOut result', response);
+        } catch (error) {
+            console.error(error);
+        }
+
+        // sign out
+        await Firebase.auth.signOut();
     }
 
     static async deleteToken(uid) {
