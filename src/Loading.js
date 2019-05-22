@@ -132,7 +132,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         opacity: this.state.image2Opacity
                     }}
                     source={PreloadImage.Background}
-                    // blurRadius={Platform.OS === 'android' ? 1 : 15}
+                // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
             </View>
         );

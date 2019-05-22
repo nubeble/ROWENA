@@ -391,7 +391,7 @@ export default class SignUpWithEmail extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-                // blurRadius={Platform.OS === 'android' ? 1 : 15}
+            // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <View style={styles.searchBar}>

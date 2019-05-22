@@ -14,7 +14,7 @@ import { Text, Theme } from "./rnff/src/components";
 import { registerExpoPushToken } from './PushNotifications';
 import autobind from "autobind-decorator";
 
-const AnimatedImage = Animated.createAnimatedComponent(Image);
+// const AnimatedImage = Animated.createAnimatedComponent(Image);
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
 const HEIGHT = Dimensions.get('window').height;
@@ -246,7 +246,7 @@ export default class AuthMain extends React.Component {
                     }}
                     source={PreloadImage.Background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
-                    // blurRadius={Platform.OS === 'android' ? 1 : 15}
+                // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
                 {/*
                 <ImageBackground

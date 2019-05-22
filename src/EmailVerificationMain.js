@@ -125,7 +125,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             console.log('An error happened.', error);
 
             // show message box
-            this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
+            this.showNotification('Unusual activity. Try again later.');
 
             // show resend button
             this.setState({ showResend: true });

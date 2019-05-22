@@ -350,12 +350,10 @@ import Loading from './src/Loading';
 import Welcome from './src/Welcome';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
-import SignUpWithEmailVerification from './src/SignUpWithEmailVerification';
 import SignUpWithMobileName from './src/SignUpWithMobileName';
 import SignUpWithMobileMain from './src/SignUpWithMobileMain';
 import SignUpWithMobilePassword from './src/SignUpWithMobilePassword';
 import SignUpWithMobileBirthday from './src/SignUpWithMobileBirthday';
-// import EmailVerificationIntro from './src/EmailVerificationIntro';
 import EmailVerificationMain from './src/EmailVerificationMain';
 
 import ChatMain from './src/ChatMain';
@@ -387,7 +385,6 @@ const SignUpWithEmailStackNavigator = createStackNavigator(
     {
         signUpWithEmailName: { screen: SignUpWithMobileName },
         signUpWithEmailMain: { screen: SignUpWithEmail },
-        // signUpWithEmailVerification: { screen: SignUpWithEmailVerification }
         signUpWithEmailVerification: { screen: EmailVerificationMain }
     },
     {
@@ -486,9 +483,8 @@ class SignUpWithMobileStackNavigatorWrapper extends React.Component {
 // ----
 const EmailVerificationStackNavigator = createStackNavigator(
     {
-        // emailVerificationIntro: { screen: EmailVerificationIntro },
+        // intro
         main: { screen: EmailVerificationMain },
-        // 
     },
     {
         mode: 'card',
