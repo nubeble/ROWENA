@@ -1,8 +1,8 @@
 // @flow
-import {observable, computed} from "mobx";
+import { observable, computed } from "mobx";
 
 import Firebase from "../../../../Firebase";
-import type {Comment, Comments, CommentEntry} from "../../components/Model";
+import type { Comment, Comments, CommentEntry } from "../../components/Model";
 
 export default class CommentsStore {
 
@@ -21,19 +21,24 @@ export default class CommentsStore {
             .collection("comments")
             .orderBy("timestamp", "desc");
 
-        query.onSnapshot(async snap => {
-            const comments: Promise<CommentEntry>[] = [];
+        query.onSnapshot(
+            async snap => {
+                const comments: Promise<CommentEntry>[] = [];
 
-            snap.forEach(commentDoc => comments.push((async () => {
-                const comment = commentDoc.data();
-                const profileDoc = await Firebase.firestore.collection("users").doc(comment.uid).get();
-                const profile = profileDoc.data();
+                snap.forEach(commentDoc => comments.push((async () => {
+                    const comment = commentDoc.data();
+                    const profileDoc = await Firebase.firestore.collection("users").doc(comment.uid).get();
+                    const profile = profileDoc.data();
 
-                return { comment, profile };
-            })()));
+                    return { comment, profile };
+                })()));
 
-            this.comments = await Promise.all(comments);
-        });
+                this.comments = await Promise.all(comments);
+            },
+            error => {
+                console.log('CommentsStore.init, error', error);
+            }
+        );
     }
 
     async addComment(postId: string, comment: Comment): Promise<void> {

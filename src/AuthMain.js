@@ -59,7 +59,6 @@ export default class AuthMain extends React.Component {
     handleHardwareBackPress() {
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcons();
 
             return true;
         }
@@ -311,20 +310,19 @@ export default class AuthMain extends React.Component {
                         <Image
                             style={{
                                 tintColor: 'rgba(255, 255, 255, 0.8)',
-                                width: 56, height: 56,
+                                width: 46, height: 46,
                                 resizeMode: 'cover'
                             }}
                             source={PreloadImage.Title}
                         />
                         <Text style={{
                             // backgroundColor: 'green',
-                            marginLeft: -6,
-
+                            marginLeft: -4,
                             fontFamily: "FriendlySchoolmates-Regular",
                             color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 42,
-                            paddingTop: 22,
-                            paddingBottom: 2,
+                            fontSize: 40,
+                            paddingTop: 27,
+                            // paddingBottom: 4,
                             textAlign: 'center'
                         }}>ROWENA</Text>
                     </View>

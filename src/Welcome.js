@@ -31,25 +31,30 @@ export default class Welcome extends React.Component {
     }
 
     render() {
+        const from = this.props.navigation.state.params.from;
+
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
-                    <View style={{
-                        position: 'absolute',
-                        top: Constants.statusBarHeight,
-                        width: '100%',
-                        height: 3,
-                        backgroundColor: "rgba(62, 165, 255, 0.4)"
-                    }}>
+                    {
+                        from === 'MOBILE' || from === 'EMAIL' &&
                         <View style={{
                             position: 'absolute',
-                            top: 0,
-                            left: '75%',
-                            width: '25%',
+                            top: Constants.statusBarHeight,
+                            width: '100%',
                             height: 3,
-                            backgroundColor: "rgb(62, 165, 255)"
-                        }} />
-                    </View>
+                            backgroundColor: "rgba(62, 165, 255, 0.4)"
+                        }}>
+                            <View style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: '75%',
+                                width: '25%',
+                                height: 3,
+                                backgroundColor: "rgb(62, 165, 255)"
+                            }} />
+                        </View>
+                    }
                 </View>
 
                 <View style={styles.container}>

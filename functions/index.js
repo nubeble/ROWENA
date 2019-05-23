@@ -321,7 +321,6 @@ const makeData = (index, url) => {
 }
 */
 
-
 const saveToken = async(function () {
     const params = this;
     const fields = params.fields;
@@ -735,7 +734,6 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
 });
 */
 
-
 const signOut = async(function () {
     const params = this;
     const fields = params.fields;
@@ -747,7 +745,7 @@ const signOut = async(function () {
 
     // Revoke all refresh tokens for a specified user for whatever reason.
     // Retrieve the timestamp of the revocation, in seconds since the epoch.
-    await(admin.auth().revokeRefreshTokens(uid).then(() => {
+    var result = await(admin.auth().revokeRefreshTokens(uid).then(() => {
         console.log('revoke success.', uid);
         return admin.auth().getUser(uid);
     }).then((userRecord) => {
@@ -755,25 +753,9 @@ const signOut = async(function () {
         return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
     }).then((timestamp) => {
         console.log("Tokens revoked at: ", timestamp);
-
-        // ToDo: send timestamp
-        // res.status(200).send(timestamp);
-        /*
-            Unhandled rejection
-
-            RangeError: Invalid status code: 1558548684
-            at ServerResponse.writeHead (_http_server.js:193:11)
-            at ServerResponse._implicitHeader (_http_server.js:158:8)
-            at ServerResponse.OutgoingMessage.end (_http_outgoing.js:586:10)
-            at ServerResponse.send (/var/tmp/worker/node_modules/express/lib/response.js:221:10)
-            at Object.<anonymous> (/user_code/index.js:763:21)
-            at tryBlock (/user_code/node_modules/asyncawait/src/async/fiberManager.js:39:33)
-            at runInFiber (/user_code/node_modules/asyncawait/src/async/fiberManager.js:26:9)
-        */
     }));
 
-    const msg = 'revokeRefreshTokens success.';
-    res.status(200).send(msg);
+    res.status(200).send(result);
 });
 
 exports.signOutUsers = functions.https.onRequest((req, res) => {

@@ -88,12 +88,12 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
                         // move to next
                         setTimeout(() => {
+                            console.log('[first join] move to welcome.');
+                            this.props.navigation.navigate("welcome", { from: 'EMAIL' });
+
                             // sign up finished
                             Vars.signUpType = null;
                             Vars.signUpName = null;
-
-                            console.log('[first join] move to welcome.');
-                            this.props.navigation.navigate("welcome");
                         }, 2000); // 2 sec
                     }
                 }, error => {
@@ -303,6 +303,24 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <Animated.View
+                        style={[styles.notification, notificationStyle]}
+                        ref={notification => this._notification = notification}
+                    >
+                        <Text style={styles.notificationText}>{this.state.notification}</Text>
+                        <TouchableOpacity
+                            style={styles.notificationButton}
+                            onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcon();
+                                }
+                            }}
+                        >
+                            <Ionicons name='md-close' color="black" size={20} />
+                        </TouchableOpacity>
+                    </Animated.View>
+
                     <View style={styles.searchBar}>
                         <TouchableOpacity
                             style={{
@@ -344,24 +362,6 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                             }} />
                         </View>
                     </View>
-
-                    <Animated.View
-                        style={[styles.notification, notificationStyle]}
-                        ref={notification => this._notification = notification}
-                    >
-                        <Text style={styles.notificationText}>{this.state.notification}</Text>
-                        <TouchableOpacity
-                            style={styles.notificationButton}
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                    this.hideAlertIcon();
-                                }
-                            }}
-                        >
-                            <Ionicons name='md-close' color="black" size={20} />
-                        </TouchableOpacity>
-                    </Animated.View>
 
                     <View style={{ paddingTop: Theme.spacing.tiny }}>
                         <Text style={{

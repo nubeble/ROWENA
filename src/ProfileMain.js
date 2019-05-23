@@ -1,6 +1,10 @@
 import autobind from "autobind-decorator";
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image, TouchableWithoutFeedback } from 'react-native';
+import {
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
+    NetInfo, TouchableWithoutFeedback, Animated
+} from 'react-native';
+import { Constants } from "expo";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
 import { inject, observer } from "mobx-react/native";
@@ -13,6 +17,7 @@ import { RefreshIndicator } from "./rnff/src/components";
 import Dialog from "react-native-dialog";
 import Util from "./Util";
 import ProfileStore from "./rnff/src/home/ProfileStore";
+import Intro from './Intro';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -36,6 +41,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         totalFeedsSize: 0,
         focused: false,
         // showPostIndicator: -1,
+
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         dialogVisible: false,
         dialogTitle: '',
@@ -67,6 +76,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+        this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
 
         this.getUserFeeds();
 
@@ -81,6 +91,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+        this.networkListener.remove();
 
         for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
@@ -97,7 +108,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('ProfileMain.handleHardwareBackPress');
+        // console.log('ProfileMain.handleHardwareBackPress');
+
+        if (this._showNotification) {
+            this.hideNotification();
+
+            return true;
+        }
 
         this.props.navigation.navigate("intro");
 
@@ -131,6 +148,29 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.setState({ focused: false });
     }
 
+    @autobind
+    handleConnectionChange(connectionInfo) {
+        // console.log('handleConnectionChange, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
+        // console.log('handleConnectionChange', connectionInfo);
+
+        /*
+        const msg = 'type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType;
+        this.showNotification(msg);
+        */
+
+        if (connectionInfo.type === 'none') {
+            // disconnected
+            this.showNotification('You are currently offline.');
+
+            // ToDo: stop
+        } else if (connectionInfo.type !== 'none') {
+            // connected
+            this.showNotification('You are connected again.');
+
+            // ToDo: resume
+        }
+    }
+
     /*
     @autobind
     onScrollHandler() {
@@ -139,6 +179,50 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.getUserFeeds();
     }
     */
+
+    showNotification(msg) {
+        if (this._showNotification) {
+            this.hideNotification();
+        }
+
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
+                    ])
+                ]).start();
+            });
+        });
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 200
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: height * -1,
+                        duration: 200
+                    })
+                ])
+            ]).start();
+        });
+
+        this._showNotification = false;
+    }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         const threshold = 80;
@@ -439,6 +523,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     render() {
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [{ translateY: this.state.offset }]
+        };
+
         const { profile } = this.props.profileStore;
 
         let uid = null;
@@ -475,6 +564,23 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         return (
             <View style={styles.flex}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBar}>
 
                     <TouchableOpacity activeOpacity={1.0}
@@ -656,29 +762,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 if (!profile) return;
 
-                                                this.openDialog('alert', 'Log out', 'Are you sure you want to logout?', () => {
-                                                    // 1. unsubscribe all the feeds, place
-                                                    for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
-                                                        const instance = this.feedsUnsubscribes[i];
-                                                        instance();
-                                                    }
-
-                                                    this.feedsUnsubscribes = [];
-
-                                                    for (var i = 0; i < this.countsUnsubscribes.length; i++) {
-                                                        const instance = this.countsUnsubscribes[i];
-                                                        instance();
-                                                    }
-
-                                                    this.countsUnsubscribes = [];
-
-                                                    // 2. unsubscribe profile first!
+                                                this.openDialog('alert', 'Log out', 'Are you sure you want to logout?', async () => {
+                                                    // unsubscribe profile
                                                     this.props.profileStore.final();
 
-                                                    // Consider: should wait
-                                                    setTimeout(async () => {
-                                                        await Firebase.signOut(profile.uid);
-                                                    }, 1000);
+                                                    // init & unsubscribe
+                                                    Intro.final();
+
+                                                    await Firebase.signOut(profile.uid);
                                                 });
 
                                                 /*
@@ -1135,5 +1226,35 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Light",
         paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.base
+    },
+    notification: {
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
+        height: (8 + 34 + 8) - 12,
+        borderRadius: 5,
+        position: "absolute",
+        top: 0,
+        backgroundColor: Theme.color.notification,
+        zIndex: 10000,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    notificationText: {
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
+        lineHeight: 17,
+        fontFamily: "Roboto-Medium",
+        color: "black",
+        textAlign: 'center'
+    },
+    notificationButton: {
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

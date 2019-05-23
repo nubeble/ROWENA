@@ -7,7 +7,7 @@ import {
 import Qs from 'qs';
 // import debounce from 'lodash.debounce';
 import { debounce } from 'lodash';
-import { Text, Theme } from '../rnff/src/components';
+import { Text, Theme, RefreshIndicator } from '../rnff/src/components';
 import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Cons } from '../Globals';
 
@@ -122,7 +122,8 @@ export default class GooglePlacesAutocomplete extends Component {
         dataSource: this.buildRowsFromResults([]),
         listViewDisplayed: this.props.listViewDisplayed === 'auto' ? false : this.props.listViewDisplayed,
 
-        clearButtonDisplayed: false
+        clearButtonDisplayed: false,
+        isLoading: false
     })
 
     // setAddressText = address => !this.closed && this.setState({ text: address })
@@ -213,19 +214,10 @@ export default class GooglePlacesAutocomplete extends Component {
     }
 
     getCurrentLocation = () => {
-        console.log('GooglePlacesAutocomplete.getCurrentLocation');
+        // console.log('GooglePlacesAutocomplete.getCurrentLocation');
 
-        if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
-            // ToDo: get current location (street)
-        } else {
-            // ToDo: get current location (city)
-        }
-
-
-
-
-
-
+        // show loader
+        this.setState({ isLoading: true });
 
         let options = {
             enableHighAccuracy: false,
@@ -243,6 +235,10 @@ export default class GooglePlacesAutocomplete extends Component {
         navigator.geolocation.getCurrentPosition((position) => {
             console.log('navigator.geolocation.getCurrentPosition', position);
 
+            // set text
+            const name = position.coords.latitude + ', ' + position.coords.longitude;
+            !this.closed && this.setState({ text: name });
+
             if (this.props.nearbyPlacesAPI === 'None') {
                 let currentLocation = {
                     description: this.props.currentLocationLabel,
@@ -254,14 +250,92 @@ export default class GooglePlacesAutocomplete extends Component {
                     }
                 };
 
+                // hide loader
+                this.setState({ isLoading: false });
+
                 this._disableRowLoaders();
                 this.props.onPress(currentLocation, currentLocation);
-            } else {
-                this._requestNearby(position.coords.latitude, position.coords.longitude);
+            } else { // GoogleReverseGeocoding or GooglePlacesSearch
+                // this._requestNearby(position.coords.latitude, position.coords.longitude);
+
+                const input = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                const key = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+
+                if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
+                    // get current location (street)
+                    this.getStreetAddress(input, key, (obj) => {
+                        if (this.closed) return;
+
+                        console.log('this.getStreetAddress result', obj);
+
+                        // Consider: exception
+                        if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+
+                        // set text
+                        !this.closed && this.setState({ text: obj.formatted_address });
+
+                        const data = {
+                            description: obj.formatted_address,
+                            place_id: obj.place_id
+                        };
+
+                        const details = {
+                            geometry: {
+                                location: {
+                                    lat: obj.geometry.location.lat,
+                                    lng: obj.geometry.location.lng
+                                }
+                            }
+                        };
+
+                        // hide loader
+                        this.setState({ isLoading: false });
+
+                        this._disableRowLoaders();
+                        this.props.onPress(data, details);
+                    });
+                } else {
+                    // get current location (city)
+                    this.getPlaceId(input, key, (obj) => {
+                        if (this.closed) return;
+
+                        console.log('this.getPlaceId result', obj);
+
+                        // Consider: exception
+                        if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+
+                        // set text
+                        !this.closed && this.setState({ text: obj.formatted_address });
+
+                        const data = {
+                            description: obj.formatted_address,
+                            place_id: obj.place_id
+                        };
+
+                        const details = {
+                            geometry: {
+                                location: {
+                                    lat: obj.geometry.location.lat,
+                                    lng: obj.geometry.location.lng
+                                }
+                            }
+                        };
+
+                        // hide loader
+                        this.setState({ isLoading: false });
+
+                        this._disableRowLoaders();
+                        this.props.onPress(data, details);
+                    });
+                }
             }
         }, (error) => {
             this._disableRowLoaders();
-            alert(error.message);
+            console.log('navigator.geolocation.getCurrentPosition error', error.message);
         }, options
         );
     }
@@ -295,9 +369,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             this._disableRowLoaders();
                             this._onBlur();
 
-                            !this.closed && this.setState({
-                                text: this._renderDescription(rowData)
-                            });
+                            !this.closed && this.setState({ text: this._renderDescription(rowData) });
 
                             if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
 
@@ -311,9 +383,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         this._disableRowLoaders();
 
                         if (this.props.autoFillOnNotFound) {
-                            !this.closed && this.setState({
-                                text: this._renderDescription(rowData)
-                            });
+                            !this.closed && this.setState({ text: this._renderDescription(rowData) });
 
                             if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
 
@@ -346,7 +416,7 @@ export default class GooglePlacesAutocomplete extends Component {
             }));
 
             if (this.props.query.origin !== null) {
-                request.setRequestHeader('Referer', this.props.query.origin)
+                request.setRequestHeader('Referer', this.props.query.origin);
             }
 
             request.send();
@@ -354,20 +424,15 @@ export default class GooglePlacesAutocomplete extends Component {
             // display loader
             this._enableRowLoader(rowData);
 
-            !this.closed && this.setState({
-                text: this._renderDescription(rowData),
-            });
+            !this.closed && this.setState({ text: this._renderDescription(rowData) });
 
             if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
 
             this.triggerBlur(); // hide keyboard but not the results
             delete rowData.isLoading;
             this.getCurrentLocation();
-
         } else { // predefined place
-            !this.closed && this.setState({
-                text: this._renderDescription(rowData)
-            });
+            !this.closed && this.setState({ text: this._renderDescription(rowData) });
 
             if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
 
@@ -494,7 +559,6 @@ export default class GooglePlacesAutocomplete extends Component {
 
                 if (request.status === 200) {
                     const responseJSON = JSON.parse(request.responseText);
-
                     // console.log('responseJSON', responseJSON);
 
                     this._disableRowLoaders();
@@ -552,7 +616,6 @@ export default class GooglePlacesAutocomplete extends Component {
             if (this.props.query.origin !== null) {
                 request.setRequestHeader('Referer', this.props.query.origin)
             }
-
             request.send();
         } else {
             this._results = [];
@@ -826,9 +889,9 @@ export default class GooglePlacesAutocomplete extends Component {
                 >
                     <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
                         {this._renderRowData(rowData)}
-                        {/*
-                        {this._renderLoader(rowData)}
-                        */}
+                        {
+                            // this._renderLoader(rowData)
+                        }
                     </View>
                 </TouchableHighlight>
             </ScrollView>
@@ -855,12 +918,12 @@ export default class GooglePlacesAutocomplete extends Component {
     _onBlur = () => {
         this.triggerBlur();
 
-        !this.closed && this.setState({
-            listViewDisplayed: false
-        });
+        !this.closed && this.setState({ listViewDisplayed: false });
     }
 
-    _onFocus = () => !this.closed && this.setState({ listViewDisplayed: true })
+    _onFocus = () => {
+        !this.closed && this.setState({ listViewDisplayed: true });
+    }
 
     _renderPoweredLogo = () => {
         if (!this._shouldShowPoweredLogo()) {
@@ -956,6 +1019,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
         return null;
     }
+
     render() {
         const {
             onFocus,
@@ -1015,8 +1079,171 @@ export default class GooglePlacesAutocomplete extends Component {
 
                 {this._getFlatList()}
                 {this.props.children}
+
+                {
+                    this.state.isLoading &&
+                    <View style={{
+                        position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <ActivityIndicator
+                            animating={true}
+                            size="large"
+                            color={Theme.color.selection}
+                        />
+                    </View>
+                }
             </View>
         );
+    }
+
+    async getPlaceId(input, key, callback) {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+            if (request.readyState !== 4) return;
+
+            if (request.status === 200) {
+                const responseJSON = JSON.parse(request.responseText);
+
+                // console.log('responseJSON', responseJSON);
+
+                // if (typeof responseJSON.predictions !== 'undefined') {
+                if (typeof responseJSON.results !== 'undefined') {
+                    /*
+                    const results = responseJSON.predictions; // array
+                    console.log('getPlaceId predictions', results);
+                    const result = results[0]; // map object
+                    console.log('getPlaceId array 0', result);
+
+                    callback(result);
+                    */
+
+                    let result = null;
+
+                    // console.log('getPlaceId pre results', responseJSON.results);
+                    const filter = ['locality', 'administrative_area_level_3'];
+                    const results = this._filterResultsByTypes(responseJSON.results, filter);
+                    // console.log('getPlaceId after results', results);
+
+                    // add 'street_address' filter
+                    if (results.length != 0) {
+                        result = results[0];
+                    } else {
+                        const filter2 = ['street_address'];
+                        const results2 = this._filterResultsByTypes(responseJSON.results, filter2);
+
+                        if (results2.length != 0) {
+                            result = results2[0];
+                        } else {
+                            // just use the origin
+                            result = responseJSON.results[0];
+                        }
+                    }
+
+                    callback(result);
+                }
+
+                if (typeof responseJSON.error_message !== 'undefined') {
+                    console.warn('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                }
+            }
+        };
+
+        // request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(input) + '&' + Qs.stringify(query));
+        const latitude = input.lat;
+        const longitude = input.lng;
+        const url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
+            latlng: latitude + ',' + longitude,
+            key: key
+            // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+        });
+        request.open('GET', url);
+        request.send();
+
+        // get detail
+        /*
+        request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
+            key: this.props.query.key,
+            placeid: rowData.place_id,
+            language: this.props.query.language
+        }));
+
+        request.send();
+        */
+    }
+
+    async getStreetAddress(input, key, callback) {
+        const request = new XMLHttpRequest();
+        request.onreadystatechange = () => {
+            if (request.readyState !== 4) return;
+
+            if (request.status === 200) {
+                const responseJSON = JSON.parse(request.responseText);
+
+                // console.log('responseJSON', responseJSON);
+
+                // if (typeof responseJSON.predictions !== 'undefined') {
+                if (typeof responseJSON.results !== 'undefined') {
+                    /*
+                    const results = responseJSON.predictions; // array
+                    console.log('getPlaceId predictions', results);
+                    const result = results[0]; // map object
+                    console.log('getPlaceId array 0', result);
+
+                    callback(result);
+                    */
+
+                    let result = null;
+
+                    // console.log('getPlaceId pre results', responseJSON.results);
+                    const filter = ['street_address'];
+                    const results = this._filterResultsByTypes(responseJSON.results, filter);
+                    // console.log('getPlaceId after results', results);
+
+                    // add 'street_address' filter
+                    if (results.length != 0) {
+                        result = results[0];
+                    } else {
+                        const filter2 = ['street_address'];
+                        const results2 = this._filterResultsByTypes(responseJSON.results, filter2);
+
+                        if (results2.length != 0) {
+                            result = results2[0];
+                        } else {
+                            // just use the origin
+                            result = responseJSON.results[0];
+                        }
+                    }
+
+                    callback(result);
+                }
+
+                if (typeof responseJSON.error_message !== 'undefined') {
+                    console.warn('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                }
+            }
+        };
+
+        // request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(input) + '&' + Qs.stringify(query));
+        const latitude = input.lat;
+        const longitude = input.lng;
+        const url = 'https://maps.googleapis.com/maps/api/geocode/json?' + Qs.stringify({
+            latlng: latitude + ',' + longitude,
+            key: key
+            // available options for GoogleReverseGeocoding API : https://developers.google.com/maps/documentation/geocoding/intro
+        });
+        request.open('GET', url);
+        request.send();
+
+        // get detail
+        /*
+        request.open('GET', 'https://maps.googleapis.com/maps/api/place/details/json?' + Qs.stringify({
+            key: this.props.query.key,
+            placeid: rowData.place_id,
+            language: this.props.query.language
+        }));
+
+        request.send();
+        */
     }
 }
 

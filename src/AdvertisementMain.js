@@ -796,6 +796,24 @@ export default class AdvertisementMain extends React.Component {
 
         return (
             <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -824,24 +842,6 @@ export default class AdvertisementMain extends React.Component {
 
                     <Text style={styles.searchBarTitle}>{'New Post'}</Text>
                 </View>
-
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                                this.hideAlertIcon();
-                            }
-                        }}
-                    >
-                        <Ionicons name='md-close' color="black" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
 
                 <Animated.View
                     style={[styles.flash, flashStyle]}
@@ -1942,23 +1942,6 @@ export default class AdvertisementMain extends React.Component {
 
         // Vars.userFeedsChanged = true;
     }
-
-    /*
-    // ToDo: test
-    async removeFeed() {
-        const uid = Firebase.user().uid;
-    
-        const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
-        const feedId = '26f7ee12-7b68-de8f-1dd1-b971b07421c4';
-    
-        const result = await Firebase.removeFeed(uid, placeId, feedId);
-        if (!result) {
-            // error handling - nothig to do
-        }
-    
-        Vars.userFeedsChanged = true;
-    }
-    */
 
     showDateTimePicker(title) {
         if (this._showNotification) {

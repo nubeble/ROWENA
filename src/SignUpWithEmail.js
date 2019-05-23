@@ -394,6 +394,24 @@ export default class SignUpWithEmail extends React.Component {
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <Animated.View
+                        style={[styles.notification, notificationStyle]}
+                        ref={notification => this._notification = notification}
+                    >
+                        <Text style={styles.notificationText}>{this.state.notification}</Text>
+                        <TouchableOpacity
+                            style={styles.notificationButton}
+                            onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideActiveAlertIcons();
+                                }
+                            }}
+                        >
+                            <Ionicons name='md-close' color="black" size={20} />
+                        </TouchableOpacity>
+                    </Animated.View>
+
                     <View style={styles.searchBar}>
                         <TouchableOpacity
                             style={{
@@ -428,24 +446,6 @@ export default class SignUpWithEmail extends React.Component {
                             }} />
                         </View>
                     </View>
-
-                    <Animated.View
-                        style={[styles.notification, notificationStyle]}
-                        ref={notification => this._notification = notification}
-                    >
-                        <Text style={styles.notificationText}>{this.state.notification}</Text>
-                        <TouchableOpacity
-                            style={styles.notificationButton}
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                    this.hideActiveAlertIcons();
-                                }
-                            }}
-                        >
-                            <Ionicons name='md-close' color="black" size={20} />
-                        </TouchableOpacity>
-                    </Animated.View>
 
                     <View style={{ paddingTop: Theme.spacing.tiny }}>
                         <Text style={{

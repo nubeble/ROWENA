@@ -175,23 +175,28 @@ export default class FeedStore {
             });
         });
         */
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
-            const post = snap.data();
+        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(
+            snap => {
+                const post = snap.data();
 
-            if (post) {
-                console.log('FeedStore, feed changed.');
-            } else {
-                console.log('FeedStore, feed removed.');
-            }
-
-            callback(post);
-
-            this.feed.forEach((entry, index) => {
-                if (entry.post.id === id) {
-                    this.feed[index].post = post;
+                if (post) {
+                    console.log('FeedStore, feed changed.');
+                } else {
+                    console.log('FeedStore, feed removed.');
                 }
-            });
-        });
+
+                callback(post);
+
+                this.feed.forEach((entry, index) => {
+                    if (entry.post.id === id) {
+                        this.feed[index].post = post;
+                    }
+                });
+            },
+            error => {
+                console.log('FeedStore.subscribeToPost, error', error);
+            }
+        );
     }
 
     subscribeToProfile(id: string, callback: Profile => void): Subscription {
@@ -210,23 +215,28 @@ export default class FeedStore {
             });
         });
         */
-        return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
-            const profile = snap.data();
+        return Firebase.firestore.collection("users").doc(id).onSnapshot(
+            snap => {
+                const profile = snap.data();
 
-            if (profile) {
-                console.log('FeedStore, profile changed.');
-            } else {
-                console.log('FeedStore, profile removed.');
-            }
-
-            callback(profile);
-
-            this.feed.forEach((entry, index) => {
-                if (entry.post.uid === id) {
-                    this.feed[index].profile = profile;
+                if (profile) {
+                    console.log('FeedStore, profile changed.');
+                } else {
+                    console.log('FeedStore, profile removed.');
                 }
-            });
-        });
+
+                callback(profile);
+
+                this.feed.forEach((entry, index) => {
+                    if (entry.post.uid === id) {
+                        this.feed[index].profile = profile;
+                    }
+                });
+            },
+            error => {
+                console.log('FeedStore.subscribeToProfile, error', error);
+            }
+        );
     }
 
     async joinProfiles(posts: Post[]): Promise<FeedEntry[]> {

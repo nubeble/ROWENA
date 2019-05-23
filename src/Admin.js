@@ -268,6 +268,30 @@ export default class Admin extends React.Component {
         return images;
     }
 
+    getRandomNote(number) { // 0, 1, 2, 3
+        let note = null;
+
+        switch (number) {
+            case 0:
+                note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+                break;
+
+            case 1:
+                note = "All happy girls are alike; every unhappy girl is unhappy in her own way. My kind of unhappy is full of self-deprecating humor, double IPAs, and is actually pretty rad.\nLet me know if you want to be miserable together.";
+                break;
+
+            case 2:
+                note = "You should know that I hate old people, children, and dogs.\nActually, I love all those things but if you know what movie that line is from, we should go out.";
+                break;
+
+            case 3:
+                note = "Grew up in the Portland, Oregon area. Survived middle school by becoming a skater kid (still haven’t grown out of it). Now I’m trying to pay my rent, play my music, and make my way.";
+                break;
+        }
+
+        return note;
+    }
+
     async makeBangkok() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
@@ -290,7 +314,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -375,7 +399,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -460,7 +484,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -545,7 +569,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -704,7 +728,7 @@ export default class Admin extends React.Component {
         */
         const location = this.getRandomLocationManila(_number);
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -789,7 +813,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -874,7 +898,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -959,7 +983,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -1044,7 +1068,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -1129,7 +1153,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
@@ -1214,7 +1238,7 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through";
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5

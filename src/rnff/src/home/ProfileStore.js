@@ -41,56 +41,61 @@ export default class ProfileStore {
     async init(): Promise<void> {
         // Load Profile
         const uid = Firebase.user().uid;
-        this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(async snap => {
-            if (snap.exists) {
-                console.log('ProfileStore, profile changed.');
+        this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(
+            async snap => {
+                if (snap.exists) {
+                    console.log('ProfileStore, profile changed.');
 
-                this.lastChangedTime = Date.now();
+                    this.lastChangedTime = Date.now();
 
-                if (this.profile) {
-                    // 1. check if feeds changed
-                    const oldFeeds = this.profile.feeds;
-                    const newFeeds = snap.data().feeds;
-                    const resultFeeds = this.compareFeeds(oldFeeds, newFeeds);
-                    if (!resultFeeds) this.lastTimeFeedsUpdated = this.lastChangedTime;
+                    if (this.profile) {
+                        // 1. check if feeds changed
+                        const oldFeeds = this.profile.feeds;
+                        const newFeeds = snap.data().feeds;
+                        const resultFeeds = this.compareFeeds(oldFeeds, newFeeds);
+                        if (!resultFeeds) this.lastTimeFeedsUpdated = this.lastChangedTime;
 
-                    // 2. check if likes changed
-                    const oldLikes = this.profile.likes;
-                    const newLikes = snap.data().likes;
-                    const resultLikes = this.compareLikes(oldLikes, newLikes);
-                    if (!resultLikes) this.lastTimeLikesUpdated = this.lastChangedTime;
+                        // 2. check if likes changed
+                        const oldLikes = this.profile.likes;
+                        const newLikes = snap.data().likes;
+                        const resultLikes = this.compareLikes(oldLikes, newLikes);
+                        if (!resultLikes) this.lastTimeLikesUpdated = this.lastChangedTime;
 
-                    // 3. check if reviews changed
-                    const oldReviews = this.profile.reviews;
-                    const newReviews = snap.data().reviews;
-                    const resultReviews = this.compareReviews(oldReviews, newReviews);
-                    if (!resultReviews) this.lastTimeReviewsUpdated = this.lastChangedTime;
+                        // 3. check if reviews changed
+                        const oldReviews = this.profile.reviews;
+                        const newReviews = snap.data().reviews;
+                        const resultReviews = this.compareReviews(oldReviews, newReviews);
+                        if (!resultReviews) this.lastTimeReviewsUpdated = this.lastChangedTime;
 
-                    // 4. check if comments changed
-                    const oldComments = this.profile.comments;
-                    const newComments = snap.data().comments;
-                    const resultComments = this.compareComments(oldComments, newComments);
-                    if (!resultComments) this.lastTimeCommentsUpdated = this.lastChangedTime;
+                        // 4. check if comments changed
+                        const oldComments = this.profile.comments;
+                        const newComments = snap.data().comments;
+                        const resultComments = this.compareComments(oldComments, newComments);
+                        if (!resultComments) this.lastTimeCommentsUpdated = this.lastChangedTime;
 
+                    } else {
+                        this.lastTimeFeedsUpdated = this.lastChangedTime;
+                        this.lastTimeLikesUpdated = this.lastChangedTime;
+                        this.lastTimeReviewsUpdated = this.lastChangedTime;
+                        this.lastTimeCommentsUpdated = this.lastChangedTime;
+                    }
+
+                    this.profile = snap.data();
                 } else {
-                    this.lastTimeFeedsUpdated = this.lastChangedTime;
-                    this.lastTimeLikesUpdated = this.lastChangedTime;
-                    this.lastTimeReviewsUpdated = this.lastChangedTime;
-                    this.lastTimeCommentsUpdated = this.lastChangedTime;
+                    console.log('ProfileStore, profile removed.');
+
+                    this.profile = undefined;
+                    /*
+                    // create default
+                    await Firebase.firestore.collection("users").doc(uid).set(DEFAULT_PROFILE);
+                    this.profile = DEFAULT_PROFILE;
+                    */
                 }
-
-                this.profile = snap.data();
-            } else {
-                console.log('ProfileStore, profile removed.');
-
-                this.profile = undefined;
-                /*
-                // create default
-                await Firebase.firestore.collection("users").doc(uid).set(DEFAULT_PROFILE);
-                this.profile = DEFAULT_PROFILE;
-                */
+            },
+            error => {
+                console.log('ProfileStore.init, error', error);
             }
-        });
+        );
     }
 
     final() {

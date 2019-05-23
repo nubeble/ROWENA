@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, NetInfo, Animated
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Svg, Constants, Location, Permissions, Linking } from "expo";
@@ -10,7 +10,7 @@ import { inject, observer } from "mobx-react/native";
 // import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
-import { FontAwesome, AntDesign } from 'react-native-vector-icons';
+import { FontAwesome, AntDesign, Ionicons } from 'react-native-vector-icons';
 import Firebase from './Firebase';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Carousel from './Carousel';
@@ -65,6 +65,10 @@ export default class Intro extends React.Component {
     static countsUnsubscribes = []; // Consider: unsubscribe?
 
     state = {
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
+
         // renderList: false,
 
         // set the initial places (DEFAULT_PLACE_COUNT)
@@ -131,6 +135,33 @@ export default class Intro extends React.Component {
         refreshing: false
     };
 
+    static final() {
+        console.log('Intro.final');
+
+        Intro.places = [];
+        Intro.popularFeeds = [];
+        Intro.recentFeeds = [];
+        Intro.feedCountList = new Map();
+
+        for (var i = 0; i < Intro.popularFeedsUnsubscribes.length; i++) {
+            const instance = Intro.popularFeedsUnsubscribes[i];
+            instance();
+        }
+        Intro.popularFeedsUnsubscribes = [];
+
+        for (var i = 0; i < Intro.recentFeedsUnsubscribes.length; i++) {
+            const instance = Intro.recentFeedsUnsubscribes[i];
+            instance();
+        }
+        Intro.recentFeedsUnsubscribes = [];
+
+        for (var i = 0; i < Intro.countsUnsubscribes.length; i++) {
+            const instance = Intro.countsUnsubscribes[i];
+            instance();
+        }
+        Intro.countsUnsubscribes = [];
+    }
+
     // --
     componentWillMount() {
         if (Platform.OS === 'android' && !Constants.isDevice) {
@@ -174,6 +205,8 @@ export default class Intro extends React.Component {
         console.log('height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
 
         /*
         setTimeout(() => {
@@ -224,6 +257,17 @@ export default class Intro extends React.Component {
         // setTimeout(() => {
         this.props.navigation.navigate("home", { place: place });
         // }, Cons.buttonTimeoutShort);
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        if (this._showNotification) {
+            this.hideNotification();
+
+            return true;
+        }
+
+        return true;
     }
 
     @autobind
@@ -319,8 +363,25 @@ export default class Intro extends React.Component {
         console.log('Intro.componentWillUnmount');
 
         this.onFocusListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.networkListener.remove();
 
         this.closed = true;
+    }
+
+    @autobind
+    handleConnectionChange(connectionInfo) {
+        if (connectionInfo.type === 'none') {
+            // disconnected
+            this.showNotification('You are currently offline.');
+
+            // ToDo: stop
+        } else if (connectionInfo.type !== 'none') {
+            // connected
+            this.showNotification('You are connected again.');
+
+            // ToDo: resume
+        }
     }
 
     /*
@@ -643,9 +704,30 @@ export default class Intro extends React.Component {
         // const { feedStore, profileStore, navigation } = this.props;
         // const { profile } = profileStore;
 
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [{ translateY: this.state.offset }]
+        };
 
         return (
             <View style={styles.flex}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,
@@ -1272,6 +1354,50 @@ export default class Intro extends React.Component {
 
         !this.closed && this.setState({ refreshing: false });
     }
+
+    showNotification(msg) {
+        if (this._showNotification) {
+            this.hideNotification();
+        }
+
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.sequence([
+                    Animated.parallel([
+                        Animated.timing(this.state.opacity, {
+                            toValue: 1,
+                            duration: 200
+                        }),
+                        Animated.timing(this.state.offset, {
+                            toValue: Constants.statusBarHeight + 6,
+                            duration: 200
+                        })
+                    ])
+                ]).start();
+            });
+        });
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 0,
+                        duration: 200
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: height * -1,
+                        duration: 200
+                    })
+                ])
+            ]).start();
+        });
+
+        this._showNotification = false;
+    }
 }
 
 const styles = StyleSheet.create({
@@ -1385,5 +1511,35 @@ const styles = StyleSheet.create({
         lineHeight: 13,
         fontFamily: "Roboto-Bold",
         // backgroundColor: 'grey'
+    },
+    notification: {
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
+        height: (8 + 34 + 8) - 12,
+        borderRadius: 5,
+        position: "absolute",
+        top: 0,
+        backgroundColor: Theme.color.notification,
+        zIndex: 10000,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center'
+    },
+    notificationText: {
+        width: Dimensions.get('window').width - (12 + 24) * 2, // 12: margin right, 24: button width
+        fontSize: 15,
+        lineHeight: 17,
+        fontFamily: "Roboto-Medium",
+        color: "black",
+        textAlign: 'center'
+    },
+    notificationButton: {
+        marginRight: 12,
+        width: 24,
+        height: 24,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

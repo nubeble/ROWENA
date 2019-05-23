@@ -462,6 +462,23 @@ export default class Post extends React.Component<InjectedProps> {
 
         return (
             <View style={[styles.flex, { paddingBottom }]}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -520,23 +537,6 @@ export default class Post extends React.Component<InjectedProps> {
                     </TouchableOpacity>
                     */}
                 </View>
-
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
-                        }}
-                    >
-                        <Ionicons name='md-close' color="black" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
 
                 {
                     this.state.renderList &&

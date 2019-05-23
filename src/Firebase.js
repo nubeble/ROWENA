@@ -87,7 +87,7 @@ export default class Firebase {
         return null;
     }
 
-    static async createProfile(uid, name, email, phoneNumber, picture) {
+    static async createProfile(uid, name, email, phoneNumber, photoURL) {
         const profile = {
             uid: uid,
             name: name,
@@ -97,8 +97,7 @@ export default class Firebase {
             email: email,
             phoneNumber: phoneNumber,
             picture: {
-                // preview: null,
-                uri: picture
+                uri: photoURL
             },
             about: null,
             feeds: [],
@@ -119,7 +118,7 @@ export default class Firebase {
             // displayName: "Jane Q. User",
             // photoURL: "https://example.com/jane-q-user/profile.jpg"
             displayName: name,
-            photoURL: picture
+            photoURL
         }).then(function () {
             // Update successful.
             console.log('Firebase.createProfile', 'update successful.');
@@ -294,38 +293,53 @@ export default class Firebase {
     }
 
     static subscribeToFeed(placeId, feedId, callback) {
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).onSnapshot(snap => {
-            const feed = snap.data();
-            console.log('Firebase.subscribeToFeed, feed changed.');
-            callback(feed);
-        });
+        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).onSnapshot(
+            snap => {
+                const feed = snap.data();
+                console.log('Firebase.subscribeToFeed, feed changed.');
+                callback(feed);
+            },
+            error => {
+                console.log('Firebase.subscribeToFeed, error', error);
+            }
+        );
     }
 
     static subscribeToPlace(placeId, callback) {
-        return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
-            /*
-            let count = 0;
+        return Firebase.firestore.collection("place").doc(placeId).onSnapshot(
+            snap => {
+                /*
+                let count = 0;
+    
+                if (snap.exists) {
+                    const field = snap.data().count;
+                    if (field) count = field;
+                }
+    
+                callback(count);
+                */
 
-            if (snap.exists) {
-                const field = snap.data().count;
-                if (field) count = field;
+                const place = snap.data();
+                console.log('Firebase.subscribeToPlace, place changed.');
+                callback(place);
+            },
+            error => {
+                console.log('Firebase.subscribeToPlace, error', error);
             }
-
-            callback(count);
-            */
-
-            const place = snap.data();
-            console.log('Firebase.subscribeToPlace, place changed.');
-            callback(place);
-        });
+        );
     }
 
     static subscribeToProfile(uid, callback) {
-        return Firebase.firestore.collection("users").doc(uid).onSnapshot(snap => {
-            const user = snap.data();
-            console.log('Firebase.subscribeToProfile, user changed.');
-            callback(user);
-        });
+        return Firebase.firestore.collection("users").doc(uid).onSnapshot(
+            snap => {
+                const user = snap.data();
+                console.log('Firebase.subscribeToProfile, user changed.');
+                callback(user);
+            },
+            error => {
+                console.log('Firebase.subscribeToProfile, error', error);
+            }
+        );
     }
 
     /*

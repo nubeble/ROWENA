@@ -174,6 +174,23 @@ export default class WriteReviewScreen extends React.Component {
 
         return (
             <View style={styles.flex}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -214,23 +231,6 @@ export default class WriteReviewScreen extends React.Component {
                     </TouchableOpacity>
                     */}
                 </View>
-
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
-                        }}
-                    >
-                        <Ionicons name='md-close' color="black" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
 
                 <View style={styles.infoContainer}>
                     <TouchableWithoutFeedback

@@ -243,7 +243,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 if (!name) name = user.displayName;
                 const email = user.email;
                 const mobile = user.phoneNumber;
-                const picture = user.photoURL;
+                const photoURL = user.photoURL;
 
                 let profile = await Firebase.getProfile(user.uid);
                 if (profile) {
@@ -252,13 +252,13 @@ export default class Loading extends React.Component<InjectedProps> {
                     profile.email = email;
                     profile.phoneNumber = mobile;
                     if (!profile.picture.uri) { // if only profile picture NOT exists then save it!
-                        profile.picture.uri = picture;
+                        profile.picture.uri = photoURL;
                     }
 
                     await Firebase.updateProfile(user.uid, profile);
                 } else {
                     // create
-                    await Firebase.createProfile(user.uid, name, email, mobile, picture);
+                    await Firebase.createProfile(user.uid, name, email, mobile, photoURL);
                 }
 
                 // const { uid } = Firebase.auth.currentUser;
@@ -275,8 +275,6 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 if (Loading.userAutoAuthenticated) {
                     if (Vars.signUpType === null) { // for the auto sign in
-
-
                         // check verification if EMAIL user
                         if (user.email && !user.emailVerified && user) {
 
@@ -295,7 +293,6 @@ export default class Loading extends React.Component<InjectedProps> {
                             StatusBar.setHidden(false);
                         }
                     } else { // for the resign after sign out / delete account
-
                         if (Vars.signUpType === 'EMAIL') return;
 
                         // sign up finished
@@ -320,12 +317,15 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     if (Vars.signUpType === 'EMAIL') return;
 
+                    console.log('[first join] move to welcome.');
+                    // navigation.navigate("welcome");
+
+                    if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
+                    else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
+
                     // sign up finished
                     Vars.signUpType = null;
                     Vars.signUpName = null;
-
-                    console.log('[first join] move to welcome.');
-                    navigation.navigate("welcome");
                 }
             }
         }); // end of onAuthStateChanged
