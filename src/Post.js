@@ -3,7 +3,7 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, Svg, Haptic } from "expo";
+import { Constants, Svg, Haptic, Linking } from "expo";
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
@@ -421,8 +421,11 @@ export default class Post extends React.Component<InjectedProps> {
         let number = '';
         let ageText = '';
 
+        let showSettingsButton = false;
+
         if (post) {
             distance = Util.getDistance(post.location, Vars.location);
+            if (distance === '? km away') showSettingsButton = true;
 
             const averageRating = post.averageRating;
 
@@ -666,9 +669,36 @@ export default class Post extends React.Component<InjectedProps> {
                                             </View>
                                         </View>
 
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.small }}>
+                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
                                             <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                                             <Text style={styles.distance}>{distance}</Text>
+                                            {
+                                                showSettingsButton &&
+                                                <View style={{ flex: 1 }}>
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            flex: 1, width: 24,
+                                                            alignItems: "center",
+                                                            justifyContent: "flex-end",
+                                                            paddingBottom: 0.6,
+                                                            marginLeft: -1
+                                                        }}
+                                                        onPress={async () => {
+                                                            // ToDo: show description with pop-up
+                                                            console.log('open settings');
+                                                            /*
+                                                            const url = 'app-settings:';
+                                                            const supported = await Linking.canOpenURL(url);
+                                                            if (supported) {
+                                                                Linking.openURL(url);
+                                                            }
+                                                            */
+                                                            Linking.openURL(url);
+                                                        }}>
+                                                        <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            }
                                         </View>
 
                                         {
@@ -2107,7 +2137,18 @@ const styles = StyleSheet.create({
         paddingLeft: Theme.spacing.tiny,
     },
     distance: {
-        paddingLeft: 5,
+        // paddingLeft: 5,
+        paddingHorizontal: 5,
+        color: Theme.color.title,
+        fontSize: 18,
+        // lineHeight: 18,
+        fontFamily: "Roboto-Regular",
+        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        paddingTop: 2
+    },
+    distanceButton: {
+        // paddingLeft: 5,
+        paddingHorizontal: 5,
         color: Theme.color.title,
         fontSize: 18,
         // lineHeight: 18,
