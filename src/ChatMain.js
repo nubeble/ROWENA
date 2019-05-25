@@ -37,6 +37,14 @@ export default class ChatMain extends React.Component {
         this.onLoading = false;
     }
 
+    static final() {
+        console.log('ChatMain.final');
+
+        const uid = Firebase.user().uid;
+
+        Firebase.stopChatRoom(uid);
+    }
+
     componentDidMount() {
         console.log('ChatMain.componentDidMount');
 
@@ -44,9 +52,9 @@ export default class ChatMain extends React.Component {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        const uid = Firebase.user().uid;
-
         this.setState({ isLoadingChat: true });
+
+        const uid = Firebase.user().uid;
 
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
@@ -70,7 +78,8 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onFocus() {
-        // console.log('ChatMain.onFocus');
+        console.log('ChatMain.onFocus');
+
         this.isFocused = true;
 
         Vars.currentScreenName = 'ChatMain';
@@ -307,15 +316,15 @@ export default class ChatMain extends React.Component {
                                 position: 'absolute',
                                 /*
                                 top: 0 + viewHeight * 0.08,
-                                left: viewHeight - Cons.badgeWidth - viewHeight * 0.08,
+                                left: viewHeight - Cons.redDotWidth - viewHeight * 0.08,
                                 */
                                 top: 0,
                                 left: viewHeight,
 
                                 backgroundColor: 'red',
-                                borderRadius: Cons.badgeWidth / 2,
-                                width: Cons.badgeWidth,
-                                height: Cons.badgeWidth
+                                borderRadius: Cons.redDotWidth / 2,
+                                width: Cons.redDotWidth,
+                                height: Cons.redDotWidth
                             }} />
                         }
                     </View>

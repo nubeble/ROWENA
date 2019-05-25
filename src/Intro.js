@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, NetInfo, Animated
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, Animated
 } from "react-native";
 import { Header } from 'react-navigation';
 import { Svg, Constants, Location, Permissions, Linking } from "expo";
@@ -206,7 +206,6 @@ export default class Intro extends React.Component {
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
 
         /*
         setTimeout(() => {
@@ -364,24 +363,8 @@ export default class Intro extends React.Component {
 
         this.onFocusListener.remove();
         this.hardwareBackPressListener.remove();
-        this.networkListener.remove();
 
         this.closed = true;
-    }
-
-    @autobind
-    handleConnectionChange(connectionInfo) {
-        if (connectionInfo.type === 'none') {
-            // disconnected
-            this.showNotification('You are currently offline.');
-
-            // ToDo: stop
-        } else if (connectionInfo.type !== 'none') {
-            // connected
-            this.showNotification('You are connected again.');
-
-            // ToDo: resume
-        }
     }
 
     /*
@@ -564,8 +547,6 @@ export default class Intro extends React.Component {
 
             const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
-                    // console.log('!!!!! post removed !!!!!!');
-
                     // nothing to do here.
                     return;
                 }
@@ -657,8 +638,6 @@ export default class Intro extends React.Component {
 
             const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
                 if (newFeed === undefined) { // newFeed === undefined if removed
-                    // console.log('!!!!! post removed !!!!!!');
-
                     // nothing to do here.
                     return;
                 }

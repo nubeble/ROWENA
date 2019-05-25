@@ -390,10 +390,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
         }
         data.note = _note;
 
-        data.image = {
-            uri: uploadImageUri,
-            ref: this.uploadImageRef
-        };
+        if (this.uploadImageRef) {
+            data.image = {
+                uri: uploadImageUri,
+                ref: this.uploadImageRef
+            };
+        }
 
         data.email = email;
         data.phoneNumber = phoneNumber;
@@ -1146,19 +1148,20 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
     async updateProfile(data) {
         let profile = {};
-        profile.uid = data.userUid;
-        profile.name = data.name;
-        profile.birthday = data.birthday;
-        profile.gender = data.gender;
-        profile.place = data.place;
-        profile.about = data.note;
-        profile.picture = {
-            // preview: null,
-            uri: data.image.uri,
-            ref: data.image.ref
-        };
-        profile.email = data.email;
-        profile.phoneNumber = data.phoneNumber;
+        if (data.userUid) profile.uid = data.userUid;
+        if (data.name) profile.name = data.name;
+        if (data.birthday) profile.birthday = data.birthday;
+        if (data.gender) profile.gender = data.gender;
+        if (data.place) profile.place = data.place;
+        if (data.note) profile.about = data.note;
+        if (data.image) {
+            profile.picture = {
+                uri: data.image.uri,
+                ref: data.image.ref
+            };
+        }
+        if (data.email) profile.email = data.email;
+        if (data.phoneNumber) profile.phoneNumber = data.phoneNumber;
 
         await Firebase.updateProfile(profile.uid, profile);
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Animated, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Animated, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, NetInfo } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -38,6 +38,8 @@ export default class App extends React.Component {
     // userFeedStore = new FeedStore();
 
     state = {
+        connectionState: 0, // 0: none, 1: connected, 2: disconnected
+
         showBadgeOnHome: false,
         badgeOnHomeCount: -1,
 
@@ -65,6 +67,8 @@ export default class App extends React.Component {
 
         // StatusBar.setHidden(true);
 
+        this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
+
         // Handle notifications that are received or selected while the app
         // is open. If the app was closed and then opened by tapping the
         // notification (rather than just tapping the app icon to open it),
@@ -80,24 +84,46 @@ export default class App extends React.Component {
             Alert.alert(
                 'props.exp.notification',
                 this.props.exp.notification,
-                [
-                    {
-                        text: 'Cancel',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel',
-                    },
-                    {
-                        text: 'OK',
-                        onPress: () => console.log('OK Pressed')
-                    },
-                ],
-                { cancelable: false },
+                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                { cancelable: false }
             );
         }
 
         // check the releaseChannel
         const channel = this.getApiUrl(Constants.manifest.releaseChannel);
         console.log('channel', channel);
+    }
+
+    componentWillUnmount() {
+        this.networkListener.remove();
+        this.notificationListener.remove();
+    }
+
+    @autobind
+    handleConnectionChange(connectionInfo) {
+        if (connectionInfo.type === 'none') { // disconnected
+            this.setState({ connectionState: 1 });
+
+            Alert.alert(
+                'Network connection',
+                'You are currently offline',
+                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                { cancelable: false }
+            );
+        } else if (connectionInfo.type !== 'none') { // connected / reconnected
+            const preState = this.state.connectionState;
+
+            if (preState === 1) { // reconnected
+                Alert.alert(
+                    'Network connection',
+                    'You are connected again.',
+                    [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                    { cancelable: false }
+                );
+            }
+
+            this.setState({ connectionState: 2 });
+        }
     }
 
     getApiUrl(releaseChannel) {
@@ -121,7 +147,7 @@ export default class App extends React.Component {
 
     @autobind
     async handleNotification(e) {
-        console.log('handleNotification', e);
+        console.log('App.handleNotification', e);
         /*
         handleNotification Object {
         "actionId": null,
@@ -1157,7 +1183,7 @@ const MapSearchStackNavigator = createStackNavigator(
     {
         home: { screen: MapSearch },
         post: { screen: Post },
-        // mapOverview: { screen: MapOverview } // ToDo: test
+        // mapOverview: { screen: MapOverview } // test
     },
     {
         mode: 'card',
@@ -1272,11 +1298,9 @@ const MainSwitchNavigator = createSwitchNavigator(
     {
         loading: { screen: Loading },
         authStackNavigator: { screen: AuthStackNavigatorWrapper },
-        welcome: { screen: Welcome }, // Consider: welcome & guile
-        mainStackNavigator: { screen: MainStackNavigatorWrapper },
-
-        // emailVerification: { screen: EmailVerificationStackNavigatorWrapper }
-        emailVerification: { screen: EmailVerificationMain }
+        emailVerification: { screen: EmailVerificationMain },
+        welcome: { screen: Welcome },
+        mainStackNavigator: { screen: MainStackNavigatorWrapper }
     },
     {
         // initialRouteName: 'loading'

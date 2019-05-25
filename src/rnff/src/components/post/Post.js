@@ -38,8 +38,10 @@ const imageHeight = imageWidth / 3 * 2;
 export default class PostComp extends React.Component<PostProps, PostState> {
     state: $Shape<PostState> = {};
 
+    /*
     unsubscribeToPost: () => void;
     unsubscribeToProfile: () => void;
+    */
 
     static getDerivedStateFromProps({ profile, post }: PostProps): PostState {
         return { post, profile };

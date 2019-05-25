@@ -64,6 +64,8 @@ export default class MapSearch extends React.Component {
     }
 
     async componentDidMount() {
+        // console.log('MapSearch.componentDidMount');
+
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         // this.feedStore.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
@@ -119,6 +121,15 @@ export default class MapSearch extends React.Component {
         */
     }
 
+    initFromPost(post) {
+        let feeds = [...this.state.feeds];
+        let index = feeds.findIndex(el => el.placeId === post.placeId && el.id === post.id);
+        if (index !== -1) {
+            feeds[index] = post;
+            !this.closed && this.setState({ feeds });
+        }
+    }
+
     async loadFeeds(region) {
         let feeds = [];
 
@@ -167,6 +178,8 @@ export default class MapSearch extends React.Component {
     }
 
     componentWillUnmount() {
+        console.log('MapSearch.componentWillUnmount');
+
         this.hardwareBackPressListener.remove();
 
         StatusBar.setHidden(false);
@@ -589,7 +602,7 @@ export default class MapSearch extends React.Component {
                         feedSize: feedSize
                     };
 
-                    this.props.navigation.navigate("post", { post: post, extra: extra });
+                    this.props.navigation.navigate("post", { post: post, extra: extra, initFromPost: (result) => this.initFromPost(result) });
                 }}
             >
                 <SmartImage

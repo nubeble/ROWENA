@@ -6,12 +6,9 @@ import { Constants } from "expo";
 export var Vars = {
     currentScreenName: null, // string
     location: null, // Location
-    
+
     signUpType: null, // 'FACEBOOK', 'EMAIL', 'MOBILE'
-    signUpName: null,
-
-
-
+    signUpName: null
 };
 
 export const Cons = {
@@ -69,8 +66,5 @@ export const Cons = {
     },
 
     // search bar height
-    searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
-
-
-
+    searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8
 };

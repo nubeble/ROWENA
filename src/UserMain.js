@@ -500,7 +500,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ marginTop: Cons.badgeWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
                                                     {avatarName}
                                                 </Text>
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
@@ -515,9 +515,17 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             >
                                                 {
                                                     imageUri ?
-                                                        <Image
+                                                        /*
+                                                            <Image
+                                                                style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                                                source={{ uri: imageUri }}
+                                                            />
+                                                        */
+                                                        <SmartImage
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                            source={{ uri: imageUri }}
+                                                            showSpinner={false}
+                                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                            uri={imageUri}
                                                         />
                                                         :
                                                         <Image
@@ -768,12 +776,24 @@ export default class UserMain extends React.Component<InjectedProps> {
                 */}
 
                 <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
-                    <SmartImage
-                        style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
-                        showSpinner={false}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={_review.picture}
-                    />
+                    {
+                        _review.picture ?
+                            <SmartImage
+                                style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                                showSpinner={false}
+                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={_review.picture}
+                            />
+                            :
+                            <Image
+                                style={{
+                                    backgroundColor: 'black', tintColor: 'white', width: profilePictureWidth, height: profilePictureWidth,
+                                    borderRadius: profilePictureWidth / 2, borderColor: 'black', borderWidth: 1,
+                                    resizeMode: 'cover'
+                                }}
+                                source={PreloadImage.user}
+                            />
+                    }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
                             {_review.name}</Text>

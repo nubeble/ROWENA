@@ -243,7 +243,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ marginTop: Cons.badgeWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
                                                     {avatarName}
                                                 </Text>
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
@@ -260,9 +260,9 @@ export default class EditMain extends React.Component<InjectedProps> {
                                                     picture ?
                                                         <SmartImage
                                                             style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                                            showSpinner={false}
                                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                                             uri={picture}
-                                                            showSpinner={false}
                                                         />
                                                         :
                                                         <Image

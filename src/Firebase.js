@@ -1257,6 +1257,10 @@ export default class Firebase {
         });
     }
 
+    static stopChatRoom(uid) {
+        Firebase.database.ref('chat').child(uid).off();
+    }
+
     static loadMoreChatRoom(count, uid, timestamp, id, callback) {
         // console.log('timestamp', timestamp);
 

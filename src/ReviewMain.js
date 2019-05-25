@@ -169,9 +169,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                                 top: 3,
                                                 right: 3,
                                                 backgroundColor: 'red',
-                                                borderRadius: Cons.badgeWidth / 2,
-                                                width: Cons.badgeWidth,
-                                                height: Cons.badgeWidth
+                                                borderRadius: Cons.redDotWidth / 2,
+                                                width: Cons.redDotWidth,
+                                                height: Cons.redDotWidth
                                             }} />
                                         }
                                         {

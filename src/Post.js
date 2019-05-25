@@ -193,6 +193,12 @@ export default class Post extends React.Component<InjectedProps> {
             return true;
         }
 
+        const params = this.props.navigation.state.params;
+        if (params) {
+            const initFromPost = params.initFromPost;
+            if (initFromPost) initFromPost(this.state.post);
+        }
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -494,6 +500,12 @@ export default class Post extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
+                            const params = this.props.navigation.state.params;
+                            if (params) {
+                                const initFromPost = params.initFromPost;
+                                if (initFromPost) initFromPost(this.state.post);
+                            }
+
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >

@@ -2,7 +2,7 @@ import autobind from "autobind-decorator";
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
-    NetInfo, TouchableWithoutFeedback, Animated
+    TouchableWithoutFeedback, Animated
 } from 'react-native';
 import { Constants } from "expo";
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -18,6 +18,8 @@ import Dialog from "react-native-dialog";
 import Util from "./Util";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import Intro from './Intro';
+import ChatMain from './ChatMain';
+import { unregisterExpoPushToken } from './PushNotifications';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -76,7 +78,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
-        this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
 
         this.getUserFeeds();
 
@@ -91,7 +92,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
-        this.networkListener.remove();
 
         for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
@@ -146,29 +146,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     @autobind
     onBlur() {
         this.setState({ focused: false });
-    }
-
-    @autobind
-    handleConnectionChange(connectionInfo) {
-        // console.log('handleConnectionChange, type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType);
-        // console.log('handleConnectionChange', connectionInfo);
-
-        /*
-        const msg = 'type: ' + connectionInfo.type + ', effectiveType: ' + connectionInfo.effectiveType;
-        this.showNotification(msg);
-        */
-
-        if (connectionInfo.type === 'none') {
-            // disconnected
-            this.showNotification('You are currently offline.');
-
-            // ToDo: stop
-        } else if (connectionInfo.type !== 'none') {
-            // connected
-            this.showNotification('You are connected again.');
-
-            // ToDo: resume
-        }
     }
 
     /*
@@ -626,8 +603,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
+
                                                 <View style={{ flexDirection: 'row' }}>
-                                                    <View style={{ marginTop: Cons.badgeWidth / 2, alignSelf: 'flex-start' }}>
+                                                    <View style={{ marginTop: Cons.redDotWidth / 2, alignSelf: 'flex-start' }}>
                                                         <Text style={{ paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
                                                             {avatarName}
                                                         </Text>
@@ -635,14 +613,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     {
                                                         commentAdded &&
                                                         <View style={{
-                                                            marginLeft: Cons.badgeWidth / 2,
+                                                            marginLeft: Cons.redDotWidth / 2,
                                                             backgroundColor: 'red',
-                                                            borderRadius: Cons.badgeWidth / 2,
-                                                            width: Cons.badgeWidth,
-                                                            height: Cons.badgeWidth
+                                                            borderRadius: Cons.redDotWidth / 2,
+                                                            width: Cons.redDotWidth,
+                                                            height: Cons.redDotWidth
                                                         }} />
                                                     }
                                                 </View>
+
                                                 <Text style={{ marginTop: Dimensions.get('window').height / 80, color: Theme.color.text3, fontSize: 16, fontFamily: "Roboto-Light" }}>View and edit profile</Text>
                                             </View>
                                             <TouchableOpacity
@@ -768,6 +747,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                                     // init & unsubscribe
                                                     Intro.final();
+                                                    ChatMain.final();
+
+                                                    // remove notification token
+                                                    unregisterExpoPushToken(profile.uid);
 
                                                     await Firebase.signOut(profile.uid);
                                                 });
@@ -928,9 +911,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 top: 3,
                                                 right: 3,
                                                 backgroundColor: 'red',
-                                                borderRadius: Cons.badgeWidth / 2,
-                                                width: Cons.badgeWidth,
-                                                height: Cons.badgeWidth
+                                                borderRadius: Cons.redDotWidth / 2,
+                                                width: Cons.redDotWidth,
+                                                height: Cons.redDotWidth
                                             }} />
                                         }
                                         {
