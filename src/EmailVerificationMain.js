@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
-    ImageBackground, Animated, Keyboard, Platform, TextInput, Button
+    ImageBackground, Animated, Keyboard, Platform, TextInput, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, Firebase } from './rnff/src/components';
 import { Constants, Linking, WebBrowser } from "expo";
@@ -27,6 +27,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     state = {
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
+        showSignUpLoader: false,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -81,13 +82,19 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         this.clockCall = null;
 
                         // show check hourglass
-                        this.setState({ emailVerificationState: 2 });
+                        !this.closed && this.setState({ emailVerificationState: 2 });
 
                         // enable button
-                        this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
+                        !this.closed && this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
+
+                        // enable indicator
+                        !this.closed && this.setState({ showSignUpLoader: true });
 
                         // move to next
                         setTimeout(() => {
+                            // disable indicator
+                            !this.closed && this.setState({ showSignUpLoader: false });
+
                             console.log('[first join] move to welcome.');
                             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
 
@@ -110,10 +117,10 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         this.clockCall = null;
 
                         // hide hourglass
-                        this.setState({ emailVerificationState: 0 });
+                        !this.closed && this.setState({ emailVerificationState: 0 });
 
                         // disable
-                        this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+                        !this.closed && this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
 
                         // show message box
                         this.showNotification('An error happened. Please try again.');
@@ -128,7 +135,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             this.showNotification('Unusual activity. Try again later.');
 
             // show resend button
-            this.setState({ showResend: true });
+            !this.closed && this.setState({ showResend: true });
         });
     }
 
@@ -211,18 +218,18 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
             console.log('Verification time is up.');
 
-            this.setState({ emailVerificationState: 0 });
+            !this.closed && this.setState({ emailVerificationState: 0 });
 
             // show notification
             this.showNotification('Verification time is up. Please try again.');
 
             // show resend button
-            this.setState({ showResend: true });
+            !this.closed && this.setState({ showResend: true });
 
             return;
         }
 
-        this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
+        !this.closed && this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
     };
 
     showNotification(msg) {
@@ -285,12 +292,12 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         const email = this.props.navigation.state.params.email;
         // const user = this.props.navigation.state.params.user;
 
+        const nameIcon = this.state.nameIcon;
+
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
         };
-
-        const nameIcon = this.state.nameIcon;
 
         return (
             <ImageBackground
@@ -485,6 +492,15 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                             disabled={this.state.invalid}
                         >
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>
+                            {
+                                this.state.showSignUpLoader &&
+                                <ActivityIndicator
+                                    style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                    animating={true}
+                                    size="small"
+                                    color={Theme.color.buttonText}
+                                />
+                            }
                         </TouchableOpacity>
                     </View>
 
@@ -604,9 +620,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    activityIndicator: {
-        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
         // width: '100%',

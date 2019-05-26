@@ -327,7 +327,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                registerExpoPushToken(user.user.uid, user.user.displayName);
+                await registerExpoPushToken(user.user.uid, user.user.displayName);
             }
 
             /*
@@ -350,7 +350,14 @@ export default class SignUpWithMobileMain extends React.Component {
             console.log('error', error.code, error.message);
 
             if (error.code === 'auth/email-already-in-use') {
-                this.showNotification('The email address is already in use. Please try another email address.');
+                // this.showNotification('The email address is already in use. Please try another email address.');
+                this.showNotification('There already exists an account with the given email address.'); // done
+            } else if (error.code === 'auth/invalid-email') {
+                this.showNotification('The email address is not valid.'); // done
+            } else if (error.code === 'auth/operation-not-allowed') {
+                this.showNotification('Email/Password accounts are not enabled.'); // done
+            } else if (error.code === 'auth/weak-password') {
+                this.showNotification('The password is not strong enough.'); // done
             } else if (error.code === 'auth/network-request-failed') {
                 this.showNotification('A network error happened. Please try again.');
             } else {
@@ -499,7 +506,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                             style={{
                                                 // backgroundColor: 'green',
                                                 width: 40, height: 40, justifyContent: "center", alignItems: "center",
-                                                position: 'absolute', right: 24, top: 32
+                                                position: 'absolute', right: 24, top: 33
                                             }}
                                             onPress={() => {
                                                 this.setState({ phone: '' });
@@ -693,7 +700,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                registerExpoPushToken(user.user.uid, user.user.phoneNumber);
+                await registerExpoPushToken(user.user.uid, user.user.phoneNumber);
             }
         } catch (error) {
             console.log('onSignIn error', error.code, error.message);

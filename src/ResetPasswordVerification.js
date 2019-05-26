@@ -13,7 +13,7 @@ import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 
 
-export default class SignUpWithMobileName extends React.Component {
+export default class ResetPasswordVerification extends React.Component {
     state = {
         name: '',
         nameIcon: 0, // 0: disappeared, 1: exclamation, 2: check
@@ -131,7 +131,7 @@ export default class SignUpWithMobileName extends React.Component {
     }
 
     render() {
-        const from = this.props.navigation.state.params.from; // 'mobile', 'email'
+        // const from = this.props.navigation.state.params.from; // 'mobile', 'email'
 
         const nameIcon = this.state.nameIcon;
 
@@ -148,7 +148,6 @@ export default class SignUpWithMobileName extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-            // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <Animated.View
@@ -191,23 +190,6 @@ export default class SignUpWithMobileName extends React.Component {
                         >
                             <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
-
-                        <View style={{
-                            position: 'absolute',
-                            top: Constants.statusBarHeight,
-                            width: '100%',
-                            height: 3,
-                            backgroundColor: "rgba(62, 165, 255, 0.4)"
-                        }}>
-                            <View style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: '0%',
-                                width: '25%',
-                                height: 3,
-                                backgroundColor: "rgb(62, 165, 255)"
-                            }} />
-                        </View>
                     </View>
 
                     <View style={{ paddingTop: Theme.spacing.tiny }}>
@@ -218,7 +200,7 @@ export default class SignUpWithMobileName extends React.Component {
                             lineHeight: 32,
                             fontFamily: "Roboto-Medium",
                             paddingTop: 2
-                        }}>Tell us your name</Text>
+                        }}>Reset password</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
                             <TextInput
@@ -246,47 +228,6 @@ export default class SignUpWithMobileName extends React.Component {
                             {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
                             {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
                         </View>
-
-                        {
-                            from === 'mobile' ?
-                                <TouchableOpacity
-                                    style={{ marginTop: 8, justifyContent: 'center', alignItems: 'center' }}
-                                    onPress={() => {
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        setTimeout(() => {
-                                            this.props.navigation.navigate("signUpWithMobileMain");
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text>
-                                        <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
-                                        <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
-                                    </Text>
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity
-                                    style={{ marginTop: 8, justifyContent: 'center', alignItems: 'center' }}
-                                    onPress={() => {
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        setTimeout(() => {
-                                            this.props.navigation.navigate("signUpWithEmailMain", { from: 'logIn' });
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text>
-                                        <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
-                                        <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
-                                    </Text>
-                                </TouchableOpacity>
-                        }
                     </View>
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>

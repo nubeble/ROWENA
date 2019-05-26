@@ -182,7 +182,7 @@ export default class CountryCodeList extends React.Component {
         if (this.state.clearButtonDisplayed) {
             return (
                 <TouchableOpacity
-                    style={{ position: 'absolute', right: 30, top: 18, alignSelf: 'baseline' }}
+                    style={{ position: 'absolute', right: 30, top: 20, alignSelf: 'baseline' }}
                     onPress={() => {
                         this.clearQuery();
                         /*

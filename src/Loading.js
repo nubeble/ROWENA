@@ -322,6 +322,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
                     else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
+                    else navigation.navigate("welcome");
 
                     // sign up finished
                     Vars.signUpType = null;

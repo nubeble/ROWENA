@@ -31,13 +31,19 @@ export default class Welcome extends React.Component {
     }
 
     render() {
-        const from = this.props.navigation.state.params.from;
+        // const from = this.props.navigation.state.params.from;
+        let from = null;
+        const params = this.props.navigation.state.params;
+        if (params) {
+            from = params.from;
+        }
 
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {
-                        from === 'MOBILE' || from === 'EMAIL' &&
+                        // from === 'MOBILE' || from === 'EMAIL' &&
+                        from !== 'FACEBOOK' &&
                         <View style={{
                             position: 'absolute',
                             top: Constants.statusBarHeight,

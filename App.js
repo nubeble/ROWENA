@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Animated, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, NetInfo } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, NetInfo } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -367,7 +367,6 @@ export default class App extends React.Component {
 
 import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
 import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
-import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { BottomTabBar } from 'react-navigation-tabs';
 // import { TabBarBottom } from 'react-navigation'; // not working in S7
 import IconWithBadge from './src/IconWithBadge';
@@ -378,10 +377,12 @@ import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithMobileName from './src/SignUpWithMobileName';
 import SignUpWithMobileMain from './src/SignUpWithMobileMain';
-import SignUpWithMobilePassword from './src/SignUpWithMobilePassword';
-import SignUpWithMobileBirthday from './src/SignUpWithMobileBirthday';
+// import SignUpWithMobilePassword from './src/SignUpWithMobilePassword';
+// import SignUpWithMobileBirthday from './src/SignUpWithMobileBirthday';
 import EmailVerificationMain from './src/EmailVerificationMain';
-
+// import SignUpWithEmailResetPassword from './src/SignUpWithEmailResetPassword';
+import ResetPasswordMain from './src/ResetPasswordMain';
+import ResetPasswordVerification from './src/ResetPasswordVerification';
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import UserMain from './src/UserMain';
@@ -407,10 +408,76 @@ import MapSearch from './src/MapSearch';
 import Admin from './src/Admin';
 
 
+const EmailResetPasswordStackNavigator = createStackNavigator(
+    {
+        resetPasswordMain: { screen: ResetPasswordMain },
+        resetPasswordVerification: { screen: ResetPasswordVerification }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
+    }
+);
+
+class EmailResetPasswordStackNavigatorWrapper extends React.Component {
+    static router = EmailResetPasswordStackNavigator.router;
+
+    render() {
+        return (
+            <EmailResetPasswordStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+const SignUpWithEmailMainStackNavigator = createStackNavigator(
+    {
+        emailMain: { screen: SignUpWithEmail },
+        emailReset: { screen: EmailResetPasswordStackNavigatorWrapper }
+        // resetPasswordVerification: { screen: ResetPasswordVerification }
+    },
+    {
+        mode: 'modal',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forVertical
+        })
+    }
+);
+
+class SignUpWithEmailMainStackNavigatorWrapper extends React.Component {
+    static router = SignUpWithEmailMainStackNavigator.router;
+
+    render() {
+        return (
+            <SignUpWithEmailMainStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
 const SignUpWithEmailStackNavigator = createStackNavigator(
     {
         signUpWithEmailName: { screen: SignUpWithMobileName },
-        signUpWithEmailMain: { screen: SignUpWithEmail },
+        // signUpWithEmailMain: { screen: SignUpWithEmail },
+        signUpWithEmailMain: { screen: SignUpWithEmailMainStackNavigatorWrapper },
         signUpWithEmailVerification: { screen: EmailVerificationMain }
     },
     {
@@ -506,7 +573,7 @@ class SignUpWithMobileStackNavigatorWrapper extends React.Component {
     }
 }
 
-// ----
+/*
 const EmailVerificationStackNavigator = createStackNavigator(
     {
         // intro
@@ -538,21 +605,14 @@ class EmailVerificationStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// ----
-
-
-
-
-
-
+*/
 
 // -- start of AuthStackNavigatorWrapper
 const AuthStackNavigator = createStackNavigator(
     {
         authMain: { screen: AuthMain },
-        // email: { screen: SignUpWithEmail },
-        email: { screen: SignUpWithEmailStackNavigatorWrapper },
-        mobile: { screen: SignUpWithMobileStackNavigatorWrapper }
+        mobile: { screen: SignUpWithMobileStackNavigatorWrapper },
+        email: { screen: SignUpWithEmailStackNavigatorWrapper }
     },
     {
         mode: 'card',

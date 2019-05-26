@@ -975,7 +975,7 @@ export default class GooglePlacesAutocomplete extends Component {
         if (this.state.clearButtonDisplayed) {
             return (
                 <TouchableOpacity
-                    style={{ position: 'absolute', right: 30, top: 16, alignSelf: 'baseline' }}
+                    style={{ position: 'absolute', right: 30, top: 20, alignSelf: 'baseline' }}
                     onPress={() => {
                         if (this.refs.textInput) {
                             !this.closed && this.setState({ text: '', dataSource: this.buildRowsFromResults([]), clearButtonDisplayed: false });

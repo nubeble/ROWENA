@@ -25,7 +25,7 @@ export default class AuthMain extends React.Component {
     static animation = true;
 
     state = {
-        showFacebookLoader: false,
+        // showFacebookLoader: false,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -138,7 +138,7 @@ export default class AuthMain extends React.Component {
         Vars.signUpType = 'FACEBOOK';
 
         // show indicator
-        this.setState({ showFacebookLoader: true });
+        // this.setState({ showFacebookLoader: true });
 
         // ToDo: disable buttons
 
@@ -162,7 +162,7 @@ export default class AuthMain extends React.Component {
 
                 // save token
                 if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                    registerExpoPushToken(user.user.uid, user.user.displayName);
+                    await registerExpoPushToken(user.user.uid, user.user.displayName);
                 }
 
                 /*
@@ -184,8 +184,25 @@ export default class AuthMain extends React.Component {
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
 
-                // ToDo: error handling
-                this.showNotification('An error happened. Please try again.');
+                if (error.code === 'auth/account-exists-with-different-credential') {
+                    this.showNotification('There already exists an account with the email address asserted by the credential.');
+                } else if (error.code === 'auth/invalid-credential') {
+                    this.showNotification('The credential is malformed or has expired.');
+                } else if (error.code === 'auth/operation-not-allowed') {
+                    this.showNotification('The type of account corresponding to the credential is not enabled.');
+                } else if (error.code === 'auth/user-disabled') {
+                    this.showNotification('The user corresponding to the given credential has been disabled.');
+                } else if (error.code === 'auth/user-not-found') {
+                    this.showNotification('There is no user corresponding to the given email.');
+                } else if (error.code === 'auth/wrong-password') {
+                    this.showNotification('The password is invalid for the given email.');
+                } else if (error.code === 'auth/invalid-verification-code') {
+                    this.showNotification('The verification code of the credential is not valid.');
+                } else if (error.code === 'auth/invalid-verification-id') {
+                    this.showNotification('The verification ID of the credential is not valid.');
+                } else {
+                    this.showNotification('An error happened. Please try again.');
+                }
             }
         } else {
             console.log('Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
@@ -196,7 +213,7 @@ export default class AuthMain extends React.Component {
         // ToDo: enable buttons
 
         // hide indicator
-        !this.closed && this.setState({ showFacebookLoader: false });
+        // !this.closed && this.setState({ showFacebookLoader: false });
     }
 
     isStandaloneApp = () => {
@@ -331,6 +348,11 @@ export default class AuthMain extends React.Component {
                     </View>
 
                     <View style={styles.contents}>
+                        {/*
+                        <Text style={{ marginBottom: 5, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(221, 221, 221, 0.8)' }}>
+                            Don't worry! We don't post anything to Facebook.
+                        </Text>
+                        */}
                         <TouchableOpacity
                             onPress={() => {
                                 if (this._showNotification) {
@@ -351,12 +373,14 @@ export default class AuthMain extends React.Component {
 
                             <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
                                 {
+                                    /*
                                     this.state.showFacebookLoader &&
                                     <ActivityIndicator
                                         animating={true}
                                         size="small"
                                         color='rgba(0, 0, 0, 0.6)'
                                     />
+                                    */
                                 }
                             </View>
                         </TouchableOpacity>
@@ -403,14 +427,19 @@ export default class AuthMain extends React.Component {
                             <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
+                        {/*
+                        <TouchableOpacity
+                            // style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
+                            style={styles.logInText}
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
                                 }
 
                                 // ToDo: login
-                                // this.props.navigation.navigate("logIn");
+                                setTimeout(() => {
+                                    // this.props.navigation.navigate("logIn");
+                                }, Cons.buttonTimeoutShort);
                             }}
                         >
                             <Text>
@@ -418,6 +447,7 @@ export default class AuthMain extends React.Component {
                                 <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
                             </Text>
                         </TouchableOpacity>
+                        */}
 
                         <Text style={{ position: 'absolute', bottom: 30, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
@@ -523,23 +553,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    signUpWithEmailButton: {
-        // marginTop: Dimensions.get('window').height / 40,
-        marginTop: 18,
-
-        backgroundColor: "transparent",
-        borderRadius: 5,
-        borderColor: "rgba(255, 255, 255, 0.8)",
-        borderWidth: 2,
-        width: '85%',
-        height: Cons.buttonHeight,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-    },
     signUpWithMobileButton: {
-        // marginTop: Dimensions.get('window').height / 40,
-        marginTop: 18,
+        marginTop: 20,
 
         backgroundColor: "transparent",
         borderRadius: 5,
@@ -551,6 +566,29 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
+    signUpWithEmailButton: {
+        marginTop: 20,
+
+        backgroundColor: "transparent",
+        borderRadius: 5,
+        borderColor: "rgba(255, 255, 255, 0.8)",
+        borderWidth: 2,
+        width: '85%',
+        height: Cons.buttonHeight,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+
+        marginBottom: 30 + Dimensions.get('window').height / 8,
+    },
+    /*
+    logInText: {
+        marginTop: 30,
+        marginBottom: Dimensions.get('window').height / 8,
+
+        justifyContent: 'center', alignItems: 'center'
+    },
+    */
     notification: {
         // width: '100%',
         width: '94%',

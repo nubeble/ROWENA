@@ -3,7 +3,7 @@ import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
     ImageBackground, Animated, Keyboard, Platform, TextInput, Button
 } from 'react-native';
-import { Text, Theme } from './rnff/src/components';
+import { Text, Theme, Firebase } from './rnff/src/components';
 import { Constants, Linking, WebBrowser } from "expo";
 import { Ionicons, AntDesign } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
@@ -13,10 +13,10 @@ import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 
 
-export default class SignUpWithMobileName extends React.Component {
+export default class ResetPasswordMain extends React.Component {
     state = {
-        name: '',
-        nameIcon: 0, // 0: disappeared, 1: exclamation, 2: check
+        email: '',
+        emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
@@ -78,7 +78,7 @@ export default class SignUpWithMobileName extends React.Component {
 
     @autobind
     onFocus() {
-        if (this.refs['nameInput']) this.refs['nameInput'].focus();
+        if (this.refs['emailInput']) this.refs['emailInput'].focus();
     }
 
     showNotification(msg) {
@@ -127,13 +127,11 @@ export default class SignUpWithMobileName extends React.Component {
     }
 
     hideAlertIcon() {
-        if (this.state.nameIcon !== 0) this.setState({ nameIcon: 0 });
+        if (this.state.emailIcon !== 0) this.setState({ emailIcon: 0 });
     }
 
     render() {
-        const from = this.props.navigation.state.params.from; // 'mobile', 'email'
-
-        const nameIcon = this.state.nameIcon;
+        const emailIcon = this.state.emailIcon;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -148,7 +146,6 @@ export default class SignUpWithMobileName extends React.Component {
                 }}
                 source={PreloadImage.Background}
                 resizeMode='cover'
-            // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
                 <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <Animated.View
@@ -161,7 +158,7 @@ export default class SignUpWithMobileName extends React.Component {
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
-                                    this.hideAlertIcon();
+                                    // this.hideAlertIcon();
                                 }
                             }}
                         >
@@ -183,31 +180,14 @@ export default class SignUpWithMobileName extends React.Component {
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
-                                    this.hideAlertIcon();
+                                    // this.hideAlertIcon();
                                 }
 
                                 this.props.navigation.dispatch(NavigationActions.back());
                             }}
                         >
-                            <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
-
-                        <View style={{
-                            position: 'absolute',
-                            top: Constants.statusBarHeight,
-                            width: '100%',
-                            height: 3,
-                            backgroundColor: "rgba(62, 165, 255, 0.4)"
-                        }}>
-                            <View style={{
-                                position: 'absolute',
-                                top: 0,
-                                left: '0%',
-                                width: '25%',
-                                height: 3,
-                                backgroundColor: "rgb(62, 165, 255)"
-                            }} />
-                        </View>
                     </View>
 
                     <View style={{ paddingTop: Theme.spacing.tiny }}>
@@ -218,82 +198,60 @@ export default class SignUpWithMobileName extends React.Component {
                             lineHeight: 32,
                             fontFamily: "Roboto-Medium",
                             paddingTop: 2
-                        }}>Tell us your name</Text>
+                        }}>Reset password</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
+                            <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                {'EMAIL ADDRESS'}
+                            </Text>
                             <TextInput
-                                ref='nameInput'
+                                ref='emailInput'
                                 style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
-                                value={this.state.name}
-                                onChangeText={(text) => this.validateName(text)}
+                                value={this.state.email}
+                                onChangeText={(text) => this.validateEmail(text)}
                                 onSubmitEditing={(event) => this.submit(event.nativeEvent.text)}
                                 selectionColor={Theme.color.selection}
+                                keyboardType={'email-address'}
                                 // keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
-                                autoCapitalize="words"
-                                placeholder="Selena Gomez"
-                                placeholderTextColor={Theme.color.placeholder}
+                                autoCapitalize="none"
                             />
+                            {
+                                this.state.email.length > 0 &&
+                                <TouchableOpacity
+                                    style={{
+                                        width: 40, height: 40, justifyContent: "center", alignItems: "center",
+                                        position: 'absolute', right: 24, top: 23
+                                    }}
+                                    onPress={() => {
+                                        this.setState({ email: '' });
+
+                                        // disable
+                                        this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+                                    }}
+                                >
+                                    <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
+                                </TouchableOpacity>
+                            }
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
-                                    this.namelY = y;
+                                    this.emailY = y;
                                 }}
                             />
                             {/* to block shaking */}
-                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
                         </View>
-
-                        {
-                            from === 'mobile' ?
-                                <TouchableOpacity
-                                    style={{ marginTop: 8, justifyContent: 'center', alignItems: 'center' }}
-                                    onPress={() => {
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        setTimeout(() => {
-                                            this.props.navigation.navigate("signUpWithMobileMain");
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text>
-                                        <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
-                                        <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
-                                    </Text>
-                                </TouchableOpacity>
-                                :
-                                <TouchableOpacity
-                                    style={{ marginTop: 8, justifyContent: 'center', alignItems: 'center' }}
-                                    onPress={() => {
-                                        if (this._showNotification) {
-                                            this.hideNotification();
-                                            this.hideAlertIcon();
-                                        }
-
-                                        setTimeout(() => {
-                                            this.props.navigation.navigate("signUpWithEmailMain", { from: 'logIn' });
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                >
-                                    <Text>
-                                        <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Already a member?  </Text>
-                                        <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Log in</Text>
-                                    </Text>
-                                </TouchableOpacity>
-                        }
                     </View>
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                         <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.submit(this.state.name);
+                                    this.submit(this.state.email);
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -305,14 +263,11 @@ export default class SignUpWithMobileName extends React.Component {
         );
     }
 
-    validateName(text) {
+    validateEmail(text) {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
-
-        console.log('text', text);
-
 
         // enable/disable signup button
         if (text === '') {
@@ -323,45 +278,66 @@ export default class SignUpWithMobileName extends React.Component {
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
 
-        // Consider: check character
-        if (!text) {
-            // hide icon
-            this.setState({ nameIcon: 0 });
+        // check completion
+        let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (reg.test(String(text).toLowerCase())) {
+            console.log('validateEmail', "Email is Correct");
+
+            // show icon
+            this.setState({ emailIcon: 2 });
         } else {
-            let reg = /^[a-zA-Z\s]*$/;
-            if (reg.test(text) === false) {
-                // hide icon
-                this.setState({ nameIcon: 0 });
-            } else {
-                // show icon
-                this.setState({ nameIcon: 2 });
-            }
+            // show icon
+            this.setState({ emailIcon: 0 });
         }
 
-        this.setState({ name: text });
+        this.setState({ email: text });
     }
 
-    submit(text) {
-        if (this.state.nameIcon !== 2) {
+    async submit(text) {
+        if (this.state.emailIcon !== 2) {
             // show message box
-            const msg = 'Please use valid characters for your name.';
+            const msg = 'Please use valid characters for your email.';
             this.showNotification(msg);
 
-            this.setState({ nameIcon: 1 });
+            this.setState({ emailIcon: 1 });
 
             // set focus
-            this.refs['nameInput'].focus();
+            this.refs['emailInput'].focus();
 
             return;
         }
 
-        Vars.signUpName = this.state.name;
+        try {
+            await Firebase.auth.sendPasswordResetEmail(this.state.email);
 
-        const from = this.props.navigation.state.params.from;
-        if (from === 'email') {
-            this.props.navigation.navigate("signUpWithEmailMain");
-        } else if (from === 'mobile') {
-            this.props.navigation.navigate("signUpWithMobileMain");
+            console.log('email sent');
+
+
+            /*
+            Firebase.auth.verifyPasswordResetCode(code).then(function (email) {
+                // Display a "new password" form with the user's email address
+            }).catch(function () {
+                // Invalid code
+            });
+
+            Firebase.auth.confirmPasswordReset(code, newPassword).then(function () {
+                // Success
+                console.log('success');
+            }).catch(function () {
+                // Invalid code
+                console.log('invalid code');
+            });
+            */
+        } catch (error) {
+            console.log('sendPasswordResetEmail error', error.code, error.message);
+
+            if (error.code === 'auth/user-not-found') {
+                this.showNotification('There is no user corresponding to the email address.'); // done
+            } else if (error.code === 'auth/invalid-email') {
+                this.showNotification('The email address is not valid.'); // done
+            } else {
+                this.showNotification('An error happened. Please try again.');
+            }
         }
     }
 }

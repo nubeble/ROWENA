@@ -750,7 +750,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     ChatMain.final();
 
                                                     // remove notification token
-                                                    unregisterExpoPushToken(profile.uid);
+                                                    await unregisterExpoPushToken(profile.uid);
 
                                                     await Firebase.signOut(profile.uid);
                                                 });

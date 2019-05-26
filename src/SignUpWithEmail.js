@@ -11,7 +11,7 @@ import Firebase from './Firebase'
 import autobind from "autobind-decorator";
 import PreloadImage from './PreloadImage';
 import { Text, Theme } from "./rnff/src/components";
-import { Cons } from "./Globals";
+import { Cons, Vars } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 
@@ -20,26 +20,25 @@ export default class SignUpWithEmail extends React.Component {
     state = {
         email: '',
         password: '',
-        // userName: ''
 
         emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
         pwIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
-        showSignUpLoader: false,
-
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
+        bottomPosition: Dimensions.get('window').height,
+        signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
 
         invalid: true,
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
         signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
 
+        showSignUpLoader: false,
+
         securePwInput: true,
         secureText: 'Show',
 
-        bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight // 60: gap
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
 
     componentDidMount() {
@@ -150,10 +149,10 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     validateEmail(text) {
-        this.setState({ email: text });
-
-        // console.log('email', text);
-        // console.log('password', this.state.password);
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideEmailIcon();
+        }
 
         // enable/disable signup button
         if (text === '' || this.state.password === '') {
@@ -162,11 +161,6 @@ export default class SignUpWithEmail extends React.Component {
         } else {
             // enable
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
-        }
-
-        if (this._showNotification) {
-            this.hideNotification();
-            this.hideEmailIcon();
         }
 
         // check completion
@@ -180,6 +174,8 @@ export default class SignUpWithEmail extends React.Component {
             // show icon
             this.setState({ emailIcon: 0 });
         }
+
+        this.setState({ email: text });
     }
 
     moveToPassword(text) {
@@ -202,10 +198,10 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     validatePassword(text) {
-        this.setState({ password: text });
-
-        console.log('email', this.state.email);
-        console.log('password', text);
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hidePasswordIcon();
+        }
 
         // enable/disable signup button
         if (text === '' || this.state.email === '') {
@@ -216,10 +212,7 @@ export default class SignUpWithEmail extends React.Component {
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
 
-        if (this._showNotification) {
-            this.hideNotification();
-            this.hidePasswordIcon();
-        }
+        this.setState({ password: text });
 
         if (text.length < 6) {
             console.log('Must be at least 6 characters.');
@@ -246,7 +239,6 @@ export default class SignUpWithEmail extends React.Component {
 
     moveToSignUp(text) {
         if (this.state.pwIcon !== 2) {
-
             // show message box
             const msg = this.getPasswordErrorMessage(this.state.password);
             this.showNotification(msg);
@@ -331,7 +323,57 @@ export default class SignUpWithEmail extends React.Component {
         this.refs['emailInput'].blur();
         this.refs['pwInput'].blur();
 
-        this.processSignUp();
+        // this.processSignUp();
+        let from = null;
+        const params = this.props.navigation.state.params;
+        if (params) {
+            from = params.from;
+        }
+
+        if (from === 'logIn') {
+            this.processSignIn();
+        } else {
+            this.processSignUp();
+        }
+    }
+
+    async processSignIn() {
+        // show indicator
+        this.setState({ showSignUpLoader: true });
+
+        try {
+            Firebase.auth.languageCode = 'en';
+            const user = await Firebase.auth.signInWithEmailAndPassword(this.state.email, this.state.password);
+            console.log('SignUpWithEmail.signInWithEmailAndPassword, user', user);
+
+            // save token
+            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+                await registerExpoPushToken(user.user.uid, user.user.email);
+            }
+
+            this.props.navigation.navigate("welcome", { from: 'EMAIL' });
+
+            // sign up finished
+            Vars.signUpType = null;
+            Vars.signUpName = null;
+        } catch (error) {
+            console.log('error', error.code, error.message);
+
+            if (error.code === 'auth/invalid-email') {
+                this.showNotification('The email address is not valid.');
+            } else if (error.code === 'auth/user-disabled') {
+                this.showNotification('The user corresponding to the given email has been disabled.');
+            } else if (error.code === 'auth/user-not-found') {
+                this.showNotification('There is no user corresponding to the given email.');
+            } else if (error.code === 'auth/wrong-password') {
+                this.showNotification('The password is invalid for the given email.');
+            } else {
+                this.showNotification('An error happened. Please try again.');
+            }
+        }
+
+        // hide indicator
+        !this.closed && this.setState({ showSignUpLoader: false });
     }
 
     async processSignUp() {
@@ -354,17 +396,29 @@ export default class SignUpWithEmail extends React.Component {
 
             // save token
             if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                registerExpoPushToken(user.user.uid, user.user.email);
+                await registerExpoPushToken(user.user.uid, user.user.email);
             }
 
             this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email, from: 'SignUpWithEmail' });
         } catch (error) {
             console.log('error', error.code, error.message);
 
-            if (error.code === 'auth/email-already-in-use') {
-                this.showNotification('The email address is already in use. Please try another email address.');
-            } else if (error.code === 'auth/network-request-failed') {
-                this.showNotification('A network error happened. Please try again.');
+            if (error.code === 'auth/account-exists-with-different-credential') {
+                this.showNotification('There already exists an account with the email address asserted by the credential.');
+            } else if (error.code === 'auth/invalid-credential') {
+                this.showNotification('The credential is malformed or has expired.');
+            } else if (error.code === 'auth/operation-not-allowed') {
+                this.showNotification('The type of account corresponding to the credential is not enabled.');
+            } else if (error.code === 'auth/user-disabled') {
+                this.showNotification('The user corresponding to the given credential has been disabled.');
+            } else if (error.code === 'auth/user-not-found') {
+                this.showNotification('There is no user corresponding to the given email.');
+            } else if (error.code === 'auth/wrong-password') {
+                this.showNotification('The password is invalid for the given email.');
+            } else if (error.code === 'auth/invalid-verification-code') {
+                this.showNotification('The verification code of the credential is not valid.');
+            } else if (error.code === 'auth/invalid-verification-id') {
+                this.showNotification('The verification ID of the credential is not valid.');
             } else {
                 this.showNotification('An error happened. Please try again.');
             }
@@ -375,6 +429,21 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     render() {
+        let from = null;
+        const params = this.props.navigation.state.params;
+        if (params) {
+            from = params.from;
+        }
+
+        /*
+        if (from === 'logIn') {
+            this.props.navigation.navigate("signUpWithEmailMain");
+        }
+        */
+
+
+
+
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
 
@@ -423,6 +492,11 @@ export default class SignUpWithEmail extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideAlertIcons();
+                                }
+
                                 this.props.navigation.dispatch(NavigationActions.back());
                             }}
                         >
@@ -484,7 +558,7 @@ export default class SignUpWithEmail extends React.Component {
                             {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
                             {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
 
-                            <Text style={{ marginTop: 16, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            <Text style={{ marginTop: 4, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
                             </Text>
                             <TextInput
@@ -501,8 +575,7 @@ export default class SignUpWithEmail extends React.Component {
                                 autoCorrect={false}
                             />
                             <TouchableOpacity
-                                style={{ position: 'absolute', top: 94, right: 24, alignSelf: 'baseline' }}
-                                // style={{ position: 'absolute', top: 94, right: Dimensions.get('window').width / 2, alignSelf: 'baseline' }}
+                                style={{ position: 'absolute', top: 4 + 78, right: 24, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}
                             >
                                 <Text style={{ fontSize: 13, fontFamily: "Roboto-Medium", color: Theme.color.text2 }}>{this.state.secureText}</Text>
@@ -518,10 +591,33 @@ export default class SignUpWithEmail extends React.Component {
                             {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={28} />}
                             {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                         </View>
+                        {
+                            from === 'logIn' &&
+                            <TouchableOpacity
+                                style={{ marginTop: 8, justifyContent: 'center', alignItems: 'center' }}
+                                onPress={() => {
+                                    if (this._showNotification) {
+                                        this.hideNotification();
+                                        this.hideAlertIcons();
+                                    }
+
+                                    setTimeout(() => {
+                                        this.props.navigation.navigate("emailReset");
+                                    }, Cons.buttonTimeoutShort);
+                                }}
+                            >
+                                <Text>
+                                    <Text style={{ fontSize: 14, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>Forgot password?  </Text>
+                                    <Text style={{ fontSize: 15, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Reset password</Text>
+                                </Text>
+                            </TouchableOpacity>
+                        }
                     </View>
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => this.signUp()} style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}>
+                        <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
+                            onPress={() => this.signUp()}
+                        >
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Sign up</Text>
                             {
                                 this.state.showSignUpLoader &&
