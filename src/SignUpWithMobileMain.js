@@ -488,7 +488,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
                                     <TextInput
                                         ref='emailInput'
-                                        style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                        style={{ height: 40, paddingLeft: 18, paddingRight: 48 + 24, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                         keyboardType={"numeric"}
                                         maxLength={20}
                                         // onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
@@ -504,11 +504,15 @@ export default class SignUpWithMobileMain extends React.Component {
                                         this.state.phone.length > 0 &&
                                         <TouchableOpacity
                                             style={{
-                                                // backgroundColor: 'green',
                                                 width: 40, height: 40, justifyContent: "center", alignItems: "center",
-                                                position: 'absolute', right: 24, top: 33
+                                                position: 'absolute', right: 48, top: 33
                                             }}
                                             onPress={() => {
+                                                if (this._showNotification) {
+                                                    this.hideNotification();
+                                                    this.hideAlertIcons();
+                                                }
+
                                                 this.setState({ phone: '' });
 
                                                 // disable
@@ -526,9 +530,9 @@ export default class SignUpWithMobileMain extends React.Component {
                                         }}
                                     />
                                     {/* to block shaking */}
-                                    {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                                    {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                                    {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                                    {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
+                                    {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                                    {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
                                 </View>
                             </View>
                             :

@@ -158,7 +158,7 @@ export default class ResetPasswordMain extends React.Component {
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
-                                    // this.hideAlertIcon();
+                                    this.hideAlertIcon();
                                 }
                             }}
                         >
@@ -180,7 +180,7 @@ export default class ResetPasswordMain extends React.Component {
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
-                                    // this.hideAlertIcon();
+                                    this.hideAlertIcon();
                                 }
 
                                 this.props.navigation.dispatch(NavigationActions.back());
@@ -206,7 +206,7 @@ export default class ResetPasswordMain extends React.Component {
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 48 + 24, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 value={this.state.email}
                                 onChangeText={(text) => this.validateEmail(text)}
                                 onSubmitEditing={(event) => this.submit(event.nativeEvent.text)}
@@ -222,9 +222,17 @@ export default class ResetPasswordMain extends React.Component {
                                 <TouchableOpacity
                                     style={{
                                         width: 40, height: 40, justifyContent: "center", alignItems: "center",
-                                        position: 'absolute', right: 24, top: 23
+                                        position: 'absolute', top: 23,
+                                        // right: 24
+                                        // right: 19 // center of icon
+                                        right: 24 + 24
                                     }}
                                     onPress={() => {
+                                        if (this._showNotification) {
+                                            this.hideNotification();
+                                            this.hideAlertIcon();
+                                        }
+
                                         this.setState({ email: '' });
 
                                         // disable
@@ -241,9 +249,9 @@ export default class ResetPasswordMain extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
                         </View>
                     </View>
 
@@ -279,7 +287,7 @@ export default class ResetPasswordMain extends React.Component {
         }
 
         // check completion
-        let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (reg.test(String(text).toLowerCase())) {
             console.log('validateEmail', "Email is Correct");
 

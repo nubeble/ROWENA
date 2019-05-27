@@ -223,7 +223,7 @@ export default class SignUpWithMobileName extends React.Component {
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
                             <TextInput
                                 ref='nameInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 80, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 value={this.state.name}
                                 onChangeText={(text) => this.validateName(text)}
                                 onSubmitEditing={(event) => this.submit(event.nativeEvent.text)}
@@ -235,6 +235,31 @@ export default class SignUpWithMobileName extends React.Component {
                                 placeholder="Selena Gomez"
                                 placeholderTextColor={Theme.color.placeholder}
                             />
+                            {
+                                this.state.name.length > 0 &&
+                                <TouchableOpacity
+                                    style={{
+                                        width: 40, height: 40, justifyContent: "center", alignItems: "center",
+                                        position: 'absolute', right: 48, top: 4
+                                    }}
+                                    onPress={() => {
+                                        if (this._showNotification) {
+                                            this.hideNotification();
+                                            this.hideAlertIcon();
+                                        }
+
+                                        this.setState({ name: '' });
+
+                                        // disable
+                                        this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+
+                                        this.setState({ nameIcon: 0 });
+                                    }}
+                                >
+                                    <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
+                                </TouchableOpacity>
+                            }
+
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
@@ -242,9 +267,9 @@ export default class SignUpWithMobileName extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
+                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
                         </View>
 
                         {
@@ -311,9 +336,6 @@ export default class SignUpWithMobileName extends React.Component {
             this.hideAlertIcon();
         }
 
-        console.log('text', text);
-
-
         // enable/disable signup button
         if (text === '') {
             // disable
@@ -323,18 +345,20 @@ export default class SignUpWithMobileName extends React.Component {
             this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
         }
 
-        // Consider: check character
+        // check character
         if (!text) {
             // hide icon
             this.setState({ nameIcon: 0 });
         } else {
-            let reg = /^[a-zA-Z\s]*$/;
-            if (reg.test(text) === false) {
-                // hide icon
-                this.setState({ nameIcon: 0 });
-            } else {
+            const reg = /^[a-zA-Z\s]*$/;
+            if (reg.test(String(text).toLowerCase())) {
+                console.log('validateName', "Name is Correct");
+
                 // show icon
                 this.setState({ nameIcon: 2 });
+            } else {
+                // show icon
+                this.setState({ nameIcon: 0 });
             }
         }
 

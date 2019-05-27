@@ -224,9 +224,9 @@ export default class ResetPasswordVerification extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
+                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
                         </View>
                     </View>
 
@@ -269,7 +269,7 @@ export default class ResetPasswordVerification extends React.Component {
             // hide icon
             this.setState({ nameIcon: 0 });
         } else {
-            let reg = /^[a-zA-Z\s]*$/;
+            const reg = /^[a-zA-Z\s]*$/;
             if (reg.test(text) === false) {
                 // hide icon
                 this.setState({ nameIcon: 0 });

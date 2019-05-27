@@ -164,7 +164,7 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         // check completion
-        let reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (reg.test(String(text).toLowerCase())) {
             console.log('validateEmail', "Email is Correct");
 
@@ -547,6 +547,30 @@ export default class SignUpWithEmail extends React.Component {
                                 autoCorrect={false}
                                 autoCapitalize="none"
                             />
+                            {
+                                this.state.email.length > 0 &&
+                                <TouchableOpacity
+                                    style={{
+                                        width: 40, height: 40, justifyContent: "center", alignItems: "center",
+                                        position: 'absolute', right: 48, top: 33
+                                    }}
+                                    onPress={() => {
+                                        if (this._showNotification) {
+                                            this.hideNotification();
+                                            this.hideEmailIcon();
+                                        }
+
+                                        this.setState({ email: '' });
+
+                                        // disable
+                                        this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+
+                                        this.setState({ emailIcon: 0 });
+                                    }}
+                                >
+                                    <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
+                                </TouchableOpacity>
+                            }
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
@@ -554,9 +578,9 @@ export default class SignUpWithEmail extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
 
                             <Text style={{ marginTop: 4, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
@@ -587,9 +611,9 @@ export default class SignUpWithEmail extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color="transparent" size={28} />}
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={28} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 36 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color="transparent" size={28} />}
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={28} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
                         </View>
                         {
                             from === 'logIn' &&
