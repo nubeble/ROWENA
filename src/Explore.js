@@ -608,11 +608,12 @@ export default class Explore extends React.Component<InjectedProps> {
         const placeId = place.place_id;
         */
 
+        const placeName = this.state.searchText;
         const placeId = this.state.placeId;
         const feedSize = this.state.feedSize;
 
         setTimeout(() => {
-            this.props.navigation.navigate("mapSearch", { region: region, placeId, feedSize });
+            this.props.navigation.navigate("mapSearch", { region, placeName, placeId, feedSize });
         }, Cons.buttonTimeoutShort);
     }
 }

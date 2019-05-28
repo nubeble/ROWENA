@@ -239,6 +239,9 @@ export default class Firebase {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
                 // this should never happen!
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('Firebase.getPlaceRandomFeedImage', 'THIS SHOULD NOT HAPPEN!!!');
+                console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
             } else {
                 snap2.forEach((doc) => {
                     // console.log(doc.id, '=>', doc.data());
@@ -1669,7 +1672,4 @@ export default class Firebase {
 
         return result;
     }
-
-
-
 }

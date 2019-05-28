@@ -328,7 +328,7 @@ export default class ChatMain extends React.Component {
                             }} />
                         }
                     </View>
-
+                    {/*
                     <View style={{
                         width: '46%', height: viewHeight,
                         // backgroundColor: 'green',
@@ -344,6 +344,16 @@ export default class ChatMain extends React.Component {
                         justifyContent: 'flex-start', alignItems: 'flex-end', paddingRight: Theme.spacing.xSmall
                     }}>
                         <Text style={styles.time}>{time}</Text>
+                    </View>
+                    */}
+                    <View style={{
+                        width: '76%', height: viewHeight,
+                        // backgroundColor: 'green',
+                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10
+                    }}>
+                        <Text style={styles.time}>{time}</Text>
+                        <Text style={styles.name}>{user.name}</Text>
+                        <Text style={styles.contents}>{contents}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -488,9 +498,17 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height / 60,
         color: Theme.color.text3,
         fontSize: 18,
-        fontFamily: "Roboto-Regular"
+        fontFamily: "Roboto-Regular",
+        // numberOfLines: 1, ellipsizeMode: 'tail'
     },
     time: {
+        /*
+        color: Theme.color.text3,
+        fontSize: 14,
+        fontFamily: "Roboto-Regular"
+        */
+        position: 'absolute',
+        top: (Theme.spacing.small / 3) * -1, right: Theme.spacing.xSmall,
         color: Theme.color.text3,
         fontSize: 14,
         fontFamily: "Roboto-Regular"

@@ -59,7 +59,8 @@ export default class MapSearch extends React.Component {
                 longitudeDelta: LONGITUDE_DELTA
             },
             feeds: [],
-            selectedMarker: 0 // index
+            selectedMarker: 0, // index
+            place: null
         };
     }
 
@@ -72,7 +73,9 @@ export default class MapSearch extends React.Component {
 
         StatusBar.setHidden(true);
 
-        const { region } = this.props.navigation.state.params;
+        const { placeName, region } = this.props.navigation.state.params;
+
+        this.setState({ place: placeName });
 
         let _region = null;
         if (region) {
@@ -108,11 +111,11 @@ export default class MapSearch extends React.Component {
         this.setState({ loading: true });
 
         const feeds = await this.loadFeeds(_region);
-        this.setState({ feeds: feeds });
+        !this.closed && this.setState({ feeds: feeds });
 
-        this.setState({ loading: false });
+        !this.closed && this.setState({ loading: false });
 
-        this.setState({ showSearchButton: false });
+        !this.closed && this.setState({ showSearchButton: false });
 
         /*
         setTimeout(() => {
@@ -201,7 +204,22 @@ export default class MapSearch extends React.Component {
                     this.renderMap()
                 }
 
-
+                {/* place name */}
+                <View
+                    style={{
+                        width: '100%',
+                        alignSelf: 'baseline',
+                        backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                        position: 'absolute',
+                        top: Constants.statusBarHeight,
+                        left: 0,
+                        paddingHorizontal: 12,
+                        paddingVertical: 4,
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                >
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.8)', textAlign: 'center' }}>{this.state.place}</Text>
+                </View>
 
                 {/* close button */}
                 <TouchableOpacity
@@ -233,9 +251,9 @@ export default class MapSearch extends React.Component {
                             width: '50%',
                             height: 30,
                             position: 'absolute',
-                            right: '25%',
-                            // top: 100 + 6, // center
-                            top: Constants.statusBarHeight + 30,
+                            left: '25%',
+                            top: 100 + 6, // center
+                            // top: Constants.statusBarHeight + 30,
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
@@ -250,7 +268,7 @@ export default class MapSearch extends React.Component {
                         }}>
                             {
                                 this.state.loading ?
-                                    <RefreshIndicator refreshing color={'black'} total={3} size={3} />
+                                    <RefreshIndicator refreshing color={'rgba(0, 0, 0, 0.8)'} total={3} size={3} />
                                     :
                                     <Text style={{ color: Theme.color.title, fontSize: 14, fontFamily: "Roboto-Medium" }}>{'Redo search in this area'}</Text>
                             }
@@ -269,13 +287,10 @@ export default class MapSearch extends React.Component {
                         justifyContent: "center", alignItems: "center"
                     }}
                     onPress={() => {
-                        // this.getCurrentPosition();
+                        this.getCurrentPosition();
 
                         // test
                         // this.props.navigation.navigate("mapOverview");
-
-                        // this.getCamera();
-                        this.setCamera();
                     }}
                 >
                     <View style={{
@@ -417,6 +432,8 @@ export default class MapSearch extends React.Component {
                 // mapType={MAP_TYPES.TERRAIN}
                 style={styles.map}
                 initialRegion={this.state.region}
+                showsUserLocation={true}
+                // showsMyLocationButton={true}
                 onRegionChange={(region) => {
                     if (!this.state.showSearchButton) this.setState({ showSearchButton: true });
 
@@ -576,7 +593,7 @@ export default class MapSearch extends React.Component {
             placeName = city + ', ' + country;
         }
         */
-        const placeName = Util.getDistance(post.location, Vars.location);
+        const distance = Util.getDistance(post.location, Vars.location);
 
         // defaultRating, averageRating
         const averageRating = post.averageRating;
@@ -613,7 +630,7 @@ export default class MapSearch extends React.Component {
                 />
                 <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{post.name}</Text>
-                    <Text style={styles.feedItemText}>{placeName}</Text>
+                    <Text style={styles.feedItemText}>{distance}</Text>
                     {
                         post.reviewCount > 0 ?
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
@@ -683,11 +700,11 @@ export default class MapSearch extends React.Component {
         this.setState({ loading: true });
 
         const feeds = await this.loadFeeds(region);
-        this.setState({ feeds: feeds });
+        !this.closed && this.setState({ feeds: feeds });
 
-        this.setState({ loading: false });
+        !this.closed && this.setState({ loading: false });
 
-        this.setState({ showSearchButton: false });
+        !this.closed && this.setState({ showSearchButton: false });
     }
 }
 

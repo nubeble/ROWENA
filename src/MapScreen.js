@@ -105,7 +105,7 @@ export default class MapScreen extends React.Component {
                 {
                     this.state.renderMap &&
                     <MapView
-                        ref={map => { this.map = map }}
+                        ref={ref => { this.map = ref; }}
                         provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
                         style={styles.map}
                         initialRegion={this.state.region}
@@ -170,21 +170,21 @@ export default class MapScreen extends React.Component {
                     </View>
                 </TouchableOpacity>
 
-                {/* search this area */}
+                {/* distance */}
                 <View
                     style={{
                         width: '60%',
                         height: 30,
                         position: 'absolute',
                         top: 100 + 6,
-                        right: '20%',
-                        borderRadius: 42 / 2,
+                        left: '20%',
+                        borderRadius: 30 / 3,
                         backgroundColor: 'rgba(255, 255, 255, 0.6)',
 
                         justifyContent: "center", alignItems: "center"
                     }}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "black" }}>{this.state.distance}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.8)' }}>{this.state.distance}</Text>
                 </View>
 
                 {/* gps button */}
