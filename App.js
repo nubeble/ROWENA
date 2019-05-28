@@ -380,7 +380,6 @@ import SignUpWithMobileMain from './src/SignUpWithMobileMain';
 // import SignUpWithMobilePassword from './src/SignUpWithMobilePassword';
 // import SignUpWithMobileBirthday from './src/SignUpWithMobileBirthday';
 import EmailVerificationMain from './src/EmailVerificationMain';
-// import SignUpWithEmailResetPassword from './src/SignUpWithEmailResetPassword';
 import ResetPasswordMain from './src/ResetPasswordMain';
 import ResetPasswordVerification from './src/ResetPasswordVerification';
 import ChatMain from './src/ChatMain';

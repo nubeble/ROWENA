@@ -71,6 +71,8 @@ export default class SignUpWithMobileName extends React.Component {
             return true;
         }
 
+        Vars.signUpName = null;
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -185,6 +187,8 @@ export default class SignUpWithMobileName extends React.Component {
                                     this.hideNotification();
                                     this.hideAlertIcon();
                                 }
+
+                                Vars.signUpName = null;
 
                                 this.props.navigation.dispatch(NavigationActions.back());
                             }}
