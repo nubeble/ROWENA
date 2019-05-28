@@ -543,7 +543,7 @@ export default class SignUpWithEmail extends React.Component {
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 80, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 56, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 keyboardType={'email-address'}
                                 // keyboardAppearance={'dark'}
                                 value={this.state.email}
@@ -587,16 +587,16 @@ export default class SignUpWithEmail extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
 
                             <Text style={{ marginTop: 4, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
                             </Text>
                             <TextInput
                                 ref='pwInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 80, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 56, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
                                 // keyboardAppearance={'dark'}
                                 secureTextEntry={this.state.securePwInput}
@@ -647,9 +647,9 @@ export default class SignUpWithEmail extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color="transparent" size={28} />}
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={28} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={28} />}
+                            {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
                         </View>
                         {
                             from === 'logIn' &&

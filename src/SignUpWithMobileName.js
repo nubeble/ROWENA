@@ -223,7 +223,7 @@ export default class SignUpWithMobileName extends React.Component {
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
                             <TextInput
                                 ref='nameInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 80, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 56, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 value={this.state.name}
                                 onChangeText={(text) => this.validateName(text)}
                                 onSubmitEditing={(event) => this.submit(event.nativeEvent.text)}
@@ -269,9 +269,9 @@ export default class SignUpWithMobileName extends React.Component {
                                 }}
                             />
                             {/* to block shaking */}
-                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
                         </View>
 
                         {
