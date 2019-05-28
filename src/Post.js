@@ -696,16 +696,14 @@ export default class Post extends React.Component<InjectedProps> {
                                                             marginLeft: -1
                                                         }}
                                                         onPress={async () => {
-                                                            // ToDo: show description with pop-up
                                                             console.log('open settings');
-                                                            /*
+
+                                                            // ToDo: show description with pop-up
                                                             const url = 'app-settings:';
                                                             const supported = await Linking.canOpenURL(url);
                                                             if (supported) {
                                                                 Linking.openURL(url);
                                                             }
-                                                            */
-                                                            Linking.openURL(url);
                                                         }}>
                                                         <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                                                     </TouchableOpacity>

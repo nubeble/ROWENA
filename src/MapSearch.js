@@ -389,7 +389,7 @@ export default class MapSearch extends React.Component {
 
                         this.setState({ selectedMarker: marker.index });
 
-                        // ToDo: move region in ios (in android automatically moved)
+                        // move region in ios (in android automatically moved)
                         if (Platform.OS === 'ios') {
                             this.moveMarker(marker.index);
                         }

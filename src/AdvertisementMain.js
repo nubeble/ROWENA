@@ -541,7 +541,7 @@ export default class AdvertisementMain extends React.Component {
     }
 
     async post() {
-        // ToDo: test navigation
+        // test navigation
         /*
         this.props.navigation.navigate("advertisementFinish");
         return;

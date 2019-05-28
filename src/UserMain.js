@@ -300,7 +300,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         let place = null;
         if (profile.place) place = profile.place;
 
-        if (!place) place = 'Cebu, Philippines'; // ToDo: test
+        if (!place) place = 'Location not provided';
 
         const opponentUserUid = guest.uid;
 
