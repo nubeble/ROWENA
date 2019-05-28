@@ -368,6 +368,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // ToDo: check email, phoneNumber
 
         // 2. update
+
+        // show loader
         this.setState({ showPostLoader: true });
 
         let data = {};
@@ -406,6 +408,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         // 3. go back
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            // hide loader
             this.setState({ showPostLoader: false });
 
             if (!this.closed) {
@@ -543,6 +546,17 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         >
                             <Text style={styles.done}>Done</Text>
                         </TouchableOpacity>
+                    </View>
+                }
+
+                {
+                    this.state.showPostLoader &&
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            animating={true}
+                            size="large"
+                            color={Theme.color.selection}
+                        />
                     </View>
                 }
 

@@ -214,161 +214,6 @@ export default class SignUpWithMobileMain extends React.Component {
         if (result) this.setState({ phone: newText });
     }
 
-    validateCode(text) {
-        if (this._showNotification) {
-            this.hideNotification();
-            this.hideAlertIcons();
-        }
-
-        // enable/disable signup button
-        if (text === '') {
-            // disable
-            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
-        } else {
-            // enable
-            this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
-        }
-
-        this.setState({ code: text });
-    }
-
-    moveToPassword(text) {
-        if (this.state.emailIcon !== 2) {
-            // console.log('Please enter a valid email address.');
-
-            // show message box
-            this.showNotification('Please enter a valid email address.');
-
-            this.setState({ emailIcon: 1 });
-
-            // set focus
-            this.refs['emailInput'].focus();
-
-            return;
-        }
-
-        // set focus
-        this.refs['pwInput'].focus();
-    }
-
-    moveToSignUp(text) {
-        if (this.state.pwIcon !== 2) {
-
-            // show message box
-            const msg = this.getPasswordErrorMessage(this.state.password);
-            this.showNotification(msg);
-
-            this.setState({ pwIcon: 1 });
-
-            // set focus
-            this.refs['pwInput'].focus();
-
-            return;
-        }
-
-        this.processSignUp();
-    }
-
-    getPasswordErrorMessage(text) {
-        if (text.length < 6) {
-            return 'Must be at least 6 characters.';
-        }
-
-        if (/\d/.test(text) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(text)) {
-            return ' Email is Correct';
-        } else {
-            return 'Must have at least one symbol or number.';
-        }
-    }
-
-    signUp() {
-        if (this.state.emailIcon !== 2) {
-            // console.log('Please enter a valid email address.');
-
-            // show message box
-            this.showNotification('Please enter a valid email address.');
-
-            this.setState({ emailIcon: 1 });
-
-            // set focus
-            this.refs['emailInput'].focus();
-
-            return;
-        }
-
-        if (this.state.pwIcon !== 2) {
-
-            // show message box
-            const msg = this.getPasswordErrorMessage(this.state.password);
-            this.showNotification(msg);
-
-            this.setState({ pwIcon: 1 });
-
-            // set focus
-            this.refs['pwInput'].focus();
-
-            return;
-        }
-
-        // hide keyboard
-        this.refs['emailInput'].blur();
-        this.refs['pwInput'].blur();
-
-        this.processSignUp();
-    }
-
-    async processSignUp() {
-        // show indicator
-        this.setState({ showSignUpLoader: true });
-
-        try {
-            const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
-            console.log('user', user);
-
-            // save token
-            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                await registerExpoPushToken(user.user.uid, user.user.displayName);
-            }
-
-            /*
-            const profile = await Firebase.getProfile(user.user.uid);
-            if (profile) {
-                // update
-                const data = {
-                    name: user.user.displayName,
-                    email: user.user.email,
-                    phoneNumber: user.user.phoneNumber
-                };
-
-                await Firebase.updateProfile(user.user.uid, data);
-            } else {
-                // create
-                await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
-            }
-            */
-        } catch (error) {
-            console.log('error', error.code, error.message);
-
-            if (error.code === 'auth/email-already-in-use') {
-                // this.showNotification('The email address is already in use. Please try another email address.');
-                this.showNotification('There already exists an account with the given email address.'); // done
-            } else if (error.code === 'auth/invalid-email') {
-                this.showNotification('The email address is not valid.'); // done
-            } else if (error.code === 'auth/operation-not-allowed') {
-                this.showNotification('Email/Password accounts are not enabled.'); // done
-            } else if (error.code === 'auth/weak-password') {
-                this.showNotification('The password is not strong enough.'); // done
-            } else if (error.code === 'auth/network-request-failed') {
-                this.showNotification('A network error happened. Please try again.');
-            } else {
-                this.showNotification('An error happened. Please try again.');
-            }
-        }
-
-        // hide indicator
-        !this.closed && this.setState({ showSignUpLoader: false });
-    }
-
     render() {
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
@@ -501,6 +346,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                         autoCapitalize="none"
                                     />
                                     {
+                                        /*
                                         this.state.phone.length > 0 &&
                                         <TouchableOpacity
                                             style={{
@@ -521,6 +367,7 @@ export default class SignUpWithMobileMain extends React.Component {
                                         >
                                             <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
                                         </TouchableOpacity>
+                                        */
                                     }
 
                                     <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}

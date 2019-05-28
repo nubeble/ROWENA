@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
-    ImageBackground, Animated, Keyboard, Platform, TextInput, Button
+    ImageBackground, Animated, Keyboard, Platform, TextInput, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, Firebase } from './rnff/src/components';
 import { Constants, Linking, WebBrowser } from "expo";
@@ -20,6 +20,7 @@ export default class ResetPasswordMain extends React.Component {
 
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
+        showSignUpButtonLoader: false,
 
         invalid: true,
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
@@ -201,12 +202,17 @@ export default class ResetPasswordMain extends React.Component {
                         }}>Reset password</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
-                            <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
+                                {"Enter your email address and we'll send you an email with instructions to reset password."}
+                            </Text>
+                            {/*
+                            <Text style={{ marginTop: 20, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'EMAIL ADDRESS'}
                             </Text>
+                            */}
                             <TextInput
                                 ref='emailInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48 + 24, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                style={{ marginTop: 16, height: 40, paddingLeft: 18, paddingRight: 48 + 24, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 value={this.state.email}
                                 onChangeText={(text) => this.validateEmail(text)}
                                 onSubmitEditing={(event) => this.submit(event.nativeEvent.text)}
@@ -218,6 +224,7 @@ export default class ResetPasswordMain extends React.Component {
                                 autoCapitalize="none"
                             />
                             {
+                                /*
                                 this.state.email.length > 0 &&
                                 <TouchableOpacity
                                     style={{
@@ -237,10 +244,13 @@ export default class ResetPasswordMain extends React.Component {
 
                                         // disable
                                         this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+
+                                        this.setState({ emailIcon: 0 });
                                     }}
                                 >
                                     <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
                                 </TouchableOpacity>
+                                */
                             }
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
@@ -264,6 +274,15 @@ export default class ResetPasswordMain extends React.Component {
                             }}
                         >
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Next</Text>
+                            {
+                                this.state.showSignUpButtonLoader &&
+                                <ActivityIndicator
+                                    style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                    animating={true}
+                                    size="small"
+                                    color={this.state.signUpButtonTextColor}
+                                />
+                            }
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -315,11 +334,22 @@ export default class ResetPasswordMain extends React.Component {
             return;
         }
 
+        // show loader
+        this.setState({ showSignUpButtonLoader: true });
+
         try {
+            Firebase.auth.languageCode = 'en';
             await Firebase.auth.sendPasswordResetEmail(this.state.email);
 
             console.log('email sent');
 
+            // hide loader
+            this.setState({ showSignUpButtonLoader: false });
+
+            // move to wait page
+            if (!this.closed) {
+                this.props.navigation.navigate("resetPasswordVerification");
+            }
 
             /*
             Firebase.auth.verifyPasswordResetCode(code).then(function (email) {
@@ -346,6 +376,9 @@ export default class ResetPasswordMain extends React.Component {
             } else {
                 this.showNotification('An error happened. Please try again.');
             }
+
+            // hide loader
+            this.setState({ showSignUpButtonLoader: false });
         }
     }
 }

@@ -1,9 +1,9 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
-    ImageBackground, Animated, Keyboard, Platform, TextInput, Button
+    ImageBackground, Animated, Keyboard, Platform, TextInput, ActivityIndicator
 } from 'react-native';
-import { Text, Theme } from './rnff/src/components';
+import { Text, Theme, Firebase } from './rnff/src/components';
 import { Constants, Linking, WebBrowser } from "expo";
 import { Ionicons, AntDesign } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
@@ -11,15 +11,16 @@ import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
+import * as Progress from 'react-native-progress';
 
 
 export default class ResetPasswordVerification extends React.Component {
     state = {
-        name: '',
-        nameIcon: 0, // 0: disappeared, 1: exclamation, 2: check
+        showCheckImage: false,
 
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
+        showSignUpButtonLoader: false,
 
         invalid: true,
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
@@ -66,7 +67,6 @@ export default class ResetPasswordVerification extends React.Component {
     handleHardwareBackPress() {
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcon();
 
             return true;
         }
@@ -78,13 +78,18 @@ export default class ResetPasswordVerification extends React.Component {
 
     @autobind
     onFocus() {
-        if (this.refs['nameInput']) this.refs['nameInput'].focus();
+        // if (this.refs['emailInput']) this.refs['emailInput'].focus();
+        setTimeout(() => {
+            this.setState({ showCheckImage: true });
+
+            // enable
+            this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
+        }, 500);
     }
 
     showNotification(msg) {
         if (this._showNotification) {
             this.hideNotification();
-            this.hideAlertIcon();
         }
 
         this._showNotification = true;
@@ -126,15 +131,7 @@ export default class ResetPasswordVerification extends React.Component {
         this._showNotification = false;
     }
 
-    hideAlertIcon() {
-        if (this.state.nameIcon !== 0) this.setState({ nameIcon: 0 });
-    }
-
     render() {
-        // const from = this.props.navigation.state.params.from; // 'mobile', 'email'
-
-        const nameIcon = this.state.nameIcon;
-
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
@@ -160,11 +157,10 @@ export default class ResetPasswordVerification extends React.Component {
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
-                                    this.hideAlertIcon();
                                 }
                             }}
                         >
-                            <Ionicons name='md-close' color="black" size={20} />
+                            <Ionicons name='md-arrow-back' color="black" size={20} />
                         </TouchableOpacity>
                     </Animated.View>
 
@@ -182,13 +178,12 @@ export default class ResetPasswordVerification extends React.Component {
                             onPress={() => {
                                 if (this._showNotification) {
                                     this.hideNotification();
-                                    this.hideAlertIcon();
                                 }
 
                                 this.props.navigation.dispatch(NavigationActions.back());
                             }}
                         >
-                            <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                            <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
                         </TouchableOpacity>
                     </View>
 
@@ -203,30 +198,31 @@ export default class ResetPasswordVerification extends React.Component {
                         }}>Reset password</Text>
 
                         <View style={{ marginTop: 24, paddingHorizontal: 4 }}>
-                            <TextInput
-                                ref='nameInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
-                                value={this.state.name}
-                                onChangeText={(text) => this.validateName(text)}
-                                onSubmitEditing={(event) => this.submit(event.nativeEvent.text)}
-                                selectionColor={Theme.color.selection}
-                                // keyboardAppearance={'dark'}
-                                underlineColorAndroid="transparent"
-                                autoCorrect={false}
-                                autoCapitalize="words"
-                                placeholder="Selena Gomez"
-                                placeholderTextColor={Theme.color.placeholder}
-                            />
-                            <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
-                                onLayout={(e) => {
-                                    const { y } = e.nativeEvent.layout;
-                                    this.namelY = y;
-                                }}
-                            />
-                            {/* to block shaking */}
-                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color="transparent" size={30} />}
-                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={30} />}
-                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={30} />}
+                            <Text style={{ paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
+                                {"Password reset email sent. Follow the directions in the email to reset your password."}
+                            </Text>
+                            {
+                                this.state.showCheckImage &&
+                                <View style={{ width: '100%', height: Dimensions.get('window').height / 2, justifyContent: 'center' }}>
+                                    <View style={{
+                                        height: 240,
+                                        alignItems: "center",
+                                        justifyContent: "center"
+                                    }}>
+                                        <Progress.Circle
+                                            showsText={false} size={120} color={Theme.color.text2} borderWidth={1} progress={1} />
+
+                                        <View style={{
+                                            position: 'absolute',
+                                            width: '100%',
+                                            height: 240,
+                                            alignItems: "center", justifyContent: "center"
+                                        }}>
+                                            <AntDesign name='check' color={Theme.color.text2} size={64} />
+                                        </View>
+                                    </View>
+                                </View>
+                            }
                         </View>
                     </View>
 
@@ -234,76 +230,30 @@ export default class ResetPasswordVerification extends React.Component {
                         <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.submit(this.state.name);
+                                    if (this._showNotification) {
+                                        this.hideNotification();
+                                    }
+
+                                    // ToDo
+                                    this.props.navigation.dismiss();
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Next</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Close</Text>
+                            {
+                                this.state.showSignUpButtonLoader &&
+                                <ActivityIndicator
+                                    style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                                    animating={true}
+                                    size="small"
+                                    color={this.state.signUpButtonTextColor}
+                                />
+                            }
                         </TouchableOpacity>
                     </View>
                 </View>
             </ImageBackground>
         );
-    }
-
-    validateName(text) {
-        if (this._showNotification) {
-            this.hideNotification();
-            this.hideAlertIcon();
-        }
-
-        console.log('text', text);
-
-
-        // enable/disable signup button
-        if (text === '') {
-            // disable
-            this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
-        } else {
-            // enable
-            this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
-        }
-
-        // Consider: check character
-        if (!text) {
-            // hide icon
-            this.setState({ nameIcon: 0 });
-        } else {
-            const reg = /^[a-zA-Z\s]*$/;
-            if (reg.test(text) === false) {
-                // hide icon
-                this.setState({ nameIcon: 0 });
-            } else {
-                // show icon
-                this.setState({ nameIcon: 2 });
-            }
-        }
-
-        this.setState({ name: text });
-    }
-
-    submit(text) {
-        if (this.state.nameIcon !== 2) {
-            // show message box
-            const msg = 'Please use valid characters for your name.';
-            this.showNotification(msg);
-
-            this.setState({ nameIcon: 1 });
-
-            // set focus
-            this.refs['nameInput'].focus();
-
-            return;
-        }
-
-        Vars.signUpName = this.state.name;
-
-        const from = this.props.navigation.state.params.from;
-        if (from === 'email') {
-            this.props.navigation.navigate("signUpWithEmailMain");
-        } else if (from === 'mobile') {
-            this.props.navigation.navigate("signUpWithMobileMain");
-        }
     }
 }
 
@@ -313,15 +263,10 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
         paddingBottom: 8,
         flexDirection: 'column',
         justifyContent: 'flex-end'
-    },
-    container: {
-        flex: 1,
-        // backgroundColor: 'black'
     },
     signUpButton: {
         width: '85%',
@@ -331,9 +276,6 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    activityIndicator: {
-        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0
     },
     notification: {
         // width: '100%',

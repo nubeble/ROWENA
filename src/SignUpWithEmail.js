@@ -351,6 +351,9 @@ export default class SignUpWithEmail extends React.Component {
                 await registerExpoPushToken(user.user.uid, user.user.email);
             }
 
+            // hide indicator
+            this.setState({ showSignUpLoader: false });
+
             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
 
             // sign up finished
@@ -370,10 +373,10 @@ export default class SignUpWithEmail extends React.Component {
             } else {
                 this.showNotification('An error happened. Please try again.');
             }
-        }
 
-        // hide indicator
-        !this.closed && this.setState({ showSignUpLoader: false });
+            // hide indicator
+            this.setState({ showSignUpLoader: false });
+        }
     }
 
     async processSignUp() {
@@ -399,6 +402,9 @@ export default class SignUpWithEmail extends React.Component {
                 await registerExpoPushToken(user.user.uid, user.user.email);
             }
 
+            // hide indicator
+            this.setState({ showSignUpLoader: false });
+
             this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email, from: 'SignUpWithEmail' });
         } catch (error) {
             console.log('error', error.code, error.message);
@@ -422,10 +428,10 @@ export default class SignUpWithEmail extends React.Component {
             } else {
                 this.showNotification('An error happened. Please try again.');
             }
-        }
 
-        // hide indicator
-        !this.closed && this.setState({ showSignUpLoader: false });
+            // hide indicator
+            this.setState({ showSignUpLoader: false });
+        }
     }
 
     render() {
@@ -537,22 +543,24 @@ export default class SignUpWithEmail extends React.Component {
                             </Text>
                             <TextInput
                                 ref='emailInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 80, fontSize: 22, fontFamily: "Roboto-Regular", color: Theme.color.text2 }}
                                 keyboardType={'email-address'}
-                                onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
-                                onChangeText={(text) => this.validateEmail(text)}
-                                selectionColor={Theme.color.selection}
                                 // keyboardAppearance={'dark'}
+                                value={this.state.email}
+                                onChangeText={(text) => this.validateEmail(text)}
+                                onSubmitEditing={(event) => this.moveToPassword(event.nativeEvent.text)}
+                                selectionColor={Theme.color.selection}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
                                 autoCapitalize="none"
                             />
                             {
+                                /*
                                 this.state.email.length > 0 &&
                                 <TouchableOpacity
                                     style={{
                                         width: 40, height: 40, justifyContent: "center", alignItems: "center",
-                                        position: 'absolute', right: 48, top: 33
+                                        position: 'absolute', right: 48, top: 23
                                     }}
                                     onPress={() => {
                                         if (this._showNotification) {
@@ -570,6 +578,7 @@ export default class SignUpWithEmail extends React.Component {
                                 >
                                     <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
                                 </TouchableOpacity>
+                                */
                             }
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
@@ -587,17 +596,44 @@ export default class SignUpWithEmail extends React.Component {
                             </Text>
                             <TextInput
                                 ref='pwInput'
-                                style={{ height: 40, paddingLeft: 18, paddingRight: 48, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
+                                style={{ height: 40, paddingLeft: 18, paddingRight: 80, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
                                 // keyboardType={Platform.OS === "android" ? 'visible-password' : 'default'}
+                                // keyboardAppearance={'dark'}
                                 secureTextEntry={this.state.securePwInput}
-                                onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
+                                value={this.state.password}
                                 onChangeText={(text) => this.validatePassword(text)}
+                                onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
                                 autoCapitalize="none"
                                 selectionColor={Theme.color.selection}
-                                // keyboardAppearance={'dark'}
                                 underlineColorAndroid="transparent"
                                 autoCorrect={false}
                             />
+                            {
+                                /*
+                                this.state.password.length > 0 &&
+                                <TouchableOpacity
+                                    style={{
+                                        width: 40, height: 40, justifyContent: "center", alignItems: "center",
+                                        position: 'absolute', right: 48, top: 23 + 82
+                                    }}
+                                    onPress={() => {
+                                        if (this._showNotification) {
+                                            this.hideNotification();
+                                            this.hideEmailIcon();
+                                        }
+
+                                        this.setState({ password: '' });
+
+                                        // disable
+                                        this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
+
+                                        this.setState({ pwIcon: 0 });
+                                    }}
+                                >
+                                    <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
+                                </TouchableOpacity>
+                                */
+                            }
                             <TouchableOpacity
                                 style={{ position: 'absolute', top: 4 + 78, right: 24, alignSelf: 'baseline' }}
                                 onPress={() => this.toggleSecureText()}

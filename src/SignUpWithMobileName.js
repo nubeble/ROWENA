@@ -236,6 +236,7 @@ export default class SignUpWithMobileName extends React.Component {
                                 placeholderTextColor={Theme.color.placeholder}
                             />
                             {
+                                /*
                                 this.state.name.length > 0 &&
                                 <TouchableOpacity
                                     style={{
@@ -258,6 +259,7 @@ export default class SignUpWithMobileName extends React.Component {
                                 >
                                     <Ionicons name='ios-close-circle' color='rgba(255, 255, 255, 0.8)' size={20} />
                                 </TouchableOpacity>
+                                */
                             }
 
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}

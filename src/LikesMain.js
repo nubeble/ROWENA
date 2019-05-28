@@ -611,7 +611,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             animating={true}
                             size="large"
                             // color='white'
-                            color={Theme.color.splash}
+                            color={Theme.color.selection}
                         />
                     </View>
                 }

@@ -542,8 +542,10 @@ export default class AdvertisementMain extends React.Component {
 
     async post() {
         // ToDo: test navigation
-        // this.props.navigation.navigate("advertisementFinish");
-        // return;
+        /*
+        this.props.navigation.navigate("advertisementFinish");
+        return;
+        */
 
         if (this.state.onUploadingImage) return;
 
@@ -669,6 +671,8 @@ export default class AdvertisementMain extends React.Component {
         }
 
         // 2. upload
+
+        // show loader
         this.setState({ showPostLoader: true });
 
         let data = {};
@@ -741,6 +745,7 @@ export default class AdvertisementMain extends React.Component {
 
         // 3. move to finish page
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            // hide loader
             this.setState({ showPostLoader: false });
 
             if (!this.closed) {

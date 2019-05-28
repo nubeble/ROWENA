@@ -414,13 +414,13 @@ const EmailResetPasswordStackNavigator = createStackNavigator(
         resetPasswordVerification: { screen: ResetPasswordVerification }
     },
     {
-        mode: 'modal',
+        mode: 'card',
         headerMode: 'none',
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
     }
 );

@@ -736,7 +736,7 @@ export default class GooglePlacesAutocomplete extends Component {
                 animating={true}
                 size="small"
                 // color='grey'
-                color={Theme.color.splash}
+                color={Theme.color.selection}
             />
         );
     }
