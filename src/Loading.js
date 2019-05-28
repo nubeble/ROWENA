@@ -187,7 +187,9 @@ export default class Loading extends React.Component<InjectedProps> {
         Firebase.init();
 
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
+            console.log('Loading.onAuthStateChanged', '----------------------------------------');
             console.log('Loading.onAuthStateChanged, user', user);
+            console.log('Loading.onAuthStateChanged', '----------------------------------------');
 
             /*
             if (Vars.signUpType === 'EMAIL') {

@@ -150,6 +150,7 @@ export default class AuthMain extends React.Component {
             declinedPermissions,
         } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542',
             {
+                // permissions: ['public_profile', 'email', 'user_gender', 'user_location'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
                 permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
             });
 
@@ -158,7 +159,9 @@ export default class AuthMain extends React.Component {
 
             try {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
-                console.log('user', user);
+                console.log('Firebase.auth.signInAndRetrieveDataWithCredential', '----------------------------------------');
+                console.log('Firebase.auth.signInAndRetrieveDataWithCredential, user', user);
+                console.log('Firebase.auth.signInAndRetrieveDataWithCredential', '----------------------------------------');
 
                 // save token
                 if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
