@@ -51,7 +51,7 @@ export default class AdvertisementFinish extends React.Component {
                         }}
                         onPress={() => {
                             setTimeout(() => {
-                                this.props.navigation.dismiss();
+                                !this.closed && this.props.navigation.dismiss();
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -95,7 +95,7 @@ export default class AdvertisementFinish extends React.Component {
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
-                            this.props.navigation.dismiss();
+                            !this.closed && this.props.navigation.dismiss();
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Finish</Text>

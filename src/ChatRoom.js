@@ -765,7 +765,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             };
 
             setTimeout(() => {
-                this.props.navigation.navigate("user", { item: _item });
+                !this.closed && this.props.navigation.navigate("user", { item: _item });
             }, Cons.buttonTimeoutShort);
         }
     }

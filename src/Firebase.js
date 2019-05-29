@@ -1089,7 +1089,7 @@ export default class Firebase {
         // Consider: just leave the replyAdded value in guest's user profile
     }
 
-    // comment
+    // customer review
     // --
     static async addComment(uid, targetUid, comment, name, place, picture) { // uid: writer, targetUid: receiver, comment: string
         let result;
@@ -1127,10 +1127,9 @@ export default class Firebase {
             const item = {
                 userUid: targetUid,
                 commentId: id,
-
                 name: userDoc.data().name,
                 placeName: userDoc.data().place,
-                picture: userDoc.data().picture.uri
+                picture: userDoc.data().picture.uri // customer profile picture
             };
 
             let data = {

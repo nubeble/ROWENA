@@ -662,6 +662,7 @@ export default class SignUpWithEmail extends React.Component {
                                     }
 
                                     setTimeout(() => {
+                                        if (this.closed) return;
                                         this.props.navigation.navigate("emailReset");
                                     }, Cons.buttonTimeoutShort);
                                 }}

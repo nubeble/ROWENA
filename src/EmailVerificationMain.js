@@ -65,7 +65,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
             // timer
             setTimeout(() => {
-                this.startTimer();
+                !this.closed && this.startTimer();
             }, 500);
 
             this.reloadInterval = setInterval(() => {
@@ -92,8 +92,9 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
                         // move to next
                         setTimeout(() => {
+                            if (this.closed) return;
                             // disable indicator
-                            !this.closed && this.setState({ showSignUpLoader: false });
+                            this.setState({ showSignUpLoader: false });
 
                             console.log('[first join] move to welcome.');
                             this.props.navigation.navigate("welcome", { from: 'EMAIL' });

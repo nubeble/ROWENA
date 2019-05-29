@@ -769,6 +769,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         <TouchableOpacity activeOpacity={0.5}
                                             onPress={() => {
                                                 setTimeout(() => {
+                                                    if (this.closed) return;
                                                     /*
                                                     this.setState({ isNavigating: true }, () => {
                                                         this.props.navigation.navigate("map", { post: post });
@@ -1700,6 +1701,7 @@ export default class Post extends React.Component<InjectedProps> {
     @autobind
     ratingCompleted(rating) {
         setTimeout(() => {
+            if (this.closed) return;
             // const { post } = this.props.navigation.state.params;
             const post = this.state.post;
 

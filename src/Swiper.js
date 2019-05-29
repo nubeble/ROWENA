@@ -323,6 +323,7 @@ export default class extends Component {
 
         this.autoplayTimer && clearTimeout(this.autoplayTimer)
         this.autoplayTimer = setTimeout(() => {
+            if (this.closed) return;
             /*
             if (!this.props.loop && (
                 // this.props.autoplayDirection

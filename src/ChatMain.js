@@ -239,7 +239,7 @@ export default class ChatMain extends React.Component {
                                         setTimeout(() => {
                                             // Consider: set scroll position 0
 
-                                            this.props.navigation.navigate("intro");
+                                            !this.closed && this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>

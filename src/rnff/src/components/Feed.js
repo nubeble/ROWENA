@@ -157,6 +157,7 @@ export default class Feed extends React.Component<FeedProps> {
                                 <TouchableOpacity
                                     onPress={() => {
                                         setTimeout(() => {
+                                            if (this.closed) return;
                                             this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}

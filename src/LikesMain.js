@@ -268,13 +268,11 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         this.feedList.delete(feedId);
 
                         // update state feed & UI
-                        // --
                         let feeds = [...this.state.feeds];
                         const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
                         if (index !== -1) {
                             feeds.splice(index, 1);
                         }
-                        // --
 
                         return;
                     }
@@ -283,14 +281,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     this.feedList.set(feedId, newFeed);
 
                     // update state feed & UI
-                    // --
                     let feeds = [...this.state.feeds];
                     const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
                     if (index !== -1) {
                         feeds[index] = newFeed;
                         !this.closed && this.setState({ feeds });
                     }
-                    // --
                 });
 
                 this.feedsUnsubscribes.push(fi);
@@ -584,7 +580,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                         setTimeout(() => {
                                             // Consider: set scroll position 0
 
-                                            this.props.navigation.navigate("intro");
+                                            !this.closed && this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>

@@ -1484,7 +1484,7 @@ export default class AdvertisementMain extends React.Component {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
                             setTimeout(() => {
-                                this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                                !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -1553,7 +1553,7 @@ export default class AdvertisementMain extends React.Component {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
 
                             setTimeout(() => {
-                                this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
+                                !this.closed && this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -1811,8 +1811,8 @@ export default class AdvertisementMain extends React.Component {
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
                 setTimeout(() => {
-                    !this.closed && this.hideFlash();
-
+                    if (this.closed) return;
+                    this.hideFlash();
                     this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
                 }, 1500);
             });

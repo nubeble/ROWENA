@@ -597,14 +597,15 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                 if (!this.state.guest) return;
 
                                                 setTimeout(() => {
+                                                    if (this.closed) return;
                                                     // this.props.navigation.navigate("writeComment");
                                                     this.openKeyboard();
 
                                                     // move scroll top
                                                     // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
                                                     // console.log('gap', gap);
-                                                    this._flatList.scrollToOffset({ offset: 0, animated: true });
                                                     // this._flatList.scrollToOffset({ offset: gap, animated: true });
+                                                    this._flatList.scrollToOffset({ offset: 0, animated: true });
                                                 }, Cons.buttonTimeoutShort);
 
                                             }}

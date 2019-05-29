@@ -269,6 +269,7 @@ export default class ResetPasswordMain extends React.Component {
                         <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
                             onPress={() => {
                                 setTimeout(() => {
+                                    if (this.closed) return;
                                     this.submit(this.state.email);
                                 }, Cons.buttonTimeoutShort);
                             }}

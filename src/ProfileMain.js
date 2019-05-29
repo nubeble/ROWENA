@@ -591,9 +591,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         onPress={() => {
                                             if (!profile) return;
 
-                                            setTimeout(() => {
-                                                Firebase.updateCommentChecked(uid, false);
-
+                                            setTimeout(async () => {
+                                                if (this.closed) return;
+                                                await Firebase.updateCommentChecked(uid, false);
                                                 this.props.navigation.navigate("edit");
                                             }, Cons.buttonTimeoutShort);
                                         }}
@@ -671,6 +671,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 if (!profile) return;
 
                                                 setTimeout(() => {
+                                                    if (this.closed) return;
                                                     this.props.navigation.navigate("checkReview");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
@@ -693,6 +694,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 if (!profile) return;
 
                                                 setTimeout(() => {
+                                                    if (this.closed) return;
                                                     this.props.navigation.navigate("advertisement");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
@@ -717,6 +719,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     if (!profile) return;
 
                                                     setTimeout(() => {
+                                                        if (this.closed) return;
                                                         this.props.navigation.navigate("checkComment");
                                                     }, Cons.buttonTimeoutShort);
                                                 }}
@@ -1060,6 +1063,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             if (pw === '1103') {
 
                 setTimeout(() => {
+                    if (this.closed) return;
                     this.props.navigation.navigate("admin");
                 }, Cons.buttonTimeoutShort);
             }

@@ -80,6 +80,7 @@ export default class ResetPasswordVerification extends React.Component {
     onFocus() {
         // if (this.refs['emailInput']) this.refs['emailInput'].focus();
         setTimeout(() => {
+            if (this.closed) return;
             this.setState({ showCheckImage: true });
 
             // enable
@@ -230,6 +231,8 @@ export default class ResetPasswordVerification extends React.Component {
                         <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
                             onPress={() => {
                                 setTimeout(() => {
+                                    if (this.closed) return;
+
                                     if (this._showNotification) {
                                         this.hideNotification();
                                     }

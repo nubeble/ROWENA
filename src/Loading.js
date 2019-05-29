@@ -348,6 +348,7 @@ export default class Loading extends React.Component<InjectedProps> {
         if (chatResult) {
             // show badge
             setTimeout(() => {
+                if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnChat(true, 0);
             }, 2000); // after 2 sec
@@ -358,6 +359,7 @@ export default class Loading extends React.Component<InjectedProps> {
         if (profileResult) {
             // show badge
             setTimeout(() => {
+                if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnProfile(true, 0);
             }, 2000); // after 2 sec

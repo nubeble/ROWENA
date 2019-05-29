@@ -92,7 +92,7 @@ export default class AdvertisementStart extends React.Component {
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
-                            this.props.navigation.navigate("advertisementMain");
+                            !this.closed && this.props.navigation.navigate("advertisementMain");
                         }, Cons.buttonTimeoutShort);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>

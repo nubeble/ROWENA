@@ -218,7 +218,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                         setTimeout(() => {
                                             // Consider: set scroll position 0
 
-                                            this.props.navigation.navigate("intro");
+                                            !this.closed && this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>
@@ -314,9 +314,9 @@ export default class CommentMain extends React.Component<InjectedProps> {
             } else {
                 const customer = {
                     uid: userUid,
-                    name,
-                    place: placeName,
-                    picture: {
+                    name, // will be updated
+                    place: placeName, // will be updated
+                    picture: { // will be updated
                         uri
                     }
                 };
@@ -324,42 +324,56 @@ export default class CommentMain extends React.Component<InjectedProps> {
                 newFeeds.push(customer);
 
                 // subscribe here
-                // --
                 const instance = Firebase.subscribeToProfile(userUid, user => {
                     if (user === undefined) {
                         // update this.customerList
                         this.customerList.delete(userUid);
 
                         // update state feed & UI
-                        /*
                         let feeds = [...this.state.feeds];
-                        const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
-                        if (index !== -1) {
-                            feeds.splice(index, 1);
+
+                        for (let i = 0; i < feeds.length; i++) {
+                            const feed = feeds[i];
+
+                            if (feed.uid === item.uid) {
+                                feeds.splice(index, 1);
+                            }
                         }
-                        */
+
+                        !this.closed && this.setState({ feeds });
 
                         return;
                     }
 
-                    console.log('subscribeToProfile userUid', userUid);
+                    // console.log('subscribeToProfile userUid', userUid);
 
                     // update this.customerList
                     this.customerList.set(userUid, user);
 
                     // update state feed & UI
-                    /*
+                    const item = {
+                        uid: userUid,
+                        name: user.name,
+                        place: user.place,
+                        picture: {
+                            uri: user.picture.uri
+                        }
+                    };
+
                     let feeds = [...this.state.feeds];
-                    const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
-                    if (index !== -1) {
-                        feeds[index] = newFeed;
-                        !this.closed && this.setState({ feeds });
+
+                    for (let i = 0; i < feeds.length; i++) {
+                        const feed = feeds[i];
+
+                        if (feed.uid === item.uid) {
+                            feeds[i] = item;
+                        }
                     }
-                    */
+
+                    !this.closed && this.setState({ feeds });
                 });
 
                 this.customersUnsubscribes.push(instance);
-                // --
             }
 
 
@@ -387,15 +401,14 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     openPost(item) {
-        // show indicator
         const feeds = [...this.state.feeds];
         const index = feeds.findIndex(el => el.uid === item.uid);
         if (index === -1) {
             this.refs["toast"].show('The user does not exist.', 500);
-
             return;
         }
 
+        // show indicator
         // !this.closed && this.setState({ showPostIndicator: index });
 
         const { profile } = this.props.profileStore;
@@ -430,7 +443,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         };
 
         setTimeout(() => {
-            this.props.navigation.navigate("userPost", { item: _item });
+            !this.closed && this.props.navigation.navigate("userPost", { item: _item });
         }, Cons.buttonTimeoutShort);
 
 

@@ -839,7 +839,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
 
                             setTimeout(() => {
-                                this.props.navigation.navigate("editSearch",
+                                !this.closed && this.props.navigation.navigate("editSearch",
                                     { from: 'EditProfile', initFromSearch: (result) => this.initFromSearch(result) }); // ToDo
                             }, Cons.buttonTimeoutShort);
                         }}
@@ -947,7 +947,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
                             setTimeout(() => {
-                                // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                                // !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -1002,7 +1002,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY, animated: true });
 
                             setTimeout(() => {
-                                // this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                                // !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
                         }}
                     >

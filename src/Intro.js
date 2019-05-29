@@ -675,7 +675,7 @@ export default class Intro extends React.Component {
 
     openSearch() {
         setTimeout(() => {
-            this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
+            !this.closed && this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
         }, Cons.buttonTimeoutShort);
     }
 

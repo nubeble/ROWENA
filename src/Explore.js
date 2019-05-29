@@ -204,7 +204,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             onPress={() => {
                                 setTimeout(() => {
                                     console.log('move to Intro.');
-                                    this.props.navigation.navigate("intro");
+                                    !this.closed && this.props.navigation.navigate("intro");
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -214,7 +214,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             style={{ position: 'absolute', top: 3, width: '78%', height: 27, alignSelf: 'center' }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    this.props.navigation.navigate("search", { from: 'Explore', initFromSearch: (result) => this.initFromSearch(result) });
+                                    !this.closed && this.props.navigation.navigate("search", { from: 'Explore', initFromSearch: (result) => this.initFromSearch(result) });
                                 }, Cons.buttonTimeoutShort);
                             }}
                         >
@@ -613,7 +613,7 @@ export default class Explore extends React.Component<InjectedProps> {
         const feedSize = this.state.feedSize;
 
         setTimeout(() => {
-            this.props.navigation.navigate("mapSearch", { region, placeName, placeId, feedSize });
+            !this.closed && this.props.navigation.navigate("mapSearch", { region, placeName, placeId, feedSize });
         }, Cons.buttonTimeoutShort);
     }
 }

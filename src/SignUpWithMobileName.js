@@ -289,6 +289,7 @@ export default class SignUpWithMobileName extends React.Component {
                                         }
 
                                         setTimeout(() => {
+                                            if (this.closed) return;
                                             this.props.navigation.navigate("signUpWithMobileMain");
                                         }, Cons.buttonTimeoutShort);
                                     }}
@@ -308,6 +309,7 @@ export default class SignUpWithMobileName extends React.Component {
                                         }
 
                                         setTimeout(() => {
+                                            if (this.closed) return;
                                             this.props.navigation.navigate("signUpWithEmailMain", { from: 'logIn' });
                                         }, Cons.buttonTimeoutShort);
                                     }}
@@ -324,6 +326,7 @@ export default class SignUpWithMobileName extends React.Component {
                         <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
                             onPress={() => {
                                 setTimeout(() => {
+                                    if (this.closed) return;
                                     this.submit(this.state.name);
                                 }, Cons.buttonTimeoutShort);
                             }}
