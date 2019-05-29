@@ -1071,7 +1071,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         let result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: [4, 3], // ToDo: android only! (only square image in IOS)
+            aspect: [1, 1], // ToDo: android only! (only square image in IOS)
             quality: 1.0
         });
 

@@ -1894,14 +1894,9 @@ export default class Post extends React.Component<InjectedProps> {
             users.push(user1);
             users.push(user2);
 
-            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.uid, true);
+            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.placeName, post.uid, true);
             // --
 
-            /*
-            this.setState({ isNavigating: true }, () => {
-                this.props.navigation.navigate('room', { item: item });
-            });
-            */
             this.props.navigation.navigate("chatRoom", { item: item });
         }
     }

@@ -704,11 +704,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
             await this.openPost();
         } else {
-            const owner = item.users[0]; // girl
-            const customer = item.users[1]; // customer
+            const user1 = item.users[0]; // girl
+            const user2 = item.users[1]; // customer
 
             if (!this.opponentUser) {
-                const userDoc = await Firebase.firestore.collection("users").doc(customer.uid).get();
+                const userDoc = await Firebase.firestore.collection("users").doc(user2.uid).get();
                 if (!userDoc.exists) {
                     this.refs["toast"].show('The user no longer exists.', 500);
 
@@ -720,7 +720,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
                 // subscribe here
                 // --
-                const instance = Firebase.subscribeToProfile(customer.uid, user => {
+                const instance = Firebase.subscribeToProfile(user2.uid, user => {
                     if (user === undefined) {
                         this.opponentUser = null;
 
@@ -740,28 +740,28 @@ export default class ChatRoom extends React.Component<InjectedProps> {
             let count = receivedCommentsCount;
             let address = place;
 
-            const user2 = {
-                uid: customer.uid,
-                name: customer.name,
-                picture: customer.picture,
+            const guest = { // customer
+                uid: user2.uid,
+                name: user2.name,
+                picture: user2.picture,
 
                 address,
                 receivedCommentsCount: count,
                 timestamp, birthday, gender, about
             };
 
-            const user1 = {
-                uid: owner.uid,
-                name: owner.name,
-                picture: owner.picture
+            const host = { // girl
+                uid: user1.uid,
+                name: user1.name,
+                picture: user1.picture,
+                address: item.placeName
             };
 
             const _item = {
                 placeId: item.placeId,
                 feedId: item.feedId,
-
-                host: user1,
-                guest: user2
+                host,
+                guest
             };
 
             setTimeout(() => {

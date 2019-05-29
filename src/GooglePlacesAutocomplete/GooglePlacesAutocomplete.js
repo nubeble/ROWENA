@@ -273,7 +273,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         console.log('this.getStreetAddress result', obj);
 
                         // Consider: exception
-                        if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+                        // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                         // set text
                         !this.closed && this.setState({ text: obj.formatted_address });
@@ -306,7 +306,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         console.log('this.getPlaceId result', obj);
 
                         // Consider: exception
-                        if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+                        // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                         // set text
                         !this.closed && this.setState({ text: obj.formatted_address });
@@ -375,7 +375,8 @@ export default class GooglePlacesAutocomplete extends Component {
 
                             delete rowData.isLoading;
 
-                            if (rowData.description === 'Macau') rowData.description = 'Macau, China'; // Consider: exception
+                            // Consider: exception
+                            // if (rowData.description === 'Macau') rowData.description = 'Macau, China';
 
                             this.props.onPress(rowData, details);
                         }
@@ -544,6 +545,40 @@ export default class GooglePlacesAutocomplete extends Component {
         return results;
     }
 
+    _filterResultsByCity = (unfilteredResults, typesArray) => {
+        if (typesArray.length === 0) return unfilteredResults; // never happen
+
+        const results = [];
+
+        for (let h = 0; h < typesArray.length; h++) {
+            const types = typesArray[h];
+
+            // --
+            for (let i = 0; i < unfilteredResults.length; i++) {
+                if (unfilteredResults[i].types.length !== types.length) continue;
+
+                let found = true;
+
+                for (let j = 0; j < types.length; j++) {
+                    if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
+                        found = false;
+                        break;
+                    }
+                }
+
+                if (found === true) {
+                    results.push(unfilteredResults[i]);
+                    break;
+                }
+            }
+            // --
+
+            if (results.length > 0) break;
+        }
+
+        return results;
+    }
+
     _requestNearby = (latitude, longitude) => {
         this._abortRequests();
 
@@ -660,7 +695,8 @@ export default class GooglePlacesAutocomplete extends Component {
                                 // results = responseJSON.predictions;
 
                                 console.log('_request GooglePlacesSearch pre results', responseJSON.predictions);
-                                results = this._filterByALLTypes(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
+                                // results = this._filterByALLTypes(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
+                                results = this._filterResultsByCity(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
                                 console.log('_request GooglePlacesSearch results', results);
                             }
 
@@ -786,7 +822,8 @@ export default class GooglePlacesAutocomplete extends Component {
         if (index === -1) {
             city = description;
 
-            if (city === 'Macau') state = 'China'; // Consider: exception
+            // Consider: exception
+            // if (city === 'Macau') state = 'China';
         } else {
             city = description.substring(0, index);
             state = description.substring(index + 2, description.length);
@@ -1274,9 +1311,7 @@ GooglePlacesAutocomplete.propTypes = {
     nearbyPlacesAPI: PropTypes.string,
     enableHighAccuracyLocation: PropTypes.bool,
     filterReverseGeocodingByTypes: PropTypes.array,
-
     filterPlacesSearchByTypes: PropTypes.array,
-
     predefinedPlacesAlwaysVisible: PropTypes.bool,
     enableEmptySections: PropTypes.bool,
     renderDescription: PropTypes.func,
@@ -1330,9 +1365,7 @@ GooglePlacesAutocomplete.defaultProps = {
     nearbyPlacesAPI: 'GooglePlacesSearch',
     enableHighAccuracyLocation: true,
     filterReverseGeocodingByTypes: [],
-
     filterPlacesSearchByTypes: [],
-
     predefinedPlacesAlwaysVisible: false,
     enableEmptySections: true,
     listViewDisplayed: 'auto',

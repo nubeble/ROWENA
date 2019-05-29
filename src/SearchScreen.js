@@ -261,7 +261,7 @@ export default class SearchScreen extends React.Component {
                                     console.log('Util.getPlaceId result', obj);
 
                                     // Consider: exception
-                                    if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+                                    // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                                     const city = {
                                         name: obj.formatted_address,
@@ -322,10 +322,20 @@ export default class SearchScreen extends React.Component {
                                 []
                                 :
                                 // filter with all these types to find a city
+                                /*
                                 [
                                     ["locality", "political", "geocode"],
-                                    ["administrative_area_level_1", "political", "geocode"],
-                                    // ["natural_feature", "establishment", "geocode"]
+                                    ["administrative_area_level_1", "political", "geocode"]
+                                ]
+                                */
+                                [
+                                    // ["colloquial_area", "locality", "political"],
+                                    // ["locality", "political"],
+                                    ["colloquial_area", "locality", "political", "geocode"],
+                                    ["locality", "political", "geocode"],
+                                    ["country", "political", "geocode"]
+                                    // ['locality', 'administrative_area_level_3'],
+                                    // ['street_address']
                                 ]
                         }
 

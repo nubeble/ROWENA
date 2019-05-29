@@ -1092,6 +1092,8 @@ export default class Firebase {
     // customer review
     // --
     static async addComment(uid, targetUid, comment, name, place, picture) { // uid: writer, targetUid: receiver, comment: string
+        console.log(uid, targetUid, comment, name, place, picture);
+
         let result;
 
         const id = Util.uid(); // comment id
@@ -1211,7 +1213,7 @@ export default class Firebase {
 
     //// database ////
 
-    static async createChatRoom(uid, users, placeId, feedId, id, owner, addSystemMessage) {
+    static async createChatRoom(uid, users, placeId, feedId, id, placeName, owner, addSystemMessage) {
         const timestamp = Firebase.timestamp();
 
         const data = {
@@ -1223,7 +1225,8 @@ export default class Firebase {
             users: users,
             placeId: placeId,
             feedId: feedId,
-            owner
+            placeName,
+            owner // owner's uid
         };
 
         await Firebase.database.ref('chat').child(uid).child(id).set(data);
@@ -1462,7 +1465,7 @@ export default class Firebase {
             users.push(post.users[1]);
             users.push(post.users[0]);
 
-            await Firebase.createChatRoom(receiverUid, users, post.placeId, post.feedId, id, post.owner, false);
+            await Firebase.createChatRoom(receiverUid, users, post.placeId, post.feedId, id, post.placeName, post.owner, false);
             // --
         }
 

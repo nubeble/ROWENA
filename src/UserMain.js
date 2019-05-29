@@ -282,29 +282,10 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         const name = host.name;
         const uri = host.picture;
-
-        const { profileStore } = this.props;
-        const profile = profileStore.profile;
-
-        // const name = profile.name;
-        // const uri = profile.picture.uri;
-
-        /*
-        const city = profile.city;
-        const country = profile.country;
-        let place = null;
-        if (city && country) {
-            place = city + ', ' + country;
-        }
-        */
-        let place = null;
-        if (profile.place) place = profile.place;
-
-        if (!place) place = 'Location not provided';
-
+        const placeName = host.address;
         const opponentUserUid = guest.uid;
 
-        Firebase.addComment(host.uid, opponentUserUid, message, name, place, uri); // writer, receiver (m1), message
+        Firebase.addComment(host.uid, opponentUserUid, message, name, placeName, uri); // writer, receiver (m1), message
     };
 
     async removeComment(index) {

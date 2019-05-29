@@ -277,7 +277,7 @@ export default class Util extends React.Component {
         return value;
     }
 
-    static async getPlaceId(input, key, callback) {
+    static async getPlaceId(input, key, callback) { // get city
         const request = new XMLHttpRequest();
         request.onreadystatechange = () => {
             if (request.readyState !== 4) return;
@@ -287,44 +287,46 @@ export default class Util extends React.Component {
 
                 // console.log('responseJSON', responseJSON);
 
-                // if (typeof responseJSON.predictions !== 'undefined') {
                 if (typeof responseJSON.results !== 'undefined') {
-                    /*
-                    const results = responseJSON.predictions; // array
-                    console.log('getPlaceId predictions', results);
-                    const result = results[0]; // map object
-                    console.log('getPlaceId array 0', result);
+                    console.log('getPlaceId pre results', responseJSON.results);
 
-                    callback(result);
-                    */
+                    let results = null;
+                    const filter1 = ["colloquial_area", "locality", "political"];
+                    results = Util._filterResultsByTypes(responseJSON.results, filter1);
+
+                    if (results.length === 0) {
+                        const filter2 = ["locality", "political"];
+                        results = Util._filterResultsByTypes(responseJSON.results, filter2);
+                    }
+
+                    if (results.length === 0) {
+                        const filter3 = ['locality', 'administrative_area_level_3'];
+                        results = Util._filterResultsByTypes(responseJSON.results, filter3);
+                    }
+
+                    if (results.length === 0) {
+                        const filter4 = ['street_address'];
+                        results = Util._filterResultsByTypes(responseJSON.results, filter4);
+                    }
+
+                    // console.log('getPlaceId after results', results);
 
                     let result = null;
+                    if (results.length === 0) {
+                        // ToDo: this should never happen!!!
+                        console.log('Util.getPlaceId', 'this should never happen!!!');
 
-                    // console.log('getPlaceId pre results', responseJSON.results);
-                    const filter = ['locality', 'administrative_area_level_3'];
-                    const results = Util._filterResultsByTypes(responseJSON.results, filter);
-                    console.log('getPlaceId after results', results);
-
-                    // add 'street_address' filter
-                    if (results.length != 0) {
-                        result = results[0];
+                        // just use the origin
+                        result = responseJSON.results[0];
                     } else {
-                        const filter2 = ['street_address'];
-                        const results2 = Util._filterResultsByTypes(responseJSON.results, filter2);
-
-                        if (results2.length != 0) {
-                            result = results2[0];
-                        } else {
-                            // just use the origin
-                            result = responseJSON.results[0];
-                        }
+                        result = results[0]; // select the first one
                     }
 
                     callback(result);
                 }
 
                 if (typeof responseJSON.error_message !== 'undefined') {
-                    console.warn('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                    console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
                 }
             }
         };
@@ -353,21 +355,23 @@ export default class Util extends React.Component {
     }
 
     static _filterResultsByTypes = (unfilteredResults, types) => {
-        if (types.length === 0) return unfilteredResults;
+        if (types.length === 0) return unfilteredResults; // never happen
 
         const results = [];
+
         for (let i = 0; i < unfilteredResults.length; i++) {
-            let found = false;
+            let found = true;
 
             for (let j = 0; j < types.length; j++) {
-                if (unfilteredResults[i].types.indexOf(types[j]) !== -1) {
-                    found = true;
+                if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
+                    found = false;
                     break;
                 }
             }
 
             if (found === true) {
                 results.push(unfilteredResults[i]);
+                break;
             }
         }
 
