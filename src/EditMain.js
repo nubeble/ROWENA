@@ -183,15 +183,13 @@ export default class EditMain extends React.Component<InjectedProps> {
         // check comment store update
         let showReloadCommentsButton = false;
         if (this.count === undefined) {
-            console.log('set this.count');
+            // console.log('set this.count');
             this.count = count;
         } else {
             if (this.count !== count) {
-                console.log('show reload comment store');
+                // console.log('show reload comment store');
                 showReloadCommentsButton = true;
             }
-
-            // this.count = count;
         }
 
         return (

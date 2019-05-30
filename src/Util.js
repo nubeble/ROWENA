@@ -1505,4 +1505,23 @@ export default class Util extends React.Component {
     static deg2rad(deg) {
         return deg * (Math.PI / 180);
     }
+
+    static getFacebookProvider(providers) {
+        if (!providers) return null;
+
+        if (providers.length === 0) return null;
+
+        let facebook = null;
+
+        for (let i = 0; i < providers.length; i++) {
+            const provider = providers[i];
+
+            if (provider.providerId === "facebook.com") {
+                facebook = provider;
+                break;
+            }
+        }
+
+        return facebook;
+    }
 }

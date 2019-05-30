@@ -10,6 +10,7 @@ import { RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Cons, Vars } from './Globals';
 import { Text } from './rnff/src/components';
+import Util from './Util';
 
 // $FlowFixMe
 /*
@@ -245,7 +246,10 @@ export default class Loading extends React.Component<InjectedProps> {
                 if (!name) name = user.displayName;
                 const email = user.email;
                 const mobile = user.phoneNumber;
-                const photoURL = user.photoURL;
+                // const photoURL = user.photoURL; // get profile picture from facebook
+                let photoURL = null;
+                const facebook = Util.getFacebookProvider(user.providerData);
+                if (facebook) photoURL = "https://graph.facebook.com/" + facebook.uid + "/picture?width=640&height=640";
 
                 let profile = await Firebase.getProfile(user.uid);
                 if (profile) {
