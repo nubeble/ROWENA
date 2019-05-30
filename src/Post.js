@@ -276,10 +276,10 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     async edit() {
-        // ToDo: edit post
-
-
         // Vars.userFeedsChanged = true;
+
+
+        // this.props.navigation.navigate("edit", { post: post });
     }
 
     /*
@@ -420,6 +420,8 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     render() {
+        const { from } = this.props.navigation.state.params;
+
         const post = this.state.post;
 
         let distance = '';
@@ -517,40 +519,42 @@ export default class Post extends React.Component<InjectedProps> {
                         }
                     </TouchableOpacity>
 
-                    {/* like button */}
-                    <TouchableWithoutFeedback onPress={this.toggle}>
-                        <View style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            right: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}>
-                            {
-                                this.state.liked ?
-                                    <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
-                                    :
-                                    <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
-                            }
-                        </View>
-                    </TouchableWithoutFeedback>
-                    {/* edit button (only in modal from Profile) */}
-                    {/*
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            right: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => this.edit()}
-                    >
-                        <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-                    */}
+                    {
+                        from === 'Profile' ?
+                            // edit button (only in modal from Profile)
+                            < TouchableOpacity
+                                style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    right: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => this.edit()}
+                            >
+                                <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
+                            </TouchableOpacity>
+                            :
+                            // like button
+                            <TouchableWithoutFeedback onPress={this.toggle}>
+                                <View style={{
+                                    width: 48,
+                                    height: 48,
+                                    position: 'absolute',
+                                    bottom: 2,
+                                    right: 2,
+                                    justifyContent: "center", alignItems: "center"
+                                }}>
+                                    {
+                                        this.state.liked ?
+                                            <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
+                                            :
+                                            <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
+                                    }
+                                </View>
+                            </TouchableWithoutFeedback>
+                    }
                 </View>
 
                 {
@@ -965,7 +969,7 @@ export default class Post extends React.Component<InjectedProps> {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-            </View>
+            </View >
         );
     }
 

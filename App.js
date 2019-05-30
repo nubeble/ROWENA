@@ -740,21 +740,42 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 }
 // -- end of HomeSwitchNavigatorWrapper
 
+
+
+// ToDo: post switch navigator
+const PostSwitchNavigator = createSwitchNavigator(
+    {
+        postMain: { screen: Post },
+        editPost: { screen: EditPost }
+    }
+);
+
+class PostSwitchNavigatorWrapper extends React.Component {
+    static router = PostSwitchNavigator.router;
+
+    render() {
+        return (
+            <PostSwitchNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+
+
 // start of PostStackNavigatorWrapper
 const PostStackNavigator = createStackNavigator(
     {
-        postModal: {
-            screen: Post
-        },
-        mapModal: {
-            screen: MapScreen
-        },
-        readReviewModal: {
-            screen: ReadAllReviewsScreen
-        },
-        writeReviewModal: {
-            screen: WriteReviewScreen
-        }
+        // postModal: { screen: Post },
+        postModal: { screen: PostSwitchNavigatorWrapper },
+
+        mapModal: { screen: MapScreen },
+        readReviewModal: { screen: ReadAllReviewsScreen },
+        writeReviewModal: { screen: WriteReviewScreen }
     },
     {
         mode: 'card',
