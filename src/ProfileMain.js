@@ -4,7 +4,7 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
     TouchableWithoutFeedback, Animated
 } from 'react-native';
-import { Constants } from "expo";
+import { Constants, Permissions, ImagePicker } from "expo";
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
 import { inject, observer } from "mobx-react/native";
@@ -29,6 +29,8 @@ const DEFAULT_FEED_COUNT = 9; // 3 x 3
 
 const avatarWidth = Dimensions.get('window').height / 11;
 
+const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
+
 
 @inject("profileStore")
 @observer
@@ -52,7 +54,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         dialogTitle: '',
         dialogMessage: '',
         dialogType: 'alert',
-        dialogPassword: ''
+        dialogPassword: '',
+
+        onUploadingImage: false,
+        // uploadImageUri: null,
+
+        flashMessageTitle: '',
+        flashMessageSubtitle: '',
+        flashImage: null, // uri
+        flashOpacity: new Animated.Value(0),
+        flashOffset: new Animated.Value((8 + 34 + 8) * -1)
     };
 
     constructor(props) {
@@ -70,6 +81,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.feedsUnsubscribes = [];
         this.countsUnsubscribes = [];
+
+        // this.imageRefs = []; // for cleaning files in server
     }
 
     componentDidMount() {
@@ -103,8 +116,47 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             instance();
         }
 
+        // remove server files
+        /*
+        if (this.imageRefs.length > 0) {
+            console.log('clean image files');
+
+            const formData = new FormData();
+            for (var i = 0; i < this.imageRefs.length; i++) {
+                const ref = this.imageRefs[i];
+
+                const number = i + 1;
+                const fieldName = 'file' + number.toString();
+                formData.append(fieldName, ref);
+
+                console.log(fieldName, ref);
+            }
+
+            fetch(SERVER_ENDPOINT + "cleanPostImages", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+        }
+        */
+
         this.closed = true;
     }
+
+    /*
+    removeItemFromList() {
+        if (this.uploadImageRef) {
+            const ref = this.uploadImageRef;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+    }
+    */
 
     @autobind
     handleHardwareBackPress() {
@@ -505,6 +557,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             transform: [{ translateY: this.state.offset }]
         };
 
+        const flashStyle = {
+            opacity: this.state.flashOpacity,
+            transform: [{ translateY: this.state.flashOffset }]
+        };
+
         const { profile } = this.props.profileStore;
 
         let uid = null;
@@ -556,6 +613,23 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     >
                         <Ionicons name='md-close' color="black" size={20} />
                     </TouchableOpacity>
+                </Animated.View>
+
+                <Animated.View
+                    style={[styles.flash, flashStyle]}
+                    ref={flash => this._flash = flash}
+                >
+                    <View>
+                        <Text style={styles.flashMessageTitle}>{this.state.flashMessageTitle}</Text>
+                        <Text style={styles.flashMessageSubtitle}>{this.state.flashMessageSubtitle}</Text>
+                    </View>
+                    {
+                        this.state.flashImage &&
+                        <Image
+                            style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
+                            source={{ uri: this.state.flashImage }}
+                        />
+                    }
                 </Animated.View>
 
                 <View style={styles.searchBar}>
@@ -630,12 +704,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     marginRight: 22, justifyContent: 'center', alignItems: 'center'
                                                 }}
                                                 onPress={() => {
+                                                    if (this._showNotification) {
+                                                        this.hideNotification();
+                                                        this.hideAlertIcon();
+                                                    }
+
                                                     if (!profile) return;
 
-                                                    setTimeout(() => {
-                                                        // ToDo: open picture
-
-                                                    }, Cons.buttonTimeoutShort);
+                                                    this.uploadPicture();
                                                 }}
                                             >
                                                 {
@@ -655,6 +731,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                             }}
                                                             source={PreloadImage.user}
                                                         />
+                                                }
+                                                {
+                                                    this.state.onUploadingImage &&
+                                                    <ActivityIndicator
+                                                        style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, zIndex: 10002 }}
+                                                        animating={true}
+                                                        size="large"
+                                                        color={Theme.color.selection}
+                                                    />
                                                 }
                                             </TouchableOpacity>
                                         </View>
@@ -1125,6 +1210,192 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         return false;
     }
+
+    uploadPicture() {
+        if (this.state.onUploadingImage) return;
+
+        this.pickImage();
+    }
+
+    async pickImage() {
+        const { status: existingCameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
+        const { status: existingCameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+
+        if (existingCameraStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA);
+            if (status !== 'granted') {
+                // ToDo: show notification
+                return;
+            }
+        }
+
+        if (existingCameraRollStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                // ToDo: show notification
+                return;
+            }
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [1, 1], // ToDo: android only! (only square image in IOS)
+            quality: 1.0
+        });
+
+        console.log('result of launchImageLibraryAsync:', result);
+
+        if (!result.cancelled) {
+
+            this.openDialog('alert', 'Edit profile', 'Are you sure you want to change your profile picture?', async () => {
+
+                this.setState({ onUploadingImage: true });
+
+                // show indicator & progress bar
+                this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+
+                // upload image
+                this.uploadImage(result.uri, async (uri) => {
+                    if (!uri) {
+                        this.setState({ onUploadingImage: false });
+                        return;
+                    }
+
+                    // this.setState({ uploadImageUri: uri });
+
+                    const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
+                    /*
+                    this.imageRefs.push(ref);
+
+                    this.uploadImageRef = ref;
+                    */
+
+                    // update database
+                    await this.updateProfilePicture(uri, ref);
+
+                    // hide indicator & progress bar
+                    this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+                    setTimeout(() => {
+                        if (this.closed) return;
+                        this.hideFlash();
+                        this.setState({ onUploadingImage: false });
+                    }, 1500);
+                });
+
+            });
+
+        }
+    }
+
+    async uploadImage(uri, cb) {
+        const fileName = uri.split('/').pop();
+        var ext = fileName.split('.').pop();
+
+        if (!Util.isImage(ext)) {
+            const msg = 'Invalid image file (' + ext + ').';
+            this.showNotification(msg);
+            return;
+        }
+
+        var type = Util.getImageType(ext);
+        // console.log('file type:', type);
+
+        const formData = new FormData();
+        // formData.append("type", "post");
+        formData.append("type", "profile");
+
+        formData.append("image", {
+            uri,
+            name: fileName,
+            type: type
+        });
+        formData.append("userUid", Firebase.user().uid);
+        // formData.append("pictureIndex", index);
+
+        try {
+            let response = await fetch(SERVER_ENDPOINT + "uploadFile/images",
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "multipart/form-data"
+                    },
+                    body: formData
+                }
+            );
+
+            let responseJson = await response.json();
+            console.log('uploadImage, responseJson', responseJson);
+
+            // console.log('responseJson', await response.json());
+
+            cb(responseJson.downloadUrl);
+        } catch (error) {
+            console.error(error);
+
+            this.showNotification('An error happened. Please try again.');
+
+            cb(null);
+        }
+    }
+
+    // flash
+    showFlash(title, subtitle, image) {
+        if (this._showNotification) {
+            this.hideNotification();
+        }
+
+        if (!this._showFlash) {
+            this._showFlash = true;
+
+            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.flashOpacity, {
+                                toValue: 1,
+                                duration: 200
+                            }),
+                            Animated.timing(this.state.flashOffset, {
+                                toValue: Constants.statusBarHeight,
+                                duration: 200
+                            })
+                        ])
+                    ]).start();
+                });
+            });
+        }
+    };
+
+    hideFlash() {
+        this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 0,
+                        duration: 200
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: height * -1,
+                        duration: 200
+                    })
+                ])
+            ]).start();
+        });
+
+        this._showFlash = false;
+    }
+
+    async updateProfilePicture(uri, ref) {
+        const { profile } = this.props.profileStore;
+        let data = {};
+        data.picture = {
+            uri,
+            ref
+        };
+
+        await Firebase.updateProfile(profile.uid, data);
+    }
 }
 
 const styles = StyleSheet.create({
@@ -1243,5 +1514,33 @@ const styles = StyleSheet.create({
         height: 24,
         justifyContent: 'center',
         alignItems: 'center'
+    },
+    flash: {
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
+
+        // height: Cons.searchBarHeight,
+        height: (8 + 34 + 8),
+        position: "absolute",
+        borderRadius: 5,
+        top: 0,
+        backgroundColor: Theme.color.selection,
+        zIndex: 10001,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: Theme.spacing.base
+        // paddingTop: Constants.statusBarHeight
+    },
+    flashMessageTitle: {
+        fontSize: 16,
+        fontFamily: "Roboto-Medium",
+        color: "white"
+    },
+    flashMessageSubtitle: {
+        fontSize: 14,
+        fontFamily: "Roboto-Medium",
+        color: "white"
     }
 });

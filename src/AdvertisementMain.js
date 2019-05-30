@@ -97,7 +97,7 @@ export default class AdvertisementMain extends React.Component {
 
         onUploadingImage: false,
         uploadingImageNumber: 0, // 1,2,3,4
-        refreshing: true,
+        // refreshing: true,
 
         uploadImage1Uri: null,
         uploadImage2Uri: null,
@@ -819,35 +819,6 @@ export default class AdvertisementMain extends React.Component {
                     </TouchableOpacity>
                 </Animated.View>
 
-                <View style={styles.searchBar}>
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            left: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                                this.hideAlertIcon();
-                            }
-
-                            if (this._showFlash) {
-                                this.hideFlash();
-                            }
-
-                            this.props.navigation.dispatch(NavigationActions.back());
-                        }}
-                    >
-                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-
-                    <Text style={styles.searchBarTitle}>{'New Post'}</Text>
-                </View>
-
                 <Animated.View
                     style={[styles.flash, flashStyle]}
                     ref={flash => this._flash = flash}
@@ -879,6 +850,35 @@ export default class AdvertisementMain extends React.Component {
                     </TouchableOpacity>
                     */}
                 </Animated.View>
+
+                <View style={styles.searchBar}>
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            if (this._showFlash) {
+                                this.hideFlash();
+                            }
+
+                            this.props.navigation.dispatch(NavigationActions.back());
+                        }}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+
+                    <Text style={styles.searchBarTitle}>{'New Post'}</Text>
+                </View>
 
                 <FlatList
                     // ref={(fl) => this._flatList = fl}
@@ -1598,7 +1598,7 @@ export default class AdvertisementMain extends React.Component {
                     {
                         this.state.showPostLoader &&
                         <ActivityIndicator
-                            style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 1000 }}
+                            style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 10002 }}
                             animating={true}
                             size="small"
                             color={Theme.color.buttonText}
@@ -1676,7 +1676,7 @@ export default class AdvertisementMain extends React.Component {
                             position: 'absolute', top: 0, left: 0,
                             justifyContent: 'center', alignItems: 'center'
                         }}>
-                            <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} color={Theme.color.selection} />
+                            <RefreshIndicator refreshing={true} total={3} size={4} color={Theme.color.selection} />
                         </View>
                     }
                 </View>
@@ -1714,7 +1714,7 @@ export default class AdvertisementMain extends React.Component {
                         position: 'absolute', top: 0, left: 0,
                         justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} color={Theme.color.selection} />
+                        <RefreshIndicator refreshing={true} total={3} size={4} color={Theme.color.selection} />
                     </View>
                 }
             </View>
@@ -1775,6 +1775,11 @@ export default class AdvertisementMain extends React.Component {
 
             // upload image
             this.uploadImage(result.uri, index, (uri) => {
+                if (!uri) {
+                    this.setState({ onUploadingImage: false });
+                    return;
+                }
+
                 switch (index) {
                     case 0: this.setState({ uploadImage1Uri: uri }); break;
                     case 1: this.setState({ uploadImage2Uri: uri }); break;
@@ -1884,13 +1889,15 @@ export default class AdvertisementMain extends React.Component {
             this.showNotification('An error happened. Please try again.');
 
             // stop indicator
-            this.setState({ refreshing: false });
+            // this.setState({ refreshing: false });
 
             // show alert icon
             if (index === 0) this.setState({ showPicture1AlertIcon: true });
             if (index === 1) this.setState({ showPicture2AlertIcon: true });
             if (index === 2) this.setState({ showPicture3AlertIcon: true });
             if (index === 3) this.setState({ showPicture4AlertIcon: true });
+
+            cb(null);
         }
     }
 
@@ -2077,13 +2084,13 @@ export default class AdvertisementMain extends React.Component {
     }
 
     showFlash(title, subtitle, image) {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
         if (!this._showFlash) {
             this._showFlash = true;
-
-            if (this._showNotification) {
-                this.hideNotification();
-                this.hideAlertIcon();
-            }
 
             this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
                 this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {

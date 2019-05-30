@@ -21,6 +21,10 @@ import DateTimePicker from 'react-native-modal-datetime-picker';
 import Select from 'react-native-picker-select';
 import Toast, { DURATION } from 'react-native-easy-toast';
 
+type InjectedProps = {
+    profileStore: ProfileStore
+};
+
 const avatarWidth = Dimensions.get('window').width / 4;
 
 const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
@@ -41,10 +45,6 @@ const genderItems = [
     }
 ];
 
-type InjectedProps = {
-    profileStore: ProfileStore
-};
-
 
 @inject("profileStore")
 @observer
@@ -53,7 +53,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         showPostLoader: false,
 
         onUploadingImage: false,
-        refreshing: true,
+        // refreshing: true,
 
         uploadImageUri: null,
 
@@ -225,6 +225,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
         // remove server files
         if (this.imageRefs.length > 0) {
             console.log('clean image files');
@@ -249,12 +255,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 body: formData
             });
         }
-
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -458,6 +458,23 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     </TouchableOpacity>
                 </Animated.View>
 
+                <Animated.View
+                    style={[styles.flash, flashStyle]}
+                    ref={flash => this._flash = flash}
+                >
+                    <View>
+                        <Text style={styles.flashMessageTitle}>{this.state.flashMessageTitle}</Text>
+                        <Text style={styles.flashMessageSubtitle}>{this.state.flashMessageSubtitle}</Text>
+                    </View>
+                    {
+                        this.state.flashImage &&
+                        <Image
+                            style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
+                            source={{ uri: this.state.flashImage }}
+                        />
+                    }
+                </Animated.View>
+
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -496,23 +513,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
                     </TouchableOpacity>
                 </View>
-
-                <Animated.View
-                    style={[styles.flash, flashStyle]}
-                    ref={flash => this._flash = flash}
-                >
-                    <View>
-                        <Text style={styles.flashMessageTitle}>{this.state.flashMessageTitle}</Text>
-                        <Text style={styles.flashMessageSubtitle}>{this.state.flashMessageSubtitle}</Text>
-                    </View>
-                    {
-                        this.state.flashImage &&
-                        <Image
-                            style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
-                            source={{ uri: this.state.flashImage }}
-                        />
-                    }
-                </Animated.View>
 
                 <FlatList
                     // ref={(fl) => this._flatList = fl}
@@ -617,7 +617,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 position: 'absolute', top: 0, left: 0,
                                 justifyContent: 'center', alignItems: 'center'
                             }}>
-                                <RefreshIndicator refreshing={this.state.refreshing} total={3} size={4} color={Theme.color.selection} />
+                                <RefreshIndicator refreshing={true} total={3} size={4} color={Theme.color.selection} />
                             </View>
                         }
                     </View>
@@ -1084,8 +1084,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
 
             // upload image
-            const index = 0;
-            this.uploadImage(result.uri, index, (uri) => {
+            this.uploadImage(result.uri, (uri) => {
+                if (!uri) {
+                    this.setState({ onUploadingImage: false });
+                    return;
+                }
+
                 this.setState({ uploadImageUri: uri });
 
                 const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
@@ -1096,15 +1100,15 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
                 setTimeout(() => {
-                    !this.closed && this.hideFlash();
-
+                    if (this.closed) return;
+                    this.hideFlash();
                     this.setState({ onUploadingImage: false });
                 }, 1500);
             });
         }
     }
 
-    async uploadImage(uri, index, cb) {
+    async uploadImage(uri, cb) {
         const fileName = uri.split('/').pop();
         var ext = fileName.split('.').pop();
 
@@ -1153,10 +1157,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.showNotification('An error happened. Please try again.');
 
             // stop indicator
-            this.setState({ refreshing: false });
+            // this.setState({ refreshing: false });
 
             // show alert icon
             this.setState({ showPictureAlertIcon: true });
+
+            cb(null);
         }
     }
 
@@ -1291,13 +1297,13 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     showFlash(title, subtitle, image) {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
         if (!this._showFlash) {
             this._showFlash = true;
-
-            if (this._showNotification) {
-                this.hideNotification();
-                this.hideAlertIcon();
-            }
 
             this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
                 this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {

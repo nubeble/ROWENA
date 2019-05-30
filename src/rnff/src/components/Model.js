@@ -9,7 +9,7 @@ type Location = {
 export type Picture = {
     // preview: string,
     uri: string,
-    ref: string
+    ref: string // to delete file (Firebase.deleteProfile)
 };
 
 type FeedRef = {
