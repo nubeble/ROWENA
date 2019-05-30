@@ -180,6 +180,20 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         const { reviews } = this.commentStore;
 
+        // check comment store update
+        let showReloadCommentsButton = false;
+        if (this.count === undefined) {
+            console.log('set this.count');
+            this.count = count;
+        } else {
+            if (this.count !== count) {
+                console.log('show reload comment store');
+                showReloadCommentsButton = true;
+            }
+
+            // this.count = count;
+        }
+
         return (
             <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
                 <View style={styles.searchBar}>
@@ -304,17 +318,46 @@ export default class EditMain extends React.Component<InjectedProps> {
                                         />
                                     </View>
                                 </View>
+                                {/*
                                 {
                                     labelText &&
                                     <View style={styles.titleContainer}>
                                         <Text style={styles.title}>{labelText}</Text>
                                     </View>
                                 }
-
                                 {
                                     labelText &&
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
                                 }
+                                */}
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>{labelText}</Text>
+                                    {
+                                        showReloadCommentsButton &&
+                                        <View style={{ flex: 1 }}>
+                                            <TouchableOpacity
+                                                style={{
+                                                    position: 'absolute', top: -4, left: 8,
+                                                    width: 28,
+                                                    height: 28,
+                                                    // backgroundColor: 'green',
+                                                    justifyContent: "center", alignItems: "center"
+                                                }}
+                                                onPress={() => {
+                                                    // reload
+                                                    if (this.state.isLoadingFeeds) return;
+                                                    this.setState({ isLoadingFeeds: true });
+                                                    this.commentStore.loadReviewFromTheStart();
+
+                                                    const { profile } = this.props.profileStore;
+                                                    this.count = profile.receivedCommentsCount;
+                                                }}>
+                                                <Ionicons name='md-refresh-circle' color={Theme.color.selection} size={24} />
+                                            </TouchableOpacity>
+                                        </View>
+                                    }
+                                </View>
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
                             </View>
                         }
                         // columnWrapperStyle={styles.columnWrapperStyle}
@@ -533,7 +576,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start'
     },
     titleContainer: {
-        padding: Theme.spacing.small
+        padding: Theme.spacing.small,
+        flexDirection: 'row'
     },
     title: {
         color: Theme.color.title,
