@@ -87,7 +87,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const fi = Firebase.subscribeToFeed(item.placeId, item.feedId, newFeed => {
             if (newFeed === undefined) {
                 this.feed = null;
-
                 return;
             }
 
@@ -115,18 +114,16 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         // --
 
 
-
+        // set title
         let titleImageUri = null;
         let titleName = null;
 
-        const users = item.users;
-        for (var i = 0; i < users.length; i++) { // find the owner of this post
-            const user = users[i];
+        for (var i = 0; i < item.users.length; i++) { // find the owner of this post
+            const user = item.users[i];
 
             if (item.owner === user.uid) {
                 titleImageUri = user.picture;
                 titleName = user.name;
-
                 break;
             }
         }
@@ -155,7 +152,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 this.setState({ opponentLeft: true });
             }
 
-            !this.closed && this.setState(previousState => ({
+            this.setState(previousState => ({
                 messages: GiftedChat.append(previousState.messages, message)
             }));
         });
@@ -504,7 +501,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const item = this.props.navigation.state.params.item;
 
         // save the message to database & update UI
-        await Firebase.sendMessage(this.state.id, message, isSameDay, item);
+        await Firebase.sendMessage(this.state.id, message, item);
 
         // send push notification
         const notificationType = Cons.pushNotification.chat;
@@ -621,7 +618,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
             if (newFeed === undefined) { // newFeed === undefined if removed
                 this.feed = null;
-
                 return;
             }
 

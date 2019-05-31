@@ -391,6 +391,7 @@ import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
 import Explore from './src/Explore';
 import Post from './src/Post';
+import EditPost from './src/EditPost';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewsScreen from './src/ReadAllReviewsScreen';
@@ -770,8 +771,8 @@ class PostSwitchNavigatorWrapper extends React.Component {
 // start of PostStackNavigatorWrapper
 const PostStackNavigator = createStackNavigator(
     {
-        // postModal: { screen: Post },
-        postModal: { screen: PostSwitchNavigatorWrapper },
+        postModal: { screen: Post },
+        // postModal: { screen: PostSwitchNavigatorWrapper }, // ToDo
 
         mapModal: { screen: MapScreen },
         readReviewModal: { screen: ReadAllReviewsScreen },

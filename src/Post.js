@@ -57,6 +57,7 @@ export default class Post extends React.Component<InjectedProps> {
     reviewStore: ReviewStore = new ReviewStore();
 
     state = {
+        from: null,
         post: null,
 
         renderList: false,
@@ -166,6 +167,10 @@ export default class Post extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post, extra, from } = this.props.navigation.state.params;
+        console.log('Post, from', from);
+
+
+        this.setState({ from });
         this.init(post, extra);
 
         console.log('Post.componentDidMount', from);
@@ -420,8 +425,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     render() {
-        const { from } = this.props.navigation.state.params;
-
+        const from = this.state.from;
         const post = this.state.post;
 
         let distance = '';
@@ -1706,7 +1710,6 @@ export default class Post extends React.Component<InjectedProps> {
     ratingCompleted(rating) {
         setTimeout(() => {
             if (this.closed) return;
-            // const { post } = this.props.navigation.state.params;
             const post = this.state.post;
 
             // check if removed by the owner
@@ -1848,7 +1851,6 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
-        // const { post } = this.props.navigation.state.params;
         const post = this.state.post;
 
         // check if removed by the owner
@@ -1939,7 +1941,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     async addReply(message) {
-        // const { post } = this.props.navigation.state.params;
         const post = this.state.post;
 
         const placeId = post.placeId;
@@ -1959,7 +1960,6 @@ export default class Post extends React.Component<InjectedProps> {
 
     async removeReview(index) {
         this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
-            // const { post } = this.props.navigation.state.params;
             const post = this.state.post;
 
             // check if removed by the owner
@@ -2001,7 +2001,6 @@ export default class Post extends React.Component<InjectedProps> {
 
     async removeReply(index) {
         this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
-            // const { post } = this.props.navigation.state.params;
             const post = this.state.post;
 
             const placeId = post.placeId;
@@ -2059,7 +2058,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     sendPushNotification(message) {
-        // const { post } = this.props.navigation.state.params;
         const post = this.state.post;
 
         const sender = Firebase.user().uid;

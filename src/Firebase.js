@@ -1407,7 +1407,7 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static async sendMessage(id, message, isSameDay, post) {
+    static async sendMessage(id, message, post) {
         const { text, user } = message;
 
         let _user = {};
@@ -1416,18 +1416,6 @@ export default class Firebase {
         if (!text || text.length === 0) return;
 
         const timestamp = Firebase.timestamp();
-
-        /*
-        if (!isSameDay) {
-            const dateData = {
-                text: "",
-                timestamp: timestamp,
-                system: true
-            };
-
-            await Firebase.database.ref('contents').child(id).push(dateData);
-        }
-        */
 
         const pushData = {
             text,

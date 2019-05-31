@@ -322,7 +322,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                 if (newFeed === undefined) {
                     this.feedList.delete(feedId);
-
                     return;
                 }
 
@@ -492,7 +491,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
             if (newFeed === undefined) { // newFeed === undefined if removed
                 this.feedList.delete(feedId);
-
                 return;
             }
 

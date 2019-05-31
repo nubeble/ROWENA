@@ -1135,18 +1135,11 @@ export default class Admin extends React.Component {
     async makeJakarta() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
-        const placeId = 'ChIJnUvjRenzaS4RILjULejFAAE';
-        const placeName = 'Jakarta, Indonesia';
 
-        /*
-        const location = {
-            description: "Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia",
-            longitude: 106.8400149,
-            latitude: -6.227615
-        };
-        */
-        const LATITUDE = -6.227615;
-        const LONGITUDE = 106.8400149;
+        const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
+        const placeName = 'Jakarta, Indonesia';
+        const LATITUDE = -6.2087634;
+        const LONGITUDE = 106.845599;
         const location = {
             description: '?, Jalan Menteng Dalam No.48, RT.9/RW.10, Menteng Dalam, South Jakarta City, Jakarta, Indonesia',
             latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
