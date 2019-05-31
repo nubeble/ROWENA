@@ -774,9 +774,11 @@ const PostStackNavigator = createStackNavigator(
         postModal: { screen: Post },
         // postModal: { screen: PostSwitchNavigatorWrapper }, // ToDo
 
+        /*
         mapModal: { screen: MapScreen },
         readReviewModal: { screen: ReadAllReviewsScreen },
         writeReviewModal: { screen: WriteReviewScreen }
+        */
     },
     {
         mode: 'card',

@@ -364,6 +364,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                             // await this.saveUnreadChatRoomId();
                         }}
                         onPressAvatar={async () => await this.openAvatar()}
+                        onLongPress={() => undefined}
 
                         textInputProps={{
                             /*
@@ -390,7 +391,7 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                         renderInputToolbar={this.renderInputToolbar}
 
                         listViewProps={{
-                            scrollEventThrottle: 400,
+                            // scrollEventThrottle: 400,
                             onScroll: ({ nativeEvent }) => {
                                 // console.log('nativeEvent', nativeEvent);
                                 if (this.isCloseToTop(nativeEvent)) {
@@ -707,7 +708,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 const userDoc = await Firebase.firestore.collection("users").doc(user2.uid).get();
                 if (!userDoc.exists) {
                     this.refs["toast"].show('The user no longer exists.', 500);
-
                     return;
                 }
 
@@ -719,7 +719,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 const instance = Firebase.subscribeToProfile(user2.uid, user => {
                     if (user === undefined) {
                         this.opponentUser = null;
-
                         return;
                     }
 
@@ -731,19 +730,19 @@ export default class ChatRoom extends React.Component<InjectedProps> {
                 // --
             }
 
-            const { place, receivedCommentsCount, timestamp, birthday, gender, about } = this.opponentUser; // customer
-
-            let count = receivedCommentsCount;
-            let address = place;
+            // const { place, receivedCommentsCount, timestamp, birthday, gender, about } = this.opponentUser; // customer
+            const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer
 
             const guest = { // customer
                 uid: user2.uid,
-                name: user2.name,
-                picture: user2.picture,
-
-                address,
-                receivedCommentsCount: count,
-                timestamp, birthday, gender, about
+                // name: user2.name,
+                name,
+                // picture: user2.picture,
+                picture: picture.uri,
+                address: place,
+                receivedCommentsCount: receivedCommentsCount,
+                timestamp,
+                birthday, gender, about
             };
 
             const host = { // girl

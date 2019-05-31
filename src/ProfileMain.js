@@ -83,6 +83,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.countsUnsubscribes = [];
 
         // this.imageRefs = []; // for cleaning files in server
+
+        // used in checkUpdateOnUserFeed
+        this.reviewAddedFeedHashTable = [];
+        this.replyAddedReviewHashTable = [];
     }
 
     componentDidMount() {
@@ -179,11 +183,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // check user feed updates
         if (this.checkUpdateOnUserFeed() === true) {
+            console.log('1111')
             this.lastChangedTime = 0;
             this.getUserFeeds();
         } else {
+            console.log('2222')
             const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
             if (this.lastChangedTime !== lastChangedTime) {
+                console.log('3333')
                 // reload from the start
                 this.getUserFeeds();
 
@@ -1189,22 +1196,46 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (!profile) return false;
 
+        // check 1
+        let feedResult = false;
         const feeds = profile.feeds;
-        for (var i = 0; i < feeds.length; i++) {
+        for (let i = 0; i < feeds.length; i++) {
             const feed = feeds[i];
             if (feed.reviewAdded) {
-                return true;
+                // return true;
+
+                const saved = this.reviewAddedFeedHashTable[i];
+                if (saved) { // saved. means already applied.
+                    // skip
+                } else {
+                    this.reviewAddedFeedHashTable[i] = 1;
+                    feedResult = true;
+                }
+
             }
         }
 
         // check 2
+        let reviewResult = false;
         const reviews = profile.reviews;
-        for (var i = 0; i < reviews.length; i++) {
+        for (let i = 0; i < reviews.length; i++) {
             const review = reviews[i];
             if (review.replyAdded) {
-                return true;
+                // return true;
+
+                const saved = this.replyAddedReviewHashTable[i];
+                if (saved) { // saved. means already applied.
+                    // skip
+                } else {
+                    this.replyAddedReviewHashTable[i] = 1;
+                    reviewResult = true;
+                }
+
             }
         }
+
+        // return false;
+        if (feedResult || reviewResult) return true;
 
         return false;
     }

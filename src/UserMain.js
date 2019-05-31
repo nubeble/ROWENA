@@ -127,7 +127,17 @@ export default class UserMain extends React.Component<InjectedProps> {
             }
 
             let { guest } = this.state;
+            // guest.receivedCommentsCount = user.receivedCommentsCount;
+
+            guest.name = user.name;
+            guest.picture = user.picture.uri;
+            guest.address = user.place;
             guest.receivedCommentsCount = user.receivedCommentsCount;
+            guest.timestamp = user.timestamp;
+            guest.birthday = user.birthday;
+            guest.gender = user.gender;
+            guest.about = user.about;
+
             this.setState({ guest });
         });
 

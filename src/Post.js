@@ -158,7 +158,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        console.log('Post.componentDidMount');
+        // console.log('Post.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -167,14 +167,14 @@ export default class Post extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post, extra, from } = this.props.navigation.state.params;
-        console.log('Post, from', from);
+        console.log('Post.componentDidMount, from', from);
 
 
         this.setState({ from });
         this.init(post, extra);
 
         console.log('Post.componentDidMount', from);
-        if (from === 'Profile' || from === 'ChatRoom') {
+        if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
             this.setState({ isModal: true });
         } else {
             this.setState({ isModal: false });
@@ -1726,11 +1726,14 @@ export default class Post extends React.Component<InjectedProps> {
                 initFromWriteReview: (result) => this.initFromWriteReview(result)
             };
 
+            /*
             if (this.state.isModal) {
                 this.props.navigation.navigate("writeReviewModal", param);
             } else {
                 this.props.navigation.navigate("writeReview", param);
             }
+            */
+            this.props.navigation.navigate("writeReview", param);
         }, Cons.buttonTimeoutLong);
     }
 
