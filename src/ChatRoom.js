@@ -3,7 +3,6 @@ import {
     StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, SafeAreaView
 } from 'react-native';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
-import ProfileStore from "./rnff/src/home/ProfileStore";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Firebase from './Firebase';
@@ -32,15 +31,8 @@ const bigImageWidth = postHeight * 0.7;
 // const smallImageWidth = (Dimensions.get('window').height <= 640) ? postHeight * 0.58 : bigImageWidth;
 const smallImageWidth = postHeight * 0.7;
 
-type InjectedProps = {
-    feedStore: FeedStore,
-    profileStore: ProfileStore
-};
 
-
-@inject("feedStore", "profileStore")
-@observer
-export default class ChatRoom extends React.Component<InjectedProps> {
+export default class ChatRoom extends React.Component {
     state = {
         id: null,
         titleImageUri: null,
@@ -61,14 +53,15 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         super(props);
 
         this.onLoading = false;
-
-        this.feed = null;
-        this.feedCount = 0;
-        this.opponentUser = null;
-
-        this.feedUnsubscribe = null;
-        this.countUnsubscribe = null;
-        this.opponentUserUnsubscribe = null;
+        /*
+                this.feed = null;
+                this.feedCount = 0;
+                this.opponentUser = null;
+        
+                this.feedUnsubscribe = null;
+                this.countUnsubscribe = null;
+                this.opponentUserUnsubscribe = null;
+        */
     }
 
     componentDidMount() {
@@ -81,61 +74,63 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const item = this.props.navigation.state.params.item;
 
 
+        /*
+                // subscribe here (post)
+                // --
+                const fi = Firebase.subscribeToFeed(item.placeId, item.feedId, newFeed => {
+                    if (newFeed === undefined) {
+                        this.feed = null;
+                        return;
+                    }
+        
+                    // update this.feed
+                    this.feed = newFeed;
+                });
+        
+                this.feedUnsubscribe = fi;
+                // --
+        
+                // subscribe here (count)
+                // --
+                const ci = Firebase.subscribeToPlace(item.placeId, newPlace => {
+                    if (newPlace === undefined) {
+                        this.feedCount = 0;
+                        return;
+                    }
+        
+                    // update this.feedCount
+                    this.feedCount = newPlace.count;
+                });
+        
+                this.countUnsubscribe = ci;
+                // --
+        
+                // set title
+                let titleImageUri = null;
+                let titleName = null;
+        
+                // find the owner of this post
+                for (var i = 0; i < item.users.length; i++) {
+                    const user = item.users[i];
+        
+                    if (item.owner === user.uid) {
+                        titleImageUri = user.picture;
+                        titleName = user.name;
+                        break;
+                    }
+                }
+        
+                this.setState({ id: item.id, titleImageUri, titleName });
+        */
 
-        // subscribe here (post)
-        // --
-        const fi = Firebase.subscribeToFeed(item.placeId, item.feedId, newFeed => {
-            if (newFeed === undefined) {
-                this.feed = null;
-                return;
-            }
-
-            // update this.feed
-            this.feed = newFeed;
-        });
-
-        this.feedUnsubscribe = fi;
-        // --
-
-        // subscribe here (count)
-        // --
-        const ci = Firebase.subscribeToPlace(item.placeId, newPlace => {
-            if (newPlace === undefined) {
-                this.feedCount = 0;
-
-                return;
-            }
-
-            // update this.feedCount
-            this.feedCount = newPlace.count;
-        });
-
-        this.countUnsubscribe = ci;
-        // --
-
-
-        // set title
-        let titleImageUri = null;
-        let titleName = null;
-
-        for (var i = 0; i < item.users.length; i++) { // find the owner of this post
-            const user = item.users[i];
-
-            if (item.owner === user.uid) {
-                titleImageUri = user.picture;
-                titleName = user.name;
-                break;
-            }
-        }
-
-        this.setState({ id: item.id, titleImageUri, titleName });
+        this.setState({ id: item.id, titleImageUri: item.title.picture, titleName: item.title.name });
 
         Firebase.chatOn(item.id, message => {
             console.log('on message', message);
 
             // fill name, avatar in user
             if (message.user) {
-                for (var i = 0; i < item.users.length; i++) {
+                for (let i = 0; i < item.users.length; i++) {
                     const user = item.users[i];
 
                     if (message.user._id === user.uid) {
@@ -158,9 +153,10 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         });
 
         // show center post avatar
-        if (item.contents === '') {
-            this.setState({ renderPost: true });
-        }
+
+        //        if (item.contents === '') this.setState({ renderPost: true });
+
+        if (item.showAvatar) this.setState({ renderPost: true });
     }
 
     componentWillUnmount() {
@@ -173,9 +169,11 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const item = this.props.navigation.state.params.item;
         Firebase.chatOff(item.id);
 
-        if (this.feedUnsubscribe) this.feedUnsubscribe();
-        if (this.countUnsubscribe) this.countUnsubscribe();
-        if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
+        /*
+                if (this.feedUnsubscribe) this.feedUnsubscribe();
+                if (this.countUnsubscribe) this.countUnsubscribe();
+                if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
+        */
 
         this.closed = true;
     }
@@ -191,7 +189,9 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     }
 
     moveToChatMain() {
+        // save last message
         const item = this.props.navigation.state.params.item;
+
         const lastReadMessageId = item.lastReadMessageId;
 
         const message = this.getLastMessage();
@@ -509,7 +509,6 @@ export default class ChatRoom extends React.Component<InjectedProps> {
         const sender = item.users[0].uid;
         const senderName = item.users[0].name;
         const receiver = item.users[1].uid; // owner
-        // const timestamp
 
         let users = [];
 
@@ -570,31 +569,46 @@ export default class ChatRoom extends React.Component<InjectedProps> {
     */
 
     async openPost() {
-        const item = this.props.navigation.state.params.item;
+        /*
+                const item = this.props.navigation.state.params.item;
+        
+                const post = this.getPost(item);
+                if (!post) {
+                    this.refs["toast"].show('The post has been removed by its owner.', 500); // or NOT subscribed yet!
+        
+                    // we skip here. NOT to close the chat room! (leave it to the user)
+        
+                    return;
+                }
+        
+                const feedSize = this.getFeedSize(item.placeId);
+                if (feedSize === 0) {
+                    this.refs["toast"].show('Please try again.', 500);
+        
+                    return;
+                }
+        
+                const extra = {
+                    feedSize: feedSize
+                };
+        
+                // setTimeout(() => {
+                this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
+                // }, Cons.buttonTimeoutShort);
+        */
 
-        const post = this.getPost(item);
-        if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500); // or NOT subscribed yet!
+        setTimeout(() => {
+            if (this.closed) return;
 
-            // we skip here. NOT to close the chat room! (leave it to the user)
+            const item = this.props.navigation.state.params.item;
 
-            return;
-        }
+            const post = item.post;
+            const extra = {
+                feedSize: item.feedSize
+            };
 
-        const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === 0) {
-            this.refs["toast"].show('Please try again.', 500);
-
-            return;
-        }
-
-        const extra = {
-            feedSize: feedSize
-        };
-
-        // setTimeout(() => {
-        this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
-        // }, Cons.buttonTimeoutShort);
+            this.props.navigation.navigate("post", { post, extra, from: 'ChatRoom' });
+        }, Cons.buttonTimeoutShort);
     }
 
     getPost(item) {
@@ -701,51 +715,52 @@ export default class ChatRoom extends React.Component<InjectedProps> {
 
             await this.openPost();
         } else {
-            const user1 = item.users[0]; // girl
+            const user1 = item.users[0]; // owner (girl)
             const user2 = item.users[1]; // customer
+            /*
+                        if (!this.opponentUser) {
+                            const userDoc = await Firebase.firestore.collection("users").doc(user2.uid).get();
+                            if (!userDoc.exists) {
+                                this.refs["toast"].show('The user no longer exists.', 500);
+                                return;
+                            }
+            
+                            const opponentUser = userDoc.data();
+                            this.opponentUser = opponentUser;
+            
+                            // subscribe here
+                            // --
+                            const instance = Firebase.subscribeToProfile(user2.uid, user => {
+                                if (user === undefined) {
+                                    this.opponentUser = null;
+                                    return;
+                                }
+            
+                                // update
+                                this.opponentUser = user;
+                            });
+            
+                            this.opponentUserUnsubscribe = instance;
+                            // --
+                        }
+            */
+            const customerProfile = item.customerProfile;
 
-            if (!this.opponentUser) {
-                const userDoc = await Firebase.firestore.collection("users").doc(user2.uid).get();
-                if (!userDoc.exists) {
-                    this.refs["toast"].show('The user no longer exists.', 500);
-                    return;
-                }
-
-                const opponentUser = userDoc.data();
-                this.opponentUser = opponentUser;
-
-                // subscribe here
-                // --
-                const instance = Firebase.subscribeToProfile(user2.uid, user => {
-                    if (user === undefined) {
-                        this.opponentUser = null;
-                        return;
-                    }
-
-                    // update
-                    this.opponentUser = user;
-                });
-
-                this.opponentUserUnsubscribe = instance;
-                // --
-            }
-
-            // const { place, receivedCommentsCount, timestamp, birthday, gender, about } = this.opponentUser; // customer
-            const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer
+            // const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer
+            const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = customerProfile;
 
             const guest = { // customer
                 uid: user2.uid,
-                // name: user2.name,
                 name,
-                // picture: user2.picture,
                 picture: picture.uri,
                 address: place,
+
                 receivedCommentsCount: receivedCommentsCount,
                 timestamp,
                 birthday, gender, about
             };
 
-            const host = { // girl
+            const host = { // owner (girl)
                 uid: user1.uid,
                 name: user1.name,
                 picture: user1.picture,

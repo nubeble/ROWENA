@@ -230,7 +230,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
 
             if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
-                console.log('post from memory');
+                // console.log('post from memory');
 
                 const newFeed = this.feedList.get(feedId);
                 newFeeds.push(newFeed);
@@ -272,6 +272,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
                         if (index !== -1) {
                             feeds.splice(index, 1);
+                            !this.closed && this.setState({ feeds });
                         }
 
                         return;
@@ -294,20 +295,21 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 // subscribe here (count)
                 // --
-                const ci = Firebase.subscribeToPlace(placeId, newPlace => {
-                    if (newPlace === undefined) {
-                        this.feedCountList.delete(placeId);
+                if (!this.feedCountList.has(placeId)) {
+                    const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                        if (newPlace === undefined) {
+                            this.feedCountList.delete(placeId);
+                            return;
+                        }
 
-                        return;
-                    }
+                        // console.log('count changed', newPlace.count);
 
-                    console.log('count subscribed');
+                        // update this.feedCountList
+                        this.feedCountList.set(placeId, newPlace.count);
+                    });
 
-                    // update this.feedCountList
-                    this.feedCountList.set(placeId, newPlace.count);
-                });
-
-                this.countsUnsubscribes.push(ci);
+                    this.countsUnsubscribes.push(ci);
+                }
                 // --
             }
 
@@ -376,7 +378,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
         const instance = Firebase.subscribeToPlace(placeId, newPlace => {
             if (newPlace === undefined) {
                 this.feedCountList.delete(placeId);
-
                 return;
             }
 

@@ -546,7 +546,7 @@ export default class Intro extends React.Component {
             const feed = popularFeeds[i];
 
             const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                if (newFeed === undefined) { // newFeed === undefined if removed
+                if (newFeed === undefined) {
                     // nothing to do here.
                     return;
                 }
@@ -566,18 +566,19 @@ export default class Intro extends React.Component {
 
             // subscribe here (count)
             // --
-            const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                if (newPlace === undefined) {
-                    Intro.feedCountList.delete(feed.placeId);
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === undefined) {
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
 
-                    return;
-                }
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+                });
 
-                // update Intro.feedCountList
-                Intro.feedCountList.set(feed.placeId, newPlace.count);
-            });
-
-            Intro.countsUnsubscribes.push(ci);
+                Intro.countsUnsubscribes.push(ci);
+            }
             // --
         }
     }
@@ -657,18 +658,19 @@ export default class Intro extends React.Component {
 
             // subscribe here (count)
             // --
-            const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                if (newPlace === undefined) {
-                    Intro.feedCountList.delete(feed.placeId);
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === undefined) {
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
 
-                    return;
-                }
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+                });
 
-                // update Intro.feedCountList
-                Intro.feedCountList.set(feed.placeId, newPlace.count);
-            });
-
-            Intro.countsUnsubscribes.push(ci);
+                Intro.countsUnsubscribes.push(ci);
+            }
             // --
         }
     }
@@ -1306,7 +1308,6 @@ export default class Intro extends React.Component {
         const instance = Firebase.subscribeToPlace(placeId, newPlace => {
             if (newPlace === undefined) {
                 Intro.feedCountList.delete(placeId);
-
                 return;
             }
 

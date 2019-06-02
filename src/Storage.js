@@ -75,8 +75,6 @@ export function LoadStorage(key: string, cbSuccess, cbFail, param) {
 }
 
 export function SaveStorage(key: string, value: Object, cbSuccess) {
-    console.log('1111111111111111');
-
     if ('object' == typeof value) {
         console.log('SaveStorage', JSON.stringify(value));
 

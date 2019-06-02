@@ -11,6 +11,8 @@ import { Text, Theme, RefreshIndicator } from '../rnff/src/components';
 import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Cons } from '../Globals';
 
+const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+
 const WINDOW = Dimensions.get('window');
 
 const defaultStyles = {
@@ -263,7 +265,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     lng: position.coords.longitude
                 };
 
-                const key = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+                const key = API_KEY;
 
                 if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
                     // get current location (street)

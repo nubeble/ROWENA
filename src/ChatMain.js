@@ -15,7 +15,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 
-DEFAULT_ROOM_COUNT = 10;
+DEFAULT_ROOM_COUNT = 6;
 
 // 1:1
 const illustHeight = 300;
@@ -35,13 +35,20 @@ export default class ChatMain extends React.Component {
 
         this.deletedChatRoomList = [];
         this.onLoading = false;
+
+        this.feedList = new Map();
+        this.feedCountList = new Map();
+        this.customerProfileList = new Map(); // if I am a customer, then use feed for the opponent.
+
+        this.feedsUnsubscribes = [];
+        this.countsUnsubscribes = [];
+        this.customersUnsubscribes = [];
     }
 
     static final() {
         console.log('ChatMain.final');
 
         const uid = Firebase.user().uid;
-
         Firebase.stopChatRoom(uid);
     }
 
@@ -59,11 +66,29 @@ export default class ChatMain extends React.Component {
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
             if (list) {
-                // console.log('ChatMain, loadChatRoom, updating list', list);
-
                 this.setState({ chatRoomList: list });
 
                 this.allChatRoomsLoaded = false;
+
+                for (let i = 0; i < list.length; i++) {
+                    const room = list[i];
+
+                    const owner = room.owner; // owner uid of the post
+                    const users = room.users;
+
+                    const me = users[0];
+                    const you = users[1];
+
+                    // customer or girl
+                    if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
+                        this.subscribeToProfile(you.uid, room.id);
+                    }
+
+                    // if (you.uid === owner) { // I am a customer. Then subscribe girl(post).
+                    this.subscribeToPost(room.placeId, room.feedId, room.id);
+                    this.subscribeToPlace(room.placeId);
+                    // }
+                }
             }
 
             this.setState({ isLoadingChat: false });
@@ -74,6 +99,137 @@ export default class ChatMain extends React.Component {
             !this.closed && this.setState({ renderChat: true });
         }, 0);
         */
+    }
+
+    componentWillUnmount() {
+        console.log('ChatMain.componentWillUnmount');
+
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+        this.hardwareBackPressListener.remove();
+
+        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
+            const instance = this.feedsUnsubscribes[i];
+            instance();
+        }
+
+        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
+            const instance = this.countsUnsubscribes[i];
+            instance();
+        }
+
+        for (let i = 0; i < this.customersUnsubscribes.length; i++) {
+            const instance = this.customersUnsubscribes[i];
+            instance();
+        }
+
+        this.closed = true;
+    }
+
+    subscribeToPost(placeId, feedId, roomId) {
+        if (this.feedList.has(feedId)) return;
+
+        const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+            if (newFeed === undefined) {
+                this.feedList.delete(feedId);
+                return;
+            }
+
+            this.feedList.set(feedId, newFeed);
+
+            // update chatRoomList
+            const name = newFeed.name;
+            const picture = newFeed.pictures.one.uri;
+
+            let list = [...this.state.chatRoomList];
+            const index = list.findIndex(el => el.id === roomId);
+            if (index !== -1) {
+                if (list[index].users[1].uid === list[index].owner) {
+                    let user = list[index].users[1];
+                    user.name = name;
+                    user.picture = picture;
+                    list[index].users[1] = user;
+
+                    !this.closed && this.setState({ chatRoomList: list });
+                }
+            }
+        });
+
+        this.feedsUnsubscribes.push(fi);
+    }
+
+    subscribeToPlace(placeId) { // subscribe place count
+        if (this.feedCountList.has(placeId)) return;
+
+        const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+            if (newPlace === undefined) {
+                this.feedCountList.delete(placeId);
+                return;
+            }
+
+            this.feedCountList.set(placeId, newPlace.count);
+        });
+
+        this.countsUnsubscribes.push(ci);
+    }
+
+    subscribeToProfile(uid, roomId) {
+        if (this.customerProfileList.has(uid)) return;
+
+        const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === undefined) {
+                this.customerProfileList.delete(uid);
+                return;
+            }
+
+            this.customerProfileList.set(uid, user);
+
+            // update chatRoomList
+            const name = user.name;
+            const picture = user.picture.uri;
+
+            let list = [...this.state.chatRoomList];
+            const index = list.findIndex(el => el.id === roomId);
+            if (index !== -1) {
+                if (list[index].users[0].uid === list[index].owner) {
+                    let user = list[index].users[1];
+                    user.name = name;
+                    user.picture = picture;
+                    list[index].users[1] = user;
+
+                    !this.closed && this.setState({ chatRoomList: list });
+                }
+            }
+        });
+
+        this.customersUnsubscribes.push(instance);
+    }
+
+    getPost(feedId) {
+        let post = null;
+        if (this.feedList.has(feedId)) {
+            post = this.feedList.get(feedId);
+        }
+
+        return post;
+    }
+
+    getFeedSize(placeId) {
+        let count = 0;
+        if (this.feedCountList.has(placeId)) {
+            count = this.feedCountList.get(placeId);
+        }
+
+        return count;
+    }
+
+    getCustomerProfile(uid) {
+        let profile = null;
+        if (this.customerProfileList.has(uid)) {
+            profile = this.customerProfileList.get(uid);
+        }
+
+        return profile;
     }
 
     @autobind
@@ -87,7 +243,7 @@ export default class ChatMain extends React.Component {
         const params = this.props.navigation.state.params;
         if (params) {
             const roomId = params.roomId;
-            console.log('roomId', roomId);
+            // console.log('roomId', roomId);
 
             // search it from the list
             const result = this.findChatRoom(roomId);
@@ -104,7 +260,7 @@ export default class ChatMain extends React.Component {
                 // update state
                 var array = [...this.state.chatRoomList];
                 const index = this.findIndex(array, roomId);
-                console.log('index', index);
+                // console.log('index', index);
                 if (index !== -1) { // if the item inside of 10 rooms is removed then automatically updated in database, state array and index = -1
                     array.splice(index, 1);
                     this.setState({ chatRoomList: array });
@@ -138,7 +294,7 @@ export default class ChatMain extends React.Component {
     /*
     onGoBack(index, callback) { // back from deleting
         console.log('index', index);
-
+    
         var array = [...this.state.chatRoomList];
         array.splice(index, 1);
         this.setState({chatRoomList: array}, () => callback());
@@ -147,7 +303,6 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onBlur() {
-        // console.log('ChatMain.onBlur');
         this.isFocused = false;
     }
 
@@ -158,16 +313,6 @@ export default class ChatMain extends React.Component {
         this.props.navigation.navigate("intro");
 
         return true;
-    }
-
-    componentWillUnmount() {
-        console.log('ChatMain.componentWillUnmount');
-
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-        this.hardwareBackPressListener.remove();
-
-        this.closed = true;
     }
 
     render(): React.Node {
@@ -280,8 +425,6 @@ export default class ChatMain extends React.Component {
 
     @autobind
     renderItem({ item, index }) {
-        // console.log(index, item);
-
         const id = item.id;
 
         const users = item.users;
@@ -295,8 +438,68 @@ export default class ChatMain extends React.Component {
         const avatarHeight = viewHeight;
         // const avatarHeight = viewHeight * 0.8;
 
+        let avatarName = null;
+        let avatarColor = null;
+        if (!user.picture) {
+            // avatarName = 'JK';
+            avatarName = Util.getAvatarName(user.name);
+            avatarColor = this.getAvatarColor(index);
+        }
+
         return (
-            <TouchableHighlight onPress={() => this.props.navigation.navigate("chatRoom", { item: item })}>
+            <TouchableHighlight
+                onPress={() => {
+                    // title
+                    let titleImageUri = null;
+                    let titleName = null;
+                    let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+
+                    if (users[0].uid === item.owner) {
+                        titleImageUri = users[0].picture;
+                        titleName = users[0].name;
+                        customer = users[1].uid;
+                    } else { // if (users[1].uid === item.owner) {
+                        titleImageUri = users[1].picture;
+                        titleName = users[1].name;
+                    }
+
+                    const title = {
+                        picture: titleImageUri,
+                        name: titleName
+                    };
+
+                    // feed
+                    const post = this.getPost(item.feedId);
+                    if (!post) {
+                        this.refs["toast"].show('The post no longer exists.', 500);
+                        return;
+                    }
+
+                    // count
+                    const feedSize = this.getFeedSize(item.placeId);
+
+                    // customer profile
+                    let customerProfile = null;
+                    if (customer) customerProfile = this.getCustomerProfile(customer);
+
+                    const params = {
+                        id,
+                        placeId: item.placeId,
+                        feedId: item.feedId,
+                        users,
+                        owner: item.owner, // owner uid of the post
+                        showAvatar: item.contents === '' ? true : false,
+                        lastReadMessageId: item.lastReadMessageId,
+                        placeName: item.placeName,
+                        title,
+                        post,
+                        feedSize,
+                        customerProfile
+                    };
+
+                    this.props.navigation.navigate("chatRoom", { item: params });
+                }}
+            >
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,
@@ -304,12 +507,27 @@ export default class ChatMain extends React.Component {
                         // justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
                         justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <SmartImage
-                            style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
-                            showSpinner={false}
-                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={user.picture}
-                        />
+                        {
+                            user.picture ?
+                                <SmartImage
+                                    style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={user.picture}
+                                />
+                                :
+                                <View
+                                    style={{
+                                        width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2,
+                                        alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor
+                                    }}
+                                >
+                                    <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                        {avatarName}
+                                    </Text>
+                                </View>
+                        }
+
                         {
                             update &&
                             <View style={{
@@ -467,6 +685,20 @@ export default class ChatMain extends React.Component {
         // console.log('newList', newList);
 
         this.setState({ chatRoomList: newList });
+    }
+
+    getAvatarColor(index) {
+        if (!this.avatarColorList) {
+            this.avatarColorList = new Map();
+        }
+
+        if (this.avatarColorList.has(index)) {
+            return this.avatarColorList.get(index);
+        } else {
+            const color = Util.getDarkColor();
+            this.avatarColorList.set(index, color);
+            return color;
+        }
     }
 }
 

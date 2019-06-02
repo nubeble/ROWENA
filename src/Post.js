@@ -284,7 +284,7 @@ export default class Post extends React.Component<InjectedProps> {
         // Vars.userFeedsChanged = true;
 
 
-        // this.props.navigation.navigate("edit", { post: post });
+        this.props.navigation.navigate("editPost", { post: this.state.post });
     }
 
     /*
@@ -1550,7 +1550,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 reviewArray.push(
                     <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
-                        {/* ToDo: add profile image */}
+                        {/* Consider: add profile image */}
 
                         <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
                             <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Anonymous'}</Text>
@@ -1873,23 +1873,72 @@ export default class Post extends React.Component<InjectedProps> {
         const uid = Firebase.user().uid;
 
         // find existing chat room (by uid)
-        const room = await Firebase.findChatRoomByPostId(uid, post.id);
+        let room = await Firebase.findChatRoomByPostId(uid, post.id);
         if (room) {
-            /*
-            this.setState({ isNavigating: true }, () => {
-                this.props.navigation.navigate('room', { item: room });
-            });
-            */
-            this.props.navigation.navigate("chatRoom", { item: room });
+            // this.props.navigation.navigate("chatRoom", { item: room });
+
+            // title
+            let titleImageUri = null;
+            let titleName = null;
+            let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+
+            if (room.users[0].uid === room.owner) {
+                titleImageUri = room.users[0].picture;
+                titleName = room.users[0].name;
+                customer = room.users[1].uid;
+            } else { // if (room.users[1].uid === room.owner) {
+                titleImageUri = room.users[1].picture;
+                titleName = room.users[1].name;
+            }
+
+            const title = {
+                picture: titleImageUri,
+                name: titleName
+            };
+
+            // feed
+            // const post = this.state.post;
+
+            // count
+            const { extra } = this.props.navigation.state.params;
+            const feedSize = extra.feedSize;
+
+            // customer profile
+            let customerProfile = null;
+            if (customer) customerProfile = await Firebase.getProfile(customer);
+
+            const params = {
+                id: room.id,
+                placeId: room.placeId,
+                feedId: room.feedId,
+                users: room.users,
+                owner: room.owner, // owner uid of the post
+                showAvatar: room.contents === '' ? true : false,
+                lastReadMessageId: room.lastReadMessageId,
+                placeName: room.placeName,
+
+                title,
+                post,
+                feedSize,
+                customerProfile
+            };
+
+            this.props.navigation.navigate("chatRoom", { item: params });
         } else {
+            const { profile } = this.props.profileStore;
+
             // create new chat room
             // --
             const chatRoomId = Util.uid(); // create chat room id
 
             const user1 = {
                 uid: uid,
-                name: Firebase.user().name,
-                picture: Firebase.user().photoUrl,
+                /*
+                name: Firebase.user().name, // ToDo: use profile store
+                picture: Firebase.user().photoUrl, // ToDo: use profile store
+                */
+                name: profile.name,
+                picture: profile.picture.uri
             };
 
             const user2 = {
@@ -1903,10 +1952,58 @@ export default class Post extends React.Component<InjectedProps> {
             users.push(user1);
             users.push(user2);
 
-            const item = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.placeName, post.uid, true);
+            room = await Firebase.createChatRoom(uid, users, post.placeId, post.id, chatRoomId, post.placeName, post.uid, true);
             // --
 
-            this.props.navigation.navigate("chatRoom", { item: item });
+            // this.props.navigation.navigate("chatRoom", { item: room });
+
+            // title
+            let titleImageUri = null;
+            let titleName = null;
+            let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+
+            if (room.users[0].uid === room.owner) {
+                titleImageUri = room.users[0].picture;
+                titleName = room.users[0].name;
+                customer = room.users[1].uid;
+            } else { // if (room.users[1].uid === room.owner) {
+                titleImageUri = room.users[1].picture;
+                titleName = room.users[1].name;
+            }
+
+            const title = {
+                picture: titleImageUri,
+                name: titleName
+            };
+
+            // feed
+            // const post = this.state.post;
+
+            // count
+            const { extra } = this.props.navigation.state.params;
+            const feedSize = extra.feedSize;
+
+            // customer profile
+            let customerProfile = null;
+            if (customer) customerProfile = await Firebase.getProfile(customer);
+
+            const params = {
+                id: room.id,
+                placeId: room.placeId,
+                feedId: room.feedId,
+                users: room.users,
+                owner: room.owner, // owner uid of the post
+                showAvatar: room.contents === '' ? true : false,
+                lastReadMessageId: room.lastReadMessageId,
+                placeName: room.placeName,
+
+                title,
+                post,
+                feedSize,
+                customerProfile
+            };
+
+            this.props.navigation.navigate("chatRoom", { item: params });
         }
     }
 
@@ -2061,10 +2158,13 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     sendPushNotification(message) {
+        const { profile } = this.props.profileStore;
+
         const post = this.state.post;
 
         const sender = Firebase.user().uid;
-        const senderName = Firebase.user().name;
+        // const senderName = Firebase.user().name; // ToDo: use profile store
+        const senderName = profile.name;
         // const receiver = post.uid; // owner
         const receiver = this.owner;
         const data = {

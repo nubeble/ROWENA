@@ -8,6 +8,8 @@ import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import Util from './Util';
 
+const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };
 const Bangkok = { description: 'Bangkok, Thailand', place_id: 'ChIJ82ENKDJgHTERIEjiXbIAAQE', geometry: { location: { lat: 13.7563309, lng: 100.5017651 } } };
@@ -255,7 +257,7 @@ export default class SearchScreen extends React.Component {
                                     lng: location.lng
                                 };
 
-                                const key = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+                                const key = API_KEY;
 
                                 Util.getPlaceId(input, key, (obj) => {
                                     console.log('Util.getPlaceId result', obj);
@@ -263,8 +265,20 @@ export default class SearchScreen extends React.Component {
                                     // Consider: exception
                                     // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
+                                    // Consider: exception
+                                    //--
+                                    let address = obj.formatted_address;
+
+                                    const words = address.split(', ');
+                                    if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
+                                        // Consider: To avoid "Kyiv, Ukraine, 02000"
+                                        address = words[0] + ', ' + words[1];
+                                    }
+                                    //--
+
                                     const city = {
-                                        name: obj.formatted_address,
+                                        // name: obj.formatted_address,
+                                        name: address,
                                         placeId: obj.place_id,
                                         location: {
                                             lat: obj.geometry.location.lat,
@@ -291,17 +305,19 @@ export default class SearchScreen extends React.Component {
                         query={
                             from === 'AdvertisementMain' ?
                                 {
-                                    key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
+                                    key: API_KEY,
                                     language: 'en',
-                                    types: ['establishment'],
+                                    // types: ['establishment'],
+                                    types: ['address'],
                                     components: components
                                 }
                                 :
                                 {
                                     // available options: https://developers.google.com/places/web-service/autocomplete
-                                    key: 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A',
+                                    key: API_KEY,
                                     language: 'en', // language of the results
-                                    types: ['(cities)'] // default: 'geocode'
+                                    // types: ['(cities)'] // default: 'geocode'
+                                    types: ['geocode', 'political']
                                 }
                         }
 

@@ -231,6 +231,7 @@ export default class Util extends React.Component {
         return age;
     }
 
+    /*
     static getRandomColor() {
         var letters = '0123456789ABCDEF';
         var color = '#';
@@ -239,6 +240,7 @@ export default class Util extends React.Component {
         }
         return color;
     }
+    */
 
     static isFederation(code) {
         let value = false;
@@ -1499,6 +1501,10 @@ export default class Util extends React.Component {
 
         distance = d.toFixed(0).toString() + ' km away';
 
+        if (distance === '0 km away') {
+            distance = 'less than a kilometer away';
+        }
+
         return distance;
     }
 
@@ -1523,5 +1529,32 @@ export default class Util extends React.Component {
         }
 
         return facebook;
+    }
+
+    static getDarkColor() {
+        var letters = '456789'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 6)];
+        }
+
+        return color;
+    }
+
+    static getAvatarName(name) {
+        if (!name || name.length === 0) return null;
+
+        let avatarName = '';
+
+        let words = name.split(' ');
+        if (words.length === 1) {
+            avatarName = name;
+        } else {
+            for (let i = 0; i < words.length; i++) {
+                avatarName += words[i][0];
+            }
+        }
+
+        return avatarName;
     }
 }

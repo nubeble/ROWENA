@@ -465,6 +465,20 @@ export default class Firebase {
         });
     }
 
+    static async getPost(placeId, feedId) {
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        if (feedDoc.exists) return feedDoc.data();
+
+        return null;
+    }
+
+    static async getFeedSize(placeId) {
+        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        if (placeDoc.exists) return placeDoc.data().count;
+
+        return 0;
+    }
+
     static async removeFeed(uid, placeId, feedId) {
         let result;
 
@@ -1589,15 +1603,15 @@ export default class Firebase {
             // return data;
 
             /*
-                        snapshot.forEach(item => {
-                            // console.log(item.key, item.val());
-                            // const key = item.key;
-                            const value = item.val();
-            
-                            if (value.feedId === postId) {
-                                return value;
-                            }
-                        });
+            snapshot.forEach(item => {
+                // console.log(item.key, item.val());
+                // const key = item.key;
+                const value = item.val();
+
+                if (value.feedId === postId) {
+                    return value;
+                }
+            });
             */
         });
 

@@ -198,6 +198,8 @@ export default class extends Component {
     componentWillUnmount() {
         this.autoplayTimer && clearTimeout(this.autoplayTimer)
         this.loopJumpTimer && clearTimeout(this.loopJumpTimer)
+
+        this.closed = true;
     }
 
     componentWillUpdate(nextProps, nextState) {

@@ -316,13 +316,14 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             const placeId = review.placeId;
             const feedId = review.feedId;
 
+            // if (!this.feedList.has(feedId)) {
             const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                 if (newFeed === undefined) {
                     this.feedList.delete(feedId);
                     return;
                 }
 
-                console.log('feed subscribed');
+                // console.log('feed subscribed');
 
                 // update this.feedList
                 this.feedList.set(feedId, newFeed);
@@ -337,24 +338,26 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             });
 
             this.feedsUnsubscribes.push(fi);
+            // }
             // --
 
             // subscribe here (count)
             // --
-            const ci = Firebase.subscribeToPlace(placeId, newPlace => {
-                if (newPlace === undefined) {
-                    this.feedCountList.delete(placeId);
+            if (!this.feedCountList.has(placeId)) {
+                const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                    if (newPlace === undefined) {
+                        this.feedCountList.delete(placeId);
+                        return;
+                    }
 
-                    return;
-                }
+                    // console.log('count subscribed');
 
-                console.log('count subscribed');
+                    // update this.feedCountList
+                    this.feedCountList.set(placeId, newPlace.count);
+                });
 
-                // update this.feedCountList
-                this.feedCountList.set(placeId, newPlace.count);
-            });
-
-            this.countsUnsubscribes.push(ci);
+                this.countsUnsubscribes.push(ci);
+            }
             // --
 
 
@@ -395,7 +398,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             let feeds = [...this.state.feeds];
             const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId && el.reviewId === item.reviewId);
             if (index === -1) {
-                this.refs["toast"].show('The post does not exist.', 500);
+                this.refs["toast"].show('The post no longer exists.', 500);
 
                 return;
             }
@@ -414,7 +417,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         const feeds = [...this.state.feeds];
         const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
         if (index === -1) {
-            this.refs["toast"].show('The post does not exist.', 500);
+            this.refs["toast"].show('The post no longer exists.', 500);
 
             return;
         }
@@ -509,7 +512,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         const instance = Firebase.subscribeToPlace(placeId, newPlace => {
             if (newPlace === undefined) {
                 this.feedCountList.delete(placeId);
-
                 return;
             }
 

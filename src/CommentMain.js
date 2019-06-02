@@ -14,12 +14,13 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
+import Util from './Util';
 
 type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const DEFAULT_FEED_COUNT = 12; // 3 x 4
+const DEFAULT_FEED_COUNT = 18; // 3 x 6
 
 // 1:1
 const illustHeight = 340;
@@ -145,24 +146,41 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.commentId}
                         renderItem={({ item, index }) => {
+                            let avatarName = null;
+                            let avatarColor = null;
+                            if (!item.picture) {
+                                // avatarName = 'JK';
+                                avatarName = Util.getAvatarName(user.name);
+                                avatarColor = this.getAvatarColor(index);
+                            }
+
                             return (
                                 <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
                                     <View style={styles.pictureContainer}>
                                         {
-                                            item.picture.uri ?
+                                            item.picture ?
                                                 <SmartImage
                                                     style={styles.picture}
                                                     showSpinner={false}
                                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                    uri={item.picture.uri}
+                                                    uri={item.picture}
                                                 />
                                                 :
+                                                /*
                                                 <Image
                                                     style={[styles.picture, {
                                                         backgroundColor: 'black', tintColor: 'white', resizeMode: 'cover'
                                                     }]}
                                                     source={PreloadImage.user}
                                                 />
+                                                */
+                                                <View
+                                                    style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor }}
+                                                >
+                                                    <Text style={{ color: 'white', fontSize: 34, paddingTop: 16, fontFamily: "Roboto-Medium" }}>
+                                                        {avatarName}
+                                                    </Text>
+                                                </View>
                                         }
                                         {
                                             /*
@@ -307,18 +325,24 @@ export default class CommentMain extends React.Component<InjectedProps> {
             const uri = comment.picture;
 
             if (this.customerList.has(userUid)) {
-                console.log('customer from memory');
+                const user = this.customerList.get(userUid);
 
-                const customer = this.customerList.get(userUid);
+                const customer = {
+                    commentId,
+                    uid: userUid,
+                    name: user.name,
+                    place: user.place,
+                    picture: user.picture.uri
+                };
+
                 newFeeds.push(customer);
             } else {
                 const customer = {
+                    commentId,
                     uid: userUid,
                     name, // will be updated
                     place: placeName, // will be updated
-                    picture: { // will be updated
-                        uri
-                    }
+                    picture: uri // will be updated
                 };
 
                 newFeeds.push(customer);
@@ -329,18 +353,18 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         // update this.customerList
                         this.customerList.delete(userUid);
 
-                        // update state feed & UI
+                        // update state feed & UI // ToDo
+                        /*
                         let feeds = [...this.state.feeds];
-
                         for (let i = 0; i < feeds.length; i++) {
                             const feed = feeds[i];
-
-                            if (feed.uid === item.uid) {
+                            if (feed.uid === userUid) {
                                 feeds.splice(index, 1);
                             }
                         }
 
                         !this.closed && this.setState({ feeds });
+                        */
 
                         return;
                     }
@@ -351,22 +375,21 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     this.customerList.set(userUid, user);
 
                     // update state feed & UI
-                    const item = {
-                        uid: userUid,
-                        name: user.name,
-                        place: user.place,
-                        picture: {
-                            uri: user.picture.uri
-                        }
-                    };
+
 
                     let feeds = [...this.state.feeds];
-
                     for (let i = 0; i < feeds.length; i++) {
                         const feed = feeds[i];
+                        if (feed.uid === userUid) {
+                            const customer = {
+                                commentId: feed.commentId,
+                                uid: userUid,
+                                name: user.name,
+                                place: user.place,
+                                picture: user.picture.uri
+                            };
 
-                        if (feed.uid === item.uid) {
-                            feeds[i] = item;
+                            feeds[i] = customer;
                         }
                     }
 
@@ -375,8 +398,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                 this.customersUnsubscribes.push(instance);
             }
-
-
 
             this.lastLoadedFeedIndex = i;
 
@@ -401,10 +422,17 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     openPost(item) {
+        /*
         const feeds = [...this.state.feeds];
         const index = feeds.findIndex(el => el.uid === item.uid);
         if (index === -1) {
-            this.refs["toast"].show('The user does not exist.', 500);
+            this.refs["toast"].show('The user no longer exists.', 500);
+            return;
+        }
+        */
+
+        if (!this.customerList.has(item.uid)) {
+            this.refs["toast"].show('The user no longer exists.', 500);
             return;
         }
 
@@ -416,13 +444,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
         const host = {
             uid: profile.uid,
             name: profile.name,
-            picture: profile.picture
+            picture: profile.picture.uri
         };
 
         const customer = this.customerList.get(item.uid);
         if (!customer) {
             this.refs["toast"].show('Please try again.', 500);
-
             return;
         }
 
@@ -459,6 +486,20 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.getCommentedFeeds();
 
         !this.closed && this.setState({ refreshing: false });
+    }
+
+    getAvatarColor(index) {
+        if (!this.avatarColorList) {
+            this.avatarColorList = new Map();
+        }
+
+        if (this.avatarColorList.has(index)) {
+            return this.avatarColorList.get(index);
+        } else {
+            const color = Util.getDarkColor();
+            this.avatarColorList.set(index, color);
+            return color;
+        }
     }
 }
 

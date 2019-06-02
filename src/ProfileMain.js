@@ -183,14 +183,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // check user feed updates
         if (this.checkUpdateOnUserFeed() === true) {
-            console.log('1111')
             this.lastChangedTime = 0;
             this.getUserFeeds();
         } else {
-            console.log('2222')
             const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
             if (this.lastChangedTime !== lastChangedTime) {
-                console.log('3333')
                 // reload from the start
                 this.getUserFeeds();
 
@@ -278,7 +275,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-
             return;
         }
 
@@ -332,7 +328,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     return;
                 }
 
-                console.log('feed subscribed', newFeed);
+                // console.log('feed changed.', newFeed);
 
                 // update this.feedList
                 this.feedList.set(feedId, newFeed);
@@ -351,20 +347,21 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             // subscribe here (count)
             // --
-            const ci = Firebase.subscribeToPlace(placeId, newPlace => {
-                if (newPlace === undefined) {
-                    this.feedCountList.delete(placeId);
+            if (!this.feedCountList.has(placeId)) {
+                const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                    if (newPlace === undefined) {
+                        this.feedCountList.delete(placeId);
+                        return;
+                    }
 
-                    return;
-                }
+                    // console.log('count subscribed');
 
-                console.log('count subscribed');
+                    // update this.feedCountList
+                    this.feedCountList.set(placeId, newPlace.count);
+                });
 
-                // update this.feedCountList
-                this.feedCountList.set(placeId, newPlace.count);
-            });
-
-            this.countsUnsubscribes.push(ci);
+                this.countsUnsubscribes.push(ci);
+            }
             // --
 
 
@@ -402,6 +399,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     async postClick(item) {
+        // red dot
         if (item.reviewAdded) {
             // update reviewAdded in user profile
             const { profile } = this.props.profileStore;
@@ -410,7 +408,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             const result = await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
             if (!result) {
                 this.refs["toast"].show('The user no longer exists.', 500);
-                
                 return;
             }
             */
@@ -420,8 +417,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             let feeds = [...this.state.feeds];
             const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
             if (index === -1) {
-                this.refs["toast"].show('The post does not exist.', 500);
-
+                this.refs["toast"].show('The post no longer exists.', 500);
                 return;
             }
 
@@ -439,8 +435,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const feeds = [...this.state.feeds];
         const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
         if (index === -1) {
-            this.refs["toast"].show('The post does not exist.', 500);
-
+            this.refs["toast"].show('The post no longer exists.', 500);
             return;
         }
 
@@ -452,14 +447,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             // we skip here. It'll update state feeds on onfocus event.
 
             this.refs["toast"].show('Please try again.', 500);
-
             return;
         }
 
         const feedSize = this.getFeedSize(item.placeId);
         if (feedSize === 0) {
             this.refs["toast"].show('Please try again.', 500);
-
             return;
         }
 
@@ -467,7 +460,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             feedSize: feedSize
         };
 
-        console.log('post', post);
+        // console.log('post', post);
+
         // setTimeout(() => {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
@@ -536,7 +530,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const instance = Firebase.subscribeToPlace(placeId, newPlace => {
             if (newPlace === undefined) {
                 this.feedCountList.delete(placeId);
-
                 return;
             }
 
@@ -639,9 +632,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                 <View style={styles.searchBar}>
 
-                    <TouchableOpacity activeOpacity={1.0}
-                        onPress={() => this.openAdmin()}
-                    >
+                    <TouchableOpacity activeOpacity={1.0} onPress={() => this.openAdmin()}>
                         <Text
                             style={{
                                 color: Theme.color.text1,
@@ -1108,7 +1099,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     openAdmin() {
         if (!this.adminCount) {
             this.adminCount = 1;
-
             return;
         } else {
             this.adminCount++;

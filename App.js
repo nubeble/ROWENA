@@ -234,7 +234,56 @@ export default class App extends React.Component {
                         const chatRoomId = data.userData.chatRoomId;
 
                         const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
-                        if (room) NavigationService.navigate("chatRoom", { item: room });
+                        if (room) {
+                            // NavigationService.navigate("chatRoom", { item: room });
+
+                            // title
+                            let titleImageUri = null;
+                            let titleName = null;
+                            let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+
+                            if (room.users[0].uid === room.owner) {
+                                titleImageUri = room.users[0].picture;
+                                titleName = room.users[0].name;
+                                customer = room.users[1].uid;
+                            } else { // if (room.users[1].uid === room.owner) {
+                                titleImageUri = room.users[1].picture;
+                                titleName = room.users[1].name;
+                            }
+
+                            const title = {
+                                picture: titleImageUri,
+                                name: titleName
+                            };
+
+                            // feed
+                            const post = await Firebase.getPost(item.feedId);
+
+                            // feed count
+                            const feedSize = await Firebase.getFeedSize(item.placeId);
+
+                            // customer profile
+                            let customerProfile = null;
+                            if (customer) customerProfile = await Firebase.getProfile(customer);
+
+                            const params = {
+                                id: room.id,
+                                placeId: room.placeId,
+                                feedId: room.feedId,
+                                users: room.users,
+                                owner: room.owner, // owner uid of the post
+                                showAvatar: room.contents === '' ? true : false,
+                                lastReadMessageId: room.lastReadMessageId,
+                                placeName: room.placeName,
+
+                                title,
+                                post,
+                                feedSize,
+                                customerProfile
+                            };
+
+                            NavigationService.navigate("chatRoom", { item: params });
+                        }
                     } break;
 
                     case Cons.pushNotification.review: {
@@ -741,44 +790,11 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 }
 // -- end of HomeSwitchNavigatorWrapper
 
-
-
-// ToDo: post switch navigator
-const PostSwitchNavigator = createSwitchNavigator(
-    {
-        postMain: { screen: Post },
-        editPost: { screen: EditPost }
-    }
-);
-
-class PostSwitchNavigatorWrapper extends React.Component {
-    static router = PostSwitchNavigator.router;
-
-    render() {
-        return (
-            <PostSwitchNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-
-
-
-// start of PostStackNavigatorWrapper
+/*
 const PostStackNavigator = createStackNavigator(
     {
         postModal: { screen: Post },
         // postModal: { screen: PostSwitchNavigatorWrapper }, // ToDo
-
-        /*
-        mapModal: { screen: MapScreen },
-        readReviewModal: { screen: ReadAllReviewsScreen },
-        writeReviewModal: { screen: WriteReviewScreen }
-        */
     },
     {
         mode: 'card',
@@ -806,7 +822,29 @@ class PostStackNavigatorWrapper extends React.Component {
         );
     }
 }
-// end of PostStackNavigatorWrapper
+*/
+
+const PostSwitchNavigator = createSwitchNavigator(
+    {
+        postMain: { screen: Post },
+        editPost: { screen: EditPost }
+    }
+);
+
+class PostSwitchNavigatorWrapper extends React.Component {
+    static router = PostSwitchNavigator.router;
+
+    render() {
+        return (
+            <PostSwitchNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
 
 // -- start of UserStackNavigatorWrapper
 const UserStackNavigator = createStackNavigator(
@@ -852,7 +890,8 @@ class UserStackNavigatorWrapper extends React.Component {
 const ChatRoomStackNavigator = createStackNavigator(
     {
         room: { screen: ChatRoom },
-        post: { screen: PostStackNavigatorWrapper },
+        // post: { screen: PostStackNavigatorWrapper },
+        post: { screen: PostSwitchNavigatorWrapper },
         user: { screen: UserStackNavigatorWrapper }
     },
     {
@@ -922,8 +961,9 @@ class EditStackNavigatorWrapper extends React.Component {
 const ReviewStackNavigator = createStackNavigator(
     {
         main: { screen: ReviewMain },
-        // main: { screen: HidingHeader },
-        reviewPost: { screen: PostStackNavigatorWrapper }
+        // test: { screen: HidingHeader },
+        // reviewPost: { screen: PostStackNavigatorWrapper }
+        reviewPost: { screen: PostSwitchNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -1230,7 +1270,8 @@ const RootStackNavigator = createStackNavigator(
     {
         main: { screen: MainBottomTabNavigatorWrapper },
         search: { screen: SearchScreen },
-        postPreview: { screen: PostStackNavigatorWrapper }
+        // postPreview: { screen: PostStackNavigatorWrapper }
+        postPreview: { screen: PostSwitchNavigatorWrapper }
     },
     {
         mode: 'modal',
