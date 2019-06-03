@@ -717,6 +717,7 @@ export default class AdvertisementMain extends React.Component {
         }
         data.note = _note;
 
+        /*
         data.image1 = {
             uri: uploadImage1Uri,
             ref: this.uploadImage1Ref
@@ -732,6 +733,30 @@ export default class AdvertisementMain extends React.Component {
         data.image4 = {
             uri: uploadImage4Uri,
             ref: this.uploadImage4Ref
+        };
+        */
+        let image = this.getImage(0);
+        data.image1 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        image = this.getImage(image.number);
+        data.image2 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        image = this.getImage(image.number);
+        data.image3 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        image = this.getImage(image.number);
+        data.image4 = {
+            uri: image.uri,
+            ref: image.ref
         };
 
         const extra = {
@@ -752,6 +777,90 @@ export default class AdvertisementMain extends React.Component {
                 this.props.navigation.navigate("advertisementFinish");
             }
         });
+    }
+
+    getImage(lastSavedImageNumber) {
+        let uri = null;
+        let ref = null;
+        let number = -1;
+
+        const { uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+
+        if (lastSavedImageNumber === 0) {
+
+            if (uploadImage1Uri) {
+                uri = uploadImage1Uri;
+                ref = this.uploadImage1Ref;
+                number = 1;
+            } else {
+                if (uploadImage2Uri) {
+                    uri = uploadImage2Uri;
+                    ref = this.uploadImage2Ref;
+                    number = 2;
+                } else {
+                    if (uploadImage3Uri) {
+                        uri = uploadImage3Uri;
+                        ref = this.uploadImage3Ref;
+                        number = 3;
+                    } else {
+                        if (uploadImage4Uri) {
+                            uri = uploadImage4Uri;
+                            ref = this.uploadImage4Ref;
+                            number = 4;
+                        }
+                    }
+                }
+            }
+
+        } else if (lastSavedImageNumber === 1) {
+
+            if (uploadImage2Uri) {
+                uri = uploadImage2Uri;
+                ref = this.uploadImage2Ref;
+                number = 2;
+            } else {
+                if (uploadImage3Uri) {
+                    uri = uploadImage3Uri;
+                    ref = this.uploadImage3Ref;
+                    number = 3;
+                } else {
+                    if (uploadImage4Uri) {
+                        uri = uploadImage4Uri;
+                        ref = this.uploadImage4Ref;
+                        number = 4;
+                    }
+                }
+            }
+
+        } else if (lastSavedImageNumber === 2) {
+
+            if (uploadImage3Uri) {
+                uri = uploadImage3Uri;
+                ref = this.uploadImage3Ref;
+                number = 3;
+            } else {
+                if (uploadImage4Uri) {
+                    uri = uploadImage4Uri;
+                    ref = this.uploadImage4Ref;
+                    number = 4;
+                }
+            }
+
+        } else if (lastSavedImageNumber === 3) {
+
+            if (uploadImage4Uri) {
+                uri = uploadImage4Uri;
+                ref = this.uploadImage4Ref;
+                number = 4;
+            }
+
+        }
+
+        const image = {
+            uri, ref, number
+        };
+
+        return image;
     }
 
     removeItemFromList() {

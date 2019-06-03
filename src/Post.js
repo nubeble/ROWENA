@@ -524,7 +524,7 @@ export default class Post extends React.Component<InjectedProps> {
                     </TouchableOpacity>
 
                     {
-                        from === 'Profile' ?
+                        this.state.isOwner && from === 'Profile' ?
                             // edit button (only in modal from Profile)
                             < TouchableOpacity
                                 style={{

@@ -624,7 +624,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     {
                         this.state.flashImage &&
                         <Image
-                            style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
+                            style={{ width: (8 + 34 + 8) * 0.84, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
                             source={{ uri: this.state.flashImage }}
                         />
                     }

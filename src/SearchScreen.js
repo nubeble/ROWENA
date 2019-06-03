@@ -7,6 +7,7 @@ import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
 import Util from './Util';
+import Toast, { DURATION } from 'react-native-easy-toast';
 
 const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
 
@@ -219,6 +220,12 @@ export default class SearchScreen extends React.Component {
                         // listViewDisplayed={this.state.showPlaceSearchListView}
                         fetchDetails={true}
                         // renderDescription={row => row.description} // custom description render
+                        onFail={(message) => {
+                            this.refs["toast"].show(message, 500, () => {
+                                // ToDo
+                            });
+
+                        }}
                         onPress={async (data, details = null) => { // 'details' is provided when fetchDetails = true
                             console.log('data', data);
                             console.log('details', details);
@@ -379,6 +386,13 @@ export default class SearchScreen extends React.Component {
                     // renderRightButton={() => <Text>Custom text after the input</Text>}
                     />
                 }
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2}
+                    opacity={0.6}
+                />
             </View>
         );
     }

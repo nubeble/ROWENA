@@ -1492,7 +1492,7 @@ export default class Firebase {
                 const key = item.key;
                 const value = item.val();
 
-                console.log('value', value);
+                // console.log('value', value);
 
                 result = value;
             });

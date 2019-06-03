@@ -59,10 +59,13 @@ export default class Intro extends React.Component {
 
     static feedCountList = new Map();
 
-    static popularFeedsUnsubscribes = []; // Consider: unsubscribe?
-    static recentFeedsUnsubscribes = []; // Consider: unsubscribe?
+    // do not unsibscribe
+    // --
+    static popularFeedsUnsubscribes = [];
+    static recentFeedsUnsubscribes = [];
 
-    static countsUnsubscribes = []; // Consider: unsubscribe?
+    static countsUnsubscribes = [];
+    // --
 
     state = {
         notification: '',
@@ -452,34 +455,52 @@ export default class Intro extends React.Component {
         const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
         if (snap.size > 0) {
             let places = [...this.state.places];
-
-            var index = 0;
+            let index = 0;
 
             snap.forEach(async (doc) => {
                 if (doc.exists) {
                     // console.log(doc.id, '=>', doc.data());
                     const data = doc.data();
-                    if (data.count > 0) {
-                        const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
+                    // if (data.count > 0) {
+                    const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
 
-                        places[index] = {
-                            // ...places[index],
-                            place_id: doc.id,
-                            length: data.count,
-                            name: data.name,
-                            uri,
-                            lat: data.lat,
-                            lng: data.lng,
-                            key: doc.id
-                        };
+                    places[index] = {
+                        // ...places[index],
+                        place_id: doc.id,
+                        length: data.count,
+                        name: data.name,
+                        uri,
+                        lat: data.lat,
+                        lng: data.lng,
+                        key: doc.id
+                    };
 
-                        index++;
+                    index++;
 
-                        if (index === snap.docs.length) {
-                            Intro.places = places;
-                            !this.closed && this.setState({ places });
-                        }
+                    if (index === snap.docs.length) {
+                        Intro.places = places;
+                        !this.closed && this.setState({ places });
                     }
+                    /*
+                    Intro.places = places;
+                    !this.closed && this.setState({ places });
+                    */
+
+                    // subscribe here (count)
+                    if (!Intro.feedCountList.has(doc.id)) {
+                        const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
+                            if (newPlace === undefined) {
+                                Intro.feedCountList.delete(doc.id);
+                                return;
+                            }
+
+                            // update Intro.feedCountList
+                            Intro.feedCountList.set(doc.id, newPlace.count);
+                        });
+
+                        Intro.countsUnsubscribes.push(ci);
+                    }
+                    // }
                 }
             });
         }
@@ -885,6 +906,7 @@ export default class Intro extends React.Component {
                             return (
                                 <TouchableOpacity
                                     onPress={async () => {
+                                        /*
                                         // load length from database (no need to subscribe!)
                                         const placeDoc = await Firebase.firestore.collection("place").doc(place.place_id).get();
                                         let count = 0;
@@ -896,16 +918,34 @@ export default class Intro extends React.Component {
                                         let newPlace = _.clone(place);
                                         newPlace.length = count;
 
-                                        // setTimeout(() => {
                                         this.props.navigation.navigate("home", { place: newPlace });
-                                        // }, Cons.buttonTimeoutShort);
+                                        */
+
+                                        const feedSize = this.getFeedSize(place.place_id);
+                                        if (feedSize === 0) {
+                                            this.refs["toast"].show('Please try again.', 500);
+                                            return;
+                                        }
+
+                                        let newPlace = _.clone(place);
+                                        newPlace.length = feedSize;
+
+                                        this.props.navigation.navigate("home", { place: newPlace });
                                     }}
                                 >
                                     <View style={styles.pictureContainer}>
+                                        {/*
                                         <Image
                                             style={styles.picture}
                                             source={{ uri: imageUri }}
-                                            fadeDuration={0}
+                                        // fadeDuration={0}
+                                        />
+                                        */}
+                                        <SmartImage
+                                            style={styles.item}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={imageUri}
                                         />
                                         <View style={styles.content}>
                                             <Text style={{
@@ -1073,9 +1113,7 @@ export default class Intro extends React.Component {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/*
-                        ToDo: draw a character avatar
-                    */}
+                    {/* Consider: draw a character avatar */}
                 </View>
             );
         }
@@ -1182,9 +1220,7 @@ export default class Intro extends React.Component {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/*
-                        ToDo: draw a character avatar
-                    */}
+                    {/* Consider: draw a character avatar */}
                 </View>
             );
         }
@@ -1230,7 +1266,6 @@ export default class Intro extends React.Component {
                     const feedSize = this.getFeedSize(feed.placeId);
                     if (feedSize === 0) {
                         this.refs["toast"].show('Please try again.', 500);
-
                         return;
                     }
 
@@ -1241,11 +1276,17 @@ export default class Intro extends React.Component {
                     this.props.navigation.navigate("introPost", { post: feed, extra: extra });
                 }}
             >
+                {/*
                 <SmartImage
                     style={styles.item}
                     showSpinner={false}
                     // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                     uri={feed.pictures.one.uri}
+                />
+                */}
+                <Image
+                    style={styles.item}
+                    source={{ uri: feed.pictures.one.uri }}
                 />
                 <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{feed.name}</Text>

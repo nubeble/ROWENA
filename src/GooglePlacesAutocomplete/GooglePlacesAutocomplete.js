@@ -234,111 +234,115 @@ export default class GooglePlacesAutocomplete extends Component {
             }
         }
 
-        navigator.geolocation.getCurrentPosition((position) => {
-            console.log('navigator.geolocation.getCurrentPosition', position);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                console.log('navigator.geolocation.getCurrentPosition', position);
 
-            // set text
-            const name = position.coords.latitude + ', ' + position.coords.longitude;
-            !this.closed && this.setState({ text: name });
+                // set text
+                const name = position.coords.latitude + ', ' + position.coords.longitude;
+                !this.closed && this.setState({ text: name });
 
-            if (this.props.nearbyPlacesAPI === 'None') {
-                let currentLocation = {
-                    description: this.props.currentLocationLabel,
-                    geometry: {
-                        location: {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
+                if (this.props.nearbyPlacesAPI === 'None') {
+                    let currentLocation = {
+                        description: this.props.currentLocationLabel,
+                        geometry: {
+                            location: {
+                                lat: position.coords.latitude,
+                                lng: position.coords.longitude
+                            }
                         }
+                    };
+
+                    // hide loader
+                    this.setState({ isLoading: false });
+
+                    this._disableRowLoaders();
+                    this.props.onPress(currentLocation, currentLocation);
+                } else { // GoogleReverseGeocoding or GooglePlacesSearch
+                    // this._requestNearby(position.coords.latitude, position.coords.longitude);
+
+                    const input = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+
+                    const key = API_KEY;
+
+                    if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
+                        // get current location (street)
+                        this.getStreetAddress(input, key, (obj) => {
+                            if (this.closed) return;
+
+                            console.log('this.getStreetAddress result', obj);
+
+                            // Consider: exception
+                            // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+
+                            // set text
+                            !this.closed && this.setState({ text: obj.formatted_address });
+
+                            const data = {
+                                description: obj.formatted_address,
+                                place_id: obj.place_id
+                            };
+
+                            const details = {
+                                geometry: {
+                                    location: {
+                                        lat: obj.geometry.location.lat,
+                                        lng: obj.geometry.location.lng
+                                    }
+                                }
+                            };
+
+                            // hide loader
+                            this.setState({ isLoading: false });
+
+                            this._disableRowLoaders();
+                            this.props.onPress(data, details);
+                        });
+                    } else {
+                        // get current location (city)
+                        this.getPlaceId(input, key, (obj) => {
+                            if (this.closed) return;
+
+                            console.log('this.getPlaceId result', obj);
+
+                            // Consider: exception
+                            // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
+
+                            // set text
+                            !this.closed && this.setState({ text: obj.formatted_address });
+
+                            const data = {
+                                description: obj.formatted_address,
+                                place_id: obj.place_id
+                            };
+
+                            const details = {
+                                geometry: {
+                                    location: {
+                                        lat: obj.geometry.location.lat,
+                                        lng: obj.geometry.location.lng
+                                    }
+                                }
+                            };
+
+                            // hide loader
+                            this.setState({ isLoading: false });
+
+                            this._disableRowLoaders();
+                            this.props.onPress(data, details);
+                        });
                     }
-                };
-
-                // hide loader
-                this.setState({ isLoading: false });
-
-                this._disableRowLoaders();
-                this.props.onPress(currentLocation, currentLocation);
-            } else { // GoogleReverseGeocoding or GooglePlacesSearch
-                // this._requestNearby(position.coords.latitude, position.coords.longitude);
-
-                const input = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-
-                const key = API_KEY;
-
-                if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
-                    // get current location (street)
-                    this.getStreetAddress(input, key, (obj) => {
-                        if (this.closed) return;
-
-                        console.log('this.getStreetAddress result', obj);
-
-                        // Consider: exception
-                        // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
-
-                        // set text
-                        !this.closed && this.setState({ text: obj.formatted_address });
-
-                        const data = {
-                            description: obj.formatted_address,
-                            place_id: obj.place_id
-                        };
-
-                        const details = {
-                            geometry: {
-                                location: {
-                                    lat: obj.geometry.location.lat,
-                                    lng: obj.geometry.location.lng
-                                }
-                            }
-                        };
-
-                        // hide loader
-                        this.setState({ isLoading: false });
-
-                        this._disableRowLoaders();
-                        this.props.onPress(data, details);
-                    });
-                } else {
-                    // get current location (city)
-                    this.getPlaceId(input, key, (obj) => {
-                        if (this.closed) return;
-
-                        console.log('this.getPlaceId result', obj);
-
-                        // Consider: exception
-                        // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
-
-                        // set text
-                        !this.closed && this.setState({ text: obj.formatted_address });
-
-                        const data = {
-                            description: obj.formatted_address,
-                            place_id: obj.place_id
-                        };
-
-                        const details = {
-                            geometry: {
-                                location: {
-                                    lat: obj.geometry.location.lat,
-                                    lng: obj.geometry.location.lng
-                                }
-                            }
-                        };
-
-                        // hide loader
-                        this.setState({ isLoading: false });
-
-                        this._disableRowLoaders();
-                        this.props.onPress(data, details);
-                    });
                 }
-            }
-        }, (error) => {
-            this._disableRowLoaders();
-            console.log('navigator.geolocation.getCurrentPosition error', error.message);
-        }, options
+            },
+            (error) => {
+                console.log('navigator.geolocation.getCurrentPosition error', error.message);
+                this._disableRowLoaders();
+                // if (this.props.onFail) this.props.onFail(error.message);
+                if (this.props.onFail) this.props.onFail('Please turn Location Services on.');
+            }, options
         );
     }
 
@@ -400,15 +404,9 @@ export default class GooglePlacesAutocomplete extends Component {
                         }
                     }
                 } else {
+                    console.warn('google places autocomplete: request could not be completed or has been aborted');
                     this._disableRowLoaders();
-
-                    if (!this.props.onFail) {
-                        console.warn(
-                            'google places autocomplete: request could not be completed or has been aborted'
-                        );
-                    } else {
-                        this.props.onFail('request could not be completed or has been aborted');
-                    }
+                    if (this.props.onFail) this.props.onFail('The request could not be completed or has been aborted.');
                 }
             };
 
@@ -622,11 +620,8 @@ export default class GooglePlacesAutocomplete extends Component {
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
-                        if (!this.props.onFail)
-                            console.warn('google places autocomplete: ' + responseJSON.error_message);
-                        else {
-                            this.props.onFail(responseJSON.error_message)
-                        }
+                        console.warn('google places autocomplete: ' + responseJSON.error_message);
+                        if (this.props.onFail) this.props.onFail(responseJSON.error_message);
                     }
                 } else {
                     // console.warn("google places autocomplete: request could not be completed or has been aborted");
@@ -710,11 +705,8 @@ export default class GooglePlacesAutocomplete extends Component {
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
-                        if (!this.props.onFail)
-                            console.warn('google places autocomplete: ' + responseJSON.error_message);
-                        else {
-                            this.props.onFail(responseJSON.error_message)
-                        }
+                        console.warn('google places autocomplete: ' + responseJSON.error_message);
+                        if (this.props.onFail) this.props.onFail(responseJSON.error_message);
                     }
                 } else {
                     // console.warn("google places autocomplete: request could not be completed or has been aborted");
