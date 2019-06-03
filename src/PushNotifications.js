@@ -142,6 +142,7 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
         // formData.append("placeId", data.placeId);
         // formData.append("feedId", data.feedId);
 
+        /*
         const users = data.users;
         const user1 = users[0];
         const user2 = users[1];
@@ -152,6 +153,7 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
         // formData.append("user2Uid", user2.uid);
         if (user2.name) formData.append("user2Name", user2.name);
         if (user2.picture) formData.append("user2Picture", user2.picture);
+        */
     } else if (type === Cons.pushNotification.review) {
         formData.append("message", data.message);
         formData.append("placeId", data.placeId);

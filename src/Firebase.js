@@ -1446,19 +1446,16 @@ export default class Firebase {
 
         //// update the latest message info (timestamp, contents, message id) to chat of sender ////
         const senderUid = post.users[0].uid;
-
         const updateData = {
             contents: text,
-            timestamp: timestamp,
-            mid: mid
+            timestamp,
+            mid
         };
 
         await Firebase.database.ref('chat').child(senderUid).child(id).update(updateData);
 
-
         //// update timestamp, contents to chat of receiver ////
         const receiverUid = post.users[1].uid;
-
         const room = await Firebase.findChatRoomById(receiverUid, id);
         if (!room) {
             // create new chat room

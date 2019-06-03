@@ -66,7 +66,9 @@ export default class ChatMain extends React.Component {
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
             if (list) {
-                this.setState({ chatRoomList: list });
+                // ToDo: 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트 한다!
+                // this.setState({ chatRoomList: list });
+                this.updateList(list);
 
                 this.allChatRoomsLoaded = false;
 
@@ -188,6 +190,7 @@ export default class ChatMain extends React.Component {
             const name = user.name;
             const picture = user.picture.uri;
 
+            /*
             let list = [...this.state.chatRoomList];
             const index = list.findIndex(el => el.id === roomId);
             if (index !== -1) {
@@ -200,6 +203,23 @@ export default class ChatMain extends React.Component {
                     !this.closed && this.setState({ chatRoomList: list });
                 }
             }
+            */
+            let changed = false;
+            let list = [...this.state.chatRoomList];
+            for (let i = 0; i < list.length; i++) {
+                let room = list[i];
+                if (room.users[0].uid === room.owner && room.users[1].uid === uid) {
+                    let opponent = room.users[1];
+                    opponent.name = name;
+                    opponent.picture = picture;
+                    room.users[1] = opponent;
+                    list[i] = room;
+
+                    changed = true;
+                }
+            }
+
+            if (changed) !this.closed && this.setState({ chatRoomList: list });
         });
 
         this.customersUnsubscribes.push(instance);
@@ -230,6 +250,31 @@ export default class ChatMain extends React.Component {
         }
 
         return profile;
+    }
+
+    updateList(_list) {
+        let newList = _list;
+        for (let i = 0; i < newList.length; i++) {
+            let newRoom = newList[i];
+
+            // find existing one
+            const room = this.checkExistence(newRoom.id);
+            if (room) {
+                const opponent = room.users[1];
+                newRoom.users[1] = opponent;
+                newList[i] = newRoom;
+            }
+        }
+
+        this.setState({ chatRoomList: newList });
+    }
+
+    checkExistence(id) { // return existing chat room
+        let list = [...this.state.chatRoomList];
+        const index = list.findIndex(el => el.id === id);
+        if (index !== -1) return list[index];
+
+        return null;
     }
 
     @autobind
@@ -426,9 +471,8 @@ export default class ChatMain extends React.Component {
     @autobind
     renderItem({ item, index }) {
         const id = item.id;
-
         const users = item.users;
-        const user = users[1]; // opponent
+        const opponent = users[1];
         const timestamp = item.timestamp;
         const time = Util.getTime(timestamp);
         const contents = item.contents; // last message
@@ -440,66 +484,22 @@ export default class ChatMain extends React.Component {
 
         let avatarName = null;
         let avatarColor = null;
-        if (!user.picture) {
-            // avatarName = 'JK';
-            avatarName = Util.getAvatarName(user.name);
+        if (!opponent.picture) {
+            avatarName = Util.getAvatarName(opponent.name);
             avatarColor = this.getAvatarColor(index);
         }
 
         return (
-            <TouchableHighlight
-                onPress={() => {
-                    // title
-                    let titleImageUri = null;
-                    let titleName = null;
-                    let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
-
-                    if (users[0].uid === item.owner) {
-                        titleImageUri = users[0].picture;
-                        titleName = users[0].name;
-                        customer = users[1].uid;
-                    } else { // if (users[1].uid === item.owner) {
-                        titleImageUri = users[1].picture;
-                        titleName = users[1].name;
-                    }
-
-                    const title = {
-                        picture: titleImageUri,
-                        name: titleName
-                    };
-
-                    // feed
-                    const post = this.getPost(item.feedId);
-                    if (!post) {
-                        this.refs["toast"].show('The post no longer exists.', 500);
-                        return;
-                    }
-
-                    // count
-                    const feedSize = this.getFeedSize(item.placeId);
-
-                    // customer profile
-                    let customerProfile = null;
-                    if (customer) customerProfile = this.getCustomerProfile(customer);
-
-                    const params = {
-                        id,
-                        placeId: item.placeId,
-                        feedId: item.feedId,
-                        users,
-                        owner: item.owner, // owner uid of the post
-                        showAvatar: item.contents === '' ? true : false,
-                        lastReadMessageId: item.lastReadMessageId,
-                        placeName: item.placeName,
-                        title,
-                        post,
-                        feedSize,
-                        customerProfile
-                    };
-
-                    this.props.navigation.navigate("chatRoom", { item: params });
-                }}
-            >
+            <TouchableHighlight onPress={() => {
+                let list = [...this.state.chatRoomList];
+                const itemIndex = list.findIndex(el => el.id === id);
+                if (itemIndex !== -1) {
+                    const chatRoom = list[itemIndex];
+                    this.moveToChatRoom(chatRoom);
+                } else {
+                    this.refs["toast"].show('The room no longer exists.', 500);
+                }
+            }}>
                 <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
                     <View style={{
                         width: '24%', height: viewHeight,
@@ -508,12 +508,12 @@ export default class ChatMain extends React.Component {
                         justifyContent: 'center', alignItems: 'center'
                     }}>
                         {
-                            user.picture ?
+                            opponent.picture ?
                                 <SmartImage
                                     style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
                                     showSpinner={false}
                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                    uri={user.picture}
+                                    uri={opponent.picture}
                                 />
                                 :
                                 <View
@@ -552,7 +552,7 @@ export default class ChatMain extends React.Component {
                         // backgroundColor: 'green',
                         justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10
                     }}>
-                        <Text style={styles.name}>{user.name}</Text>
+                        <Text style={styles.name}>{opponent.name}</Text>
                         <Text style={styles.contents}>{contents}</Text>
                     </View>
 
@@ -570,12 +570,66 @@ export default class ChatMain extends React.Component {
                         justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10
                     }}>
                         <Text style={styles.time}>{time}</Text>
-                        <Text style={styles.name}>{user.name}</Text>
+                        <Text style={styles.name}>{opponent.name}</Text>
                         <Text style={styles.contents}>{contents}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
         );
+    }
+
+    moveToChatRoom(item) {
+        const users = item.users;
+
+        // title
+        let titleImageUri = null;
+        let titleName = null;
+        let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+
+        if (users[0].uid === item.owner) {
+            titleImageUri = users[0].picture;
+            titleName = users[0].name;
+            customer = users[1].uid;
+        } else { // if (users[1].uid === item.owner) {
+            titleImageUri = users[1].picture;
+            titleName = users[1].name;
+        }
+
+        const title = {
+            picture: titleImageUri,
+            name: titleName
+        };
+
+        // feed
+        const post = this.getPost(item.feedId);
+        if (!post) {
+            this.refs["toast"].show('The post no longer exists.', 500);
+            return;
+        }
+
+        // count
+        const feedSize = this.getFeedSize(item.placeId);
+
+        // customer profile
+        let customerProfile = null;
+        if (customer) customerProfile = this.getCustomerProfile(customer);
+
+        const params = {
+            id: item.id,
+            placeId: item.placeId,
+            feedId: item.feedId,
+            users,
+            owner: item.owner, // owner uid of the post
+            showAvatar: item.contents === '' ? true : false,
+            lastReadMessageId: item.lastReadMessageId,
+            placeName: item.placeName,
+            title,
+            post,
+            feedSize,
+            customerProfile
+        };
+
+        this.props.navigation.navigate("chatRoom", { item: params });
     }
 
     checkUpdate(lastReadMessageId, mid) {

@@ -510,6 +510,7 @@ export default class ChatRoom extends React.Component {
         const senderName = item.users[0].name;
         const receiver = item.users[1].uid; // owner
 
+        /*
         let users = [];
 
         const user1 = { // My info
@@ -526,13 +527,14 @@ export default class ChatRoom extends React.Component {
 
         users.push(user1);
         users.push(user2);
+        */
 
         const data = {
             message: message.text,
             placeId: item.placeId,
             feedId: item.feedId,
             chatRoomId: this.state.id,
-            users: users
+            // users: users
         };
 
         sendPushNotification(sender, senderName, receiver, notificationType, data);

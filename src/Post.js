@@ -993,12 +993,17 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
                             else Vibration.vibrate(30);
                         } else { // right
-                            this.swiper.scrollBy(1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
+                            if (post.pictures.two.uri) {
+                                this.swiper.scrollBy(1, false);
+                                if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                                else Vibration.vibrate(10);
+                            } else {
+                                // right end
+                                if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                                else Vibration.vibrate(30);
+                            }
                         }
-                    }}
-                    >
+                    }}>
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
@@ -1024,12 +1029,17 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
-                            this.swiper.scrollBy(1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
+                            if (post.pictures.three.uri) {
+                                this.swiper.scrollBy(1, false);
+                                if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                                else Vibration.vibrate(10);
+                            } else {
+                                // right end
+                                if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                                else Vibration.vibrate(30);
+                            }
                         }
-                    }}
-                    >
+                    }}>
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
@@ -1055,12 +1065,17 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
-                            this.swiper.scrollBy(1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
+                            if (post.pictures.four.uri) {
+                                this.swiper.scrollBy(1, false);
+                                if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                                else Vibration.vibrate(10);
+                            } else {
+                                // right end
+                                if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                                else Vibration.vibrate(30);
+                            }
                         }
-                    }}
-                    >
+                    }}>
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}
@@ -1089,8 +1104,7 @@ export default class Post extends React.Component<InjectedProps> {
                             if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
                             else Vibration.vibrate(30);
                         }
-                    }}
-                    >
+                    }}>
                         <SmartImage
                             style={styles.item}
                             showSpinner={false}

@@ -545,6 +545,7 @@ const processPushNotification = async(function () {
         // userData['placeId'] = fields.placeId;
         // userData['feedId'] = fields.feedId;
 
+        /*
         let users = [];
 
         let user1 = {
@@ -561,6 +562,7 @@ const processPushNotification = async(function () {
         users.push(user2);
 
         userData['users'] = users;
+        */
     } else if (fields.type === '2') { // review
         userData['message'] = fields.message;
         userData['placeId'] = fields.placeId;
