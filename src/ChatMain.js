@@ -66,7 +66,7 @@ export default class ChatMain extends React.Component {
         // load chat room list
         Firebase.loadChatRoom(uid, list => {
             if (list) {
-                // ToDo: 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트 한다!
+                // Consider: 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트!
                 // this.setState({ chatRoomList: list });
                 this.updateList(list);
 
@@ -287,29 +287,15 @@ export default class ChatMain extends React.Component {
 
         const params = this.props.navigation.state.params;
         if (params) {
-            const roomId = params.roomId;
+            const roomId = params.roomId; // room id need to get removed
             // console.log('roomId', roomId);
 
-            // search it from the list
-            const result = this.findChatRoom(roomId);
+            const result = this.deleted(roomId);
             if (result) { // found
-
                 // means already removed. nothing to do here.
-
             } else { // not found
                 // means need to remove here.
-
-                // put it on the list
-                this.deletedChatRoomList.push(roomId);
-
-                // update state
-                var array = [...this.state.chatRoomList];
-                const index = this.findIndex(array, roomId);
-                // console.log('index', index);
-                if (index !== -1) { // if the item inside of 10 rooms is removed then automatically updated in database, state array and index = -1
-                    array.splice(index, 1);
-                    this.setState({ chatRoomList: array });
-                }
+                this.deleteChatRoom(roomId);
 
                 // move scroll top
                 // this._flatList.scrollToOffset({ offset: 0, animated: true });
@@ -317,7 +303,7 @@ export default class ChatMain extends React.Component {
         }
     }
 
-    findChatRoom(id) {
+    deleted(id) {
         for (var i = 0; i < this.deletedChatRoomList.length; i++) {
             const item = this.deletedChatRoomList[i];
             if (item === id) return true;
@@ -326,14 +312,28 @@ export default class ChatMain extends React.Component {
         return false;
     }
 
-    findIndex(array, id) {
-        for (var i = 0; i < array.length; i++) {
-            const item = array[i];
+    findIndex(list, id) {
+        for (var i = 0; i < list.length; i++) {
+            const item = list[i];
             console.log('id', item);
             if (item.id === id) return i;
         }
 
         return -1;
+    }
+
+    deleteChatRoom(roomId) {
+        // put it on the list
+        this.deletedChatRoomList.push(roomId);
+
+        // update state
+        var list = [...this.state.chatRoomList];
+        const index = this.findIndex(list, roomId);
+        // console.log('index', index);
+        if (index !== -1) { // if the item inside of 10 rooms is removed then automatically updated in database, state array and index = -1
+            list.splice(index, 1);
+            this.setState({ chatRoomList: list });
+        }
     }
 
     /*
@@ -486,7 +486,8 @@ export default class ChatMain extends React.Component {
         let avatarColor = null;
         if (!opponent.picture) {
             avatarName = Util.getAvatarName(opponent.name);
-            avatarColor = this.getAvatarColor(index);
+            // avatarColor = this.getAvatarColor(index);
+            avatarColor = this.getAvatarColor(id);
         }
 
         return (
@@ -603,7 +604,17 @@ export default class ChatMain extends React.Component {
         // feed
         const post = this.getPost(item.feedId);
         if (!post) {
-            this.refs["toast"].show('The post no longer exists.', 500);
+            this.refs["toast"].show('The post no longer exists.', 500, () => {
+                const me = users[0];
+                const you = users[1];
+
+                // remove the chat room
+                Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+
+                // update delete chatroom list
+                this.deleteChatRoom(item.id);
+            });
+
             return;
         }
 
@@ -741,16 +752,16 @@ export default class ChatMain extends React.Component {
         this.setState({ chatRoomList: newList });
     }
 
-    getAvatarColor(index) {
+    getAvatarColor(id) {
         if (!this.avatarColorList) {
             this.avatarColorList = new Map();
         }
 
-        if (this.avatarColorList.has(index)) {
-            return this.avatarColorList.get(index);
+        if (this.avatarColorList.has(id)) {
+            return this.avatarColorList.get(id);
         } else {
             const color = Util.getDarkColor();
-            this.avatarColorList.set(index, color);
+            this.avatarColorList.set(id, color);
             return color;
         }
     }

@@ -150,8 +150,9 @@ export default class CommentMain extends React.Component<InjectedProps> {
                             let avatarColor = null;
                             if (!item.picture) {
                                 // avatarName = 'JK';
-                                avatarName = Util.getAvatarName(user.name);
-                                avatarColor = this.getAvatarColor(index);
+                                avatarName = Util.getAvatarName(item.name);
+                                // avatarColor = this.getAvatarColor(index);
+                                avatarColor = this.getAvatarColor(item.commentId);
                             }
 
                             return (
@@ -479,16 +480,16 @@ export default class CommentMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: false });
     }
 
-    getAvatarColor(index) {
+    getAvatarColor(id) {
         if (!this.avatarColorList) {
             this.avatarColorList = new Map();
         }
 
-        if (this.avatarColorList.has(index)) {
-            return this.avatarColorList.get(index);
+        if (this.avatarColorList.has(id)) {
+            return this.avatarColorList.get(id);
         } else {
             const color = Util.getDarkColor();
-            this.avatarColorList.set(index, color);
+            this.avatarColorList.set(id, color);
             return color;
         }
     }
