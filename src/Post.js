@@ -425,48 +425,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     render() {
-        const from = this.state.from;
-        const post = this.state.post;
-
-        let distance = '';
-        let integer = 0;
-        let number = '';
-        let ageText = '';
-
-        let showSettingsButton = false;
-
-        if (post) {
-            distance = Util.getDistance(post.location, Vars.location);
-            if (distance === '? km away') showSettingsButton = true;
-
-            const averageRating = post.averageRating;
-
-            integer = Math.floor(averageRating);
-
-            if (Number.isInteger(averageRating)) {
-                number = averageRating + '.0';
-            } else {
-                number = averageRating.toString();
-            }
-
-            const age = Util.getAge(post.birthday);
-            if (age > 1) {
-                ageText = age.toString() + ' years old';
-            } else {
-                ageText = age.toString() + ' year old';
-            }
-        }
-
-        let markerImage = null;
-        switch (integer) {
-            case 0: markerImage = PreloadImage.emoji0; break;
-            case 1: markerImage = PreloadImage.emoji1; break;
-            case 2: markerImage = PreloadImage.emoji2; break;
-            case 3: markerImage = PreloadImage.emoji3; break;
-            case 4: markerImage = PreloadImage.emoji4; break;
-            case 5: markerImage = PreloadImage.emoji5; break;
-        }
-
         let paddingBottom = 0;
         if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
 
@@ -488,8 +446,7 @@ export default class Post extends React.Component<InjectedProps> {
                             if (this._showNotification) {
                                 this.hideNotification();
                             }
-                        }}
-                    >
+                        }}>
                         <Ionicons name='md-close' color="black" size={20} />
                     </TouchableOpacity>
                 </Animated.View>
@@ -506,6 +463,10 @@ export default class Post extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+
                             const params = this.props.navigation.state.params;
                             if (params) {
                                 const initFromPost = params.initFromPost;
@@ -513,8 +474,7 @@ export default class Post extends React.Component<InjectedProps> {
                             }
 
                             this.props.navigation.dispatch(NavigationActions.back());
-                        }}
-                    >
+                        }}>
                         {
                             this.state.isModal ?
                                 <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -524,7 +484,7 @@ export default class Post extends React.Component<InjectedProps> {
                     </TouchableOpacity>
 
                     {
-                        this.state.isOwner && from === 'Profile' ?
+                        this.state.isOwner && this.state.from === 'Profile' ?
                             // edit button (only in modal from Profile)
                             < TouchableOpacity
                                 style={{
@@ -535,8 +495,13 @@ export default class Post extends React.Component<InjectedProps> {
                                     right: 2,
                                     justifyContent: "center", alignItems: "center"
                                 }}
-                                onPress={() => this.edit()}
-                            >
+                                onPress={() => {
+                                    if (this._showNotification) {
+                                        this.hideNotification();
+                                    }
+
+                                    this.edit();
+                                }}>
                                 <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
                             </TouchableOpacity>
                             :
@@ -572,311 +537,7 @@ export default class Post extends React.Component<InjectedProps> {
                             ref={(fl) => this._flatList = fl}
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
-                            ListHeaderComponent={
-                                <View>
-                                    {/* profile pictures */}
-                                    {
-                                        this.renderSwiper(post)
-                                    }
-                                    <View style={styles.infoContainer}>
-                                        <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                            <View style={styles.circle}></View>
-                                            <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
-                                        </View>
-                                        <Text style={styles.name}>{post.name}</Text>
-
-                                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>
-                                            {/* 1 row */}
-                                            <View style={{
-                                                width: '100%',
-                                                height: bodyInfoItemHeight,
-                                                flexDirection: 'row',
-                                                alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.birth}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    {/*
-                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
-                                                    */}
-                                                    <Text style={styles.bodyInfoTitle}>{ageText}</Text>
-                                                </View>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
-                                                </View>
-                                            </View>
-
-                                            {/* 2 row */}
-                                            <View style={{
-                                                width: '100%',
-                                                height: bodyInfoItemHeight,
-                                                flexDirection: 'row',
-                                                alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 16, height: 16, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.ruler}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
-                                                </View>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.scale}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
-                                                </View>
-                                            </View>
-
-                                            {/* 3 row */}
-                                            <View style={{
-                                                width: '100%',
-                                                height: bodyInfoItemHeight,
-                                                flexDirection: 'row',
-                                                alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
-                                                </View>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.bra}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
-                                            <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
-                                            <Text style={styles.distance}>{distance}</Text>
-                                            {
-                                                showSettingsButton &&
-                                                <View style={{ flex: 1 }}>
-                                                    <TouchableOpacity
-                                                        style={{
-                                                            flex: 1, width: 24,
-                                                            alignItems: "center",
-                                                            justifyContent: "flex-end",
-                                                            paddingBottom: 0.6,
-                                                            marginLeft: -1
-                                                        }}
-                                                        onPress={async () => {
-                                                            console.log('open settings');
-
-                                                            // ToDo: show description with pop-up
-                                                            const url = 'app-settings:';
-                                                            const supported = await Linking.canOpenURL(url);
-                                                            if (supported) {
-                                                                Linking.openURL(url);
-                                                            }
-                                                        }}>
-                                                        <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
-                                                    </TouchableOpacity>
-                                                </View>
-                                            }
-                                        </View>
-
-                                        {
-                                            post.reviewCount > 0 ?
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
-                                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                        <AirbnbRating
-                                                            count={5}
-                                                            readOnly={true}
-                                                            showRating={false}
-                                                            defaultRating={integer}
-                                                            size={16}
-                                                            margin={1}
-                                                        />
-                                                    </View>
-                                                    <Text style={styles.rating}>{number}</Text>
-                                                    <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                                                    <Text style={styles.reviewCount}>{post.reviewCount}</Text>
-                                                </View>
-                                                :
-                                                /*
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                    <View style={{
-                                                        marginLeft: 2,
-                                                        width: 36, height: 21, borderRadius: 3,
-                                                        backgroundColor: Theme.color.new,
-                                                        justifyContent: 'center', alignItems: 'center'
-                                                    }}>
-                                                        <Text style={styles.new}>new</Text>
-                                                    </View>
-                                                </View>
-                                                */
-                                                <View style={{ marginBottom: 9 }}>
-                                                    <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
-                                                        <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
-                                                        <Text style={{
-                                                            color: '#f1c40f',
-                                                            fontSize: 18,
-                                                            fontFamily: "Roboto-Italic",
-                                                            paddingLeft: 5,
-                                                            paddingTop: 2
-                                                        }}>Newly posted</Text>
-                                                    </View>
-                                                </View>
-                                        }
-
-                                        {
-                                            post.note &&
-                                            <Text style={styles.note}>{post.note}</Text>
-                                        }
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    {/* map */}
-                                    <View style={styles.mapContainer}>
-                                        <Text style={styles.location}>{post.location.description}</Text>
-                                        <TouchableOpacity activeOpacity={0.5}
-                                            onPress={() => {
-                                                setTimeout(() => {
-                                                    if (this.closed) return;
-                                                    /*
-                                                    this.setState({ isNavigating: true }, () => {
-                                                        this.props.navigation.navigate("map", { post: post });
-                                                    });
-                                                    */
-                                                    this.props.navigation.navigate("map", { post: post });
-                                                }, Cons.buttonTimeoutShort);
-                                            }}
-                                        >
-                                            <View style={styles.mapView}>
-                                                <MapView
-                                                    ref={map => { this.map = map }}
-                                                    provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-                                                    style={styles.map}
-                                                    mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                                    initialRegion={{
-                                                        longitude: post.location.longitude,
-                                                        latitude: post.location.latitude,
-                                                        latitudeDelta: 0.008,
-                                                        longitudeDelta: 0.008 * ASPECT_RATIO
-                                                    }}
-                                                    scrollEnabled={false}
-                                                    zoomEnabled={false}
-                                                    rotateEnabled={false}
-                                                    pitchEnabled={false}
-                                                >
-                                                    <MapView.Marker
-                                                        coordinate={{
-                                                            longitude: post.location.longitude,
-                                                            latitude: post.location.latitude
-                                                        }}
-                                                    // title={'title'}
-                                                    // description={'description'}
-                                                    >
-                                                        <View style={{ width: 32, height: 50 }}>
-                                                            <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
-                                                            <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
-                                                        </View>
-                                                    </MapView.Marker>
-                                                    {/*
-                                                    <MapView.Circle
-                                                        center={{
-                                                            latitude: post.location.latitude,
-                                                            longitude: post.location.longitude
-                                                        }}
-                                                        radius={150} // m
-                                                        strokeWidth={2}
-                                                        strokeColor={Theme.color.selection}
-                                                        fillColor={'rgba(62, 165, 255, 0.5)'}
-                                                    />
-                                                    */}
-                                                </MapView>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                        {
-                                            this.renderChart(this.state.chartInfo)
-                                        }
-                                        {
-                                            this.renderReviews(this.reviewStore.reviews)
-                                        }
-                                    </View>
-
-                                    <View style={styles.writeReviewContainer}>
-                                        <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                        <View style={{ marginBottom: 10 }}>
-                                            <AirbnbRating
-                                                ref='rating'
-                                                onFinishRating={this.ratingCompleted}
-                                                showRating={false}
-                                                count={5}
-                                                defaultRating={this.state.writeRating}
-                                                size={32}
-                                                margin={3}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <Text style={{
-                                        marginTop: Theme.spacing.small,
-                                        marginBottom: Theme.spacing.small,
-                                        fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
-                                        textAlign: 'center', lineHeight: 24
-                                    }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
-
-                                    <TouchableOpacity
-                                        style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
-                                        onPress={async () => await this.contact()}
-                                    >
-                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            }
+                            ListHeaderComponent={this.renderHeader()}
                         />
                     </TouchableWithoutFeedback>
                 }
@@ -974,6 +635,365 @@ export default class Post extends React.Component<InjectedProps> {
                     opacity={0.6}
                 />
             </View >
+        );
+    }
+
+    renderHeader() {
+        const from = this.state.from;
+        const post = this.state.post;
+
+        let distance = '';
+        let integer = 0;
+        let number = '';
+        let ageText = '';
+
+        let showSettingsButton = false;
+
+        if (post) {
+            distance = Util.getDistance(post.location, Vars.location);
+            if (distance === '? km away') showSettingsButton = true;
+
+            const averageRating = post.averageRating;
+
+            integer = Math.floor(averageRating);
+
+            if (Number.isInteger(averageRating)) {
+                number = averageRating + '.0';
+            } else {
+                number = averageRating.toString();
+            }
+
+            const age = Util.getAge(post.birthday);
+            if (age > 1) {
+                ageText = age.toString() + ' years old';
+            } else {
+                ageText = age.toString() + ' year old';
+            }
+        }
+
+        let markerImage = null;
+        switch (integer) {
+            case 0: markerImage = PreloadImage.emoji0; break;
+            case 1: markerImage = PreloadImage.emoji1; break;
+            case 2: markerImage = PreloadImage.emoji2; break;
+            case 3: markerImage = PreloadImage.emoji3; break;
+            case 4: markerImage = PreloadImage.emoji4; break;
+            case 5: markerImage = PreloadImage.emoji5; break;
+        }
+
+        return (
+            <View>
+                {/* profile pictures */}
+                {
+                    this.renderSwiper(post)
+                }
+                <View style={styles.infoContainer}>
+                    <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <View style={styles.circle}></View>
+                        <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
+                    </View>
+                    <Text style={styles.name}>{post.name}</Text>
+
+                    <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>
+                        {/* 1 row */}
+                        <View style={{
+                            width: '100%',
+                            height: bodyInfoItemHeight,
+                            flexDirection: 'row',
+                            alignItems: 'center', justifyContent: 'center'
+                        }}>
+                            <View style={{
+                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                            }}>
+                                <Image
+                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
+                                    source={PreloadImage.birth}
+                                />
+                            </View>
+                            <View style={{
+                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                            }}>
+                                {/*
+                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
+                                                    */}
+                                <Text style={styles.bodyInfoTitle}>{ageText}</Text>
+                            </View>
+                            <View style={{
+                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                            }}>
+                                <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
+                            </View>
+                            <View style={{
+                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                            }}>
+                                <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
+                            </View>
+                        </View>
+
+                        {/* 2 row */}
+                        <View style={{
+                            width: '100%',
+                            height: bodyInfoItemHeight,
+                            flexDirection: 'row',
+                            alignItems: 'center', justifyContent: 'center'
+                        }}>
+                            <View style={{
+                                width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                            }}>
+                                <Image
+                                    style={{ width: 16, height: 16, tintColor: Theme.color.subtitle }}
+                                    source={PreloadImage.ruler}
+                                />
+                            </View>
+                            <View style={{
+                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                            }}>
+                                <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                            </View>
+                            <View style={{
+                                width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                            }}>
+                                <Image
+                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
+                                    source={PreloadImage.scale}
+                                />
+                            </View>
+                            <View style={{
+                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                            }}>
+                                <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
+                            </View>
+                        </View>
+
+                        {/* 3 row */}
+                        <View style={{
+                            width: '100%',
+                            height: bodyInfoItemHeight,
+                            flexDirection: 'row',
+                            alignItems: 'center', justifyContent: 'center'
+                        }}>
+                            <View style={{
+                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                            }}>
+                                <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
+                            </View>
+                            <View style={{
+                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                            }}>
+                                <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
+                            </View>
+                            <View style={{
+                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                            }}>
+                                <Image
+                                    style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
+                                    source={PreloadImage.bra}
+                                />
+                            </View>
+                            <View style={{
+                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                            }}>
+                                <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
+                            </View>
+                        </View>
+                    </View>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
+                        <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
+                        <Text style={styles.distance}>{distance}</Text>
+                        {
+                            showSettingsButton &&
+                            <View style={{ flex: 1 }}>
+                                <TouchableOpacity
+                                    style={{
+                                        flex: 1, width: 24,
+                                        alignItems: "center",
+                                        justifyContent: "flex-end",
+                                        paddingBottom: 0.6,
+                                        marginLeft: -1
+                                    }}
+                                    onPress={async () => {
+                                        console.log('open settings');
+
+                                        // ToDo: show description with pop-up
+                                        const url = 'app-settings:';
+                                        const supported = await Linking.canOpenURL(url);
+                                        if (supported) {
+                                            Linking.openURL(url);
+                                        }
+                                    }}>
+                                    <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    </View>
+
+                    {
+                        post.reviewCount > 0 ?
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
+                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                    <AirbnbRating
+                                        count={5}
+                                        readOnly={true}
+                                        showRating={false}
+                                        defaultRating={integer}
+                                        size={16}
+                                        margin={1}
+                                    />
+                                </View>
+                                <Text style={styles.rating}>{number}</Text>
+                                <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
+                                <Text style={styles.reviewCount}>{post.reviewCount}</Text>
+                            </View>
+                            :
+                            /*
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                                <View style={{
+                                    marginLeft: 2,
+                                    width: 36, height: 21, borderRadius: 3,
+                                    backgroundColor: Theme.color.new,
+                                    justifyContent: 'center', alignItems: 'center'
+                                }}>
+                                    <Text style={styles.new}>new</Text>
+                                </View>
+                            </View>
+                            */
+                            <View style={{ marginBottom: 9 }}>
+                                <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
+                                    <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
+                                    <Text style={{
+                                        color: '#f1c40f',
+                                        fontSize: 18,
+                                        fontFamily: "Roboto-Italic",
+                                        paddingLeft: 5,
+                                        paddingTop: 2
+                                    }}>Newly posted</Text>
+                                </View>
+                            </View>
+                    }
+
+                    {
+                        post.note &&
+                        <Text style={styles.note}>{post.note}</Text>
+                    }
+                </View>
+
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                {/* map */}
+                <View style={styles.mapContainer}>
+                    <Text style={styles.location}>{post.location.description}</Text>
+                    <TouchableOpacity activeOpacity={0.5}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+
+                            setTimeout(() => {
+                                if (this.closed) return;
+                                /*
+                                this.setState({ isNavigating: true }, () => {
+                                    this.props.navigation.navigate("map", { post: post });
+                                });
+                                */
+                                this.props.navigation.navigate("map", { post: post });
+                            }, Cons.buttonTimeoutShort);
+                        }}
+                    >
+                        <View style={styles.mapView}>
+                            <MapView
+                                ref={map => { this.map = map }}
+                                provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                                style={styles.map}
+                                mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                initialRegion={{
+                                    longitude: post.location.longitude,
+                                    latitude: post.location.latitude,
+                                    latitudeDelta: 0.008,
+                                    longitudeDelta: 0.008 * ASPECT_RATIO
+                                }}
+                                scrollEnabled={false}
+                                zoomEnabled={false}
+                                rotateEnabled={false}
+                                pitchEnabled={false}
+                            >
+                                <MapView.Marker
+                                    coordinate={{
+                                        longitude: post.location.longitude,
+                                        latitude: post.location.latitude
+                                    }}
+                                // title={'title'}
+                                // description={'description'}
+                                >
+                                    <View style={{ width: 32, height: 50 }}>
+                                        <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
+                                        <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                                    </View>
+                                </MapView.Marker>
+                                {/*
+                                                    <MapView.Circle
+                                                        center={{
+                                                            latitude: post.location.latitude,
+                                                            longitude: post.location.longitude
+                                                        }}
+                                                        radius={150} // m
+                                                        strokeWidth={2}
+                                                        strokeColor={Theme.color.selection}
+                                                        fillColor={'rgba(62, 165, 255, 0.5)'}
+                                                    />
+                                                    */}
+                            </MapView>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
+                    {
+                        this.renderChart(this.state.chartInfo)
+                    }
+                    {
+                        this.renderReviews(this.reviewStore.reviews)
+                    }
+                </View>
+
+                <View style={styles.writeReviewContainer}>
+                    <Text style={styles.ratingText}>Share your experience to help others</Text>
+                    <View style={{ marginBottom: 10 }}>
+                        <AirbnbRating
+                            ref='rating'
+                            onFinishRating={this.ratingCompleted}
+                            showRating={false}
+                            count={5}
+                            defaultRating={this.state.writeRating}
+                            size={32}
+                            margin={3}
+                        />
+                    </View>
+                </View>
+
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
+
+                <Text style={{
+                    marginTop: Theme.spacing.small,
+                    marginBottom: Theme.spacing.small,
+                    fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                    textAlign: 'center', lineHeight: 24
+                }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
+
+                <TouchableOpacity
+                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
+                    onPress={async () => {
+                        if (this._showNotification) {
+                            this.hideNotification();
+                        }
+
+                        await this.contact();
+                    }}>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 
@@ -1677,18 +1697,21 @@ export default class Post extends React.Component<InjectedProps> {
                     {/* Read all ??? reviews button */}
                     <TouchableOpacity
                         onPress={() => {
-                            // setTimeout(() => {
-                            this.props.navigation.navigate("readReview",
-                                {
-                                    reviewStore: this.reviewStore,
-                                    isOwner: this.state.isOwner,
-                                    placeId: this.props.navigation.state.params.post.placeId,
-                                    feedId: this.props.navigation.state.params.post.id,
-                                    initFromReadAllReviews: () => this.initFromReadAllReviews()
-                                });
-                            // }, Cons.buttonTimeoutShort);
-                        }}
-                    >
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+
+                            setTimeout(() => {
+                                this.props.navigation.navigate("readReview",
+                                    {
+                                        reviewStore: this.reviewStore,
+                                        isOwner: this.state.isOwner,
+                                        placeId: this.props.navigation.state.params.post.placeId,
+                                        feedId: this.props.navigation.state.params.post.id,
+                                        initFromReadAllReviews: () => this.initFromReadAllReviews()
+                                    });
+                            }, Cons.buttonTimeoutShort);
+                        }}>
                         <View style={{
                             width: '100%', height: Dimensions.get('window').height / 14,
                             justifyContent: 'center',

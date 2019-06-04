@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, BackHandler, View, TouchableOpacity, AsyncStorage } from 'react-native';
+import { StyleSheet, BackHandler, View, TouchableOpacity, AsyncStorage, Dimensions } from 'react-native';
 import { Header } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';

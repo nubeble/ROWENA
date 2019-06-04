@@ -25,6 +25,9 @@ import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
+import DateTimePicker from 'react-native-modal-datetime-picker';
+// https://github.com/lawnstarter/react-native-picker-select
+import Select from 'react-native-picker-select';
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -51,6 +54,27 @@ const ASPECT_RATIO = width / height;
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
 
 
+
+
+
+const textInputFontSize = 18;
+const textInputHeight = 34;
+
+const genderItems = [
+    {
+        label: 'Male',
+        value: 'Male'
+    },
+    {
+        label: 'Female',
+        value: 'Female'
+    }
+];
+
+
+
+
+
 @inject("feedStore", "profileStore")
 @observer // for reviewStore
 export default class EditPost extends React.Component<InjectedProps> {
@@ -61,9 +85,6 @@ export default class EditPost extends React.Component<InjectedProps> {
 
         renderList: false,
         isOwner: false,
-
-        showKeyboard: false,
-        bottomPosition: Dimensions.get('window').height,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -78,7 +99,30 @@ export default class EditPost extends React.Component<InjectedProps> {
         chartInfo: null,
 
         isModal: false,
-        disableContactButton: false
+        disableContactButton: false,
+
+        name: '',
+
+        showDatePicker: false,
+        datePickerTitle: null,
+        datePickerDate: new Date(1990, 1, 1),
+        birthday: null,
+        gender: null,
+        height: '',
+        weight: '',
+        bodyType: null,
+        breasts: null,
+        note: '',
+        noteLength: 0,
+
+        country: null,
+        countryCode: null,
+
+        street: null,
+        city: '',
+        state: '',
+        streetInfo: null,
+        cityInfo: null,
     };
 
     constructor(props) {
@@ -420,6 +464,141 @@ export default class EditPost extends React.Component<InjectedProps> {
     }
 
     render() {
+        let paddingBottom = 0;
+        if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
+
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [{ translateY: this.state.offset }]
+        };
+
+        return (
+            <View style={[styles.flex, { paddingBottom }]}>
+                {/* notification bar */}
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
+                    >
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
+
+                {/* search bar */}
+                <View style={styles.searchBar}>
+                    {/* close button */}
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+
+                            const params = this.props.navigation.state.params;
+                            if (params) {
+                                const initFromPost = params.initFromPost;
+                                if (initFromPost) initFromPost(this.state.post);
+                            }
+
+                            this.props.navigation.dispatch(NavigationActions.back());
+                        }}
+                    >
+                        {
+                            this.state.isModal ?
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                                :
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        }
+                    </TouchableOpacity>
+
+                    {/* delete button */}
+                    {/*
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            // this.handleLeave();
+                        }}
+                    >
+                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
+                    */}
+
+                    {/* check button */}
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={async () => {
+                            // await this.save();
+                        }}
+                    >
+                        <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
+                    </TouchableOpacity>
+                </View>
+
+                {
+                    this.state.renderList &&
+                    <FlatList
+                        ref={(fl) => this._flatList = fl}
+                        contentContainerStyle={styles.container}
+                        showsVerticalScrollIndicator={true}
+                        ListHeaderComponent={this.renderHeader()}
+                    />
+                }
+
+                <DateTimePicker
+                    isVisible={this.state.showDatePicker}
+                    onConfirm={this._handleDatePicked}
+                    onCancel={this._hideDateTimePicker}
+                    date={this.state.datePickerDate}
+                    titleIOS={this.state.datePickerTitle}
+                />
+
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
+            </View >
+        );
+    }
+
+    renderHeader() {
         const { from } = this.props.navigation.state.params;
 
         const post = this.state.post;
@@ -453,523 +632,300 @@ export default class EditPost extends React.Component<InjectedProps> {
             }
         }
 
-        let markerImage = null;
-        switch (integer) {
-            case 0: markerImage = PreloadImage.emoji0; break;
-            case 1: markerImage = PreloadImage.emoji1; break;
-            case 2: markerImage = PreloadImage.emoji2; break;
-            case 3: markerImage = PreloadImage.emoji3; break;
-            case 4: markerImage = PreloadImage.emoji4; break;
-            case 5: markerImage = PreloadImage.emoji5; break;
-        }
-
-        let paddingBottom = 0;
-        if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
-
-        const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
-        };
-
         return (
-            <View style={[styles.flex, { paddingBottom }]}>
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
-                        }}
-                    >
-                        <Ionicons name='md-close' color="black" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
-
-                <View style={styles.searchBar}>
-                    {/* close button */}
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            left: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={() => {
-                            const params = this.props.navigation.state.params;
-                            if (params) {
-                                const initFromPost = params.initFromPost;
-                                if (initFromPost) initFromPost(this.state.post);
-                            }
-
-                            this.props.navigation.dispatch(NavigationActions.back());
-                        }}
-                    >
-                        {
-                            this.state.isModal ?
-                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
-                                :
-                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
-                        }
-                    </TouchableOpacity>
-
-                    {
-                        from === 'Profile' ?
-                            // edit button (only in modal from Profile)
-                            < TouchableOpacity
-                                style={{
-                                    width: 48,
-                                    height: 48,
-                                    position: 'absolute',
-                                    bottom: 2,
-                                    right: 2,
-                                    justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => this.edit()}
-                            >
-                                <MaterialCommunityIcons name="square-edit-outline" color="rgba(255, 255, 255, 0.8)" size={24} />
-                            </TouchableOpacity>
-                            :
-                            // like button
-                            <TouchableWithoutFeedback onPress={this.toggle}>
-                                <View style={{
-                                    width: 48,
-                                    height: 48,
-                                    position: 'absolute',
-                                    bottom: 2,
-                                    right: 2,
-                                    justifyContent: "center", alignItems: "center"
-                                }}>
-                                    {
-                                        this.state.liked ?
-                                            <AnimatedIcon name="md-heart" color="red" size={24} style={{ transform: [{ scale: this.springValue }] }} />
-                                            :
-                                            <Ionicons name="md-heart-empty" color="rgba(255, 255, 255, 0.8)" size={24} />
-                                    }
-                                </View>
-                            </TouchableWithoutFeedback>
-                    }
-                </View>
-
+            <View>
+                {/* profile pictures */}
                 {
-                    this.state.renderList &&
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
-                        }}
-                    >
-                        <FlatList
-                            ref={(fl) => this._flatList = fl}
-                            contentContainerStyle={styles.container}
-                            showsVerticalScrollIndicator={true}
-                            ListHeaderComponent={
-                                <View>
-                                    {/* profile pictures */}
-                                    {
-                                        this.renderSwiper(post)
-                                    }
-                                    <View style={styles.infoContainer}>
-                                        <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                            <View style={styles.circle}></View>
-                                            <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
-                                        </View>
-                                        <Text style={styles.name}>{post.name}</Text>
-
-                                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>
-                                            {/* 1 row */}
-                                            <View style={{
-                                                width: '100%',
-                                                height: bodyInfoItemHeight,
-                                                flexDirection: 'row',
-                                                alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.birth}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    {/*
-                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
-                                                    */}
-                                                    <Text style={styles.bodyInfoTitle}>{ageText}</Text>
-                                                </View>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
-                                                </View>
-                                            </View>
-
-                                            {/* 2 row */}
-                                            <View style={{
-                                                width: '100%',
-                                                height: bodyInfoItemHeight,
-                                                flexDirection: 'row',
-                                                alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 16, height: 16, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.ruler}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
-                                                </View>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.scale}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
-                                                </View>
-                                            </View>
-
-                                            {/* 3 row */}
-                                            <View style={{
-                                                width: '100%',
-                                                height: bodyInfoItemHeight,
-                                                flexDirection: 'row',
-                                                alignItems: 'center', justifyContent: 'center'
-                                            }}>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
-                                                </View>
-                                                <View style={{
-                                                    width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                                                }}>
-                                                    <Image
-                                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
-                                                        source={PreloadImage.bra}
-                                                    />
-                                                </View>
-                                                <View style={{
-                                                    width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
-                                                }}>
-                                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
-                                            <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
-                                            <Text style={styles.distance}>{distance}</Text>
-                                            {
-                                                showSettingsButton &&
-                                                <View style={{ flex: 1 }}>
-                                                    <TouchableOpacity
-                                                        style={{
-                                                            flex: 1, width: 24,
-                                                            alignItems: "center",
-                                                            justifyContent: "flex-end",
-                                                            paddingBottom: 0.6,
-                                                            marginLeft: -1
-                                                        }}
-                                                        onPress={async () => {
-                                                            console.log('open settings');
-
-                                                            // ToDo: show description with pop-up
-                                                            const url = 'app-settings:';
-                                                            const supported = await Linking.canOpenURL(url);
-                                                            if (supported) {
-                                                                Linking.openURL(url);
-                                                            }
-                                                        }}>
-                                                        <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
-                                                    </TouchableOpacity>
-                                                </View>
-                                            }
-                                        </View>
-
-                                        {
-                                            post.reviewCount > 0 ?
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
-                                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                        <AirbnbRating
-                                                            count={5}
-                                                            readOnly={true}
-                                                            showRating={false}
-                                                            defaultRating={integer}
-                                                            size={16}
-                                                            margin={1}
-                                                        />
-                                                    </View>
-                                                    <Text style={styles.rating}>{number}</Text>
-                                                    <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                                                    <Text style={styles.reviewCount}>{post.reviewCount}</Text>
-                                                </View>
-                                                :
-                                                /*
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                    <View style={{
-                                                        marginLeft: 2,
-                                                        width: 36, height: 21, borderRadius: 3,
-                                                        backgroundColor: Theme.color.new,
-                                                        justifyContent: 'center', alignItems: 'center'
-                                                    }}>
-                                                        <Text style={styles.new}>new</Text>
-                                                    </View>
-                                                </View>
-                                                */
-                                                <View style={{ marginBottom: 9 }}>
-                                                    <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
-                                                        <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
-                                                        <Text style={{
-                                                            color: '#f1c40f',
-                                                            fontSize: 18,
-                                                            fontFamily: "Roboto-Italic",
-                                                            paddingLeft: 5,
-                                                            paddingTop: 2
-                                                        }}>Newly posted</Text>
-                                                    </View>
-                                                </View>
-                                        }
-
-                                        {
-                                            post.note &&
-                                            <Text style={styles.note}>{post.note}</Text>
-                                        }
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    {/* map */}
-                                    <View style={styles.mapContainer}>
-                                        <Text style={styles.location}>{post.location.description}</Text>
-                                        <TouchableOpacity activeOpacity={0.5}
-                                            onPress={() => {
-                                                setTimeout(() => {
-                                                    if (this.closed) return;
-                                                    /*
-                                                    this.setState({ isNavigating: true }, () => {
-                                                        this.props.navigation.navigate("map", { post: post });
-                                                    });
-                                                    */
-                                                    this.props.navigation.navigate("map", { post: post });
-                                                }, Cons.buttonTimeoutShort);
-                                            }}
-                                        >
-                                            <View style={styles.mapView}>
-                                                <MapView
-                                                    ref={map => { this.map = map }}
-                                                    provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-                                                    style={styles.map}
-                                                    mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                                    initialRegion={{
-                                                        longitude: post.location.longitude,
-                                                        latitude: post.location.latitude,
-                                                        latitudeDelta: 0.008,
-                                                        longitudeDelta: 0.008 * ASPECT_RATIO
-                                                    }}
-                                                    scrollEnabled={false}
-                                                    zoomEnabled={false}
-                                                    rotateEnabled={false}
-                                                    pitchEnabled={false}
-                                                >
-                                                    <MapView.Marker
-                                                        coordinate={{
-                                                            longitude: post.location.longitude,
-                                                            latitude: post.location.latitude
-                                                        }}
-                                                    // title={'title'}
-                                                    // description={'description'}
-                                                    >
-                                                        <View style={{ width: 32, height: 50 }}>
-                                                            <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
-                                                            <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
-                                                        </View>
-                                                    </MapView.Marker>
-                                                    {/*
-                                                    <MapView.Circle
-                                                        center={{
-                                                            latitude: post.location.latitude,
-                                                            longitude: post.location.longitude
-                                                        }}
-                                                        radius={150} // m
-                                                        strokeWidth={2}
-                                                        strokeColor={Theme.color.selection}
-                                                        fillColor={'rgba(62, 165, 255, 0.5)'}
-                                                    />
-                                                    */}
-                                                </MapView>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <View style={styles.reviewsContainer} onLayout={this.onLayoutReviewsContainer}>
-                                        {
-                                            this.renderChart(this.state.chartInfo)
-                                        }
-                                        {
-                                            this.renderReviews(this.reviewStore.reviews)
-                                        }
-                                    </View>
-
-                                    <View style={styles.writeReviewContainer}>
-                                        <Text style={styles.ratingText}>Share your experience to help others</Text>
-                                        <View style={{ marginBottom: 10 }}>
-                                            <AirbnbRating
-                                                ref='rating'
-                                                onFinishRating={this.ratingCompleted}
-                                                showRating={false}
-                                                count={5}
-                                                defaultRating={this.state.writeRating}
-                                                size={32}
-                                                margin={3}
-                                            />
-                                        </View>
-                                    </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
-
-                                    <Text style={{
-                                        marginTop: Theme.spacing.small,
-                                        marginBottom: Theme.spacing.small,
-                                        fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
-                                        textAlign: 'center', lineHeight: 24
-                                    }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
-
-                                    <TouchableOpacity
-                                        style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
-                                        onPress={async () => await this.contact()}
-                                    >
-                                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                        />
-                    </TouchableWithoutFeedback>
+                    this.renderSwiper(post)
                 }
 
-                {
-                    this.state.showKeyboard &&
-                    <View style={{
-                        position: 'absolute',
-                        top: this.state.bottomPosition - replyViewHeight,
-                        height: replyViewHeight,
-                        width: '100%',
-                        flexDirection: 'row',
-                        // justifyContent: 'center',
-                        // alignItems:'center',
-                        flex: 1,
-
-                        paddingTop: 8,
-                        paddingBottom: 8,
-                        paddingLeft: 10,
-                        paddingRight: 0,
-
-                        borderTopWidth: 1,
-                        borderTopColor: Theme.color.line,
-                        backgroundColor: Theme.color.background
-                    }}>
-
-                        <TextInput
-                            // ref='reply'
-                            ref={(c) => { this._reply = c; }}
-                            multiline={true}
-                            numberOfLines={2}
-                            style={{
-                                /*
-                                width: '80%',
-                                // width: Dimensions.get('window').width * 0.5,
-                                height: '90%',
-                                */
-                                flex: 0.85,
-
-                                // padding: 8, // not working in ios
-                                paddingTop: 10,
-                                paddingBottom: 10,
-                                paddingLeft: 10,
-                                paddingRight: 10,
-
-                                borderRadius: 5,
-                                fontSize: 14,
-                                fontFamily: "Roboto-Regular",
-                                color: Theme.color.title,
-                                textAlign: 'justify',
-                                textAlignVertical: 'top',
-                                backgroundColor: '#212121'
-                            }}
-                            placeholder='Reply to a review'
-                            placeholderTextColor={Theme.color.placeholder}
-                            onChangeText={(text) => this.onChangeText(text)}
-                            selectionColor={Theme.color.selection}
-                            // keyboardAppearance={'dark'}
-                            underlineColorAndroid="transparent"
-                            autoCorrect={false}
-                        />
+                <View style={{ marginTop: Theme.spacing.base, paddingHorizontal: 4 }}
+                    onLayout={(e) => {
+                        const { y } = e.nativeEvent.layout;
+                        this.inputViewY = y;
+                    }}
+                >
+                    {/* 1. name */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'NAME'}
+                        </Text>
                         <TouchableOpacity
                             style={{
-                                // marginLeft: 10,
-                                // width: Dimensions.get('window').width * 0.2,
-                                /*
-                                width: '10%',
-                                height: '90%',
-                                */
-                                flex: 0.15,
-                                // borderRadius: 5,
-                                // backgroundColor: 'red',
-
-                                justifyContent: 'center',
-                                alignItems: 'center'
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => this.sendReply()}
-                        >
-                            <Ionicons name='ios-send' color={Theme.color.selection} size={24} />
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
-                }
+                    <TextInput
+                        style={{
+                            paddingLeft: 18, paddingRight: 32,
+                            width: '80%',
+                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                        }}
+                        // keyboardType={'email-address'}
+                        // keyboardAppearance='dark'
+                        onChangeText={(text) => this.validateName(text)}
+                        value={this.state.name}
+                        selectionColor={Theme.color.selection}
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        autoCapitalize="words"
+                        placeholder="Enter your name"
+                        placeholderTextColor={Theme.color.placeholder}
+                        onFocus={(e) => this.onFocusName()}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.nameY = y;
+                        }}
+                    />
+                    {
+                        this.state.showNameAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.nameY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
 
-                <Dialog.Container visible={this.state.dialogVisible}>
-                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
-                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
-                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
-                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
-                </Dialog.Container>
+                    {/* 2. birthday */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'AGE (BIRTHDAY)'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    {/* picker */}
+                    <TouchableOpacity
+                        onPress={() => {
+                            this.onFocusBirthday();
 
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
-            </View >
+                            this.showDateTimePicker('What is your date of birth?');
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                width: '80%',
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.birthday ? this.state.birthday : "Select your birthday"}</Text>
+
+                        {/* ToDo: add icon */}
+
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.birthdayY = y;
+                        }}
+                    />
+                    {
+                        this.state.showAgeAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.birthdayY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 3. gender */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{
+                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                        }}>
+                            {'GENDER'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <Select
+                        onOpen={() => this.onFocusGender()} // NOT work in Android
+                        placeholder={{
+                            label: "Select your gender",
+                            value: null
+                        }}
+                        items={genderItems}
+                        onValueChange={(value) => { // only for Android
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.setState({ gender: value });
+                        }}
+                        style={{
+                            iconContainer: {
+                                top: 5,
+                                right: 100
+                            }
+                        }}
+                        textInputProps={{
+                            style: {
+                                paddingHorizontal: 18,
+                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                color: this.state.gender === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                            }
+                        }}
+                        useNativeAndroidPickerStyle={false}
+                        value={this.state.gender}
+
+                        Icon={() => {
+                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                            return null;
+                        }}
+                    />
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.genderY = y;
+                        }}
+                    />
+                    {
+                        this.state.showGenderAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.genderY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 4. place */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'LOCATION'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+
+                            setTimeout(() => {
+                                !this.closed && this.props.navigation.navigate("editSearch",
+                                    { from: 'EditProfile', initFromSearch: (result) => this.initFromSearch(result) }); // ToDo
+                            }, Cons.buttonTimeoutShort);
+                        }}
+                    >
+                        <Text
+                            style={{
+                                paddingHorizontal: 18,
+                                // height: textInputHeight,
+                                minHeight: textInputHeight,
+                                fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.place ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
+                                paddingTop: 7
+                            }}
+                        >{this.state.place ? this.state.place : "Select your location"}</Text>
+                    </TouchableOpacity>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.placeY = y;
+                        }}
+                    />
+                    {
+                        this.state.showPlaceAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.placeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+                    {/* 6. note */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                            {'NOTE'}
+                        </Text>
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                // ToDo: show description with pop-up
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                    </View>
+                    <TextInput
+                        style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
+                        placeholder='More information about you'
+                        placeholderTextColor={Theme.color.placeholder}
+                        onChangeText={(text) => {
+                            this.setState({ note: text, noteLength: text.length });
+                        }}
+                        value={this.state.note}
+                        selectionColor={Theme.color.selection}
+
+                        // keyboardType='default'
+                        // returnKeyType='done'
+                        // keyboardAppearance='dark'
+                        underlineColorAndroid="transparent"
+                        autoCorrect={false}
+                        // autoCapitalize="none"
+                        maxLength={200}
+                        multiline={true}
+                        numberOfLines={4}
+                        onFocus={(e) => {
+                            this.onFocusNote();
+                        }}
+                        onBlur={(e) => this.onBlurNote()}
+                    />
+                    <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
+                        {this.state.noteLength}
+                    </Text>
+                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                        onLayout={(e) => {
+                            const { y } = e.nativeEvent.layout;
+                            this.noteY = y;
+                        }}
+                    />
+                </View>
+
+                <TouchableOpacity
+                    style={[styles.contactButton, { marginTop: Theme.spacing.large, marginBottom: 32 }]}
+                // onPress={async () => await this.contact()}
+                >
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Delete this post'}</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 
@@ -1737,8 +1693,6 @@ export default class EditPost extends React.Component<InjectedProps> {
 
         console.log('Post._keyboardDidShow');
 
-        !this.closed && this.setState({ showKeyboard: true, bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
-
         if (!this.selectedItem) return;
 
         let totalHeights = 0;
@@ -1763,8 +1717,6 @@ export default class EditPost extends React.Component<InjectedProps> {
         if (!this.focused) return;
 
         console.log('Post._keyboardDidHide');
-
-        !this.closed && this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
@@ -1830,6 +1782,64 @@ export default class EditPost extends React.Component<InjectedProps> {
 
         this._showNotification = false;
     }
+
+    showDateTimePicker(title) {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        this.setState({ datePickerTitle: title, showDatePicker: true });
+    }
+
+    _hideDateTimePicker = () => this.setState({ showDatePicker: false });
+
+    _handleDatePicked = (date) => {
+        console.log('A date has been picked: ', date);
+
+        this._hideDateTimePicker();
+
+        const _date = new Date(date);
+
+        const day = _date.getDate();
+        const month = _date.getMonth();
+        const year = _date.getFullYear();
+        /*
+        console.log('day', day);
+        console.log('month', month);
+        console.log('year', year);
+        */
+
+        let _day = '';
+        if (day < 10) {
+            _day = '0' + day.toString();
+        } else {
+            _day = day.toString();
+        }
+
+        let _month = '';
+        switch (month) {
+            case 0: _month = 'JAN'; break;
+            case 1: _month = 'FEB'; break;
+            case 2: _month = 'MAR'; break;
+            case 3: _month = 'APR'; break;
+            case 4: _month = 'MAY'; break;
+            case 5: _month = 'JUN'; break;
+            case 6: _month = 'JUL'; break;
+            case 7: _month = 'AUG'; break;
+            case 8: _month = 'SEP'; break;
+            case 9: _month = 'OCT'; break;
+            case 10: _month = 'NOV'; break;
+            case 11: _month = 'DEC'; break;
+        }
+
+        let _year = '';
+        _year = year.toString();
+
+        const birthday = _day + '  ' + _month + '  ' + _year;
+
+        this.setState({ birthday, datePickerDate: _date });
+    };
 
     onChangeText(text) {
         if (this._showNotification) {
@@ -2290,5 +2300,27 @@ const styles = StyleSheet.create({
         fontSize: 12,
         fontFamily: "Roboto-Medium",
         // backgroundColor: 'green'
+    },
+    textInputStyleIOS: {
+        paddingLeft: 18, paddingRight: 32,
+        fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
+        minHeight: 52
+    },
+    textInputStyleAndroid: {
+        paddingLeft: 18, paddingRight: 32,
+        fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)',
+        height: 84,
+        textAlignVertical: 'top'
+    },
+    done: {
+        fontSize: 17,
+        fontFamily: 'System',
+        // fontWeight: 'bold',
+        fontWeight: '500',
+
+        // color: Theme.color.selection,
+        color: 'rgb(30, 117, 212)',
+        // backgroundColor: 'grey',
+        alignSelf: 'center'
     }
 });

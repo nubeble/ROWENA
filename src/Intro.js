@@ -236,6 +236,7 @@ export default class Intro extends React.Component {
         }
         */
 
+        /*
         // load length from database (no need to subscribe!)
         const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
         let count = 0;
@@ -243,8 +244,38 @@ export default class Intro extends React.Component {
             let field = placeDoc.data().count;
             if (field) count = field;
         }
+        */
 
-        // console.log('count', count);
+        let count = 0;
+
+        const feedSize = this.getFeedSize(result.place_id);
+        if (feedSize === 0) {
+            // load length from database (no need to subscribe!)
+            const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
+            if (placeDoc.exists) {
+                let field = placeDoc.data().count;
+                if (field) count = field;
+            }
+
+            // subscribe here (count)
+            // --
+            if (!Intro.feedCountList.has(result.placeId)) {
+                const ci = Firebase.subscribeToPlace(result.place_id, newPlace => {
+                    if (newPlace === undefined) {
+                        Intro.feedCountList.delete(result.place_id);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(result.place_id, newPlace.count);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        } else {
+            count = feedSize;
+        }
 
         const place = {
             name: name,
@@ -256,9 +287,7 @@ export default class Intro extends React.Component {
             lng: result.location.lng
         }
 
-        // setTimeout(() => {
         this.props.navigation.navigate("home", { place: place });
-        // }, Cons.buttonTimeoutShort);
     }
 
     @autobind
@@ -461,46 +490,65 @@ export default class Intro extends React.Component {
                 if (doc.exists) {
                     // console.log(doc.id, '=>', doc.data());
                     const data = doc.data();
-                    // if (data.count > 0) {
-                    const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
+                    if (data.count > 0) {
+                        const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
 
-                    places[index] = {
-                        // ...places[index],
-                        place_id: doc.id,
-                        length: data.count,
-                        name: data.name,
-                        uri,
-                        lat: data.lat,
-                        lng: data.lng,
-                        key: doc.id
-                    };
+                        places[index] = {
+                            // ...places[index],
+                            place_id: doc.id,
+                            length: data.count,
+                            name: data.name,
+                            uri,
+                            lat: data.lat,
+                            lng: data.lng,
+                            key: doc.id
+                        };
 
-                    index++;
+                        index++;
 
-                    if (index === snap.docs.length) {
+                        if (index === snap.docs.length) {
+                            Intro.places = places;
+                            !this.closed && this.setState({ places });
+                        }
+                        /*
                         Intro.places = places;
                         !this.closed && this.setState({ places });
+                        */
+
+                        // subscribe here (count)
+                        if (!Intro.feedCountList.has(doc.id)) {
+                            const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
+                                if (newPlace === undefined) {
+                                    Intro.feedCountList.delete(doc.id);
+                                    return;
+                                }
+
+                                // update Intro.feedCountList
+                                Intro.feedCountList.set(doc.id, newPlace.count);
+
+                                // update UI
+                                let __places = [...this.state.places];
+                                let __index = __places.findIndex(el => el.place_id === doc.id);
+                                if (__index !== -1) {
+                                    let __place = __places[__index];
+                                    __place.length = newPlace.count;
+                                    __places[__index] = __place;
+
+                                    Intro.places = __places;
+                                    !this.closed && this.setState({ places: __places });
+                                }
+                            });
+
+                            Intro.countsUnsubscribes.push(ci);
+                        }
+                    } else { // data.count === 0
+                        index++;
+
+                        if (index === snap.docs.length) {
+                            Intro.places = places;
+                            !this.closed && this.setState({ places });
+                        }
                     }
-                    /*
-                    Intro.places = places;
-                    !this.closed && this.setState({ places });
-                    */
-
-                    // subscribe here (count)
-                    if (!Intro.feedCountList.has(doc.id)) {
-                        const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
-                            if (newPlace === undefined) {
-                                Intro.feedCountList.delete(doc.id);
-                                return;
-                            }
-
-                            // update Intro.feedCountList
-                            Intro.feedCountList.set(doc.id, newPlace.count);
-                        });
-
-                        Intro.countsUnsubscribes.push(ci);
-                    }
-                    // }
                 }
             });
         }

@@ -153,10 +153,6 @@ export default class AdvertisementMain extends React.Component {
         showCountryAlertIcon: false,
         showStreetAlertIcon: false,
 
-        /*
-        showKeyboard: false,
-        bottomPosition: Dimensions.get('window').height,
-        */
         onNote: false,
         keyboardTop: Dimensions.get('window').height
     };
