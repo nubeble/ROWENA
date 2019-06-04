@@ -688,10 +688,23 @@ export default class Post extends React.Component<InjectedProps> {
                     this.renderSwiper(post)
                 }
                 <View style={styles.infoContainer}>
-                    <View style={{ marginTop: Theme.spacing.tiny, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <View style={styles.circle}></View>
-                        <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 2 }}
+                            onPress={async () => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
+
+                                await this.contact();
+                            }}
+                        >
+                            {/* ToDo: status color */}
+                            <View style={styles.circle}></View>
+                            <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
+                        </TouchableOpacity>
                     </View>
+
                     <Text style={styles.name}>{post.name}</Text>
 
                     <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>

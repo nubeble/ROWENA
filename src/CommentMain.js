@@ -275,7 +275,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-
             return;
         }
 
@@ -369,27 +368,19 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         return;
                     }
 
-                    // console.log('subscribeToProfile userUid', userUid);
-
                     // update this.customerList
                     this.customerList.set(userUid, user);
 
                     // update state feed & UI
-
-
                     let feeds = [...this.state.feeds];
                     for (let i = 0; i < feeds.length; i++) {
-                        const feed = feeds[i];
+                        let feed = feeds[i];
                         if (feed.uid === userUid) {
-                            const customer = {
-                                commentId: feed.commentId,
-                                uid: userUid,
-                                name: user.name,
-                                place: user.place,
-                                picture: user.picture.uri
-                            };
+                            feed.name = user.name;
+                            feed.place = user.place;
+                            feed.picture = user.picture.uri;
 
-                            feeds[i] = customer;
+                            feeds[i] = feed;
                         }
                     }
 
