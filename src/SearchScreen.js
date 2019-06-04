@@ -221,10 +221,7 @@ export default class SearchScreen extends React.Component {
                         fetchDetails={true}
                         // renderDescription={row => row.description} // custom description render
                         onFail={(message) => {
-                            this.refs["toast"].show(message, 500, () => {
-                                // ToDo
-                            });
-
+                            this.refs["toast"].show(message, 500);
                         }}
                         onPress={async (data, details = null) => { // 'details' is provided when fetchDetails = true
                             console.log('data', data);

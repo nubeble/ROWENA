@@ -339,10 +339,21 @@ export default class GooglePlacesAutocomplete extends Component {
             },
             (error) => {
                 console.log('navigator.geolocation.getCurrentPosition error', error.message);
+
+                // hide loader
+                this.setState({ isLoading: false });
+
                 this._disableRowLoaders();
                 // if (this.props.onFail) this.props.onFail(error.message);
                 if (this.props.onFail) this.props.onFail('Please turn Location Services on.');
-            }, options
+
+                // this.setState({ text: this.props.getDefaultValue() });
+                this._handleChangeText(this.props.getDefaultValue());
+                setTimeout(() => {
+                    !this.closed && this.refs.textInput && this.refs.textInput.focus();
+                }, 1000);
+            },
+            options
         );
     }
 
@@ -406,7 +417,7 @@ export default class GooglePlacesAutocomplete extends Component {
                 } else {
                     console.warn('google places autocomplete: request could not be completed or has been aborted');
                     this._disableRowLoaders();
-                    if (this.props.onFail) this.props.onFail('The request could not be completed or has been aborted.');
+                    // if (this.props.onFail) this.props.onFail('The request could not be completed or has been aborted.');
                 }
             };
 
@@ -621,7 +632,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
                     if (typeof responseJSON.error_message !== 'undefined') {
                         console.warn('google places autocomplete: ' + responseJSON.error_message);
-                        if (this.props.onFail) this.props.onFail(responseJSON.error_message);
+                        // if (this.props.onFail) this.props.onFail(responseJSON.error_message);
                     }
                 } else {
                     // console.warn("google places autocomplete: request could not be completed or has been aborted");
@@ -706,7 +717,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
                     if (typeof responseJSON.error_message !== 'undefined') {
                         console.warn('google places autocomplete: ' + responseJSON.error_message);
-                        if (this.props.onFail) this.props.onFail(responseJSON.error_message);
+                        // if (this.props.onFail) this.props.onFail(responseJSON.error_message);
                     }
                 } else {
                     // console.warn("google places autocomplete: request could not be completed or has been aborted");
