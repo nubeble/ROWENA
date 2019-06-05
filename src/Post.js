@@ -57,7 +57,7 @@ export default class Post extends React.Component<InjectedProps> {
     reviewStore: ReviewStore = new ReviewStore();
 
     state = {
-        from: null,
+        // from: null,
         post: null,
 
         renderList: false,
@@ -169,11 +169,10 @@ export default class Post extends React.Component<InjectedProps> {
         const { post, extra, from } = this.props.navigation.state.params;
         console.log('Post.componentDidMount, from', from);
 
-
-        this.setState({ from });
+        // this.setState({ from });
         this.init(post, extra);
 
-        console.log('Post.componentDidMount', from);
+        // console.log('Post.componentDidMount', from);
         if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
             this.setState({ isModal: true });
         } else {
@@ -222,19 +221,17 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     init(post, extra) {
-        !this.closed && this.setState({ post });
+        this.setState({ post });
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
         const isOwner = this.isOwner(post.uid, Firebase.user().uid);
-        !this.closed && this.setState({ isOwner });
+        this.setState({ isOwner });
 
         // check liked
         const liked = this.checkLiked(post.likes);
-        if (liked) {
-            !this.closed && this.setState({ liked: true });
-        }
+        this.setState({ liked });
 
         // chart info
 
@@ -425,6 +422,8 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     render() {
+        const { from } = this.props.navigation.state.params;
+
         let paddingBottom = 0;
         if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
 
@@ -484,7 +483,7 @@ export default class Post extends React.Component<InjectedProps> {
                     </TouchableOpacity>
 
                     {
-                        this.state.isOwner && this.state.from === 'Profile' ?
+                        this.state.isOwner && from === 'Profile' ?
                             // edit button (only in modal from Profile)
                             < TouchableOpacity
                                 style={{
@@ -639,7 +638,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderHeader() {
-        const from = this.state.from;
+        // const from = this.state.from;
         const post = this.state.post;
 
         let distance = '';
@@ -2292,10 +2291,10 @@ const styles = StyleSheet.create({
     */
     bodyInfoTitle: {
         color: Theme.color.title,
-        fontSize: 14,
+        fontSize: 16,
         fontFamily: "Roboto-Medium",
         // paddingTop: Cons.bodyInfoTitlePaddingTop(),
-        paddingTop: 2,
+        paddingTop: 3,
         paddingLeft: Theme.spacing.tiny,
     },
     distance: {
