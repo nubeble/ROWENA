@@ -790,11 +790,10 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 }
 // -- end of HomeSwitchNavigatorWrapper
 
-/*
 const PostStackNavigator = createStackNavigator(
     {
-        postModal: { screen: Post },
-        // postModal: { screen: PostSwitchNavigatorWrapper }, // ToDo
+        postMain: { screen: Post },
+        editPost: { screen: EditPost }
     },
     {
         mode: 'card',
@@ -814,29 +813,6 @@ class PostStackNavigatorWrapper extends React.Component {
     render() {
         return (
             <PostStackNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-*/
-
-const PostSwitchNavigator = createSwitchNavigator(
-    {
-        postMain: { screen: Post },
-        editPost: { screen: EditPost }
-    }
-);
-
-class PostSwitchNavigatorWrapper extends React.Component {
-    static router = PostSwitchNavigator.router;
-
-    render() {
-        return (
-            <PostSwitchNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation
@@ -890,8 +866,8 @@ class UserStackNavigatorWrapper extends React.Component {
 const ChatRoomStackNavigator = createStackNavigator(
     {
         room: { screen: ChatRoom },
-        // post: { screen: PostStackNavigatorWrapper },
-        post: { screen: PostSwitchNavigatorWrapper },
+        // post: { screen: PostSwitchNavigatorWrapper },
+        post: { screen: PostStackNavigatorWrapper },
         user: { screen: UserStackNavigatorWrapper }
     },
     {
@@ -962,8 +938,8 @@ const ReviewStackNavigator = createStackNavigator(
     {
         main: { screen: ReviewMain },
         // test: { screen: HidingHeader },
-        // reviewPost: { screen: PostStackNavigatorWrapper }
-        reviewPost: { screen: PostSwitchNavigatorWrapper }
+        // reviewPost: { screen: PostSwitchNavigatorWrapper }
+        reviewPost: { screen: PostStackNavigatorWrapper }
     },
     {
         mode: 'modal',
@@ -1035,7 +1011,6 @@ class AdvertisementStackNavigatorWrapper extends React.Component {
 const CommentStackNavigator = createStackNavigator(
     {
         main: { screen: CommentMain },
-        // commentPost: { screen: PostStackNavigatorWrapper }
         userPost: { screen: UserStackNavigatorWrapper }
     },
     {
@@ -1270,8 +1245,8 @@ const RootStackNavigator = createStackNavigator(
     {
         main: { screen: MainBottomTabNavigatorWrapper },
         search: { screen: SearchScreen },
-        // postPreview: { screen: PostStackNavigatorWrapper }
-        postPreview: { screen: PostSwitchNavigatorWrapper }
+        // postPreview: { screen: PostSwitchNavigatorWrapper }
+        postPreview: { screen: PostStackNavigatorWrapper }
     },
     {
         mode: 'modal',

@@ -105,7 +105,6 @@ export default class AdvertisementMain extends React.Component {
         uploadImage4Uri: null,
 
         name: '',
-
         showDatePicker: false,
         datePickerTitle: null,
         datePickerDate: new Date(1990, 1, 1),

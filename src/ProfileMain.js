@@ -183,11 +183,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // check user feed updates
         if (this.checkUpdateOnUserFeed() === true) {
+            console.log('111111111111111111')
             this.lastChangedTime = 0;
             this.getUserFeeds();
         } else {
             const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
+            console.log('222222222222222')
             if (this.lastChangedTime !== lastChangedTime) {
+                console.log('3333333333333')
                 // reload from the start
                 this.getUserFeeds();
 

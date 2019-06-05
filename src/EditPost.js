@@ -32,6 +32,8 @@ import Select from 'react-native-picker-select';
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 
+const doneButtonViewHeight = 44;
+
 const textInputFontSize = 18;
 const textInputHeight = 34;
 
@@ -127,7 +129,24 @@ export default class EditPost extends React.Component {
         countryCode: null,
         street: null,
         note: '',
-        noteLength: 0
+        noteLength: 0,
+
+        showPicture1AlertIcon: false,
+        showPicture2AlertIcon: false,
+        showPicture3AlertIcon: false,
+        showPicture4AlertIcon: false,
+        showNameAlertIcon: false,
+        showAgeAlertIcon: false,
+        showGenderAlertIcon: false,
+        showHeightAlertIcon: false,
+        showWeightAlertIcon: false,
+        showBodyTypeAlertIcon: false,
+        showBreastsAlertIcon: false,
+        showCountryAlertIcon: false,
+        showStreetAlertIcon: false,
+
+        onNote: false,
+        keyboardTop: Dimensions.get('window').height
     };
 
     constructor(props) {
@@ -139,8 +158,6 @@ export default class EditPost extends React.Component {
     }
 
     componentDidMount() {
-        console.log('Post.componentDidMount');
-
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
@@ -198,32 +215,156 @@ export default class EditPost extends React.Component {
         */
     }
 
+    initFromSelect(result) { // country
+        console.log('AdvertisementMain.initFromSelect', result);
+
+        this.setState({
+            country: result.name, countryCode: result.code,
+            street: null, city: '', state: '', streetInfo: null, cityInfo: null
+        });
+    }
+
+    initFromSearch(result1, result2) { // street
+        console.log('AdvertisementMain.initFromSearch', result1, result2);
+
+        /*
+        "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
+        "location": {
+            "lat": 37.4851745,
+            "lng": 127.0131415,
+        },
+        "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
+        }
+        */
+        const location = {
+            description: result1.description,
+            // streetId: result1.place_id,
+            longitude: result1.location.lng,
+            latitude: result1.location.lat
+        };
+
+        const cityInfo = {
+            description: result2.name,
+            cityId: result2.placeId,
+            location: result2.location
+        };
+
+        /*
+        let street = null;
+        let state = '';
+        let city = '';
+
+        const words2 = result2.name.split(', '); // "23 Limslattsvag, 22920, Aland Islands"
+
+        // get street text
+        const words1 = result1.description.split(', '); // "23 Limslattsvag, Aland Islands"
+        const length = words1.length - words2.length;
+
+        if (length <= 0) {
+            if (words1.length === 0) {
+                // someting is wrong
+            } else if (words1.length === 1) {
+                // someting is wrong
+            } else if (words1.length === 2) {
+                street = words1[0];
+            } else if (words1.length === 3) {
+                street = words1[0];
+                city = words1[1];
+            } else if (words1.length === 4) {
+                street = words1[0];
+                city = words1[1];
+                state = words1[2];
+            } else {
+                street = '';
+                for (var i = 0; i < words1.length - 3; i++) {
+                    street += words1[i];
+
+                    if (i !== words1.length - 3 - 1) street += ', ';
+                }
+
+                city = words1[words1.length - 3];
+                state = words1[words1.length - 2];
+            }
+        } else {
+            street = '';
+            for (var i = 0; i < length; i++) {
+                street += words1[i];
+
+                if (i !== length - 1) street += ', ';
+            }
+
+            // get city, state
+            if (words2.length === 0) {
+                // someting is wrong
+            } else if (words2.length === 1) {
+                // someting is wrong
+            } else if (words2.length === 2) {
+                city = words2[0];
+            } else if (words2.length === 3) {
+                city = words2[0];
+                state = words2[1];
+            } else {
+                city = words2[words2.length - 3];
+                state = words2[words2.length - 2];
+            }
+        }
+        */
+
+        let street = null;
+        let state = '';
+        let city = '';
+
+        street = ''; // remove country
+        const words1 = result1.description.split(', ');
+        const size = words1.length - 1;
+        for (var i = 0; i < size; i++) {
+            street += words1[i];
+            if (i != size - 1) street += ', ';
+        }
+
+        this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
+    }
+
     @autobind
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
+        console.log('AdvertisementMain._keyboardDidShow');
+
+        if (this.focusedItem === 'name') {
+            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+        } else if (this.focusedItem === 'height') {
+            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+        } else if (this.focusedItem === 'weight') {
+            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
+        } else if (this.focusedItem === 'note') {
+            // this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY, animated: true });
+
+            if (!this.state.onNote) this.setState({ onNote: true });
+        }
+
+        this.setState({ keyboardTop: Dimensions.get('window').height - e.endCoordinates.height });
     }
 
     @autobind
     _keyboardDidHide() {
         if (!this.focused) return;
 
+        console.log('AdvertisementMain._keyboardDidHide');
 
+        if (this.state.onNote) this.setState({ onNote: false });
+
+        this.setState({ keyboardTop: Dimensions.get('window').height });
     }
 
-    @autobind
-    handleHardwareBackPress() {
-        console.log('EditPost.handleHardwareBackPress');
+    noteDone() {
+        this.setState({ onNote: false, keyboardTop: Dimensions.get('window').height });
 
-        if (this._showNotification) {
-            this.hideNotification();
-
-            return true;
-        }
-
-        this.props.navigation.dispatch(NavigationActions.back());
-
-        return true;
+        Keyboard.dismiss();
     }
 
     @autobind
@@ -238,6 +379,24 @@ export default class EditPost extends React.Component {
         this.focused = false;
     }
 
+    @autobind
+    handleHardwareBackPress() {
+        console.log('EditPost.handleHardwareBackPress');
+
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+
+            return true;
+        }
+
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
+
+
+
     componentWillUnmount() {
         console.log('Post.componentWillUnmount');
 
@@ -248,6 +407,387 @@ export default class EditPost extends React.Component {
         this.onBlurListener.remove();
 
         this.closed = true;
+    }
+
+    validateName(text) {
+        this.setState({ name: text });
+    }
+
+    onFocusName() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // move scroll in keyboard show event
+        this.focusedItem = 'name';
+    }
+
+    onFocusBirthday() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+    }
+
+    onFocusGender() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+    }
+
+    onFocusHeight() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // clear
+        this.setState({ height: '' });
+
+        // move scroll in keyboard show event
+        this.focusedItem = 'height';
+    }
+
+    onBlurHeight() {
+        // set cm
+        const text = this.state.height;
+
+        if (text.length === 0) return;
+
+        this.setState({ height: text + ' cm' });
+    }
+
+    validateHeight(text) {
+        if (text.length === 0) {
+            this.setState({ height: '' });
+
+            return;
+        }
+
+        if (text.length > 3) {
+            return;
+        }
+
+        this.setState({ height: text });
+    }
+
+    onFocusWeight() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // clear
+        this.setState({ weight: '' });
+
+        // move scroll in keyboard show event
+        this.focusedItem = 'weight';
+    }
+
+    onBlurWeight() {
+        // set kg
+        const text = this.state.weight;
+
+        if (text.length === 0) return;
+
+        this.setState({ weight: text + ' kg' });
+    }
+
+    validateWeight(text) {
+        if (text.length === 0) {
+            this.setState({ weight: '' });
+
+            return;
+        }
+
+        if (text.length > 3) {
+            return;
+        }
+
+        this.setState({ weight: text });
+    }
+
+    onFocusBodyType() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
+    }
+
+    onFocusBreasts() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        // this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+    }
+
+    onFocusNote() {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        if (!this.state.onNote) this.setState({ onNote: true });
+
+        // move scroll in keyboard show event
+        this.focusedItem = 'note';
+    }
+
+    onBlurNote() {
+        if (this.state.onNote) this.setState({ onNote: false });
+    }
+
+    async post() {
+        // test navigation
+        /*
+        this.props.navigation.navigate("advertisementFinish");
+        return;
+        */
+
+        if (this.state.onUploadingImage) return;
+
+        // 1. check
+        const { name, birthday, gender, height, weight, bodyType, breasts, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+
+        if (uploadImage1Uri === null) {
+            this.showNotification('Please add your 1st profile picture.');
+
+            this.setState({ showPicture1AlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: 0, animated: true });
+
+            return;
+        }
+
+        if (name === '') {
+            this.showNotification('Please write your name.');
+
+            this.setState({ showNameAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+
+            return;
+        }
+
+        if (birthday === null) {
+            this.showNotification('Please select your date of birth.');
+
+            this.setState({ showAgeAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+
+            return;
+        }
+
+        if (gender === null) {
+            this.showNotification('Please select your gender.');
+
+            this.setState({ showGenderAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+
+            return;
+        }
+
+        if (height === '') {
+            this.showNotification('Please enter your height.');
+
+            this.setState({ showHeightAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+
+            return;
+        }
+
+        if (weight === '') {
+            this.showNotification('Please enter your weight.');
+
+            this.setState({ showWeightAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + heightY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
+
+            return;
+        }
+
+        if (!bodyType) {
+            this.showNotification('Please select your bra size.');
+
+            this.setState({ showBodyTypeAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
+
+            return;
+        }
+
+        if (!breasts) {
+            this.showNotification('Please select your bra size.');
+
+            this.setState({ showBreastsAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+
+            return;
+        }
+
+        if (country === null) {
+            this.showNotification('Please enter your country.');
+
+            this.setState({ showCountryAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+
+            return;
+        }
+
+        if (street === null) {
+            this.showNotification('Please enter your city.');
+
+            this.setState({ showStreetAlertIcon: true });
+
+            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
+            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
+
+            return;
+        }
+
+        // 2. upload
+
+        // show loader
+        this.setState({ showPostLoader: true });
+
+        let data = {};
+
+        if (!this.feedId) {
+            this.feedId = Util.uid();
+        }
+        data.feedId = this.feedId;
+
+        data.userUid = Firebase.user().uid;
+
+        data.name = name;
+
+        let _birthday = 'DDMMYYYY';
+        _birthday = Util.getBirthday(this.state.datePickerDate);
+        data.birthday = _birthday;
+
+        data.gender = gender;
+        data.height = Util.getHeight(height);
+        data.weight = Util.getWeight(weight);
+        data.bodyType = bodyType;
+        data.bust = Util.getBust(breasts);
+
+        // placeId, placeName, location
+        // --
+        data.placeId = cityInfo.cityId;
+        data.placeName = cityInfo.description;
+
+        const location = {
+            description: streetInfo.description,
+            // streetId: streetInfo.streetId,
+            longitude: streetInfo.longitude,
+            latitude: streetInfo.latitude
+        };
+
+        data.location = location;
+        // --
+
+        let _note = null;
+        if (note !== '') {
+            _note = note;
+        }
+        data.note = _note;
+
+        /*
+        data.image1 = {
+            uri: uploadImage1Uri,
+            ref: this.uploadImage1Ref
+        };
+        data.image2 = {
+            uri: uploadImage2Uri,
+            ref: this.uploadImage2Ref
+        };
+        data.image3 = {
+            uri: uploadImage3Uri,
+            ref: this.uploadImage3Ref
+        };
+        data.image4 = {
+            uri: uploadImage4Uri,
+            ref: this.uploadImage4Ref
+        };
+        */
+        let image = this.getImage(0);
+        data.image1 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        image = this.getImage(image.number);
+        data.image2 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        image = this.getImage(image.number);
+        data.image3 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        image = this.getImage(image.number);
+        data.image4 = {
+            uri: image.uri,
+            ref: image.ref
+        };
+
+        const extra = {
+            lat: cityInfo.location.lat,
+            lng: cityInfo.location.lng
+        };
+
+        await this.createFeed(data, extra);
+
+        this.removeItemFromList();
+
+        // 3. move to finish page
+        this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            // hide loader
+            this.setState({ showPostLoader: false });
+
+            if (!this.closed) {
+                this.props.navigation.navigate("advertisementFinish");
+            }
+        });
     }
 
     render() {
@@ -304,7 +844,7 @@ export default class EditPost extends React.Component {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     {/* delete button */}
@@ -322,13 +862,11 @@ export default class EditPost extends React.Component {
                                 this.hideNotification();
                             }
 
-                            // ToDo: check!
                             this.openDialog('Delete', 'Are you sure you want to delete this post?', async () => {
                                 const { post } = this.props.navigation.state.params;
                                 await Firebase.removeFeed(post.uid, post.placeId, post.id);
 
-                                // close
-                                this.props.navigation.dispatch(NavigationActions.back());
+                                this.props.navigation.dismiss();
                             });
                         }}
                     >
@@ -361,7 +899,7 @@ export default class EditPost extends React.Component {
                         ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.container}
                         showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={this.renderHeader()}
+                        ListHeaderComponent={this.renderHeader(this.state.post)}
                     />
                 }
 
@@ -390,38 +928,7 @@ export default class EditPost extends React.Component {
         );
     }
 
-    renderHeader() {
-        const post = this.state.post;
-
-        let distance = '';
-        let integer = 0;
-        let number = '';
-        let ageText = '';
-
-        let showSettingsButton = false;
-
-        if (post) {
-            distance = Util.getDistance(post.location, Vars.location);
-            if (distance === '? km away') showSettingsButton = true;
-
-            const averageRating = post.averageRating;
-
-            integer = Math.floor(averageRating);
-
-            if (Number.isInteger(averageRating)) {
-                number = averageRating + '.0';
-            } else {
-                number = averageRating.toString();
-            }
-
-            const age = Util.getAge(post.birthday);
-            if (age > 1) {
-                ageText = age.toString() + ' years old';
-            } else {
-                ageText = age.toString() + ' year old';
-            }
-        }
-
+    renderHeader(post) {
         return (
             <View>
                 {/* profile pictures */}
@@ -1033,7 +1540,6 @@ export default class EditPost extends React.Component {
                         this.state.showStreetAlertIcon &&
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
-
                 </View>
 
                 <TouchableOpacity
@@ -1415,204 +1921,6 @@ const styles = StyleSheet.create({
     item: {
         width: imageWidth,
         height: imageHeight
-    },
-    infoContainer: {
-        flex: 1,
-        //justifyContent: 'center',
-        //alignItems: 'center',
-        // padding: Theme.spacing.small,
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny,
-        paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small
-    },
-    circle: {
-        width: 10,
-        height: 10,
-        borderRadius: 10 / 2,
-        backgroundColor: 'rgb(70, 154, 32)'
-    },
-    date: {
-        marginLeft: 8,
-        color: Theme.color.text2,
-        fontSize: 14,
-        fontFamily: "Roboto-Light"
-    },
-    name: {
-        color: Theme.color.title,
-        fontSize: 24,
-        paddingTop: 4,
-        fontFamily: "Roboto-Medium"
-    },
-    /*
-    size: {
-        color: "white",
-        fontSize: 18,
-        fontFamily: "Roboto-Light",
-        paddingTop: Theme.spacing.xSmall,
-        paddingBottom: Theme.spacing.xSmall
-    },
-    */
-    bodyInfoTitle: {
-        color: Theme.color.title,
-        fontSize: 14,
-        fontFamily: "Roboto-Medium",
-        // paddingTop: Cons.bodyInfoTitlePaddingTop(),
-        paddingTop: 2,
-        paddingLeft: Theme.spacing.tiny,
-    },
-    distance: {
-        // paddingLeft: 5,
-        paddingHorizontal: 5,
-        color: Theme.color.title,
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
-        paddingTop: 2
-    },
-    distanceButton: {
-        // paddingLeft: 5,
-        paddingHorizontal: 5,
-        color: Theme.color.title,
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
-        paddingTop: 2
-    },
-    rating: {
-        marginLeft: 5,
-        color: '#f1c40f',
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
-        paddingTop: 2
-    },
-    reviewCount: {
-        marginLeft: 5,
-        color: Theme.color.title,
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
-        paddingTop: 2
-    },
-    /*
-    note: {
-        marginTop: 5,
-        color: Theme.color.text2,
-        fontSize: 16,
-        lineHeight: Platform.OS === 'ios' ? 26 : 30,
-        fontFamily: "Roboto-Light",
-        paddingTop: Theme.spacing.small,
-        paddingBottom: Theme.spacing.small,
-        paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small,
-        backgroundColor: 'rgb(34, 34, 34)',
-        borderRadius: 5,
-        // borderColor: "transparent",
-        borderWidth: 0,
-    },
-    */
-    note: {
-        marginTop: Theme.spacing.tiny,
-
-        color: Theme.color.text2,
-        fontSize: 16,
-        fontFamily: "Roboto-Light",
-        lineHeight: 26
-    },
-    mapContainer: {
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny,
-        paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small,
-    },
-    location: {
-        // marginTop: Theme.spacing.xSmall,
-        marginBottom: Theme.spacing.tiny,
-
-        color: Theme.color.text2,
-        fontSize: 16,
-        lineHeight: 26,
-        fontFamily: "Roboto-Regular"
-    },
-    mapView: {
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny
-    },
-    map: {
-        width: '100%',
-        height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 5 * 3
-    },
-    writeReviewContainer: {
-        paddingBottom: Theme.spacing.tiny,
-        paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small
-    },
-    ratingText: {
-        color: Theme.color.placeholder,
-        textAlign: 'center',
-        fontSize: 16,
-        // lineHeight: 16,
-        fontFamily: "Roboto-Light",
-        paddingTop: 10,
-        paddingBottom: 10
-    },
-    reviewsContainer: {
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny,
-        paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small,
-    },
-    reviewContainer: {
-        // marginHorizontal: 10,
-        padding: 10,
-    },
-    reviewName: {
-        color: Theme.color.title,
-        fontSize: 14,
-        fontFamily: "Roboto-Medium",
-    },
-    reviewDate: {
-        color: Theme.color.text3,
-        fontSize: 12,
-        fontFamily: "Roboto-Light",
-        marginLeft: 'auto'
-    },
-    reviewRating: {
-        marginLeft: 4,
-        color: '#f1c40f',
-        fontSize: 14,
-        // lineHeight: 13,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Theme.spacing.xSmall
-        // paddingTop: 1
-    },
-    reviewText: {
-        color: Theme.color.text2,
-        fontSize: 14,
-        lineHeight: 18,
-        fontFamily: "Roboto-Regular"
-    },
-    replyOwner: {
-        color: Theme.color.title,
-        fontSize: 14,
-        fontFamily: "Roboto-MediumItalic"
-    },
-    replyDate: {
-        color: Theme.color.text3,
-        fontSize: 12,
-        fontFamily: "Roboto-Light",
-        marginLeft: 'auto'
-    },
-    replyComment: {
-        color: Theme.color.text2,
-        fontSize: 14,
-        lineHeight: 18,
-        fontFamily: "Roboto-Italic"
     },
     contactButton: {
         width: '85%',

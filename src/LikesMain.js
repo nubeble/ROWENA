@@ -486,7 +486,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             {
                                                 item.reviewCount === -1 &&
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                    <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'center' }}>
+                                                    <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
                                                         <ActivityIndicator animating={true} size={'small'} color={Theme.color.selection} />
                                                     </View>
                                                 </View>
