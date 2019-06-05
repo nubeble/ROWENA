@@ -272,7 +272,7 @@ export default class AdvertisementMain extends React.Component {
         let state = '';
         let city = '';
 
-        street = '';
+        street = ''; // remove country
         const words1 = result1.description.split(', ');
         const size = words1.length - 1;
         for (var i = 0; i < size; i++) {

@@ -328,8 +328,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         console.log('LikesMain', 'loading feeds done!');
 
-        // this.setState({ isLoadingFeeds: false });
-        this.setState({ isLoadingFeeds: false, loadingType: 0 });
+        // this.setState({ isLoadingFeeds: false, loadingType: 0 });
+        setTimeout(() => {
+            !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
+        }, 500);
 
         this.onLoading = false;
     }

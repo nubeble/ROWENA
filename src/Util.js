@@ -398,7 +398,6 @@ export default class Util extends React.Component {
         return str;
     }
 
-    /*
     static getCountyCode(country) {
         let code = null;
 
@@ -1435,7 +1434,6 @@ export default class Util extends React.Component {
 
         return code;
     }
-    */
 
     /*
     static isSameDay(date1, date2) {

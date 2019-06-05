@@ -140,7 +140,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const noteLength = about.length;
         */
 
-        this.setState({ uploadImageUri: imageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength: noteLength, email, phoneNumber });
+        this.setState({ uploadImageUri: imageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength, email, phoneNumber });
     }
 
     initFromSearch(result) { // 'Cebu, Philippines'
@@ -497,6 +497,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     <Text style={styles.searchBarTitle}>{'Edit Profile'}</Text>
 
                     {/* check button */}
+                    {/*
                     <TouchableOpacity
                         style={{
                             width: 48,
@@ -512,6 +513,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     >
                         <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
                     </TouchableOpacity>
+                    */}
                 </View>
 
                 <FlatList
@@ -948,6 +950,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
                             setTimeout(() => {
                                 // !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+
+                                // ToDo:
+
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -1003,6 +1008,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
                             setTimeout(() => {
                                 // !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+
+                                // ToDo:
+
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -1027,6 +1035,31 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.phoneNumberY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
                 </View>
+
+                <TouchableOpacity
+                    style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: 32 }]}
+                    onPress={async () => {
+                        if (this._showNotification) {
+                            this.hideNotification();
+                            this.hideAlertIcon();
+                        }
+
+                        await this.save()
+                    }}
+                >
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Save Profile</Text>
+                    {
+                        /*
+                        this.state.showPostLoader &&
+                        <ActivityIndicator
+                            style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 10002 }}
+                            animating={true}
+                            size="small"
+                            color={Theme.color.buttonText}
+                        />
+                        */
+                    }
+                </TouchableOpacity>
             </View>
         );
     }
@@ -1363,7 +1396,15 @@ const styles = StyleSheet.create({
         color: 'rgba(255, 255, 255, 0.8)',
         paddingBottom: 8
     },
-
+    contactButton: {
+        width: '85%',
+        height: Cons.buttonHeight,
+        alignSelf: 'center',
+        backgroundColor: Theme.color.buttonBackground,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
     notification: {
         // width: '100%',
         width: '94%',

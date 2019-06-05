@@ -310,7 +310,7 @@ export default class extends Component {
         if (!this.state.loopJump) return
         const i = this.state.index + (this.props.loop ? 1 : 0)
         const scrollView = this.scrollView
-        this.loopJumpTimer = setTimeout(() => scrollView.setPageWithoutAnimation &&
+        this.loopJumpTimer = setTimeout(() => !this.closed && scrollView.setPageWithoutAnimation &&
             scrollView.setPageWithoutAnimation(i), 50)
     }
 

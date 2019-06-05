@@ -247,6 +247,17 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     />
                 }
 
+                {
+                    this.state.isLoadingFeeds &&
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            animating={true}
+                            size="large"
+                            color={Theme.color.selection}
+                        />
+                    </View>
+                }
+
                 <Toast
                     ref="toast"
                     position='top'
@@ -370,10 +381,16 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         if (this.reload) {
             this.reload = false;
 
-            this.setState({ isLoadingFeeds: false, feeds: newFeeds });
+            // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
+            this.setState({ feeds: newFeeds });
         } else {
-            this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
+            // this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
+            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
         }
+
+        setTimeout(() => {
+            !this.closed && this.setState({ isLoadingFeeds: false });
+        }, 500);
 
         console.log('ReviewMain', 'loading feeds done!');
 

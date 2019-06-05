@@ -239,10 +239,10 @@ export default class MapScreen extends React.Component {
 
     moveRegion(region, duration) {
         if (this.ready) {
-            setTimeout(() => this.map.animateToRegion(region), duration);
-        }
+            setTimeout(() => !this.closed && this.map.animateToRegion(region), duration);
 
-        // this.setState({ region });
+            // this.setState({ region });
+        }
     }
 
     onRegionChange = (region) => {

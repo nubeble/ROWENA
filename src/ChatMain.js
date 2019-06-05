@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler
+    StyleSheet, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler, ActivityIndicator
 } from 'react-native';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import PreloadImage from './PreloadImage';
@@ -379,78 +379,86 @@ export default class ChatMain extends React.Component {
 
                 </View>
 
+                <FlatList
+                    ref={(fl) => this._flatList = fl}
+                    data={this.state.chatRoomList}
+                    keyExtractor={this.keyExtractor}
+                    renderItem={this.renderItem}
+                    // onEndReachedThreshold={0.5}
+                    // onEndReached={this.loadMore}
+                    onScroll={({ nativeEvent }) => {
+                        if (this.isCloseToBottom(nativeEvent)) {
+                            this.loadMore();
+                        }
+                    }}
+                    // scrollEventThrottle={1}
+
+                    contentContainerStyle={styles.contentContainer}
+                    showsVerticalScrollIndicator={true}
+
+                    /*
+                    ListFooterComponent={
+                        this.state.isLoadingChat &&
+                        <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
+                            <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
+                        </View>
+                    }
+                    */
+
+                    ListEmptyComponent={
+                        !this.state.isLoadingChat &&
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{
+                                color: Theme.color.text2,
+                                fontSize: 24,
+                                paddingTop: 4,
+                                fontFamily: "Roboto-Medium"
+                            }}>No new messages</Text>
+
+                            <Text style={{
+                                marginTop: 10,
+                                color: Theme.color.text3,
+                                fontSize: 18,
+                                fontFamily: "Roboto-Medium"
+                            }}>Let's find some hot chicks</Text>
+
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTimeout(() => {
+                                        // Consider: set scroll position 0
+
+                                        !this.closed && this.props.navigation.navigate("intro");
+                                    }, Cons.buttonTimeoutShort);
+                                }}
+                                style={{ marginTop: 20 }}>
+
+                                <View style={{
+                                    width: illustWidth, height: illustHeight,
+                                    justifyContent: 'center', alignItems: 'center'
+                                }}>
+                                    <Image
+                                        style={{
+                                            width: illustWidth * 0.6,
+                                            height: illustHeight * 0.6,
+                                            resizeMode: 'cover'
+                                        }}
+                                        source={PreloadImage.chat}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    }
+                />
+
                 {
-                    // this.state.renderChat &&
-                    <FlatList
-                        ref={(fl) => this._flatList = fl}
-                        data={this.state.chatRoomList}
-                        keyExtractor={this.keyExtractor}
-                        renderItem={this.renderItem}
-                        // onEndReachedThreshold={0.5}
-                        // onEndReached={this.loadMore}
-                        onScroll={({ nativeEvent }) => {
-                            if (this.isCloseToBottom(nativeEvent)) {
-                                this.loadMore();
-                            }
-                        }}
-                        // scrollEventThrottle={1}
-
-                        contentContainerStyle={styles.contentContainer}
-                        showsVerticalScrollIndicator={true}
-
-                        /*
-                        ListFooterComponent={
-                            this.state.isLoadingChat &&
-                            <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
-                            </View>
-                        }
-                        */
-
-                        ListEmptyComponent={
-                            !this.state.isLoadingChat &&
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{
-                                    color: Theme.color.text2,
-                                    fontSize: 24,
-                                    paddingTop: 4,
-                                    fontFamily: "Roboto-Medium"
-                                }}>No new messages</Text>
-
-                                <Text style={{
-                                    marginTop: 10,
-                                    color: Theme.color.text3,
-                                    fontSize: 18,
-                                    fontFamily: "Roboto-Medium"
-                                }}>Let's find some hot chicks</Text>
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setTimeout(() => {
-                                            // Consider: set scroll position 0
-
-                                            !this.closed && this.props.navigation.navigate("intro");
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                    style={{ marginTop: 20 }}>
-
-                                    <View style={{
-                                        width: illustWidth, height: illustHeight,
-                                        justifyContent: 'center', alignItems: 'center'
-                                    }}>
-                                        <Image
-                                            style={{
-                                                width: illustWidth * 0.6,
-                                                height: illustHeight * 0.6,
-                                                resizeMode: 'cover'
-                                            }}
-                                            source={PreloadImage.chat}
-                                        />
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        }
-                    />
+                    this.state.isLoadingChat &&
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            animating={true}
+                            size="large"
+                            color={Theme.color.selection}
+                        />
+                    </View>
                 }
 
                 <Toast

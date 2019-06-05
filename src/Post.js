@@ -1715,7 +1715,7 @@ export default class Post extends React.Component<InjectedProps> {
                             }
 
                             setTimeout(() => {
-                                this.props.navigation.navigate("readReview",
+                                !this.closed && this.props.navigation.navigate("readReview",
                                     {
                                         reviewStore: this.reviewStore,
                                         isOwner: this.state.isOwner,
