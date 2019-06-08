@@ -617,13 +617,12 @@ export default class Firebase {
     }
     */
 
-    static async updateLikes(uid, placeId, feedId, name, placeName, uri) {
+    static async toggleLikes(uid, placeId, feedId, name, placeName, uri) {
         let result;
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
-        // update count to post
         await Firebase.firestore.runTransaction(async transaction => {
             const postDoc = await transaction.get(feedRef);
             if (!postDoc.exists) throw 'Post document does not exist!';
@@ -670,58 +669,81 @@ export default class Firebase {
 
             transaction.update(userRef, { likes: userLikes });
         }).then(() => {
-            // console.log("Transaction successfully committed!");
+            console.log("Firebase.toggleLikes, success.");
             result = true;
         }).catch((error) => {
-            console.log('Firebase.updateLikes', error);
+            console.log('Firebase.toggleLikes', error);
             result = false;
         });
 
-        if (!result) return false;
+        return result;
+    }
 
-        // save to user profile
-        /*
+    static async updateLikes(uid, placeId, feedId, name, placeName, picture) {
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
         await Firebase.firestore.runTransaction(async transaction => {
-            const userRef = Firebase.firestore.collection("users").doc(uid);
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'Profile document does not exist!';
+            if (!userDoc.exists) throw 'User document does not exist!';
 
             let { likes } = userDoc.data();
-            let _idx = -1;
 
-            for (var i = 0; i < likes.length; i++) {
-                const item = likes[i];
+            for (let i = 0; i < likes.length; i++) {
+                let item = likes[i];
                 if (item.placeId === placeId && item.feedId === feedId) {
-                    _idx = i;
+
+                    item.name = name;
+                    item.placeName = placeName;
+                    item.picture = picture;
+
                     break;
                 }
-            }
 
-            if (_idx === -1) { // add
-                const data = { // LikeRef
-                    placeId,
-                    feedId,
-
-                    picture: uri,
-                    name,
-                    placeName
-                }
-                likes.push(data);
-            } else { // remove
-                likes.splice(_idx, 1);
+                likes[i] = item;
             }
 
             transaction.update(userRef, { likes });
         }).then(() => {
-            // console.log("Transaction successfully committed!");
-            result = true;
+            console.log("Firebase.updateLikes, success.");
         }).catch((error) => {
             console.log('Firebase.updateLikes', error);
+        });
+    }
+
+    // update like in user profile
+    static async removeLike(uid, placeId, feedId) {
+        let result;
+
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'Profile document does not exist!';
+
+            let { likes } = userDoc.data();
+            let index = -1;
+
+            for (var i = 0; i < likes.length; i++) {
+                const item = likes[i];
+                if (item.placeId === placeId && item.feedId === feedId) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index !== -1) {
+                likes.splice(index, 1);
+            }
+
+            transaction.update(userRef, { likes });
+        }).then(() => {
+            result = true;
+        }).catch((error) => {
+            console.log('Firebase.removeLike', error);
             result = false;
         });
-        */
 
-        return true;
+        return result;
     }
 
     static async updateReviewChecked(uid, placeId, feedId, checked) {
@@ -873,6 +895,38 @@ export default class Firebase {
         Firebase.updateReviewChecked(ownerUid, placeId, feedId, true);
 
         return result;
+    };
+
+    static async updateReview(uid, placeId, feedId, picture) {
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+            let { reviews } = userDoc.data();
+
+            for (let i = 0; i < reviews.length; i++) {
+                let review = reviews[i];
+
+                if (review.placeId === placeId && review.feedId === feedId) {
+                    review.picture = picture;
+
+                    reviews[i] = review;
+                    // break;
+                }
+            }
+
+            let data = {
+                reviews
+            };
+
+            transaction.update(userRef, data);
+        }).then(() => {
+            console.log('Firebase.updateReview, success.');
+        }).catch((error) => {
+            console.log('Firebase.updateReview', error);
+        });
     };
 
     static async removeReview(placeId, feedId, reviewId, userUid) {
@@ -1100,7 +1154,7 @@ export default class Firebase {
             transaction.update(userRef, { replies });
         });
 
-        // Consider: just leave the replyAdded value in guest's user profile
+        // Consider: just leave the replyAdded valueuserRef in guest's user profile
     }
 
     // customer review
@@ -1169,6 +1223,41 @@ export default class Firebase {
         return true;
     };
 
+    static async updateComments(uid, targetUid, name, place, picture) {
+        console.log('Firebase.updateComments', uid, targetUid, name, place, picture);
+
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document does not exist!';
+
+            let { comments } = userDoc.data(); // array
+
+            for (let i = 0; i < comments.length; i++) {
+                let item = comments[i];
+
+                if (item.userUid === targetUid) {
+                    item.name = name;
+                    item.placeName = place;
+                    item.picture = picture;
+                }
+
+                comments[i] = item;
+            }
+
+            let data = {
+                comments
+            };
+
+            transaction.update(userRef, data);
+        }).then(() => {
+            console.log('Firebase.updateComments, success.');
+        }).catch((error) => {
+            console.log('Firebase.updateComments', error);
+        });
+    };
+
     static async updateCommentChecked(uid, checked) {
         const profile = {
             commentAdded: checked
@@ -1225,7 +1314,7 @@ export default class Firebase {
     }
     // --
 
-    //// database ////
+    //// Realtime Database ////
 
     static async createChatRoom(uid, users, placeId, feedId, id, placeName, owner, addSystemMessage) {
         const timestamp = Firebase.timestamp();
@@ -1393,10 +1482,10 @@ export default class Firebase {
 
         if (user !== null) {
             name = user.displayName;
-            if (!name) name = 'Anonymous'; // test
+            // if (!name) name = 'Anonymous'; // ToDo: test
             email = user.email;
             photoUrl = user.photoURL;
-            if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // test
+            // if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // ToDo: test
             emailVerified = user.emailVerified;
             uid = user.uid;
         }
@@ -1421,7 +1510,7 @@ export default class Firebase {
         return firebase.database.ServerValue.TIMESTAMP;
     }
 
-    static async sendMessage(id, message, post) {
+    static async sendMessage(id, message, item) {
         const { text, user } = message;
 
         let _user = {};
@@ -1445,7 +1534,7 @@ export default class Firebase {
         const mid = snap.key;
 
         //// update the latest message info (timestamp, contents, message id) to chat of sender ////
-        const senderUid = post.users[0].uid;
+        const senderUid = item.users[0].uid;
         const updateData = {
             contents: text,
             timestamp,
@@ -1455,16 +1544,16 @@ export default class Firebase {
         await Firebase.database.ref('chat').child(senderUid).child(id).update(updateData);
 
         //// update timestamp, contents to chat of receiver ////
-        const receiverUid = post.users[1].uid;
+        const receiverUid = item.users[1].uid;
         const room = await Firebase.findChatRoomById(receiverUid, id);
         if (!room) {
             // create new chat room
             // --
             let users = []; // name, picture, uid
-            users.push(post.users[1]);
-            users.push(post.users[0]);
+            users.push(item.users[1]);
+            users.push(item.users[0]);
 
-            await Firebase.createChatRoom(receiverUid, users, post.placeId, post.feedId, id, post.placeName, post.owner, false);
+            await Firebase.createChatRoom(receiverUid, users, item.placeId, item.feedId, id, item.placeName, item.owner, false);
             // --
         }
 
@@ -1673,4 +1762,43 @@ export default class Firebase {
 
         return result;
     }
+
+    static async updateChatRoom(myUid, opponentUid, roomId, myUsers) {
+        // update my chat room
+        await Firebase.database.ref('chat').child(myUid).child(roomId).once('value').then(snapshot => {
+            if (!snapshot.exists()) throw 'Database data does not exist! (User left the chat room.)';
+
+            // update
+            const updateData = {
+                users: myUsers
+            };
+
+            Firebase.database.ref('chat').child(myUid).child(roomId).update(updateData);
+        }).then(() => {
+            console.log('Firebase.updateChatRoom, success.');
+        }).catch((error) => {
+            console.log('Firebase.updateChatRoom', error);
+        });
+
+        // update the opponent chat room
+        await Firebase.database.ref('chat').child(opponentUid).child(roomId).once('value').then(snapshot => {
+            if (!snapshot.exists()) throw 'Database data does not exist! (User left the chat room.)';
+
+            let users = [];
+            users.push(myUsers[1]);
+            users.push(myUsers[0]);
+
+            // update
+            const updateData = {
+                users
+            };
+
+            Firebase.database.ref('chat').child(opponentUid).child(roomId).update(updateData);
+        }).then(() => {
+            console.log('Firebase.updateChatRoom, success.');
+        }).catch((error) => {
+            console.log('Firebase.updateChatRoom', error);
+        });
+    }
+
 }

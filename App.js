@@ -208,8 +208,6 @@ export default class App extends React.Component {
                         if (Vars.currentScreenName !== 'ProfileMain') {
                             // show badge
                             this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
-
-                            // ToDo: mark on the post in the Posts You've Reviewed (process this in renderItem ProfileMain)
                         }
                     } break;
 
@@ -217,8 +215,6 @@ export default class App extends React.Component {
                         if (Vars.currentScreenName !== 'ProfileMain') {
                             // show badge
                             this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
-
-                            // ToDo: mark on the comment list in the Edit Profile (process this in renderItem ProfileMain)
                         }
                     } break;
                 }
@@ -233,57 +229,7 @@ export default class App extends React.Component {
                         const message = data.userData.message;
                         const chatRoomId = data.userData.chatRoomId;
 
-                        const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
-                        if (room) {
-                            // NavigationService.navigate("chatRoom", { item: room });
-
-                            // title
-                            let titleImageUri = null;
-                            let titleName = null;
-                            let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
-
-                            if (room.users[0].uid === room.owner) {
-                                titleImageUri = room.users[0].picture;
-                                titleName = room.users[0].name;
-                                customer = room.users[1].uid;
-                            } else { // if (room.users[1].uid === room.owner) {
-                                titleImageUri = room.users[1].picture;
-                                titleName = room.users[1].name;
-                            }
-
-                            const title = {
-                                picture: titleImageUri,
-                                name: titleName
-                            };
-
-                            // feed
-                            const post = await Firebase.getPost(item.feedId);
-
-                            // feed count
-                            const feedSize = await Firebase.getFeedSize(item.placeId);
-
-                            // customer profile
-                            let customerProfile = null;
-                            if (customer) customerProfile = await Firebase.getProfile(customer);
-
-                            const params = {
-                                id: room.id,
-                                placeId: room.placeId,
-                                feedId: room.feedId,
-                                users: room.users,
-                                owner: room.owner, // owner uid of the post
-                                showAvatar: room.contents === '' ? true : false,
-                                lastReadMessageId: room.lastReadMessageId,
-                                placeName: room.placeName,
-
-                                title,
-                                post,
-                                feedSize,
-                                customerProfile
-                            };
-
-                            NavigationService.navigate("chatRoom", { item: params });
-                        }
+                        this.moveToChatRoom(chatRoomId);
                     } break;
 
                     case Cons.pushNotification.review: {
@@ -294,19 +240,8 @@ export default class App extends React.Component {
                         const placeId = data.userData.placeId;
                         const feedId = data.userData.feedId;
 
-                        // move to detail
-                        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-                        if (!placeDoc.exists) return;
-
-                        const extra = {
-                            feedSize: placeDoc.data().count
-                        };
-
-                        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-                        if (!feedDoc.exists) return;
-
-                        const post = feedDoc.data();
-                        NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+                        // move to post preview
+                        this.moveToUserPost(placeId, feedId);
                     } break;
 
                     case Cons.pushNotification.reply: {
@@ -317,27 +252,97 @@ export default class App extends React.Component {
                         const placeId = data.userData.placeId;
                         const feedId = data.userData.feedId;
 
-                        // move to detail
-                        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-                        if (!placeDoc.exists) return;
-
-                        const extra = {
-                            feedSize: placeDoc.data().count
-                        };
-
-                        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-                        if (!feedDoc.exists) return;
-
-                        const post = feedDoc.data();
-                        NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+                        // move to post preview
+                        this.moveToUserPost(placeId, feedId);
                     } break;
 
                     case Cons.pushNotification.comment: {
-                        // ToDo
+                        // hide badge
+                        this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
+
+                        const message = data.userData.message;
+
+                        // move to check profile
+                        this.moveToCheckProfile();
                     } break;
                 }
             }
         }
+    }
+
+    async moveToChatRoom(chatRoomId) {
+        const room = await Firebase.findChatRoomById(Firebase.user().uid, chatRoomId);
+        if (room) {
+            // NavigationService.navigate("chatRoom", { item: room });
+
+            // title
+            let titleImageUri = null;
+            let titleName = null;
+            let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+
+            if (room.users[0].uid === room.owner) {
+                titleImageUri = room.users[0].picture;
+                titleName = room.users[0].name;
+                customer = room.users[1].uid;
+            } else { // if (room.users[1].uid === room.owner) {
+                titleImageUri = room.users[1].picture;
+                titleName = room.users[1].name;
+            }
+
+            const title = {
+                picture: titleImageUri,
+                name: titleName
+            };
+
+            // feed
+            const post = await Firebase.getPost(room.feedId);
+
+            // feed count
+            const feedSize = await Firebase.getFeedSize(room.placeId);
+
+            // customer profile
+            let customerProfile = null;
+            if (customer) customerProfile = await Firebase.getProfile(customer);
+
+            const params = {
+                id: room.id,
+                placeId: room.placeId,
+                feedId: room.feedId,
+                users: room.users,
+                owner: room.owner, // owner uid of the post
+                showAvatar: room.contents === '' ? true : false,
+                lastReadMessageId: room.lastReadMessageId,
+                placeName: room.placeName,
+
+                title,
+                post,
+                feedSize,
+                customerProfile
+            };
+
+            NavigationService.navigate("chatRoom", { item: params });
+        }
+    }
+
+    async moveToUserPost(placeId, feedId) {
+        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        if (!placeDoc.exists) return;
+
+        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        if (!feedDoc.exists) return;
+
+        const extra = {
+            feedSize: placeDoc.data().count
+        };
+
+        const post = feedDoc.data();
+
+        NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+    }
+
+    moveToCheckProfile() {
+        Firebase.updateCommentChecked(Firebase.user().uid, false);
+        NavigationService.navigate("edit");
     }
 
     render() {

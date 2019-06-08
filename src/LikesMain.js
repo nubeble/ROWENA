@@ -51,7 +51,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-        this.onLoading = false;
+        // this.onLoading = false;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -167,7 +167,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     getSavedFeeds() {
-        if (this.onLoading) return;
+        // if (this.onLoading) return;
+        if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
         if (!profile) return;
@@ -176,7 +177,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
         const length = feeds.length;
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-
             return;
         }
 
@@ -193,11 +193,11 @@ export default class LikesMain extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
-        this.onLoading = true;
-
-        console.log('LikesMain', 'loading feeds...');
+        // this.onLoading = true;
 
         // this.setState({ isLoadingFeeds: true });
+
+        console.log('LikesMain', 'loading feeds...');
 
         let newFeeds = [];
 
@@ -221,17 +221,11 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
             const placeId = feed.placeId;
             const feedId = feed.feedId;
-
-            const picture = feed.picture;
             const name = feed.name;
             const placeName = feed.placeName;
-
-
-
+            const picture = feed.picture;
 
             if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
-                // console.log('post from memory');
-
                 const newFeed = this.feedList.get(feedId);
                 newFeeds.push(newFeed);
             } else {
@@ -244,6 +238,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 this.feedList.set(feedId, newFeed);
                 */
+
+
+
                 const newFeed = {
                     name,
                     placeName,
@@ -261,56 +258,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 newFeeds.push(newFeed);
 
                 // subscribe here (post)
-                // --
-                const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
-                    if (newFeed === undefined) { // newFeed === undefined if removed
-                        // update this.feedList
-                        this.feedList.delete(feedId);
-
-                        // update state feed & UI
-                        let feeds = [...this.state.feeds];
-                        const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
-                        if (index !== -1) {
-                            feeds.splice(index, 1);
-                            !this.closed && this.setState({ feeds });
-                        }
-
-                        return;
-                    }
-
-                    // update this.feedList
-                    this.feedList.set(feedId, newFeed);
-
-                    // update state feed & UI
-                    let feeds = [...this.state.feeds];
-                    const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
-                    if (index !== -1) {
-                        feeds[index] = newFeed;
-                        !this.closed && this.setState({ feeds });
-                    }
-                });
-
-                this.feedsUnsubscribes.push(fi);
-                // --
+                this.subscribeToPost(placeId, feedId);
 
                 // subscribe here (count)
-                // --
-                if (!this.feedCountList.has(placeId)) {
-                    const ci = Firebase.subscribeToPlace(placeId, newPlace => {
-                        if (newPlace === undefined) {
-                            this.feedCountList.delete(placeId);
-                            return;
-                        }
-
-                        // console.log('count changed', newPlace.count);
-
-                        // update this.feedCountList
-                        this.feedCountList.set(placeId, newPlace.count);
-                    });
-
-                    this.countsUnsubscribes.push(ci);
-                }
-                // --
+                this.subscribeToPlace(placeId);
             }
 
             this.lastLoadedFeedIndex = i;
@@ -333,24 +284,84 @@ export default class LikesMain extends React.Component<InjectedProps> {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 500);
 
-        this.onLoading = false;
+        // this.onLoading = false;
+    }
+
+    subscribeToPost(placeId, feedId) {
+        const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+            if (newFeed === undefined) {
+                // update this.feedList
+                this.feedList.delete(feedId);
+
+                // update state feed & UI
+                let feeds = [...this.state.feeds];
+                const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
+                if (index !== -1) {
+                    feeds.splice(index, 1);
+                    !this.closed && this.setState({ feeds });
+                }
+
+                // update database
+                Firebase.removeLike(Firebase.user().uid, placeId, feedId);
+
+                return;
+            }
+
+            // update this.feedList
+            this.feedList.set(feedId, newFeed);
+
+            // update state feed & UI
+            let changed = false;
+            let feeds = [...this.state.feeds];
+            const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
+            if (index !== -1) {
+                const item = feeds[index];
+                if (item.name !== newFeed.name || item.placeName !== newFeed.placeName || item.pictures.one.uri !== newFeed.pictures.one.uri) changed = true;
+
+                feeds[index] = newFeed;
+                !this.closed && this.setState({ feeds });
+            }
+
+            // update database
+            if (changed) {
+                const name = newFeed.name;
+                const placeName = newFeed.placeName;
+                const picture = newFeed.pictures.one.uri;
+                Firebase.updateLikes(Firebase.user().uid, placeId, feedId, name, placeName, picture);
+            }
+        });
+
+        this.feedsUnsubscribes.push(fi);
+    }
+
+    subscribeToPlace(placeId) {
+        if (!this.feedCountList.has(placeId)) {
+            const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                if (newPlace === undefined) {
+                    this.feedCountList.delete(placeId);
+                    return;
+                }
+
+                // update this.feedCountList
+                this.feedCountList.set(placeId, newPlace.count);
+            });
+
+            this.countsUnsubscribes.push(ci);
+        }
     }
 
     async openPost(item, index) {
         const post = this.state.feeds[index];
-
         if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-
             // we skip here. NOT to refresh! (leave it to the user)
 
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
         const feedSize = this.getFeedSize(item.placeId);
         if (feedSize === 0) {
             this.refs["toast"].show('Please try again.', 500);
-
             return;
         }
 

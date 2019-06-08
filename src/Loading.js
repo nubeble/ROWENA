@@ -400,36 +400,31 @@ export default class Loading extends React.Component<InjectedProps> {
         // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
         // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우
 
-
-        // 1.
         const { profileStore } = this.props;
         const { profile } = profileStore;
 
-        if (profile) {
-            const feeds = profile.feeds;
-            for (var i = 0; i < feeds.length; i++) {
-                const feed = feeds[i];
-                if (feed.reviewAdded) {
-                    return true;
-                }
+        if (!profile) return false;
+
+        // 1. check reviews on my post
+        const feeds = profile.feeds;
+        for (let i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+            if (feed.reviewAdded) {
+                return true;
             }
         }
 
-        // check 2
-        if (profile) {
-            const reviews = profile.reviews;
-            for (var i = 0; i < reviews.length; i++) {
-                const review = reviews[i];
-                if (review.replyAdded) {
-                    return true;
-                }
+        // 2. check replies on my review
+        const reviews = profile.reviews;
+        for (let i = 0; i < reviews.length; i++) {
+            const review = reviews[i];
+            if (review.replyAdded) {
+                return true;
             }
         }
 
-        // check 3
-        if (profile) {
-            if (profile.commentAdded) return true;
-        }
+        // 3. check comments on my profile
+        if (profile.commentAdded) return true;
 
         return false;
     }

@@ -46,7 +46,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-        this.onLoading = false;
+        // this.onLoading = false;
 
         this.customerList = new Map();
         this.customersUnsubscribes = [];
@@ -151,8 +151,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
                             if (!item.picture) {
                                 // avatarName = 'JK';
                                 avatarName = Util.getAvatarName(item.name);
-                                // avatarColor = this.getAvatarColor(index);
-                                avatarColor = this.getAvatarColor(item.commentId);
+                                // avatarColor = this.getAvatarColor(item.commentId);
+                                avatarColor = this.getAvatarColor(item.uid);
                             }
 
                             return (
@@ -277,7 +277,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     getCommentedFeeds() {
-        if (this.onLoading) return;
+        // if (this.onLoading) return;
+        if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
         const comments = profile.comments;
@@ -303,11 +304,11 @@ export default class CommentMain extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
-        this.onLoading = true;
-
-        console.log('CommentMain', 'loading feeds...');
+        // this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
+
+        console.log('CommentMain', 'loading feeds...');
 
         let newFeeds = [];
 
@@ -329,18 +330,18 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
 
 
-            const userUid = comment.userUid;
+            const uid = comment.userUid;
             const commentId = comment.commentId;
             const name = comment.name;
             const placeName = comment.placeName;
             const uri = comment.picture;
 
-            if (this.customerList.has(userUid)) {
-                const user = this.customerList.get(userUid);
+            if (this.customerList.has(uid)) {
+                const user = this.customerList.get(uid);
 
                 const customer = {
                     commentId,
-                    uid: userUid,
+                    uid,
                     name: user.name,
                     place: user.place,
                     picture: user.picture.uri
@@ -350,7 +351,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             } else {
                 const customer = {
                     commentId,
-                    uid: userUid,
+                    uid,
                     name, // will be updated
                     place: placeName, // will be updated
                     picture: uri // will be updated
@@ -359,35 +360,25 @@ export default class CommentMain extends React.Component<InjectedProps> {
                 newFeeds.push(customer);
 
                 // subscribe here
-                const instance = Firebase.subscribeToProfile(userUid, user => {
+                const instance = Firebase.subscribeToProfile(uid, user => {
                     if (user === undefined) {
                         // update this.customerList
-                        this.customerList.delete(userUid);
-
-                        // update state feed & UI // ToDo
-                        /*
-                        let feeds = [...this.state.feeds];
-                        for (let i = 0; i < feeds.length; i++) {
-                            const feed = feeds[i];
-                            if (feed.uid === userUid) {
-                                feeds.splice(index, 1);
-                            }
-                        }
-
-                        !this.closed && this.setState({ feeds });
-                        */
-
+                        this.customerList.delete(uid);
                         return;
                     }
 
                     // update this.customerList
-                    this.customerList.set(userUid, user);
+                    this.customerList.set(uid, user);
 
                     // update state feed & UI
+                    let changed = false;
                     let feeds = [...this.state.feeds];
                     for (let i = 0; i < feeds.length; i++) {
                         let feed = feeds[i];
-                        if (feed.uid === userUid) {
+                        if (feed.uid === uid) {
+
+                            if (feed.name !== user.name || feed.place !== user.place || feed.picture !== user.picture.uri) changed = true;
+
                             feed.name = user.name;
                             feed.place = user.place;
                             feed.picture = user.picture.uri;
@@ -397,6 +388,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     }
 
                     !this.closed && this.setState({ feeds });
+
+                    // update database
+                    if (changed) {
+                        const { profile } = this.props.profileStore;
+                        Firebase.updateComments(profile.uid, user.uid, user.name, user.place, user.picture.uri);
+                    }
                 });
 
                 this.customersUnsubscribes.push(instance);
@@ -423,7 +420,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         console.log('CommentMain', 'loading feeds done!');
 
-        this.onLoading = false;
+        // this.onLoading = false;
     }
 
     postClick(item) {

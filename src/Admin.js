@@ -197,7 +197,7 @@ export default class Admin extends React.Component {
 
             case 2: {
                 uri1 = 'https://i1.daumcdn.net/thumb/R750x0/?fname=http%3A%2F%2Fcfile27.uf.tistory.com%2Fimage%2F99115C3359D104EA04DB67';
-                uri2 = 'https://i.ytimg.com/vi/dW0mXvpPRJ8/maxresdefault.jpg';
+                uri2 = 'https://t1.daumcdn.net/cfile/tistory/22219E3C591AC33505';
                 uri3 = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';
                 uri4 = 'https://pbs.twimg.com/profile_images/744128499904978944/eIN4yA3y_400x400.jpg';
             } break;

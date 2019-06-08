@@ -19,7 +19,8 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const DEFAULT_FEED_COUNT = 12; // 3 x 4
+// const DEFAULT_FEED_COUNT = 12; // 3 x 4
+const DEFAULT_FEED_COUNT = 18; // 3 x 6
 
 // 1:1
 const illustHeight = 340;
@@ -45,7 +46,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-        this.onLoading = false;
+        // this.onLoading = false;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -198,7 +199,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         refreshing={this.state.refreshing}
 
                         ListHeaderComponent={
-                            (this.state.totalFeedsSize > 0) &&
+                            this.state.totalFeedsSize > 0 &&
                             <View>
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
@@ -269,7 +270,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     }
 
     getReviewedFeeds() {
-        if (this.onLoading) return;
+        // if (this.onLoading) return;
+        if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
         const reviews = profile.reviews;
@@ -296,11 +298,11 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
-        this.onLoading = true;
-
-        console.log('ReviewMain', 'loading feeds...');
+        // this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
+
+        console.log('ReviewMain', 'loading feeds...');
 
         let newFeeds = [];
 
@@ -334,18 +336,22 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     return;
                 }
 
-                // console.log('feed subscribed');
-
                 // update this.feedList
                 this.feedList.set(feedId, newFeed);
 
                 // update picture
+                let changed = false;
                 let feeds = [...this.state.feeds];
                 const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
                 if (index !== -1) {
+                    if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+
                     feeds[index].picture = newFeed.pictures.one.uri;
                     !this.closed && this.setState({ feeds });
                 }
+
+                // update database
+                if (changed) Firebase.updateReview(uid, placeId, feedId, newFeed.pictures.one.uri);
             });
 
             this.feedsUnsubscribes.push(fi);
@@ -360,8 +366,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         this.feedCountList.delete(placeId);
                         return;
                     }
-
-                    // console.log('count subscribed');
 
                     // update this.feedCountList
                     this.feedCountList.set(placeId, newPlace.count);
@@ -394,7 +398,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         console.log('ReviewMain', 'loading feeds done!');
 
-        this.onLoading = false;
+        // this.onLoading = false;
     }
 
     postClick(item) {

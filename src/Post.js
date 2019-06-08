@@ -359,7 +359,7 @@ export default class Post extends React.Component<InjectedProps> {
         const reviewCount = post.reviewCount;
         const uri = post.pictures.one.uri;
 
-        const result = await Firebase.updateLikes(uid, placeId, feedId, name, placeName, uri);
+        const result = await Firebase.toggleLikes(uid, placeId, feedId, name, placeName, uri);
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500);
@@ -1375,7 +1375,7 @@ export default class Post extends React.Component<InjectedProps> {
                     fontFamily: "Roboto-Regular",
                     // backgroundColor: 'green',
                     // paddingTop: 12
-                }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
+                }}>{"#" + ranking + " of " + numberOfGirls + " girls in " + cityName}</Text>
 
                 <View style={{ marginBottom: 18 }}>
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>

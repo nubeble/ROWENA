@@ -15,6 +15,7 @@ import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
+import PreloadImage from './PreloadImage';
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 const textInputPaddingTop = (Dimensions.get('window').height / 26);
@@ -128,14 +129,15 @@ export default class ChatRoom extends React.Component {
         Firebase.chatOn(item.id, message => {
             console.log('on message', message);
 
-            // fill name, avatar in user
+            // fill name, avatar (picture)
             if (message.user) {
                 for (let i = 0; i < item.users.length; i++) {
                     const user = item.users[i];
 
                     if (message.user._id === user.uid) {
                         message.user.name = user.name;
-                        message.user.avatar = user.picture;
+                        if (user.picture) message.user.avatar = user.picture;
+                        else message.user.avatar = PreloadImage.user; // ToDo: tint color
 
                         break;
                     }
@@ -154,7 +156,7 @@ export default class ChatRoom extends React.Component {
 
         // show center post avatar
 
-        //        if (item.contents === '') this.setState({ renderPost: true });
+        // if (item.contents === '') this.setState({ renderPost: true });
 
         if (item.showAvatar) this.setState({ renderPost: true });
     }
@@ -170,9 +172,9 @@ export default class ChatRoom extends React.Component {
         Firebase.chatOff(item.id);
 
         /*
-                if (this.feedUnsubscribe) this.feedUnsubscribe();
-                if (this.countUnsubscribe) this.countUnsubscribe();
-                if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
+            if (this.feedUnsubscribe) this.feedUnsubscribe();
+            if (this.countUnsubscribe) this.countUnsubscribe();
+            if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
         */
 
         this.closed = true;

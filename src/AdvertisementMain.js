@@ -1780,7 +1780,10 @@ export default class AdvertisementMain extends React.Component {
                             position: 'absolute', top: 0, left: 0,
                             justifyContent: 'center', alignItems: 'center'
                         }}>
+                            {/*
                             <RefreshIndicator refreshing={true} total={3} size={4} color={Theme.color.selection} />
+                            */}
+                            <ActivityIndicator animating={true} size="small" color={Theme.color.selection} />
                         </View>
                     }
                 </View>
@@ -1818,7 +1821,10 @@ export default class AdvertisementMain extends React.Component {
                         position: 'absolute', top: 0, left: 0,
                         justifyContent: 'center', alignItems: 'center'
                     }}>
+                        {/*
                         <RefreshIndicator refreshing={true} total={3} size={4} color={Theme.color.selection} />
+                        */}
+                        <ActivityIndicator animating={true} size="small" color={Theme.color.selection} />
                     </View>
                 }
             </View>

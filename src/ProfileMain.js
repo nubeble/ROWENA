@@ -72,7 +72,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-        this.onLoading = false;
+        // this.onLoading = false;
 
         this.lastCommentsUpdatedTime = 0;
 
@@ -85,8 +85,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // this.imageRefs = []; // for cleaning files in server
 
         // used in checkUpdateOnUserFeed
-        this.reviewAddedFeedHashTable = [];
-        this.replyAddedReviewHashTable = [];
+        // this.reviewAddedFeedHashTable = [];
+        this.reviewAddedFeedHashTable = new Map();
     }
 
     componentDidMount() {
@@ -183,14 +183,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // check user feed updates
         if (this.checkUpdateOnUserFeed() === true) {
-            console.log('111111111111111111')
             this.lastChangedTime = 0;
             this.getUserFeeds();
         } else {
             const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
-            console.log('222222222222222')
             if (this.lastChangedTime !== lastChangedTime) {
-                console.log('3333333333333')
                 // reload from the start
                 this.getUserFeeds();
 
@@ -266,7 +263,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     };
 
     getUserFeeds() {
-        if (this.onLoading) return;
+        // if (this.onLoading) return;
+        if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
         if (!profile) return;
@@ -294,11 +292,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
-        this.onLoading = true;
-
-        console.log('ProfileMain', 'loading feeds...');
+        // this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
+
+        console.log('ProfileMain', 'loading feeds...');
 
         let newFeeds = [];
 
@@ -390,7 +388,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         console.log('ProfileMain', 'loading feeds done!');
 
-        this.onLoading = false;
+        // this.onLoading = false;
     }
 
     async postClick(item) {
@@ -454,8 +452,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const extra = {
             feedSize: feedSize
         };
-
-        // console.log('post', post);
 
         // setTimeout(() => {
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
@@ -589,6 +585,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             }
         }
 
+        const replyAdded = this.checkUpdateOnReview();
+
         return (
             <View style={styles.flex}>
                 <Animated.View
@@ -656,9 +654,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         onPress={() => {
                                             if (!profile) return;
 
-                                            setTimeout(async () => {
+                                            setTimeout(() => {
                                                 if (this.closed) return;
-                                                await Firebase.updateCommentChecked(uid, false);
+                                                Firebase.updateCommentChecked(uid, false);
                                                 this.props.navigation.navigate("edit");
                                             }, Cons.buttonTimeoutShort);
                                         }}
@@ -754,10 +752,21 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         >
                                             <View style={{
                                                 width: '100%', height: Dimensions.get('window').height / 14,
-                                                justifyContent: 'center',
-                                                paddingLeft: 2
+                                                // justifyContent: 'center', paddingLeft: 2
+                                                flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Girls You've Reviewed"}</Text>
+                                                {
+                                                    replyAdded &&
+                                                    <View style={{
+                                                        backgroundColor: 'red',
+                                                        borderRadius: Cons.redDotWidth / 2,
+                                                        width: Cons.redDotWidth,
+                                                        height: Cons.redDotWidth,
+                                                        marginLeft: Cons.redDotWidth / 2,
+                                                        marginBottom: Cons.redDotWidth * 2
+                                                    }} />
+                                                }
                                                 <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
@@ -802,10 +811,23 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             >
                                                 <View style={{
                                                     width: '100%', height: Dimensions.get('window').height / 14,
-                                                    justifyContent: 'center',
-                                                    paddingLeft: 2
+                                                    // justifyContent: 'center', paddingLeft: 2
+                                                    flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
                                                     <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Customers You've Reviewed"}</Text>
+                                                    {
+                                                        /*
+                                                        // commentAdded &&
+                                                        <View style={{
+                                                            backgroundColor: 'red',
+                                                            borderRadius: Cons.redDotWidth / 2,
+                                                            width: Cons.redDotWidth,
+                                                            height: Cons.redDotWidth,
+                                                            marginLeft: Cons.redDotWidth / 2,
+                                                            marginBottom: Cons.redDotWidth * 2
+                                                        }} />
+                                                        */
+                                                    }
                                                     <MaterialCommunityIcons name='comment-text-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
                                                 </View>
                                             </TouchableOpacity>
@@ -1166,6 +1188,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hideDialog();
     }
 
+    /*
     checkUpdateOnCustomerReview() {
         const { profileStore } = this.props;
         const { profile } = profileStore;
@@ -1178,60 +1201,57 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         return false;
     }
+    */
 
     // copied from Loading.js
-    checkUpdateOnUserFeed() { // User Feed 업데이트만 체크!
-        // 1. owner의 경우, 내가 올린 post에 리뷰가 달린 경우
-        // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
-        // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우 - skip here!
+    checkUpdateOnUserFeed() {
+        // User Feed 업데이트만 체크!
+        // owner의 경우, 내가 올린 post에 리뷰가 달린 경우
 
-
-        // 1.
         const { profileStore } = this.props;
         const { profile } = profileStore;
 
         if (!profile) return false;
 
-        // check 1
-        let feedResult = false;
+        // check reviews on my post
+        let result = false;
+
         const feeds = profile.feeds;
         for (let i = 0; i < feeds.length; i++) {
             const feed = feeds[i];
             if (feed.reviewAdded) {
-                // return true;
-
-                const saved = this.reviewAddedFeedHashTable[i];
+                // const saved = this.reviewAddedFeedHashTable[i];
+                const saved = this.reviewAddedFeedHashTable.has(feed.feedId);
                 if (saved) { // saved. means already applied.
                     // skip
                 } else {
-                    this.reviewAddedFeedHashTable[i] = 1;
-                    feedResult = true;
+                    // this.reviewAddedFeedHashTable[i] = 1;
+                    this.reviewAddedFeedHashTable.set(feed.feedId, 1);
+                    result = true;
                 }
-
             }
         }
 
-        // check 2
-        let reviewResult = false;
+        return result;
+    }
+
+    checkUpdateOnReview() {
+        // Girls You've Reviewed
+        // customer의 경우, 내가 쓴 review에 답글이 달린 경우
+
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+
+        if (!profile) return false;
+
+        // check replies on my review
         const reviews = profile.reviews;
         for (let i = 0; i < reviews.length; i++) {
             const review = reviews[i];
             if (review.replyAdded) {
-                // return true;
-
-                const saved = this.replyAddedReviewHashTable[i];
-                if (saved) { // saved. means already applied.
-                    // skip
-                } else {
-                    this.replyAddedReviewHashTable[i] = 1;
-                    reviewResult = true;
-                }
-
+                return true;
             }
         }
-
-        // return false;
-        if (feedResult || reviewResult) return true;
 
         return false;
     }
