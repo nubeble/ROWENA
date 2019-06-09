@@ -36,8 +36,6 @@ export default class ReadAllReviewsScreen extends React.Component {
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
 
-        focused: false,
-
         notification: '',
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
@@ -106,12 +104,12 @@ export default class ReadAllReviewsScreen extends React.Component {
     onFocus() {
         Vars.currentScreenName = 'ReadAllReviewsScreen';
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -190,7 +188,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             // onEndReachedThreshold={0.5}
                             // onEndReached={this.loadMore}
                             onScroll={({ nativeEvent }) => {
-                                if (!this.state.focused) return;
+                                if (!this.focused) return;
 
                                 if (this.isCloseToBottom(nativeEvent)) {
                                     this.loadMore();

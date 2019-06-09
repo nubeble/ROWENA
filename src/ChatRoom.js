@@ -607,10 +607,12 @@ export default class ChatRoom extends React.Component {
             const item = this.props.navigation.state.params.item;
 
             const post = item.post;
+
             const extra = {
                 feedSize: item.feedSize
             };
 
+            Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
             this.props.navigation.navigate("post", { post, extra, from: 'ChatRoom' });
         }, Cons.buttonTimeoutShort);
     }

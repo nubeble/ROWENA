@@ -492,6 +492,12 @@ export default class ChatMain extends React.Component {
         const timestamp = item.timestamp;
         const time = Util.getTime(timestamp);
         const contents = item.contents; // last message
+        let _contents = null;
+        if (contents.length > 30) {
+            _contents = contents.substr(0, 29) + '...';
+        } else {
+            _contents = contents;
+        }
         const update = this.checkUpdate(item.lastReadMessageId, item.mid);
         // const viewHeight = Dimensions.get('window').height / 10;
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
@@ -587,7 +593,7 @@ export default class ChatMain extends React.Component {
                     }}>
                         <Text style={styles.time}>{time}</Text>
                         <Text style={styles.name}>{opponent.name}</Text>
-                        <Text style={styles.contents}>{contents}</Text>
+                        <Text style={styles.contents}>{_contents}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -832,8 +838,7 @@ const styles = StyleSheet.create({
         marginTop: Dimensions.get('window').height / 60,
         color: Theme.color.text3,
         fontSize: 18,
-        fontFamily: "Roboto-Regular",
-        // numberOfLines: 1, ellipsizeMode: 'tail'
+        fontFamily: "Roboto-Regular"
     },
     time: {
         /*

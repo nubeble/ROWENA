@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Constants, Svg, Haptic, Linking } from "expo";
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -60,7 +60,7 @@ export default class Post extends React.Component<InjectedProps> {
         // from: null,
         post: null,
 
-        renderList: false,
+        // renderList: false,
         isOwner: false,
 
         showKeyboard: false,
@@ -139,10 +139,16 @@ export default class Post extends React.Component<InjectedProps> {
 
     getChartInfo(post) {
         const chart = this.state.chartInfo;
+        if (!chart) return null;
 
-        // 2) ranking
-        // ToDo: calc ranking by averageRating
-        const ranking = 2;
+        let visitCount = 0; // people
+        let totalVisitCount = 0;
+        let visitCountPerDay = 0; // people
+        if (post.visits) { // ToDo: tmp
+            visitCount = post.visits.length;
+            totalVisitCount = this.getVisitCount(post.visits);
+            visitCountPerDay = this.getVisitCountPerDay(post.visits);
+        }
 
         const newChart = {
             cityName: chart.cityName,
@@ -151,10 +157,54 @@ export default class Post extends React.Component<InjectedProps> {
             averageRating: post.averageRating,
             reviewCount: post.reviewCount,
             reviewStats: post.reviewStats,
-            ranking: ranking
+            // ranking: ranking
+            visitCount,
+            totalVisitCount,
+            visitCountPerDay,
+            likeCount: post.likes.length
         };
 
         return newChart;
+    }
+
+    getVisitCount(visits) {
+        if (visits.length === 0) return 0;
+
+        let totalCount = 0;
+
+        for (let i = 0; i < visits.length; i++) {
+            const visit = visits[i];
+            const count = visit.count;
+
+            totalCount = totalCount + count;
+        }
+
+        return totalCount;
+    }
+
+    getVisitCountPerDay(visits) {
+        if (visits.length === 0) return 0;
+
+        let visitCountPerDay = 0;
+
+        const now = Date.now();
+
+        for (let i = 0; i < visits.length; i++) {
+            const visit = visits[i];
+            const timestamp = visit.timestamp;
+
+            const difference = now - timestamp;
+            // const daysDifference = Math.floor(difference/1000/60/60/24);
+            const hoursDifference = Math.floor(difference / 1000 / 60 / 60);
+
+            console.log('hoursDifference', hoursDifference);
+
+            if (hoursDifference <= 24) visitCountPerDay++;
+        }
+
+        console.log('total visit count', visits.length, '24 hours visit count', visitCountPerDay);
+
+        return visitCountPerDay;
     }
 
     componentDidMount() {
@@ -182,9 +232,11 @@ export default class Post extends React.Component<InjectedProps> {
         // show contact button
         if (from === 'ChatRoom') this.setState({ disableContactButton: true });
 
+        /*
         setTimeout(() => {
             !this.closed && this.setState({ renderList: true });
         }, 0);
+        */
     }
 
     @autobind
@@ -240,18 +292,29 @@ export default class Post extends React.Component<InjectedProps> {
         const words = placeName.split(', ');
         const cityName = words[0];
 
-        // 2) ranking
-        // ToDo: calc ranking
-        const ranking = 4;
+        // 2) statement
+        let visitCount = 0;
+        let totalVisitCount = 0;
+        let visitCountPerDay = 0;
+        if (post.visits) { // ToDo: tmp
+            visitCount = post.visits.length;
+            totalVisitCount = this.getVisitCount(post.visits);
+            visitCountPerDay = this.getVisitCountPerDay(post.visits);
+        }
 
         const chart = {
             // cityName: extra.cityName,
             cityName: cityName,
             numberOfGirls: extra.feedSize,
+
             averageRating: post.averageRating,
             reviewCount: post.reviewCount,
             reviewStats: post.reviewStats, // 5, 4, 3, 2, 1
-            ranking: ranking
+            // ranking: ranking
+            visitCount,
+            totalVisitCount,
+            visitCountPerDay,
+            likeCount: post.likes.length
         };
 
         !this.closed && this.setState({ chartInfo: chart });
@@ -278,9 +341,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     async edit() {
-        // Vars.userFeedsChanged = true;
-
-
         this.props.navigation.navigate("editPost", { post: this.state.post });
     }
 
@@ -355,8 +415,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         const name = post.name;
         const placeName = post.placeName;
-        const averageRating = post.averageRating;
-        const reviewCount = post.reviewCount;
+        // const averageRating = post.averageRating;
+        // const reviewCount = post.reviewCount;
         const uri = post.pictures.one.uri;
 
         const result = await Firebase.toggleLikes(uid, placeId, feedId, name, placeName, uri);
@@ -526,7 +586,7 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
 
                 {
-                    this.state.renderList &&
+                    // this.state.renderList &&
                     <TouchableWithoutFeedback
                         onPress={() => {
                             if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
@@ -638,8 +698,8 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderHeader() {
-        // const from = this.state.from;
         const post = this.state.post;
+        if (!post) return null;
 
         let distance = '';
         let integer = 0;
@@ -726,8 +786,8 @@ export default class Post extends React.Component<InjectedProps> {
                                 width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 {/*
-                                                    <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
-                                                    */}
+                                <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
+                                */}
                                 <Text style={styles.bodyInfoTitle}>{ageText}</Text>
                             </View>
                             <View style={{
@@ -1195,11 +1255,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderChart(data) {
-        if (data === null) {
-            // Consider: draw skeleton
-
-            return null;
-        }
+        if (!data) return null;
 
         if (data.reviewCount === 0) {
             return (
@@ -1231,7 +1287,9 @@ export default class Post extends React.Component<InjectedProps> {
         const averageRating = data.averageRating;
         const reviewCount = data.reviewCount;
         const stats = data.reviewStats; // 5
-        const ranking = data.ranking;
+        // const ranking = data.ranking;
+        const statement = this.getStatement(data);
+
 
         /*
         // test
@@ -1367,15 +1425,39 @@ export default class Post extends React.Component<InjectedProps> {
                     */}
                 </View>
 
-                <Text style={{
-                    marginBottom: 20,
-                    // marginLeft: 12,
-                    color: Theme.color.text3,
-                    fontSize: 16,
-                    fontFamily: "Roboto-Regular",
-                    // backgroundColor: 'green',
-                    // paddingTop: 12
-                }}>{"#" + ranking + " of " + numberOfGirls + " girls in " + cityName}</Text>
+                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
+                    {
+                        statement.type === 100 &&
+                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                            <AntDesign name='like2' color={Theme.color.text3} size={19} />
+                        </View>
+                    }
+                    {
+                        statement.type === 200 &&
+                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                            <Ionicons name="md-heart-empty" color={Theme.color.text3} size={19} />
+                        </View>
+                    }
+                    {
+                        statement.type === 300 &&
+                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={19} />
+                        </View>
+                    }
+                    {
+                        statement.type === 400 &&
+                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                            <Foundation name='magnifying-glass' color={Theme.color.text3} size={19} />
+                        </View>
+                    }
+                    <Text style={{
+                        marginLeft: 4,
+                        color: Theme.color.text3,
+                        fontSize: 16,
+                        fontFamily: "Roboto-Regular",
+                        // paddingTop: 12
+                    }}>{statement.text}</Text>
+                </View>
 
                 <View style={{ marginBottom: 18 }}>
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1510,6 +1592,146 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
             </View>
         );
+    }
+
+    getStatement(chart) {
+        // 1) #23 of 307 girls in Singapore
+        // 2) 38 people called dibs on this girl
+        // 3) 40 people are viewing this girl within the past 24 hours
+        // 4) 4 people are viewing this girl now
+
+        const cityName = chart.cityName;
+        const numberOfGirls = chart.numberOfGirls;
+        const averageRating = chart.averageRating;
+        const reviewCount = chart.reviewCount;
+        // const stats = chart.reviewStats;
+        const visitCount = chart.visitCount;
+        const totalVisitCount = chart.totalVisitCount;
+        const visitCountPerDay = chart.visitCountPerDay;
+        const likeCount = chart.likeCount;
+
+        const ranking = this.getRanking(chart); // total post >= 10 & average rating >= 4.0 & 1 <= ranking <= 10
+        if (ranking !== 0) {
+            const type = 100;
+            const text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
+            const result = {
+                type, text
+            };
+
+            return result;
+        }
+
+        if (likeCount >= 10 && visitCountPerDay >= 10) {
+            // pick one
+            const rn = Math.round(Math.random() * 10) % 2; // 0 ~ 1
+            if (rn === 0) {
+                // pick like
+                const type = 200;
+                const text = likeCount + " people called dibs on this girl";
+                const result = {
+                    type, text
+                };
+
+                return result;
+            } else {
+                // pick visit
+                const type = 300;
+                const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
+                const result = {
+                    type, text
+                };
+
+                return result;
+            }
+        }
+
+        if (likeCount >= 10) {
+            const type = 200;
+            const text = likeCount + " people called dibs on this girl";
+            const result = {
+                type, text
+            };
+
+            return result;
+        }
+
+        if (visitCountPerDay >= 10) {
+            const type = 300;
+            const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
+            const result = {
+                type, text
+            };
+
+            return result;
+        }
+
+        const type = 400;
+        const text = visitCount + " people viewed this girl " + totalVisitCount + " times";
+        const result = {
+            type, text
+        };
+
+        return result;
+    }
+
+    getRanking(chart) { // 1 ~ 10
+        const numberOfGirls = chart.numberOfGirls;
+        const averageRating = chart.averageRating;
+        const reviewCount = chart.reviewCount;
+        // const stats = chart.reviewStats;
+        const visitCount = chart.visitCount;
+        const likeCount = chart.likeCount;
+
+        if (numberOfGirls < 10) return 0;
+
+        if (averageRating < 4) return 0;
+
+        const points = reviewCount + visitCount + likeCount;
+
+        if (averageRating >= 4.8) { // 1 ~ 2
+            if (points >= 50) return 1;
+            return 2;
+        }
+
+        if (averageRating >= 4.6) { // 1 ~ 4
+            if (points >= 50) return 1;
+            if (points >= 45) return 2;
+            if (points >= 40) return 3;
+            return 4;
+        }
+
+        if (averageRating >= 4.4) { // 1 ~ 6
+            if (points >= 50) return 1;
+            if (points >= 45) return 2;
+            if (points >= 40) return 3;
+            if (points >= 35) return 4;
+            if (points >= 30) return 5;
+            return 6;
+        }
+
+        if (averageRating >= 4.2) { // 1 ~ 8
+            if (points >= 50) return 1;
+            if (points >= 45) return 2;
+            if (points >= 40) return 3;
+            if (points >= 35) return 4;
+            if (points >= 30) return 5;
+            if (points >= 25) return 6;
+            if (points >= 20) return 7;
+            return 8;
+        }
+
+        // if (averageRating >= 4.0) { // 1 ~ 10
+        if (points >= 50) return 1;
+        if (points >= 45) return 2;
+        if (points >= 40) return 3;
+        if (points >= 35) return 4;
+        if (points >= 30) return 5;
+        if (points >= 25) return 6;
+        if (points >= 20) return 7;
+        if (points >= 15) return 8;
+        if (points >= 10) return 9;
+        return 10;
+        // }
     }
 
     renderReviews(reviews) { // draw items up to 4
@@ -1983,8 +2205,8 @@ export default class Post extends React.Component<InjectedProps> {
             const user1 = {
                 uid: uid,
                 /*
-                name: Firebase.user().name, // ToDo: use profile store
-                picture: Firebase.user().photoUrl, // ToDo: use profile store
+                name: Firebase.user().name, // use profile store
+                picture: Firebase.user().photoUrl, // use profile store
                 */
                 name: profile.name,
                 picture: profile.picture.uri
@@ -2212,7 +2434,7 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
 
         const sender = Firebase.user().uid;
-        // const senderName = Firebase.user().name; // ToDo: use profile store
+        // const senderName = Firebase.user().name; // use profile store
         const senderName = profile.name;
         // const receiver = post.uid; // owner
         const receiver = this.owner;

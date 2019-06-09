@@ -14,6 +14,7 @@ import Text from "../Text";
 // import LikesAndComments from "./LikesAndComments";
 import { Cons, Vars } from "../../../../Globals";
 import Util from "../../../../Util";
+import Firebase from '../../../../Firebase';
 
 import type { Post, Profile } from "../Model";
 import type { NavigationProps } from "../Types";
@@ -137,7 +138,12 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         }
 
         return (
-            <TouchableWithoutFeedback onPress={() => navigation.navigate("detail", { post: post, profile: profile, extra: extra })}>
+            <TouchableWithoutFeedback
+                onPress={() => {
+                    Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                    navigation.navigate("detail", { post: post, profile: profile, extra: extra });
+                }}
+            >
                 {/* Consider: use image carousel (one, two, ...) */}
                 <View style={styles.container}>
                     <SmartImage

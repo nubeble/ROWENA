@@ -36,7 +36,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
         isLoadingFeeds: false,
         refreshing: false,
         totalFeedsSize: 0,
-        focused: false,
         // showPostIndicator: -1,
     };
 
@@ -79,12 +78,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
             // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     @autobind
@@ -140,7 +139,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         ref={(fl) => this._flatList = fl}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
-
                         columnWrapperStyle={{ flex: 1, justifyContent: 'flex-start' }}
                         numColumns={3}
                         data={this.state.feeds}
@@ -197,7 +195,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                         }}
                         onScroll={({ nativeEvent }) => {
-                            if (!this.state.focused) return;
+                            if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.getCommentedFeeds();
@@ -359,16 +357,16 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                 newFeeds.push(customer);
 
-                // subscribe here
-                const instance = Firebase.subscribeToProfile(uid, user => {
-                    if (user === undefined) {
+                // subscribe user profile
+                const instance = Firebase.subscribeToProfile(uid, newUser => {
+                    if (newUser === undefined) {
                         // update this.customerList
                         this.customerList.delete(uid);
                         return;
                     }
 
                     // update this.customerList
-                    this.customerList.set(uid, user);
+                    this.customerList.set(uid, newUser);
 
                     // update state feed & UI
                     let changed = false;
@@ -377,11 +375,11 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         let feed = feeds[i];
                         if (feed.uid === uid) {
 
-                            if (feed.name !== user.name || feed.place !== user.place || feed.picture !== user.picture.uri) changed = true;
+                            if (feed.name !== newUser.name || feed.place !== newUser.place || feed.picture !== newUser.picture.uri) changed = true;
 
-                            feed.name = user.name;
-                            feed.place = user.place;
-                            feed.picture = user.picture.uri;
+                            feed.name = newUser.name;
+                            feed.place = newUser.place;
+                            feed.picture = newUser.picture.uri;
 
                             feeds[i] = feed;
                         }
@@ -392,7 +390,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     // update database
                     if (changed) {
                         const { profile } = this.props.profileStore;
-                        Firebase.updateComments(profile.uid, user.uid, user.name, user.place, user.picture.uri);
+                        Firebase.updateComments(profile.uid, newUser.uid, newUser.name, newUser.place, newUser.picture.uri);
                     }
                 });
 

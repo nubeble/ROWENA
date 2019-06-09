@@ -337,6 +337,7 @@ export default class App extends React.Component {
 
         const post = feedDoc.data();
 
+        Firebase.addVisits(Firebase.user().uid, placeId, feedId);
         NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
     }
 

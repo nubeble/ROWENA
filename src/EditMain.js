@@ -44,9 +44,7 @@ export default class EditMain extends React.Component<InjectedProps> {
         refreshing: false,
 
         host: null,
-        guest: null,
-
-        focused: false
+        guest: null
     };
 
     constructor(props) {
@@ -100,12 +98,12 @@ export default class EditMain extends React.Component<InjectedProps> {
     onFocus() {
         Vars.currentScreenName = 'EditMain';
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -365,7 +363,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                         ItemSeparatorComponent={this.itemSeparatorComponent}
 
                         onScroll={({ nativeEvent }) => {
-                            if (!this.state.focused) return;
+                            if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.loadMore();

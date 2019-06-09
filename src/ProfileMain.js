@@ -43,7 +43,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         isLoadingFeeds: false,
         refreshing: false,
         totalFeedsSize: 0,
-        focused: false,
         // showPostIndicator: -1,
 
         notification: '',
@@ -196,12 +195,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             }
         }
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     /*
@@ -454,6 +453,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         };
 
         // setTimeout(() => {
+        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
 
@@ -1032,7 +1032,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.onScrollHandler}
                         onScroll={({ nativeEvent }) => {
-                            if (!this.state.focused) return;
+                            if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.getUserFeeds();

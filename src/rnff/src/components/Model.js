@@ -15,7 +15,7 @@ export type Picture = {
 type FeedRef = {
     placeId: string,
     feedId: string,
-    picture: string, // ToDo: update when the origin post changed
+    picture: string,
     reviewAdded: boolean
 };
 
@@ -24,7 +24,7 @@ type ReviewRef = {
     feedId: string,
     reviewId: string,
     replyAdded: boolean,
-    picture: string // ToDo: update when the origin post changed
+    picture: string
 };
 
 type ReplyRef = {
@@ -83,6 +83,12 @@ type Pictures = {
     four: Picture
 };
 
+type VisitRef = {
+    userUid: string, // visitor uid
+    count: number, // total visit count
+    timestamp: number // last visit time
+};
+
 // feed: user id, place id, feed id, pictures, location, note, reviews[review id], averageRating, name, age
 export type Post = {
     uid: string, // user uid
@@ -95,7 +101,7 @@ export type Post = {
     reviewCount: number,
     averageRating: number,
     reviewStats: Array<number>, // [0] - 5, [1] - 4, [2] - 3, [3] - 2, [4] - 1
-    likes: Array<string>, // user uid list
+    likes: Array<string>, // user uid array
     name: string,
     birthday: string, // DDMMYYYY
     gender: string, // 'male', 'female'
@@ -106,7 +112,9 @@ export type Post = {
     timestamp: number,
     rn: number, // random number
     g: string,
-    l: firebase.firestore.GeoPoint
+    l: firebase.firestore.GeoPoint,
+    visits: VisitRef[], // visit count array
+    // ranking: number
 };
 
 export type FeedEntry = { post: Post, profile: Profile };

@@ -1321,6 +1321,7 @@ export default class Intro extends React.Component {
                         feedSize: feedSize
                     };
 
+                    Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
                     this.props.navigation.navigate("introPost", { post: feed, extra: extra });
                 }}
             >

@@ -439,7 +439,7 @@ export default class AuthMain extends React.Component {
                                     this.hideNotification();
                                 }
 
-                                // ToDo: login
+                                // login
                                 setTimeout(() => {
                                     // this.props.navigation.navigate("logIn");
                                 }, Cons.buttonTimeoutShort);

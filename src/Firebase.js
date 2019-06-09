@@ -48,36 +48,34 @@ export default class Firebase {
     }
 
     static deleteQueryBatch(db, query, batchSize, resolve, reject) {
-        query.get()
-            .then((snapshot) => {
-                // When there are no documents left, we are done
-                if (snapshot.size == 0) {
-                    return 0;
-                }
+        query.get().then((snapshot) => {
+            // When there are no documents left, we are done
+            if (snapshot.size == 0) {
+                return 0;
+            }
 
-                // Delete documents in a batch
-                // var batch = db.batch();
-                var batch = Firebase.firestore.batch();
-                snapshot.docs.forEach((doc) => {
-                    batch.delete(doc.ref);
-                });
+            // Delete documents in a batch
+            // var batch = db.batch();
+            var batch = Firebase.firestore.batch();
+            snapshot.docs.forEach((doc) => {
+                batch.delete(doc.ref);
+            });
 
-                return batch.commit().then(() => {
-                    return snapshot.size;
-                });
-            }).then((numDeleted) => {
-                if (numDeleted === 0) {
-                    resolve();
-                    return;
-                }
+            return batch.commit().then(() => {
+                return snapshot.size;
+            });
+        }).then((numDeleted) => {
+            if (numDeleted === 0) {
+                resolve();
+                return;
+            }
 
-                // Recurse on the next process tick, to avoid
-                // exploding the stack.
-                process.nextTick(() => {
-                    Firebase.deleteQueryBatch(db, query, batchSize, resolve, reject);
-                });
-            })
-            .catch(reject);
+            // Recurse on the next process tick, to avoid
+            // exploding the stack.
+            process.nextTick(() => {
+                Firebase.deleteQueryBatch(db, query, batchSize, resolve, reject);
+            });
+        }).catch(reject);
     }
 
     static async getProfile(uid) {
@@ -418,9 +416,11 @@ export default class Firebase {
 
         const coordinates: LatLngLiteral = { lat: feed.location.latitude, lng: feed.location.longitude };
         const hash: string = Geokit.hash(coordinates);
-
         feed.g = hash;
         feed.l = new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude);
+
+        feed.visits = [];
+
 
         // 1. add feed
         await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
@@ -456,7 +456,7 @@ export default class Firebase {
                 feeds: firebase.firestore.FieldValue.arrayUnion({
                     placeId: feed.placeId,
                     feedId: feed.id,
-                    picture: feed.pictures.one.uri, // ToDo: update this when the post changed
+                    picture: feed.pictures.one.uri,
                     reviewAdded: false
                 })
             };
@@ -481,6 +481,11 @@ export default class Firebase {
 
     static async removeFeed(uid, placeId, feedId) {
         let result;
+
+        // remove reviews collection
+        const db = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const path = "reviews";
+        Firebase.deleteCollection(db, path, 10);
 
         const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
         const placeRef = Firebase.firestore.collection("place").doc(placeId);
@@ -616,6 +621,54 @@ export default class Firebase {
         return userFeeds;
     }
     */
+
+    static async addVisits(uid, placeId, feedId) {
+        console.log('Firebase.addVisits', placeId, feedId);
+
+        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const postDoc = await transaction.get(feedRef);
+            if (!postDoc.exists) throw 'Post document does not exist!';
+
+            let { visits } = postDoc.data();
+
+            // if (!visits) throw 'visits field does not exist!'; // ToDo: tmp
+            if (!visits) visits = [];
+
+            let index = -1;
+            for (let i = 0; i < visits.length; i++) {
+                const visit = visits[i];
+
+                if (visit.userUid === uid) {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index === -1) {
+                // add new
+                const visit = {
+                    userUid: uid,
+                    count: 1,
+                    timestamp: Firebase.getTimestamp()
+                };
+                visits.push(visit);
+            } else {
+                // update
+                let visit = visits[index];
+                visit.count = visit.count + 1;
+                visit.timestamp = Firebase.getTimestamp();
+                visits[index] = visit;
+            }
+
+            transaction.update(feedRef, { visits });
+        }).then(() => {
+            console.log("Firebase.addVisits, success.");
+        }).catch((error) => {
+            console.log('Firebase.addVisits', error);
+        });
+    }
 
     static async toggleLikes(uid, placeId, feedId, name, placeName, uri) {
         let result;
@@ -1123,7 +1176,6 @@ export default class Firebase {
             const userDoc = await transaction.get(userRef);
             if (!userDoc.exists) throw 'User document does not exist!';
 
-
             transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
 
             /*
@@ -1184,7 +1236,6 @@ export default class Firebase {
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(receiverRef);
             if (!userDoc.exists) throw 'User document does not exist!';
-
 
             // update reviewCount in user (receiver)
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
@@ -1277,7 +1328,6 @@ export default class Firebase {
             // update reviewCount in user (receiver)
             const userDoc = await transaction.get(receiverRef);
             if (!userDoc.exists) throw 'User document does not exist!';
-
 
             // 1. receivedCommentsCount
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
@@ -1800,5 +1850,7 @@ export default class Firebase {
             console.log('Firebase.updateChatRoom', error);
         });
     }
+
+
 
 }

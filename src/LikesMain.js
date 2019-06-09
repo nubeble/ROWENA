@@ -40,9 +40,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         feeds: [],
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
-        refreshing: false,
-
-        focused: false
+        refreshing: false
     };
 
     constructor(props) {
@@ -133,12 +131,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
         }
         */
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -369,6 +367,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
             feedSize: feedSize
         };
 
+        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'LikesMain' });
     }
 
@@ -547,7 +546,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.handleScrollEnd}
                         onScroll={({ nativeEvent }) => {
-                            if (!this.state.focused) return;
+                            if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.getSavedFeeds();

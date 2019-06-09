@@ -36,7 +36,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         isLoadingFeeds: false,
         refreshing: false,
         totalFeedsSize: 0,
-        focused: false,
         // showPostIndicator: -1,
     };
 
@@ -82,17 +81,18 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     @autobind
     handleHardwareBackPress() {
         console.log('ReviewMain.handleHardwareBackPress');
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -108,12 +108,12 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.onBlurListener.remove();
         this.hardwareBackPressListener.remove();
 
-        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
+        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
             instance();
         }
 
-        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
+        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
             const instance = this.countsUnsubscribes[i];
             instance();
         }
@@ -189,7 +189,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
                         }}
                         onScroll={({ nativeEvent }) => {
-                            if (!this.state.focused) return;
+                            if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.getReviewedFeeds();
@@ -466,6 +466,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         };
 
         // setTimeout(() => {
+        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("reviewPost", { post: post, extra: extra, from: 'Profile' });
         // }, Cons.buttonTimeoutShort);
 

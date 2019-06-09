@@ -51,8 +51,6 @@ export default class UserMain extends React.Component<InjectedProps> {
         host: null,
         guest: null,
 
-        focused: false,
-
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
 
@@ -181,12 +179,12 @@ export default class UserMain extends React.Component<InjectedProps> {
     onFocus() {
         Vars.currentScreenName = 'UserMain';
 
-        this.setState({ focused: true });
+        this.focused = true;
     }
 
     @autobind
     onBlur() {
-        this.setState({ focused: false });
+        this.focused = false;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -637,7 +635,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.onScrollHandler}
                         onScroll={({ nativeEvent }) => {
-                            if (!this.state.focused) return;
+                            if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
                                 this.loadMore();

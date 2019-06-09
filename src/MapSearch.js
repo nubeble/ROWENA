@@ -31,6 +31,8 @@ const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 // const UP = 1.02;
 
+const DEFAULT_FEED_COUNT = 8;
+
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
 
 // 3:2 image
@@ -147,7 +149,7 @@ export default class MapSearch extends React.Component {
             center: new firebase.firestore.GeoPoint(region.latitude, region.longitude),
             radius: km, // kilometers
             // limit: 5
-        }).limit(8); // ToDo: limit
+        }).limit(DEFAULT_FEED_COUNT);
 
         await query.get().then(async (value: GeoQuerySnapshot) => {
             // console.log(value.docs); // All docs returned by GeoQuery
@@ -619,6 +621,7 @@ export default class MapSearch extends React.Component {
                         feedSize: feedSize
                     };
 
+                    Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
                     this.props.navigation.navigate("post", { post: post, extra: extra, initFromPost: (result) => this.initFromPost(result) });
                 }}
             >
