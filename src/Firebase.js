@@ -980,7 +980,6 @@ export default class Firebase {
             } else {
                 for (let i = 0; i < reviews.length; i++) {
                     let review = reviews[i];
-
                     if (review.placeId === placeId && review.feedId === feedId) {
                         review.picture = picture;
 
@@ -1305,23 +1304,41 @@ export default class Firebase {
 
             let { comments } = userDoc.data(); // array
 
-            for (let i = 0; i < comments.length; i++) {
-                let item = comments[i];
-
-                if (item.userUid === targetUid) {
-                    item.name = name;
-                    item.placeName = place;
-                    item.picture = picture;
+            if (name === null && place === null && picture === null) { // remove comment
+                let newComments = [];
+                for (let i = 0; i < comments.length; i++) {
+                    const comment = comments[i];
+                    if (comment.userUid === targetUid) {
+                        // skip
+                    } else {
+                        const newComment = _.clone(comment);
+                        newComments.push(newComment);
+                    }
                 }
 
-                comments[i] = item;
+                const data = {
+                    comments: newComments
+                };
+
+                transaction.update(userRef, data);
+            } else { // update comment
+                for (let i = 0; i < comments.length; i++) {
+                    let comment = comments[i];
+                    if (comment.userUid === targetUid) {
+                        comment.name = name;
+                        comment.placeName = place;
+                        comment.picture = picture;
+                    }
+
+                    comments[i] = comment;
+                }
+
+                const data = {
+                    comments
+                };
+
+                transaction.update(userRef, data);
             }
-
-            let data = {
-                comments
-            };
-
-            transaction.update(userRef, data);
         }).then(() => {
             console.log('Firebase.updateComments, success.');
         }).catch((error) => {

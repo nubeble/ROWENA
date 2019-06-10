@@ -52,11 +52,14 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        console.log('CommentMain.componentDidMount');
+
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.getCommentedFeeds();
+        // this.getCommentedFeeds();
 
         /*
         setTimeout(() => {
@@ -214,7 +217,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         }
 
                         ListEmptyComponent={
-                            !this.state.isLoadingFeeds &&
+                            // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
@@ -336,16 +339,27 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
             if (this.customerList.has(uid)) {
                 const user = this.customerList.get(uid);
+                if (user) {
+                    const customer = {
+                        commentId,
+                        uid,
+                        name: user.name,
+                        place: user.place,
+                        picture: user.picture.uri
+                    };
 
-                const customer = {
-                    commentId,
-                    uid,
-                    name: user.name,
-                    place: user.place,
-                    picture: user.picture.uri
-                };
+                    newFeeds.push(customer);
+                } else {
+                    const customer = {
+                        commentId,
+                        uid,
+                        name, // will be updated
+                        place: placeName, // will be updated
+                        picture: uri // will be updated
+                    };
 
-                newFeeds.push(customer);
+                    newFeeds.push(customer);
+                }
             } else {
                 const customer = {
                     commentId,
@@ -356,6 +370,9 @@ export default class CommentMain extends React.Component<InjectedProps> {
                 };
 
                 newFeeds.push(customer);
+
+                // this will update in subscribe
+                this.customerList.set(uid, null);
 
                 // subscribe user profile
                 const instance = Firebase.subscribeToProfile(uid, newUser => {
@@ -374,7 +391,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     for (let i = 0; i < feeds.length; i++) {
                         let feed = feeds[i];
                         if (feed.uid === uid) {
-
                             if (feed.name !== newUser.name || feed.place !== newUser.place || feed.picture !== newUser.picture.uri) changed = true;
 
                             feed.name = newUser.name;
@@ -384,7 +400,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                             feeds[i] = feed;
                         }
                     }
-
                     !this.closed && this.setState({ feeds });
 
                     // update database
@@ -426,20 +441,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     openPost(item) {
-        /*
-        const feeds = [...this.state.feeds];
-        const index = feeds.findIndex(el => el.uid === item.uid);
-        if (index === -1) {
-            this.refs["toast"].show('The user no longer exists.', 500);
-            return;
-        }
-        */
-
-        if (!this.customerList.has(item.uid)) {
-            this.refs["toast"].show('The user no longer exists.', 500);
-            return;
-        }
-
         // show indicator
         // !this.closed && this.setState({ showPostIndicator: index });
 
@@ -452,8 +453,29 @@ export default class CommentMain extends React.Component<InjectedProps> {
         };
 
         const customer = this.customerList.get(item.uid);
-        if (!customer) {
+        if (customer === null) {
+            // the user is not subscribed yet
             this.refs["toast"].show('Please try again.', 500);
+            return;
+        }
+
+        if (customer === undefined) {
+            // the user is removed
+            this.refs["toast"].show('The user no longer exists.', 500, () => {
+                // update state feed & UI
+                let feeds = [...this.state.feeds];
+                for (let i = 0; i < feeds.length; i++) {
+                    const feed = feeds[i];
+                    if (feed.uid === item.uid) {
+                        feeds.splice(i, 1);
+                    }
+                }
+                !this.closed && this.setState({ feeds });
+
+                // update database
+                Firebase.updateComments(profile.uid, item.uid, null, null, null);
+            });
+
             return;
         }
 

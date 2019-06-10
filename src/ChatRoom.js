@@ -54,15 +54,6 @@ export default class ChatRoom extends React.Component {
         super(props);
 
         this.onLoading = false;
-        /*
-                this.feed = null;
-                this.feedCount = 0;
-                this.opponentUser = null;
-        
-                this.feedUnsubscribe = null;
-                this.countUnsubscribe = null;
-                this.opponentUserUnsubscribe = null;
-        */
     }
 
     componentDidMount() {
@@ -73,56 +64,6 @@ export default class ChatRoom extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const item = this.props.navigation.state.params.item;
-
-
-        /*
-                // subscribe here (post)
-                // --
-                const fi = Firebase.subscribeToFeed(item.placeId, item.feedId, newFeed => {
-                    if (newFeed === undefined) {
-                        this.feed = null;
-                        return;
-                    }
-        
-                    // update this.feed
-                    this.feed = newFeed;
-                });
-        
-                this.feedUnsubscribe = fi;
-                // --
-        
-                // subscribe here (count)
-                // --
-                const ci = Firebase.subscribeToPlace(item.placeId, newPlace => {
-                    if (newPlace === undefined) {
-                        this.feedCount = 0;
-                        return;
-                    }
-        
-                    // update this.feedCount
-                    this.feedCount = newPlace.count;
-                });
-        
-                this.countUnsubscribe = ci;
-                // --
-        
-                // set title
-                let titleImageUri = null;
-                let titleName = null;
-        
-                // find the owner of this post
-                for (var i = 0; i < item.users.length; i++) {
-                    const user = item.users[i];
-        
-                    if (item.owner === user.uid) {
-                        titleImageUri = user.picture;
-                        titleName = user.name;
-                        break;
-                    }
-                }
-        
-                this.setState({ id: item.id, titleImageUri, titleName });
-        */
 
         this.setState({ id: item.id, titleImageUri: item.title.picture, titleName: item.title.name });
 
@@ -155,9 +96,7 @@ export default class ChatRoom extends React.Component {
         });
 
         // show center post avatar
-
         // if (item.contents === '') this.setState({ renderPost: true });
-
         if (item.showAvatar) this.setState({ renderPost: true });
     }
 
@@ -170,12 +109,6 @@ export default class ChatRoom extends React.Component {
 
         const item = this.props.navigation.state.params.item;
         Firebase.chatOff(item.id);
-
-        /*
-            if (this.feedUnsubscribe) this.feedUnsubscribe();
-            if (this.countUnsubscribe) this.countUnsubscribe();
-            if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
-        */
 
         this.closed = true;
     }
@@ -573,34 +506,6 @@ export default class ChatRoom extends React.Component {
     */
 
     async openPost() {
-        /*
-                const item = this.props.navigation.state.params.item;
-        
-                const post = this.getPost(item);
-                if (!post) {
-                    this.refs["toast"].show('The post has been removed by its owner.', 500); // or NOT subscribed yet!
-        
-                    // we skip here. NOT to close the chat room! (leave it to the user)
-        
-                    return;
-                }
-        
-                const feedSize = this.getFeedSize(item.placeId);
-                if (feedSize === 0) {
-                    this.refs["toast"].show('Please try again.', 500);
-        
-                    return;
-                }
-        
-                const extra = {
-                    feedSize: feedSize
-                };
-        
-                // setTimeout(() => {
-                this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
-                // }, Cons.buttonTimeoutShort);
-        */
-
         setTimeout(() => {
             if (this.closed) return;
 
@@ -618,72 +523,12 @@ export default class ChatRoom extends React.Component {
     }
 
     getPost(item) {
-        /*
-        const placeId = item.placeId;
-        const feedId = item.feedId;
-
-        if (this.feed) {
-            console.log('post from memory');
-            return this.feed;
-        }
-
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) return null;
-
-        const post = feedDoc.data();
-
-        this.feed = post;
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
-            if (newFeed === undefined) { // newFeed === undefined if removed
-                this.feed = null;
-                return;
-            }
-
-            // update
-            this.feed = newFeed;
-        });
-
-        this.feedUnsubscribe = instance;
-        // --
-        */
-
         const post = this.feed;
 
         return post;
     }
 
     getFeedSize(placeId) {
-        /*
-        if (this.feedCount) {
-            console.log('count from memory');
-            return this.feedCount;
-        }
-
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        const count = placeDoc.data().count;
-
-        this.feedCount = count;
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
-            if (newPlace === undefined) {
-                this.feedCount = 0;
-
-                return;
-            }
-
-            // update this.feedCount
-            this.feedCount = newPlace.count;
-        });
-
-        this.countUnsubscribe = instance;
-        // --
-        */
-
         const count = this.feedCount;
 
         return count;
@@ -693,63 +538,11 @@ export default class ChatRoom extends React.Component {
         const item = this.props.navigation.state.params.item;
 
         if (item.owner === item.users[1].uid) {
-            /*
-            const placeId = item.placeId;
-            const feedId = item.feedId;
-            const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-            if (!feedDoc.exists) {
-                this.refs["toast"].show('The post has been removed by its owner.', 500);
-                return;
-            }
-
-            setTimeout(async () => {
-                const post = feedDoc.data();
-
-                if (!this.feedSize) {
-                    const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-                    this.feedSize = placeDoc.data().count;
-                }
-
-                const extra = {
-                    // cityName: this.state.searchText,
-                    feedSize: this.feedSize
-                };
-
-                this.props.navigation.navigate("post", { post: post, extra: extra, from: 'ChatRoom' });
-            }, Cons.buttonTimeoutShort);
-            */
-
             await this.openPost();
         } else {
             const user1 = item.users[0]; // owner (girl)
             const user2 = item.users[1]; // customer
-            /*
-                        if (!this.opponentUser) {
-                            const userDoc = await Firebase.firestore.collection("users").doc(user2.uid).get();
-                            if (!userDoc.exists) {
-                                this.refs["toast"].show('The user no longer exists.', 500);
-                                return;
-                            }
-            
-                            const opponentUser = userDoc.data();
-                            this.opponentUser = opponentUser;
-            
-                            // subscribe here
-                            // --
-                            const instance = Firebase.subscribeToProfile(user2.uid, user => {
-                                if (user === undefined) {
-                                    this.opponentUser = null;
-                                    return;
-                                }
-            
-                                // update
-                                this.opponentUser = user;
-                            });
-            
-                            this.opponentUserUnsubscribe = instance;
-                            // --
-                        }
-            */
+
             const customerProfile = item.customerProfile;
 
             // const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer

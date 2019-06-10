@@ -58,6 +58,7 @@ export default class ChatMain extends React.Component {
         console.log('ChatMain.componentDidMount');
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
@@ -72,7 +73,7 @@ export default class ChatMain extends React.Component {
                 } else {
                     // this.allChatRoomsLoaded = false;
 
-                    // Consider: On sending a meesage
+                    // Consider: On sending a message
                     // 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트!
                     // this.setState({ chatRoomList: list });
                     this.updateList(list);
@@ -140,6 +141,9 @@ export default class ChatMain extends React.Component {
     subscribeToPost(placeId, feedId, roomId) {
         if (this.feedList.has(feedId)) return;
 
+        // this will update in subscribe
+        this.feedList.set(feedId, null);
+
         const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
             if (newFeed === undefined) {
                 this.feedList.delete(feedId);
@@ -180,6 +184,9 @@ export default class ChatMain extends React.Component {
     subscribeToPlace(placeId) {
         if (this.feedCountList.has(placeId)) return;
 
+        // this will update feed value in subscribe
+        this.feedCountList.set(placeId, -1);
+
         const ci = Firebase.subscribeToPlace(placeId, newPlace => {
             if (newPlace === undefined) {
                 this.feedCountList.delete(placeId);
@@ -194,6 +201,9 @@ export default class ChatMain extends React.Component {
 
     subscribeToProfile(uid, roomId) {
         if (this.customerProfileList.has(uid)) return;
+
+        // this will update in subscribe
+        this.customerProfileList.set(uid, null);
 
         const instance = Firebase.subscribeToProfile(uid, user => {
             if (user === undefined) {
@@ -234,30 +244,42 @@ export default class ChatMain extends React.Component {
     }
 
     getPost(feedId) {
+        /*
         let post = null;
         if (this.feedList.has(feedId)) {
             post = this.feedList.get(feedId);
         }
 
         return post;
+        */
+
+        return this.feedList.get(feedId); // null: the post is not subscribed yet, undefined: the post is removed
     }
 
     getFeedSize(placeId) {
+        /*
         let count = 0;
         if (this.feedCountList.has(placeId)) {
             count = this.feedCountList.get(placeId);
         }
 
         return count;
+        */
+
+        return this.feedCountList.get(placeId); // -1: the place is not subscribed yet, undefined: the place is removed
     }
 
     getCustomerProfile(uid) {
+        /*
         let profile = null;
         if (this.customerProfileList.has(uid)) {
             profile = this.customerProfileList.get(uid);
         }
 
         return profile;
+        */
+
+        return this.customerProfileList.get(uid); // null: the user is not subscribed yet, undefined: the user is removed
     }
 
     updateList(list) {
@@ -414,7 +436,7 @@ export default class ChatMain extends React.Component {
                     */
 
                     ListEmptyComponent={
-                        !this.state.isLoadingChat &&
+                        // !this.state.isLoadingChat &&
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{
                                 color: Theme.color.text2,
@@ -624,7 +646,13 @@ export default class ChatMain extends React.Component {
 
         // feed
         const post = this.getPost(item.feedId);
-        if (!post) {
+        if (post === null) {
+            // the post is not subscribed yet
+            this.refs["toast"].show('Please try again.', 500);
+            return;
+        }
+
+        if (post === undefined) {
             this.refs["toast"].show('The post no longer exists.', 500, () => {
                 const me = users[0];
                 const you = users[1];
@@ -641,10 +669,44 @@ export default class ChatMain extends React.Component {
 
         // count
         const feedSize = this.getFeedSize(item.placeId);
+        if (feedSize === -1) {
+            this.refs["toast"].show('Please try again.', 500);
+            return;
+        }
+
+        if (feedSize === undefined) {
+            // the place is removed
+            // this should never happen
+            return;
+        }
 
         // customer profile
         let customerProfile = null;
-        if (customer) customerProfile = this.getCustomerProfile(customer);
+        if (customer) {
+            const profile = this.getCustomerProfile(customer);
+            if (profile === null) {
+                // the post is not subscribed yet
+                this.refs["toast"].show('Please try again.', 500);
+                return;
+            }
+
+            if (profile === undefined) {
+                this.refs["toast"].show('The user no longer exists.', 500, () => {
+                    const me = users[0];
+                    const you = users[1];
+
+                    // remove the chat room
+                    Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+
+                    // update delete chatroom list
+                    this.deleteChatRoom(item.id);
+                });
+
+                return;
+            }
+
+            customerProfile = profile;
+        }
 
         const params = {
             id: item.id,

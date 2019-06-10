@@ -63,9 +63,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        this.getSavedFeeds();
+        // this.getSavedFeeds();
 
         /*
         setTimeout(() => {
@@ -227,18 +228,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 const newFeed = this.feedList.get(feedId);
                 newFeeds.push(newFeed);
             } else {
-                /*
-                const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-                if (!feedDoc.exists) return;
-
-                const newFeed = feedDoc.data();
-                newFeeds.push(newFeed);
-
-                this.feedList.set(feedId, newFeed);
-                */
-
-
-
                 const newFeed = {
                     name,
                     placeName,
@@ -255,10 +244,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 newFeeds.push(newFeed);
 
-                // subscribe here (post)
+                // subscribe post
                 this.subscribeToPost(placeId, feedId);
 
-                // subscribe here (count)
+                // subscribe count
                 this.subscribeToPlace(placeId);
             }
 
@@ -334,6 +323,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
     subscribeToPlace(placeId) {
         if (!this.feedCountList.has(placeId)) {
+            // this will update in subscribe
+            this.feedCountList.set(placeId, -1);
+
             const ci = Firebase.subscribeToPlace(placeId, newPlace => {
                 if (newPlace === undefined) {
                     this.feedCountList.delete(placeId);
@@ -351,20 +343,25 @@ export default class LikesMain extends React.Component<InjectedProps> {
     async openPost(item, index) {
         const post = this.state.feeds[index];
         if (!post) {
-            // we skip here. NOT to refresh! (leave it to the user)
-
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            // this should never happen
+            // this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
 
         const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === 0) {
+        if (feedSize === -1) {
             this.refs["toast"].show('Please try again.', 500);
             return;
         }
 
+        if (feedSize === undefined) {
+            // the place is removed
+            // this should never happen
+            return;
+        }
+
         const extra = {
-            feedSize: feedSize
+            feedSize
         };
 
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
@@ -373,40 +370,14 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
     getFeedSize(placeId) {
         /*
-        if (this.feedCountList.has(placeId)) {
-            console.log('count from memory');
-            return this.feedCountList.get(placeId);
-        }
-
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        // if (!placeDoc.exists) return 0; // never happen
-
-        const count = placeDoc.data().count;
-
-        this.feedCountList.set(placeId, count);
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
-            if (newPlace === undefined) {
-                this.feedCountList.delete(placeId);
-                return;
-            }
-
-            // update this.feedCountList
-            this.feedCountList.set(placeId, newPlace.count);
-        });
-
-        this.countsUnsubscribes.push(instance);
-        // --
-        */
-
         let count = 0;
         if (this.feedCountList.has(placeId)) {
             count = this.feedCountList.get(placeId);
         }
 
         return count;
+        */
+        return this.feedCountList.get(placeId);
     }
 
     /*
@@ -572,7 +543,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                 :
                             */
 
-                            !this.state.isLoadingFeeds &&
+                            // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,

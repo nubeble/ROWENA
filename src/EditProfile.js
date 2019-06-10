@@ -842,7 +842,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("editSearch",
-                                    { from: 'EditProfile', initFromSearch: (result) => this.initFromSearch(result) }); // ToDo
+                                    { from: 'EditProfile', initFromSearch: (result) => this.initFromSearch(result) });
                             }, Cons.buttonTimeoutShort);
                         }}
                     >
@@ -939,6 +939,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
+                            /*
                             if (this.state.onUploadingImage) return;
 
                             if (this._showNotification) {
@@ -949,11 +950,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
                             setTimeout(() => {
-                                // !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
-
                                 // ToDo:
-
                             }, Cons.buttonTimeoutShort);
+                            */
                         }}
                     >
                         <Text
@@ -997,6 +996,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
+                            /*
                             if (this.state.onUploadingImage) return;
 
                             if (this._showNotification) {
@@ -1007,11 +1007,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY, animated: true });
 
                             setTimeout(() => {
-                                // !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
-
                                 // ToDo:
-
                             }, Cons.buttonTimeoutShort);
+                            */
                         }}
                     >
                         <Text

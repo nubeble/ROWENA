@@ -219,7 +219,6 @@ export default class Post extends React.Component<InjectedProps> {
         const { post, extra, from } = this.props.navigation.state.params;
         console.log('Post.componentDidMount, from', from);
 
-        // this.setState({ from });
         this.init(post, extra);
 
         // console.log('Post.componentDidMount', from);

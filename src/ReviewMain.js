@@ -53,17 +53,45 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.getReviewedFeeds();
+        // this.getReviewedFeeds();
 
         /*
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
         */
+    }
+
+    componentWillUnmount() {
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+        this.hardwareBackPressListener.remove();
+
+        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
+            const instance = this.feedsUnsubscribes[i];
+            instance();
+        }
+
+        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
+            const instance = this.countsUnsubscribes[i];
+            instance();
+        }
+
+        this.closed = true;
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        console.log('ReviewMain.handleHardwareBackPress');
+
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
     }
 
     @autobind
@@ -89,37 +117,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.focused = false;
     }
 
-    @autobind
-    handleHardwareBackPress() {
-        console.log('ReviewMain.handleHardwareBackPress');
-
-        this.props.navigation.dispatch(NavigationActions.back());
-
-        return true;
-    }
-
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
-
-    componentWillUnmount() {
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-        this.hardwareBackPressListener.remove();
-
-        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
-            const instance = this.feedsUnsubscribes[i];
-            instance();
-        }
-
-        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
-            const instance = this.countsUnsubscribes[i];
-            instance();
-        }
-
-        this.closed = true;
-    }
 
     render() {
         return (
@@ -208,7 +209,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         }
 
                         ListEmptyComponent={
-                            !this.state.isLoadingFeeds &&
+                            // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     color: Theme.color.text2,
@@ -311,7 +312,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         let count = 0;
 
-        for (var i = startIndex; i >= 0; i--) {
+        for (let i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
             let review = reviews[i];
@@ -336,7 +337,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
                 // this will update feed value in subscribe
                 this.feedList.set(feedId, null);
-                this.feedCountList.set(placeId, -1);
 
                 const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
                     if (newFeed === undefined) {
@@ -350,13 +350,16 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     // update picture
                     let changed = false;
                     let feeds = [...this.state.feeds];
-                    const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
-                    if (index !== -1) {
-                        if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+                    for (let i = 0; i < feeds.length; i++) {
+                        let feed = feeds[i];
+                        if (feed.placeId === newFeed.placeId && feed.feedId === newFeed.id) {
+                            if (feed.picture !== newFeed.pictures.one.uri) changed = true;
 
-                        feeds[index].picture = newFeed.pictures.one.uri;
-                        !this.closed && this.setState({ feeds });
+                            feed.picture = newFeed.pictures.one.uri;
+                            feeds[i] = feed;
+                        }
                     }
+                    !this.closed && this.setState({ feeds });
 
                     // update database
                     if (changed) Firebase.updateReview(uid, placeId, feedId, newFeed.pictures.one.uri);
@@ -369,6 +372,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             // subscribe feed count
             // --
             if (!this.feedCountList.has(placeId)) {
+                // this will update feed value in subscribe
+                this.feedCountList.set(placeId, -1);
+
                 const ci = Firebase.subscribeToPlace(placeId, newPlace => {
                     if (newPlace === undefined) {
                         this.feedCountList.delete(placeId);
@@ -444,12 +450,22 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
                 // update picture
+                /*
                 let feeds = [...this.state.feeds];
                 const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
                 if (index !== -1) {
                     feeds.splice(index, 1);
                     !this.closed && this.setState({ feeds });
                 }
+                */
+                let feeds = [...this.state.feeds];
+                for (let i = 0; i < feeds.length; i++) {
+                    const feed = feeds[i];
+                    if (feed.placeId === item.placeId && feed.feedId === item.feedId) {
+                        feeds.splice(i, 1);
+                    }
+                }
+                !this.closed && this.setState({ feeds });
 
                 // update database
                 Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
@@ -460,6 +476,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         const feedSize = this.getFeedSize(item.placeId);
         if (feedSize === -1) {
+            // console.log('getFeedSize', item.placeId);
             this.refs["toast"].show('Please try again.', 500);
             return;
         }

@@ -315,7 +315,7 @@ export default class Util extends React.Component {
 
                     let result = null;
                     if (results.length === 0) {
-                        // ToDo: this should never happen!!!
+                        // this should never happen
                         console.log('Util.getPlaceId', 'this should never happen!!!');
 
                         // just use the origin

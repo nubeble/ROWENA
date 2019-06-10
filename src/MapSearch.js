@@ -618,7 +618,7 @@ export default class MapSearch extends React.Component {
                     const { feedSize } = this.props.navigation.state.params;
 
                     const extra = {
-                        feedSize: feedSize
+                        feedSize
                     };
 
                     Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
