@@ -2,6 +2,7 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import Util from './Util';
 import { Geokit, LatLngLiteral } from 'geokit';
+import _ from 'lodash';
 
 const config = {
     apiKey: "AIzaSyCT1LV1HF5REJw_SePsUeUdwFalo5IzrsQ",
@@ -959,22 +960,41 @@ export default class Firebase {
 
             let { reviews } = userDoc.data();
 
-            for (let i = 0; i < reviews.length; i++) {
-                let review = reviews[i];
-
-                if (review.placeId === placeId && review.feedId === feedId) {
-                    review.picture = picture;
-
-                    reviews[i] = review;
-                    // break;
+            if (picture === null) { // remove review
+                let newReviews = [];
+                for (let i = 0; i < reviews.length; i++) {
+                    const review = reviews[i];
+                    if (review.placeId === placeId && review.feedId === feedId) {
+                        // skip
+                    } else {
+                        const newReview = _.clone(review);
+                        newReviews.push(newReview);
+                    }
                 }
+
+                const data = {
+                    reviews: newReviews
+                };
+
+                transaction.update(userRef, data);
+            } else {
+                for (let i = 0; i < reviews.length; i++) {
+                    let review = reviews[i];
+
+                    if (review.placeId === placeId && review.feedId === feedId) {
+                        review.picture = picture;
+
+                        reviews[i] = review;
+                        // break;
+                    }
+                }
+
+                const data = {
+                    reviews
+                };
+
+                transaction.update(userRef, data);
             }
-
-            let data = {
-                reviews
-            };
-
-            transaction.update(userRef, data);
         }).then(() => {
             console.log('Firebase.updateReview, success.');
         }).catch((error) => {

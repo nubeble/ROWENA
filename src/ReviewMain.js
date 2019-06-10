@@ -19,7 +19,6 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-// const DEFAULT_FEED_COUNT = 12; // 3 x 4
 const DEFAULT_FEED_COUNT = 18; // 3 x 6
 
 // 1:1
@@ -45,7 +44,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-        // this.onLoading = false;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -70,6 +68,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
+        console.log('ReviewMain.onFocus', this.lastChangedTime, this.props.profileStore.lastTimeReviewsUpdated);
+
         Vars.currentScreenName = 'ReviewMain';
 
         const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
@@ -270,7 +270,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     }
 
     getReviewedFeeds() {
-        // if (this.onLoading) return;
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
@@ -281,7 +280,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
-
             return;
         }
 
@@ -297,8 +295,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
-
-        // this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
 
@@ -318,51 +314,59 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         for (var i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
-            const review = reviews[i];
+            let review = reviews[i];
 
-            newFeeds.push(review);
+            // newFeeds.push(review);
 
-
-            // this will update feed value in subscribe
-            this.feedList.set(feedId, null);
-            this.feedCountList.set(placeId, -1);
-
-
-            // subscribe here (post)
+            // subscribe post
             // --
             const placeId = review.placeId;
             const feedId = review.feedId;
 
-            // if (!this.feedList.has(feedId)) {
-            const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
-                if (newFeed === undefined) {
-                    this.feedList.delete(feedId);
-                    return;
+            if (this.feedList.has(feedId)) {
+                const feed = this.feedList.get(feedId);
+                if (feed) { // could be null or undefined
+                    // update picture
+                    review.picture = feed.pictures.one.uri;
                 }
 
-                // update this.feedList
-                this.feedList.set(feedId, newFeed);
+                newFeeds.push(review);
+            } else {
+                newFeeds.push(review);
 
-                // update picture
-                let changed = false;
-                let feeds = [...this.state.feeds];
-                const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
-                if (index !== -1) {
-                    if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+                // this will update feed value in subscribe
+                this.feedList.set(feedId, null);
+                this.feedCountList.set(placeId, -1);
 
-                    feeds[index].picture = newFeed.pictures.one.uri;
-                    !this.closed && this.setState({ feeds });
-                }
+                const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+                    if (newFeed === undefined) {
+                        this.feedList.delete(feedId);
+                        return;
+                    }
 
-                // update database
-                if (changed) Firebase.updateReview(uid, placeId, feedId, newFeed.pictures.one.uri);
-            });
+                    // update this.feedList
+                    this.feedList.set(feedId, newFeed);
 
-            this.feedsUnsubscribes.push(fi);
-            // }
+                    // update picture
+                    let changed = false;
+                    let feeds = [...this.state.feeds];
+                    const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
+                    if (index !== -1) {
+                        if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+
+                        feeds[index].picture = newFeed.pictures.one.uri;
+                        !this.closed && this.setState({ feeds });
+                    }
+
+                    // update database
+                    if (changed) Firebase.updateReview(uid, placeId, feedId, newFeed.pictures.one.uri);
+                });
+
+                this.feedsUnsubscribes.push(fi);
+            }
             // --
 
-            // subscribe here (count)
+            // subscribe feed count
             // --
             if (!this.feedCountList.has(placeId)) {
                 const ci = Firebase.subscribeToPlace(placeId, newPlace => {
@@ -399,8 +403,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         }, 500);
 
         console.log('ReviewMain', 'loading feeds done!');
-
-        // this.onLoading = false;
     }
 
     postClick(item) {
@@ -441,13 +443,16 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         if (post === undefined) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
-                // update state feed
+                // update picture
                 let feeds = [...this.state.feeds];
                 const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
                 if (index !== -1) {
                     feeds.splice(index, 1);
                     !this.closed && this.setState({ feeds });
                 }
+
+                // update database
+                Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
             });
 
             return;
