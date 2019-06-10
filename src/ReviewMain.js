@@ -323,6 +323,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             newFeeds.push(review);
 
 
+            // this will update feed value in subscribe
+            this.feedList.set(feedId, null);
+            this.feedCountList.set(placeId, -1);
+
 
             // subscribe here (post)
             // --
@@ -375,8 +379,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             }
             // --
 
-
-
             this.lastLoadedFeedIndex = i;
 
             count++;
@@ -405,22 +407,14 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         if (item.replyAdded) {
             // update replyAdded in user profile
             const { profile } = this.props.profileStore;
-            /*
-            const result = await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
-            if (!result) {
-                this.refs["toast"].show('The user no longer exists.', 500);
 
-                return;
-            }
-            */
             Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
 
             // update state
             let feeds = [...this.state.feeds];
             const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId && el.reviewId === item.reviewId);
             if (index === -1) {
-                this.refs["toast"].show('The post no longer exists.', 500);
-
+                // this should never happen
                 return;
             }
 
@@ -435,29 +429,39 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     openPost(item) {
         // show indicator
-        const feeds = [...this.state.feeds];
-        const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
-        if (index === -1) {
-            this.refs["toast"].show('The post no longer exists.', 500);
-
-            return;
-        }
-
         // !this.closed && this.setState({ showPostIndicator: index });
 
         const post = this.getPost(item);
-        if (!post) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500); // or NOT subscribed yet!
+        if (post === null) {
+            // the post is not subscribed yet
+            this.refs["toast"].show('Please try again.', 500);
+            return;
+        }
 
-            // we skip here. It'll update state feeds on onfocus event.
+        if (post === undefined) {
+            // the post is removed
+            this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
+                // update state feed
+                let feeds = [...this.state.feeds];
+                const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
+                if (index !== -1) {
+                    feeds.splice(index, 1);
+                    !this.closed && this.setState({ feeds });
+                }
+            });
 
             return;
         }
 
         const feedSize = this.getFeedSize(item.placeId);
-        if (feedSize === 0) {
+        if (feedSize === -1) {
             this.refs["toast"].show('Please try again.', 500);
+            return;
+        }
 
+        if (feedSize === undefined) {
+            // the place is removed
+            // this should never happen
             return;
         }
 
@@ -478,79 +482,15 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         const placeId = item.placeId;
         const feedId = item.feedId;
 
-        /*
-        if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
-            console.log('post from memory');
-            return this.feedList.get(feedId);
-        }
+        const post = this.feedList.get(feedId);
 
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (!feedDoc.exists) return null;
-
-        const post = feedDoc.data();
-
-        this.feedList.set(feedId, post);
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
-            if (newFeed === undefined) {
-                this.feedList.delete(feedId);
-                return;
-            }
-
-            // update this.feedList
-            this.feedList.set(feedId, newFeed);
-        });
-
-        this.feedsUnsubscribes.push(instance);
-        // --
-        */
-
-        let post = null;
-        if (this.feedList.has(feedId)) {
-            post = this.feedList.get(feedId);
-        }
-
-        return post;
+        return post; // null: the post is not subscribed yet, undefined: the post is removed
     }
 
     getFeedSize(placeId) {
-        /*
-        if (this.feedCountList.has(placeId)) {
-            console.log('count from memory');
-            return this.feedCountList.get(placeId);
-        }
+        const count = this.feedCountList.get(placeId);
 
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
-        // if (!placeDoc.exists) return 0; // never happen
-
-        const count = placeDoc.data().count;
-
-        this.feedCountList.set(placeId, count);
-
-        // subscribe here
-        // --
-        const instance = Firebase.subscribeToPlace(placeId, newPlace => {
-            if (newPlace === undefined) {
-                this.feedCountList.delete(placeId);
-                return;
-            }
-
-            // update this.feedCountList
-            this.feedCountList.set(placeId, newPlace.count);
-        });
-
-        this.countsUnsubscribes.push(instance);
-        // --
-        */
-
-        let count = 0;
-        if (this.feedCountList.has(placeId)) {
-            count = this.feedCountList.get(placeId);
-        }
-
-        return count;
+        return count; // -1: the place is not subscribed yet, undefined: the place is removed
     }
 
     handleRefresh = () => {
