@@ -958,6 +958,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 // ToDo:
                             }, Cons.buttonTimeoutShort);
                             */
+                            this.refs["toast"].show("Can't change email address!", 500);
                         }}
                     >
                         <Text
@@ -1015,6 +1016,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 // ToDo:
                             }, Cons.buttonTimeoutShort);
                             */
+                            this.refs["toast"].show("Can't change phone number!", 500);
                         }}
                     >
                         <Text

@@ -84,9 +84,9 @@ export default class SearchScreen extends React.Component {
         }
 
         let placeholder = '';
-        if (from === 'EditProfile') placeholder = 'Where are you from?';
-        else if (from === 'AdvertisementMain') placeholder = 'Where do you live?';
-        else placeholder = 'Where to?';
+        if (from === 'EditProfile') placeholder = 'Where are you from? (Type city)';
+        else if (from === 'AdvertisementMain') placeholder = 'Where do you live? (Type street)';
+        else placeholder = 'Where to? (Type city)';
 
         return (
             <View style={styles.flex}>
@@ -348,7 +348,8 @@ export default class SearchScreen extends React.Component {
                                     // ["locality", "political"],
                                     ["colloquial_area", "locality", "political", "geocode"],
                                     ["locality", "political", "geocode"],
-                                    ["country", "political", "geocode"]
+                                    // ["country", "political", "geocode"]
+
                                     // ['locality', 'administrative_area_level_3'],
                                     // ['street_address']
                                 ]

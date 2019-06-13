@@ -261,6 +261,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     if (!profile.picture.uri) { // if only profile picture NOT exists then save it!
                         profile.picture.uri = photoURL;
                     }
+                    profile.lastLogInTime = Date.now();
 
                     await Firebase.updateProfile(user.uid, profile);
                 } else {

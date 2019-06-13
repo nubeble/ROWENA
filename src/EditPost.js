@@ -1635,6 +1635,7 @@ export default class EditPost extends React.Component {
                                 !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
                             */
+                            this.refs["toast"].show("Can't change country!", 500);
                         }}
                     >
                         <Text
@@ -1703,6 +1704,7 @@ export default class EditPost extends React.Component {
                                 !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                             }, Cons.buttonTimeoutShort);
                             */
+                            this.refs["toast"].show("Can't change street!", 500);
                         }}
                     >
                         <Text

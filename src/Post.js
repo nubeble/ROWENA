@@ -72,6 +72,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         showPostLoader: false,
 
+        lastLogInTime: null,
+
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
 
@@ -89,6 +91,9 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.feed = null; // subscribe post
         this.feedUnsubscribe = null;
+
+        this.user = null; // subscribe user
+        this.userUnsubscribe = null;
 
         this.itemHeights = {};
 
@@ -136,6 +141,10 @@ export default class Post extends React.Component<InjectedProps> {
             this.feedUnsubscribe();
         }
 
+        if (this.userUnsubscribe) {
+            this.userUnsubscribe();
+        }
+
         this.closed = true;
     }
 
@@ -153,6 +162,28 @@ export default class Post extends React.Component<InjectedProps> {
         });
 
         this.feedUnsubscribe = fi;
+    }
+
+    subscribeToProfile(uid) {
+        // this will be updated in subscribe
+        // this.user = null;
+
+        const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === undefined) {
+                this.user = null;
+
+                this.setState({ lastLogInTime: null });
+                return;
+            }
+
+            this.user = user;
+
+            if (user.lastLogInTime) {
+                this.setState({ lastLogInTime: user.lastLogInTime });
+            }
+        });
+
+        this.userUnsubscribe = instance;
     }
 
     edit() {
@@ -325,6 +356,7 @@ export default class Post extends React.Component<InjectedProps> {
         this.setState({ post });
 
         this.subscribeToPost(post);
+        this.subscribeToProfile(post.uid);
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
@@ -733,6 +765,22 @@ export default class Post extends React.Component<InjectedProps> {
             case 5: markerImage = PreloadImage.emoji5; break;
         }
 
+        let lastLogInTime = null;
+        let circleColor = 'grey'; // ToDo: get rgb color (green, yellow, grey)
+        if (this.state.lastLogInTime) {
+            lastLogInTime = moment(this.state.lastLogInTime).fromNow();
+
+            const now = Date.now();
+            const difference = now - this.state.lastLogInTime;
+            const daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
+
+            console.log('daysDifference', daysDifference);
+
+            if (daysDifference > 7) circleColor = 'grey';
+            else if (daysDifference > 1) circleColor = 'yellow';
+            else circleColor = 'green';
+        }
+
         return (
             <View>
                 {/* profile pictures */}
@@ -741,8 +789,12 @@ export default class Post extends React.Component<InjectedProps> {
                 }
                 <View style={styles.infoContainer}>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 2 }}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                        <View style={{ justifyContent: 'center', alignItems: 'flex-start', paddingVertical: 2 }}>
+                            <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Light" }}>Posted {moment(post.timestamp).fromNow()}</Text>
+                        </View>
+
+                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingLeft: 10, paddingVertical: 2 }}
                             onPress={async () => {
                                 if (this.state.showPostLoader) return;
 
@@ -765,9 +817,9 @@ export default class Post extends React.Component<InjectedProps> {
                                     </View>
                                     :
                                     // ToDo: status color
-                                    <View style={styles.circle}></View>
+                                    <View style={[styles.circle, { backgroundColor: circleColor }]}></View>
                             }
-                            <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
+                            <Text style={styles.date}>Activated {lastLogInTime ? lastLogInTime : 'long time ago'}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -2138,13 +2190,6 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         // check if removed by the owner
-        /*
-        const feedDoc = await Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).get();
-        if (!feedDoc.exists) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-            return;
-        }
-        */
         if (!this.feed) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;

@@ -87,6 +87,8 @@ export default class Firebase {
     }
 
     static async createProfile(uid, name, email, phoneNumber, photoURL) {
+        const time = Firebase.getTimestamp();
+
         const profile = {
             uid: uid,
             name: name,
@@ -106,7 +108,8 @@ export default class Firebase {
             comments: [],
             receivedCommentsCount: 0,
             commentAdded: false,
-            timestamp: Firebase.getTimestamp()
+            timestamp: time,
+            lastLogInTime: time
         };
 
         await Firebase.firestore.collection("users").doc(uid).set(profile);
@@ -1920,12 +1923,12 @@ export default class Firebase {
         }).then(() => {
             console.log('Firebase.updateChatRoom, success.');
         }).catch((error) => {
-            console.log('Firebase.updateChatRoom', error);
+            console.log('Firebase.updateChatRoom, error', error);
         });
 
         // update the opponent chat room
         await Firebase.database.ref('chat').child(opponentUid).child(roomId).once('value').then(snapshot => {
-            if (!snapshot.exists()) throw 'Database data does not exist! (User left the chat room.)';
+            if (!snapshot.exists()) throw 'Opponent chat room does not exist! (User left the chat room.)';
 
             let users = [];
             users.push(myUsers[1]);
@@ -1940,7 +1943,7 @@ export default class Firebase {
         }).then(() => {
             console.log('Firebase.updateChatRoom, success.');
         }).catch((error) => {
-            console.log('Firebase.updateChatRoom', error);
+            console.log('Firebase.updateChatRoom, error', error);
         });
     }
 

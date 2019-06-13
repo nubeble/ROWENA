@@ -72,7 +72,8 @@ export type Profile = {
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
     receivedCommentsCount: number, // 내가 받은 comment 개수
     commentAdded: boolean,
-    timestamp: number
+    timestamp: number,
+    lastLogInTime: number
 };
 
 type Pictures = {
