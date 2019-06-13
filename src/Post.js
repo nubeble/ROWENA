@@ -415,6 +415,8 @@ export default class Post extends React.Component<InjectedProps> {
     async toggle() {
         if (this.toggling) return;
 
+        const post = this.state.post;
+
         // check the owner of the post
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
@@ -427,8 +429,6 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         this.toggling = true;
-
-        const post = this.state.post;
 
         if (!this.state.liked) {
             !this.closed && this.setState({ liked: true });
