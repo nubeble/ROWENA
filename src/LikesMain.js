@@ -62,8 +62,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
         console.log('LikesMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         // this.getSavedFeeds();
@@ -79,7 +79,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
     handleHardwareBackPress() {
         console.log('LikesMain.handleHardwareBackPress');
 
-        this.props.navigation.navigate("intro");
+        // this.props.navigation.navigate("intro");
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }
@@ -269,7 +270,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         // this.setState({ isLoadingFeeds: false, loadingType: 0 });
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
-        }, 500);
+        }, 250);
 
         // this.onLoading = false;
     }
@@ -323,7 +324,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
     subscribeToPlace(placeId) {
         if (!this.feedCountList.has(placeId)) {
-            // this will update in subscribe
+            // this will be updated in subscribe
             this.feedCountList.set(placeId, -1);
 
             const ci = Firebase.subscribeToPlace(placeId, newPlace => {
@@ -426,12 +427,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         renderItem={({ item, index }) => {
                             // placeName
                             let placeName = item.placeName;
-                            const words = placeName.split(', ');
-                            if (words.length > 1) {
-                                const city = words[0];
-                                const country = words[words.length - 1];
-                                placeName = city + ', ' + country;
-                            }
+                            placeName = Util.getPlaceName(placeName);
 
                             // defaultRating, averageRating
                             let integer = 0;
@@ -564,7 +560,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                         setTimeout(() => {
                                             // Consider: set scroll position 0
 
-                                            !this.closed && this.props.navigation.navigate("intro");
+                                            // !this.closed && this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>

@@ -231,7 +231,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                             if (this.closed) return;
                                             // Consider: set scroll position 0
 
-                                            this.props.navigation.navigate("intro");
+                                            // this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>
@@ -335,7 +335,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             } else {
                 newFeeds.push(review);
 
-                // this will update feed value in subscribe
+                // this will be updated in subscribe
                 this.feedList.set(feedId, null);
 
                 const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
@@ -362,7 +362,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     !this.closed && this.setState({ feeds });
 
                     // update database
-                    if (changed) Firebase.updateReview(uid, placeId, feedId, newFeed.pictures.one.uri);
+                    if (changed) Firebase.updateReview(Firebase.user().uid, placeId, feedId, newFeed.pictures.one.uri);
                 });
 
                 this.feedsUnsubscribes.push(fi);
@@ -372,7 +372,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             // subscribe feed count
             // --
             if (!this.feedCountList.has(placeId)) {
-                // this will update feed value in subscribe
+                // this will be updated in subscribe
                 this.feedCountList.set(placeId, -1);
 
                 const ci = Firebase.subscribeToPlace(placeId, newPlace => {
@@ -406,17 +406,17 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false });
-        }, 500);
+        }, 250);
 
         console.log('ReviewMain', 'loading feeds done!');
     }
 
-    postClick(item) {
+    async postClick(item) {
         if (item.replyAdded) {
             // update replyAdded in user profile
             const { profile } = this.props.profileStore;
 
-            Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
+            await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
 
             // update state
             let feeds = [...this.state.feeds];
@@ -469,6 +469,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
                 // update database
                 Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
+
+                // await Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
+                // this.onFocus();
             });
 
             return;

@@ -348,9 +348,7 @@ export default class ResetPasswordMain extends React.Component {
             this.setState({ showSignUpButtonLoader: false });
 
             // move to wait page
-            if (!this.closed) {
-                this.props.navigation.navigate("resetPasswordVerification");
-            }
+            this.props.navigation.navigate("resetPasswordVerification");
 
             /*
             Firebase.auth.verifyPasswordResetCode(code).then(function (email) {

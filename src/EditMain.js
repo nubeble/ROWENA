@@ -15,6 +15,7 @@ import Firebase from "./Firebase";
 import PreloadImage from './PreloadImage';
 import { RefreshIndicator } from "./rnff/src/components";
 import Util from "./Util";
+import type { CommentEntry } from "../rnff/src/components/Model";
 import CommentStore from "./CommentStore";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
@@ -38,20 +39,9 @@ export default class EditMain extends React.Component<InjectedProps> {
     commentStore: CommentStore = new CommentStore();
 
     state = {
-        // renderFeed: false,
-
         isLoadingFeeds: false,
-        refreshing: false,
-
-        host: null,
-        guest: null
+        refreshing: false
     };
-
-    constructor(props) {
-        super(props);
-
-        this.opponentUserUnsubscribe = null;
-    }
 
     componentDidMount() {
         console.log('EditMain.componentDidMount');
@@ -70,12 +60,6 @@ export default class EditMain extends React.Component<InjectedProps> {
             const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
             this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
         }
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderFeed: true });
-        }, 0);
-        */
     }
 
     @autobind
@@ -358,10 +342,9 @@ export default class EditMain extends React.Component<InjectedProps> {
                         }
                         // columnWrapperStyle={styles.columnWrapperStyle}
                         data={reviews}
-                        keyExtractor={item => item.review.id}
+                        keyExtractor={item => item.comment.id}
                         renderItem={this.renderItem}
                         ItemSeparatorComponent={this.itemSeparatorComponent}
-
                         onScroll={({ nativeEvent }) => {
                             if (!this.focused) return;
 
@@ -388,13 +371,23 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     renderItem({ item, index }: FlatListItem<CommentEntry>): React.Node {
-        // const _profile = item.profile; // boss's profile
-        const _review = item.review;
+        const post = item.post;
+        const _review = item.comment;
 
-        /*
-        console.log ('profile', _profile.uid); // writer
-        console.log ('review', _review.id); // comment
-        */
+        let picture = null;
+        let placeName = null;
+        let name = null;
+
+        if (post) {
+            picture = post.pictures.one.uri;
+            placeName = post.placeName;
+            name = post.name;
+        } else {
+            // ToDo: tmp
+            picture = _review.picture;
+            placeName = _review.place;
+            name = _review.name;
+        }
 
         let isMyComment = false;
         if (_review.uid === Firebase.user().uid) {
@@ -411,22 +404,33 @@ export default class EditMain extends React.Component<InjectedProps> {
                 */}
 
                 <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
-                    <SmartImage
-                        style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
-                        showSpinner={false}
-                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={_review.picture}
-                    />
+                    {
+                        picture ?
+                            <SmartImage
+                                style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                                showSpinner={false}
+                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={picture}
+                            />
+                            :
+                            <Image
+                                style={{
+                                    backgroundColor: 'black', tintColor: 'white', width: profilePictureWidth, height: profilePictureWidth,
+                                    borderRadius: profilePictureWidth / 2, borderColor: 'black', borderWidth: 1,
+                                    resizeMode: 'cover'
+                                }}
+                                source={PreloadImage.user}
+                            />
+                    }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
-                            {_review.name}</Text>
+                            {name}</Text>
                         <Text style={{
                             marginTop: 4,
                             color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
-                        }}>{_review.place}</Text>
+                        }}>{placeName}</Text>
                     </View>
                 </View>
-
                 {
                     isMyComment && (
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -441,7 +445,6 @@ export default class EditMain extends React.Component<InjectedProps> {
                         </View>
                     )
                 }
-
             </View>
         );
     }

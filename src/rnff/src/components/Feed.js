@@ -158,7 +158,7 @@ export default class Feed extends React.Component<FeedProps> {
                                     onPress={() => {
                                         setTimeout(() => {
                                             if (this.closed) return;
-                                            this.props.navigation.navigate("intro");
+                                            // this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 6 }}>

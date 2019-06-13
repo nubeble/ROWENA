@@ -17,6 +17,7 @@ import Firebase from './Firebase';
 import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
 import { Cons, Vars } from "./Globals";
+import Util from "./Util";
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -65,7 +66,10 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     init(place) {
-        this.setState({ searchText: place.name, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
+        let placeName = place.name;
+        placeName = Util.getPlaceName(placeName);
+
+        this.setState({ searchText: placeName, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
@@ -574,45 +578,16 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     openMap() {
-        // const { feedStore } = this.props;
-        /*
-        const { feed } = feedStore;
-
-        if (!feed) return;
-        */
-
-        /*
-        let region = null;
-        if (feedStore) {
-            const { feed } = feedStore; // array
-            if (feed) {
-                if (feed.length > 0) {
-                    const post = feed[0].post;
-
-                    const latitude = post.location.latitude;
-                    const longitude = post.location.longitude;
-
-                    region = { latitude, longitude };
-                }
-            }
-        }
-        */
-
-        const region = {
-            latitude: this.state.latitude,
-            longitude: this.state.longitude
-        };
-
-        /*
-        const place = this.props.navigation.state.params.place;
-        const placeId = place.place_id;
-        */
-
-        const placeName = this.state.searchText;
-        const placeId = this.state.placeId;
-        const feedSize = this.state.feedSize;
-
         setTimeout(() => {
+            const region = {
+                latitude: this.state.latitude,
+                longitude: this.state.longitude
+            };
+
+            const placeName = this.state.searchText;
+            const placeId = this.state.placeId;
+            const feedSize = this.state.feedSize;
+
             !this.closed && this.props.navigation.navigate("mapSearch", { region, placeName, placeId, feedSize });
         }, Cons.buttonTimeoutShort);
     }

@@ -20,6 +20,7 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import Intro from './Intro';
 import ChatMain from './ChatMain';
 import { unregisterExpoPushToken } from './PushNotifications';
+import { NavigationActions } from 'react-navigation';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -71,7 +72,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-        // this.onLoading = false;
 
         this.lastCommentsUpdatedTime = 0;
 
@@ -174,7 +174,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return true;
         }
 
-        this.props.navigation.navigate("intro");
+        // this.props.navigation.navigate("intro");
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }
@@ -265,7 +266,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     };
 
     getUserFeeds() {
-        // if (this.onLoading) return;
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
@@ -293,8 +293,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
-
-        // this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
 
@@ -334,7 +332,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             } else {
                 newFeeds.push(feed);
 
-                // this will update feed value in subscribe
+                // this will be updated in subscribe
                 this.feedList.set(feedId, null);
 
                 const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
@@ -347,12 +345,18 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     this.feedList.set(feedId, newFeed);
 
                     // update picture
+                    // let changed = false;
                     let feeds = [...this.state.feeds];
                     const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
                     if (index !== -1) {
+                        // if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+
                         feeds[index].picture = newFeed.pictures.one.uri;
                         this.setState({ feeds });
                     }
+
+                    // update database
+                    // if (changed) Firebase.updateUserFeed(Firebase.user().uid, placeId, feedId, newFeed.pictures.one.uri);
                 });
 
                 this.feedsUnsubscribes.push(fi);
@@ -362,7 +366,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             // subscribe feed count
             // --
             if (!this.feedCountList.has(placeId)) {
-                // this will update feed value in subscribe
+                // this will be updated in subscribe
                 this.feedCountList.set(placeId, -1);
 
                 const ci = Firebase.subscribeToPlace(placeId, newPlace => {
@@ -396,11 +400,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false });
-        }, 500);
+        }, 250);
 
         console.log('ProfileMain', 'loading feeds done!');
-
-        // this.onLoading = false;
     }
 
     async postClick(item) {
@@ -1045,8 +1047,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     handleRefresh = () => {
         /*
-        if (this.onLoading) return;
-
         this.setState(
             {
                 refreshing: true
@@ -1156,8 +1156,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     // copied from Loading.js
     checkUpdateOnUserFeed() {
-        // User Feed 업데이트만 체크!
-        // owner의 경우, 내가 올린 post에 리뷰가 달린 경우
+        // 내가 올린 post에 리뷰가 달린 경우만 체크!
 
         const { profileStore } = this.props;
         const { profile } = profileStore;

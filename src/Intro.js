@@ -21,6 +21,7 @@ import _ from 'lodash';
 import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 import Toast, { DURATION } from 'react-native-easy-toast';
+import Util from './Util';
 
 /*
 type ExploreState = {
@@ -232,14 +233,7 @@ export default class Intro extends React.Component {
 
         // get city, country
         let name = result.description;
-        /*
-        const words = name.split(', ');
-        if (words.length > 1) {
-            city = words[0];
-            country = words[words.length - 1];
-            name = city + ', ' + country;
-        }
-        */
+        name = Util.getPlaceName(name);
 
         /*
         // load count from database (no need to subscribe!)
@@ -272,7 +266,7 @@ export default class Intro extends React.Component {
             // subscribe feed count
             // --
             if (!Intro.feedCountList.has(result.place_id)) {
-                // this will update in subscribe
+                // this will be updated in subscribe
                 Intro.feedCountList.set(result.place_id, -1);
 
                 const ci = Firebase.subscribeToPlace(result.place_id, newPlace => {
@@ -370,7 +364,7 @@ export default class Intro extends React.Component {
 
                         // subscribe feed count
                         if (!Intro.feedCountList.has(doc.id)) {
-                            // this will update in subscribe
+                            // this will be updated in subscribe
                             Intro.feedCountList.set(doc.id, -1);
 
                             const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
@@ -473,7 +467,7 @@ export default class Intro extends React.Component {
             // subscribe post
             // --
             if (!Intro.feedList.has(feed.id)) {
-                // this will update in subscribe
+                // this will be updated in subscribe
                 Intro.feedList.set(feed.id, null);
 
                 const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
@@ -505,7 +499,7 @@ export default class Intro extends React.Component {
             // subscribe feed count
             // --
             if (!Intro.feedCountList.has(feed.placeId)) {
-                // this will update in subscribe
+                // this will be updated in subscribe
                 Intro.feedCountList.set(feed.placeId, -1);
 
                 const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
@@ -581,7 +575,7 @@ export default class Intro extends React.Component {
             // subscribe post
             // --
             if (!Intro.feedList.has(feed.id)) {
-                // this will update in subscribe
+                // this will be updated in subscribe
                 Intro.feedList.set(feed.id, null);
 
                 const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
@@ -613,7 +607,7 @@ export default class Intro extends React.Component {
             // subscribe feed count
             // --
             if (!Intro.feedCountList.has(feed.placeId)) {
-                // this will update in subscribe
+                // this will be updated in subscribe
                 Intro.feedCountList.set(feed.placeId, -1);
 
                 const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
@@ -791,6 +785,7 @@ export default class Intro extends React.Component {
                                 name = place.name;
 
                                 // get city, country
+                                /*
                                 const words = name.split(', ');
                                 if (words.length > 1) {
                                     city = words[0];
@@ -798,6 +793,9 @@ export default class Intro extends React.Component {
                                 } else {
                                     city = name;
                                 }
+                                */
+                                city = Util.getCityName(name);
+                                country = Util.getCountryName(name);
 
                                 imageUri = place.uri;
                             } else {
@@ -809,15 +807,17 @@ export default class Intro extends React.Component {
                                     name = place.name;
 
                                     // get city, country
-                                    if (name) {
-                                        const words = name.split(', ');
-                                        if (words.length > 1) {
-                                            city = words[0];
-                                            country = words[words.length - 1];
-                                        } else {
-                                            city = name;
-                                        }
+                                    /*
+                                    const words = name.split(', ');
+                                    if (words.length > 1) {
+                                        city = words[0];
+                                        country = words[words.length - 1];
+                                    } else {
+                                        city = name;
                                     }
+                                    */
+                                    city = Util.getCityName(name);
+                                    country = Util.getCountryName(name);
 
                                     imageUri = place.uri;
                                 } else {
@@ -1167,12 +1167,7 @@ export default class Intro extends React.Component {
     renderFeedItem(feed) {
         // placeName
         let placeName = feed.placeName;
-        const words = placeName.split(', ');
-        if (words.length > 2) {
-            const city = words[0];
-            const country = words[words.length - 1];
-            placeName = city + ', ' + country;
-        }
+        placeName = Util.getPlaceName(placeName);
 
         // defaultRating, averageRating
         const averageRating = feed.averageRating;

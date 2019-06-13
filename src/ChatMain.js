@@ -57,8 +57,8 @@ export default class ChatMain extends React.Component {
     componentDidMount() {
         console.log('ChatMain.componentDidMount');
 
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
@@ -141,7 +141,7 @@ export default class ChatMain extends React.Component {
     subscribeToPost(placeId, feedId, roomId) {
         if (this.feedList.has(feedId)) return;
 
-        // this will update in subscribe
+        // this will be updated in subscribe
         this.feedList.set(feedId, null);
 
         const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
@@ -184,7 +184,7 @@ export default class ChatMain extends React.Component {
     subscribeToPlace(placeId) {
         if (this.feedCountList.has(placeId)) return;
 
-        // this will update feed value in subscribe
+        // this will be updated in subscribe
         this.feedCountList.set(placeId, -1);
 
         const ci = Firebase.subscribeToPlace(placeId, newPlace => {
@@ -202,7 +202,7 @@ export default class ChatMain extends React.Component {
     subscribeToProfile(uid, roomId) {
         if (this.customerProfileList.has(uid)) return;
 
-        // this will update in subscribe
+        // this will be updated in subscribe
         this.customerProfileList.set(uid, null);
 
         const instance = Firebase.subscribeToProfile(uid, user => {
@@ -385,7 +385,8 @@ export default class ChatMain extends React.Component {
     handleHardwareBackPress() {
         console.log('ChatMain.handleHardwareBackPress');
 
-        this.props.navigation.navigate("intro");
+        // this.props.navigation.navigate("intro");
+        this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
     }
@@ -457,7 +458,7 @@ export default class ChatMain extends React.Component {
                                     setTimeout(() => {
                                         // Consider: set scroll position 0
 
-                                        !this.closed && this.props.navigation.navigate("intro");
+                                        // !this.closed && this.props.navigation.navigate("intro");
                                     }, Cons.buttonTimeoutShort);
                                 }}
                                 style={{ marginTop: 20 }}>
@@ -541,6 +542,7 @@ export default class ChatMain extends React.Component {
                     const chatRoom = list[itemIndex];
                     this.moveToChatRoom(chatRoom);
                 } else {
+                    // this should never happen
                     this.refs["toast"].show('The room no longer exists.', 500);
                 }
             }}>
@@ -571,7 +573,6 @@ export default class ChatMain extends React.Component {
                                     </Text>
                                 </View>
                         }
-
                         {
                             update &&
                             <View style={{

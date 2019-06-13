@@ -238,7 +238,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                         setTimeout(() => {
                                             // Consider: set scroll position 0
 
-                                            !this.closed && this.props.navigation.navigate("intro");
+                                            // !this.closed && this.props.navigation.navigate("intro");
                                         }, Cons.buttonTimeoutShort);
                                     }}
                                     style={{ marginTop: 20 }}>
@@ -371,7 +371,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                 newFeeds.push(customer);
 
-                // this will update in subscribe
+                // this will be updated in subscribe
                 this.customerList.set(uid, null);
 
                 // subscribe user profile
@@ -429,7 +429,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false });
-        }, 500);
+        }, 250);
 
         console.log('CommentMain', 'loading feeds done!');
 
@@ -462,7 +462,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         if (customer === undefined) {
             // the user is removed
             this.refs["toast"].show('The user no longer exists.', 500, () => {
-                // update state feed & UI
+                // update picture
                 let feeds = [...this.state.feeds];
                 for (let i = 0; i < feeds.length; i++) {
                     const feed = feeds[i];

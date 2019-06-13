@@ -1304,11 +1304,13 @@ export default class Admin extends React.Component {
     }
 
     addComment() {
+        /*
         // test
         const name = 'Max Power';
         const place = 'Cebu, Philippines';
         const uri = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';
         Firebase.addComment(Firebase.user().uid, 'VUg2ZB2PgWfwCNXyXwa94FwErrZ2', 'wow!', name, place, uri); // writer, receiver (m1), message
+        */
     }
 
     removeComment() {

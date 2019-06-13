@@ -16,7 +16,8 @@ export default class CommentStore {
     lastKnownEntry: any;
     query: any;
 
-    profiles: { [uid: string]: Profile } = {};
+    // profiles: { [uid: string]: Profile } = {};
+    posts: { [id: string]: Post } = {}; // id: comment id
 
     allReviewsLoaded = false;
 
@@ -33,8 +34,9 @@ export default class CommentStore {
     init(query: any, count = DEFAULT_REVIEW_COUNT) {
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
-        this.query = undefined;
-        this.profiles = {};
+        // this.query = undefined;
+        // this.profiles = {};
+        this.posts = {};
         this.reviews = undefined;
         this.allReviewsLoaded = false;
 
@@ -66,7 +68,8 @@ export default class CommentStore {
             reviews.push(reviewDoc.data());
         });
 
-        const _reviews = await this.joinProfiles(reviews);
+        // const _reviews = await this.joinProfiles(reviews);
+        const _reviews = await this.joinPost(reviews);
         if (!this.reviews) {
             this.reviews = [];
             this.lastKnownEntry = snap.docs[0];
@@ -108,10 +111,41 @@ export default class CommentStore {
         });
     }
 
-    addToReview(entries: CommentEntry[]) {
-        const _reviews = _.uniqBy([...this.reviews.slice(), ...entries], entry => entry.review.id);
+    async joinPost(comments: Comment[]): Promise<CommentEntry[]> { // mapping review and review writer
+        let array: Comment[] = [];
+        for (let i = 0; i < comments.length; i++) {
+            const comment = comments[i];
+            if (this.posts[comment.id] === undefined) {
+                array.push(comment);
+            }
+        }
 
-        this.reviews = _.orderBy(_reviews, entry => entry.review.timestamp, ["desc"]);
+        console.log('CommentStore.joinPost, array', array);
+
+        const promises = _.uniqBy(array, item => item.id).map(item => (async () => {
+            console.log('CommentStore.joinPost, uniqBy', item.placeId, item.feedId);
+
+            try {
+                const feedDoc = await Firebase.firestore.collection("place").doc(item.placeId).collection("feed").doc(item.feedId).get();
+                if (feedDoc.exists) this.posts[item.id] = feedDoc.data();
+            } catch (e) {
+                console.log('CommentStore.joinPost, old comment');
+            }
+        })());
+
+        await Promise.all(promises);
+
+        return comments.map(comment => {
+            const post = this.posts[comment.id];
+
+            return { comment, post };
+        });
+    }
+
+    addToReview(entries: CommentEntry[]) {
+        const _reviews = _.uniqBy([...this.reviews.slice(), ...entries], entry => entry.comment.id);
+
+        this.reviews = _.orderBy(_reviews, entry => entry.comment.timestamp, ["desc"]);
     }
 
     async checkForNewEntries(): Promise<void> {
@@ -132,7 +166,8 @@ export default class CommentStore {
                 reviews.push(reviewDoc.data());
             });
 
-            const _reviews = await this.joinProfiles(reviews);
+            // const _reviews = await this.joinProfiles(reviews);
+            const _reviews = await this.joinPost(reviews);
             if (!this.reviews) {
                 this.reviews = [];
                 this.lastKnownEntry = snap.docs[0];

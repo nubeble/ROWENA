@@ -14,6 +14,7 @@ import { Cons, Vars } from "./Globals";
 import PreloadImage from './PreloadImage';
 import { RefreshIndicator } from "./rnff/src/components";
 import Util from "./Util";
+import type { CommentEntry } from "../rnff/src/components/Model";
 import CommentStore from "./CommentStore";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
@@ -51,6 +52,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         host: null,
         guest: null,
 
+        disableReviewButton: false,
+
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
 
@@ -72,7 +75,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        console.log('UserMain.componentDidMount');
+        // console.log('UserMain.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
@@ -83,6 +86,12 @@ export default class UserMain extends React.Component<InjectedProps> {
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         const item = this.props.navigation.state.params.item;
+        // console.log('UserMain.componentDidMount', item);
+
+        let disableReviewButton = true;
+        if (!item.placeId && !item.feedId) disableReviewButton = false;
+
+
         const guest = item.guest;
         const host = item.host;
 
@@ -91,7 +100,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
 
-        this.setState({ guest: guest, host: host });
+        this.setState({ disableReviewButton, guest: guest, host: host });
 
 
         // ----
@@ -287,13 +296,10 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     async addComment(message) {
         const { host, guest } = this.state;
+        const { placeId, feedId } = this.props.navigation.state.params.item;
 
-        const name = host.name;
-        const uri = host.picture;
-        const placeName = host.address;
-        const opponentUserUid = guest.uid;
-
-        Firebase.addComment(host.uid, opponentUserUid, message, name, placeName, uri); // writer, receiver (m1), message
+        // Firebase.addComment(host.uid, guest.uid, message, host.name, host.address, host.picture, placeId, feedId);
+        Firebase.addComment(host.uid, guest.uid, message, placeId, feedId);
     };
 
     async removeComment(index) {
@@ -583,6 +589,8 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             }
                                             ]}
                                             onPress={() => {
+                                                if (!this.state.disableReviewButton) return;
+
                                                 if (!this.state.guest) return;
 
                                                 setTimeout(() => {
@@ -629,7 +637,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             </View>
                         }
                         data={reviews}
-                        keyExtractor={item => item.review.id}
+                        keyExtractor={item => item.comment.id}
                         renderItem={this.renderItem}
 
                         // onEndReachedThreshold={0.5}
@@ -663,7 +671,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                     this.state.showKeyboard &&
                     <View style={{
                         position: 'absolute',
-
                         top: this.state.bottomPosition - replyViewHeight,
                         height: replyViewHeight,
 
@@ -743,13 +750,23 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     renderItem({ item, index }: FlatListItem<CommentEntry>): React.Node {
-        // const _profile = item.profile; // boss's profile
-        const _review = item.review;
+        const post = item.post;
+        const _review = item.comment;
 
-        /*
-        console.log ('profile', _profile.uid); // writer
-        console.log ('review', _review.id); // comment
-        */
+        let picture = null;
+        let placeName = null;
+        let name = null;
+
+        if (post) {
+            picture = post.pictures.one.uri;
+            placeName = post.placeName;
+            name = post.name;
+        } else {
+            // ToDo: tmp
+            picture = _review.picture;
+            placeName = _review.place;
+            name = _review.name;
+        }
 
         let isMyComment = false;
         if (_review.uid === Firebase.user().uid) {
@@ -767,12 +784,12 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                 <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
                     {
-                        _review.picture ?
+                        picture ?
                             <SmartImage
                                 style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
                                 showSpinner={false}
                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                uri={_review.picture}
+                                uri={picture}
                             />
                             :
                             <Image
@@ -786,14 +803,13 @@ export default class UserMain extends React.Component<InjectedProps> {
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
-                            {_review.name}</Text>
+                            {name}</Text>
                         <Text style={{
                             marginTop: 4,
                             color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
-                        }}>{_review.place}</Text>
+                        }}>{placeName}</Text>
                     </View>
                 </View>
-
                 {
                     isMyComment && (
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -808,7 +824,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                         </View>
                     )
                 }
-
             </View>
         );
     }

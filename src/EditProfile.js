@@ -122,7 +122,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const place = profile.place;
         const email = profile.email;
         const phoneNumber = profile.phoneNumber;
-        const imageUri = profile.picture.uri;
+        // const imageUri = profile.picture.uri;
+
+        const uploadImageUri = profile.picture.uri;
+        this.uploadImageRef = profile.picture.ref;
+        if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);
+
         const about = profile.about;
         let noteLength = 0;
         if (about) noteLength = about.length;
@@ -140,7 +145,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const noteLength = about.length;
         */
 
-        this.setState({ uploadImageUri: imageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength, email, phoneNumber });
+        this.setState({ uploadImageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength, email, phoneNumber });
     }
 
     initFromSearch(result) { // 'Cebu, Philippines'
@@ -392,7 +397,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         }
         data.note = _note;
 
-        if (this.uploadImageRef) {
+        if (uploadImageUri) {
             data.image = {
                 uri: uploadImageUri,
                 ref: this.uploadImageRef
@@ -408,12 +413,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         // 3. go back
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            if (this.closed) return;
+
             // hide loader
             this.setState({ showPostLoader: false });
 
-            if (!this.closed) {
-                this.props.navigation.dispatch(NavigationActions.back());
-            }
+            this.props.navigation.dispatch(NavigationActions.back());
         });
     }
 
@@ -1037,12 +1042,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: 32 }]}
                     onPress={async () => {
+                        if (this.state.showPostLoader) return;
+
                         if (this._showNotification) {
                             this.hideNotification();
                             this.hideAlertIcon();
                         }
 
-                        await this.save()
+                        await this.save();
                     }}
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Save Profile</Text>

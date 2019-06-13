@@ -107,7 +107,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             placeName = city + ', ' + country;
         }
         */
-
         const distance = Util.getDistance(post.location, Vars.location);
 
         const averageRating = post.averageRating;

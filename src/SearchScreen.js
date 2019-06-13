@@ -272,12 +272,7 @@ export default class SearchScreen extends React.Component {
                                     // Consider: exception
                                     //--
                                     let address = obj.formatted_address;
-
-                                    const words = address.split(', ');
-                                    if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
-                                        // Consider: To avoid "Kyiv, Ukraine, 02000"
-                                        address = words[0] + ', ' + words[1];
-                                    }
+                                    address = Util.getPlaceName(address);
                                     //--
 
                                     const city = {

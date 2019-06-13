@@ -13,7 +13,8 @@ import { Notifications, Constants } from 'expo';
 import Firebase from './src/Firebase';
 import { Cons, Vars } from './src/Globals';
 
-configure({ enforceActions: 'observed' })
+// disable mobx strict mode
+// configure({ enforceActions: 'observed' })
 
 // $FlowFixMe
 /*
@@ -799,7 +800,9 @@ class HomeSwitchNavigatorWrapper extends React.Component {
 const PostStackNavigator = createStackNavigator(
     {
         postMain: { screen: Post },
-        editPost: { screen: EditPost }
+        editPost: { screen: EditPost },
+        selectCountry: { screen: CountrySelection },
+        searchStreet: { screen: SearchScreen }
     },
     {
         mode: 'card',
@@ -872,7 +875,6 @@ class UserStackNavigatorWrapper extends React.Component {
 const ChatRoomStackNavigator = createStackNavigator(
     {
         room: { screen: ChatRoom },
-        // post: { screen: PostSwitchNavigatorWrapper },
         post: { screen: PostStackNavigatorWrapper },
         user: { screen: UserStackNavigatorWrapper }
     },
@@ -1252,7 +1254,6 @@ const RootStackNavigator = createStackNavigator(
     {
         main: { screen: MainBottomTabNavigatorWrapper },
         search: { screen: SearchScreen },
-        // postPreview: { screen: PostSwitchNavigatorWrapper }
         postPreview: { screen: PostStackNavigatorWrapper }
     },
     {

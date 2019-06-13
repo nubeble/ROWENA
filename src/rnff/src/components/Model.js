@@ -140,17 +140,15 @@ export type ReviewEntry = { review: Review, profile: Profile };
 export type Reviews = ReviewEntry[];
 
 type Comment = {
-    uid: string, // boss's uid
-    comment: string,
     id: string,
     timestamp: string,
-
-    name: string,
-    place: string, // city, country
-    picture: string // uri
+    uid: string, // boss's uid
+    comment: string,
+    placeId: string,
+    feedId: string
 };
 
-export type CommentEntry = { comment: Comment, profile: Profile };
+export type CommentEntry = { comment: Comment, post: Post };
 export type Comments = CommentEntry[];
 
 

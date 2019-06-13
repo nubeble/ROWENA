@@ -1555,4 +1555,42 @@ export default class Util extends React.Component {
 
         return avatarName;
     }
+
+    static getPlaceName(name) {
+        // Consider: To avoid "Kyiv, Ukraine, 02000"
+        const words = name.split(', ');
+        if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
+            const result = words[0] + ', ' + words[1];
+
+            return result;
+        }
+
+        if (words.length > 1) {
+            const city = words[0];
+            const country = words[words.length - 1];
+            const result = city + ', ' + country;
+
+            return result;
+        }
+
+
+        return name;
+    }
+
+    static getCityName(name) {
+        const words = name.split(', ');
+        return words[0];
+    }
+
+    static getCountryName(name) {
+        // Consider: To avoid "Kyiv, Ukraine, 02000"
+        const words = name.split(', ');
+        if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
+            return words[1];
+        }
+
+        if (words.length <= 1) return null;
+
+        return words[words.length - 1];
+    }
 }

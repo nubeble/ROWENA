@@ -61,11 +61,11 @@ export default class FeedStore {
     init(query: any, order) {
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
-        this.query = undefined;
+        // this.query = undefined;
         this.profiles = {};
         this.feed = undefined;
         this.allFeedsLoaded = false;
-        this.order = undefined;
+        // this.order = undefined;
 
         this.query = query;
         this.order = order;

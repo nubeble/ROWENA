@@ -3,39 +3,43 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, Svg, Haptic, Linking } from "expo";
-import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
+import { Constants, Svg, Haptic, Linking, Permissions, ImagePicker } from "expo";
 import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";
-import { Text, Theme, FeedStore } from "./rnff/src/components";
-import ProfileStore from "./rnff/src/home/ProfileStore";
-import moment from 'moment';
+import { Text, Theme, RefreshIndicator } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
 import Swiper from './Swiper';
-import { AirbnbRating } from './react-native-ratings/src';
 import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
-import { inject, observer } from "mobx-react/native";
-import ReadMore from "./ReadMore";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
 import { sendPushNotification } from './PushNotifications';
-import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
 import DateTimePicker from 'react-native-modal-datetime-picker';
 // https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
 
-// 3:2 image
-const imageWidth = Dimensions.get('window').width;
-const imageHeight = imageWidth / 3 * 2;
+const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
 const doneButtonViewHeight = 44;
 
 const textInputFontSize = 18;
 const textInputHeight = 34;
+
+const imageViewWidth = Dimensions.get('window').width / 2;
+const imageViewHeight = imageViewWidth / 4 * 3;
+
+// 4:3 image
+const imageWidth = imageViewWidth * 0.8;
+const imageHeight = imageViewHeight * 0.8;
+
+/*
+// 3:2 image
+const imageWidth = Dimensions.get('window').width;
+const imageHeight = imageWidth / 3 * 2;
+*/
 
 const genderItems = [
     {
@@ -101,17 +105,14 @@ export default class EditPost extends React.Component {
     state = {
         post: null,
 
-        // renderList: false,
+        showPostLoader: false,
 
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
-
-        dialogVisible: false,
-        dialogTitle: '',
-        dialogMessage: '',
-
-
+        onUploadingImage: false,
+        uploadingImageNumber: 0, // 1,2,3,4
+        uploadImage1Uri: null,
+        uploadImage2Uri: null,
+        uploadImage3Uri: null,
+        uploadImage4Uri: null,
 
         name: '',
         showDatePicker: false,
@@ -142,19 +143,31 @@ export default class EditPost extends React.Component {
         showWeightAlertIcon: false,
         showBodyTypeAlertIcon: false,
         showBreastsAlertIcon: false,
-        showCountryAlertIcon: false,
-        showStreetAlertIcon: false,
+        // showCountryAlertIcon: false,
+        // showStreetAlertIcon: false,
 
         onNote: false,
-        keyboardTop: Dimensions.get('window').height
+        keyboardTop: Dimensions.get('window').height,
+
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
+
+        flashMessageTitle: '',
+        flashMessageSubtitle: '',
+        flashImage: null, // uri
+        flashOpacity: new Animated.Value(0),
+        flashOffset: new Animated.Value((8 + 34 + 8) * -1),
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
         super(props);
 
-        this.itemHeights = {};
-
-        this.springValue = new Animated.Value(1);
+        this.imageRefs = []; // for cleaning files in server
     }
 
     componentDidMount() {
@@ -165,6 +178,20 @@ export default class EditPost extends React.Component {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post } = this.props.navigation.state.params;
+        // console.log('EditPost', post.uid, post.id);
+
+        const uploadImage1Uri = post.pictures.one.uri;
+        this.uploadImage1Ref = post.pictures.one.ref;
+        if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+        const uploadImage2Uri = post.pictures.two.uri;
+        this.uploadImage2Ref = post.pictures.two.ref;
+        if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+        const uploadImage3Uri = post.pictures.three.uri;
+        this.uploadImage3Ref = post.pictures.three.ref;
+        if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+        const uploadImage4Uri = post.pictures.four.uri;
+        this.uploadImage4Ref = post.pictures.four.ref;
+        if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
 
         const name = post.name;
         let birthday = null;
@@ -181,7 +208,8 @@ export default class EditPost extends React.Component {
 
         const cityInfo = {
             cityId: post.placeId,
-            description: post.placeName
+            description: post.placeName,
+            location: null
         };
 
         const location = post.location;
@@ -206,17 +234,50 @@ export default class EditPost extends React.Component {
         let noteLength = 0;
         if (note) noteLength = note.length;
 
-        this.setState({ post, name, birthday, datePickerDate, gender, height, weight, bodyType, breasts, cityInfo, streetInfo, country, countryCode, street, note, noteLength });
+        this.setState({
+            post,
+            uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri,
+            name, birthday, datePickerDate, gender, height, weight, bodyType, breasts, cityInfo, streetInfo, country, countryCode, street, note, noteLength
+        });
+    }
 
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderList: true });
-        }, 0);
-        */
+    componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        // remove server files
+        if (this.imageRefs.length > 0) {
+            console.log('clean image files');
+
+            const formData = new FormData();
+            for (let i = 0; i < this.imageRefs.length; i++) {
+                const ref = this.imageRefs[i];
+
+                const number = i + 1;
+                const fieldName = 'file' + number.toString();
+                formData.append(fieldName, ref);
+
+                console.log(fieldName, ref);
+            }
+
+            fetch(SERVER_ENDPOINT + "cleanPostImages", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+        }
+
+        this.closed = true;
     }
 
     initFromSelect(result) { // country
-        console.log('AdvertisementMain.initFromSelect', result);
+        console.log('EditPost.initFromSelect', result);
 
         this.setState({
             country: result.name, countryCode: result.code,
@@ -225,7 +286,7 @@ export default class EditPost extends React.Component {
     }
 
     initFromSearch(result1, result2) { // street
-        console.log('AdvertisementMain.initFromSearch', result1, result2);
+        console.log('EditPost.initFromSearch', result1, result2);
 
         /*
         "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
@@ -249,67 +310,6 @@ export default class EditPost extends React.Component {
             location: result2.location
         };
 
-        /*
-        let street = null;
-        let state = '';
-        let city = '';
-
-        const words2 = result2.name.split(', '); // "23 Limslattsvag, 22920, Aland Islands"
-
-        // get street text
-        const words1 = result1.description.split(', '); // "23 Limslattsvag, Aland Islands"
-        const length = words1.length - words2.length;
-
-        if (length <= 0) {
-            if (words1.length === 0) {
-                // someting is wrong
-            } else if (words1.length === 1) {
-                // someting is wrong
-            } else if (words1.length === 2) {
-                street = words1[0];
-            } else if (words1.length === 3) {
-                street = words1[0];
-                city = words1[1];
-            } else if (words1.length === 4) {
-                street = words1[0];
-                city = words1[1];
-                state = words1[2];
-            } else {
-                street = '';
-                for (var i = 0; i < words1.length - 3; i++) {
-                    street += words1[i];
-
-                    if (i !== words1.length - 3 - 1) street += ', ';
-                }
-
-                city = words1[words1.length - 3];
-                state = words1[words1.length - 2];
-            }
-        } else {
-            street = '';
-            for (var i = 0; i < length; i++) {
-                street += words1[i];
-
-                if (i !== length - 1) street += ', ';
-            }
-
-            // get city, state
-            if (words2.length === 0) {
-                // someting is wrong
-            } else if (words2.length === 1) {
-                // someting is wrong
-            } else if (words2.length === 2) {
-                city = words2[0];
-            } else if (words2.length === 3) {
-                city = words2[0];
-                state = words2[1];
-            } else {
-                city = words2[words2.length - 3];
-                state = words2[words2.length - 2];
-            }
-        }
-        */
-
         let street = null;
         let state = '';
         let city = '';
@@ -329,7 +329,7 @@ export default class EditPost extends React.Component {
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        console.log('AdvertisementMain._keyboardDidShow');
+        console.log('EditPost._keyboardDidShow');
 
         if (this.focusedItem === 'name') {
             // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
@@ -354,7 +354,7 @@ export default class EditPost extends React.Component {
     _keyboardDidHide() {
         if (!this.focused) return;
 
-        console.log('AdvertisementMain._keyboardDidHide');
+        console.log('EditPost._keyboardDidHide');
 
         if (this.state.onNote) this.setState({ onNote: false });
 
@@ -390,23 +390,15 @@ export default class EditPost extends React.Component {
             return true;
         }
 
+        if (this._showFlash) {
+            this.hideFlash();
+
+            return true;
+        }
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
-    }
-
-
-
-    componentWillUnmount() {
-        console.log('Post.componentWillUnmount');
-
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-
-        this.closed = true;
     }
 
     validateName(text) {
@@ -551,17 +543,13 @@ export default class EditPost extends React.Component {
         if (this.state.onNote) this.setState({ onNote: false });
     }
 
-    async post() {
-        // test navigation
-        /*
-        this.props.navigation.navigate("advertisementFinish");
-        return;
-        */
-
-        if (this.state.onUploadingImage) return;
-
+    async update() {
         // 1. check
-        const { name, birthday, gender, height, weight, bodyType, breasts, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const {
+            post,
+            uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri,
+            name, birthday, gender, height, weight, bodyType, breasts, note, country, street, streetInfo, cityInfo
+        } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -578,8 +566,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showNameAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
 
             return;
@@ -590,8 +576,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showAgeAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
 
             return;
@@ -602,8 +586,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showGenderAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
 
             return;
@@ -614,8 +596,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showHeightAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
 
             return;
@@ -626,8 +606,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showWeightAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + heightY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
 
             return;
@@ -638,8 +616,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showBodyTypeAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
 
             return;
@@ -650,8 +626,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showBreastsAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
 
             return;
@@ -662,8 +636,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showCountryAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
             return;
@@ -674,8 +646,6 @@ export default class EditPost extends React.Component {
 
             this.setState({ showStreetAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
 
             return;
@@ -687,13 +657,6 @@ export default class EditPost extends React.Component {
         this.setState({ showPostLoader: true });
 
         let data = {};
-
-        if (!this.feedId) {
-            this.feedId = Util.uid();
-        }
-        data.feedId = this.feedId;
-
-        data.userUid = Firebase.user().uid;
 
         data.name = name;
 
@@ -709,6 +672,7 @@ export default class EditPost extends React.Component {
 
         // placeId, placeName, location
         // --
+        /*
         data.placeId = cityInfo.cityId;
         data.placeName = cityInfo.description;
 
@@ -720,6 +684,7 @@ export default class EditPost extends React.Component {
         };
 
         data.location = location;
+        */
         // --
 
         let _note = null;
@@ -728,78 +693,93 @@ export default class EditPost extends React.Component {
         }
         data.note = _note;
 
-        /*
-        data.image1 = {
-            uri: uploadImage1Uri,
-            ref: this.uploadImage1Ref
-        };
-        data.image2 = {
-            uri: uploadImage2Uri,
-            ref: this.uploadImage2Ref
-        };
-        data.image3 = {
-            uri: uploadImage3Uri,
-            ref: this.uploadImage3Ref
-        };
-        data.image4 = {
-            uri: uploadImage4Uri,
-            ref: this.uploadImage4Ref
-        };
-        */
+        let images = {};
         let image = this.getImage(0);
-        data.image1 = {
+        images.image1 = {
             uri: image.uri,
             ref: image.ref
         };
 
         image = this.getImage(image.number);
-        data.image2 = {
+        images.image2 = {
             uri: image.uri,
             ref: image.ref
         };
 
         image = this.getImage(image.number);
-        data.image3 = {
+        images.image3 = {
             uri: image.uri,
             ref: image.ref
         };
 
         image = this.getImage(image.number);
-        data.image4 = {
+        images.image4 = {
             uri: image.uri,
             ref: image.ref
         };
 
+        const pictures = {
+            one: {
+                uri: images.image1.uri ? images.image1.uri : null,
+                ref: images.image1.ref ? images.image1.ref : null
+            },
+            two: {
+                uri: images.image2.uri ? images.image2.uri : null,
+                ref: images.image2.ref ? images.image2.ref : null
+            },
+            three: {
+                uri: images.image3.uri ? images.image3.uri : null,
+                ref: images.image3.ref ? images.image3.ref : null
+            },
+            four: {
+                uri: images.image4.uri ? images.image4.uri : null,
+                ref: images.image4.ref ? images.image4.ref : null
+            }
+        };
+        data.pictures = pictures;
+
+
+
+
+
+
+        /*
         const extra = {
             lat: cityInfo.location.lat,
             lng: cityInfo.location.lng
         };
 
-        await this.createFeed(data, extra);
+        // await this.createFeed(data, extra);
+        */
+
+        await Firebase.updateFeed(post.uid, post.placeId, post.id, data);
 
         this.removeItemFromList();
 
         // 3. move to finish page
-        this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+        this.refs["toast"].show('Your post updated successfully.', 500, () => {
+            if (this.closed) return;
+
             // hide loader
             this.setState({ showPostLoader: false });
 
-            if (!this.closed) {
-                this.props.navigation.navigate("advertisementFinish");
-            }
+            this.props.navigation.dismiss();
         });
     }
 
     render() {
-        let paddingBottom = Cons.viewMarginBottom();
-
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
         };
 
+        const flashStyle = {
+            opacity: this.state.flashOpacity,
+            transform: [{ translateY: this.state.flashOffset }]
+        };
+
         return (
-            <View style={[styles.flex, { paddingBottom }]}>
+            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
                 {/* notification bar */}
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
@@ -818,6 +798,24 @@ export default class EditPost extends React.Component {
                     </TouchableOpacity>
                 </Animated.View>
 
+                {/* flash bar */}
+                <Animated.View
+                    style={[styles.flash, flashStyle]}
+                    ref={flash => this._flash = flash}
+                >
+                    <View>
+                        <Text style={styles.flashMessageTitle}>{this.state.flashMessageTitle}</Text>
+                        <Text style={styles.flashMessageSubtitle}>{this.state.flashMessageSubtitle}</Text>
+                    </View>
+                    {
+                        this.state.flashImage &&
+                        <Image
+                            style={{ width: (8 + 34 + 8) * 0.84 / 3 * 4, height: (8 + 34 + 8) * 0.84, borderRadius: 2 }}
+                            source={{ uri: this.state.flashImage }}
+                        />
+                    }
+                </Animated.View>
+
                 {/* search bar */}
                 <View style={styles.searchBar}>
                     {/* close button */}
@@ -833,12 +831,11 @@ export default class EditPost extends React.Component {
                         onPress={() => {
                             if (this._showNotification) {
                                 this.hideNotification();
+                                this.hideAlertIcon();
                             }
 
-                            const params = this.props.navigation.state.params;
-                            if (params) {
-                                const initFromPost = params.initFromPost;
-                                if (initFromPost) initFromPost(this.state.post);
+                            if (this._showFlash) {
+                                this.hideFlash();
                             }
 
                             this.props.navigation.dispatch(NavigationActions.back());
@@ -858,14 +855,20 @@ export default class EditPost extends React.Component {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={async () => {
+                            if (this.state.showPostLoader) return;
+
                             if (this._showNotification) {
                                 this.hideNotification();
+                                this.hideAlertIcon();
                             }
 
                             this.openDialog('Delete', 'Are you sure you want to delete this post?', async () => {
+                                this.setState({ showPostLoader: true });
+
                                 const { post } = this.props.navigation.state.params;
                                 await Firebase.removeFeed(post.uid, post.placeId, post.id);
 
+                                this.setState({ showPostLoader: false });
                                 this.props.navigation.dismiss();
                             });
                         }}
@@ -893,15 +896,13 @@ export default class EditPost extends React.Component {
                     */}
                 </View>
 
-                {
-                    // this.state.renderList &&
-                    <FlatList
-                        ref={(fl) => this._flatList = fl}
-                        contentContainerStyle={styles.container}
-                        showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={this.renderHeader(this.state.post)}
-                    />
-                }
+                <FlatList
+                    // ref={(fl) => this._flatList = fl}
+                    ref="flatList"
+                    contentContainerStyle={styles.container}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={this.renderHeader(this.state.post)}
+                />
 
                 <DateTimePicker
                     isVisible={this.state.showDatePicker}
@@ -910,6 +911,25 @@ export default class EditPost extends React.Component {
                     date={this.state.datePickerDate}
                     titleIOS={this.state.datePickerTitle}
                 />
+
+                {
+                    this.state.onNote &&
+                    <View style={{
+                        width: '100%', height: doneButtonViewHeight, backgroundColor: '#D0D0D0',
+                        // borderTopColor: '#3B3B3B', borderTopWidth: 1,
+                        position: 'absolute', top: this.state.keyboardTop - doneButtonViewHeight,
+                        justifyContent: "center", alignItems: "flex-end", paddingRight: 15
+                    }}>
+                        <TouchableOpacity
+                            style={{
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => this.noteDone()}
+                        >
+                            <Text style={styles.done}>Done</Text>
+                        </TouchableOpacity>
+                    </View>
+                }
 
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
@@ -928,10 +948,128 @@ export default class EditPost extends React.Component {
         );
     }
 
+    getImage(lastSavedImageNumber) {
+        let uri = null;
+        let ref = null;
+        let number = -1;
+
+        const { uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+
+        if (lastSavedImageNumber === 0) {
+
+            if (uploadImage1Uri) {
+                uri = uploadImage1Uri;
+                ref = this.uploadImage1Ref;
+                number = 1;
+            } else {
+                if (uploadImage2Uri) {
+                    uri = uploadImage2Uri;
+                    ref = this.uploadImage2Ref;
+                    number = 2;
+                } else {
+                    if (uploadImage3Uri) {
+                        uri = uploadImage3Uri;
+                        ref = this.uploadImage3Ref;
+                        number = 3;
+                    } else {
+                        if (uploadImage4Uri) {
+                            uri = uploadImage4Uri;
+                            ref = this.uploadImage4Ref;
+                            number = 4;
+                        }
+                    }
+                }
+            }
+
+        } else if (lastSavedImageNumber === 1) {
+
+            if (uploadImage2Uri) {
+                uri = uploadImage2Uri;
+                ref = this.uploadImage2Ref;
+                number = 2;
+            } else {
+                if (uploadImage3Uri) {
+                    uri = uploadImage3Uri;
+                    ref = this.uploadImage3Ref;
+                    number = 3;
+                } else {
+                    if (uploadImage4Uri) {
+                        uri = uploadImage4Uri;
+                        ref = this.uploadImage4Ref;
+                        number = 4;
+                    }
+                }
+            }
+
+        } else if (lastSavedImageNumber === 2) {
+
+            if (uploadImage3Uri) {
+                uri = uploadImage3Uri;
+                ref = this.uploadImage3Ref;
+                number = 3;
+            } else {
+                if (uploadImage4Uri) {
+                    uri = uploadImage4Uri;
+                    ref = this.uploadImage4Ref;
+                    number = 4;
+                }
+            }
+
+        } else if (lastSavedImageNumber === 3) {
+
+            if (uploadImage4Uri) {
+                uri = uploadImage4Uri;
+                ref = this.uploadImage4Ref;
+                number = 4;
+            }
+
+        }
+
+        const image = {
+            uri, ref, number
+        };
+
+        return image;
+    }
+
+    removeItemFromList() {
+        if (this.uploadImage1Ref) {
+            const ref = this.uploadImage1Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+
+        if (this.uploadImage2Ref) {
+            const ref = this.uploadImage2Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+
+        if (this.uploadImage3Ref) {
+            const ref = this.uploadImage3Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+
+        if (this.uploadImage4Ref) {
+            const ref = this.uploadImage4Ref;
+            const index = this.imageRefs.indexOf(ref);
+            if (index > -1) {
+                this.imageRefs.splice(index, 1);
+            }
+        }
+    }
+
     renderHeader(post) {
         return (
+            /*
             <View>
-                {/* profile pictures */}
                 {
                     this.renderSwiper(post)
                 }
@@ -942,6 +1080,55 @@ export default class EditPost extends React.Component {
                         this.inputViewY = y;
                     }}
                 >
+            */
+            <View style={{ paddingTop: 2 }}>
+                {/* image editor view */}
+                <Text style={{ marginHorizontal: 4, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium", paddingLeft: 18 }}>
+                    {'PICTURES'}
+                </Text>
+
+                <View style={{ width: '100%', marginBottom: 20 }}>
+                    {/* row 1 view */}
+                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* cell 1 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
+                            {
+                                this.renderImage(1, this.state.uploadImage1Uri)
+                            }
+                        </View>
+                        {/* cell 2 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
+                            {
+                                this.renderImage(2, this.state.uploadImage2Uri)
+                            }
+                        </View>
+                    </View>
+                    {/* row 2 view */}
+                    <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                        {/* cell 1 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-end', paddingRight: 12 }}>
+                            {
+                                this.renderImage(3, this.state.uploadImage3Uri)
+                            }
+                        </View>
+                        {/* cell 2 view */}
+                        <View style={{ width: imageViewWidth, height: imageViewHeight, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 12 }}>
+                            {
+                                this.renderImage(4, this.state.uploadImage4Uri)
+                            }
+                        </View>
+                    </View>
+                </View>
+
+                {/* input view */}
+                <View style={{ paddingHorizontal: 4 }}
+                    onLayout={(e) => {
+                        const { y } = e.nativeEvent.layout;
+                        this.inputViewY = y;
+                    }}
+                >
+
+
                     {/* 1. name */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
@@ -1436,19 +1623,18 @@ export default class EditPost extends React.Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
-                            if (this.state.onUploadingImage) return;
-
+                            /*
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
                             }
 
-                            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
 
                             setTimeout(() => {
-                                !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
+                                !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
+                            */
                         }}
                     >
                         <Text
@@ -1492,8 +1678,7 @@ export default class EditPost extends React.Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
-                            if (this.state.onUploadingImage) return;
-
+                            /*
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
@@ -1512,12 +1697,12 @@ export default class EditPost extends React.Component {
                                 return;
                             }
 
-                            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
 
                             setTimeout(() => {
-                                !this.closed && this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
+                                !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                             }, Cons.buttonTimeoutShort);
+                            */
                         }}
                     >
                         <Text
@@ -1545,14 +1730,26 @@ export default class EditPost extends React.Component {
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: 32 }]}
                     onPress={async () => {
+                        if (this.state.showPostLoader) return;
+
                         if (this._showNotification) {
                             this.hideNotification();
+                            this.hideAlertIcon();
                         }
 
-                        // await this.contact();
+                        await this.update();
                     }}
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Update Post'}</Text>
+                    {
+                        this.state.showPostLoader &&
+                        <ActivityIndicator
+                            style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 10002 }}
+                            animating={true}
+                            size="small"
+                            color={Theme.color.buttonText}
+                        />
+                    }
                 </TouchableOpacity>
             </View>
         );
@@ -1731,6 +1928,251 @@ export default class EditPost extends React.Component {
         );
     }
 
+    renderImage(number, uri) {
+        const iconButtonWidth = Dimensions.get('window').width / 14;
+        const iconButtonX = (iconButtonWidth / 2) * -1 + iconButtonWidth / 3;
+
+        if (!uri) {
+            return (
+                <View style={{ width: imageWidth, height: imageHeight }}>
+                    <View style={{
+                        width: '100%', height: '100%', borderRadius: 2, borderColor: '#707070', borderWidth: 2, borderStyle: 'dashed', backgroundColor: '#505050',
+                        justifyContent: "center", alignItems: "center"
+                    }}>
+                        {/* center icon */}
+                        <Ionicons name='md-person' color={Theme.color.component} size={40} />
+                    </View>
+
+                    {/* number */}
+                    <Text style={{ fontFamily: "Roboto-Medium", fontSize: 18, color: 'rgba(255, 255, 255, 0.8)', position: 'absolute', top: 6, left: 8 }}>{number}</Text>
+
+                    {/* icon button */}
+                    <TouchableOpacity
+                        style={{
+                            width: iconButtonWidth, height: iconButtonWidth, borderRadius: iconButtonWidth / 2,
+                            backgroundColor: Theme.color.selection, position: 'absolute',
+                            bottom: iconButtonX, right: iconButtonX, justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                                this.hideAlertIcon();
+                            }
+
+                            this.uploadPicture(number - 1);
+                        }}
+                    >
+                        <Ionicons name='ios-add' color='white' size={24} />
+                    </TouchableOpacity>
+                    {
+                        number === 1 && this.state.showPicture1AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+                    {
+                        number === 2 && this.state.showPicture2AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+                    {
+                        number === 3 && this.state.showPicture3AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+                    {
+                        number === 4 && this.state.showPicture4AlertIcon &&
+                        <AntDesign style={{ position: 'absolute', top: imageHeight / 2 - 12, left: imageWidth / 2 - 12 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+                    {
+                        this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
+                        <View style={{
+                            width: imageWidth, height: imageHeight,
+                            position: 'absolute', top: 0, left: 0,
+                            justifyContent: 'center', alignItems: 'center'
+                        }}>
+                            <ActivityIndicator animating={true} size="small" color={Theme.color.selection} />
+                        </View>
+                    }
+                </View>
+            );
+        }
+
+        return (
+            <View style={{ width: imageWidth, height: imageHeight }}>
+                <Image
+                    style={{ width: imageWidth, height: imageHeight, borderRadius: 2 }}
+                    source={{ uri: uri }}
+                />
+
+                {/* icon */}
+                <TouchableOpacity
+                    style={{ width: 28, height: 28, borderRadius: 14, backgroundColor: 'white', position: 'absolute', bottom: -14 + 10, right: -14 + 10, justifyContent: "center", alignItems: "center" }}
+                    onPress={() => {
+                        this.uploadPicture(number - 1);
+                    }}
+                >
+                    <Ionicons name='md-create' color={Theme.color.selection} size={18} />
+                </TouchableOpacity>
+                {
+                    this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
+                    <View style={{
+                        width: imageWidth, height: imageHeight,
+                        position: 'absolute', top: 0, left: 0,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <ActivityIndicator animating={true} size="small" color={Theme.color.selection} />
+                    </View>
+                }
+            </View>
+        );
+    }
+
+    uploadPicture(index) {
+        if (this.state.onUploadingImage) return;
+
+        this.pickImage(index);
+    }
+
+    async pickImage(index) {
+        const { status: existingCameraStatus } = await Permissions.getAsync(Permissions.CAMERA);
+        const { status: existingCameraRollStatus } = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+
+        if (existingCameraStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA);
+            if (status !== 'granted') {
+                /*
+                const url = 'app-settings:';
+                const supported = await Linking.canOpenURL(url);
+                if (supported) {
+                    Linking.openURL(url);
+                }
+                */
+                return;
+            }
+        }
+
+        if (existingCameraRollStatus !== 'granted') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            if (status !== 'granted') {
+                /*
+                const url = 'app-settings:';
+                const supported = await Linking.canOpenURL(url);
+                if (supported) {
+                    Linking.openURL(url);
+                }
+                */
+                return;
+            }
+        }
+
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            aspect: [4, 3], // ToDo: android only! (only square image in IOS)
+            quality: 1.0
+        });
+
+        console.log('result of launchImageLibraryAsync:', result);
+
+        if (!result.cancelled) {
+            this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
+
+            // show indicator & progress bar
+            this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+
+            // upload image
+            this.uploadImage(result.uri, index, (uri) => {
+                if (!uri) {
+                    this.setState({ onUploadingImage: false });
+                    return;
+                }
+
+                switch (index) {
+                    case 0: this.setState({ uploadImage1Uri: uri }); break;
+                    case 1: this.setState({ uploadImage2Uri: uri }); break;
+                    case 2: this.setState({ uploadImage3Uri: uri }); break;
+                    case 3: this.setState({ uploadImage4Uri: uri }); break;
+                }
+
+                const feedId = this.state.post.id;
+                const ref = 'images/' + Firebase.user().uid + '/post/' + feedId + '/' + result.uri.split('/').pop();
+                this.imageRefs.push(ref);
+
+                switch (index) {
+                    case 0: this.uploadImage1Ref = ref; break;
+                    case 1: this.uploadImage2Ref = ref; break;
+                    case 2: this.uploadImage3Ref = ref; break;
+                    case 3: this.uploadImage4Ref = ref; break;
+                }
+
+                // hide indicator & progress bar
+                this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+
+                setTimeout(() => {
+                    if (this.closed) return;
+                    this.hideFlash();
+                    this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
+                }, 1000);
+            });
+        }
+    }
+
+    async uploadImage(uri, index, cb) {
+        const fileName = uri.split('/').pop();
+        var ext = fileName.split('.').pop();
+
+        if (!Util.isImage(ext)) {
+            const msg = 'Invalid image file (' + ext + ').';
+            this.showNotification(msg);
+            return;
+        }
+
+        var type = Util.getImageType(ext);
+
+        const formData = new FormData();
+        formData.append("type", "post");
+
+        const feedId = this.state.post.id;
+
+        formData.append("feedId", feedId);
+
+        formData.append("image", {
+            uri,
+            name: fileName,
+            type: type
+        });
+        formData.append("userUid", Firebase.user().uid);
+        // formData.append("pictureIndex", index);
+
+        try {
+            let response = await fetch(SERVER_ENDPOINT + "uploadFile/images",
+                {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "multipart/form-data"
+                    },
+                    body: formData
+                }
+            );
+
+            let responseJson = await response.json();
+            console.log('uploadImage, responseJson', responseJson);
+
+            // console.log('responseJson', await response.json());
+
+            cb(responseJson.downloadUrl);
+        } catch (error) {
+            console.error(error);
+
+            this.showNotification('An error happened. Please try again.');
+
+            // show alert icon
+            if (index === 0) this.setState({ showPicture1AlertIcon: true });
+            if (index === 1) this.setState({ showPicture2AlertIcon: true });
+            if (index === 2) this.setState({ showPicture3AlertIcon: true });
+            if (index === 3) this.setState({ showPicture4AlertIcon: true });
+
+            cb(null);
+        }
+    }
+
     openKeyboard(ref, index, owner) {
         if (this.state.showKeyboard) return;
 
@@ -1783,6 +2225,73 @@ export default class EditPost extends React.Component {
         });
 
         this._showNotification = false;
+    }
+
+    showFlash(title, subtitle, image) {
+        if (this._showNotification) {
+            this.hideNotification();
+            this.hideAlertIcon();
+        }
+
+        if (!this._showFlash) {
+            this._showFlash = true;
+
+            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                    Animated.sequence([
+                        Animated.parallel([
+                            Animated.timing(this.state.flashOpacity, {
+                                toValue: 1,
+                                duration: 200
+                            }),
+                            Animated.timing(this.state.flashOffset, {
+                                toValue: Constants.statusBarHeight,
+                                duration: 200
+                            })
+                        ])
+                    ]).start();
+                });
+            });
+
+            // StatusBar.setHidden(true);
+        }
+    };
+
+    hideFlash() {
+        this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.sequence([
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 0,
+                        duration: 200
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: height * -1,
+                        duration: 200
+                    })
+                ])
+            ]).start();
+        });
+
+        // StatusBar.setHidden(false);
+
+        this._showFlash = false;
+    }
+
+    hideAlertIcon() {
+        if (this.state.showNameAlertIcon) this.setState({ showNameAlertIcon: false });
+        if (this.state.showAgeAlertIcon) this.setState({ showAgeAlertIcon: false });
+        if (this.state.showGenderAlertIcon) this.setState({ showGenderAlertIcon: false });
+        if (this.state.showHeightAlertIcon) this.setState({ showHeightAlertIcon: false });
+        if (this.state.showWeightAlertIcon) this.setState({ showWeightAlertIcon: false });
+        if (this.state.showBodyTypeAlertIcon) this.setState({ showBodyTypeAlertIcon: false });
+        if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
+        if (this.state.showCountryAlertIcon) this.setState({ showCountryAlertIcon: false });
+        if (this.state.showStreetAlertIcon) this.setState({ showStreetAlertIcon: false });
+        if (this.state.showPicture1AlertIcon) this.setState({ showPicture1AlertIcon: false });
+        if (this.state.showPicture2AlertIcon) this.setState({ showPicture2AlertIcon: false });
+        if (this.state.showPicture3AlertIcon) this.setState({ showPicture3AlertIcon: false });
+        if (this.state.showPicture4AlertIcon) this.setState({ showPicture4AlertIcon: false });
     }
 
     showDateTimePicker(title) {
@@ -1842,12 +2351,6 @@ export default class EditPost extends React.Component {
 
         this.setState({ birthday, datePickerDate: _date });
     };
-
-    onChangeText(text) {
-        if (this._showNotification) {
-            this.hideNotification();
-        }
-    }
 
     openDialog(title, message, callback) {
         !this.closed && this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
@@ -1911,6 +2414,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         // paddingBottom: Theme.spacing.small
     },
+    /*
     wrapper: {
     },
     slide: {
@@ -1922,6 +2426,7 @@ const styles = StyleSheet.create({
         width: imageWidth,
         height: imageHeight
     },
+    */
     contactButton: {
         width: '85%',
         height: Cons.buttonHeight,
@@ -1961,25 +2466,33 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    ratingText1: {
-        // height: 8,
-        width: 20,
+    flash: {
+        // width: '100%',
+        width: '94%',
+        alignSelf: 'center',
 
-        color: Theme.color.text4,
-        fontSize: 12,
-        fontFamily: "Roboto-Medium",
-        // backgroundColor: 'green'
+        // height: Cons.searchBarHeight,
+        height: (8 + 34 + 8),
+        position: "absolute",
+        borderRadius: 5,
+        top: 0,
+        backgroundColor: Theme.color.selection,
+        zIndex: 10001,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: Theme.spacing.base
+        // paddingTop: Constants.statusBarHeight
     },
-    ratingText2: {
-        // height: 8,
-
-        width: 30,
-        textAlign: 'right',
-
-        color: Theme.color.text4,
-        fontSize: 12,
+    flashMessageTitle: {
+        fontSize: 16,
         fontFamily: "Roboto-Medium",
-        // backgroundColor: 'green'
+        color: "white"
+    },
+    flashMessageSubtitle: {
+        fontSize: 14,
+        fontFamily: "Roboto-Medium",
+        color: "white"
     },
     textInputStyleIOS: {
         paddingLeft: 18, paddingRight: 32,

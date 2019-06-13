@@ -63,6 +63,15 @@ export default class Post extends React.Component<InjectedProps> {
         // renderList: false,
         isOwner: false,
 
+        writeRating: 0,
+        liked: false,
+        chartInfo: null,
+
+        isModal: false,
+        disableContactButton: false,
+
+        showPostLoader: false,
+
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
 
@@ -72,69 +81,174 @@ export default class Post extends React.Component<InjectedProps> {
 
         dialogVisible: false,
         dialogTitle: '',
-        dialogMessage: '',
-
-        writeRating: 0,
-        liked: false,
-        chartInfo: null,
-
-        isModal: false,
-        disableContactButton: false
+        dialogMessage: ''
     };
 
     constructor(props) {
         super(props);
+
+        this.feed = null; // subscribe post
+        this.feedUnsubscribe = null;
 
         this.itemHeights = {};
 
         this.springValue = new Animated.Value(1);
     }
 
-    async initFromWriteReview(result) { // back from rating
-        // console.log('Post.initFromWriteReview', result);
+    componentDidMount() {
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
+        const { post, extra, from } = this.props.navigation.state.params;
+        console.log('Post.componentDidMount, from', from);
+
+        this.init(post, extra);
+
+        if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
+            this.setState({ isModal: true });
+        } else {
+            this.setState({ isModal: false });
+        }
+
+        // show contact button
+        if (from === 'ChatRoom') this.setState({ disableContactButton: true });
+
+        /*
+        setTimeout(() => {
+            !this.closed && this.setState({ renderList: true });
+        }, 0);
+        */
+    }
+
+    componentWillUnmount() {
+        console.log('Post.componentWillUnmount');
+
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        if (this.feedUnsubscribe) {
+            this.feedUnsubscribe();
+        }
+
+        this.closed = true;
+    }
+
+    subscribeToPost(post) {
+        // this will be updated in subscribe
+        this.feed = post;
+
+        const fi = Firebase.subscribeToFeed(post.placeId, post.id, newFeed => {
+            if (newFeed === undefined) {
+                this.feed = null;
+                return;
+            }
+
+            this.feed = newFeed;
+        });
+
+        this.feedUnsubscribe = fi;
+    }
+
+    edit() {
+        if (!this.feed) {
+            // this should never happen
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
+
+        this.props.navigation.navigate("editPost", { post: this.state.post });
+    }
+
+    @autobind
+    handleHardwareBackPress() {
+        console.log('Post.handleHardwareBackPress');
+
+        if (this._showNotification) {
+            this.hideNotification();
+
+            return true;
+        }
+
+        const params = this.props.navigation.state.params;
+        if (params) {
+            const initFromPost = params.initFromPost;
+            if (initFromPost) initFromPost(this.state.post);
+        }
+
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
+
+    @autobind
+    onFocus() {
+        Vars.currentScreenName = 'Post';
+
+        this.focused = true;
+    }
+
+    @autobind
+    onBlur() {
+        this.focused = false;
+    }
+
+    initFromWriteReview(result) { // back from rating
         !this.closed && this.setState({ writeRating: 0 });
+
         this.refs.rating.setPosition(0); // bug in AirbnbRating
 
         if (result) {
-            await this.reloadReviews();
+            this.reloadReviews();
         }
     }
 
-    async initFromReadAllReviews() { // back from read all reviews
-        await this.reloadReviews();
+    initFromReadAllReviews() { // back from read all reviews
+        this.reloadReviews();
     }
 
-    async reloadReviews() {
+    reloadReviews() {
         // 1. reload reviews
         const post = this.state.post;
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
         // 2. reload review count & calc chart
-        const newPost = await this.reloadPost(post.placeId, post.id);
+        const newPost = this.reloadPost();
         const newChart = this.getChartInfo(newPost);
         !this.closed && this.setState({ post: newPost, chartInfo: newChart });
 
         this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
     }
 
-    async reloadPost(placeId, feedId) {
+    reloadPost() {
+        /*
         const postDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
         if (postDoc.exists) {
             const post = postDoc.data();
 
-            // 1. update feedStore
+            // update feedStore
             const { feedStore } = this.props;
             feedStore.updateFeed(post);
-
-            // 2. update Intro's state array
-            // this.addToUpdatedPostsForIntro(post);
 
             return post;
         }
 
         return null;
+        */
+
+        const post = this.feed;
+
+        // update feedStore
+        const { feedStore } = this.props;
+        feedStore.updateFeed(post);
+
+        return post;
     }
 
     getChartInfo(post) {
@@ -207,72 +321,10 @@ export default class Post extends React.Component<InjectedProps> {
         return visitCountPerDay;
     }
 
-    componentDidMount() {
-        // console.log('Post.componentDidMount');
-
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-        this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
-
-        const { post, extra, from } = this.props.navigation.state.params;
-        console.log('Post.componentDidMount, from', from);
-
-        this.init(post, extra);
-
-        // console.log('Post.componentDidMount', from);
-        if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
-            this.setState({ isModal: true });
-        } else {
-            this.setState({ isModal: false });
-        }
-
-        // show contact button
-        if (from === 'ChatRoom') this.setState({ disableContactButton: true });
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderList: true });
-        }, 0);
-        */
-    }
-
-    @autobind
-    handleHardwareBackPress() {
-        console.log('Post.handleHardwareBackPress');
-
-        if (this._showNotification) {
-            this.hideNotification();
-
-            return true;
-        }
-
-        const params = this.props.navigation.state.params;
-        if (params) {
-            const initFromPost = params.initFromPost;
-            if (initFromPost) initFromPost(this.state.post);
-        }
-
-        this.props.navigation.dispatch(NavigationActions.back());
-
-        return true;
-    }
-
-    @autobind
-    onFocus() {
-        Vars.currentScreenName = 'Post';
-
-        this.focused = true;
-    }
-
-    @autobind
-    onBlur() {
-        this.focused = false;
-    }
-
     init(post, extra) {
         this.setState({ post });
+
+        this.subscribeToPost(post);
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
@@ -327,65 +379,24 @@ export default class Post extends React.Component<InjectedProps> {
         }
     }
 
-    componentWillUnmount() {
-        console.log('Post.componentWillUnmount');
-
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-
-        this.closed = true;
-    }
-
-    async edit() {
-        this.props.navigation.navigate("editPost", { post: this.state.post });
-    }
-
-    /*
-    isValidPost(placeId, feedId) {
-        const { feedStore } = this.props;
-        const { feed } = feedStore;
-
-        if (feed) {
-            for (var i = 0; i < feed.length; i++) {
-                const post = feed[i].post;
-
-                if (post.placeId === placeId && post.id === feedId) {
-                    // exists
-                    return true;
-                }
-            }
-        }
-
-        return false; // removed
-    }
-    */
-
     @autobind
     async toggle() {
         if (this.toggling) return;
 
-        this.toggling = true;
-
-        const post = this.state.post;
-
-        // check if removed by the owner
-        /*
-        if (!this.isValidPost(post.placeId, post.id)) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-            return;
-        }
-        */
-
         // check the owner of the post
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
-
-            this.toggling = false;
             return;
         }
+
+        if (!this.feed) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
+
+        this.toggling = true;
+
+        const post = this.state.post;
 
         if (!this.state.liked) {
             !this.closed && this.setState({ liked: true });
@@ -422,6 +433,8 @@ export default class Post extends React.Component<InjectedProps> {
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.toggling = false;
+            return;
         }
 
         // update likes to state post
@@ -439,30 +452,14 @@ export default class Post extends React.Component<InjectedProps> {
         newPost.likes = likes;
 
         !this.closed && this.setState({ post: newPost });
+
+        // update feedStore - NOT needed for likes
+        // const { feedStore } = this.props;
+        // feedStore.updateFeed(post);
         // --
 
         this.toggling = false;
-
-
-
-        // Vars.postLikeButtonPressed = true;
-
-        // this.addToUpdatedPostsForIntro(newPost);
     }
-
-    /*
-    addToUpdatedPostsForIntro(post) {
-        for (var i = 0; i < Vars.updatedPostsForIntro.length; i++) {
-            const item = Vars.updatedPostsForIntro[i];
-            if (item.placeId === post.placeId && item.id === post.id) {
-                console.log('already exists in Vars.updatedPostsForIntro');
-                return;
-            }
-        }
-
-        Vars.updatedPostsForIntro.push(post);
-    }
-    */
 
     checkLiked(likes) {
         let liked = false;
@@ -704,29 +701,26 @@ export default class Post extends React.Component<InjectedProps> {
         let integer = 0;
         let number = '';
         let ageText = '';
-
         let showSettingsButton = false;
 
-        if (post) {
-            distance = Util.getDistance(post.location, Vars.location);
-            if (distance === '? km away') showSettingsButton = true;
+        distance = Util.getDistance(post.location, Vars.location);
+        if (distance === '? km away') showSettingsButton = true;
 
-            const averageRating = post.averageRating;
+        const averageRating = post.averageRating;
 
-            integer = Math.floor(averageRating);
+        integer = Math.floor(averageRating);
 
-            if (Number.isInteger(averageRating)) {
-                number = averageRating + '.0';
-            } else {
-                number = averageRating.toString();
-            }
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
 
-            const age = Util.getAge(post.birthday);
-            if (age > 1) {
-                ageText = age.toString() + ' years old';
-            } else {
-                ageText = age.toString() + ' year old';
-            }
+        const age = Util.getAge(post.birthday);
+        if (age > 1) {
+            ageText = age.toString() + ' years old';
+        } else {
+            ageText = age.toString() + ' year old';
         }
 
         let markerImage = null;
@@ -750,6 +744,8 @@ export default class Post extends React.Component<InjectedProps> {
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                         <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingHorizontal: 10, paddingVertical: 2 }}
                             onPress={async () => {
+                                if (this.state.showPostLoader) return;
+
                                 if (this._showNotification) {
                                     this.hideNotification();
                                 }
@@ -757,8 +753,20 @@ export default class Post extends React.Component<InjectedProps> {
                                 await this.contact();
                             }}
                         >
-                            {/* ToDo: status color */}
-                            <View style={styles.circle}></View>
+                            {
+                                this.state.showPostLoader ?
+                                    <View style={{ width: 10, height: 10 }}>
+                                        <ActivityIndicator
+                                            style={{ position: 'absolute', top: 0, bottom: 0, left: -10, zIndex: 10002 }}
+                                            animating={true}
+                                            size="small"
+                                            color={Theme.color.buttonText}
+                                        />
+                                    </View>
+                                    :
+                                    // ToDo: status color
+                                    <View style={styles.circle}></View>
+                            }
                             <Text style={styles.date}>Posted {moment(post.timestamp).fromNow()}</Text>
                         </TouchableOpacity>
                     </View>
@@ -962,11 +970,6 @@ export default class Post extends React.Component<InjectedProps> {
 
                             setTimeout(() => {
                                 if (this.closed) return;
-                                /*
-                                this.setState({ isNavigating: true }, () => {
-                                    this.props.navigation.navigate("map", { post: post });
-                                });
-                                */
                                 this.props.navigation.navigate("map", { post: post });
                             }, Cons.buttonTimeoutShort);
                         }}
@@ -1056,6 +1059,8 @@ export default class Post extends React.Component<InjectedProps> {
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
                     onPress={async () => {
+                        if (this.state.showPostLoader) return;
+
                         if (this._showNotification) {
                             this.hideNotification();
                         }
@@ -1063,6 +1068,15 @@ export default class Post extends React.Component<InjectedProps> {
                         await this.contact();
                     }}>
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Message ' + post.name}</Text>
+                    {
+                        this.state.showPostLoader &&
+                        <ActivityIndicator
+                            style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 10002 }}
+                            animating={true}
+                            size="small"
+                            color={Theme.color.buttonText}
+                        />
+                    }
                 </TouchableOpacity>
             </View>
         );
@@ -1935,7 +1949,14 @@ export default class Post extends React.Component<InjectedProps> {
                             }
 
                             setTimeout(() => {
-                                !this.closed && this.props.navigation.navigate("readReview",
+                                if (this.closed) return;
+
+                                if (!this.feed) {
+                                    this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                    return;
+                                }
+
+                                this.props.navigation.navigate("readReview",
                                     {
                                         reviewStore: this.reviewStore,
                                         isOwner: this.state.isOwner,
@@ -1980,15 +2001,14 @@ export default class Post extends React.Component<InjectedProps> {
     ratingCompleted(rating) {
         setTimeout(() => {
             if (this.closed) return;
-            const post = this.state.post;
 
             // check if removed by the owner
-            /*
-            if (!this.isValidPost(post.placeId, post.id)) {
+            if (!this.feed) {
                 this.refs["toast"].show('The post has been removed by its owner.', 500);
                 return;
             }
-            */
+
+            const post = this.state.post;
 
             const param = {
                 post: post,
@@ -1996,13 +2016,6 @@ export default class Post extends React.Component<InjectedProps> {
                 initFromWriteReview: (result) => this.initFromWriteReview(result)
             };
 
-            /*
-            if (this.state.isModal) {
-                this.props.navigation.navigate("writeReviewModal", param);
-            } else {
-                this.props.navigation.navigate("writeReview", param);
-            }
-            */
             this.props.navigation.navigate("writeReview", param);
         }, Cons.buttonTimeoutLong);
     }
@@ -2124,21 +2137,22 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
-        const post = this.state.post;
-
         // check if removed by the owner
         /*
-        if (!this.isValidPost(post.placeId, post.id)) {
-            this.refs["toast"].show('The post has been removed by its owner.', 500);
-            return;
-        }
-        */
-
         const feedDoc = await Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).get();
         if (!feedDoc.exists) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             return;
         }
+        */
+        if (!this.feed) {
+            this.refs["toast"].show('The post has been removed by its owner.', 500);
+            return;
+        }
+
+        this.setState({ showPostLoader: true });
+
+        const post = this.state.post;
 
         const uid = Firebase.user().uid;
 
@@ -2193,6 +2207,7 @@ export default class Post extends React.Component<InjectedProps> {
                 customerProfile
             };
 
+            this.setState({ showPostLoader: false });
             this.props.navigation.navigate("chatRoom", { item: params });
         } else {
             const { profile } = this.props.profileStore;
@@ -2273,6 +2288,7 @@ export default class Post extends React.Component<InjectedProps> {
                 customerProfile
             };
 
+            this.setState({ showPostLoader: false });
             this.props.navigation.navigate("chatRoom", { item: params });
         }
     }
@@ -2290,23 +2306,10 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.sendPushNotification(message);
 
-        this.refs["toast"].show('Your reply has been submitted!', 500, async () => {
-            if (!this.closed) {
-                // this._reply.blur();
-                if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
-
-                // 1. reload reviews
-                const post = this.state.post;
-                const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
-
-                // 2. reload review count & calc chart
-                const newPost = await this.reloadPost(post.placeId, post.id);
-                const newChart = this.getChartInfo(newPost);
-                !this.closed && this.setState({ post: newPost, chartInfo: newChart });
-
-                this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
-            }
+        this.refs["toast"].show('Your reply has been submitted!', 500, () => {
+            if (this.closed) return;
+            if (this.state.showKeyboard) this.setState({ showKeyboard: false });
+            this.reloadReviews();
         });
     }
 
@@ -2352,19 +2355,9 @@ export default class Post extends React.Component<InjectedProps> {
                 return;
             }
 
-            this.refs["toast"].show('Your review has successfully been removed.', 500, async () => {
-                if (!this.closed) {
-                    // 1. reload reviews
-                    const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                    this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
-
-                    // 2. reload review count & calc chart
-                    const newPost = await this.reloadPost(post.placeId, post.id);
-                    const newChart = this.getChartInfo(newPost);
-                    !this.closed && this.setState({ post: newPost, chartInfo: newChart });
-
-                    this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
-                }
+            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
+                if (this.closed) return;
+                this.reloadReviews();
             });
         });
     }
@@ -2381,19 +2374,9 @@ export default class Post extends React.Component<InjectedProps> {
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
-            this.refs["toast"].show('Your reply has successfully been removed.', 500, async () => {
-                if (!this.closed) {
-                    // 1. reload reviews
-                    const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-                    this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
-
-                    // 2. reload review count & calc chart
-                    const newPost = await this.reloadPost(post.placeId, post.id);
-                    const newChart = this.getChartInfo(newPost);
-                    !this.closed && this.setState({ post: newPost, chartInfo: newChart });
-
-                    this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
-                }
+            this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
+                if (this.closed) return;
+                this.reloadReviews();
             });
         });
     }

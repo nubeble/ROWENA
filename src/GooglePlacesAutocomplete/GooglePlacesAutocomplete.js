@@ -254,7 +254,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     };
 
                     // hide loader
-                    this.setState({ isLoading: false });
+                    !this.closed && this.setState({ isLoading: false });
 
                     this._disableRowLoaders();
                     this.props.onPress(currentLocation, currentLocation);
@@ -296,7 +296,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             };
 
                             // hide loader
-                            this.setState({ isLoading: false });
+                            !this.closed && this.setState({ isLoading: false });
 
                             this._disableRowLoaders();
                             this.props.onPress(data, details);
@@ -329,7 +329,7 @@ export default class GooglePlacesAutocomplete extends Component {
                             };
 
                             // hide loader
-                            this.setState({ isLoading: false });
+                            !this.closed && this.setState({ isLoading: false });
 
                             this._disableRowLoaders();
                             this.props.onPress(data, details);
@@ -341,7 +341,7 @@ export default class GooglePlacesAutocomplete extends Component {
                 console.log('navigator.geolocation.getCurrentPosition error', error.message);
 
                 // hide loader
-                this.setState({ isLoading: false });
+                !this.closed && this.setState({ isLoading: false });
 
                 this._disableRowLoaders();
                 // if (this.props.onFail) this.props.onFail(error.message);

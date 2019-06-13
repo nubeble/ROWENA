@@ -16,6 +16,7 @@ import { inject, observer } from "mobx-react/native";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
 import PreloadImage from './PreloadImage';
+import { NavigationActions } from 'react-navigation';
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 const textInputPaddingTop = (Dimensions.get('window').height / 26);
@@ -138,7 +139,8 @@ export default class ChatRoom extends React.Component {
             }
         }
 
-        this.props.navigation.navigate("chat");
+        // this.props.navigation.navigate("chat");
+        this.props.navigation.dispatch(NavigationActions.back());
     }
 
     getLastMessage() {

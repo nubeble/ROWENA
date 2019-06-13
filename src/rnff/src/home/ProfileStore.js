@@ -3,8 +3,8 @@ import { observable, computed } from "mobx";
 import Firebase from "../../../Firebase";
 import type { Profile } from "../components/Model";
 
-/*
 const DEFAULT_PROFILE: Profile = {
+    /*
     uid: 'uid',
     name: 'default name',
     country: 'country',
@@ -20,12 +20,33 @@ const DEFAULT_PROFILE: Profile = {
     reviews: [],
     replies: [],
     likes: []
+    */
+
+    uid: null,
+    name: null,
+    birthday: null,
+    gender: null,
+    place: null,
+    email: null,
+    phoneNumber: null,
+    picture: {
+        uri: null,
+        ref: null
+    },
+    about: null,
+    feeds: [],
+    reviews: [],
+    replies: [],
+    likes: [],
+    comments: [],
+    receivedCommentsCount: 0,
+    commentAdded: false,
+    timestamp: 0
 };
-*/
+
 
 export default class ProfileStore {
     lastChangedTime: number;
-
     lastTimeFeedsUpdated: number;
     lastTimeLikesUpdated: number;
     lastTimeReviewsUpdated: number;
@@ -42,7 +63,7 @@ export default class ProfileStore {
         // Load Profile
         const uid = Firebase.user().uid;
         this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(
-            async snap => {
+            snap => {
                 if (snap.exists) {
                     console.log('ProfileStore, profile changed.');
 
@@ -93,7 +114,7 @@ export default class ProfileStore {
                 }
             },
             error => {
-                console.log('ProfileStore.init, error', error);
+                console.log('ProfileStore, an error happened.', error);
             }
         );
     }
@@ -107,7 +128,7 @@ export default class ProfileStore {
         if (oldFeeds.length !== newFeeds.length) return false;
 
         // 2. contents
-        for (var i = 0; i < oldFeeds.length; i++) {
+        for (let i = 0; i < oldFeeds.length; i++) {
 
             const a = oldFeeds[i]; // LikeRef
             const b = newFeeds[i]; // LikeRef
@@ -124,7 +145,7 @@ export default class ProfileStore {
         if (oldLikes.length !== newLikes.length) return false;
 
         // 2. contents
-        for (var i = 0; i < oldLikes.length; i++) {
+        for (let i = 0; i < oldLikes.length; i++) {
 
             const a = oldLikes[i]; // LikeRef
             const b = newLikes[i]; // LikeRef
@@ -141,7 +162,7 @@ export default class ProfileStore {
         if (oldReviews.length !== newReviews.length) return false;
 
         // 2. contents
-        for (var i = 0; i < oldReviews.length; i++) {
+        for (let i = 0; i < oldReviews.length; i++) {
 
             const a = oldReviews[i]; // LikeRef
             const b = newReviews[i]; // LikeRef
@@ -159,7 +180,7 @@ export default class ProfileStore {
         if (oldComments.length !== newComments.length) return false;
 
         // 2. contents
-        for (var i = 0; i < oldComments.length; i++) {
+        for (let i = 0; i < oldComments.length; i++) {
 
             const a = oldComments[i]; // CommentRef
             const b = newComments[i]; // CommentRef

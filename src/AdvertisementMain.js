@@ -9,7 +9,6 @@ import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign } from 'react-native-vector-icons';
 import { NavigationActions } from 'react-navigation';
 import Firebase from './Firebase';
-import * as firebase from "firebase";
 import Util from './Util';
 import autobind from 'autobind-decorator';
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -28,6 +27,7 @@ const textInputHeight = 34;
 const imageViewWidth = Dimensions.get('window').width / 2;
 const imageViewHeight = imageViewWidth / 4 * 3;
 
+// 4:3 image
 const imageWidth = imageViewWidth * 0.8;
 const imageHeight = imageViewHeight * 0.8;
 
@@ -97,8 +97,6 @@ export default class AdvertisementMain extends React.Component {
 
         onUploadingImage: false,
         uploadingImageNumber: 0, // 1,2,3,4
-        // refreshing: true,
-
         uploadImage1Uri: null,
         uploadImage2Uri: null,
         uploadImage3Uri: null,
@@ -126,18 +124,6 @@ export default class AdvertisementMain extends React.Component {
         streetInfo: null,
         cityInfo: null,
 
-
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
-
-        flashMessageTitle: '',
-        flashMessageSubtitle: '',
-        flashImage: null, // uri
-        flashOpacity: new Animated.Value(0),
-        // flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
-        flashOffset: new Animated.Value((8 + 34 + 8) * -1),
-
         showPicture1AlertIcon: false,
         showPicture2AlertIcon: false,
         showPicture3AlertIcon: false,
@@ -153,7 +139,18 @@ export default class AdvertisementMain extends React.Component {
         showStreetAlertIcon: false,
 
         onNote: false,
-        keyboardTop: Dimensions.get('window').height
+        keyboardTop: Dimensions.get('window').height,
+
+        notification: '',
+        opacity: new Animated.Value(0),
+        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
+
+        flashMessageTitle: '',
+        flashMessageSubtitle: '',
+        flashImage: null, // uri
+        flashOpacity: new Animated.Value(0),
+        // flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
+        flashOffset: new Animated.Value((8 + 34 + 8) * -1)
     };
 
     constructor(props) {
@@ -193,7 +190,7 @@ export default class AdvertisementMain extends React.Component {
         "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
         }
         */
-        const location = {
+        const location = { // streetInfo
             description: result1.description,
             // streetId: result1.place_id,
             longitude: result1.location.lng,
@@ -359,12 +356,18 @@ export default class AdvertisementMain extends React.Component {
     }
 
     componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
         // remove server files
         if (this.imageRefs.length > 0) {
             console.log('clean image files');
 
             const formData = new FormData();
-            for (var i = 0; i < this.imageRefs.length; i++) {
+            for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
                 const number = i + 1;
@@ -383,12 +386,6 @@ export default class AdvertisementMain extends React.Component {
                 body: formData
             });
         }
-
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -765,12 +762,12 @@ export default class AdvertisementMain extends React.Component {
 
         // 3. move to finish page
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+            if (this.closed) return;
+
             // hide loader
             this.setState({ showPostLoader: false });
 
-            if (!this.closed) {
-                this.props.navigation.navigate("advertisementFinish");
-            }
+            this.props.navigation.navigate("advertisementFinish");
         });
     }
 
@@ -905,6 +902,7 @@ export default class AdvertisementMain extends React.Component {
 
         return (
             <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+                {/* notification bar */}
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -923,6 +921,7 @@ export default class AdvertisementMain extends React.Component {
                     </TouchableOpacity>
                 </Animated.View>
 
+                {/* flash bar */}
                 <Animated.View
                     style={[styles.flash, flashStyle]}
                     ref={flash => this._flash = flash}
@@ -955,6 +954,7 @@ export default class AdvertisementMain extends React.Component {
                     */}
                 </Animated.View>
 
+                {/* search bar */}
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -1696,7 +1696,14 @@ export default class AdvertisementMain extends React.Component {
 
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
-                    onPress={async () => await this.post()}
+                    onPress={async () => {
+                        if (this._showNotification) {
+                            this.hideNotification();
+                            this.hideAlertIcon();
+                        }
+
+                        await this.post();
+                    }}
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post an Advertisement</Text>
                     {
@@ -1767,14 +1774,6 @@ export default class AdvertisementMain extends React.Component {
                     }
                     {
                         this.state.onUploadingImage && number === this.state.uploadingImageNumber &&
-                        /*
-                        <ActivityIndicator
-                            style={{ position: 'absolute', top: 0, bottom: 0, right: 0, left: 0, zIndex: 10001 }}
-                            animating={true}
-                            size="small"
-                            color='#A8A8A8'
-                        />
-                        */
                         <View style={{
                             width: imageWidth, height: imageHeight,
                             position: 'absolute', top: 0, left: 0,
@@ -1925,11 +1924,12 @@ export default class AdvertisementMain extends React.Component {
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
+
                 setTimeout(() => {
                     if (this.closed) return;
                     this.hideFlash();
                     this.setState({ onUploadingImage: false, uploadingImageNumber: 0 });
-                }, 1500);
+                }, 1000);
             });
         }
     }
@@ -1998,9 +1998,6 @@ export default class AdvertisementMain extends React.Component {
 
             this.showNotification('An error happened. Please try again.');
 
-            // stop indicator
-            // this.setState({ refreshing: false });
-
             // show alert icon
             if (index === 0) this.setState({ showPicture1AlertIcon: true });
             if (index === 1) this.setState({ showPicture2AlertIcon: true });
@@ -2057,8 +2054,6 @@ export default class AdvertisementMain extends React.Component {
         feed.weight = data.weight;
         feed.bodyType = data.bodyType;
         feed.bust = data.bust;
-
-        // console.log('feed', feed);
 
         await Firebase.createFeed(feed, extra);
 
@@ -2168,31 +2163,6 @@ export default class AdvertisementMain extends React.Component {
         this._showNotification = false;
     }
 
-    hideAlertIcon() {
-        if (this.state.showNameAlertIcon) this.setState({ showNameAlertIcon: false });
-
-        if (this.state.showAgeAlertIcon) this.setState({ showAgeAlertIcon: false });
-
-        if (this.state.showGenderAlertIcon) this.setState({ showGenderAlertIcon: false });
-
-        if (this.state.showHeightAlertIcon) this.setState({ showHeightAlertIcon: false });
-
-        if (this.state.showWeightAlertIcon) this.setState({ showWeightAlertIcon: false });
-
-        if (this.state.showBodyTypeAlertIcon) this.setState({ showBodyTypeAlertIcon: false });
-
-        if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
-
-        if (this.state.showCountryAlertIcon) this.setState({ showCountryAlertIcon: false });
-
-        if (this.state.showStreetAlertIcon) this.setState({ showStreetAlertIcon: false });
-
-        if (this.state.showPicture1AlertIcon) this.setState({ showPicture1AlertIcon: false });
-        if (this.state.showPicture2AlertIcon) this.setState({ showPicture2AlertIcon: false });
-        if (this.state.showPicture3AlertIcon) this.setState({ showPicture3AlertIcon: false });
-        if (this.state.showPicture4AlertIcon) this.setState({ showPicture4AlertIcon: false });
-    }
-
     showFlash(title, subtitle, image) {
         if (this._showNotification) {
             this.hideNotification();
@@ -2242,6 +2212,22 @@ export default class AdvertisementMain extends React.Component {
         // StatusBar.setHidden(false);
 
         this._showFlash = false;
+    }
+
+    hideAlertIcon() {
+        if (this.state.showNameAlertIcon) this.setState({ showNameAlertIcon: false });
+        if (this.state.showAgeAlertIcon) this.setState({ showAgeAlertIcon: false });
+        if (this.state.showGenderAlertIcon) this.setState({ showGenderAlertIcon: false });
+        if (this.state.showHeightAlertIcon) this.setState({ showHeightAlertIcon: false });
+        if (this.state.showWeightAlertIcon) this.setState({ showWeightAlertIcon: false });
+        if (this.state.showBodyTypeAlertIcon) this.setState({ showBodyTypeAlertIcon: false });
+        if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
+        if (this.state.showCountryAlertIcon) this.setState({ showCountryAlertIcon: false });
+        if (this.state.showStreetAlertIcon) this.setState({ showStreetAlertIcon: false });
+        if (this.state.showPicture1AlertIcon) this.setState({ showPicture1AlertIcon: false });
+        if (this.state.showPicture2AlertIcon) this.setState({ showPicture2AlertIcon: false });
+        if (this.state.showPicture3AlertIcon) this.setState({ showPicture3AlertIcon: false });
+        if (this.state.showPicture4AlertIcon) this.setState({ showPicture4AlertIcon: false });
     }
 }
 
