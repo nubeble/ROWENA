@@ -84,9 +84,9 @@ export default class SearchScreen extends React.Component {
         }
 
         let placeholder = '';
-        if (from === 'EditProfile') placeholder = 'Where are you from? (Type city)';
-        else if (from === 'AdvertisementMain') placeholder = 'Where do you live? (Type street)';
-        else placeholder = 'Where to? (Type city)';
+        if (from === 'EditProfile') placeholder = 'Where are you from? (City)';
+        else if (from === 'AdvertisementMain') placeholder = 'Where do you live? (Street)';
+        else placeholder = 'Where to? (City)';
 
         return (
             <View style={styles.flex}>

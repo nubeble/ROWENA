@@ -8,6 +8,7 @@ import SmartImage from './rnff/src/components/SmartImage';
 import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
+import Util from './Util';
 
 const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const illustHeight = illustWidth;
