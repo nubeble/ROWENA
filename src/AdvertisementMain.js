@@ -159,6 +159,8 @@ export default class AdvertisementMain extends React.Component {
         this.feedId = null;
 
         this.imageRefs = []; // for cleaning files in server
+
+        this.contentText = Util.getQuotes();
     }
 
     componentDidMount() {
@@ -1692,7 +1694,7 @@ export default class AdvertisementMain extends React.Component {
                     marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
                     textAlign: 'center', lineHeight: 24
-                }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
+                }}>{this.contentText}</Text>
 
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}

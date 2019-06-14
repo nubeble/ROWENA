@@ -8,14 +8,21 @@ import SmartImage from './rnff/src/components/SmartImage';
 import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
+import Util from "./Util";
 
 const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const illustHeight = illustWidth / 380 * 260;
 
-const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
+// const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
 
 
 export default class AdvertisementFinish extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.contentText = Util.getQuotes();
+    }
+
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
     }

@@ -12,10 +12,16 @@ import autobind from 'autobind-decorator';
 const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const illustHeight = illustWidth;
 
-const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
+// const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
 
 
 export default class AdvertisementStart extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.contentText = Util.getQuotes();
+    }
+
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
     }
@@ -86,7 +92,7 @@ export default class AdvertisementStart extends React.Component {
                         lineHeight: 24,
                         fontFamily: "Roboto-Light",
                         textAlign: 'center'
-                    }}>{contentText}</Text>
+                    }}>{this.contentText}</Text>
                 </View>
 
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>

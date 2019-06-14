@@ -98,6 +98,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.itemHeights = {};
 
         this.springValue = new Animated.Value(1);
+
+        this.contentText = Util.getQuotes();
     }
 
     componentDidMount() {
@@ -470,25 +472,23 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         // update likes to state post
-        // --
         console.log('update likes to state post');
-        let { likes } = post;
+
+        let newPost = this.state.post;
+        let { likes } = newPost;
         const idx = likes.indexOf(uid);
         if (idx === -1) {
             likes.push(uid);
         } else {
             likes.splice(idx, 1);
         }
-
-        let newPost = post;
         newPost.likes = likes;
 
         !this.closed && this.setState({ post: newPost });
 
         // update feedStore - NOT needed for likes
         // const { feedStore } = this.props;
-        // feedStore.updateFeed(post);
-        // --
+        // feedStore.updateFeed(newPost);
 
         this.toggling = false;
     }
@@ -1106,7 +1106,7 @@ export default class Post extends React.Component<InjectedProps> {
                     marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
                     textAlign: 'center', lineHeight: 24
-                }}>{"Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you"}</Text>
+                }}>{this.contentText}</Text>
 
                 <TouchableOpacity
                     style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}

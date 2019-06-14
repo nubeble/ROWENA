@@ -1593,4 +1593,24 @@ export default class Util extends React.Component {
 
         return words[words.length - 1];
     }
+
+    static getQuotes() {
+        const rn = Math.round(Math.random() * 100) % 11; // 0 ~ 10
+
+        switch (rn) {
+            case 0: return "Earth is full of heartache and strife, being able to share the journey with somebody you love helps to make it a little easier.";
+            case 1: return "If ever you think of me out of the blue, just remember it's all the kisses I've blown in the air finally catching up with you!";
+            case 2: return "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+            case 3: return "Nothing on this planet can compare with a woman's love - it is kind and compassionate, patient and nurturing, generous and sweet and unconditional.";
+            case 4: return "It takes strength to stand alone, it takes courage to lean on another. It takes strength to love, it takes courage to be loved.";
+            case 5: return "Romance isn't reserved only for the bedroom. Being affectionate, thoughtful and kind at other times are building blocks for a good love life.";
+            case 6: return "I collect memories. I look for opportunities to try new things, go to new places, and meet new people all the time.";
+            case 7: return "First impressions matter. Experts say we size up new people in somewhere between 30 seconds and two minutes.";
+            case 8: return "One thing I look forward to is seeing new places and new people.";
+            case 9: return "Sometimes, it's just great to bring new people into the mix.";
+            case 10: return "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
+        }
+
+        return null;
+    }
 }
