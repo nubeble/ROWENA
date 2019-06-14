@@ -79,7 +79,7 @@ export default class ChatRoom extends React.Component {
                     if (message.user._id === user.uid) {
                         message.user.name = user.name;
                         if (user.picture) message.user.avatar = user.picture;
-                        else message.user.avatar = PreloadImage.user; // ToDo: tint color
+                        else message.user.avatar = PreloadImage.user;
 
                         break;
                     }

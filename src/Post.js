@@ -816,7 +816,6 @@ export default class Post extends React.Component<InjectedProps> {
                                         />
                                     </View>
                                     :
-                                    // ToDo: status color
                                     <View style={[styles.circle, { backgroundColor: circleColor }]}></View>
                             }
                             <Text style={styles.date}>Activated {lastLogInTime ? lastLogInTime : 'long time ago'}</Text>
