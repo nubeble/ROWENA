@@ -374,7 +374,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         let avatarName = 'Anonymous';
         let address = "No address registered";
         let reviewText = 'loading...';
-        let labelText = null;
+        // let labelText = null;
         let imageUri = null;
         let dateText = 'Joined in September 26, 2018';
         let age = '20';
@@ -394,19 +394,21 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             // reviewText
             if (count === 0) {
-                reviewText = 'No host reviews yet';
+                reviewText = 'No customer reviews yet';
             } else if (count === 1) {
-                reviewText = ' 1 review';
+                reviewText = '1 customer review';
             } else {
-                reviewText = count.toString() + " reviews";
+                reviewText = count.toString() + " customer reviews";
             }
 
             // labelText
+            /*
             if (count === 1) {
                 labelText = count.toString() + ' review from hosts';
             } else if (count > 1) {
                 labelText = count.toString() + ' reviews from hosts';
             }
+            */
 
             // image
             if (guest.picture) imageUri = guest.picture;
@@ -572,20 +574,21 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             paddingBottom: 10
                                             */
 
-                                            marginTop: Theme.spacing.small,
+                                            paddingHorizontal: Theme.spacing.base,
+                                            // marginTop: Theme.spacing.small,
+                                            marginTop: Theme.spacing.tiny,
                                             marginBottom: Theme.spacing.small,
                                             fontSize: 14, fontFamily: "Roboto-Light",
                                             color: Theme.color.placeholder,
-                                            textAlign: 'center',
-                                            // lineHeight: 24
+                                            textAlign: 'center', lineHeight: 24
                                         }}>Share your experience to help others</Text>
 
                                         <TouchableOpacity
                                             style={[styles.contactButton,
                                             {
-                                                // marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small
-                                                marginBottom: Theme.spacing.tiny + Theme.spacing.small,
-                                                borderColor: this.state.showKeyboard ? 'black' : "rgba(255, 255, 255, 0.8)",
+                                                marginBottom: Theme.spacing.tiny,
+                                                // borderColor: this.state.showKeyboard ? 'black' : "rgba(255, 255, 255, 0.8)",
+                                                backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
                                             }
                                             ]}
                                             onPress={() => {
@@ -604,21 +607,19 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                     // this._flatList.scrollToOffset({ offset: gap, animated: true });
                                                     this._flatList.scrollToOffset({ offset: 0, animated: true });
                                                 }, Cons.buttonTimeoutShort);
-
                                             }}
                                         >
                                             <Text style={{
                                                 fontSize: 16, fontFamily: "Roboto-Medium",
-                                                // color: 'rgba(255, 255, 255, 0.8)'
-                                                color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
+                                                // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
+                                                color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
                                             }}>{'Add a Review'}</Text>
                                         </TouchableOpacity>
 
-                                        <View style={{
-                                            borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny
-                                        }} />
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }} />
                                     </View>
                                 </View>
+                                {/*
                                 {
                                     labelText &&
                                     <View style={styles.titleContainer}>
@@ -629,11 +630,11 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         </Text>
                                     </View>
                                 }
-
                                 {
                                     labelText &&
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
                                 }
+*/}
                             </View>
                         }
                         data={reviews}
@@ -1092,7 +1093,7 @@ const styles = StyleSheet.create({
     infoContainer: {
         flex: 1,
         // width: '100%',
-        paddingBottom: Theme.spacing.tiny
+        // paddingBottom: Theme.spacing.tiny
     },
     /*
     bodyInfoTitle: {
@@ -1123,6 +1124,7 @@ const styles = StyleSheet.create({
         paddingBottom: Theme.spacing.base
     },
     contactButton: {
+        /*
         // width: '85%',
         width: Dimensions.get('window').width * 0.85,
         height: Cons.buttonHeight,
@@ -1134,6 +1136,15 @@ const styles = StyleSheet.create({
 
         alignItems: 'center',
         justifyContent: 'center'
+        */
+
+        width: Dimensions.get('window').width * 0.85,
+        height: Cons.buttonHeight,
+        alignSelf: 'center',
+        backgroundColor: Theme.color.buttonBackground,
+        borderRadius: 5,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     reviewDate: {
         color: Theme.color.text3,

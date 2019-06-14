@@ -93,9 +93,11 @@ export default class Welcome extends React.Component {
 
                     <Text style={{
                         marginTop: 10,
+                        paddingHorizontal: Theme.spacing.base,
                         color: 'rgba(255, 255, 255, 0.8)',
                         fontSize: 16,
-                        lineHeight: 30,
+                        // lineHeight: 30,
+                        lineHeight: 24,
                         fontFamily: "Roboto-Light",
                         textAlign: 'center'
                     }}>{this.contentText}</Text>

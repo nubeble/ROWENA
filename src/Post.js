@@ -1101,6 +1101,7 @@ export default class Post extends React.Component<InjectedProps> {
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                 <Text style={{
+                    paddingHorizontal: Theme.spacing.base,
                     marginTop: Theme.spacing.small,
                     marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,

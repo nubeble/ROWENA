@@ -241,7 +241,7 @@ export default class EditPost extends React.Component {
         });
     }
 
-    componentWillUnmount() {
+    async componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
@@ -263,7 +263,7 @@ export default class EditPost extends React.Component {
                 console.log(fieldName, ref);
             }
 
-            fetch(SERVER_ENDPOINT + "cleanPostImages", {
+            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
                 method: "POST",
                 headers: {
                     Accept: "application/json",

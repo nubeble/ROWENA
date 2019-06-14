@@ -357,7 +357,7 @@ export default class AdvertisementMain extends React.Component {
         return true;
     }
 
-    componentWillUnmount() {
+    async componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
@@ -379,7 +379,7 @@ export default class AdvertisementMain extends React.Component {
                 console.log(fieldName, ref);
             }
 
-            fetch(SERVER_ENDPOINT + "cleanPostImages", {
+            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
                 method: "POST",
                 headers: {
                     Accept: "application/json",
@@ -1690,6 +1690,7 @@ export default class AdvertisementMain extends React.Component {
                 */}
 
                 <Text style={{
+                    paddingHorizontal: Theme.spacing.base,
                     marginTop: Theme.spacing.small,
                     marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,

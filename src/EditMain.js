@@ -144,21 +144,23 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         let reviewText = '';
         if (count === 0) {
-            reviewText = 'No host reviews yet';
+            reviewText = 'No customer reviews yet';
         } else if (count === 1) {
-            reviewText = ' 1 review';
+            reviewText = '1 customer review';
         } else {
-            reviewText = count.toString() + " reviews";
+            reviewText = count.toString() + " customer reviews";
         }
 
+        /*
         let labelText = null;
         if (count === 0) {
-            labelText = 'No reviews from hosts';
+            labelText = 'No reviews from girls';
         } else if (count === 1) {
-            labelText = count.toString() + ' review from hosts';
+            labelText = count.toString() + ' review from girls';
         } else if (count > 1) {
-            labelText = count.toString() + ' reviews from hosts';
+            labelText = count.toString() + ' reviews from girls';
         }
+        */
 
         const { reviews } = this.commentStore;
 
@@ -221,150 +223,132 @@ export default class EditMain extends React.Component<InjectedProps> {
                     </TouchableOpacity>
                 </View>
 
-                {
-                    // this.state.renderFeed &&
-                    <FlatList
-                        ref={(fl) => this._flatList = fl}
-                        contentContainerStyle={styles.contentContainer}
-                        showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={
-                            <View>
-                                <View style={styles.infoContainer}>
-                                    {/* avatar view */}
-                                    <View style={{ marginTop: 20 }}>
-                                        <View style={{
-                                            width: '100%', height: Dimensions.get('window').height / 8,
-                                            flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
-                                        }}>
-                                            <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
-                                                    {avatarName}
-                                                </Text>
-                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
-                                                    {dateText}
-                                                </Text>
-                                            </View>
-                                            <View
-                                                style={{
-                                                    width: avatarWidth, height: avatarWidth,
-                                                    marginRight: 22, justifyContent: 'center', alignItems: 'center'
-                                                }}
-                                            >
-                                                {
-                                                    picture ?
-                                                        <SmartImage
-                                                            style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                            showSpinner={false}
-                                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                            uri={picture}
-                                                        />
-                                                        :
-                                                        <Image
-                                                            style={{
-                                                                backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                                                borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
-                                                                resizeMode: 'cover'
-                                                            }}
-                                                            source={PreloadImage.user}
-                                                        />
-                                                }
-                                            </View>
+                <FlatList
+                    ref={(fl) => this._flatList = fl}
+                    contentContainerStyle={styles.contentContainer}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={
+                        <View>
+                            <View style={styles.infoContainer}>
+                                {/* avatar view */}
+                                <View style={{ marginTop: 20 }}>
+                                    <View style={{
+                                        width: '100%', height: Dimensions.get('window').height / 8,
+                                        flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+                                    }}>
+                                        <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
+                                            <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                {avatarName}
+                                            </Text>
+                                            <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
+                                                {dateText}
+                                            </Text>
                                         </View>
-                                    </View>
-
-                                    <View style={{ width: '100%', paddingHorizontal: 20 }}>
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
-                                            <Image
-                                                style={{ width: 20, height: 20, resizeMode: 'cover' }}
-                                                source={PreloadImage.home}
-                                            />
-                                            <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
-                                            <Image
-                                                style={{ width: 22, height: 22, resizeMode: 'cover' }}
-                                                source={PreloadImage.comment}
-                                            />
-                                            <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{reviewText}</Text>
-                                        </View>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
-                                            onLayout={(event) => {
-                                                const { x, y, width, height } = event.nativeEvent.layout;
-
-                                                this.borderY = y;
+                                        <View
+                                            style={{
+                                                width: avatarWidth, height: avatarWidth,
+                                                marginRight: 22, justifyContent: 'center', alignItems: 'center'
                                             }}
-                                        />
-                                    </View>
-                                </View>
-                                {/*
-                                {
-                                    labelText &&
-                                    <View style={styles.titleContainer}>
-                                        <Text style={styles.title}>{labelText}</Text>
-                                    </View>
-                                }
-                                {
-                                    labelText &&
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
-                                }
-                                */}
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>{labelText}</Text>
-                                    {
-                                        showReloadCommentsButton &&
-                                        <View style={{ flex: 1 }}>
-                                            <TouchableOpacity
-                                                style={{
-                                                    position: 'absolute', top: -4, left: 8,
-                                                    width: 28,
-                                                    height: 28,
-                                                    // backgroundColor: 'green',
-                                                    justifyContent: "center", alignItems: "center"
-                                                }}
-                                                onPress={() => {
-                                                    // reload
-                                                    if (this.state.isLoadingFeeds) return;
-                                                    this.setState({ isLoadingFeeds: true });
-                                                    this.commentStore.loadReviewFromTheStart();
-
-                                                    const { profile } = this.props.profileStore;
-                                                    this.count = profile.receivedCommentsCount;
-                                                }}>
-                                                <Ionicons name='md-refresh-circle' color={Theme.color.selection} size={24} />
-                                            </TouchableOpacity>
+                                        >
+                                            {
+                                                picture ?
+                                                    <SmartImage
+                                                        style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                                        showSpinner={false}
+                                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                        uri={picture}
+                                                    />
+                                                    :
+                                                    <Image
+                                                        style={{
+                                                            backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
+                                                            borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                                            resizeMode: 'cover'
+                                                        }}
+                                                        source={PreloadImage.user}
+                                                    />
+                                            }
                                         </View>
-                                    }
+                                    </View>
                                 </View>
-                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
+
+                                <View style={{ width: '100%', paddingHorizontal: 20 }}>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
+                                        <Image
+                                            style={{ width: 20, height: 20, resizeMode: 'cover' }}
+                                            source={PreloadImage.home}
+                                        />
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
+                                        <Image
+                                            style={{ width: 22, height: 22, resizeMode: 'cover' }}
+                                            source={PreloadImage.comment}
+                                        />
+                                        <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{reviewText}</Text>
+                                        {
+                                            showReloadCommentsButton &&
+                                            <View style={{ flex: 1, justifyContent: "center" }}>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        marginLeft: 8,
+                                                        // backgroundColor: 'green',
+                                                        // position: 'absolute', top: 0, left: 8,
+                                                        width: 20,
+                                                        height: 20,
+                                                        justifyContent: "center", alignItems: "center"
+                                                    }}
+                                                    onPress={() => {
+                                                        // reload
+                                                        if (this.state.isLoadingFeeds) return;
+                                                        this.setState({ isLoadingFeeds: true });
+                                                        this.commentStore.loadReviewFromTheStart();
+
+                                                        const { profile } = this.props.profileStore;
+                                                        this.count = profile.receivedCommentsCount;
+                                                    }}>
+                                                    <Ionicons name='md-refresh-circle' color={Theme.color.selection} size={20} />
+                                                </TouchableOpacity>
+                                            </View>
+                                        }
+                                    </View>
+
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }}
+                                        onLayout={(event) => {
+                                            const { x, y, width, height } = event.nativeEvent.layout;
+
+                                            this.borderY = y;
+                                        }}
+                                    />
+                                </View>
                             </View>
+                        </View>
+                    }
+                    // columnWrapperStyle={styles.columnWrapperStyle}
+                    data={reviews}
+                    keyExtractor={item => item.comment.id}
+                    renderItem={this.renderItem}
+                    ItemSeparatorComponent={this.itemSeparatorComponent}
+                    onScroll={({ nativeEvent }) => {
+                        if (!this.focused) return;
+
+                        if (this.isCloseToBottom(nativeEvent)) {
+                            this.loadMore();
                         }
-                        // columnWrapperStyle={styles.columnWrapperStyle}
-                        data={reviews}
-                        keyExtractor={item => item.comment.id}
-                        renderItem={this.renderItem}
-                        ItemSeparatorComponent={this.itemSeparatorComponent}
-                        onScroll={({ nativeEvent }) => {
-                            if (!this.focused) return;
+                    }}
+                    onRefresh={this.handleRefresh}
+                    refreshing={this.state.refreshing}
 
-                            if (this.isCloseToBottom(nativeEvent)) {
-                                this.loadMore();
-                            }
-                        }}
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
+                    ListFooterComponent={
+                        this.state.isLoadingFeeds &&
+                        <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                            <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
+                        </View>
+                    }
 
-                        ListFooterComponent={
-                            this.state.isLoadingFeeds &&
-                            <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
-                            </View>
-                        }
-
-                        ListEmptyComponent={this.renderListEmptyComponent}
-                    />
-                }
+                    ListEmptyComponent={this.renderListEmptyComponent}
+                />
             </View>
         );
     }
@@ -585,8 +569,7 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         flex: 1,
-        // width: '100%',
-        paddingBottom: Theme.spacing.tiny
+        // paddingBottom: Theme.spacing.tiny
     },
     reviewDate: {
         color: Theme.color.text3,

@@ -229,7 +229,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         return true;
     }
 
-    componentWillUnmount() {
+    async componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
@@ -251,7 +251,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 console.log(fieldName, ref);
             }
 
-            fetch(SERVER_ENDPOINT + "cleanPostImages", {
+            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
                 method: "POST",
                 headers: {
                     Accept: "application/json",

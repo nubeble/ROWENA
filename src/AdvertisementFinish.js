@@ -96,7 +96,7 @@ export default class AdvertisementFinish extends React.Component {
                         lineHeight: 24,
                         fontFamily: "Roboto-Light",
                         textAlign: 'center'
-                    }}>{contentText}</Text>
+                    }}>{this.contentText}</Text>
                 </View>
 
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
