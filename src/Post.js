@@ -54,6 +54,8 @@ const useGoogleMaps = Platform.OS === 'android' ? true : false;
 @inject("feedStore", "profileStore")
 @observer // for reviewStore
 export default class Post extends React.Component<InjectedProps> {
+    static __flatList = null;
+
     reviewStore: ReviewStore = new ReviewStore();
 
     state = {
@@ -100,6 +102,10 @@ export default class Post extends React.Component<InjectedProps> {
         this.springValue = new Animated.Value(1);
 
         this.contentText = Util.getQuotes();
+    }
+
+    static scrollToTop() {
+        Post.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     componentDidMount() {
@@ -621,7 +627,10 @@ export default class Post extends React.Component<InjectedProps> {
                         }}
                     >
                         <FlatList
-                            ref={(fl) => this._flatList = fl}
+                            ref={(fl) => {
+                                this._flatList = fl;
+                                Post.__flatList = fl;
+                            }}
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
                             ListHeaderComponent={this.renderHeader()}

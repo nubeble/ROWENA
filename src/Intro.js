@@ -54,6 +54,8 @@ const skeletonViewHeight = (4 + (Dimensions.get('window').width - 4 * 2 * 3) / 2
 // @inject("feedStore", "profileStore") @observer
 // export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
 export default class Intro extends React.Component {
+    static __flatList = null;
+
     static places = [];
     static popularFeeds = [];
     static recentFeeds = [];
@@ -139,6 +141,10 @@ export default class Intro extends React.Component {
         searchText: '',
         refreshing: false
     };
+
+    static scrollToTop() {
+        Intro.__flatList.scrollToOffset({ offset: 0, animated: true });
+    }
 
     static final() {
         console.log('Intro.final');
@@ -226,6 +232,15 @@ export default class Intro extends React.Component {
 
         this.getPopularFeeds();
         this.getRecentFeeds();
+    }
+
+    componentWillUnmount() {
+        console.log('Intro.componentWillUnmount');
+
+        this.onFocusListener.remove();
+        this.hardwareBackPressListener.remove();
+
+        this.closed = true;
     }
 
     async initFromSearch(result) {
@@ -316,15 +331,6 @@ export default class Intro extends React.Component {
         Vars.currentScreenName = 'Intro';
     }
 
-    componentWillUnmount() {
-        console.log('Intro.componentWillUnmount');
-
-        this.onFocusListener.remove();
-        this.hardwareBackPressListener.remove();
-
-        this.closed = true;
-    }
-
     async getPlaces() {
         const size = DEFAULT_PLACE_COUNT;
 
@@ -408,52 +414,29 @@ export default class Intro extends React.Component {
     async getPopularFeeds() {
         if (Intro.popularFeeds.length > 0) return;
 
-        const size = DEFAULT_FEED_COUNT;
         let placeList = [];
-        for (let i = 0; i < size; i++) {
+        let count = 0;
+        while (true) {
             const placeId = await Firebase.getRandomPlace();
-            if (placeId) placeList.push(placeId);
-        }
-        placeList.sort();
-
-        let prevItem = null;
-        let array = {}; // map Object
-        /*
-            array = {
-                key (placeId) : value (count)
-            };
-        */
-
-        for (let i = 0; i < placeList.length; i++) {
-            const item = placeList[i]; // placeId
-            if (!item) continue;
-
-            if (item === prevItem) {
-                array[item]++;
-            } else {
-                // new item
-                array[item] = 1;
-                prevItem = item;
+            if (placeId) {
+                // check existance
+                if (placeList.indexOf(placeId) === -1) {
+                    placeList.push(placeId);
+                    count++;
+                }
             }
+
+            if (count >= DEFAULT_FEED_COUNT) break;
         }
 
-        // console.log('array', array);
-
-        let popularFeeds = [...this.state.popularFeeds];
+        let popularFeeds = [];
         let index = 0;
 
-        // map search
-        for (key in array) {
-            let value = array[key]; // count
-            // console.log(key + ":" + value);
-
-            const feeds = await Firebase.getFeedByAverageRating(key, value); // feeds.length could not be the same as value
-
-            for (let i = 0; i < feeds.length; i++) {
-                const feed = feeds[i];
-
+        for (let i = 0; i < placeList.length; i++) {
+            const placeId = placeList[i];
+            const feed = await Firebase.getFeedByAverageRating(placeId);
+            if (feed) {
                 popularFeeds[index] = feed;
-
                 index++;
             }
         }
@@ -522,46 +505,29 @@ export default class Intro extends React.Component {
     async getRecentFeeds() {
         if (Intro.recentFeeds.length > 0) return;
 
-        const size = DEFAULT_FEED_COUNT;
         let placeList = [];
-        for (let i = 0; i < size; i++) {
+        let count = 0;
+        while (true) {
             const placeId = await Firebase.getRandomPlace();
-            if (placeId) placeList.push(placeId);
-        }
-        placeList.sort();
-
-        let prevItem = null;
-        let array = {};
-        for (let i = 0; i < placeList.length; i++) {
-            const item = placeList[i];
-            if (!item) continue;
-
-            if (item === prevItem) {
-                array[item]++;
-            } else {
-                // new item
-                array[item] = 1;
-                prevItem = item;
+            if (placeId) {
+                // check existance
+                if (placeList.indexOf(placeId) === -1) {
+                    placeList.push(placeId);
+                    count++;
+                }
             }
+
+            if (count >= DEFAULT_FEED_COUNT) break;
         }
 
-        // console.log('array', array);
-
-        let recentFeeds = [...this.state.recentFeeds];
+        let recentFeeds = [];
         let index = 0;
 
-        // map search
-        for (key in array) {
-            let value = array[key]; // count
-            // console.log(key + ":" + value);
-
-            const feeds = await Firebase.getFeedByTimestamp(key, value);
-
-            for (let i = 0; i < feeds.length; i++) {
-                const feed = feeds[i];
-
+        for (let i = 0; i < placeList.length; i++) {
+            const placeId = placeList[i];
+            const feed = await Firebase.getFeedByTimestamp(placeId);
+            if (feed) {
                 recentFeeds[index] = feed;
-
                 index++;
             }
         }
@@ -698,6 +664,9 @@ export default class Intro extends React.Component {
                 {
                     // this.state.renderList &&
                     <FlatList
+                        // ref={(fl) => this._flatList = fl}
+                        ref={(fl) => Intro.__flatList = fl}
+
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={

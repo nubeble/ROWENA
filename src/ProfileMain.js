@@ -36,6 +36,8 @@ const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 @inject("profileStore")
 @observer
 export default class ProfileMain extends React.Component<InjectedProps> {
+    static __flatList = null;
+
     state = {
         // renderFeed: false,
         // showIndicator: false,
@@ -86,6 +88,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // used in checkUpdateOnUserFeed
         // this.reviewAddedFeedHashTable = [];
         this.reviewAddedFeedHashTable = new Map();
+    }
+
+    static scrollToTop() {
+        ProfileMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     componentDidMount() {
@@ -595,7 +601,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 {
                     // this.state.renderFeed &&
                     <FlatList
-                        ref={(fl) => this._flatList = fl}
+                        ref={(fl) => {
+                            this._flatList = fl;
+                            ProfileMain.__flatList = fl;
+                        }}
                         contentContainerStyle={{ flexGrow: 1 }}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={

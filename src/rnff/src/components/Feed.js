@@ -26,10 +26,16 @@ type FeedProps = NavigationProps<> & {
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
+    static __flatList = null;
+
     state = {
         isLoadingFeeds: false,
         refreshing: false
     };
+
+    scrollToTop() {
+        Feed.__flatList.scrollToOffset({ offset: 0, animated: true });
+    }
 
     componentDidMount() {
         // const { feed } = this.props.store; // FeedStore
@@ -87,16 +93,16 @@ export default class Feed extends React.Component<FeedProps> {
         );
     }
 
-    _scrollTo(offset) {
-        this._flatList.scrollToOffset({ offset: offset, animated: false });
-    }
-
     enableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });
     }
 
     disableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
+    }
+
+    _scrollTo(offset) {
+        this._flatList.scrollToOffset({ offset: offset, animated: false });
     }
 
     render(): React.Node {
@@ -107,7 +113,10 @@ export default class Feed extends React.Component<FeedProps> {
         return (
             <SafeAreaView style={styles.list}>
                 <FlatList
-                    ref={(fl) => this._flatList = fl}
+                    ref={(fl) => {
+                        this._flatList = fl;
+                        Feed.__flatList = fl;
+                    }}
                     contentContainerStyle={styles.contentContainer}
                     // showsVerticalScrollIndicator
                     data={feed}

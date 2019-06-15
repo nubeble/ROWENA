@@ -23,6 +23,8 @@ const illustWidth = 300;
 
 
 export default class ChatMain extends React.Component {
+    static __flatList = null;
+
     state = {
         name: '',
         // renderChat: false,
@@ -45,6 +47,10 @@ export default class ChatMain extends React.Component {
         this.feedsUnsubscribes = [];
         this.countsUnsubscribes = [];
         this.customersUnsubscribes = [];
+    }
+
+    static scrollToTop() {
+        ChatMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     static final() {
@@ -411,7 +417,10 @@ export default class ChatMain extends React.Component {
                 </View>
 
                 <FlatList
-                    ref={(fl) => this._flatList = fl}
+                    ref={(fl) => {
+                        this._flatList = fl;
+                        ChatMain.__flatList = fl;
+                    }}
                     data={this.state.chatRoomList}
                     keyExtractor={this.keyExtractor}
                     renderItem={this.renderItem}

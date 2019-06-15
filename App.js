@@ -1098,6 +1098,9 @@ const MainBottomTabNavigator = createBottomTabNavigator(
         }
 );
 
+let routeName = null;
+let timestamp = 0;
+
 function _navigationOptions(navigation, screenProps) {
     // console.log('_navigationOptions, data', screenProps.data);
 
@@ -1132,12 +1135,46 @@ function _navigationOptions(navigation, screenProps) {
             if (navigation.state.routeName === 'home') {
                 console.log('home');
 
+                const now = Date.now();
+
+                if (routeName === 'home') {
+                    const diff = now - timestamp;
+                    console.log('diff', diff);
+
+                    if (diff < 500) {
+                        // double click
+                        if (Vars.currentScreenName === 'Intro') Intro.scrollToTop();
+                        if (Vars.currentScreenName === 'Explore') Explore.scrollToTop();
+                        if (Vars.currentScreenName === 'Post') Post.scrollToTop();
+                    }
+                } else {
+                    routeName = 'home';
+                }
+
+                timestamp = now;
+
                 if (data.showBadgeOnHome) {
                     // hide badge
                     data.changeBadgeOnHome(false, -1);
                 }
             } else if (navigation.state.routeName === 'likes') {
                 console.log('likes');
+
+                const now = Date.now();
+
+                if (routeName === 'likes') {
+                    const diff = now - timestamp;
+                    console.log('diff', diff);
+
+                    if (diff < 500) {
+                        // double click
+                        if (Vars.currentScreenName === 'LikesMain') LikesMain.scrollToTop();
+                    }
+                } else {
+                    routeName = 'likes';
+                }
+
+                timestamp = now;
 
                 if (data.showBadgeOnLikes) {
                     // hide badge
@@ -1146,12 +1183,44 @@ function _navigationOptions(navigation, screenProps) {
             } else if (navigation.state.routeName === 'chat') {
                 console.log('chat');
 
+                const now = Date.now();
+
+                if (routeName === 'chat') {
+                    const diff = now - timestamp;
+                    console.log('diff', diff);
+
+                    if (diff < 500) {
+                        // double click
+                        if (Vars.currentScreenName === 'ChatMain') ChatMain.scrollToTop();
+                    }
+                } else {
+                    routeName = 'chat';
+                }
+
+                timestamp = now;
+
                 if (data.showBadgeOnChat) {
                     // hide badge
                     data.changeBadgeOnChat(false, -1);
                 }
             } else if (navigation.state.routeName === 'profile') {
                 console.log('profile');
+
+                const now = Date.now();
+
+                if (routeName === 'profile') {
+                    const diff = now - timestamp;
+                    console.log('diff', diff);
+
+                    if (diff < 500) {
+                        // double click
+                        if (Vars.currentScreenName === 'ProfileMain') ProfileMain.scrollToTop();
+                    }
+                } else {
+                    routeName = 'profile';
+                }
+
+                timestamp = now;
 
                 if (data.showBadgeOnProfile) {
                     // hide badge

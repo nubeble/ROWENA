@@ -43,6 +43,22 @@ const emoji3 = require('../assets/emoji/3.png');
 const emoji4 = require('../assets/emoji/4.png');
 const emoji5 = require('../assets/emoji/5.png');
 
+// ads
+const starbucks1 = require('../assets/ads/starbucks/1.jpg');
+const starbucks2 = require('../assets/ads/starbucks/2.jpg');
+const starbucks3 = require('../assets/ads/starbucks/3.jpg');
+const starbucks4 = require('../assets/ads/starbucks/4.jpg');
+
+const coke1 = require('../assets/ads/coca-cola/1.jpg');
+const coke2 = require('../assets/ads/coca-cola/2.jpg');
+const coke3 = require('../assets/ads/coca-cola/3.jpg');
+const coke4 = require('../assets/ads/coca-cola/4.jpg');
+
+const burger1 = require('../assets/ads/burgerking/1.jpg');
+const burger2 = require('../assets/ads/burgerking/2.jpg');
+const burger3 = require('../assets/ads/burgerking/3.jpg');
+const burger4 = require('../assets/ads/burgerking/4.jpg');
+
 
 export default class PreloadImage {
     static Splash = Splash;
@@ -85,6 +101,21 @@ export default class PreloadImage {
     static emoji3 = emoji3;
     static emoji4 = emoji4;
     static emoji5 = emoji5;
+
+    static starbucks1 = starbucks1;
+    static starbucks2 = starbucks2;
+    static starbucks3 = starbucks3;
+    static starbucks4 = starbucks4;
+
+    static coke1 = coke1;
+    static coke2 = coke2;
+    static coke3 = coke3;
+    static coke4 = coke4;
+
+    static burger1 = burger1;
+    static burger2 = burger2;
+    static burger3 = burger3;
+    static burger4 = burger4;
 
 
     static downloadAsync(): Promise<*>[] {
@@ -130,7 +161,22 @@ export default class PreloadImage {
                 PreloadImage.emoji2,
                 PreloadImage.emoji3,
                 PreloadImage.emoji4,
-                PreloadImage.emoji5
+                PreloadImage.emoji5,
+
+                PreloadImage.starbucks1,
+                PreloadImage.starbucks2,
+                PreloadImage.starbucks3,
+                PreloadImage.starbucks4,
+
+                PreloadImage.coke1,
+                PreloadImage.coke2,
+                PreloadImage.coke3,
+                PreloadImage.coke4,
+
+                PreloadImage.burger1,
+                PreloadImage.burger2,
+                PreloadImage.burger3,
+                PreloadImage.burger4
             ])
         ];
     }

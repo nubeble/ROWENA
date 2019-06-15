@@ -347,7 +347,6 @@ export default class Firebase {
         );
     }
 
-    /*
     static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
         let feed = null;
 
@@ -358,7 +357,7 @@ export default class Firebase {
 
         return feed;
     }
-    */
+    /*
     static async getFeedByAverageRating(placeId, size) {
         let feeds = [];
 
@@ -370,8 +369,8 @@ export default class Firebase {
 
         return feeds;
     }
+    */
 
-    /*
     static async getFeedByTimestamp(placeId) { // 가장 최근에 생성된 포스트
         let feed = null;
 
@@ -382,7 +381,7 @@ export default class Firebase {
 
         return feed;
     }
-    */
+    /*
     static async getFeedByTimestamp(placeId, size) {
         let feeds = [];
 
@@ -394,6 +393,7 @@ export default class Firebase {
 
         return feeds;
     }
+    */
 
     /*
     static subscribeToPlaceSize(placeId, callback) {

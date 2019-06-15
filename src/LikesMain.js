@@ -35,6 +35,8 @@ const illustWidth = 300 / 510 * 600;
 @inject("feedStore", "profileStore")
 @observer
 export default class LikesMain extends React.Component<InjectedProps> {
+    static __flatList = null;
+
     state = {
         // renderList: false,
         feeds: [],
@@ -56,6 +58,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         this.feedsUnsubscribes = [];
         this.countsUnsubscribes = [];
+    }
+
+    static scrollToTop() {
+        LikesMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     componentDidMount() {
@@ -410,7 +416,10 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 {
                     // this.state.renderList &&
                     <FlatList
-                        ref={(fl) => this._flatList = fl}
+                        ref={(fl) => {
+                            this._flatList = fl;
+                            LikesMain.__flatList = fl;
+                        }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         /*

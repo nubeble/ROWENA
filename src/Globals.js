@@ -5,6 +5,7 @@ import { Constants } from "expo";
 
 export var Vars = {
     currentScreenName: null, // string
+
     location: null, // Location
 
     signUpType: null, // 'FACEBOOK', 'EMAIL', 'MOBILE'
@@ -12,8 +13,8 @@ export var Vars = {
 };
 
 export const Cons = {
-    buildNumber: '0.0.19',
-    lastUpdatedDate: 'Jun 14, 2019 20:11',
+    buildNumber: '0.0.21',
+    lastUpdatedDate: 'Jun 15, 2019 15:05',
 
     // push notification type
     pushNotification: {

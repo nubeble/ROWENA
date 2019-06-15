@@ -18,6 +18,7 @@ import { RefreshIndicator } from "./rnff/src/components";
 import Swiper from './Swiper';
 import { Cons, Vars } from "./Globals";
 import Util from "./Util";
+import PreloadImage from "./PreloadImage";
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -33,6 +34,8 @@ const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 @inject("feedStore", "profileStore")
 @observer
 export default class Explore extends React.Component<InjectedProps> {
+    static __feed = null;
+
     state = {
         // scrollAnimation: new Animated.Value(0),
 
@@ -47,6 +50,17 @@ export default class Explore extends React.Component<InjectedProps> {
         selectedOrderIndex: 2 // order by time
     };
 
+    constructor(props) {
+        super(props);
+
+        this.ads = []; // length 4
+    }
+
+    static scrollToTop() {
+        // this._feed.scrollToTop();
+        Explore.__feed.scrollToTop();
+    }
+
     componentDidMount() {
         console.log('Explore.componentDidMount');
 
@@ -58,11 +72,52 @@ export default class Explore extends React.Component<InjectedProps> {
         const place = params.place;
         this.init(place);
 
+        const rn = Math.round(Math.random() * 10) % 4; // 0 ~ 3
+
+        switch (rn) {
+            case 0: // starbucks
+                this.ads[0] = PreloadImage.starbucks1;
+                this.ads[1] = PreloadImage.starbucks2;
+                this.ads[2] = PreloadImage.starbucks3;
+                this.ads[3] = PreloadImage.starbucks4;
+                break;
+
+            case 1: // coca-cola
+                this.ads[0] = PreloadImage.coke1;
+                this.ads[1] = PreloadImage.coke2;
+                this.ads[2] = PreloadImage.coke3;
+                this.ads[3] = PreloadImage.coke4;
+                break;
+
+            case 2: // burger king
+                this.ads[0] = PreloadImage.burger1;
+                this.ads[1] = PreloadImage.burger2;
+                this.ads[2] = PreloadImage.burger3;
+                this.ads[3] = PreloadImage.burger4;
+                break;
+
+            case 3: // ToDo
+                this.ads[0] = { uri: 'https://www.iprayprayer.com/wp-content/uploads/2017/04/images.png' };
+                this.ads[1] = { uri: 'https://s3.envato.com/files/71383791/origami_590_preview.jpg' };
+                this.ads[2] = { uri: 'https://image.shutterstock.com/z/stock-vector-sale-banner-template-and-special-offer-off-vector-illustration-346063715.jpg' };
+                this.ads[3] = { uri: 'https://dnacademy.in/wp-content/uploads/2018/08/Graphic-Designer.jpg' };
+                break;
+        }
+
         /*
         setTimeout(() => {
             !this.closed && this.setState({ renderFeed: true });
         }, 0);
         */
+    }
+
+    componentWillUnmount() {
+        console.log('Explore.componentWillUnmount');
+
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+
+        this.closed = true;
     }
 
     init(place) {
@@ -123,16 +178,6 @@ export default class Explore extends React.Component<InjectedProps> {
     @autobind
     onFocus() {
         Vars.currentScreenName = 'Explore';
-
-    }
-
-    componentWillUnmount() {
-        console.log('Explore.componentWillUnmount');
-
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-
-        this.closed = true;
     }
 
     render(): React.Node {
@@ -344,7 +389,10 @@ export default class Explore extends React.Component<InjectedProps> {
                 {
                     // this.state.renderFeed &&
                     <Feed
-                        ref={(feed) => this._feed = feed}
+                        ref={(feed) => {
+                            this._feed = feed;
+                            Explore.__feed = feed;
+                        }}
                         store={feedStore}
                         extra={extra}
 
@@ -380,88 +428,82 @@ export default class Explore extends React.Component<InjectedProps> {
                                     // ToDo: use index
                                     console.log('TouchableWithoutFeedback onPress', index);
                                 }}>
-                                    <Swiper
-                                        // style={styles.wrapper}
-                                        // containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
-                                        width={Dimensions.get('window').width}
-                                        height={Dimensions.get('window').width / 21 * 9}
-                                        loop={false}
-                                        autoplay={true}
-                                        autoplayTimeout={3}
-                                        paginationStyle={{ bottom: 4 }}
-                                        onIndexChanged={(index) => {
-                                            // console.log('onIndexChanged', index);
-                                            this.currentSwiperIndex = index;
-                                        }}
-                                    >
-                                        <View style={styles.slide}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                showSpinner={false}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://aydencreative.com/files/2018/10/180221-AYD-Website-Header_Mockup-1.jpg'}
-                                            />
-                                            {/*
-                                                <View style={styles.content}>
-                                                    <Text style={{
-                                                        textAlign: 'center',
-                                                        fontWeight: '500',
-                                                        color: "black",
-                                                        fontSize: 21,
-                                                        fontFamily: "Roboto-Medium"
-                                                    }}>{"advertising area 1"}
-                                                    </Text>
+                                    {
+                                        this.ads.length === 4 ?
+                                            <Swiper
+                                                // style={styles.wrapper}
+                                                // containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                                width={Dimensions.get('window').width}
+                                                height={Dimensions.get('window').width / 21 * 9}
+                                                loop={false}
+                                                autoplay={true}
+                                                autoplayTimeout={3}
+                                                paginationStyle={{ bottom: 4 }}
+                                                onIndexChanged={(index) => {
+                                                    // console.log('onIndexChanged', index);
+                                                    this.currentSwiperIndex = index;
+                                                }}
+                                            >
+                                                <View style={styles.slide}>
+                                                    <Image
+                                                        style={styles.item}
+                                                        source={this.ads[0]}
+                                                    />
+                                                    {/*
+                                                    <View style={styles.content}>
+                                                        <Text style={{
+                                                            textAlign: 'center',
+                                                            fontWeight: '500',
+                                                            color: "black",
+                                                            fontSize: 21,
+                                                            fontFamily: "Roboto-Medium"
+                                                        }}>{"advertising area 1"}
+                                                        </Text>
+                                                    </View>
+                                                    */}
                                                 </View>
-                                                */}
-                                        </View>
-                                        <View style={styles.slide}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                showSpinner={false}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://www.esentra.com.tw/wp-content/uploads/2013/02/f2c70a681b8679277edc6d5e77ee5477.jpg'}
-                                            />
-                                            {/*
-                                                <View style={styles.content}>
-                                                    <Text style={{
-                                                        textAlign: 'center',
-                                                        fontWeight: '500',
-                                                        color: "black",
-                                                        fontSize: 21,
-                                                        fontFamily: "Roboto-Medium"
-                                                    }}>{"advertising area 2"}
-                                                    </Text>
+                                                <View style={styles.slide}>
+                                                    <Image
+                                                        style={styles.item}
+                                                        source={this.ads[1]}
+                                                    />
+                                                    {/*
+                                                    <View style={styles.content}>
+                                                        <Text style={{
+                                                            textAlign: 'center',
+                                                            fontWeight: '500',
+                                                            color: "black",
+                                                            fontSize: 21,
+                                                            fontFamily: "Roboto-Medium"
+                                                        }}>{"advertising area 2"}
+                                                        </Text>
+                                                    </View>
+                                                    */}
                                                 </View>
-                                                */}
-                                        </View>
-                                        <View style={styles.slide}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                showSpinner={false}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://www.thefriaryguildford.com/wp-content/uploads/2018/04/7640-365-Creative-Web-Banners-AW6.jpg'}
-                                            />
-                                            {/*
-                                                <View style={styles.content}>
-                                                    <Text style={{
-                                                        textAlign: 'center',
-                                                        fontWeight: '500',
-                                                        color: "black",
-                                                        fontSize: 21,
-                                                        fontFamily: "Roboto-Medium"
-                                                    }}>{"advertising area 3"}
-                                                    </Text>
+                                                <View style={styles.slide}>
+                                                    <Image
+                                                        style={styles.item}
+                                                        source={this.ads[2]}
+                                                    />
+                                                    {/*
+                                                    <View style={styles.content}>
+                                                        <Text style={{
+                                                            textAlign: 'center',
+                                                            fontWeight: '500',
+                                                            color: "black",
+                                                            fontSize: 21,
+                                                            fontFamily: "Roboto-Medium"
+                                                        }}>{"advertising area 3"}
+                                                        </Text>
+                                                    </View>
+                                                    */}
                                                 </View>
-                                                */}
-                                        </View>
-                                        <View style={styles.slide}>
-                                            <SmartImage
-                                                style={styles.item}
-                                                showSpinner={false}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={'https://www.designer-daily.com/wp-content/uploads/2015/02/wifi.jpg'}
-                                            />
-                                            {/*
+                                                <View style={styles.slide}>
+                                                    <Image
+                                                        style={styles.item}
+                                                        source={this.ads[3]}
+                                                    />
+                                                    {/*
                                                 <View style={styles.content}>
                                                     <Text style={{
                                                         textAlign: 'center',
@@ -473,8 +515,16 @@ export default class Explore extends React.Component<InjectedProps> {
                                                     </Text>
                                                 </View>
                                                 */}
-                                        </View>
-                                    </Swiper>
+                                                </View>
+                                            </Swiper>
+                                            :
+                                            <View style={{
+                                                width: Dimensions.get('window').width,
+                                                height: Dimensions.get('window').width / 21 * 9,
+                                                backgroundColor: 'green'
+                                            }} />
+                                    }
+
                                 </TouchableWithoutFeedback>
 
                                 <View style={styles.titleContainer}>
@@ -636,7 +686,8 @@ const styles = StyleSheet.create({
     },
     item: {
         width: Dimensions.get('window').width,
-        height: Dimensions.get('window').width / 21 * 9
+        height: Dimensions.get('window').width / 21 * 9,
+        resizeMode: 'cover'
     },
     titleContainer: {
         padding: Theme.spacing.small
