@@ -79,6 +79,14 @@ export default class Firebase {
         }).catch(reject);
     }
 
+    static async setToken(uid, data) {
+        await Firebase.firestore.collection("tokens").doc(uid).set(data);
+    }
+
+    static async deleteToken(uid) {
+        await Firebase.firestore.collection("tokens").doc(uid).delete();
+    }
+
     static async getProfile(uid) {
         const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
         if (userDoc.exists) return userDoc.data();
@@ -223,10 +231,6 @@ export default class Firebase {
 
         // sign out
         await Firebase.auth.signOut();
-    }
-
-    static async deleteToken(uid) {
-        await Firebase.firestore.collection("tokens").doc(uid).delete();
     }
 
     static async getPlaceRandomFeedImage(placeId) {

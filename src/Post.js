@@ -954,12 +954,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     onPress={async () => {
                                         console.log('open settings');
 
-                                        // ToDo: show description with pop-up
-                                        const url = 'app-settings:';
-                                        const supported = await Linking.canOpenURL(url);
-                                        if (supported) {
-                                            Linking.openURL(url);
-                                        }
+                                        await Util.openSettings();
                                     }}>
                                     <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                                 </TouchableOpacity>
@@ -1110,11 +1105,14 @@ export default class Post extends React.Component<InjectedProps> {
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
                 <Text style={{
-                    paddingHorizontal: Theme.spacing.base,
+                    // backgroundColor: 'green',
+                    width: '85%', alignSelf: 'center',
                     marginTop: Theme.spacing.small,
                     marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
-                    textAlign: 'center', lineHeight: 24
+                    textAlign: 'center',
+                    // lineHeight: 24
+                    lineHeight: 20
                 }}>{this.contentText}</Text>
 
                 <TouchableOpacity
@@ -1302,7 +1300,7 @@ export default class Post extends React.Component<InjectedProps> {
                     }}
                     >
                         <Image
-                            style={[styles.item, { backgroundColor: 'black', tintColor: 'white', resizeMode: 'contain' }]}
+                            style={[styles.item, { backgroundColor: 'black', resizeMode: 'cover' }]}
                             source={PreloadImage.user}
                         />
                     </TouchableOpacity>
@@ -1503,25 +1501,25 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         statement.type === 100 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <AntDesign name='like2' color={Theme.color.text3} size={19} />
+                            <AntDesign name='like2' color={Theme.color.text3} size={18} />
                         </View>
                     }
                     {
                         statement.type === 200 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name="md-heart-empty" color={Theme.color.text3} size={19} />
+                            <Ionicons name="md-heart-empty" color={Theme.color.text3} size={18} />
                         </View>
                     }
                     {
                         statement.type === 300 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={19} />
+                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={18} />
                         </View>
                     }
                     {
                         statement.type === 400 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Foundation name='magnifying-glass' color={Theme.color.text3} size={19} />
+                            <Foundation name='magnifying-glass' color={Theme.color.text3} size={18} />
                         </View>
                     }
                     <Text style={{
@@ -2615,8 +2613,8 @@ const styles = StyleSheet.create({
 
         color: Theme.color.text2,
         fontSize: 16,
-        fontFamily: "Roboto-Light",
-        lineHeight: 26
+        lineHeight: 26,
+        fontFamily: "Roboto-Light"
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
@@ -2625,7 +2623,6 @@ const styles = StyleSheet.create({
         paddingRight: Theme.spacing.small,
     },
     location: {
-        // marginTop: Theme.spacing.xSmall,
         marginBottom: Theme.spacing.tiny,
 
         color: Theme.color.text2,

@@ -240,9 +240,6 @@ export default class WriteReviewScreen extends React.Component {
                             this.refs['comment'].blur();
                         }}
                     >
-                        {/*
-                        <Text style={styles.review}>Share your experience to help others</Text>
-                        */}
                         <View style={{ marginBottom: 10 + 16 }}>
                             <AirbnbRating
                                 ref='rating'

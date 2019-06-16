@@ -347,18 +347,15 @@ export default class SignUpWithEmail extends React.Component {
             console.log('SignUpWithEmail.signInWithEmailAndPassword, user', user);
 
             // save token
-            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                await registerExpoPushToken(user.user.uid, user.user.email);
-            }
+            // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+            await registerExpoPushToken(user.user.uid, user.user.email);
+            // }
 
             // hide indicator
             this.setState({ showSignUpLoader: false });
 
+            console.log('[SignUpWithEmail.processSignIn] move to welcome.');
             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
-
-            // sign up finished
-            Vars.signUpType = null;
-            Vars.signUpName = null;
         } catch (error) {
             console.log('error', error.code, error.message);
 
@@ -380,15 +377,6 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     async processSignUp() {
-
-        /*
-        this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
-            console.log('SignUpWithEmail.onAuthStateChanged', user);
-
-            if (user) this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email });
-        });
-        */
-
         // show indicator
         this.setState({ showSignUpLoader: true });
 
@@ -398,9 +386,9 @@ export default class SignUpWithEmail extends React.Component {
             console.log('SignUpWithEmail.processSignUp, user', user);
 
             // save token
-            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                await registerExpoPushToken(user.user.uid, user.user.email);
-            }
+            // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+            await registerExpoPushToken(user.user.uid, user.user.email);
+            // }
 
             // hide indicator
             this.setState({ showSignUpLoader: false });

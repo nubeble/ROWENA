@@ -127,7 +127,6 @@ export default class Location extends React.Component {
                         ListHeaderComponent={this.renderHeader}
                         ListFooterComponent={this.renderFooter}
                         renderItem={({ item }) => {
-
                             const rating = item.rating ? item.rating : 'na'
 
                             return (

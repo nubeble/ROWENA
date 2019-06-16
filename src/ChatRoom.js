@@ -327,6 +327,14 @@ export default class ChatRoom extends React.Component {
                         renderSend={this.renderSend}
                         renderInputToolbar={this.renderInputToolbar}
 
+
+                        /*
+                        renderAvatar ={props => {
+                            return <CustomActions {...props} onSend={this.onSendFromUser} />
+                        }}
+                        */
+
+
                         listViewProps={{
                             // scrollEventThrottle: 400,
                             onScroll: ({ nativeEvent }) => {

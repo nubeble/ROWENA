@@ -147,13 +147,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.commentId}
                         renderItem={({ item, index }) => {
-                            let avatarName = null;
-                            let avatarColor = null;
+                            let avatarName = '';
+                            let avatarColor = 'black';
                             if (!item.picture) {
                                 // avatarName = 'JK';
                                 avatarName = Util.getAvatarName(item.name);
-                                // avatarColor = this.getAvatarColor(item.commentId);
-                                avatarColor = this.getAvatarColor(item.uid);
+                                avatarColor = Util.getAvatarColor(item.uid);
                             }
 
                             return (
@@ -171,7 +170,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                                 /*
                                                 <Image
                                                     style={[styles.picture, {
-                                                        backgroundColor: 'black', tintColor: 'white', resizeMode: 'cover'
+                                                        backgroundColor: 'black', resizeMode: 'cover'
                                                     }]}
                                                     source={PreloadImage.user}
                                                 />
@@ -514,6 +513,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: false });
     }
 
+    /*
     getAvatarColor(id) {
         if (!this.avatarColorList) {
             this.avatarColorList = new Map();
@@ -527,6 +527,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             return color;
         }
     }
+    */
 }
 
 const styles = StyleSheet.create({

@@ -1,6 +1,7 @@
 import { Permissions, Notifications, Linking } from 'expo';
 import Firebase from './Firebase';
 import { Cons } from './Globals';
+// import Util from './Util';
 
 const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
@@ -11,8 +12,6 @@ export async function registerExpoPushToken(uid, name) {
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
 
-    // console.log("existingStatus", existingStatus);
-
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
     if (existingStatus !== "granted") {
@@ -22,27 +21,21 @@ export async function registerExpoPushToken(uid, name) {
         finalStatus = status;
     }
 
-    // console.log("finalStatus", finalStatus);
-
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
         console.log('Permission to access notifications was denied.');
-        /*
-        const url = 'app-settings:';
-        const supported = await Linking.canOpenURL(url);
-        if (supported) {
-            Linking.openURL(url);
-        }
-        */
+
+        // await Util.openSettings();
         return;
     }
 
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
-    console.log("token", token);
+    console.log("push token", token);
 
     // const user = Firebase.user();
 
+    /*
     const formData = new FormData();
     formData.append("token", token);
     // formData.append("uid", user.uid);
@@ -58,28 +51,24 @@ export async function registerExpoPushToken(uid, name) {
             // "Content-Type": "application/json",
             "Content-Type": "multipart/form-data"
         },
-        /*
-        body: JSON.stringify({
-            token: {
-                value: token,
-            },
-            user: {
-                uid: user.uid,
-                name: user.name
-            }
-        })
-        */
         body: formData
     });
+    */
+    const data = {
+        token,
+        uid,
+        name
+    };
+    
+    await Firebase.setToken(uid, data);
 }
 
+/*
 export async function unregisterExpoPushToken(uid) {
     console.log('unregisterExpoPushToken', uid);
 
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
-
-    // console.log("existingStatus", existingStatus);
 
     // only ask if permissions have not already been determined, because
     // iOS won't necessarily prompt the user a second time.
@@ -90,18 +79,11 @@ export async function unregisterExpoPushToken(uid) {
         finalStatus = status;
     }
 
-    // console.log("finalStatus", finalStatus);
-
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
         console.log('Permission to access notifications was denied.');
-        /*
-        const url = 'app-settings:';
-        const supported = await Linking.canOpenURL(url);
-        if (supported) {
-            Linking.openURL(url);
-        }
-        */
+
+        // await Util.openSettings();
         return;
     }
 
@@ -126,6 +108,7 @@ export async function unregisterExpoPushToken(uid) {
         body: formData
     });
 }
+*/
 
 export function sendPushNotification(sender, senderName, receiver, type, data) {
     console.log('sendPushNotification', sender, receiver, data);

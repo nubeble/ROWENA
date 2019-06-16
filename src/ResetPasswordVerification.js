@@ -237,7 +237,6 @@ export default class ResetPasswordVerification extends React.Component {
                                         this.hideNotification();
                                     }
 
-                                    // ToDo: check
                                     this.props.navigation.dismiss();
                                 }, Cons.buttonTimeoutShort);
                             }}

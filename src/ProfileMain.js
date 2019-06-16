@@ -19,7 +19,7 @@ import Util from "./Util";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import Intro from './Intro';
 import ChatMain from './ChatMain';
-import { unregisterExpoPushToken } from './PushNotifications';
+// import { unregisterExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 
 type InjectedProps = {
@@ -188,6 +188,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
+        console.log('ProfileMain.onFocus');
+
         Vars.currentScreenName = 'ProfileMain';
 
         // check user feed updates
@@ -275,7 +277,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
-        if (!profile) return;
+        // if (!profile) return;
 
         const feeds = profile.feeds;
         const length = feeds.length;
@@ -416,7 +418,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (item.reviewAdded) {
             // update reviewAdded in user profile
             const { profile } = this.props.profileStore;
-            if (!profile) return;
+            // if (!profile) return;
+
             /*
             const result = await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
             if (!result) {
@@ -512,36 +515,34 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         const { profile } = this.props.profileStore;
 
-        let uid = null;
-        let name = null;
-        let email = null;
-        let phoneNumber = null;
-        let picture = null;
-        let comments = null;
-        let commentAdded = false;
+        const uid = profile.uid;
+        const name = profile.name;
+        const email = profile.email;
+        const phoneNumber = profile.phoneNumber;
+        const picture = profile.picture.uri;
+        const comments = profile.comments;
+        const commentAdded = profile.commentAdded;
 
         let avatarName = 'Anonymous';
 
-        if (profile) {
-            uid = profile.uid;
-            name = profile.name;
-            email = profile.email;
-            phoneNumber = profile.phoneNumber;
-            picture = profile.picture.uri;
-            comments = profile.comments;
-            commentAdded = profile.commentAdded;
-
-            if (name) {
-                avatarName = name;
+        if (name) {
+            avatarName = name;
+        } else {
+            if (email) {
+                avatarName = email;
             } else {
-                if (email) {
-                    avatarName = email;
-                } else {
-                    if (phoneNumber) {
-                        avatarName = phoneNumber;
-                    }
+                if (phoneNumber) {
+                    avatarName = phoneNumber;
                 }
             }
+        }
+
+        let _avatarName = '';
+        let _avatarColor = 'black';
+
+        if (!picture) {
+            _avatarName = Util.getAvatarName(name);
+            _avatarColor = Util.getAvatarColor(uid);
         }
 
         const replyAdded = this.checkUpdateOnReview();
@@ -674,14 +675,27 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                             showSpinner={false}
                                                         />
                                                         :
+                                                        /*
                                                         <Image
                                                             style={{
-                                                                backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                                                borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                                                backgroundColor: 'black',
+                                                                width: avatarWidth, height: avatarWidth,
+                                                                borderRadius: avatarWidth / 2,
                                                                 resizeMode: 'cover'
                                                             }}
                                                             source={PreloadImage.user}
                                                         />
+                                                        */
+                                                        <View
+                                                            style={{
+                                                                width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                                                backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
+                                                            }}
+                                                        >
+                                                            <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                                                {_avatarName}
+                                                            </Text>
+                                                        </View>
                                                 }
                                                 {
                                                     this.state.onUploadingImage &&
@@ -812,8 +826,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     Intro.final();
                                                     ChatMain.final();
 
-                                                    // remove notification token
-                                                    await unregisterExpoPushToken(profile.uid);
+                                                    // remove push token
+                                                    // await unregisterExpoPushToken(profile.uid);
+                                                    await Firebase.deleteToken(uid);
 
                                                     await Firebase.signOut(profile.uid);
                                                 });
@@ -847,7 +862,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // 3. delete all the chat rooms
                                                     await Firebase.deleteChatRooms(uid);
 
-                                                    // 4. remove token (tokens - uid)
+                                                    // 4. remove push token (tokens - uid)
                                                     await Firebase.deleteToken(uid);
 
                                                     // 5. remove all the received comments (users - user - comments - all the documents)

@@ -105,7 +105,7 @@ export default class AdvertisementMain extends React.Component {
         name: '',
         showDatePicker: false,
         datePickerTitle: null,
-        datePickerDate: new Date(1990, 1, 1),
+        datePickerDate: new Date(1990, 0, 1),
         birthday: null,
         gender: null,
         height: '',
@@ -1694,7 +1694,8 @@ export default class AdvertisementMain extends React.Component {
                     marginTop: Theme.spacing.small,
                     marginBottom: Theme.spacing.small,
                     fontSize: 14, fontFamily: "Roboto-Light", color: Theme.color.placeholder,
-                    textAlign: 'center', lineHeight: 24
+                    textAlign: 'center',
+                    lineHeight: 20
                 }}>{this.contentText}</Text>
 
                 <TouchableOpacity
@@ -1846,13 +1847,7 @@ export default class AdvertisementMain extends React.Component {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }
@@ -1860,13 +1855,7 @@ export default class AdvertisementMain extends React.Component {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }

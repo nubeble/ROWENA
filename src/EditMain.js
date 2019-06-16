@@ -51,15 +51,15 @@ export default class EditMain extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { profile } = this.props.profileStore;
-        if (profile) {
-            const uid = profile.uid;
-            const receivedCommentsCount = profile.receivedCommentsCount;
+        // if (profile) {
+        const uid = profile.uid;
+        const receivedCommentsCount = profile.receivedCommentsCount;
 
-            this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
+        this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
-            const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
-            this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
-        }
+        const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
+        this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+        // }
     }
 
     @autobind
@@ -104,8 +104,6 @@ export default class EditMain extends React.Component<InjectedProps> {
     }
 
     render() {
-        const { profile } = this.props.profileStore;
-
         let avatarName = 'Anonymous';
         let address = "No address registered";
         let count = 0;
@@ -117,30 +115,39 @@ export default class EditMain extends React.Component<InjectedProps> {
         let gender = 'Female';
         let note = 'hi';
 
-        if (profile) {
-            const name = profile.name;
-            const email = profile.email;
-            const phoneNumber = profile.phoneNumber;
-            if (name) {
-                avatarName = name;
+        const { profile } = this.props.profileStore;
+        // if (profile) {
+        const name = profile.name;
+        const email = profile.email;
+        const phoneNumber = profile.phoneNumber;
+        if (name) {
+            avatarName = name;
+        } else {
+            if (email) {
+                avatarName = email;
             } else {
-                if (email) {
-                    avatarName = email;
-                } else {
-                    if (phoneNumber) {
-                        avatarName = phoneNumber;
-                    }
+                if (phoneNumber) {
+                    avatarName = phoneNumber;
                 }
             }
-            if (profile.place) address = profile.place;
-            count = profile.receivedCommentsCount;
-            picture = profile.picture.uri;
-            dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
-
-            if (profile.birthday) age = Util.getAge(profile.birthday);
-            gender = profile.gender;
-            note = profile.about;
         }
+        if (profile.place) address = profile.place;
+        count = profile.receivedCommentsCount;
+        picture = profile.picture.uri;
+        dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
+
+        if (profile.birthday) age = Util.getAge(profile.birthday);
+        gender = profile.gender;
+        note = profile.about;
+
+        let _avatarName = '';
+        let _avatarColor = 'black';
+
+        if (!picture) {
+            _avatarName = Util.getAvatarName(name);
+            _avatarColor = Util.getAvatarColor(profile.uid);
+        }
+        // }
 
         let reviewText = '';
         if (count === 0) {
@@ -259,14 +266,27 @@ export default class EditMain extends React.Component<InjectedProps> {
                                                         uri={picture}
                                                     />
                                                     :
+                                                    /*
                                                     <Image
                                                         style={{
-                                                            backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                                            borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                                            backgroundColor: 'black',
+                                                            width: avatarWidth, height: avatarWidth,
+                                                            borderRadius: avatarWidth / 2,
                                                             resizeMode: 'cover'
                                                         }}
                                                         source={PreloadImage.user}
                                                     />
+                                                    */
+                                                    <View
+                                                        style={{
+                                                            width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                                            backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
+                                                        }}
+                                                    >
+                                                        <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                                            {_avatarName}
+                                                        </Text>
+                                                    </View>
                                             }
                                         </View>
                                     </View>
@@ -354,7 +374,7 @@ export default class EditMain extends React.Component<InjectedProps> {
     }
 
     @autobind
-    renderItem({ item, index }: FlatListItem<CommentEntry>): React.Node {
+    renderItem({ item, index }): React.Node {
         const post = item.post;
         const _review = item.comment;
 
@@ -378,6 +398,13 @@ export default class EditMain extends React.Component<InjectedProps> {
             isMyComment = true;
         }
 
+        let avatarName = '';
+        let avatarColor = 'black';
+        if (!picture) {
+            avatarName = Util.getAvatarName(name);
+            avatarColor = Util.getAvatarColor(post.id);
+        }
+
         return (
             <View style={{ paddingHorizontal: Theme.spacing.base, paddingVertical: Theme.spacing.small }}>
 
@@ -397,14 +424,27 @@ export default class EditMain extends React.Component<InjectedProps> {
                                 uri={picture}
                             />
                             :
+                            /*
                             <Image
                                 style={{
-                                    backgroundColor: 'black', tintColor: 'white', width: profilePictureWidth, height: profilePictureWidth,
-                                    borderRadius: profilePictureWidth / 2, borderColor: 'black', borderWidth: 1,
+                                    backgroundColor: 'black',
+                                    width: profilePictureWidth, height: profilePictureWidth,
+                                    borderRadius: profilePictureWidth / 2,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.user}
                             />
+                            */
+                            <View
+                                style={{
+                                    width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
+                                    backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                }}
+                            >
+                                <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                    {avatarName}
+                                </Text>
+                            </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
@@ -454,7 +494,7 @@ export default class EditMain extends React.Component<InjectedProps> {
     @autobind
     renderListEmptyComponent() {
         const { profile } = this.props.profileStore;
-        if (!profile) return null;
+        // if (!profile) return null;
         const receivedCommentsCount = profile.receivedCommentsCount;
         if (receivedCommentsCount === 0) return null;
 

@@ -193,18 +193,6 @@ export default class Loading extends React.Component<InjectedProps> {
             console.log('Loading.onAuthStateChanged, user', user);
             console.log('Loading.onAuthStateChanged', '----------------------------------------');
 
-            /*
-            if (Vars.signUpType === 'EMAIL') {
-                console.log('skip to save profile for EMAIL sign up.');
-
-                Loading.userAutoAuthenticated = false;
-                Vars.signUpType = null;
-                 return;
-            }
-
-            Vars.signUpType = null;
-            */
-
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
 
@@ -224,7 +212,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     Loading.userAutoAuthenticated = false;
 
                     Animated.sequence([
-                        Animated.delay(3000),
+                        Animated.delay(1500),
                         Animated.timing(this.state.image2Opacity, {
                             toValue: 1,
                             duration: 500,
@@ -242,7 +230,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 Loading.userSignedIn = true;
 
                 // save profile
-                let name = Vars.signUpName;
+                let name = Vars.signUpName; // means just sign up
 
                 if (!name) name = user.displayName;
                 const email = user.email;
@@ -285,7 +273,6 @@ export default class Loading extends React.Component<InjectedProps> {
                     if (Vars.signUpType === null) { // for the auto sign in
                         // check verification if EMAIL user
                         if (user.email && !user.emailVerified && user) {
-
                             if (user.providerData && user.providerData.length > 0 && user.providerData[0].providerId === "facebook.com") {
                                 console.log('email user is not verified. but facebook user NOT need to email verification.');
                                 await this.checkUpdates();
@@ -301,40 +288,36 @@ export default class Loading extends React.Component<InjectedProps> {
                             StatusBar.setHidden(false);
                         }
                     } else { // for the resign after sign out / delete account
-                        if (Vars.signUpType === 'EMAIL') return;
-
-                        // sign up finished
-                        Vars.signUpType = null;
-                        Vars.signUpName = null;
+                        if (Vars.signUpType === 'EMAIL') {
+                            // sign up finished
+                            Vars.signUpType = null;
+                            Vars.signUpName = null;
+                            return;
+                        } else {
+                            // sign up finished
+                            Vars.signUpType = null;
+                            Vars.signUpName = null;
+                        }
                     }
 
                     console.log('[auto sign in OR resign after sign out / delete account] move to main.');
                     navigation.navigate("mainStackNavigator");
                 } else {
-                    /*
-                    if (Vars.signUpType === 'FACEBOOK' || Vars.signUpType === 'MOBILE') {
-                        console.log('move to welcome');
-                        navigation.navigate("welcome");
-                    } else if (Vars.signUpType === 'EMAIL') {
-                        // nothing to do here
+                    if (Vars.signUpType === 'EMAIL') {
+                        // sign up finished
+                        Vars.signUpType = null;
+                        Vars.signUpName = null;
                     } else {
+                        // sign up finished
+                        Vars.signUpType = null;
+                        Vars.signUpName = null;
+
+                        console.log('[first join] move to welcome.');
+
+                        if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
+                        else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
+                        else navigation.navigate("welcome");
                     }
-
-                    Vars.signUpType = null; // sign up process finished
-                    */
-
-                    if (Vars.signUpType === 'EMAIL') return;
-
-                    console.log('[first join] move to welcome.');
-                    // navigation.navigate("welcome");
-
-                    if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
-                    else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
-                    else navigation.navigate("welcome");
-
-                    // sign up finished
-                    Vars.signUpType = null;
-                    Vars.signUpName = null;
                 }
             }
         }); // end of onAuthStateChanged

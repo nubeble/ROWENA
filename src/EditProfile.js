@@ -580,6 +580,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
     renderContainer() {
         const { uploadImageUri } = this.state;
 
+        let avatarName = '';
+        let avatarColor = 'black';
+        if (!uploadImageUri) {
+            const { profile } = this.props.profileStore;
+            avatarName = Util.getAvatarName(profile.name);
+            avatarColor = Util.getAvatarColor(profile.uid);
+        }
+
         return (
             <View>
                 <View style={{ borderTopColor: Theme.color.line, borderTopWidth: 1 }}>
@@ -601,14 +609,26 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                         uri={uploadImageUri}
                                     />
                                     :
+                                    /*
                                     <Image
                                         style={{
-                                            backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                            borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                            backgroundColor: 'black', width: avatarWidth, height: avatarWidth,
+                                            borderRadius: avatarWidth / 2,
                                             resizeMode: 'cover'
                                         }}
                                         source={PreloadImage.user}
                                     />
+                                    */
+                                    <View
+                                        style={{
+                                            width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                            backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                        }}
+                                    >
+                                        <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                            {avatarName}
+                                        </Text>
+                                    </View>
                             }
                         </TouchableOpacity>
                         {
@@ -1084,13 +1104,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }
@@ -1098,13 +1112,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }

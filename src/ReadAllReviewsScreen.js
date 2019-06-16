@@ -322,7 +322,7 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     @autobind
-    renderItem({ item, index }: FlatListItem<ReviewEntry>): React.Node {
+    renderItem({ item, index }): React.Node {
         const _profile = item.profile;
         const _review = item.review;
 

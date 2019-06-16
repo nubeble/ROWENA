@@ -325,7 +325,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Angel';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -410,7 +410,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Evelyn';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -495,7 +495,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Kim Seol-hyun';
+        const name = 'Molly';
         const birthday = '02121996';
         const height = 167;
         const weight = 49;
@@ -580,7 +580,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Kim Seol-hyun';
+        const name = 'Ivy';
         const birthday = '02121996';
         const height = 167;
         const weight = 49;
@@ -739,7 +739,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Olivia';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -824,7 +824,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Elizabeth';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -994,7 +994,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Kristen';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -1079,7 +1079,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Lindsey';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -1157,7 +1157,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'April';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;
@@ -1242,7 +1242,7 @@ export default class Admin extends React.Component {
         let image4Uri = images[3];
         // --
 
-        const name = 'Bae Soo-bin';
+        const name = 'Erika';
         const birthday = '02121996';
         const height = 167;
         const weight = 48;

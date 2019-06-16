@@ -517,7 +517,7 @@ export default class ChatMain extends React.Component {
     }
 
     @autobind
-    renderItem({ item, index }) {
+    renderItem({ item, index }): React.Node {
         const id = item.id;
         const users = item.users;
         const opponent = users[1];
@@ -536,11 +536,11 @@ export default class ChatMain extends React.Component {
         const avatarHeight = viewHeight;
         // const avatarHeight = viewHeight * 0.8;
 
-        let avatarName = null;
-        let avatarColor = null;
+        let avatarName = '';
+        let avatarColor = 'black';
         if (!opponent.picture) {
             avatarName = Util.getAvatarName(opponent.name);
-            avatarColor = this.getAvatarColor(id);
+            avatarColor = Util.getAvatarColor(id);
         }
 
         return (
@@ -867,6 +867,7 @@ export default class ChatMain extends React.Component {
         this.setState({ chatRoomList: newList });
     }
 
+    /*
     getAvatarColor(id) {
         if (!this.avatarColorList) {
             this.avatarColorList = new Map();
@@ -880,6 +881,7 @@ export default class ChatMain extends React.Component {
             return color;
         }
     }
+    */
 }
 
 const styles = StyleSheet.create({

@@ -381,6 +381,9 @@ export default class UserMain extends React.Component<InjectedProps> {
         let gender = 'Female';
         let note = 'hi';
 
+        let _avatarName = '';
+        let _avatarColor = 'black';
+
         const { guest } = this.state; // undefined at loading
 
         if (guest) {
@@ -420,6 +423,11 @@ export default class UserMain extends React.Component<InjectedProps> {
             if (guest.birthday) age = Util.getAge(guest.birthday);
             if (guest.gender) gender = guest.gender;
             if (guest.about) note = guest.about;
+
+            if (!imageUri) {
+                _avatarName = Util.getAvatarName(avatarName);
+                _avatarColor = Util.getAvatarColor(guest.uid);
+            }
         }
 
         const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
@@ -525,14 +533,27 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                             uri={imageUri}
                                                         />
                                                         :
+                                                        /*
                                                         <Image
                                                             style={{
-                                                                backgroundColor: 'black', tintColor: 'white', width: avatarWidth, height: avatarWidth,
-                                                                borderRadius: avatarWidth / 2, borderColor: 'black', borderWidth: 1,
+                                                                backgroundColor: 'black',
+                                                                width: avatarWidth, height: avatarWidth,
+                                                                borderRadius: avatarWidth / 2,
                                                                 resizeMode: 'cover'
                                                             }}
                                                             source={PreloadImage.user}
                                                         />
+                                                        */
+                                                        <View
+                                                            style={{
+                                                                width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                                                backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
+                                                            }}
+                                                        >
+                                                            <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                                                {_avatarName}
+                                                            </Text>
+                                                        </View>
                                                 }
                                             </View>
                                         </View>
@@ -565,17 +586,11 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         />
 
                                         <Text style={{
-                                            /*
-                                            color: Theme.color.placeholder,
-                                            textAlign: 'center',
-                                            fontSize: 16,
-                                            fontFamily: "Roboto-Light",
-                                            paddingTop: 10,
-                                            paddingBottom: 10
-                                            */
+                                            // paddingHorizontal: Theme.spacing.base,
 
-                                            paddingHorizontal: Theme.spacing.base,
-                                            // marginTop: Theme.spacing.small,
+                                            width: Dimensions.get('window').width * 0.85,
+                                            alignSelf: 'center',
+
                                             marginTop: Theme.spacing.tiny,
                                             marginBottom: Theme.spacing.small,
                                             fontSize: 14, fontFamily: "Roboto-Light",
@@ -750,7 +765,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     } // end of render()
 
     @autobind
-    renderItem({ item, index }: FlatListItem<CommentEntry>): React.Node {
+    renderItem({ item, index }): React.Node {
         const post = item.post;
         const _review = item.comment;
 
@@ -774,6 +789,13 @@ export default class UserMain extends React.Component<InjectedProps> {
             isMyComment = true;
         }
 
+        let avatarName = '';
+        let avatarColor = 'black';
+        if (!picture) {
+            avatarName = Util.getAvatarName(name);
+            avatarColor = Util.getAvatarColor(post.id);
+        }
+
         return (
             <View style={{ paddingHorizontal: Theme.spacing.base, paddingVertical: Theme.spacing.small }}>
 
@@ -793,14 +815,27 @@ export default class UserMain extends React.Component<InjectedProps> {
                                 uri={picture}
                             />
                             :
+                            /*
                             <Image
                                 style={{
-                                    backgroundColor: 'black', tintColor: 'white', width: profilePictureWidth, height: profilePictureWidth,
-                                    borderRadius: profilePictureWidth / 2, borderColor: 'black', borderWidth: 1,
+                                    backgroundColor: 'black',
+                                    width: profilePictureWidth, height: profilePictureWidth,
+                                    borderRadius: profilePictureWidth / 2,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.user}
                             />
+                            */
+                            <View
+                                style={{
+                                    width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
+                                    backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                }}
+                            >
+                                <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                    {avatarName}
+                                </Text>
+                            </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>

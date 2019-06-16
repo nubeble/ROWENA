@@ -20,7 +20,8 @@ import CodeInput from 'react-native-confirmation-code-input';
 // import firebase from 'firebase/app';
 // import 'firebase/auth';
 
-const captchaUrl = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
+// const captchaUrl = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
+const captchaUrl = `https://rowena-88cfd.web.app/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 
 
 export default class SignUpWithMobileMain extends React.Component {
@@ -550,9 +551,9 @@ export default class SignUpWithMobileMain extends React.Component {
             console.log('user', user);
 
             // save token
-            if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
-                await registerExpoPushToken(user.user.uid, user.user.phoneNumber);
-            }
+            // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
+            await registerExpoPushToken(user.user.uid, user.user.phoneNumber);
+            // }
         } catch (error) {
             console.log('onSignIn error', error.code, error.message);
 

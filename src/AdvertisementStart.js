@@ -13,8 +13,6 @@ import Util from './Util';
 const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const illustHeight = illustWidth;
 
-// const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
-
 
 export default class AdvertisementStart extends React.Component {
     constructor(props) {

@@ -193,15 +193,7 @@ export default class Intro extends React.Component {
             if (status !== 'granted') {
                 console.log('Permission to access location was denied.');
 
-                // ToDo:
-
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }

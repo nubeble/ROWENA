@@ -5,12 +5,11 @@ import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";
 import autobind from 'autobind-decorator';
+import Util from "./Util";
 
 // const titlePosition = Dimensions.get('window').height / 8;
 const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
 const illustHeight = illustWidth / 16 * 9;
-
-// const contentText = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
 
 
 export default class Welcome extends React.Component {
@@ -96,7 +95,6 @@ export default class Welcome extends React.Component {
                         paddingHorizontal: Theme.spacing.base,
                         color: 'rgba(255, 255, 255, 0.8)',
                         fontSize: 16,
-                        // lineHeight: 30,
                         lineHeight: 24,
                         fontFamily: "Roboto-Light",
                         textAlign: 'center'

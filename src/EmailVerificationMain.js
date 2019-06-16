@@ -98,10 +98,6 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
                             console.log('[first join] move to welcome.');
                             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
-
-                            // sign up finished
-                            Vars.signUpType = null;
-                            Vars.signUpName = null;
                         }, 2000); // 2 sec
                     }
                 }, error => {

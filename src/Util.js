@@ -1,8 +1,11 @@
 import React from 'react';
+import { Linking } from "expo";
 import moment from "moment";
 import Qs from 'qs';
 
 const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+
+const avatarColorList = new Map();
 
 
 export default class Util extends React.Component {
@@ -1556,6 +1559,16 @@ export default class Util extends React.Component {
         return avatarName;
     }
 
+    static getAvatarColor(id) {// id: uid or chatroom id
+        if (avatarColorList.has(id)) {
+            return avatarColorList.get(id);
+        }
+
+        const color = Util.getDarkColor();
+        avatarColorList.set(id, color);
+        return color;
+    }
+
     static getPlaceName(name) {
         // Consider: To avoid "Kyiv, Ukraine, 02000"
         const words = name.split(', ');
@@ -1612,5 +1625,13 @@ export default class Util extends React.Component {
         }
 
         return null;
+    }
+
+    static async openSettings() {
+        const url = 'app-settings:';
+        const supported = await Linking.canOpenURL(url);
+        if (supported) {
+            Linking.openURL(url);
+        }
     }
 }

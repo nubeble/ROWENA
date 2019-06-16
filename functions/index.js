@@ -321,38 +321,13 @@ const makeData = (index, url) => {
 }
 */
 
+/*
 const saveToken = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('Done parsing form.', fields);
-
-    /*
-    const data = {
-        token: fields.token,
-        uid: fields.uid,
-        name: fields.name
-    };
-    */
 
     console.log('Done parsing form.', fields);
-
-    // Push the token info into the Realtime Database using the Firebase Admin SDK.
-    /*
-    return admin.database().ref('/tokens').push(data).then((snapshot) => {
-        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-        return res.redirect(303, snapshot.ref.toString());
-    });
-    */
-
-    /*
-    // return admin.database().ref('tokens').child(data.uid).set(data).then((snapshot) => {
-    return admin.database().ref('/tokens/' + data.uid).set(data).then((snapshot) => {
-        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-        return res.redirect(303, snapshot.ref.toString());
-    });
-    */
-
 
     const result = await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
 
@@ -382,12 +357,6 @@ exports.setToken = functions.https.onRequest((req, res) => {
         // req.pipe(busboy); // not working!
         busboy.end(req.rawBody);
 
-        /*
-        res.writeHead(303, { Connection: 'close', Location: '/' });
-        res.end();
-        */
-
-        // res.status(200).send(fields);
     } else {
         // Return a "method not allowed" error
         const error = 'only POST message acceptable.';
@@ -395,39 +364,16 @@ exports.setToken = functions.https.onRequest((req, res) => {
         res.status(405).end(error);
     }
 });
+*/
 
+/*
 const removeToken = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
     // console.log('Done parsing form.', fields);
 
-    /*
-    const data = {
-        token: fields.token,
-        uid: fields.uid,
-        name: fields.name
-    };
-    */
-
     console.log('Done parsing form.', fields);
-
-    // Push the token info into the Realtime Database using the Firebase Admin SDK.
-    /*
-    return admin.database().ref('/tokens').push(data).then((snapshot) => {
-        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-        return res.redirect(303, snapshot.ref.toString());
-    });
-    */
-
-    /*
-    // return admin.database().ref('tokens').child(data.uid).set(data).then((snapshot) => {
-    return admin.database().ref('/tokens/' + data.uid).set(data).then((snapshot) => {
-        // Redirect with 303 SEE OTHER to the URL of the pushed object in the Firebase console.
-        return res.redirect(303, snapshot.ref.toString());
-    });
-    */
-
 
     const result = await(admin.firestore().collection('tokens').doc(fields.uid).delete());
 
@@ -456,13 +402,6 @@ exports.unsetToken = functions.https.onRequest((req, res) => {
 
         // req.pipe(busboy); // not working!
         busboy.end(req.rawBody);
-
-        /*
-        res.writeHead(303, { Connection: 'close', Location: '/' });
-        res.end();
-        */
-
-        // res.status(200).send(fields);
     } else {
         // Return a "method not allowed" error
         const error = 'only POST message acceptable.';
@@ -470,6 +409,7 @@ exports.unsetToken = functions.https.onRequest((req, res) => {
         res.status(405).end(error);
     }
 });
+*/
 
 const getToken = async(function (uid) {
     let targetToken = null;

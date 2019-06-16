@@ -177,7 +177,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
-        if (!profile) return;
+        // if (!profile) return;
 
         const feeds = profile.likes;
         const length = feeds.length;

@@ -117,7 +117,7 @@ export default class EditPost extends React.Component {
         name: '',
         showDatePicker: false,
         datePickerTitle: null,
-        datePickerDate: new Date(1990, 1, 1),
+        datePickerDate: new Date(1990, 0, 1),
         birthday: null,
         gender: null,
         height: '',
@@ -1757,179 +1757,6 @@ export default class EditPost extends React.Component {
         );
     }
 
-    renderSwiper(post) {
-        if (!post) return null;
-
-        let pictures = [];
-
-        let value = post.pictures.one.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`one`}>
-                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
-                        const imageW = Dimensions.get('window').width;
-                        const boundary = imageW / 2;
-                        const x = e.nativeEvent.locationX;
-
-                        if (x <= boundary) { // left
-                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
-                            else Vibration.vibrate(30);
-                        } else { // right
-                            this.swiper.scrollBy(1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
-                        }
-                    }}
-                    >
-                        <SmartImage
-                            style={styles.item}
-                            showSpinner={false}
-                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-
-        value = post.pictures.two.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`two`}>
-                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
-                        const imageW = Dimensions.get('window').width;
-                        const boundary = imageW / 2;
-                        const x = e.nativeEvent.locationX;
-
-                        if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
-                        } else { // right
-                            this.swiper.scrollBy(1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
-                        }
-                    }}
-                    >
-                        <SmartImage
-                            style={styles.item}
-                            showSpinner={false}
-                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-
-        value = post.pictures.three.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`three`}>
-                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
-                        const imageW = Dimensions.get('window').width;
-                        const boundary = imageW / 2;
-                        const x = e.nativeEvent.locationX;
-
-                        if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
-                        } else { // right
-                            this.swiper.scrollBy(1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
-                        }
-                    }}
-                    >
-                        <SmartImage
-                            style={styles.item}
-                            showSpinner={false}
-                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-
-        value = post.pictures.four.uri;
-        if (value) {
-            pictures.push(
-                <View style={styles.slide} key={`four`}>
-                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
-                        const imageW = Dimensions.get('window').width;
-                        const boundary = imageW / 2;
-                        const x = e.nativeEvent.locationX;
-
-                        if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
-                            else Vibration.vibrate(10);
-                        } else { // right
-                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
-                            else Vibration.vibrate(30);
-                        }
-                    }}
-                    >
-                        <SmartImage
-                            style={styles.item}
-                            showSpinner={false}
-                            // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={value}
-                        />
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-
-        // anonymous image
-        if (pictures.length === 0) {
-            pictures.push(
-                <View style={styles.slide} key={`zero`}>
-                    <TouchableOpacity activeOpacity={1.0} onPress={(e) => {
-                        const imageW = Dimensions.get('window').width;
-                        const boundary = imageW / 2;
-                        const x = e.nativeEvent.locationX;
-
-                        if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Success);
-                            else Vibration.vibrate(30);
-                        } else { // right
-                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
-                            else Vibration.vibrate(30);
-                        }
-                    }}
-                    >
-                        <Image
-                            style={[styles.item, { backgroundColor: 'black', tintColor: 'white', resizeMode: 'contain' }]}
-                            source={PreloadImage.user}
-                        />
-                    </TouchableOpacity>
-                </View>
-            );
-        }
-
-
-        return (
-            <Swiper
-                ref={(swiper) => { this.swiper = swiper; }}
-                style={styles.wrapper}
-                // containerStyle={{ marginBottom: 10 }}
-                width={imageWidth}
-                height={imageHeight}
-                loop={false}
-                autoplay={false}
-                autoplayTimeout={3}
-                paginationStyle={{ bottom: 4 }}
-            >
-                {pictures}
-            </Swiper>
-        );
-    }
-
     renderImage(number, uri) {
         const iconButtonWidth = Dimensions.get('window').width / 14;
         const iconButtonX = (iconButtonWidth / 2) * -1 + iconButtonWidth / 3;
@@ -2039,13 +1866,7 @@ export default class EditPost extends React.Component {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }
@@ -2053,13 +1874,7 @@ export default class EditPost extends React.Component {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                /*
-                const url = 'app-settings:';
-                const supported = await Linking.canOpenURL(url);
-                if (supported) {
-                    Linking.openURL(url);
-                }
-                */
+                await Util.openSettings();
                 return;
             }
         }
