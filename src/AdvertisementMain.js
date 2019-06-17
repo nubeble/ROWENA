@@ -861,7 +861,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.uploadImage1Ref) {
             const ref = this.uploadImage1Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -869,7 +869,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.uploadImage2Ref) {
             const ref = this.uploadImage2Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -877,7 +877,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.uploadImage3Ref) {
             const ref = this.uploadImage3Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -885,7 +885,7 @@ export default class AdvertisementMain extends React.Component {
         if (this.uploadImage4Ref) {
             const ref = this.uploadImage4Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -1168,7 +1168,7 @@ export default class AdvertisementMain extends React.Component {
                             }}
                         >{this.state.birthday ? this.state.birthday : "When is your birthday?"}</Text>
 
-                        {/* ToDo: add icon */}
+                        {/* // ToDo: add icon */}
 
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
@@ -1889,7 +1889,6 @@ export default class AdvertisementMain extends React.Component {
                 }
 
                 const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
-                this.imageRefs.push(ref);
 
                 switch (index) {
                     case 0: this.uploadImage1Ref = ref; break;
@@ -1897,6 +1896,8 @@ export default class AdvertisementMain extends React.Component {
                     case 2: this.uploadImage3Ref = ref; break;
                     case 3: this.uploadImage4Ref = ref; break;
                 }
+
+                this.imageRefs.push(ref);
 
                 // save to database
                 /*

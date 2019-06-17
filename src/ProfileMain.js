@@ -163,7 +163,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (this.uploadImageRef) {
             const ref = this.uploadImageRef;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -1284,9 +1284,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                     const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
                     /*
-                    this.imageRefs.push(ref);
-
                     this.uploadImageRef = ref;
+
+                    this.imageRefs.push(ref);
                     */
 
                     // update database
@@ -1407,6 +1407,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     async updateProfilePicture(uri, ref) {
         const { profile } = this.props.profileStore;
+
+        if (profile.picture.ref) {
+            const ref = profile.picture.ref;
+            Firebase.removeProfilePictureRef(ref);
+        }
+
         let data = {};
         data.picture = {
             uri,

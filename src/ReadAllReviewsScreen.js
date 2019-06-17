@@ -337,7 +337,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         return (
             <View style={{ paddingBottom: Theme.spacing.tiny }} onLayout={(event) => this.onItemLayout(event, index)}>
-                {/* ToDo: add profile image */}
+                {/* // ToDo: add profile image */}
 
                 <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.base, paddingBottom: Theme.spacing.tiny }}>
                     <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Anonymous'}</Text>

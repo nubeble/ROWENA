@@ -125,8 +125,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // const imageUri = profile.picture.uri;
 
         const uploadImageUri = profile.picture.uri;
-        this.uploadImageRef = profile.picture.ref;
-        if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);
+        if (profile.picture.ref) {
+            this.uploadImageRef = profile.picture.ref;
+            this.imageRefs.push(this.uploadImageRef);
+        }
 
         const about = profile.about;
         let noteLength = 0;
@@ -426,7 +428,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (this.uploadImageRef) {
             const ref = this.uploadImageRef;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -755,7 +757,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             }}
                         >{this.state.birthday ? this.state.birthday : "Select your birthday"}</Text>
 
-                        {/* ToDo: add icon */}
+                        {/* // ToDo: add icon */}
 
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
@@ -1141,9 +1143,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 this.setState({ uploadImageUri: uri });
 
                 const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
-                this.imageRefs.push(ref);
 
                 this.uploadImageRef = ref;
+
+                this.imageRefs.push(ref);
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });

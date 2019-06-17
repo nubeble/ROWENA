@@ -246,7 +246,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     profile.name = name;
                     profile.email = email;
                     profile.phoneNumber = mobile;
-                    if (!profile.picture.uri) { // if only profile picture NOT exists then save it!
+                    if (photoURL && !profile.picture.uri) { // if only profile picture NOT exists then save it!
                         profile.picture.uri = photoURL;
                     }
                     profile.lastLogInTime = Date.now();

@@ -138,19 +138,24 @@ export default class Firebase {
         });
     }
 
+    static async removeProfilePictureRef(ref) {
+        await Firebase.storage.ref(ref).delete();
+    }
+
     static async updateProfile(uid, profile) {
+        // 2. update user doc
         await Firebase.firestore.collection("users").doc(uid).update(profile);
 
-        // update firebase auth
+        // 3. update firebase auth
         const name = profile.name;
-        let picture = null;
-        if (profile.picture && profile.picture.uri) picture = profile.picture.uri;
+        let uri = null;
+        if (profile.picture.uri) uri = profile.picture.uri;
         const user = Firebase.auth.currentUser;
         await user.updateProfile({
             // displayName: "Jane Q. User",
             // photoURL: "https://example.com/jane-q-user/profile.jpg"
             displayName: name,
-            photoURL: picture
+            photoURL: uri
         }).then(function () {
             // Update successful.
             console.log('Firebase.updateProfile', 'update successful.');
@@ -490,7 +495,6 @@ export default class Firebase {
                 let item = feeds[i];
                 if (item.placeId === placeId && item.feedId === feedId) {
                     item.picture = picture;
-
                     break;
                 }
 

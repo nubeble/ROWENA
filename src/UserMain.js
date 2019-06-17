@@ -88,8 +88,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         const item = this.props.navigation.state.params.item;
         // console.log('UserMain.componentDidMount', item);
 
-        let disableReviewButton = true;
-        if (!item.placeId && !item.feedId) disableReviewButton = false;
+        let disableReviewButton = false;
+        if (!item.placeId || !item.feedId) disableReviewButton = true; // from CommentMain
 
 
         const guest = item.guest;
@@ -607,9 +607,15 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             }
                                             ]}
                                             onPress={() => {
-                                                if (!this.state.disableReviewButton) return;
+                                                if (this.state.disableReviewButton) {
+                                                    this.refs["toast"].show("Can't add a review here.", 500);
+                                                    return;
+                                                }
 
-                                                if (!this.state.guest) return;
+                                                if (!this.state.guest) {
+                                                    this.refs["toast"].show('The user no longer exists.', 500);
+                                                    return;
+                                                }
 
                                                 setTimeout(() => {
                                                     if (this.closed) return;

@@ -180,18 +180,35 @@ export default class EditPost extends React.Component {
         const { post } = this.props.navigation.state.params;
         // console.log('EditPost', post.uid, post.id);
 
-        const uploadImage1Uri = post.pictures.one.uri;
-        this.uploadImage1Ref = post.pictures.one.ref;
-        if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
-        const uploadImage2Uri = post.pictures.two.uri;
-        this.uploadImage2Ref = post.pictures.two.ref;
-        if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
-        const uploadImage3Uri = post.pictures.three.uri;
-        this.uploadImage3Ref = post.pictures.three.ref;
-        if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
-        const uploadImage4Uri = post.pictures.four.uri;
-        this.uploadImage4Ref = post.pictures.four.ref;
-        if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+        const { pictures } = post;
+
+        let uploadImage1Uri = null;
+        if (pictures.one.uri) {
+            uploadImage1Uri = post.pictures.one.uri;
+            this.uploadImage1Ref = post.pictures.one.ref;
+            if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+        }
+
+        let uploadImage2Uri = null;
+        if (pictures.two.uri) {
+            uploadImage2Uri = post.pictures.two.uri;
+            this.uploadImage2Ref = post.pictures.two.ref;
+            if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+        }
+
+        let uploadImage3Uri = null;
+        if (pictures.three.uri) {
+            uploadImage3Uri = post.pictures.three.uri;
+            this.uploadImage3Ref = post.pictures.three.ref;
+            if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+        }
+
+        let uploadImage4Uri = null;
+        if (pictures.four.uri) {
+            uploadImage4Uri = post.pictures.four.uri;
+            this.uploadImage4Ref = post.pictures.four.ref;
+            if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+        }
 
         const name = post.name;
         let birthday = null;
@@ -1036,7 +1053,7 @@ export default class EditPost extends React.Component {
         if (this.uploadImage1Ref) {
             const ref = this.uploadImage1Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -1044,7 +1061,7 @@ export default class EditPost extends React.Component {
         if (this.uploadImage2Ref) {
             const ref = this.uploadImage2Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -1052,7 +1069,7 @@ export default class EditPost extends React.Component {
         if (this.uploadImage3Ref) {
             const ref = this.uploadImage3Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -1060,7 +1077,7 @@ export default class EditPost extends React.Component {
         if (this.uploadImage4Ref) {
             const ref = this.uploadImage4Ref;
             const index = this.imageRefs.indexOf(ref);
-            if (index > -1) {
+            if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
         }
@@ -1213,7 +1230,7 @@ export default class EditPost extends React.Component {
                             }}
                         >{this.state.birthday ? this.state.birthday : "When is your birthday?"}</Text>
 
-                        {/* ToDo: add icon */}
+                        {/* // ToDo: add icon */}
 
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
@@ -1896,6 +1913,7 @@ export default class EditPost extends React.Component {
             // upload image
             this.uploadImage(result.uri, index, (uri) => {
                 if (!uri) {
+                    this.showNotification('An error happened. Please try again.');
                     this.setState({ onUploadingImage: false });
                     return;
                 }
@@ -1909,7 +1927,6 @@ export default class EditPost extends React.Component {
 
                 const feedId = this.state.post.id;
                 const ref = 'images/' + Firebase.user().uid + '/post/' + feedId + '/' + result.uri.split('/').pop();
-                this.imageRefs.push(ref);
 
                 switch (index) {
                     case 0: this.uploadImage1Ref = ref; break;
@@ -1917,6 +1934,8 @@ export default class EditPost extends React.Component {
                     case 2: this.uploadImage3Ref = ref; break;
                     case 3: this.uploadImage4Ref = ref; break;
                 }
+
+                this.imageRefs.push(ref);
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
