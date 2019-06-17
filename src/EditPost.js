@@ -41,6 +41,69 @@ const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 */
 
+// --
+// message box pos
+const messageBoxW = Dimensions.get('window').width / 2;
+const messageBoxH = 70;
+
+const V1 = 10;
+const V3 = 5;
+const V4 = 19;
+// const V2 = (messageBoxW - V3 * 2) * 0.9;
+const V2 = messageBoxW - V3 * 2 - V4;
+
+/*
+const x1 = 5;
+const y1 = V1;
+
+const x2 = V2;
+const y2 = y1;
+
+const x3 = V2 + V3;
+const y3 = 5;
+
+const x4 = V2 + V3 * 2;
+const y4 = y1;
+
+const x5 = messageBoxW;
+const y5 = V1;
+
+const x6 = messageBoxW;
+const y6 = messageBoxH;
+const x7 = 5;
+const y7 = messageBoxH;
+*/
+
+const x1 = 5;
+const y1 = 5;
+
+const x2 = x1 + messageBoxW;
+const y2 = y1;
+
+const x3 = x2;
+const y3 = y2 + messageBoxH;
+
+const x4 = x1 + (V2 + V3 * 2);
+const y4 = y3;
+
+const x5 = x1 + (V2 + V3);
+const y5 = y4 + V1;
+
+const x6 = x1 + V2;
+const y6 = y4;
+
+const x7 = x1;
+const y7 = y3;
+
+const points = x1.toString() + ' ' + y1.toString() + ' ' +
+    x2.toString() + ' ' + y2.toString() + ' ' +
+    x3.toString() + ' ' + y3.toString() + ' ' +
+    x4.toString() + ' ' + y4.toString() + ' ' +
+    x5.toString() + ' ' + y5.toString() + ' ' +
+    x6.toString() + ' ' + y6.toString() + ' ' +
+    x7.toString() + ' ' + y7.toString();
+// --
+
 const genderItems = [
     {
         label: 'Male',
@@ -145,6 +208,9 @@ export default class EditPost extends React.Component {
         showBreastsAlertIcon: false,
         // showCountryAlertIcon: false,
         // showStreetAlertIcon: false,
+
+        showMessageBox: false,
+        messageBoxY: 0,
 
         onNote: false,
         keyboardTop: Dimensions.get('window').height,
@@ -1144,8 +1210,6 @@ export default class EditPost extends React.Component {
                         this.inputViewY = y;
                     }}
                 >
-
-
                     {/* 1. name */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
@@ -1159,7 +1223,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: -17 });  // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1208,7 +1273,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.nameY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1229,9 +1295,6 @@ export default class EditPost extends React.Component {
                                 paddingTop: 7
                             }}
                         >{this.state.birthday ? this.state.birthday : "When is your birthday?"}</Text>
-
-                        {/* // ToDo: add icon */}
-
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -1259,7 +1322,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.birthdayY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1324,7 +1388,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.genderY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1373,7 +1438,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.heightY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1424,7 +1490,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.weightY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1492,7 +1559,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.bodyTypeY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1580,7 +1648,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.breastsY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1633,7 +1702,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.noteY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1689,7 +1759,8 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
+                                this.setState({ showMessageBox: true, messageBoxY: this.countryY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1743,6 +1814,28 @@ export default class EditPost extends React.Component {
                     {
                         this.state.showStreetAlertIcon &&
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                    }
+
+
+
+                    {
+                        this.state.showMessageBox &&
+                        <View style={{
+                            width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
+                            position: 'absolute', right: 5, top: this.state.messageBoxY - (messageBoxH + V1 - 10), // this.state.messageBoxY - (5 + messageBoxH + V1 + 5),
+                            alignItems: 'center', justifyContent: 'center',
+                            backgroundColor: 'transparent'
+                        }}>
+                            <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
+                                <Svg.Polygon
+                                    points={points}
+                                    fill="black"
+                                    strokeWidth="1.8"
+                                    stroke="orange"
+                                    strokeLinecap="round"
+                                />
+                            </Svg>
+                        </View>
                     }
                 </View>
 

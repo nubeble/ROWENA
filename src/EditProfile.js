@@ -686,7 +686,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -735,7 +735,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -756,9 +756,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 paddingTop: 7
                             }}
                         >{this.state.birthday ? this.state.birthday : "Select your birthday"}</Text>
-
-                        {/* // ToDo: add icon */}
-
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -786,7 +783,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -851,7 +848,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -907,7 +904,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -959,7 +956,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1017,7 +1014,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up
+                                // ToDo: show description with pop-up message box
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
