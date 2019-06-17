@@ -14,7 +14,6 @@ import autobind from "autobind-decorator";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import PreloadImage from './PreloadImage';
-import { sendPushNotification } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
 import DateTimePicker from 'react-native-modal-datetime-picker';
@@ -43,12 +42,12 @@ const imageHeight = imageWidth / 3 * 2;
 
 // --
 // message box pos
-const messageBoxW = Dimensions.get('window').width / 2;
-const messageBoxH = 70;
+const messageBoxW = Dimensions.get('window').width / 3 * 2;
+const messageBoxH = 60;
 
 const V1 = 10;
-const V3 = 5;
-const V4 = 19;
+const V3 = 10;
+const V4 = 14;
 // const V2 = (messageBoxW - V3 * 2) * 0.9;
 const V2 = messageBoxW - V3 * 2 - V4;
 
@@ -234,6 +233,8 @@ export default class EditPost extends React.Component {
         super(props);
 
         this.imageRefs = []; // for cleaning files in server
+
+        this.originImageRefs = []; // max size: 4
     }
 
     componentDidMount() {
@@ -250,30 +251,46 @@ export default class EditPost extends React.Component {
 
         let uploadImage1Uri = null;
         if (pictures.one.uri) {
-            uploadImage1Uri = post.pictures.one.uri;
-            this.uploadImage1Ref = post.pictures.one.ref;
-            if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+            uploadImage1Uri = pictures.one.uri;
+
+            const ref = pictures.one.ref;
+            if (ref) {
+                this.uploadImage1Ref = ref;
+                this.originImageRefs.push(ref);
+            }
         }
 
         let uploadImage2Uri = null;
         if (pictures.two.uri) {
-            uploadImage2Uri = post.pictures.two.uri;
-            this.uploadImage2Ref = post.pictures.two.ref;
-            if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+            uploadImage2Uri = pictures.two.uri;
+
+            const ref = pictures.two.ref;
+            if (ref) {
+                this.uploadImage2Ref = ref;
+                this.originImageRefs.push(ref);
+            }
         }
 
         let uploadImage3Uri = null;
         if (pictures.three.uri) {
-            uploadImage3Uri = post.pictures.three.uri;
-            this.uploadImage3Ref = post.pictures.three.ref;
-            if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+            uploadImage3Uri = pictures.three.uri;
+
+            const ref = pictures.three.ref;
+            if (ref) {
+                this.uploadImage3Ref = ref;
+                this.originImageRefs.push(ref);
+            }
         }
 
         let uploadImage4Uri = null;
         if (pictures.four.uri) {
-            uploadImage4Uri = post.pictures.four.uri;
-            this.uploadImage4Ref = post.pictures.four.ref;
-            if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+            uploadImage4Uri = pictures.four.uri;
+
+            const ref = pictures.four.ref;
+            if (ref) {
+                this.uploadImage4Ref = ref;
+                this.originImageRefs.push(ref);
+            }
         }
 
         const name = post.name;
@@ -478,6 +495,17 @@ export default class EditPost extends React.Component {
 
             return true;
         }
+
+        // add current upload files to remove list
+        // --
+        if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+        if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+        if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+        if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+        // --
+
+        // remove origin image files from remove list
+        this.removeItemFromList();
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -837,7 +865,7 @@ export default class EditPost extends React.Component {
 
         await Firebase.updateFeed(post.uid, post.placeId, post.id, data);
 
-        this.removeItemFromList();
+        // this.removeItemFromList();
 
         // 3. move to finish page
         this.refs["toast"].show('Your post updated successfully.', 500, () => {
@@ -920,6 +948,17 @@ export default class EditPost extends React.Component {
                             if (this._showFlash) {
                                 this.hideFlash();
                             }
+
+                            // add current upload files to remove list
+                            // --
+                            if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+                            if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+                            if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+                            if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+                            // --
+
+                            // remove origin image files from remove list
+                            this.removeItemFromList();
 
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
@@ -1027,7 +1066,7 @@ export default class EditPost extends React.Component {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-            </View >
+            </View>
         );
     }
 
@@ -1115,6 +1154,7 @@ export default class EditPost extends React.Component {
         return image;
     }
 
+    /*
     removeItemFromList() {
         if (this.uploadImage1Ref) {
             const ref = this.uploadImage1Ref;
@@ -1146,6 +1186,16 @@ export default class EditPost extends React.Component {
             if (index !== -1) {
                 this.imageRefs.splice(index, 1);
             }
+        }
+    }
+    */
+
+    removeItemFromList() {
+        for (let i = 0; i < this.originImageRefs.length; i++) {
+            const ref = this.originImageRefs[i];
+
+            const index = this.imageRefs.indexOf(ref);
+            if (index !== -1) this.imageRefs.splice(index, 1);
         }
     }
 
@@ -1224,6 +1274,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: -17 });  // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1274,6 +1328,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.nameY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1323,6 +1381,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.birthdayY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1389,6 +1451,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.genderY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1439,6 +1505,9 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
                                 this.setState({ showMessageBox: true, messageBoxY: this.heightY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1491,6 +1560,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.weightY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1560,6 +1633,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.bodyTypeY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1649,6 +1726,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.breastsY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1703,6 +1784,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.noteY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1760,6 +1845,10 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                if (this.state.showMessageBox) {
+                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
+                                }
+
                                 this.setState({ showMessageBox: true, messageBoxY: this.countryY });
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1815,28 +1904,6 @@ export default class EditPost extends React.Component {
                         this.state.showStreetAlertIcon &&
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.streetY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
-
-
-
-                    {
-                        this.state.showMessageBox &&
-                        <View style={{
-                            width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
-                            position: 'absolute', right: 5, top: this.state.messageBoxY - (messageBoxH + V1 - 10), // this.state.messageBoxY - (5 + messageBoxH + V1 + 5),
-                            alignItems: 'center', justifyContent: 'center',
-                            backgroundColor: 'transparent'
-                        }}>
-                            <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
-                                <Svg.Polygon
-                                    points={points}
-                                    fill="black"
-                                    strokeWidth="1.8"
-                                    stroke="orange"
-                                    strokeLinecap="round"
-                                />
-                            </Svg>
-                        </View>
-                    }
                 </View>
 
                 <TouchableOpacity
@@ -1863,6 +1930,46 @@ export default class EditPost extends React.Component {
                         />
                     }
                 </TouchableOpacity>
+
+                {
+                    this.state.showMessageBox &&
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log('111111111111');
+                        if (this.state.showMessageBox) {
+                            this.setState({ showMessageBox: false, messageBoxY: 0 });
+                        }
+                    }}>
+                        <View style={{
+                            width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
+                            position: 'absolute', right: 5, top: this.inputViewY + this.state.messageBoxY - (messageBoxH + V1 - 10),
+                            alignItems: 'center', justifyContent: 'center',
+                            backgroundColor: 'transparent'
+                        }}>
+                            <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
+                                <Svg.Polygon
+                                    points={points}
+                                    fill={Theme.color.text5}
+                                />
+                            </Svg>
+                            <Text style={{
+                                width: '92%', height: '70%',
+                                position: 'absolute', top: 7, left: 10,
+                                // backgroundColor: '#212121',
+                                fontSize: 13, lineHeight: 18,
+                                fontFamily: "Roboto-Regular", color: Theme.color.highlight,
+                                // textAlignVertical: 'center', // only for android
+
+                            }}
+                                onBlur={(e) => {
+                                    console.log('323333');
+                                }}
+
+                            >
+                                {"Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried."}
+                            </Text>
+                        </View>
+                    </TouchableWithoutFeedback>
+                }
             </View>
         );
     }
@@ -2011,24 +2118,36 @@ export default class EditPost extends React.Component {
                     return;
                 }
 
-                switch (index) {
-                    case 0: this.setState({ uploadImage1Uri: uri }); break;
-                    case 1: this.setState({ uploadImage2Uri: uri }); break;
-                    case 2: this.setState({ uploadImage3Uri: uri }); break;
-                    case 3: this.setState({ uploadImage4Uri: uri }); break;
-                }
-
                 const feedId = this.state.post.id;
                 const ref = 'images/' + Firebase.user().uid + '/post/' + feedId + '/' + result.uri.split('/').pop();
 
                 switch (index) {
-                    case 0: this.uploadImage1Ref = ref; break;
-                    case 1: this.uploadImage2Ref = ref; break;
-                    case 2: this.uploadImage3Ref = ref; break;
-                    case 3: this.uploadImage4Ref = ref; break;
+                    case 0:
+                        this.setState({ uploadImage1Uri: uri });
+                        if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+                        this.uploadImage1Ref = ref;
+                        break;
+
+                    case 1:
+                        this.setState({ uploadImage2Uri: uri });
+                        if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+                        this.uploadImage2Ref = ref;
+                        break;
+
+                    case 2:
+                        this.setState({ uploadImage3Uri: uri });
+                        if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+                        this.uploadImage3Ref = ref;
+                        break;
+
+                    case 3:
+                        this.setState({ uploadImage4Uri: uri });
+                        if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+                        this.uploadImage4Ref = ref;
+                        break;
                 }
 
-                this.imageRefs.push(ref);
+                // this.imageRefs.push(ref);
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
@@ -2308,23 +2427,6 @@ export default class EditPost extends React.Component {
         }
 
         this.hideDialog();
-    }
-
-    sendPushNotification(message) {
-        // const { post } = this.props.navigation.state.params;
-        const post = this.state.post;
-
-        const sender = Firebase.user().uid;
-        const senderName = Firebase.user().name;
-        // const receiver = post.uid; // owner
-        const receiver = this.owner;
-        const data = {
-            message: message,
-            placeId: post.placeId,
-            feedId: post.id
-        };
-
-        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.reply, data);
     }
 }
 

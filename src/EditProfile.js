@@ -98,6 +98,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
         super(props);
 
         this.imageRefs = []; // for cleaning files in server
+
+        this.originImageRef = null;
     }
 
     componentDidMount() {
@@ -124,10 +126,15 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const phoneNumber = profile.phoneNumber;
         // const imageUri = profile.picture.uri;
 
-        const uploadImageUri = profile.picture.uri;
-        if (profile.picture.ref) {
-            this.uploadImageRef = profile.picture.ref;
-            this.imageRefs.push(this.uploadImageRef);
+        let uploadImageUri = null;
+        if (profile.picture.uri) {
+            uploadImageUri = profile.picture.uri;
+
+            const ref = profile.picture.ref;
+            if (ref) {
+                this.uploadImageRef = ref;
+                this.originImageRef = ref;
+            }
         }
 
         const about = profile.about;
@@ -225,6 +232,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             return true;
         }
+
+        // add current upload files to remove list
+        if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);
+
+        // remove origin image files from remove list
+        this.removeItemFromList();
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -411,7 +424,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         await this.updateProfile(data);
 
-        this.removeItemFromList();
+        // this.removeItemFromList();
 
         // 3. go back
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
@@ -424,6 +437,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         });
     }
 
+    /*
     removeItemFromList() {
         if (this.uploadImageRef) {
             const ref = this.uploadImageRef;
@@ -432,6 +446,13 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 this.imageRefs.splice(index, 1);
             }
         }
+    }
+    */
+    removeItemFromList() {
+        const ref = this.originImageRef;
+
+        const index = this.imageRefs.indexOf(ref);
+        if (index !== -1) this.imageRefs.splice(index, 1);
     }
 
     render() {
@@ -638,7 +659,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             <AntDesign style={{ position: 'absolute', left: Dimensions.get('window').width / 2 - 12, top: avatarWidth / 2 - 12 }}
                                 name='exclamationcircleo' color={Theme.color.notification} size={24} />
                         }
-
                         {
                             this.state.onUploadingImage &&
                             <View style={{
@@ -646,7 +666,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 position: 'absolute', top: 0, left: 0,
                                 justifyContent: 'center', alignItems: 'center'
                             }}>
+                                {/*
                                 <RefreshIndicator refreshing={true} total={3} size={4} color={Theme.color.selection} />
+                                */}
+                                <ActivityIndicator animating={true} size="small" color={Theme.color.selection} />
                             </View>
                         }
                     </View>
@@ -1133,17 +1156,18 @@ export default class EditProfile extends React.Component<InjectedProps> {
             // upload image
             this.uploadImage(result.uri, (uri) => {
                 if (!uri) {
+                    this.showNotification('An error happened. Please try again.');
                     this.setState({ onUploadingImage: false });
                     return;
                 }
 
-                this.setState({ uploadImageUri: uri });
-
                 const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
 
+                this.setState({ uploadImageUri: uri });
+                if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);
                 this.uploadImageRef = ref;
 
-                this.imageRefs.push(ref);
+                // this.imageRefs.push(ref);
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });

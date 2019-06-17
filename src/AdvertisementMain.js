@@ -352,6 +352,14 @@ export default class AdvertisementMain extends React.Component {
             return true;
         }
 
+        // add current upload files to remove list
+        // --
+        if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+        if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+        if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+        if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+        // --
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -760,7 +768,7 @@ export default class AdvertisementMain extends React.Component {
 
         await this.createFeed(data, extra);
 
-        this.removeItemFromList();
+        // this.removeItemFromList();
 
         // 3. move to finish page
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
@@ -857,6 +865,7 @@ export default class AdvertisementMain extends React.Component {
         return image;
     }
 
+    /*
     removeItemFromList() {
         if (this.uploadImage1Ref) {
             const ref = this.uploadImage1Ref;
@@ -890,6 +899,7 @@ export default class AdvertisementMain extends React.Component {
             }
         }
     }
+    */
 
     render() {
         const notificationStyle = {
@@ -976,6 +986,14 @@ export default class AdvertisementMain extends React.Component {
                             if (this._showFlash) {
                                 this.hideFlash();
                             }
+
+                            // add current upload files to remove list
+                            // --
+                            if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+                            if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+                            if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+                            if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+                            // --
 
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
@@ -1874,43 +1892,40 @@ export default class AdvertisementMain extends React.Component {
             // upload image
             this.uploadImage(result.uri, index, (uri) => {
                 if (!uri) {
+                    this.showNotification('An error happened. Please try again.');
                     this.setState({ onUploadingImage: false });
                     return;
-                }
-
-                switch (index) {
-                    case 0: this.setState({ uploadImage1Uri: uri }); break;
-                    case 1: this.setState({ uploadImage2Uri: uri }); break;
-                    case 2: this.setState({ uploadImage3Uri: uri }); break;
-                    case 3: this.setState({ uploadImage4Uri: uri }); break;
                 }
 
                 const ref = 'images/' + Firebase.user().uid + '/post/' + this.feedId + '/' + result.uri.split('/').pop();
 
                 switch (index) {
-                    case 0: this.uploadImage1Ref = ref; break;
-                    case 1: this.uploadImage2Ref = ref; break;
-                    case 2: this.uploadImage3Ref = ref; break;
-                    case 3: this.uploadImage4Ref = ref; break;
+                    case 0:
+                        this.setState({ uploadImage1Uri: uri });
+                        if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
+                        this.uploadImage1Ref = ref;
+                        break;
+
+                    case 1:
+                        this.setState({ uploadImage2Uri: uri });
+                        if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
+                        this.uploadImage2Ref = ref;
+                        break;
+
+                    case 2:
+                        this.setState({ uploadImage3Uri: uri });
+                        if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
+                        this.uploadImage3Ref = ref;
+                        break;
+
+                    case 3:
+                        this.setState({ uploadImage4Uri: uri });
+                        if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
+                        this.uploadImage4Ref = ref;
+                        break;
                 }
 
-                this.imageRefs.push(ref);
-
-                // save to database
-                /*
-                    var data = {
-                    pictures: {
-                        uri: uri
-                    }
-                };
-                this.updateUser(Firebase.user().uid, data);
-                */
-
-                /*
-                const fileName = result.uri.split('/').pop();
-                const url = await firebase.storage().ref(fileName).getDownloadURL();
-                console.log('download URL:', url);
-                */
+                // this.imageRefs.push(ref);
 
                 // hide indicator & progress bar
                 this.setState({ flashMessageTitle: 'Success!', flashMessageSubtitle: 'Your picture uploaded successfully.' });
