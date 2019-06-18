@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-    StyleSheet, TouchableOpacity, View, BackHandler, Dimensions, Image, TextInput,
-    Platform, FlatList, Animated, StatusBar, Keyboard, ActivityIndicator
+    StyleSheet, TouchableOpacity, View, BackHandler, Dimensions, Image, TextInput, Easing,
+    Platform, FlatList, Animated, TouchableWithoutFeedback, Keyboard, ActivityIndicator
 } from 'react-native';
-import { Permissions, Linking, ImagePicker, Constants } from 'expo';
+import { Permissions, Linking, ImagePicker, Constants, Svg } from 'expo';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign } from 'react-native-vector-icons';
@@ -30,6 +30,46 @@ const imageViewHeight = imageViewWidth / 4 * 3;
 // 4:3 image
 const imageWidth = imageViewWidth * 0.8;
 const imageHeight = imageViewHeight * 0.8;
+
+// --
+// message box pos
+const messageBoxW = Dimensions.get('window').width / 3 * 2;
+const messageBoxH = 60;
+
+const V1 = 10;
+const V3 = 10;
+const V4 = 14;
+const V2 = messageBoxW - V3 * 2 - V4;
+
+const x1 = 5;
+const y1 = 5;
+
+const x2 = x1 + messageBoxW;
+const y2 = y1;
+
+const x3 = x2;
+const y3 = y2 + messageBoxH;
+
+const x4 = x1 + (V2 + V3 * 2);
+const y4 = y3;
+
+const x5 = x1 + (V2 + V3);
+const y5 = y4 + V1;
+
+const x6 = x1 + V2;
+const y6 = y4;
+
+const x7 = x1;
+const y7 = y3;
+
+const points = x1.toString() + ' ' + y1.toString() + ' ' +
+    x2.toString() + ' ' + y2.toString() + ' ' +
+    x3.toString() + ' ' + y3.toString() + ' ' +
+    x4.toString() + ' ' + y4.toString() + ' ' +
+    x5.toString() + ' ' + y5.toString() + ' ' +
+    x6.toString() + ' ' + y6.toString() + ' ' +
+    x7.toString() + ' ' + y7.toString();
+// --
 
 const genderItems = [
     {
@@ -137,6 +177,11 @@ export default class AdvertisementMain extends React.Component {
         showBreastsAlertIcon: false,
         showCountryAlertIcon: false,
         showStreetAlertIcon: false,
+
+        showMessageBox: false,
+        messageBoxY: 0,
+        messageBoxText: '',
+        messageBoxOpacity: new Animated.Value(0),
 
         onNote: false,
         keyboardTop: Dimensions.get('window').height,
@@ -1050,6 +1095,10 @@ export default class AdvertisementMain extends React.Component {
     }
 
     renderContainer() {
+        const viewStyle = {
+            opacity: this.state.messageBoxOpacity
+        };
+
         return (
             <View style={{ paddingTop: 2 }}>
                 {/* image editor view */}
@@ -1116,6 +1165,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                this.showMessageBox(msg, -17); // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1165,6 +1216,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                this.showMessageBox(msg, this.nameY); // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1213,6 +1266,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.birthdayY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1279,6 +1334,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                this.showMessageBox(msg, this.genderY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1328,6 +1385,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.heightY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1379,6 +1438,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.weightY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1447,6 +1508,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.bodyTypeY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1535,6 +1598,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.breastsY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1588,6 +1653,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.noteY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1644,6 +1711,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.countryY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1735,6 +1804,41 @@ export default class AdvertisementMain extends React.Component {
                         />
                     }
                 </TouchableOpacity>
+
+                {
+                    this.state.showMessageBox &&
+                    <TouchableWithoutFeedback onPress={() => {
+                        if (this.state.showMessageBox) {
+                            this.hideMessageBox();
+                        }
+                    }}>
+                        <Animated.View style={[
+                            {
+                                width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
+                                position: 'absolute', right: 5, top: this.inputViewY + this.state.messageBoxY - (messageBoxH + V1 - 10),
+                                alignItems: 'center', justifyContent: 'center',
+                                backgroundColor: 'transparent'
+                            }, viewStyle
+                        ]}>
+                            <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
+                                <Svg.Polygon
+                                    points={points}
+                                    fill={Theme.color.text5}
+                                />
+                            </Svg>
+                            <Text style={{
+                                width: '92%', height: '70%',
+                                position: 'absolute', top: 7, left: 10,
+                                // backgroundColor: '#212121',
+                                fontSize: 13, lineHeight: 18,
+                                fontFamily: "Roboto-Regular", color: Theme.color.highlight,
+                                // textAlignVertical: 'center', // only for android
+                            }}>
+                                {this.state.messageBoxText}
+                            </Text>
+                        </Animated.View>
+                    </TouchableWithoutFeedback>
+                }
             </View>
         );
     }
@@ -2124,26 +2228,28 @@ export default class AdvertisementMain extends React.Component {
     };
 
     showNotification(msg) {
+        /*
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
+        */
 
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.sequence([
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 1,
-                            duration: 200
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: Constants.statusBarHeight + 6,
-                            duration: 200
-                        })
-                    ])
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
                 ]).start();
             });
         });
@@ -2151,21 +2257,19 @@ export default class AdvertisementMain extends React.Component {
 
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
         });
-
-        this._showNotification = false;
     }
 
     showFlash(title, subtitle, image) {
@@ -2174,49 +2278,45 @@ export default class AdvertisementMain extends React.Component {
             this.hideAlertIcon();
         }
 
-        if (!this._showFlash) {
-            this._showFlash = true;
+        this._showFlash = true;
 
-            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
-                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.flashOpacity, {
-                                toValue: 1,
-                                duration: 200
-                            }),
-                            Animated.timing(this.state.flashOffset, {
-                                toValue: Constants.statusBarHeight,
-                                duration: 200
-                            })
-                        ])
-                    ]).start();
-                });
+        this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+            this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: Constants.statusBarHeight,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
+                ]).start();
             });
+        });
 
-            // StatusBar.setHidden(true);
-        }
+        // StatusBar.setHidden(true);
     };
 
     hideFlash() {
         this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
             Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.flashOpacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.flashOffset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+                Animated.timing(this.state.flashOpacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.flashOffset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showFlash = false; });
         });
 
         // StatusBar.setHidden(false);
-
-        this._showFlash = false;
     }
 
     hideAlertIcon() {
@@ -2233,6 +2333,45 @@ export default class AdvertisementMain extends React.Component {
         if (this.state.showPicture2AlertIcon) this.setState({ showPicture2AlertIcon: false });
         if (this.state.showPicture3AlertIcon) this.setState({ showPicture3AlertIcon: false });
         if (this.state.showPicture4AlertIcon) this.setState({ showPicture4AlertIcon: false });
+    }
+
+    showMessageBox(msg, y) {
+        this.setState({ messageBoxText: msg, showMessageBox: true, messageBoxY: y }, () => {
+            Animated.timing(this.state.messageBoxOpacity, {
+                toValue: 1,
+                duration: 200,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true
+            }).start(() => {
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+
+                this.timer = setTimeout(() => {
+                    if (this.closed) return;
+
+                    if (this.state.showMessageBox) this.hideMessageBox();
+                }, 2000);
+            });
+        });
+    }
+
+    hideMessageBox() {
+        if (this._hideMessageBox) return;
+
+        this._hideMessageBox = true;
+
+        Animated.timing(this.state.messageBoxOpacity, {
+            toValue: 0,
+            duration: 200,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true
+        }).start(() => {
+            this.setState({ showMessageBox: false, messageBoxY: 0 });
+
+            this._hideMessageBox = false;
+        });
     }
 }
 

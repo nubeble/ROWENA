@@ -14,8 +14,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
+import _ from 'lodash';
 
-DEFAULT_ROOM_COUNT = 6;
+const DEFAULT_ROOM_COUNT = 6;
 
 // 1:1
 const illustHeight = 300;
@@ -85,25 +86,7 @@ export default class ChatMain extends React.Component {
                     this.updateList(list);
 
                     // subscribe profile, post, feed count
-                    for (let i = 0; i < list.length; i++) {
-                        const room = list[i];
-
-                        const owner = room.owner; // owner uid of the post
-                        const users = room.users;
-
-                        const me = users[0];
-                        const you = users[1];
-
-                        // customer or girl
-                        if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
-                            this.subscribeToProfile(you.uid, room.id);
-                        }
-
-                        // if (you.uid === owner) { // I am a customer. Then subscribe girl(post).
-                        this.subscribeToPost(room.placeId, room.feedId, room.id);
-                        this.subscribeToPlace(room.placeId);
-                        // }
-                    }
+                    this.subscribe(list);
                 }
             } else {
                 this.allChatRoomsLoaded = true;
@@ -142,6 +125,72 @@ export default class ChatMain extends React.Component {
         }
 
         this.closed = true;
+    }
+
+    subscribe(list) {
+        for (let i = 0; i < list.length; i++) {
+            const room = list[i];
+
+            const owner = room.owner; // owner uid of the post
+            const users = room.users;
+
+            const me = users[0];
+            const you = users[1];
+
+            // check if customer or girl
+            if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
+                this.subscribeToProfile(you.uid);
+            }
+
+            // if (you.uid === owner) { // I am a customer. Then subscribe girl(post).
+            this.subscribeToPost(room.placeId, room.feedId, room.id);
+            this.subscribeToPlace(room.placeId);
+            // }
+        }
+    }
+
+    subscribeToProfile(uid) {
+        if (this.customerProfileList.has(uid)) return;
+
+        // this will be updated in subscribe
+        this.customerProfileList.set(uid, null);
+
+        const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === undefined) {
+                this.customerProfileList.delete(uid);
+                return;
+            }
+
+            this.customerProfileList.set(uid, user);
+
+            // update chatRoomList
+            const name = user.name;
+            const picture = user.picture.uri;
+
+            let list = [...this.state.chatRoomList];
+            for (let i = 0; i < list.length; i++) {
+                let room = list[i];
+                if (room.users[0].uid === room.owner && room.users[1].uid === uid) {
+                    let opponent = room.users[1];
+
+                    let changed = false;
+                    if (opponent.name !== name || opponent.picture !== picture) changed = true;
+
+                    opponent.name = name;
+                    opponent.picture = picture;
+
+                    room.users[1] = opponent;
+                    list[i] = room;
+
+                    // update database
+                    if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
+                }
+            }
+
+            !this.closed && this.setState({ chatRoomList: list });
+        });
+
+        this.customersUnsubscribes.push(instance);
     }
 
     subscribeToPost(placeId, feedId, roomId) {
@@ -205,48 +254,17 @@ export default class ChatMain extends React.Component {
         this.countsUnsubscribes.push(ci);
     }
 
-    subscribeToProfile(uid, roomId) {
-        if (this.customerProfileList.has(uid)) return;
+    getProfile(uid) {
+        /*
+        let profile = null;
+        if (this.customerProfileList.has(uid)) {
+            profile = this.customerProfileList.get(uid);
+        }
 
-        // this will be updated in subscribe
-        this.customerProfileList.set(uid, null);
+        return profile;
+        */
 
-        const instance = Firebase.subscribeToProfile(uid, user => {
-            if (user === undefined) {
-                this.customerProfileList.delete(uid);
-                return;
-            }
-
-            this.customerProfileList.set(uid, user);
-
-            // update chatRoomList
-            const name = user.name;
-            const picture = user.picture.uri;
-
-            let list = [...this.state.chatRoomList];
-            for (let i = 0; i < list.length; i++) {
-                let room = list[i];
-                if (room.users[0].uid === room.owner && room.users[1].uid === uid) {
-                    let opponent = room.users[1];
-
-                    let changed = false;
-                    if (opponent.name !== name || opponent.picture !== picture) changed = true;
-
-                    opponent.name = name;
-                    opponent.picture = picture;
-
-                    room.users[1] = opponent;
-                    list[i] = room;
-
-                    // update database
-                    if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
-                }
-            }
-
-            !this.closed && this.setState({ chatRoomList: list });
-        });
-
-        this.customersUnsubscribes.push(instance);
+        return this.customerProfileList.get(uid); // null: the user is not subscribed yet, undefined: the user is removed
     }
 
     getPost(feedId) {
@@ -275,26 +293,13 @@ export default class ChatMain extends React.Component {
         return this.feedCountList.get(placeId); // -1: the place is not subscribed yet, undefined: the place is removed
     }
 
-    getCustomerProfile(uid) {
-        /*
-        let profile = null;
-        if (this.customerProfileList.has(uid)) {
-            profile = this.customerProfileList.get(uid);
-        }
-
-        return profile;
-        */
-
-        return this.customerProfileList.get(uid); // null: the user is not subscribed yet, undefined: the user is removed
-    }
-
     updateList(list) {
         let newList = list;
         for (let i = 0; i < newList.length; i++) {
             let newRoom = newList[i];
 
             // find existing one
-            const room = this.checkExistence(newRoom.id);
+            const room = this.checkRoomExistence(newRoom.id);
             if (room) {
                 const opponent = room.users[1];
                 newRoom.users[1] = opponent;
@@ -305,7 +310,7 @@ export default class ChatMain extends React.Component {
         this.setState({ chatRoomList: newList });
     }
 
-    checkExistence(id) { // return existing chat room
+    checkRoomExistence(id) { // return existing chat room
         let list = [...this.state.chatRoomList];
         const index = list.findIndex(el => el.id === id);
         if (index !== -1) return list[index];
@@ -693,7 +698,7 @@ export default class ChatMain extends React.Component {
         // customer profile
         let customerProfile = null;
         if (customer) {
-            const profile = this.getCustomerProfile(customer);
+            const profile = this.getProfile(customer);
             if (profile === null) {
                 // the post is not subscribed yet
                 this.refs["toast"].show('Please try again.', 500);
@@ -777,12 +782,13 @@ export default class ChatMain extends React.Component {
         const timestamp = this.state.chatRoomList[this.state.chatRoomList.length - 1].timestamp;
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
-        Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => { // load 10 rooms
+        Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => { // load 10 rooms more
             if (list) {
-                // console.log('loadMoreChatRoom', list);
                 if (list.length === 0) {
                     this.allChatRoomsLoaded = true;
                 } else {
+                    // this.allChatRoomsLoaded = false;
+
                     /*
                     this.setState(prevState => ({
                         chatRoomList: [...prevState.chatRoomList, list]
@@ -790,33 +796,14 @@ export default class ChatMain extends React.Component {
                     */
 
                     // check duplication
-                    const result = this.hasItem(list);
+                    const result = this.hasRoom(list);
                     if (result) {
                         this.allChatRoomsLoaded = true;
                     } else {
-                        this.addItem(list);
+                        this.addList(list); // ToDo: update room before put it in the state list
 
                         // subscribe profile, post, feed count
-                        for (let i = 0; i < list.length; i++) {
-                            const room = list[i];
-
-                            const owner = room.owner; // owner uid of the post
-                            const users = room.users;
-
-                            const me = users[0];
-                            const you = users[1];
-
-                            // customer or girl
-                            if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
-                                this.subscribeToProfile(you.uid, room.id);
-                            }
-
-                            // if (you.uid === owner) { // I am a customer. Then subscribe girl(post).
-                            this.subscribeToPost(room.placeId, room.feedId, room.id);
-                            this.subscribeToPlace(room.placeId);
-                            // }
-                        }
-
+                        this.subscribe(list);
                     }
                 }
             } else {
@@ -837,7 +824,7 @@ export default class ChatMain extends React.Component {
         return 0;
     }
 
-    hasItem(list) {
+    hasRoom(list) {
         const array = this.state.chatRoomList;
 
         for (let i = 0; i < list.length; i++) {
@@ -855,33 +842,45 @@ export default class ChatMain extends React.Component {
         return false;
     }
 
-    addItem(list) {
+    addList(list) {
+        let _list = _.clone(list);
+        for (let i = 0; i < _list.length; i++) {
+            const room = _list[i];
+
+            const owner = room.owner; // owner uid of the post
+            const users = room.users;
+
+            const me = users[0];
+            const you = users[1];
+
+            // check if customer or girl
+            if (me.uid === owner) { // I am a girl. Then check if customer(you)'s user profile is in the subscribe list.
+                const profile = this.getProfile(you.uid);
+                if (profile) {
+                    const name = profile.name;
+                    const picture = profile.picture.uri;
+
+                    // check if the values are not same
+                    if (you.name !== name || you.picture !== picture) {
+                        // 1. update room
+                        _list[i].users[1].name = name;
+                        _list[i].users[1].picture = picture;
+
+                        // 2. update database
+                        Firebase.updateChatRoom(me.uid, you.uid, room.id, _list[i].users);
+                    }
+                }
+            }
+        }
+
         let newList = [...this.state.chatRoomList];
-        for (let i = 0; i < list.length; i++) {
-            newList.push(list[i]);
+        for (let i = 0; i < _list.length; i++) {
+            newList.push(_list[i]);
         }
         newList.sort(this.compare);
 
-        // console.log('newList', newList);
-
         this.setState({ chatRoomList: newList });
     }
-
-    /*
-    getAvatarColor(id) {
-        if (!this.avatarColorList) {
-            this.avatarColorList = new Map();
-        }
-
-        if (this.avatarColorList.has(id)) {
-            return this.avatarColorList.get(id);
-        } else {
-            const color = Util.getDarkColor();
-            this.avatarColorList.set(id, color);
-            return color;
-        }
-    }
-    */
 }
 
 const styles = StyleSheet.create({

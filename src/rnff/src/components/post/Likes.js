@@ -1,12 +1,12 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import {StyleSheet, TouchableWithoutFeedback, View, Animated, Easing} from "react-native";
-import {Feather as Icon} from "@expo/vector-icons";
+import { StyleSheet, TouchableWithoutFeedback, View, Animated, Easing } from "react-native";
+import { Feather as Icon } from "@expo/vector-icons";
 
 import Odometer from "./Odometer";
 
-import {Theme} from "../Theme";
+import { Theme } from "../Theme";
 import Firebase from "../../../../Firebase";
 
 type LikesProps = {
@@ -30,7 +30,7 @@ export default class Likes extends React.Component<LikesProps, LikesState> {
     };
 
     static getDerivedStateFromProps({ likes }: LikesProps): LikesState {
-        const {uid} = Firebase.auth.currentUser;
+        const { uid } = Firebase.auth.currentUser;
         const isLiked = likes.indexOf(uid) !== -1;
         return {
             animation: new Animated.Value(0),
@@ -41,9 +41,9 @@ export default class Likes extends React.Component<LikesProps, LikesState> {
 
     @autobind
     toggle() {
-        const {post} = this.props;
-        const {isLiked, count, animation} = this.state;
-        const {uid} = Firebase.auth.currentUser;
+        const { post } = this.props;
+        const { isLiked, count, animation } = this.state;
+        const { uid } = Firebase.auth.currentUser;
         if (!isLiked) {
             this.setState({ animation, isLiked: !isLiked, count: count + 1 });
             Animated.timing(
@@ -60,7 +60,7 @@ export default class Likes extends React.Component<LikesProps, LikesState> {
         const postRef = Firebase.firestore.collection("feed").doc(post);
         Firebase.firestore.runTransaction(async transaction => {
             const postDoc = await transaction.get(postRef);
-            const {likes} = postDoc.data();
+            const { likes } = postDoc.data();
             const idx = likes.indexOf(uid);
             if (idx === -1) {
                 likes.push(uid);
@@ -72,8 +72,8 @@ export default class Likes extends React.Component<LikesProps, LikesState> {
     }
 
     render(): React.Node {
-        const {color} = this.props;
-        const {animation, isLiked, count} = this.state;
+        const { color } = this.props;
+        const { animation, isLiked, count } = this.state;
         const computedStyle = [styles.icon];
         if (animation) {
             const fontSize = animation.interpolate({
@@ -89,9 +89,9 @@ export default class Likes extends React.Component<LikesProps, LikesState> {
             <TouchableWithoutFeedback onPress={this.toggle}>
                 <View style={styles.container}>
                     <View style={styles.iconContainer}>
-                        <AnimatedIcon name="aa-up" color={color} style={computedStyle}/>
+                        <AnimatedIcon name="aa-up" color={color} style={computedStyle} />
                     </View>
-                    <Odometer count={count} {...{ color }}/>
+                    <Odometer count={count} {...{ color }} />
                 </View>
             </TouchableWithoutFeedback>
         );

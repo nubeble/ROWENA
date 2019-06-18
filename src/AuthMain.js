@@ -68,38 +68,7 @@ export default class AuthMain extends React.Component {
 
     @autobind
     onFocus() {
-        /*
-        if (!AuthMain.loaded) {
-            AuthMain.loaded = true;
-
-            Animated.timing(this.state.viewOffset, {
-                toValue: 0,
-                duration: 500,
-                useNativeDriver: true
-            }).start(() => {
-                StatusBar.setHidden(false);
-            });
-        } else {
-            Animated.timing(this.state.viewOffset, {
-                toValue: 0,
-                duration: 0,
-                useNativeDriver: true
-            }).start(() => {
-                // StatusBar.setHidden(false);
-            });
-        }
-        */
-
         if (AuthMain.animation) {
-            /*
-            Animated.timing(this.state.viewOffset, {
-                toValue: 0,
-                duration: 300,
-                useNativeDriver: true
-            }).start(() => {
-                StatusBar.setHidden(false);
-            });
-            */
             Animated.sequence([
                 Animated.delay(500),
                 Animated.spring(this.state.viewOffset, {
@@ -462,25 +431,23 @@ export default class AuthMain extends React.Component {
     }
 
     showNotification(msg) {
-        if (this._showNotification) {
-            this.hideNotification();
-        }
+        // if (this._showNotification) this.hideNotification();
 
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.sequence([
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 1,
-                            duration: 200
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: Constants.statusBarHeight + 6,
-                            duration: 200
-                        })
-                    ])
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
                 ]).start();
             });
         });
@@ -488,21 +455,19 @@ export default class AuthMain extends React.Component {
 
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
         });
-
-        this._showNotification = false;
     }
 }
 

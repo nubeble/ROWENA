@@ -495,10 +495,12 @@ export default class EditMain extends React.Component<InjectedProps> {
     renderListEmptyComponent() {
         const { profile } = this.props.profileStore;
         // if (!profile) return null;
-        const receivedCommentsCount = profile.receivedCommentsCount;
-        if (receivedCommentsCount === 0) return null;
+
+        // const receivedCommentsCount = profile.receivedCommentsCount;
+        // if (receivedCommentsCount === 0) return null; // ToDo: !!!
 
         const { reviews } = this.commentStore;
+
         const loading = reviews === undefined;
 
         const width = Dimensions.get('window').width - Theme.spacing.base * 2;
@@ -551,10 +553,45 @@ export default class EditMain extends React.Component<InjectedProps> {
         }
 
         return (
-            loading &&
-            <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
-                {reviewArray}
-            </View>
+            loading ?
+                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
+                    {reviewArray}
+                </View>
+                :
+                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+
+                        <Text style={{
+                            color: Theme.color.text2,
+                            fontSize: 24,
+                            paddingTop: 4,
+                            fontFamily: "Roboto-Medium"
+                        }}>No selected girls</Text>
+
+                        <Text style={{
+                            marginTop: 10,
+                            color: Theme.color.text3,
+                            fontSize: 18,
+                            fontFamily: "Roboto-Medium"
+                        }}>Start exploring girls for your next trip</Text>
+
+                        <TouchableOpacity
+                            onPress={() => {
+                            }}
+                            style={{ marginTop: 20 }}>
+                            <Image
+                                style={{
+                                    width: 300 / 510 * 600,
+                                    height: 300,
+                                    resizeMode: 'cover'
+                                }}
+                                source={PreloadImage.find}
+
+                            />
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
         );
     }
 

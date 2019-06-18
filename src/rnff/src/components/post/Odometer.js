@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, Animated, Easing} from "react-native";
+import { StyleSheet, View, Animated, Easing } from "react-native";
 
-import {directInverseInterpolation, directInterpolation, simpleInterpolation} from "../Animations";
-import {Theme} from "../Theme";
+import { directInverseInterpolation, directInterpolation, simpleInterpolation } from "../Animations";
+import { Theme } from "../Theme";
 import Text from "../Text";
 
 type OdometerProps = {
@@ -36,12 +36,12 @@ export default class Odometer extends React.Component<OdometerProps, OdometerSta
     }
 
     render(): React.Node {
-        const {color} = this.props;
+        const { color } = this.props;
         const numbers = `${this.state.count}`.split("").map(char => parseInt(char, 10));
         return (
             <View style={styles.row}>
                 {
-                    numbers.map((digit, key) => <Digit {...{ key, digit, color }}/>)
+                    numbers.map((digit, key) => <Digit {...{ key, digit, color }} />)
                 }
             </View>
         );
@@ -90,15 +90,15 @@ class Digit extends React.PureComponent<DigitProps, DigitState> {
     }
 
     render(): React.Node {
-        const {color} = this.props;
-        const {digit, lastDigit, animation, goesUp} = this.state;
+        const { color } = this.props;
+        const { digit, lastDigit, animation, goesUp } = this.state;
         const height = Theme.typography.regular.fontSize;
         const opacity = animation.interpolate(directInverseInterpolation());
         const translateY = animation.interpolate(simpleInterpolation(0, goesUp * height));
         const newOpacity = animation.interpolate(directInterpolation());
         const newTranslateY = animation.interpolate(simpleInterpolation(goesUp * -height, 0));
-        const lastDigitStyle = [styles.text, {color}, { opacity, transform: [{ translateY }]}];
-        const digitStyle = [styles.text, {color}, { opacity: newOpacity, transform: [{ translateY: newTranslateY }]}];
+        const lastDigitStyle = [styles.text, { color }, { opacity, transform: [{ translateY }] }];
+        const digitStyle = [styles.text, { color }, { opacity: newOpacity, transform: [{ translateY: newTranslateY }] }];
         return (
             <View style={styles.container}>
                 <AnimatedText style={lastDigitStyle}>{`${lastDigit}`}</AnimatedText>

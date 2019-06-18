@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, Animated} from "react-native";
+import { StyleSheet, View, Animated } from "react-native";
 
-import {Theme} from "../../components";
-import type {BaseProps} from "../../components/Types";
+import { Theme } from "../../components";
+import type { BaseProps } from "../../components/Types";
 
 type RefreshIndicatorProps = BaseProps & {
     refreshing: boolean
@@ -25,7 +25,7 @@ class Circle extends React.Component<CircleProps, CircleState> {
     };
 
     componentDidMount() {
-        const {animation} = this.state;
+        const { animation } = this.state;
         Animated.loop(Animated.timing(
             animation,
             {
@@ -37,8 +37,8 @@ class Circle extends React.Component<CircleProps, CircleState> {
     }
 
     render(): React.Node {
-        const {order, total} = this.props;
-        const {animation} = this.state;
+        const { order, total } = this.props;
+        const { animation } = this.state;
         const factor = order - 1;
         const part = 1 / total;
         const scale = animation.interpolate({
@@ -46,7 +46,7 @@ class Circle extends React.Component<CircleProps, CircleState> {
             outputRange: [1, 1, 2, 1, 1]
         });
         return (
-            <Animated.View style={[styles.circle, { transform: [{ scale }] }]}/>
+            <Animated.View style={[styles.circle, { transform: [{ scale }] }]} />
         );
     }
 }
@@ -55,16 +55,16 @@ class Circle extends React.Component<CircleProps, CircleState> {
 export default class RefreshIndicator extends React.PureComponent<RefreshIndicatorProps> {
 
     render(): React.Node {
-        const {refreshing, style} = this.props;
+        const { refreshing, style } = this.props;
         if (!refreshing) {
             return <View />;
         }
         return (
             <View style={[styles.container, style]}>
-                <Circle order={1} total={4}/>
-                <Circle order={2} total={4}/>
-                <Circle order={3} total={4}/>
-                <Circle order={4} total={4}/>
+                <Circle order={1} total={4} />
+                <Circle order={2} total={4} />
+                <Circle order={3} total={4} />
+                <Circle order={4} total={4} />
             </View>
         );
     }

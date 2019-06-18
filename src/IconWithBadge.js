@@ -25,7 +25,8 @@ export default class IconWithBadge extends React.Component {
                 Animated.spring(this.springValue, {
                     toValue: 1,
                     friction: 2,
-                    tension: 1
+                    tension: 1,
+                    useNativeDriver: true
                 }).start(() => this.animationState = 2); // finished
             }
         } else {

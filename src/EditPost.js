@@ -48,7 +48,6 @@ const messageBoxH = 60;
 const V1 = 10;
 const V3 = 10;
 const V4 = 14;
-// const V2 = (messageBoxW - V3 * 2) * 0.9;
 const V2 = messageBoxW - V3 * 2 - V4;
 
 /*
@@ -210,6 +209,8 @@ export default class EditPost extends React.Component {
 
         showMessageBox: false,
         messageBoxY: 0,
+        messageBoxText: '',
+        messageBoxOpacity: new Animated.Value(0),
 
         onNote: false,
         keyboardTop: Dimensions.get('window').height,
@@ -1200,6 +1201,10 @@ export default class EditPost extends React.Component {
     }
 
     renderHeader(post) {
+        const viewStyle = {
+            opacity: this.state.messageBoxOpacity
+        };
+
         return (
             /*
             <View>
@@ -1274,11 +1279,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: -17 });  // 0: base of inputview
+                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                this.showMessageBox(msg, -17); // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1328,11 +1330,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.nameY });
+                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                this.showMessageBox(msg, this.nameY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1381,11 +1380,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.birthdayY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.birthdayY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1451,11 +1447,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.genderY });
+                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                this.showMessageBox(msg, this.genderY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1505,10 +1498,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-                                this.setState({ showMessageBox: true, messageBoxY: this.heightY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.heightY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1560,11 +1551,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.weightY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.weightY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1633,11 +1621,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.bodyTypeY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.bodyTypeY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1726,11 +1711,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.breastsY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.breastsY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1784,11 +1766,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.noteY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.noteY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1845,11 +1824,8 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                if (this.state.showMessageBox) {
-                                    this.setState({ showMessageBox: false, messageBoxY: 0 });
-                                }
-
-                                this.setState({ showMessageBox: true, messageBoxY: this.countryY });
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.countryY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1934,17 +1910,18 @@ export default class EditPost extends React.Component {
                 {
                     this.state.showMessageBox &&
                     <TouchableWithoutFeedback onPress={() => {
-                        console.log('111111111111');
                         if (this.state.showMessageBox) {
-                            this.setState({ showMessageBox: false, messageBoxY: 0 });
+                            this.hideMessageBox();
                         }
                     }}>
-                        <View style={{
-                            width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
-                            position: 'absolute', right: 5, top: this.inputViewY + this.state.messageBoxY - (messageBoxH + V1 - 10),
-                            alignItems: 'center', justifyContent: 'center',
-                            backgroundColor: 'transparent'
-                        }}>
+                        <Animated.View style={[
+                            {
+                                width: 5 + messageBoxW + 5, height: 5 + messageBoxH + V1 + 5,
+                                position: 'absolute', right: 5, top: this.inputViewY + this.state.messageBoxY - (messageBoxH + V1 - 10),
+                                alignItems: 'center', justifyContent: 'center',
+                                backgroundColor: 'transparent'
+                            }, viewStyle
+                        ]}>
                             <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
                                 <Svg.Polygon
                                     points={points}
@@ -1958,16 +1935,10 @@ export default class EditPost extends React.Component {
                                 fontSize: 13, lineHeight: 18,
                                 fontFamily: "Roboto-Regular", color: Theme.color.highlight,
                                 // textAlignVertical: 'center', // only for android
-
-                            }}
-                                onBlur={(e) => {
-                                    console.log('323333');
-                                }}
-
-                            >
-                                {"Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried."}
+                            }}>
+                                {this.state.messageBoxText}
                             </Text>
-                        </View>
+                        </Animated.View>
                     </TouchableWithoutFeedback>
                 }
             </View>
@@ -2234,23 +2205,23 @@ export default class EditPost extends React.Component {
     }
 
     showNotification(msg) {
-        if (this._showNotification) this.hideNotification();
+        // if (this._showNotification) this.hideNotification();
 
         this._showNotification = true;
 
         !this.closed && this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.sequence([
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 1,
-                            duration: 200
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: Constants.statusBarHeight + 6,
-                            duration: 200
-                        })
-                    ])
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
                 ]).start();
             });
         });
@@ -2258,21 +2229,19 @@ export default class EditPost extends React.Component {
 
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
         });
-
-        this._showNotification = false;
     }
 
     showFlash(title, subtitle, image) {
@@ -2281,49 +2250,45 @@ export default class EditPost extends React.Component {
             this.hideAlertIcon();
         }
 
-        if (!this._showFlash) {
-            this._showFlash = true;
+        this._showFlash = true;
 
-            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
-                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.flashOpacity, {
-                                toValue: 1,
-                                duration: 200
-                            }),
-                            Animated.timing(this.state.flashOffset, {
-                                toValue: Constants.statusBarHeight,
-                                duration: 200
-                            })
-                        ])
-                    ]).start();
-                });
+        this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+            this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: Constants.statusBarHeight,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
+                ]).start();
             });
+        });
 
-            // StatusBar.setHidden(true);
-        }
+        // StatusBar.setHidden(true);
     };
 
     hideFlash() {
         this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.flashOpacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.flashOffset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.flashOpacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.flashOffset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showFlash = false; });
         });
 
         // StatusBar.setHidden(false);
-
-        this._showFlash = false;
     }
 
     hideAlertIcon() {
@@ -2340,6 +2305,45 @@ export default class EditPost extends React.Component {
         if (this.state.showPicture2AlertIcon) this.setState({ showPicture2AlertIcon: false });
         if (this.state.showPicture3AlertIcon) this.setState({ showPicture3AlertIcon: false });
         if (this.state.showPicture4AlertIcon) this.setState({ showPicture4AlertIcon: false });
+    }
+
+    showMessageBox(msg, y) {
+        this.setState({ messageBoxText: msg, showMessageBox: true, messageBoxY: y }, () => {
+            Animated.timing(this.state.messageBoxOpacity, {
+                toValue: 1,
+                duration: 200,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true
+            }).start(() => {
+                if (this.timer) {
+                    clearTimeout(this.timer);
+                    this.timer = null;
+                }
+
+                this.timer = setTimeout(() => {
+                    if (this.closed) return;
+
+                    if (this.state.showMessageBox) this.hideMessageBox();
+                }, 2000);
+            });
+        });
+    }
+
+    hideMessageBox() {
+        if (this._hideMessageBox) return;
+
+        this._hideMessageBox = true;
+
+        Animated.timing(this.state.messageBoxOpacity, {
+            toValue: 0,
+            duration: 200,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true
+        }).start(() => {
+            this.setState({ showMessageBox: false, messageBoxY: 0 });
+
+            this._hideMessageBox = false;
+        });
     }
 
     showDateTimePicker(title) {

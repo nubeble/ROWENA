@@ -315,23 +315,23 @@ export default class WriteReviewScreen extends React.Component {
     }
 
     showNotification(msg) {
-        if (this._showNotification) this.hideNotification();
+        // if (this._showNotification) this.hideNotification();
 
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.sequence([
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 1,
-                            duration: 200
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: Constants.statusBarHeight + 6,
-                            duration: 200
-                        })
-                    ])
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
                 ]).start();
             });
         });
@@ -339,21 +339,19 @@ export default class WriteReviewScreen extends React.Component {
 
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
         });
-
-        this._showNotification = false;
     }
 
     onChangeText(text) {

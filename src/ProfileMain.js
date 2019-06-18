@@ -225,25 +225,23 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     */
 
     showNotification(msg) {
-        if (this._showNotification) {
-            this.hideNotification();
-        }
+        // if (this._showNotification) this.hideNotification();
 
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.sequence([
-                    Animated.parallel([
-                        Animated.timing(this.state.opacity, {
-                            toValue: 1,
-                            duration: 200
-                        }),
-                        Animated.timing(this.state.offset, {
-                            toValue: Constants.statusBarHeight + 6,
-                            duration: 200
-                        })
-                    ])
+                Animated.parallel([
+                    Animated.timing(this.state.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
                 ]).start();
             });
         });
@@ -251,21 +249,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
         });
-
-        this._showNotification = false;
     }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
@@ -639,7 +635,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     {
                                                         commentAdded &&
                                                         <View style={{
-                                                            marginLeft: Cons.redDotWidth / 2,
+                                                            marginLeft: Cons.redDotWidth,
                                                             backgroundColor: 'red',
                                                             borderRadius: Cons.redDotWidth / 2,
                                                             width: Cons.redDotWidth,
@@ -735,12 +731,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 {
                                                     replyAdded &&
                                                     <View style={{
+                                                        marginLeft: Cons.redDotWidth,
+                                                        marginBottom: Cons.redDotWidth * 3,
                                                         backgroundColor: 'red',
                                                         borderRadius: Cons.redDotWidth / 2,
                                                         width: Cons.redDotWidth,
-                                                        height: Cons.redDotWidth,
-                                                        marginLeft: Cons.redDotWidth / 2,
-                                                        marginBottom: Cons.redDotWidth * 2
+                                                        height: Cons.redDotWidth
                                                     }} />
                                                 }
                                                 <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
@@ -1364,45 +1360,41 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.hideNotification();
         }
 
-        if (!this._showFlash) {
-            this._showFlash = true;
+        this._showFlash = true;
 
-            this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
-                this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
-                    Animated.sequence([
-                        Animated.parallel([
-                            Animated.timing(this.state.flashOpacity, {
-                                toValue: 1,
-                                duration: 200
-                            }),
-                            Animated.timing(this.state.flashOffset, {
-                                toValue: Constants.statusBarHeight,
-                                duration: 200
-                            })
-                        ])
-                    ]).start();
-                });
+        this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
+            this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.parallel([
+                    Animated.timing(this.state.flashOpacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.state.flashOffset, {
+                        toValue: Constants.statusBarHeight,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
+                ]).start();
             });
-        }
+        });
     };
 
     hideFlash() {
         this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.sequence([
-                Animated.parallel([
-                    Animated.timing(this.state.flashOpacity, {
-                        toValue: 0,
-                        duration: 200
-                    }),
-                    Animated.timing(this.state.flashOffset, {
-                        toValue: height * -1,
-                        duration: 200
-                    })
-                ])
-            ]).start();
+            Animated.parallel([
+                Animated.timing(this.state.flashOpacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.state.flashOffset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showFlash = false; });
         });
-
-        this._showFlash = false;
     }
 
     async updateProfilePicture(uri, ref) {
