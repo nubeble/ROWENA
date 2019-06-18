@@ -1378,12 +1378,15 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.birthdayY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        /*
+                        onPress={() => {
+                            // ToDo: show description with pop-up message box
+                            const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                            this.showMessageBox(msg, this.birthdayY);
+                        }}
+                        */
+                        >
+                            <Ionicons name='md-alert' color='transparent' size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
@@ -1445,12 +1448,15 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
-                                this.showMessageBox(msg, this.genderY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        /*
+                        onPress={() => {
+                            // ToDo: show description with pop-up message box
+                            const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                            this.showMessageBox(msg, this.genderY);
+                        }}
+                        */
+                        >
+                            <Ionicons name='md-alert' color={'transparent'} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TextInput
@@ -1496,12 +1502,15 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.heightY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        /*
+                        onPress={() => {
+                            // ToDo: show description with pop-up message box
+                            const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                            this.showMessageBox(msg, this.heightY);
+                        }}
+                        */
+                        >
+                            <Ionicons name='md-alert' color={'transparent'} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TextInput
@@ -1779,9 +1788,9 @@ export default class EditPost extends React.Component {
                                 this.hideNotification();
                                 this.hideAlertIcon();
                             }
-
+ 
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
-
+ 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
                             }, Cons.buttonTimeoutShort);
@@ -1837,22 +1846,22 @@ export default class EditPost extends React.Component {
                                 this.hideNotification();
                                 this.hideAlertIcon();
                             }
-
+ 
                             // check the country is filled
                             if (!this.state.country) {
                                 this.showNotification('Please enter your country.');
-
+ 
                                 this.setState({ showCountryAlertIcon: true });
-
+ 
                                 // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
                                 // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
                                 this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
-
+ 
                                 return;
                             }
-
+ 
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
-
+ 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
                             }, Cons.buttonTimeoutShort);
@@ -2450,15 +2459,15 @@ const styles = StyleSheet.create({
         // paddingBottom: Theme.spacing.small
     },
     /*
-    wrapper: {
-    },
-    slide: {
-        flex: 1,
+wrapper: {
+        },
+slide: {
+            flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
-    item: {
-        width: imageWidth,
+item: {
+            width: imageWidth,
         height: imageHeight
     },
     */

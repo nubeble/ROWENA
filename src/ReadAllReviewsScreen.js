@@ -488,65 +488,103 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         const loading = reviews === undefined;
 
-        const width = Dimensions.get('window').width - Theme.spacing.base * 2;
+        if (loading) {
 
-        let reviewArray = [];
+            const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
-        for (var i = 0; i < 4; i++) {
-            reviewArray.push(
-                <View key={i}>
-                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
-                        <Svg.Circle
-                            cx={18 + 2}
-                            cy={18 + 2}
-                            r={18}
-                        />
-                        <Svg.Rect
-                            x={2 + 18 * 2 + 10}
-                            y={2 + 18 - 12}
-                            width={60}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={2 + 18 * 2 + 10}
-                            y={2 + 18 + 6}
-                            width={100}
-                            height={6}
-                        />
+            let reviewArray = [];
 
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14}
-                            width={'100%'}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14 + 14}
-                            width={'100%'}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14 + 14 + 14}
-                            width={'80%'}
-                            height={6}
-                        />
-                    </SvgAnimatedLinearGradient>
+            for (var i = 0; i < 4; i++) {
+                reviewArray.push(
+                    <View key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
+                            <Svg.Circle
+                                cx={18 + 2}
+                                cy={18 + 2}
+                                r={18}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 - 12}
+                                width={60}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 + 6}
+                                width={100}
+                                height={6}
+                            />
+
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                width={'80%'}
+                                height={6}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+                );
+            }
+
+            return (
+                <View style={{ paddingVertical: Theme.spacing.small }}>
+                    {reviewArray}
                 </View>
             );
         }
 
+        return this.renderEmptyImage();
+    }
+
+    renderEmptyImage() { // ToDo: render design
+        /*
+        <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
+            <FirstPost {...{ navigation }} />
+        </View>
+        */
+
         return (
-            loading ?
-                <View style={{ paddingVertical: Theme.spacing.small }}>
-                    {reviewArray}
-                </View>
-                :
-                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    {/* // ToDo: remove FirstPost */}
-                    <FirstPost {...{ navigation }} />
-                </View>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{
+                    // color: Theme.color.text2,
+                    color: 'rgb(247, 178, 57)',
+                    fontSize: 24,
+                    paddingTop: 4,
+                    fontFamily: "Roboto-Medium"
+                }}>No customer reviews yet</Text>
+
+                {/*
+            <Text style={{
+                marginTop: 10,
+                color: Theme.color.text3,
+                fontSize: 18,
+                fontFamily: "Roboto-Medium"
+            }}>Start exploring girls for your next trip</Text>
+            */}
+
+                <Image
+                    style={{
+                        marginTop: 20,
+                        width: 200 / 510 * 600,
+                        height: 200,
+                        resizeMode: 'cover'
+                    }}
+                    source={PreloadImage.find}
+                />
+            </View>
         );
     }
 

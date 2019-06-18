@@ -91,7 +91,6 @@ export default class UserMain extends React.Component<InjectedProps> {
         let disableReviewButton = false;
         if (!item.placeId || !item.feedId) disableReviewButton = true; // from CommentMain
 
-
         const guest = item.guest;
         const host = item.host;
 
@@ -307,23 +306,21 @@ export default class UserMain extends React.Component<InjectedProps> {
             const { reviews } = this.commentStore;
             const { host, guest } = this.state;
 
-            const commentId = reviews[index].review.id;
+            const commentId = reviews[index].comment.id;
             const result = await Firebase.removeComment(host.uid, guest.uid, commentId);
             if (!result) {
                 this.refs["toast"].show('The user no longer exists.', 500);
                 return;
             }
 
-            this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
-                if (!this.closed) {
-                    // refresh
-                    this.setState({ isLoadingFeeds: true });
-                    this.commentStore.loadReviewFromTheStart();
+            this.refs["toast"].show('Your review has successfully been removed.', 500);
 
-                    // move scroll top
-                    this._flatList.scrollToOffset({ offset: 0, animated: false });
-                }
-            });
+            // refresh
+            this.setState({ isLoadingFeeds: true });
+            this.commentStore.loadReviewFromTheStart();
+
+            // move scroll top
+            this._flatList.scrollToOffset({ offset: 0, animated: false });
         });
     }
 
@@ -369,7 +366,8 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     render() {
-        const { reviews } = this.commentStore;
+        const { guest } = this.state; // undefined at loading
+        if (!guest) return null;
 
         let avatarName = 'Anonymous';
         let address = "No address registered";
@@ -384,53 +382,51 @@ export default class UserMain extends React.Component<InjectedProps> {
         let _avatarName = '';
         let _avatarColor = 'black';
 
-        const { guest } = this.state; // undefined at loading
+        const { reviews } = this.commentStore;
 
-        if (guest) {
-            // name
-            if (guest.name) avatarName = guest.name;
+        // name
+        if (guest.name) avatarName = guest.name;
 
-            // address
-            if (guest.address) address = guest.address;
+        // address
+        if (guest.address) address = guest.address;
 
-            const count = guest.receivedCommentsCount;
+        const count = guest.receivedCommentsCount;
 
-            // reviewText
-            if (count === 0) {
-                reviewText = 'No customer reviews yet';
-            } else if (count === 1) {
-                reviewText = '1 customer review';
-            } else {
-                reviewText = count.toString() + " customer reviews";
-            }
-
-            // labelText
-            /*
-            if (count === 1) {
-                labelText = count.toString() + ' review from hosts';
-            } else if (count > 1) {
-                labelText = count.toString() + ' reviews from hosts';
-            }
-            */
-
-            // image
-            if (guest.picture) imageUri = guest.picture;
-
-            // date
-            dateText = Util.getJoinedDate(guest.timestamp);
-
-            // ToDo: use age, gender, note
-            if (guest.birthday) age = Util.getAge(guest.birthday);
-            if (guest.gender) gender = guest.gender;
-            if (guest.about) note = guest.about;
-
-            if (!imageUri) {
-                _avatarName = Util.getAvatarName(avatarName);
-                _avatarColor = Util.getAvatarColor(guest.uid);
-            }
+        // reviewText
+        if (count === 0) {
+            reviewText = 'No customer reviews yet';
+        } else if (count === 1) {
+            reviewText = '1 customer review';
+        } else {
+            reviewText = count.toString() + " customer reviews";
         }
 
-        const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
+        // labelText
+        /*
+        if (count === 1) {
+            labelText = count.toString() + ' review from hosts';
+        } else if (count > 1) {
+            labelText = count.toString() + ' reviews from hosts';
+        }
+        */
+
+        // image
+        if (guest.picture) imageUri = guest.picture;
+
+        // date
+        dateText = Util.getJoinedDate(guest.timestamp);
+
+        // ToDo: use age, gender, note
+        if (guest.birthday) age = Util.getAge(guest.birthday);
+        if (guest.gender) gender = guest.gender;
+        if (guest.about) note = guest.about;
+
+        if (!imageUri) {
+            _avatarName = Util.getAvatarName(avatarName);
+            _avatarColor = Util.getAvatarColor(guest.uid);
+        }
+
+        // const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -894,76 +890,103 @@ export default class UserMain extends React.Component<InjectedProps> {
     renderListEmptyComponent() {
         const { guest } = this.state;
         if (!guest) return null;
-        if (guest.receivedCommentsCount === 0) return null;
 
-        // const { navigation } = this.props;
+        // if (guest.receivedCommentsCount === 0) return null;
+        // if (guest.receivedCommentsCount === 0) return this.renderEmptyImage();
 
         const { reviews } = this.commentStore;
+
         const loading = reviews === undefined;
 
-        const width = Dimensions.get('window').width - Theme.spacing.base * 2;
+        if (loading) {
+            const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
-        let reviewArray = [];
+            let reviewArray = [];
 
-        for (var i = 0; i < 4; i++) {
-            reviewArray.push(
-                <View key={i}>
-                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
-                        <Svg.Circle
-                            cx={18 + 2}
-                            cy={18 + 2}
-                            r={18}
-                        />
-                        <Svg.Rect
-                            x={2 + 18 * 2 + 10}
-                            y={2 + 18 - 12}
-                            width={60}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={2 + 18 * 2 + 10}
-                            y={2 + 18 + 6}
-                            width={100}
-                            height={6}
-                        />
+            for (var i = 0; i < 4; i++) {
+                reviewArray.push(
+                    <View key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
+                            <Svg.Circle
+                                cx={18 + 2}
+                                cy={18 + 2}
+                                r={18}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 - 12}
+                                width={60}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 + 6}
+                                width={100}
+                                height={6}
+                            />
 
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14}
-                            width={'100%'}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14 + 14}
-                            width={'100%'}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14 + 14 + 14}
-                            width={'80%'}
-                            height={6}
-                        />
-                    </SvgAnimatedLinearGradient>
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                width={'80%'}
+                                height={6}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+                );
+            }
+
+            return (
+                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
+                    {reviewArray}
                 </View>
             );
         }
 
+        return this.renderEmptyImage();
+    }
+
+    renderEmptyImage() { // ToDo: render design
         return (
-            /*
-            loading ?
-                <View style={{ paddingVertical: Theme.spacing.small }}>
-                    {reviewArray}
-                </View>
-                :
-                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-                    <FirstPost {...{ navigation }} />
-                </View>
-            */
-            loading &&
-            <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
-                {reviewArray}
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{
+                    // color: Theme.color.text2,
+                    color: 'rgb(247, 178, 57)',
+                    fontSize: 24,
+                    paddingTop: 4,
+                    fontFamily: "Roboto-Medium"
+                }}>No customer reviews yet</Text>
+
+                {/*
+                <Text style={{
+                    marginTop: 10,
+                    color: Theme.color.text3,
+                    fontSize: 18,
+                    fontFamily: "Roboto-Medium"
+                }}>Start exploring girls for your next trip</Text>
+                */}
+
+                <Image
+                    style={{
+                        marginTop: 20,
+                        width: 200 / 510 * 600,
+                        height: 200,
+                        resizeMode: 'cover'
+                    }}
+                    source={PreloadImage.find}
+                />
             </View>
         );
     }

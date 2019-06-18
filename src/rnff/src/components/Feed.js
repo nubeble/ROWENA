@@ -145,6 +145,7 @@ export default class Feed extends React.Component<FeedProps> {
                                 <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                             </View>
                             :
+                            // ToDo: render design
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{
                                     // color: Theme.color.text2,

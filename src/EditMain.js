@@ -51,15 +51,14 @@ export default class EditMain extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { profile } = this.props.profileStore;
-        // if (profile) {
+
         const uid = profile.uid;
-        const receivedCommentsCount = profile.receivedCommentsCount;
+        // const receivedCommentsCount = profile.receivedCommentsCount;
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
-        // }
     }
 
     @autobind
@@ -104,6 +103,9 @@ export default class EditMain extends React.Component<InjectedProps> {
     }
 
     render() {
+        const { profile } = this.props.profileStore;
+        if (!profile) return null;
+
         let avatarName = 'Anonymous';
         let address = "No address registered";
         let count = 0;
@@ -115,8 +117,6 @@ export default class EditMain extends React.Component<InjectedProps> {
         let gender = 'Female';
         let note = 'hi';
 
-        const { profile } = this.props.profileStore;
-        // if (profile) {
         const name = profile.name;
         const email = profile.email;
         const phoneNumber = profile.phoneNumber;
@@ -147,7 +147,6 @@ export default class EditMain extends React.Component<InjectedProps> {
             _avatarName = Util.getAvatarName(name);
             _avatarColor = Util.getAvatarColor(profile.uid);
         }
-        // }
 
         let reviewText = '';
         if (count === 0) {
@@ -494,104 +493,106 @@ export default class EditMain extends React.Component<InjectedProps> {
     @autobind
     renderListEmptyComponent() {
         const { profile } = this.props.profileStore;
-        // if (!profile) return null;
+        if (!profile) return null;
 
         // const receivedCommentsCount = profile.receivedCommentsCount;
-        // if (receivedCommentsCount === 0) return null; // ToDo: !!!
+        // if (receivedCommentsCount === 0) return null;
+        // if (receivedCommentsCount === 0) return this.renderEmptyImage();
 
         const { reviews } = this.commentStore;
 
         const loading = reviews === undefined;
 
-        const width = Dimensions.get('window').width - Theme.spacing.base * 2;
+        if (loading) {
+            const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
-        let reviewArray = [];
+            let reviewArray = [];
 
-        for (var i = 0; i < 4; i++) {
-            reviewArray.push(
-                <View key={i}>
-                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
-                        <Svg.Circle
-                            cx={18 + 2}
-                            cy={18 + 2}
-                            r={18}
-                        />
-                        <Svg.Rect
-                            x={2 + 18 * 2 + 10}
-                            y={2 + 18 - 12}
-                            width={60}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={2 + 18 * 2 + 10}
-                            y={2 + 18 + 6}
-                            width={100}
-                            height={6}
-                        />
+            for (var i = 0; i < 4; i++) {
+                reviewArray.push(
+                    <View key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
+                            <Svg.Circle
+                                cx={18 + 2}
+                                cy={18 + 2}
+                                r={18}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 - 12}
+                                width={60}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={2 + 18 * 2 + 10}
+                                y={2 + 18 + 6}
+                                width={100}
+                                height={6}
+                            />
 
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14}
-                            width={'100%'}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14 + 14}
-                            width={'100%'}
-                            height={6}
-                        />
-                        <Svg.Rect
-                            x={0}
-                            y={2 + 18 * 2 + 14 + 14 + 14}
-                            width={'80%'}
-                            height={6}
-                        />
-                    </SvgAnimatedLinearGradient>
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14}
+                                width={'100%'}
+                                height={6}
+                            />
+                            <Svg.Rect
+                                x={0}
+                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                width={'80%'}
+                                height={6}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+                );
+            }
+
+            return (
+                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
+                    {reviewArray}
                 </View>
             );
         }
 
+        return this.renderEmptyImage();
+    }
+
+    renderEmptyImage() { // ToDo: render design
         return (
-            loading ?
-                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
-                    {reviewArray}
-                </View>
-                :
-                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'green' }}>
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{
+                    // color: Theme.color.text2,
+                    color: 'rgb(247, 178, 57)',
+                    fontSize: 24,
+                    paddingTop: 4,
+                    fontFamily: "Roboto-Medium"
+                }}>No customer reviews yet</Text>
 
-                        <Text style={{
-                            color: Theme.color.text2,
-                            fontSize: 24,
-                            paddingTop: 4,
-                            fontFamily: "Roboto-Medium"
-                        }}>No selected girls</Text>
+                {/*
+                <Text style={{
+                    marginTop: 10,
+                    color: Theme.color.text3,
+                    fontSize: 18,
+                    fontFamily: "Roboto-Medium"
+                }}>Start exploring girls for your next trip</Text>
+                */}
 
-                        <Text style={{
-                            marginTop: 10,
-                            color: Theme.color.text3,
-                            fontSize: 18,
-                            fontFamily: "Roboto-Medium"
-                        }}>Start exploring girls for your next trip</Text>
-
-                        <TouchableOpacity
-                            onPress={() => {
-                            }}
-                            style={{ marginTop: 20 }}>
-                            <Image
-                                style={{
-                                    width: 300 / 510 * 600,
-                                    height: 300,
-                                    resizeMode: 'cover'
-                                }}
-                                source={PreloadImage.find}
-
-                            />
-                        </TouchableOpacity>
-                    </View>
-
-                </View>
+                <Image
+                    style={{
+                        marginTop: 20,
+                        width: 200 / 510 * 600,
+                        height: 200,
+                        resizeMode: 'cover'
+                    }}
+                    source={PreloadImage.find}
+                />
+            </View>
         );
     }
 

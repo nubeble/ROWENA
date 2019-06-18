@@ -165,15 +165,6 @@ export default class MapSearch extends React.Component {
         return feeds;
     }
 
-    /*
-    @autobind
-    onAddToFeedFinished() {
-        console.log('MapSearch.onAddToFeedFinished');
-
-        !this.closed && this.setState({ loading: false });
-    }
-    */
-
     @autobind
     handleHardwareBackPress() {
         // this.props.navigation.goBack();
