@@ -424,16 +424,15 @@ export default class Intro extends React.Component {
         placeList = Util.shuffle(placeList);
 
         let popularFeeds = [];
-        let index = 0;
-
         for (let i = 0; i < placeList.length; i++) {
             const placeId = placeList[i];
             const feed = await Firebase.getFeedByAverageRating(placeId);
             if (feed) {
-                popularFeeds[index] = feed;
-                index++;
+                popularFeeds.push(feed);
             }
         }
+
+        console.log('popularFeeds', popularFeeds.length);
 
         !this.closed && this.setState({ popularFeeds });
         Intro.popularFeeds = popularFeeds;
@@ -519,16 +518,15 @@ export default class Intro extends React.Component {
         placeList = Util.shuffle(placeList);
 
         let recentFeeds = [];
-        let index = 0;
-
         for (let i = 0; i < placeList.length; i++) {
             const placeId = placeList[i];
             const feed = await Firebase.getFeedByTimestamp(placeId);
             if (feed) {
-                recentFeeds[index] = feed;
-                index++;
+                recentFeeds.push(feed);
             }
         }
+
+        console.log('recentFeeds', recentFeeds.length);
 
         !this.closed && this.setState({ recentFeeds });
         Intro.recentFeeds = recentFeeds;
