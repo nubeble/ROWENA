@@ -82,10 +82,10 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeMacao()}
+                    <TouchableOpacity onPress={() => this.makeMacau()}
                         style={styles.bottomButton}
                     >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macao)</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macau)</Text>
                     </TouchableOpacity>
 
                     {/*
@@ -142,8 +142,8 @@ export default class Admin extends React.Component {
             // 5. 캄보디아
             this.makePP();
 
-            // 6. 마카오 (Macao, Macau)
-            this.makeMacao();
+            // 6. 마카오
+            this.makeMacau();
 
             // 7. 인도네시아
             this.makeJakarta();
@@ -1047,11 +1047,12 @@ export default class Admin extends React.Component {
         // Vars.userFeedsChanged = true;
     }
 
-    async makeMacao() {
+    async makeMacau() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
-        const placeName = 'Macau, China'; // Consider: exception
+        // const placeName = 'Macau, China'; // Consider: exception
+        const placeName = 'Macau';
 
         /*
         const location = {

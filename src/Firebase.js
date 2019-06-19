@@ -197,7 +197,7 @@ export default class Firebase {
         if (!result) return false;
 
         // delete firebase auth
-        var user = Firebase.auth.currentUser;
+        let user = Firebase.auth.currentUser;
         await user.delete().then(function () {
             // User deleted.
             console.log('Firebase auth deleted.');
@@ -475,7 +475,7 @@ export default class Firebase {
                 // update
                 let count = 0;
                 let field = placeDoc.data().count;
-                if (field) count = field; // never happen
+                if (field) count = field; // this will never happen
                 count++;
 
                 transaction.update(placeRef, {
@@ -898,7 +898,7 @@ export default class Firebase {
 
 
             let { feeds } = ownerDoc.data();
-            for (var i = 0; i < feeds.length; i++) {
+            for (let i = 0; i < feeds.length; i++) {
                 let feed = feeds[i];
                 if (feed.placeId === placeId && feed.feedId === feedId) {
                     // update
@@ -1213,7 +1213,7 @@ export default class Firebase {
 
 
             let { reviews } = userDoc.data();
-            for (var i = 0; i < reviews.length; i++) {
+            for (let i = 0; i < reviews.length; i++) {
                 let review = reviews[i];
                 if (review.placeId === placeId && review.feedId === feedId && review.reviewId === reviewId) {
                     // update
@@ -1651,8 +1651,8 @@ export default class Firebase {
     */
 
     static user() {
-        var user = Firebase.auth.currentUser;
-        var name, email, photoUrl, uid, emailVerified;
+        let user = Firebase.auth.currentUser;
+        let name, email, photoUrl, uid, emailVerified;
 
         if (user !== null) {
             name = user.displayName;
@@ -1814,7 +1814,7 @@ export default class Firebase {
         await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
             if (!snapshot.exists()) throw 'Chat - uid data does not exist!';
 
-            var BreakException = {};
+            let BreakException = {};
 
             try {
                 snapshot.forEach(item => {
@@ -1883,7 +1883,7 @@ export default class Firebase {
         await Firebase.database.ref('chat').child(myUid).child(postId).remove();
 
         // check if the opponent exists
-        var opponentExists = false;
+        let opponentExists = false;
         await Firebase.database.ref('chat').child(opponentUid).child(postId).once('value').then(snapshot => {
             if (snapshot.exists()) opponentExists = true;
         });

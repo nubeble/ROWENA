@@ -146,7 +146,7 @@ export const getAlphabet = () => {
             { name: 'Lithuania', code: '+370' },
             { name: 'Luxembourg', code: '+352' }],
         M:
-            [{ name: 'Macao', code: '+853' },
+            [{ name: 'Macau', code: '+853' },
             { name: 'Macedonia', code: '+389' },
             { name: 'Madagascar', code: '+261' },
             { name: 'Malawi', code: '+265' },
@@ -968,7 +968,7 @@ export const getAlphabet = () => {
             {
                 dial: '+853',
                 code: "MO",
-                name: "Macao"
+                name: "Macau"
             },
             {
                 dial: '+389',

@@ -224,8 +224,10 @@ export default class SearchScreen extends React.Component {
                             this.refs["toast"].show(message, 500);
                         }}
                         onPress={async (data, details = null) => { // 'details' is provided when fetchDetails = true
-                            console.log('data', data);
-                            console.log('details', details);
+                            console.log('SearchScreen, data', data);
+                            console.log('SearchScreen, details', details);
+
+                            if (!details) this.props.navigation.goBack();
 
                             const location = details.geometry.location;
                             const result = {
@@ -256,6 +258,13 @@ export default class SearchScreen extends React.Component {
                             // --
 
                             if (from === 'AdvertisementMain') {
+                                // ToDo: exception for city-state (Macau, Hong Kong, ...)
+                                let type = 200; // 100: city-state, 200: city
+                                if (countryCode === 'MO' || countryCode === 'HK' || countryCode === 'MC' || countryCode === 'SG') {
+                                    console.log('!!!!!!!! city-state !!!!!!!!');
+                                    type = 100;
+                                }
+
                                 const input = {
                                     lat: location.lat,
                                     lng: location.lng
@@ -263,8 +272,10 @@ export default class SearchScreen extends React.Component {
 
                                 const key = API_KEY;
 
-                                Util.getPlaceId(input, key, (obj) => {
+                                Util.getPlaceId(input, key, type, (obj) => {
                                     console.log('Util.getPlaceId result', obj);
+
+                                    if (!obj) return;
 
                                     // Consider: exception
                                     // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
@@ -403,7 +414,7 @@ export default class SearchScreen extends React.Component {
     getSavedPlaces() {
         const predefinedPlaces = [];
 
-        for (var i = 0; i < this.state.history.length; i++) {
+        for (let i = 0; i < this.state.history.length; i++) {
             let item = this.state.history[i];
             if (item) {
                 item.icon = 'saved';
@@ -419,7 +430,7 @@ export default class SearchScreen extends React.Component {
             predefinedList.push(Vientiane);
 
             const startIndex = predefinedPlaces.length;
-            for (var i = startIndex; i < 4; i++) {
+            for (let i = startIndex; i < 4; i++) {
                 predefinedPlaces.push(predefinedList[i]);
             }
         }

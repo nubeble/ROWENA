@@ -282,7 +282,7 @@ export default class Util extends React.Component {
         return value;
     }
 
-    static async getPlaceId(input, key, callback) { // get city
+    static async getPlaceId(input, key, type, callback) { // get placeId of city-state or city
         const request = new XMLHttpRequest();
         request.onreadystatechange = () => {
             if (request.readyState !== 4) return;
@@ -292,46 +292,90 @@ export default class Util extends React.Component {
 
                 // console.log('responseJSON', responseJSON);
 
-                if (typeof responseJSON.results !== 'undefined') {
-                    console.log('getPlaceId pre results', responseJSON.results);
+                if (type === 100) { // get placeId of city-state
 
-                    let results = null;
-                    const filter1 = ["colloquial_area", "locality", "political"];
-                    results = Util._filterResultsByTypes(responseJSON.results, filter1);
+                    // --
+                    if (typeof responseJSON.results !== 'undefined') {
+                        console.log('getPlaceId pre results', responseJSON.results);
 
-                    if (results.length === 0) {
-                        const filter2 = ["locality", "political"];
-                        results = Util._filterResultsByTypes(responseJSON.results, filter2);
+                        let results = null;
+                        const filter1 = ["country", "political"];
+                        results = Util._filterResultsByTypes(responseJSON.results, filter1);
+
+                        if (results.length === 0) {
+                            const filter2 = ["locality", "political"];
+                            results = Util._filterResultsByTypes(responseJSON.results, filter2);
+                        }
+
+                        // console.log('getPlaceId after results', results);
+
+                        let result = null;
+                        if (results.length === 0) {
+                            // this should never happen
+                            console.log('Util.getPlaceId', 'this should never happen!!!');
+
+                            // just use the origin
+                            result = responseJSON.results[0];
+                        } else {
+                            result = results[0]; // select the first one
+                        }
+
+                        callback(result);
                     }
 
-                    if (results.length === 0) {
-                        const filter3 = ['locality', 'administrative_area_level_3'];
-                        results = Util._filterResultsByTypes(responseJSON.results, filter3);
+                    if (typeof responseJSON.error_message !== 'undefined') {
+                        console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                    }
+                    // --
+
+                } else if (type === 200) { // get placeId of city
+
+                    // --
+                    if (typeof responseJSON.results !== 'undefined') {
+                        console.log('getPlaceId pre results', responseJSON.results);
+
+                        let results = null;
+                        const filter1 = ["colloquial_area", "locality", "political"];
+                        results = Util._filterResultsByTypes(responseJSON.results, filter1);
+
+                        if (results.length === 0) {
+                            const filter2 = ["locality", "political"];
+                            results = Util._filterResultsByTypes(responseJSON.results, filter2);
+                        }
+
+                        if (results.length === 0) {
+                            const filter3 = ['locality', 'administrative_area_level_3'];
+                            results = Util._filterResultsByTypes(responseJSON.results, filter3);
+                        }
+
+                        if (results.length === 0) {
+                            const filter4 = ['street_address'];
+                            results = Util._filterResultsByTypes(responseJSON.results, filter4);
+                        }
+
+                        // console.log('getPlaceId after results', results);
+
+                        let result = null;
+                        if (results.length === 0) {
+                            // this should never happen
+                            console.log('Util.getPlaceId', 'this should never happen!!!');
+
+                            // just use the origin
+                            result = responseJSON.results[0];
+                        } else {
+                            result = results[0]; // select the first one
+                        }
+
+                        callback(result);
                     }
 
-                    if (results.length === 0) {
-                        const filter4 = ['street_address'];
-                        results = Util._filterResultsByTypes(responseJSON.results, filter4);
+                    if (typeof responseJSON.error_message !== 'undefined') {
+                        console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
                     }
+                    // --
 
-                    // console.log('getPlaceId after results', results);
-
-                    let result = null;
-                    if (results.length === 0) {
-                        // this should never happen
-                        console.log('Util.getPlaceId', 'this should never happen!!!');
-
-                        // just use the origin
-                        result = responseJSON.results[0];
-                    } else {
-                        result = results[0]; // select the first one
-                    }
-
-                    callback(result);
-                }
-
-                if (typeof responseJSON.error_message !== 'undefined') {
-                    console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                } else {
+                    callback(null);
                 }
             }
         };
@@ -360,7 +404,7 @@ export default class Util extends React.Component {
     }
 
     static _filterResultsByTypes = (unfilteredResults, types) => {
-        if (types.length === 0) return unfilteredResults; // never happen
+        if (types.length === 0) return unfilteredResults; // this will never happen
 
         const results = [];
 
@@ -939,7 +983,7 @@ export default class Util extends React.Component {
 
             {
                 code: "MO",
-                name: "Macao"
+                name: "Macau"
             },
             {
                 code: "MK",
@@ -1533,9 +1577,9 @@ export default class Util extends React.Component {
     }
 
     static getDarkColor() {
-        var letters = '456789'.split('');
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
+        let letters = '456789'.split('');
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 6)];
         }
 
@@ -1636,7 +1680,7 @@ export default class Util extends React.Component {
     }
 
     static shuffle(array) {
-        var currentIndex = array.length, temp, randomIndex;
+        let currentIndex = array.length, temp, randomIndex;
 
         // While there remain elements to shuffle...
         while (0 !== currentIndex) {

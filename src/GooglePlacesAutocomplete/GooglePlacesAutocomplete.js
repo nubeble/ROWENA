@@ -557,9 +557,9 @@ export default class GooglePlacesAutocomplete extends Component {
     }
 
     _filterResultsByCity = (unfilteredResults, typesArray) => {
-        if (typesArray.length === 0) return unfilteredResults; // never happen
+        if (typesArray.length === 0) return unfilteredResults; // this will never happen
 
-        const results = [];
+        let results = [];
 
         for (let h = 0; h < typesArray.length; h++) {
             const types = typesArray[h];
@@ -586,6 +586,32 @@ export default class GooglePlacesAutocomplete extends Component {
 
             if (results.length > 0) break;
         }
+
+        return results;
+    }
+
+    _filterResultsByCityState = (unfilteredResults, types) => {
+        let results = [];
+
+        // --
+        for (let i = 0; i < unfilteredResults.length; i++) {
+            if (unfilteredResults[i].types.length !== types.length) continue;
+
+            let found = true;
+
+            for (let j = 0; j < types.length; j++) {
+                if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
+                    found = false;
+                    break;
+                }
+            }
+
+            if (found === true) {
+                results.push(unfilteredResults[i]);
+                break;
+            }
+        }
+        // --
 
         return results;
     }
@@ -694,7 +720,7 @@ export default class GooglePlacesAutocomplete extends Component {
                                 : responseJSON.predictions;
                             */
 
-                            var results = [];
+                            let results = [];
                             if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
                                 console.log('_request GoogleReverseGeocoding pre results', responseJSON.predictions);
                                 results = this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes);
@@ -703,9 +729,23 @@ export default class GooglePlacesAutocomplete extends Component {
                                 // results = responseJSON.predictions;
 
                                 console.log('_request GooglePlacesSearch pre results', responseJSON.predictions);
-                                // results = this._filterByALLTypes(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
                                 results = this._filterResultsByCity(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
                                 console.log('_request GooglePlacesSearch results', results);
+
+                                // ToDo: exception for city-state (Macau, Hong Kong, ...)
+                                if (results.length === 0) {
+                                    const filter = ["country", "political", "geocode"];
+                                    results = this._filterResultsByCityState(responseJSON.predictions, filter);
+                                    console.log('_request GooglePlacesSearch _filterResultsByCityState', results);
+                                    if (results.length === 1) {
+                                        const result = results[0];
+                                        if (result.description === "Hong Kong" || result.description === "Macau" || result.description === "Singapore" || result.description === "Monaco") {
+                                            // keep going
+                                        } else {
+                                            results = [];
+                                        }
+                                    }
+                                }
                             }
 
                             this._results = results;
