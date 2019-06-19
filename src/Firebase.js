@@ -273,6 +273,7 @@ export default class Firebase {
         return uri;
     }
 
+    /*
     static async getRandomPlace() {
         let placeId = null;
 
@@ -304,6 +305,21 @@ export default class Firebase {
         }
 
         return placeId;
+    }
+    */
+    static async getRandomPlaces(size) {
+        let places = [];
+
+        const postsRef = Firebase.firestore.collection("place");
+        const snap = await postsRef.orderBy("timestamp", "desc").limit(size).get();
+        if (snap.size > 0) {
+            snap.forEach(doc => {
+                // const data = doc.data();
+                places.push(doc.id);
+            });
+        }
+
+        return places;
     }
 
     static subscribeToFeed(placeId, feedId, callback) {

@@ -548,6 +548,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                 :
                             */
 
+                            // ToDo: render design
                             // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{

@@ -563,8 +563,9 @@ export default class EditMain extends React.Component<InjectedProps> {
         return this.renderEmptyImage();
     }
 
-    renderEmptyImage() { // ToDo: render design
+    renderEmptyImage() {
         return (
+            // ToDo: render design
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
                     // color: Theme.color.text2,

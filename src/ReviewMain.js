@@ -209,6 +209,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         }
 
                         ListEmptyComponent={
+                            // ToDo: render design
                             // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                                 <Text style={{

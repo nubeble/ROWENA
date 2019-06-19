@@ -332,71 +332,69 @@ export default class Intro extends React.Component {
             let index = 0;
 
             snap.forEach(async (doc) => {
-                if (doc.exists) {
-                    // console.log(doc.id, '=>', doc.data());
-                    const data = doc.data();
-                    if (data.count > 0) {
-                        const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
+                // console.log(doc.id, '=>', doc.data());
+                const data = doc.data();
+                if (data.count > 0) {
+                    const uri = await Firebase.getPlaceRandomFeedImage(doc.id);
 
-                        places[index] = {
-                            // ...places[index],
-                            place_id: doc.id,
-                            length: data.count,
-                            name: data.name,
-                            uri,
-                            lat: data.lat,
-                            lng: data.lng,
-                            key: doc.id
-                        };
+                    places[index] = {
+                        // ...places[index],
+                        place_id: doc.id,
+                        length: data.count,
+                        name: data.name,
+                        uri,
+                        lat: data.lat,
+                        lng: data.lng,
+                        key: doc.id
+                    };
 
-                        index++;
+                    index++;
 
-                        if (index === snap.docs.length) {
-                            Intro.places = places;
-                            !this.closed && this.setState({ places });
-                        }
-                        /*
+                    if (index === snap.docs.length) {
                         Intro.places = places;
                         !this.closed && this.setState({ places });
-                        */
+                    }
+                    /*
+                    Intro.places = places;
+                    !this.closed && this.setState({ places });
+                    */
 
-                        // subscribe feed count
-                        if (!Intro.feedCountList.has(doc.id)) {
-                            // this will be updated in subscribe
-                            Intro.feedCountList.set(doc.id, -1);
+                    // subscribe feed count
+                    if (!Intro.feedCountList.has(doc.id)) {
+                        // this will be updated in subscribe
+                        Intro.feedCountList.set(doc.id, -1);
 
-                            const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
-                                if (newPlace === undefined) {
-                                    // update Intro.feedCountList
-                                    Intro.feedCountList.delete(doc.id);
-                                    return;
-                                }
-
+                        const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
+                            if (newPlace === undefined) {
                                 // update Intro.feedCountList
-                                Intro.feedCountList.set(doc.id, newPlace.count);
+                                Intro.feedCountList.delete(doc.id);
+                                return;
+                            }
 
-                                // update UI
-                                let __places = [...this.state.places];
-                                let __index = __places.findIndex(el => el.place_id === doc.id);
-                                if (__index !== -1) {
-                                    let __place = __places[__index];
-                                    __place.length = newPlace.count;
-                                    __places[__index] = __place;
+                            // update Intro.feedCountList
+                            Intro.feedCountList.set(doc.id, newPlace.count);
 
-                                    Intro.places = __places;
-                                    !this.closed && this.setState({ places: __places });
-                                }
-                            });
+                            // update UI
+                            let __places = [...this.state.places];
+                            let __index = __places.findIndex(el => el.place_id === doc.id);
+                            if (__index !== -1) {
+                                let __place = __places[__index];
+                                __place.length = newPlace.count;
+                                __places[__index] = __place;
 
-                            Intro.countsUnsubscribes.push(ci);
-                        }
-                    } else { // data.count === 0
-                        index++;
+                                Intro.places = __places;
+                                !this.closed && this.setState({ places: __places });
+                            }
+                        });
 
-                        if (index === snap.docs.length) {
-                            Intro.places = places;
-                            !this.closed && this.setState({ places });
-                        }
+                        Intro.countsUnsubscribes.push(ci);
+                    }
+                } else { // data.count === 0
+                    index++;
+
+                    if (index === snap.docs.length) {
+                        Intro.places = places;
+                        !this.closed && this.setState({ places });
                     }
                 }
             });
@@ -407,6 +405,7 @@ export default class Intro extends React.Component {
         if (Intro.popularFeeds.length > 0) return;
 
         let placeList = [];
+        /*
         let count = 0;
         while (true) {
             const placeId = await Firebase.getRandomPlace();
@@ -420,6 +419,9 @@ export default class Intro extends React.Component {
 
             if (count >= DEFAULT_FEED_COUNT) break;
         }
+        */
+        placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
+        placeList = Util.shuffle(placeList);
 
         let popularFeeds = [];
         let index = 0;
@@ -498,6 +500,7 @@ export default class Intro extends React.Component {
         if (Intro.recentFeeds.length > 0) return;
 
         let placeList = [];
+        /*
         let count = 0;
         while (true) {
             const placeId = await Firebase.getRandomPlace();
@@ -511,6 +514,9 @@ export default class Intro extends React.Component {
 
             if (count >= DEFAULT_FEED_COUNT) break;
         }
+        */
+        placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
+        placeList = Util.shuffle(placeList);
 
         let recentFeeds = [];
         let index = 0;

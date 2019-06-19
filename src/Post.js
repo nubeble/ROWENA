@@ -1332,6 +1332,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (data.reviewCount === 0) {
             return (
+                // ToDo: render design
                 <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
                     <Text style={{
                         // color: Theme.color.text3,

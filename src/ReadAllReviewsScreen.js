@@ -549,7 +549,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         return this.renderEmptyImage();
     }
 
-    renderEmptyImage() { // ToDo: render design
+    renderEmptyImage() {
         /*
         <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
             <FirstPost {...{ navigation }} />
@@ -557,6 +557,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         */
 
         return (
+            // ToDo: render design
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
                     // color: Theme.color.text2,
@@ -567,13 +568,13 @@ export default class ReadAllReviewsScreen extends React.Component {
                 }}>No customer reviews yet</Text>
 
                 {/*
-            <Text style={{
-                marginTop: 10,
-                color: Theme.color.text3,
-                fontSize: 18,
-                fontFamily: "Roboto-Medium"
-            }}>Start exploring girls for your next trip</Text>
-            */}
+                <Text style={{
+                    marginTop: 10,
+                    color: Theme.color.text3,
+                    fontSize: 18,
+                    fontFamily: "Roboto-Medium"
+                }}>Start exploring girls for your next trip</Text>
+                */}
 
                 <Image
                     style={{

@@ -1634,4 +1634,25 @@ export default class Util extends React.Component {
             Linking.openURL(url);
         }
     }
+
+    static shuffle(array) {
+        var currentIndex = array.length, temp, randomIndex;
+
+        // While there remain elements to shuffle...
+        while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+
+            // And swap it with the current element.
+            temp = array[currentIndex];
+            array[currentIndex] = array[randomIndex];
+            array[randomIndex] = temp;
+        }
+
+        return array;
+    }
+
+
+
 }

@@ -64,6 +64,7 @@ export default class AdvertisementFinish extends React.Component {
                     </TouchableOpacity>
                 </View>
 
+                {/* // ToDo: render design */}
                 <View style={styles.container}>
                     <Text style={{
                         marginTop: Theme.spacing.tiny,

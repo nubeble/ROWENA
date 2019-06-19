@@ -627,6 +627,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 }
 
                 {
+                    /*
                     this.state.showPostLoader &&
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator
@@ -635,6 +636,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             color={Theme.color.selection}
                         />
                     </View>
+                    */
                 }
 
                 <Toast
@@ -1163,7 +1165,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Update Profile'}</Text>
                     {
-                        /*
                         this.state.showPostLoader &&
                         <ActivityIndicator
                             style={{ position: 'absolute', top: 0, bottom: 0, right: 20, zIndex: 10002 }}
@@ -1171,7 +1172,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             size="small"
                             color={Theme.color.buttonText}
                         />
-                        */
                     }
                 </TouchableOpacity>
 
