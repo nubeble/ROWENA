@@ -20,10 +20,6 @@ import { Cons, Vars } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
-type FlatListItem<T> = {
-    item: T
-};
-
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 
@@ -481,15 +477,12 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     @autobind
     renderListEmptyComponent() {
-        const { navigation } = this.props; // ToDo: remove FirstPost
-
         const { reviewStore } = this.props.navigation.state.params;
         const { reviews } = reviewStore;
 
         const loading = reviews === undefined;
 
         if (loading) {
-
             const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
             let reviewArray = [];
@@ -550,12 +543,6 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     renderEmptyImage() {
-        /*
-        <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: Theme.spacing.small }}>
-            <FirstPost {...{ navigation }} />
-        </View>
-        */
-
         return (
             // ToDo: render design
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

@@ -546,7 +546,8 @@ export default class ChatMain extends React.Component {
         let avatarColor = 'black';
         if (!opponent.picture) {
             avatarName = Util.getAvatarName(opponent.name);
-            avatarColor = Util.getAvatarColor(id);
+            // avatarColor = Util.getAvatarColor(id);
+            avatarColor = Util.getAvatarColor(opponent.uid);
         }
 
         return (

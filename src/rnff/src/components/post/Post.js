@@ -67,6 +67,8 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         this.unsubscribeToProfile();
         */
 
+        if (this.thumbnailImage) this.thumbnailImage = null;
+
         this.closed = true;
     }
 
@@ -143,7 +145,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                     navigation.navigate("detail", { post: post, profile: profile, extra: extra });
                 }}
             >
-                {/* Consider: use image carousel (one, two, ...) */}
+                {/* // Consider: use image carousel (one, two, ...) */}
                 <View style={styles.container}>
                     <SmartImage
                         style={styles.picture}

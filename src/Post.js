@@ -1892,7 +1892,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 reviewArray.push(
                     <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
-                        {/* Consider: add profile image */}
+                        {/* // Consider: add profile image */}
 
                         <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
                             <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Anonymous'}</Text>

@@ -1006,7 +1006,7 @@ export default class Intro extends React.Component {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/* Consider: draw a character avatar */}
+                    {/* // Consider: draw a character avatar */}
                 </View>
             );
         }
@@ -1113,7 +1113,7 @@ export default class Intro extends React.Component {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/* Consider: draw a character avatar */}
+                    {/* // Consider: draw a character avatar */}
                 </View>
             );
         }

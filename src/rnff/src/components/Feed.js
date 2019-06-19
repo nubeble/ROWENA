@@ -10,10 +10,8 @@ import PreloadImage from '../../../PreloadImage';
 import type { FeedEntry } from "../components/Model";
 import type { NavigationProps } from "../components/Types";
 import { Cons, Vars } from "../../../Globals";
-
-type FlatListItem<T> = {
-    item: T
-};
+import { Constants, Svg } from "expo";
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
 type FeedProps = NavigationProps<> & {
     store: FeedStore,
@@ -108,7 +106,7 @@ export default class Feed extends React.Component<FeedProps> {
     render(): React.Node {
         const { onScroll, store, navigation, bounce, ListHeaderComponent } = this.props;
         const { feed } = store;
-        const loading = feed === undefined;
+        // const loading = feed === undefined;
 
         return (
             <SafeAreaView style={styles.list}>
@@ -139,51 +137,7 @@ export default class Feed extends React.Component<FeedProps> {
                         </View>
                     }
 
-                    ListEmptyComponent={
-                        loading ?
-                            <View style={{ height: Dimensions.get('window').height, paddingTop: Dimensions.get('window').height / 12 }}>
-                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
-                            </View>
-                            :
-                            // ToDo: render design
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={{
-                                    // color: Theme.color.text2,
-                                    color: 'rgb(247, 178, 57)',
-                                    fontSize: 24,
-                                    paddingTop: 4,
-                                    fontFamily: "Roboto-Medium"
-                                }}>No registered girls yet</Text>
-
-                                {/*
-                                <Text style={{
-                                    marginTop: 10,
-                                    color: Theme.color.text3,
-                                    fontSize: 18,
-                                    fontFamily: "Roboto-Medium"
-                                }}>Start exploring girls for your next trip</Text>
-                                */}
-
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setTimeout(() => {
-                                            if (this.closed) return;
-                                            // this.props.navigation.navigate("intro");
-                                        }, Cons.buttonTimeoutShort);
-                                    }}
-                                    style={{ marginTop: 6 }}>
-
-                                    <Image
-                                        style={{
-                                            width: 140,
-                                            height: 140,
-                                            resizeMode: 'cover'
-                                        }}
-                                        source={PreloadImage.feed}
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                    }
+                    ListEmptyComponent={this.renderListEmptyComponent}
 
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
@@ -191,6 +145,110 @@ export default class Feed extends React.Component<FeedProps> {
                     {...{ bounce, ListHeaderComponent }}
                 />
             </SafeAreaView>
+        );
+    }
+
+    @autobind
+    renderListEmptyComponent() {
+        const { store } = this.props;
+        const { feed } = store;
+        const loading = feed === undefined;
+
+        if (loading) {
+            /*
+            return (
+                <View style={{ height: Dimensions.get('window').height, paddingTop: Dimensions.get('window').height / 12 }}>
+                    <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
+                </View>
+            );
+            */
+
+            // render skeleton
+            // 3:2 image
+            const itemWidth = Dimensions.get("window").width - (Theme.spacing.small * 2);
+            const itemHeight = itemWidth / 3 * 2;
+
+            return (
+                <View style={{ flex: 1, alignItems: 'center' }}>
+                    <View style={{ marginVertical: Theme.spacing.small }}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                            <Svg.Rect
+                                x={0}
+                                y={0}
+                                width={itemWidth}
+                                height={itemHeight}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+
+                    <View style={{ marginVertical: Theme.spacing.small }}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                            <Svg.Rect
+                                x={0}
+                                y={0}
+                                width={itemWidth}
+                                height={itemHeight}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+
+                    <View style={{ marginVertical: Theme.spacing.small }}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                            <Svg.Rect
+                                x={0}
+                                y={0}
+                                width={itemWidth}
+                                height={itemHeight}
+                            />
+                        </SvgAnimatedLinearGradient>
+                    </View>
+                </View>
+            );
+        }
+
+        return this.renderEmptyImage();
+    }
+
+    renderEmptyImage() {
+        return (
+            // ToDo: render design
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <Text style={{
+                    // color: Theme.color.text2,
+                    color: 'rgb(247, 178, 57)',
+                    fontSize: 24,
+                    paddingTop: 4,
+                    fontFamily: "Roboto-Medium"
+                }}>No registered girls yet</Text>
+
+                {/*
+                <Text style={{
+                    marginTop: 10,
+                    color: Theme.color.text3,
+                    fontSize: 18,
+                    fontFamily: "Roboto-Medium"
+                }}>Start exploring girls for your next trip</Text>
+                */}
+
+                <TouchableOpacity
+                    onPress={() => {
+                        setTimeout(() => {
+                            if (this.closed) return;
+                            // this.props.navigation.navigate("intro");
+                        }, Cons.buttonTimeoutShort);
+                    }}
+                    style={{ marginTop: 6 }}>
+
+                    <Image
+                        style={{
+                            width: 140,
+                            height: 140,
+                            resizeMode: 'cover'
+                        }}
+                        source={PreloadImage.feed}
+                    />
+                </TouchableOpacity>
+            </View>
         );
     }
 
