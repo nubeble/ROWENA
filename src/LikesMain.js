@@ -613,6 +613,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     handleRefresh = () => {
+        if (this.state.refreshing) return;
+
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start

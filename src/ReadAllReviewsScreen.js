@@ -65,8 +65,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         // reviewStore.checkForNewEntries(); // do not use here!
-        // this.setState({ isLoadingReview: true });
-        this.loadReviewFromTheStart();
+        this.loadReviewFromStart();
 
         setTimeout(() => {
             !this.closed && this.setState({ renderReview: true });
@@ -78,6 +77,8 @@ export default class ReadAllReviewsScreen extends React.Component {
         // console.log('onAddToReviewFinished');
 
         !this.closed && this.setState({ isLoadingReview: false, refreshing: false });
+
+        // !this.closed && this.enableScroll();
     }
 
     @autobind
@@ -299,17 +300,22 @@ export default class ReadAllReviewsScreen extends React.Component {
     } // end of render()
 
     handleRefresh = () => {
-        if (this.state.isLoadingReview) return;
+        if (this.state.refreshing) return;
 
-        this.setState({ isLoadingReview: true, refreshing: true });
+        // this.setState({ isLoadingReview: true, refreshing: true });
+        this.setState({ refreshing: true });
 
         // reload from the start
-        this.loadReviewFromTheStart();
+        this.loadReviewFromStart();
     }
 
-    loadReviewFromTheStart() {
+    loadReviewFromStart() {
+        this.setState({ isLoadingReview: true });
+
         const { reviewStore } = this.props.navigation.state.params;
-        reviewStore.loadReviewFromTheStart();
+        reviewStore.loadReviewFromStart();
+
+        // this.disableScroll();
     }
 
     @autobind
@@ -487,7 +493,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             let reviewArray = [];
 
-            for (var i = 0; i < 4; i++) {
+            for (let i = 0; i < 5; i++) {
                 reviewArray.push(
                     <View key={i}>
                         <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
@@ -698,8 +704,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
                 this.refreshReviews(placeId, feedId, 6);
                 */
-                this.setState({ isLoadingReview: true });
-                this.loadReviewFromTheStart();
+                this.loadReviewFromStart();
 
                 // move scroll top
                 this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -741,8 +746,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     // reload
                     // this.refreshReviews(placeId, feedId, 6);
-                    this.setState({ isLoadingReview: true });
-                    this.loadReviewFromTheStart();
+                    this.loadReviewFromStart();
 
                     // move scroll top
                     this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -765,8 +769,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     // reload
                     // this.refreshReviews(placeId, feedId, 6);
-                    this.setState({ isLoadingReview: true });
-                    this.loadReviewFromTheStart();
+                    this.loadReviewFromStart();
 
                     // move scroll top
                     this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -783,6 +786,14 @@ export default class ReadAllReviewsScreen extends React.Component {
         reviewStore.init(query, count);
     }
     */
+
+    enableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });
+    }
+
+    disableScroll() {
+        this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
+    }
 
     openDialog(title, message, callback) {
         this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });

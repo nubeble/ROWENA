@@ -45,7 +45,7 @@ export default class ReviewStore {
         this.addToReviewFinishedCallback = cb;
     }
 
-    loadReviewFromTheStart() {
+    loadReviewFromStart() {
         if (this.query) this.init(this.query);
     }
 

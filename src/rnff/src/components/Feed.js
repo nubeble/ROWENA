@@ -253,12 +253,14 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     handleRefresh = () => {
-        if (this.state.isLoadingFeeds) return;
+        if (this.state.refreshing) return;
 
         this.setState({ isLoadingFeeds: true, refreshing: true });
 
         // reload from the start
         this.props.store.loadFeedFromTheStart();
+
+        this.disableScroll();
     }
 }
 

@@ -1083,6 +1083,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         // if (this.state.isLoadingFeeds) return;
 
+        if (this.state.refreshing) return;
+
         this.setState({ refreshing: true });
 
         // reload from the start

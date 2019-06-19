@@ -505,6 +505,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     handleRefresh = () => {
+        if (this.state.refreshing) return;
+
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
@@ -513,22 +515,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ refreshing: false });
     }
-
-    /*
-    getAvatarColor(id) {
-        if (!this.avatarColorList) {
-            this.avatarColorList = new Map();
-        }
-
-        if (this.avatarColorList.has(id)) {
-            return this.avatarColorList.get(id);
-        } else {
-            const color = Util.getDarkColor();
-            this.avatarColorList.set(id, color);
-            return color;
-        }
-    }
-    */
 }
 
 const styles = StyleSheet.create({

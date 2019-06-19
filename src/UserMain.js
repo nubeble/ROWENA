@@ -94,13 +94,16 @@ export default class UserMain extends React.Component<InjectedProps> {
         const guest = item.guest;
         const host = item.host;
 
+        this.setState({ disableReviewButton, guest: guest, host: host });
+
         const uid = guest.uid;
+
+        this.setState({ isLoadingReview: true });
 
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
 
-        this.setState({ disableReviewButton, guest: guest, host: host });
-
+        // this.disableScroll();
 
         // ----
         /*
@@ -165,7 +168,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
-        // this.enableScroll();
+        // !this.closed && this.enableScroll();
     }
 
     @autobind
@@ -285,7 +288,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                 // refresh
                 this.setState({ isLoadingFeeds: true });
-                this.commentStore.loadReviewFromTheStart();
+                this.commentStore.loadReviewFromStart();
 
                 // move scroll top
                 this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -317,7 +320,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             // refresh
             this.setState({ isLoadingFeeds: true });
-            this.commentStore.loadReviewFromTheStart();
+            this.commentStore.loadReviewFromStart();
 
             // move scroll top
             this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -483,160 +486,158 @@ export default class UserMain extends React.Component<InjectedProps> {
                     */}
                 </View>
 
-                {
-                    // this.state.renderFeed &&
-                    <FlatList
-                        ref={(fl) => this._flatList = fl}
-                        contentContainerStyle={styles.contentContainer}
-                        showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={
-                            <View>
-                                <View style={styles.infoContainer}>
-                                    {/* avatar view */}
-                                    <View
-                                        style={{ marginTop: 20 }}
-                                    >
-                                        <View style={{
-                                            width: '100%', height: Dimensions.get('window').height / 8,
-                                            flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
-                                        }}>
-                                            <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                                <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
-                                                    {avatarName}
-                                                </Text>
-                                                <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
-                                                    {dateText}
-                                                </Text>
-                                            </View>
-                                            <View
-                                                style={{
-                                                    width: avatarWidth, height: avatarWidth,
-                                                    marginRight: 22, justifyContent: 'center', alignItems: 'center'
-                                                }}
-                                            >
-                                                {
-                                                    imageUri ?
-                                                        /*
-                                                            <Image
-                                                                style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                                source={{ uri: imageUri }}
-                                                            />
-                                                        */
-                                                        <SmartImage
-                                                            style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                            showSpinner={false}
-                                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                            uri={imageUri}
-                                                        />
-                                                        :
-                                                        /*
-                                                        <Image
-                                                            style={{
-                                                                backgroundColor: 'black',
-                                                                width: avatarWidth, height: avatarWidth,
-                                                                borderRadius: avatarWidth / 2,
-                                                                resizeMode: 'cover'
-                                                            }}
-                                                            source={PreloadImage.user}
-                                                        />
-                                                        */
-                                                        <View
-                                                            style={{
-                                                                width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
-                                                                backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
-                                                            }}
-                                                        >
-                                                            <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
-                                                                {_avatarName}
-                                                            </Text>
-                                                        </View>
-                                                }
-                                            </View>
+                <FlatList
+                    ref={(fl) => this._flatList = fl}
+                    contentContainerStyle={styles.contentContainer}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={
+                        <View>
+                            <View style={styles.infoContainer}>
+                                {/* avatar view */}
+                                <View
+                                    style={{ marginTop: 20 }}
+                                >
+                                    <View style={{
+                                        width: '100%', height: Dimensions.get('window').height / 8,
+                                        flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
+                                    }}>
+                                        <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
+                                            <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                {avatarName}
+                                            </Text>
+                                            <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
+                                                {dateText}
+                                            </Text>
                                         </View>
-                                    </View>
-
-                                    <View style={{ width: '100%', paddingHorizontal: 20 }}>
-
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
-                                            <Image
-                                                style={{ width: 20, height: 20, resizeMode: 'cover' }}
-                                                source={PreloadImage.home}
-                                            />
-                                            <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
-                                        </View>
-
-                                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
-                                            <Image
-                                                style={{ width: 22, height: 22, resizeMode: 'cover' }}
-                                                source={PreloadImage.comment}
-                                            />
-                                            <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{reviewText}</Text>
-                                        </View>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
-                                            onLayout={(event) => {
-                                                const { x, y, width, height } = event.nativeEvent.layout;
-
-                                                this.borderY = y;
-                                            }}
-                                        />
-
-                                        <Text style={{
-                                            // paddingHorizontal: Theme.spacing.base,
-
-                                            width: Dimensions.get('window').width * 0.85,
-                                            alignSelf: 'center',
-
-                                            marginTop: Theme.spacing.tiny,
-                                            marginBottom: Theme.spacing.small,
-                                            fontSize: 14, fontFamily: "Roboto-Light",
-                                            color: Theme.color.placeholder,
-                                            textAlign: 'center', lineHeight: 24
-                                        }}>Share your experience to help others</Text>
-
-                                        <TouchableOpacity
-                                            style={[styles.contactButton,
-                                            {
-                                                marginBottom: Theme.spacing.tiny,
-                                                // borderColor: this.state.showKeyboard ? 'black' : "rgba(255, 255, 255, 0.8)",
-                                                backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
-                                            }
-                                            ]}
-                                            onPress={() => {
-                                                if (this.state.disableReviewButton) {
-                                                    this.refs["toast"].show("Can't add a review here.", 500);
-                                                    return;
-                                                }
-
-                                                if (!this.state.guest) {
-                                                    this.refs["toast"].show('The user no longer exists.', 500);
-                                                    return;
-                                                }
-
-                                                setTimeout(() => {
-                                                    if (this.closed) return;
-                                                    // this.props.navigation.navigate("writeComment");
-                                                    this.openKeyboard();
-
-                                                    // move scroll top
-                                                    // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
-                                                    // console.log('gap', gap);
-                                                    // this._flatList.scrollToOffset({ offset: gap, animated: true });
-                                                    this._flatList.scrollToOffset({ offset: 0, animated: true });
-                                                }, Cons.buttonTimeoutShort);
+                                        <View
+                                            style={{
+                                                width: avatarWidth, height: avatarWidth,
+                                                marginRight: 22, justifyContent: 'center', alignItems: 'center'
                                             }}
                                         >
-                                            <Text style={{
-                                                fontSize: 16, fontFamily: "Roboto-Medium",
-                                                // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
-                                                color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
-                                            }}>{'Add a Review'}</Text>
-                                        </TouchableOpacity>
-
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }} />
+                                            {
+                                                imageUri ?
+                                                    /*
+                                                        <Image
+                                                            style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                                            source={{ uri: imageUri }}
+                                                        />
+                                                    */
+                                                    <SmartImage
+                                                        style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                                        showSpinner={false}
+                                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                        uri={imageUri}
+                                                    />
+                                                    :
+                                                    /*
+                                                    <Image
+                                                        style={{
+                                                            backgroundColor: 'black',
+                                                            width: avatarWidth, height: avatarWidth,
+                                                            borderRadius: avatarWidth / 2,
+                                                            resizeMode: 'cover'
+                                                        }}
+                                                        source={PreloadImage.user}
+                                                    />
+                                                    */
+                                                    <View
+                                                        style={{
+                                                            width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                                            backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
+                                                        }}
+                                                    >
+                                                        <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                                            {_avatarName}
+                                                        </Text>
+                                                    </View>
+                                            }
+                                        </View>
                                     </View>
                                 </View>
-                                {/*
+
+                                <View style={{ width: '100%', paddingHorizontal: 20 }}>
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
+                                        <Image
+                                            style={{ width: 20, height: 20, resizeMode: 'cover' }}
+                                            source={PreloadImage.home}
+                                        />
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
+                                    </View>
+
+                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
+                                        <Image
+                                            style={{ width: 22, height: 22, resizeMode: 'cover' }}
+                                            source={PreloadImage.comment}
+                                        />
+                                        <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{reviewText}</Text>
+                                    </View>
+
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                        onLayout={(event) => {
+                                            const { x, y, width, height } = event.nativeEvent.layout;
+
+                                            this.borderY = y;
+                                        }}
+                                    />
+
+                                    <Text style={{
+                                        // paddingHorizontal: Theme.spacing.base,
+
+                                        width: Dimensions.get('window').width * 0.85,
+                                        alignSelf: 'center',
+
+                                        marginTop: Theme.spacing.tiny,
+                                        marginBottom: Theme.spacing.small,
+                                        fontSize: 14, fontFamily: "Roboto-Light",
+                                        color: Theme.color.placeholder,
+                                        textAlign: 'center', lineHeight: 24
+                                    }}>Share your experience to help others</Text>
+
+                                    <TouchableOpacity
+                                        style={[styles.contactButton,
+                                        {
+                                            marginBottom: Theme.spacing.tiny,
+                                            // borderColor: this.state.showKeyboard ? 'black' : "rgba(255, 255, 255, 0.8)",
+                                            backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
+                                        }
+                                        ]}
+                                        onPress={() => {
+                                            if (this.state.disableReviewButton) {
+                                                this.refs["toast"].show("Can't add a review here.", 500);
+                                                return;
+                                            }
+
+                                            if (!this.state.guest) {
+                                                this.refs["toast"].show('The user no longer exists.', 500);
+                                                return;
+                                            }
+
+                                            setTimeout(() => {
+                                                if (this.closed) return;
+                                                // this.props.navigation.navigate("writeComment");
+                                                this.openKeyboard();
+
+                                                // move scroll top
+                                                // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
+                                                // console.log('gap', gap);
+                                                // this._flatList.scrollToOffset({ offset: gap, animated: true });
+                                                this._flatList.scrollToOffset({ offset: 0, animated: true });
+                                            }, Cons.buttonTimeoutShort);
+                                        }}
+                                    >
+                                        <Text style={{
+                                            fontSize: 16, fontFamily: "Roboto-Medium",
+                                            // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
+                                            color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
+                                        }}>{'Add a Review'}</Text>
+                                    </TouchableOpacity>
+
+                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }} />
+                                </View>
+                            </View>
+                            {/*
                                 {
                                     labelText &&
                                     <View style={styles.titleContainer}>
@@ -652,38 +653,37 @@ export default class UserMain extends React.Component<InjectedProps> {
                                     <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
                                 }
 */}
-                            </View>
+                        </View>
+                    }
+                    data={reviews}
+                    keyExtractor={item => item.comment.id}
+                    renderItem={this.renderItem}
+
+                    // onEndReachedThreshold={0.5}
+                    // onEndReached={this.onScrollHandler}
+                    onScroll={({ nativeEvent }) => {
+                        if (!this.focused) return;
+
+                        if (this.isCloseToBottom(nativeEvent)) {
+                            this.loadMore();
                         }
-                        data={reviews}
-                        keyExtractor={item => item.comment.id}
-                        renderItem={this.renderItem}
+                    }}
+                    // scrollEventThrottle={1}
 
-                        // onEndReachedThreshold={0.5}
-                        // onEndReached={this.onScrollHandler}
-                        onScroll={({ nativeEvent }) => {
-                            if (!this.focused) return;
+                    ItemSeparatorComponent={this.itemSeparatorComponent}
 
-                            if (this.isCloseToBottom(nativeEvent)) {
-                                this.loadMore();
-                            }
-                        }}
-                        // scrollEventThrottle={1}
+                    onRefresh={this.handleRefresh}
+                    refreshing={this.state.refreshing}
 
-                        ItemSeparatorComponent={this.itemSeparatorComponent}
+                    ListFooterComponent={
+                        this.state.isLoadingFeeds &&
+                        <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                            <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
+                        </View>
+                    }
 
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
-
-                        ListFooterComponent={
-                            this.state.isLoadingFeeds &&
-                            <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
-                                <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
-                            </View>
-                        }
-
-                        ListEmptyComponent={this.renderListEmptyComponent}
-                    />
-                }
+                    ListEmptyComponent={this.renderListEmptyComponent}
+                />
 
                 {
                     this.state.showKeyboard &&
@@ -903,43 +903,43 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             let reviewArray = [];
 
-            for (var i = 0; i < 4; i++) {
+            for (let i = 0; i < 4; i++) {
                 reviewArray.push(
                     <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={156}>
                             <Svg.Circle
                                 cx={18 + 2}
-                                cy={18 + 2}
+                                cy={18 + 2 + 28}
                                 r={18}
                             />
                             <Svg.Rect
                                 x={2 + 18 * 2 + 10}
-                                y={2 + 18 - 12}
+                                y={2 + 18 - 12 + 28}
                                 width={60}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={2 + 18 * 2 + 10}
-                                y={2 + 18 + 6}
+                                y={2 + 18 + 6 + 28}
                                 width={100}
                                 height={6}
                             />
 
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14}
+                                y={2 + 18 * 2 + 14 + 28}
                                 width={'100%'}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14}
+                                y={2 + 18 * 2 + 14 + 14 + 28}
                                 width={'100%'}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                y={2 + 18 * 2 + 14 + 14 + 14 + 28}
                                 width={'80%'}
                                 height={6}
                             />
@@ -993,14 +993,14 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     handleRefresh = () => {
-        if (this.state.isLoadingFeeds) return;
+        if (this.state.refreshing) return;
 
         this.setState({ isLoadingFeeds: true, refreshing: true });
 
-        // this.disableScroll();
-
         // reload from the start
-        this.commentStore.loadReviewFromTheStart();
+        this.commentStore.loadReviewFromStart();
+
+        // this.disableScroll();
     }
 
     enableScroll() {

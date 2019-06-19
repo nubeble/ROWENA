@@ -1263,6 +1263,8 @@ export default class Intro extends React.Component {
     }
 
     handleRefresh = async () => {
+        if (this.state.refreshing) return;
+
         !this.closed && this.setState({ refreshing: true });
 
         await this.getPlaces();

@@ -64,6 +64,12 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 cities) 🔥</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => this.makeSingapore()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Singapore)</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => this.makeBangkok()}
                         style={styles.bottomButton}
                     >
@@ -290,6 +296,86 @@ export default class Admin extends React.Component {
         }
 
         return note;
+    }
+
+    async makeSingapore() {
+        for (let i = 0; i < 10; i++) {
+
+            const userUid = Firebase.user().uid;
+            const feedId = Util.uid();
+
+            const placeId = 'ChIJdZOLiiMR2jERxPWrUs9peIg';
+            const placeName = 'Singapore';
+
+            const LATITUDE = 1.352083;
+            const LONGITUDE = 103.819836;
+            const location = {
+                description: '?, Singapore',
+                latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
+                longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
+            };
+
+            const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
+
+            // --
+            const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
+            const images = this.getRandomImage(number);
+            let image1Uri = images[0];
+            let image2Uri = images[1];
+            let image3Uri = images[2];
+            let image4Uri = images[3];
+            // --
+
+            const name = 'Wendy';
+            const birthday = '02121996';
+            const height = 167;
+            const weight = 48;
+            const bust = 'B';
+
+            let feed = {};
+            feed.uid = userUid;
+            feed.id = feedId;
+            feed.placeId = placeId;
+            feed.placeName = placeName;
+            feed.location = location;
+            feed.note = note;
+
+            const pictures = {
+                one: {
+                    uri: image1Uri,
+                    ref: null
+                },
+                two: {
+                    uri: image2Uri,
+                    ref: null
+                },
+                three: {
+                    uri: image3Uri,
+                    ref: null
+                },
+                four: {
+                    uri: image4Uri,
+                    ref: null
+                }
+            };
+
+            feed.pictures = pictures;
+            feed.name = name;
+            feed.birthday = birthday;
+            feed.height = height;
+            feed.weight = weight;
+            feed.bust = bust;
+
+            const extra = {
+                lat: 13.7563309,
+                lng: 100.5017651
+            };
+
+            feed.gender = 'Female';
+            feed.bodyType = 'Skinny';
+
+            await Firebase.createFeed(feed, extra);
+        }
     }
 
     async makeBangkok() {
@@ -1050,8 +1136,7 @@ export default class Admin extends React.Component {
     async makeMacau() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
-        const placeId = 'ChIJmY8AduF6ATQRrXXv59PpHbk';
-        // const placeName = 'Macau, China'; // Consider: exception
+        const placeId = 'ChIJ88g14uB6ATQR9qyFtCzje8Y';
         const placeName = 'Macau';
 
         /*

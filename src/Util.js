@@ -1635,18 +1635,25 @@ export default class Util extends React.Component {
     }
 
     static getCityName(name) {
+        if (!name) return '';
+
         const words = name.split(', ');
+
+        if (words.length <= 1) return '';
+
         return words[0];
     }
 
     static getCountryName(name) {
+        if (!name) return '';
+
         // Consider: To avoid "Kyiv, Ukraine, 02000"
         const words = name.split(', ');
         if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
             return words[1];
         }
 
-        if (words.length <= 1) return null;
+        if (words.length <= 1) return name;
 
         return words[words.length - 1];
     }

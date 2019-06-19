@@ -57,8 +57,12 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
+        this.setState({ isLoadingReview: true });
+
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+
+        // this.disableScroll();
     }
 
     @autobind
@@ -66,6 +70,8 @@ export default class EditMain extends React.Component<InjectedProps> {
         console.log('EditMain.onAddToReviewFinished');
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
+
+        // !this.closed && this.enableScroll();
     }
 
     @autobind
@@ -322,7 +328,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                                         // reload
                                                         if (this.state.isLoadingFeeds) return;
                                                         this.setState({ isLoadingFeeds: true });
-                                                        this.commentStore.loadReviewFromTheStart();
+                                                        this.commentStore.loadReviewFromStart();
 
                                                         const { profile } = this.props.profileStore;
                                                         this.count = profile.receivedCommentsCount;
@@ -508,43 +514,43 @@ export default class EditMain extends React.Component<InjectedProps> {
 
             let reviewArray = [];
 
-            for (var i = 0; i < 4; i++) {
+            for (let i = 0; i < 4; i++) {
                 reviewArray.push(
                     <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={100}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={156}>
                             <Svg.Circle
                                 cx={18 + 2}
-                                cy={18 + 2}
+                                cy={18 + 2 + 28}
                                 r={18}
                             />
                             <Svg.Rect
                                 x={2 + 18 * 2 + 10}
-                                y={2 + 18 - 12}
+                                y={2 + 18 - 12 + 28}
                                 width={60}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={2 + 18 * 2 + 10}
-                                y={2 + 18 + 6}
+                                y={2 + 18 + 6 + 28}
                                 width={100}
                                 height={6}
                             />
 
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14}
+                                y={2 + 18 * 2 + 14 + 28}
                                 width={'100%'}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14}
+                                y={2 + 18 * 2 + 14 + 14 + 28}
                                 width={'100%'}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 14}
+                                y={2 + 18 * 2 + 14 + 14 + 14 + 28}
                                 width={'80%'}
                                 height={6}
                             />
@@ -598,14 +604,14 @@ export default class EditMain extends React.Component<InjectedProps> {
     }
 
     handleRefresh = () => {
-        if (this.state.isLoadingFeeds) return;
+        if (this.state.refreshing) return;
 
         this.setState({ isLoadingFeeds: true, refreshing: true });
 
-        // this.disableScroll();
-
         // reload from the start
-        this.commentStore.loadReviewFromTheStart();
+        this.commentStore.loadReviewFromStart();
+
+        // this.disableScroll();
     }
 
     enableScroll() {
