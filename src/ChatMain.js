@@ -27,7 +27,8 @@ export default class ChatMain extends React.Component {
     static __flatList = null;
 
     state = {
-        name: '',
+        ready: false,
+
         // renderChat: false,
         isLoadingChat: false,
         chatRoomList: []
@@ -92,7 +93,7 @@ export default class ChatMain extends React.Component {
                 this.allChatRoomsLoaded = true;
             }
 
-            this.setState({ isLoadingChat: false });
+            this.setState({ ready: true, isLoadingChat: false });
         });
 
         /*
@@ -453,6 +454,8 @@ export default class ChatMain extends React.Component {
                     ListEmptyComponent={
                         // ToDo: render design
                         // !this.state.isLoadingChat &&
+
+                        this.state.ready &&
                         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{
                                 color: Theme.color.text2,

@@ -42,7 +42,8 @@ export default class LikesMain extends React.Component<InjectedProps> {
         feeds: [],
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
-        refreshing: false
+        refreshing: false,
+        totalFeedsSize: 0
     };
 
     constructor(props) {
@@ -181,6 +182,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         const feeds = profile.likes;
         const length = feeds.length;
+
+        this.setState({ totalFeedsSize: length });
+
         if (length === 0) {
             if (this.state.feeds.length > 0) this.setState({ feeds: [] });
             return;
@@ -422,15 +426,23 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
-                        /*
+
                         ListHeaderComponent={
+                            /*
                             <View>
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>Bangkok, Thailand (3)</Text>
                                 </View>
                             </View>
+                            */
+                            this.state.totalFeedsSize > 0 &&
+                            <View>
+                                <View style={styles.titleContainer}>
+                                    <Text style={styles.title}>You saved {this.state.totalFeedsSize} girls</Text>
+                                </View>
+                            </View>
                         }
-                        */
+
                         data={this.state.feeds}
                         keyExtractor={item => item.id}
                         renderItem={({ item, index }) => {
@@ -639,10 +651,10 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        paddingLeft: Theme.spacing.base,
-        paddingRight: Theme.spacing.base,
-        paddingTop: Theme.spacing.base,
-        paddingBottom: Theme.spacing.base
+        // paddingLeft: Theme.spacing.base,
+        // paddingRight: Theme.spacing.base,
+        // paddingTop: Theme.spacing.base,
+        // paddingBottom: Theme.spacing.base
     },
     pictureContainer: {
         // 3:2 image
@@ -650,7 +662,8 @@ const styles = StyleSheet.create({
         height: (Dimensions.get('window').width - Theme.spacing.base * 2) / 3 * 2,
 
         borderRadius: 2,
-        marginVertical: Theme.spacing.base
+        marginVertical: Theme.spacing.base,
+        marginHorizontal: Theme.spacing.base
     },
     picture: {
         width: '100%',

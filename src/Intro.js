@@ -841,31 +841,33 @@ export default class Intro extends React.Component {
                                             uri={imageUri}
                                         />
                                         <View style={styles.content}>
-                                            <Text style={{
-                                                // backgroundColor: 'green',
-                                                textAlign: 'center',
-                                                color: Theme.color.title,
-                                                fontSize: 20,
-                                                fontFamily: "Roboto-Bold",
+                                            {
+                                                city &&
+                                                <Text style={{
+                                                    textAlign: 'center',
+                                                    color: Theme.color.title,
+                                                    fontSize: 20,
+                                                    fontFamily: "Roboto-Bold",
 
-                                                textShadowColor: 'black',
-                                                textShadowOffset: { width: 1, height: 1 },
-                                                textShadowRadius: 1
+                                                    textShadowColor: 'black',
+                                                    textShadowOffset: { width: 1, height: 1 },
+                                                    textShadowRadius: 1
+                                                }}>{city}</Text>
+                                            }
+                                            {
+                                                country &&
+                                                <Text style={{
+                                                    marginTop: 8,
+                                                    textAlign: 'center',
+                                                    color: Theme.color.title,
+                                                    fontSize: 20,
+                                                    fontFamily: "Roboto-Bold",
 
-                                            }}>{city}</Text>
-                                            <Text style={{
-                                                marginTop: 8,
-                                                // backgroundColor: 'green',
-                                                textAlign: 'center',
-                                                color: Theme.color.title,
-                                                fontSize: 20,
-                                                fontFamily: "Roboto-Bold",
-
-                                                textShadowColor: 'black',
-                                                textShadowOffset: { width: 1, height: 1 },
-                                                textShadowRadius: 1
-                                            }}>{country}</Text>
-
+                                                    textShadowColor: 'black',
+                                                    textShadowOffset: { width: 1, height: 1 },
+                                                    textShadowRadius: 1
+                                                }}>{country}</Text>
+                                            }
                                             <Text style={{
                                                 marginTop: 8,
                                                 // backgroundColor: 'green',
@@ -873,7 +875,6 @@ export default class Intro extends React.Component {
                                                 color: Theme.color.subtitle,
                                                 fontSize: 14,
                                                 fontFamily: "Roboto-Medium",
-
                                                 textShadowColor: 'black',
                                                 textShadowOffset: { width: 1, height: 1 },
                                                 textShadowRadius: 1

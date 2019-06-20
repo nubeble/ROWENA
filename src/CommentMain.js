@@ -207,7 +207,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         refreshing={this.state.refreshing}
 
                         ListHeaderComponent={
-                            (this.state.totalFeedsSize > 0) &&
+                            this.state.totalFeedsSize > 0 &&
                             <View>
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>Your customers ({this.state.totalFeedsSize})</Text>

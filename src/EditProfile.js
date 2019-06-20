@@ -98,19 +98,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
         uploadImageUri: null,
 
         name: '',
-
         showDatePicker: false,
         datePickerTitle: null,
         datePickerDate: new Date(1990, 0, 1), // 1990.01.01
         birthday: null,
-
         gender: null,
-
         place: null,
-
         note: '',
         noteLength: 0,
-
         email: null,
         phoneNumber: null,
 

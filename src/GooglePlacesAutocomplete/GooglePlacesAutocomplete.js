@@ -10,6 +10,7 @@ import { debounce } from 'lodash';
 import { Text, Theme, RefreshIndicator } from '../rnff/src/components';
 import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { Cons } from '../Globals';
+import Util from '../Util';
 
 const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
 
@@ -848,17 +849,22 @@ export default class GooglePlacesAutocomplete extends Component {
             return (
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <FontAwesome style={{ width: 20 }} name='location-arrow' color={Theme.color.selection} size={16} />
-                        <Text
-                            style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
-                            { fontSize: 16, fontFamily: "Roboto-Medium", marginLeft: 14, paddingTop: 2 }]}
-                        >{rowData.description}</Text>
+                        <FontAwesome style={{ width: 20, paddingBottom: 4 }} name='location-arrow' color={Theme.color.selection} size={16} />
+
+                        <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
+                            <Text
+                                style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
+                                { fontSize: 16, lineHeight: 16, fontFamily: "Roboto-Medium" }]}
+                            >{rowData.description}</Text>
+                        </View>
                     </View>
                 </View>
             );
         }
 
         const description = rowData.description;
+        console.log('description', description);
+        /*
         const index = description.indexOf(',');
 
         let city = '';
@@ -876,6 +882,12 @@ export default class GooglePlacesAutocomplete extends Component {
             // console.log('city', city);
             // console.log('state', state);
         }
+        */
+        const city = Util.getCityName(description);
+        const state = Util.getCountryName(description);
+
+        let texts = false;
+        if (city && state) texts = true;
 
         if (rowData.isPredefinedPlace) {
             const icon = rowData.icon;
@@ -895,19 +907,31 @@ export default class GooglePlacesAutocomplete extends Component {
                             !icon &&
                             <Ionicons style={{ width: 20 }} name='ios-heart' color={Theme.color.text2} size={15} />
                         }
-                        <View style={{ marginLeft: 14, marginRight: 20 }}>
-                            <Text
-                                style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription,
-                                { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 2 }]}
-                            >{city}</Text>
-                            <Text
-                                style={[defaultStyles.description, this.props.styles.description,
-                                this.props.styles.predefinedPlacesDescription,
-                                { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
-                                numberOfLines={this.props.numberOfLines}
-                            >{state}</Text>
-                        </View>
+                        {
+                            texts ?
+                                <View style={{ marginLeft: 14, marginRight: 20 }}>
+                                    <Text
+                                        style={[defaultStyles.description, this.props.styles.description,
+                                        this.props.styles.predefinedPlacesDescription,
+                                        { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 8 }]}
+                                    >{city}</Text>
+                                    <Text
+                                        style={[defaultStyles.description, this.props.styles.description,
+                                        this.props.styles.predefinedPlacesDescription,
+                                        { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
+                                        numberOfLines={this.props.numberOfLines}
+                                    >{state}</Text>
+                                </View>
+                                :
+                                <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
+                                    <Text
+                                        style={[defaultStyles.description, this.props.styles.description,
+                                        this.props.styles.predefinedPlacesDescription,
+                                        { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
+                                        numberOfLines={this.props.numberOfLines}
+                                    >{state}</Text>
+                                </View>
+                        }
                     </View>
                 </View>
             );
@@ -917,19 +941,31 @@ export default class GooglePlacesAutocomplete extends Component {
             <View style={{ flex: 1, justifyContent: 'center' }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                     <MaterialIcons style={{ width: 20 }} name='location-on' color={Theme.color.text2} size={15} />
-                    <View style={{ marginLeft: 14, marginRight: 20 }}>
-                        <Text
-                            style={[defaultStyles.description, this.props.styles.description,
-                            this.props.styles.predefinedPlacesDescription,
-                            { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 2 }]}
-                        >{city}</Text>
-                        <Text
-                            style={[defaultStyles.description, this.props.styles.description,
-                            this.props.styles.predefinedPlacesDescription,
-                            { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Light" }]}
-                            numberOfLines={this.props.numberOfLines}
-                        >{state}</Text>
-                    </View>
+                    {
+                        texts ?
+                            <View style={{ marginLeft: 14, marginRight: 20 }}>
+                                <Text
+                                    style={[defaultStyles.description, this.props.styles.description,
+                                    this.props.styles.predefinedPlacesDescription,
+                                    { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 8 }]}
+                                >{city}</Text>
+                                <Text
+                                    style={[defaultStyles.description, this.props.styles.description,
+                                    this.props.styles.predefinedPlacesDescription,
+                                    { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
+                                    numberOfLines={this.props.numberOfLines}
+                                >{state}</Text>
+                            </View>
+                            :
+                            <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
+                                <Text
+                                    style={[defaultStyles.description, this.props.styles.description,
+                                    this.props.styles.predefinedPlacesDescription,
+                                    { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
+                                    numberOfLines={this.props.numberOfLines}
+                                >{state}</Text>
+                            </View>
+                    }
                 </View>
             </View>
         );
