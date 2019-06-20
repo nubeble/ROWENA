@@ -428,18 +428,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         showsVerticalScrollIndicator={true}
 
                         ListHeaderComponent={
-                            /*
-                            <View>
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>Bangkok, Thailand (3)</Text>
-                                </View>
-                            </View>
-                            */
                             this.state.totalFeedsSize > 0 &&
-                            <View>
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>You saved {this.state.totalFeedsSize} girls</Text>
-                                </View>
+                            <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 0 }]}>
+                                <Text style={styles.title}>You picked {this.state.totalFeedsSize} girls</Text>
                             </View>
                         }
 

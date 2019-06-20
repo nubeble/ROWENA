@@ -805,7 +805,7 @@ export default class ChatMain extends React.Component {
                     if (result) {
                         this.allChatRoomsLoaded = true;
                     } else {
-                        this.addList(list); // ToDo: update room before put it in the state list
+                        this.addList(list)
 
                         // subscribe profile, post, feed count
                         this.subscribe(list);
@@ -848,6 +848,7 @@ export default class ChatMain extends React.Component {
     }
 
     addList(list) {
+        // update room before put it in the state list
         let _list = _.clone(list);
         for (let i = 0; i < _list.length; i++) {
             const room = _list[i];
@@ -878,6 +879,7 @@ export default class ChatMain extends React.Component {
             }
         }
 
+        // update state list
         let newList = [...this.state.chatRoomList];
         for (let i = 0; i < _list.length; i++) {
             newList.push(_list[i]);

@@ -666,15 +666,8 @@ export default class Intro extends React.Component {
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         ListHeaderComponent={
-                            <View>
-                                {/*
-                                <View style={[styles.titleContainer, { paddingBottom: 12 }]}>
-                                    <Text style={styles.title}>{'Popular destinations'}</Text>
-                                </View>
-                                */}
-                                <View style={{ paddingHorizontal: Theme.spacing.small, paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>
-                                    <Text style={styles.title}>{'Popular destinations'}</Text>
-                                </View>
+                            <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
+                                <Text style={styles.title}>{'Popular destinations'}</Text>
                             </View>
                         }
 

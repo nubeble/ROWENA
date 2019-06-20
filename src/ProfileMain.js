@@ -946,7 +946,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                 </View>
                                 {
-                                    (this.state.totalFeedsSize > 0) &&
+                                    this.state.totalFeedsSize > 0 &&
                                     <View style={styles.titleContainer}>
                                         <Text style={styles.title}>Your post ({this.state.totalFeedsSize})</Text>
                                     </View>

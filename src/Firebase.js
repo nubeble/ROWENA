@@ -726,7 +726,7 @@ export default class Firebase {
 
             let { visits } = postDoc.data();
 
-            // if (!visits) throw 'visits field does not exist!'; // ToDo: tmp
+            // if (!visits) throw 'visits field does not exist!'; // ToDo: test
             if (!visits) visits = [];
 
             let index = -1;

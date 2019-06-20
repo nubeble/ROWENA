@@ -208,10 +208,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                         ListHeaderComponent={
                             this.state.totalFeedsSize > 0 &&
-                            <View>
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>Your customers ({this.state.totalFeedsSize})</Text>
-                                </View>
+                            <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
+                                <Text style={styles.title}>Your customers ({this.state.totalFeedsSize})</Text>
                             </View>
                         }
 

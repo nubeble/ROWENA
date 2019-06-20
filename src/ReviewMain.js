@@ -201,10 +201,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
                         ListHeaderComponent={
                             this.state.totalFeedsSize > 0 &&
-                            <View>
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
-                                </View>
+                            <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
+                                <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
                             </View>
                         }
 

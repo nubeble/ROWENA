@@ -451,12 +451,12 @@ export default class Post extends React.Component<InjectedProps> {
             }).start();
 
             // toast
-            this.refs["toast"].show('Thanks ❤', 500);
+            this.refs["toast"].show('Saved to Likes ❤', 500);
         } else {
             !this.closed && this.setState({ liked: false });
 
             // toast
-            this.refs["toast"].show('Oh...', 500);
+            this.refs["toast"].show('Removed from Likes ❤', 500);
         }
 
         // update database
@@ -776,7 +776,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         let lastLogInTime = null;
-        let circleColor = 'grey'; // ToDo: get rgb color (green, yellow, grey)
+        let circleColor = 'grey'; // green, yellow, grey
         if (this.state.lastLogInTime) {
             lastLogInTime = moment(this.state.lastLogInTime).fromNow();
 

@@ -194,7 +194,6 @@ export default class MapOverview extends React.Component {
                         <Ionicons name='md-arrow-back' color="black" size={24} />
                     </TouchableOpacity>
 
-                    {/* // ToDo: get geolocation of my location */}
                     <Text style={styles.distance}>{distance}</Text>
 
                     {/* gps button */}
