@@ -24,6 +24,7 @@ if (!console.ignoredYellowBox) {
 }
 console.ignoredYellowBox.push("Setting a timer");
 */
+/*
 YellowBox.ignoreWarnings(['Setting a timer']);
 const _console = _.clone(console);
 console.warn = message => {
@@ -31,6 +32,12 @@ console.warn = message => {
         _console.warn(message);
     }
 };
+*/
+YellowBox.ignoreWarnings([
+    'Warning:',
+    'Setting a timer for a long period of time',
+    'Require cycle'
+]);
 
 
 export default class App extends React.Component {

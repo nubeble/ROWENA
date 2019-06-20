@@ -3,7 +3,8 @@ import {
     StyleSheet, TouchableOpacity, View, BackHandler, Dimensions, Image, TextInput, Easing,
     Platform, FlatList, Animated, TouchableWithoutFeedback, Keyboard, ActivityIndicator
 } from 'react-native';
-import { Permissions, Linking, ImagePicker, Constants, Svg } from 'expo';
+import { Permissions, Linking, ImagePicker, Constants } from 'expo';
+import * as Svg from 'react-native-svg';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign } from 'react-native-vector-icons';

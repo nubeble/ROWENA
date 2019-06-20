@@ -7,7 +7,7 @@ import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons, Feather, MaterialCommunityIcons, MaterialIcons } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
-import { Svg, Constants } from 'expo';
+import * as Svg from 'react-native-svg';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import { inject, observer } from "mobx-react/native";

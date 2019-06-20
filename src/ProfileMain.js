@@ -118,12 +118,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
-        for (var i = 0; i < this.feedsUnsubscribes.length; i++) {
+        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
             instance();
         }
 
-        for (var i = 0; i < this.countsUnsubscribes.length; i++) {
+        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
             const instance = this.countsUnsubscribes[i];
             instance();
         }
@@ -134,7 +134,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             console.log('clean image files');
 
             const formData = new FormData();
-            for (var i = 0; i < this.imageRefs.length; i++) {
+            for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
                 const number = i + 1;
@@ -815,6 +815,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 if (!profile) return;
 
                                                 this.openDialog('alert', 'Log out', 'Are you sure you want to logout?', async () => {
+                                                    // show indicator
+                                                    !this.closed && this.setState({ isLoadingFeeds: true });
+
                                                     // unsubscribe profile
                                                     this.props.profileStore.final();
 
@@ -827,6 +830,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     await Firebase.deleteToken(uid);
 
                                                     await Firebase.signOut(profile.uid);
+
+                                                    // hide indicator
+                                                    !this.closed && this.setState({ isLoadingFeeds: false });
                                                 });
 
                                                 /*

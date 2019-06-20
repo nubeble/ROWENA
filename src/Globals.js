@@ -13,9 +13,9 @@ export var Vars = {
 };
 
 export const Cons = {
-    version: '0.9.33',
+    version: '0.9.34',
     buildNumber: '21052146',
-    lastUpdatedDate: 'Jun 20, 2019 15:07',
+    lastUpdatedDate: 'Jun 20, 2019 21:34',
 
     // push notification type
     pushNotification: {

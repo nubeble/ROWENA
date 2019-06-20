@@ -287,36 +287,36 @@ export default class Loading extends React.Component<InjectedProps> {
                             await this.checkUpdates();
                             StatusBar.setHidden(false);
                         }
-                    } else { // for the resign after sign out / delete account
-                        if (Vars.signUpType === 'EMAIL') {
-                            // sign up finished
-                            Vars.signUpType = null;
-                            Vars.signUpName = null;
-                            return;
-                        } else {
-                            // sign up finished
-                            Vars.signUpType = null;
-                            Vars.signUpName = null;
-                        }
-                    }
 
-                    console.log('[auto sign in OR resign after sign out / delete account] move to main.');
-                    navigation.navigate("mainStackNavigator");
-                } else {
-                    if (Vars.signUpType === 'EMAIL') {
-                        // sign up finished
-                        Vars.signUpType = null;
-                        Vars.signUpName = null;
-                    } else {
+                        console.log('[auto sign in] move to main.');
+                        navigation.navigate("mainStackNavigator");
+                    } else { // for the resign in after sign out / delete account
+                        const type = Vars.signUpType; // copy
+
                         // sign up finished
                         Vars.signUpType = null;
                         Vars.signUpName = null;
 
-                        console.log('[first join] move to welcome.');
-                        if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
-                        else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
+                        if (type === 'EMAIL') return;
+
+                        console.log('[resign in after sign out / delete account] move to welcome.');
+                        if (type === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
+                        else if (type === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
                         else navigation.navigate("welcome");
                     }
+                } else {
+                    const type = Vars.signUpType; // copy
+
+                    // sign up finished
+                    Vars.signUpType = null;
+                    Vars.signUpName = null;
+
+                    if (type === 'EMAIL') return;
+
+                    console.log('[first join] move to welcome.');
+                    if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
+                    else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
+                    else navigation.navigate("welcome");
                 }
             }
         }); // end of onAuthStateChanged

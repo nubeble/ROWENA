@@ -4,7 +4,8 @@ import {
     StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, Animated
 } from "react-native";
 import { Header } from 'react-navigation';
-import { Svg, Constants, Location, Permissions, Linking } from "expo";
+import { Constants, Location, Permissions, Linking } from "expo";
+import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { inject, observer } from "mobx-react/native";
 // import ProfileStore from "./rnff/src/home/ProfileStore";

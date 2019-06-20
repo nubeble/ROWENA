@@ -3,7 +3,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, Svg, Haptic, Linking } from "expo";
+import { Constants, Haptic, Linking } from "expo";
+import * as Svg from 'react-native-svg';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";

@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {Image as NativeImage, StyleSheet} from "react-native";
-import {Svg} from "expo";
+import * as Svg from 'react-native-svg';
 
 import CacheManager from "./CacheManager";
 import type {StyleProps} from "./theme";

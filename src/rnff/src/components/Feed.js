@@ -10,7 +10,7 @@ import PreloadImage from '../../../PreloadImage';
 import type { FeedEntry } from "../components/Model";
 import type { NavigationProps } from "../components/Types";
 import { Cons, Vars } from "../../../Globals";
-import { Constants, Svg } from "expo";
+import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 
 type FeedProps = NavigationProps<> & {

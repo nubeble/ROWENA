@@ -3,7 +3,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, Svg, Haptic, Linking, Permissions, ImagePicker } from "expo";
+import { Constants, Haptic, Linking, Permissions, ImagePicker } from "expo";
+import * as Svg from 'react-native-svg';
 import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";
 import { Text, Theme, RefreshIndicator } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
