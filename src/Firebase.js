@@ -106,7 +106,8 @@ export default class Firebase {
             email: email,
             phoneNumber: phoneNumber,
             picture: {
-                uri: photoURL
+                uri: photoURL,
+                ref: null
             },
             about: null,
             feeds: [],

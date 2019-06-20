@@ -124,7 +124,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     </View>
                 }
                 <Text style={{ position: 'absolute', bottom: 30 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Date Published ' + Cons.lastUpdatedDate}</Text>
-                <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Build: ' + Cons.buildNumber}</Text>
+                <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Version: ' + Cons.version}</Text>
                 <Animated.Image
                     style={{
                         position: 'absolute',
@@ -313,7 +313,6 @@ export default class Loading extends React.Component<InjectedProps> {
                         Vars.signUpName = null;
 
                         console.log('[first join] move to welcome.');
-
                         if (Vars.signUpType === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
                         else if (Vars.signUpType === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
                         else navigation.navigate("welcome");

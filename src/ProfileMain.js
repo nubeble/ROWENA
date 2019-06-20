@@ -946,6 +946,19 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                 </View>
                                 {
+                                    this.state.totalFeedsSize === 0 &&
+                                    <View style={{
+                                        width: '100%', height: Dimensions.get('window').height / 14,
+                                        justifyContent: 'center', alignItems: 'center'
+                                    }}>
+                                        <TouchableOpacity onPress={() => {
+                                            // nothing to do
+                                        }}>
+                                            <Text style={{ fontSize: 16, color: Theme.color.text4, fontFamily: "Roboto-Light" }}>VERSION {Cons.version} ({Cons.buildNumber})</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                }
+                                {
                                     this.state.totalFeedsSize > 0 &&
                                     <View style={styles.titleContainer}>
                                         <Text style={styles.title}>Your post ({this.state.totalFeedsSize})</Text>
