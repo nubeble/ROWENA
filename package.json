@@ -17,6 +17,7 @@
     "d3-ease": "^1.0.5",
     "exenv": "^1.2.2",
     "expo": "^33.0.0",
+    "expo-file-system": "^5.0.1",
     "firebase": "^5.5.7",
     "flow": "^0.2.3",
     "geofirestore": "^3.2.3",

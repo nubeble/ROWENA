@@ -1152,11 +1152,6 @@ export default class AdvertisementMain extends React.Component {
                         <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'NAME'}
                         </Text>
-                        {/*
-                        <Text style={{ marginRight: 18, color: Theme.color.text5, fontSize: 12, lineHeight: 19, fontFamily: "Roboto-Light" }}>
-                            {'Customers find you with it.'}
-                        </Text>
-                        */}
                         <TouchableOpacity
                             style={{
                                 width: 24,
@@ -1166,7 +1161,8 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
-                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                // const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                const msg = "Fill out your name (or your friend's name). People find you";
                                 this.showMessageBox(msg, -17); // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
