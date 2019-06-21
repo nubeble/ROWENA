@@ -2334,6 +2334,11 @@ export default class AdvertisementMain extends React.Component {
     }
 
     showMessageBox(msg, y) {
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+
         this.setState({ messageBoxText: msg, showMessageBox: true, messageBoxY: y }, () => {
             Animated.timing(this.state.messageBoxOpacity, {
                 toValue: 1,
@@ -2341,11 +2346,6 @@ export default class AdvertisementMain extends React.Component {
                 easing: Easing.inOut(Easing.ease),
                 useNativeDriver: true
             }).start(() => {
-                if (this.timer) {
-                    clearTimeout(this.timer);
-                    this.timer = null;
-                }
-
                 this.timer = setTimeout(() => {
                     if (this.closed) return;
 

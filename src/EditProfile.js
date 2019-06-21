@@ -1509,16 +1509,11 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     showMessageBox(msg, y) {
-        /*
-        this.setState({ messageBoxText: msg, showMessageBox: true, messageBoxY: y }, () => {
-            Animated.timing(this.state.messageBoxOpacity, {
-                toValue: 1,
-                duration: 200,
-                easing: Easing.inOut(Easing.ease),
-                useNativeDriver: true
-            }).start();
-        });
-        */
+        if (this.timer) {
+            clearTimeout(this.timer);
+            this.timer = null;
+        }
+
         this.setState({ messageBoxText: msg, showMessageBox: true, messageBoxY: y }, () => {
             Animated.timing(this.state.messageBoxOpacity, {
                 toValue: 1,
@@ -1526,11 +1521,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 easing: Easing.inOut(Easing.ease),
                 useNativeDriver: true
             }).start(() => {
-                if (this.timer) {
-                    clearTimeout(this.timer);
-                    this.timer = null;
-                }
-
                 this.timer = setTimeout(() => {
                     if (this.closed) return;
 
@@ -1541,16 +1531,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
     }
 
     hideMessageBox() {
-        /*
-        Animated.timing(this.state.messageBoxOpacity, {
-            toValue: 0,
-            duration: 200,
-            easing: Easing.inOut(Easing.ease),
-            useNativeDriver: true
-        }).start(() => {
-            this.setState({ showMessageBox: false, messageBoxY: 0 });
-        });
-        */
         if (this._hideMessageBox) return;
 
         this._hideMessageBox = true;
