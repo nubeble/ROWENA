@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import * as Svg from 'react-native-svg';
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign } from 'react-native-vector-icons';
@@ -1817,12 +1818,12 @@ export default class AdvertisementMain extends React.Component {
                                 backgroundColor: 'transparent'
                             }, viewStyle
                         ]}>
-                            <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
+                            <SvgAnimatedLinearGradient width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
                                 <Svg.Polygon
                                     points={points}
                                     fill={Theme.color.text5}
                                 />
-                            </Svg>
+                            </SvgAnimatedLinearGradient>
                             <Text style={{
                                 width: '92%', height: '70%',
                                 position: 'absolute', top: 7, left: 10,

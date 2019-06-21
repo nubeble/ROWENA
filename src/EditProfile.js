@@ -9,6 +9,7 @@ import { Ionicons, AntDesign } from 'react-native-vector-icons';
 import SmartImage from './rnff/src/components/SmartImage';
 import { Permissions, Linking, ImagePicker, Constants } from 'expo';
 import * as Svg from 'react-native-svg';
+import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import { inject, observer } from "mobx-react/native";
@@ -1186,12 +1187,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 backgroundColor: 'transparent'
                             }, viewStyle
                         ]}>
-                            <Svg width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
+                            <SvgAnimatedLinearGradient width={5 + messageBoxW + 5} height={5 + messageBoxH + V1 + 5}>
                                 <Svg.Polygon
                                     points={points}
                                     fill={Theme.color.text5}
                                 />
-                            </Svg>
+                            </SvgAnimatedLinearGradient>
                             <Text style={{
                                 width: '92%', height: '70%',
                                 position: 'absolute', top: 7, left: 10,

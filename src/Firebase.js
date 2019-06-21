@@ -313,12 +313,10 @@ export default class Firebase {
 
         const postsRef = Firebase.firestore.collection("place");
         const snap = await postsRef.orderBy("timestamp", "desc").limit(size).get();
-        if (snap.size > 0) {
-            snap.forEach(doc => {
-                // const data = doc.data();
-                places.push(doc.id);
-            });
-        }
+        snap.forEach(doc => {
+            // const data = doc.data();
+            places.push(doc.id);
+        });
 
         return places;
     }
@@ -377,11 +375,10 @@ export default class Firebase {
         let feed = null;
 
         const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(1).get();
-        if (snap.size > 0) {
-            snap.forEach(feedDoc => {
-                feed = feedDoc.data();
-            });
-        }
+        snap.forEach(feedDoc => {
+            feed = feedDoc.data();
+            // console.log('Firebase.getFeedByAverageRating, feed', feed);
+        });
 
         return feed;
     }
@@ -403,11 +400,9 @@ export default class Firebase {
         let feed = null;
 
         const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(1).get();
-        if (snap.size > 0) {
-            snap.forEach(feedDoc => {
-                feed = feedDoc.data();
-            });
-        }
+        snap.forEach(feedDoc => {
+            feed = feedDoc.data();
+        });
 
         return feed;
     }
