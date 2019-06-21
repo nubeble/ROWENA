@@ -50,7 +50,7 @@ export default class SearchScreen extends React.Component {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'SearchScreen';
+        Vars.focusedScreen = 'SearchScreen';
     }
 
     componentWillUnmount() {

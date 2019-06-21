@@ -70,7 +70,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'CommentMain';
+        Vars.focusedScreen = 'CommentMain';
 
         const lastChangedTime = this.props.profileStore.lastTimeCommentsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {

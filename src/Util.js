@@ -2,6 +2,7 @@ import React from 'react';
 import { Linking } from "expo";
 import moment from "moment";
 import Qs from 'qs';
+import { Vars } from './Globals';
 
 const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
@@ -1504,34 +1505,20 @@ export default class Util extends React.Component {
         // location2
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
 
-        let distance = '? km away';
+        let unit = null;
+        if (Vars.distanceUnit === 'meter') {
+            unit = ' km away';
+        } else {
+            unit = ' miles away';
+        }
 
-        if (!location2) return distance;
+        if (!location2) return '?' + unit;
 
-        let lat1, lon1, lat2, lon2, unit;
+        let lat1, lon1, lat2, lon2;
         lat1 = location1.latitude;
         lon1 = location1.longitude;
         lat2 = location2.coords.latitude;
         lon2 = location2.coords.longitude;
-        unit = "K";
-
-        /*
-        var radlat1 = Math.PI * lat1 / 180;
-        var radlat2 = Math.PI * lat2 / 180;
-        var theta = lon1 - lon2;
-        var radtheta = Math.PI * theta / 180;
-        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-        dist = Math.acos(dist);
-        dist = dist * 180 / Math.PI;
-        dist = dist * 60 * 1.1515;
-        if (unit === "K") {
-            dist = dist * 1.609344;
-            distance = dist + ' km away';
-        } else if (unit === "M") {
-            dist = dist * 0.8684;
-            distance = dist + ' m away';
-        }
-        */
 
         var R = 6371; // Radius of the earth in km
         var dLat = Util.deg2rad(lat2 - lat1);
@@ -1542,12 +1529,22 @@ export default class Util extends React.Component {
             Math.sin(dLon / 2) * Math.sin(dLon / 2)
             ;
         var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        var d = R * c; // Distance in km
+        var d = R * c; // distance in km
+        var m = d * 0.621371192; // distance in miles
 
-        distance = d.toFixed(0).toString() + ' km away';
-
-        if (distance === '0 km away') {
-            distance = 'less than a kilometer away';
+        let distance = null;
+        if (d <= 1) {
+            if (Vars.distanceUnit === 'meter') {
+                distance = 'less than a kilometer away';
+            } else {
+                distance = 'less than a mile away';
+            }
+        } else {
+            if (Vars.distanceUnit === 'meter') {
+                distance = d.toFixed(0).toString() + unit;
+            } else {
+                distance = m.toFixed(0).toString() + unit;
+            }
         }
 
         return distance;

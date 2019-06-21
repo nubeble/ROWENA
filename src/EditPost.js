@@ -237,6 +237,11 @@ export default class EditPost extends React.Component {
 
         this.imageRefs = []; // for cleaning files in server
 
+        this.uploadImage1Ref = null;
+        this.uploadImage2Ref = null;
+        this.uploadImage3Ref = null;
+        this.uploadImage4Ref = null;
+
         this.originImageRefs = []; // max size: 4
     }
 
@@ -472,7 +477,7 @@ export default class EditPost extends React.Component {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'EditPost';
+        Vars.focusedScreen = 'EditPost';
 
         this.focused = true;
     }

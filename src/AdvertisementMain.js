@@ -372,7 +372,7 @@ export default class AdvertisementMain extends React.Component {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'AdvertisementMain';
+        Vars.focusedScreen = 'AdvertisementMain';
 
         this.focused = true;
     }

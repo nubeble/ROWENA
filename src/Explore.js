@@ -177,7 +177,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'Explore';
+        Vars.focusedScreen = 'Explore';
     }
 
     render(): React.Node {

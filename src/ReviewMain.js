@@ -98,7 +98,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     onFocus() {
         console.log('ReviewMain.onFocus', this.lastChangedTime, this.props.profileStore.lastTimeReviewsUpdated);
 
-        Vars.currentScreenName = 'ReviewMain';
+        Vars.focusedScreen = 'ReviewMain';
 
         const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {

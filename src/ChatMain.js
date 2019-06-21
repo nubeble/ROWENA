@@ -325,7 +325,7 @@ export default class ChatMain extends React.Component {
 
         this.isFocused = true;
 
-        Vars.currentScreenName = 'ChatMain';
+        Vars.focusedScreen = 'ChatMain';
 
         const params = this.props.navigation.state.params;
         if (params) {

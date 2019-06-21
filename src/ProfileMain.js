@@ -190,7 +190,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     onFocus() {
         console.log('ProfileMain.onFocus');
 
-        Vars.currentScreenName = 'ProfileMain';
+        Vars.focusedScreen = 'ProfileMain';
 
         // check user feed updates
         if (this.checkUpdateOnUserFeed() === true) {

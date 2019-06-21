@@ -228,7 +228,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'Post';
+        Vars.focusedScreen = 'Post';
 
         this.focused = true;
     }
@@ -452,12 +452,12 @@ export default class Post extends React.Component<InjectedProps> {
             }).start();
 
             // toast
-            this.refs["toast"].show('Saved to Likes ❤', 500);
+            this.refs["toast"].show('Saved to ❤', 500);
         } else {
             !this.closed && this.setState({ liked: false });
 
             // toast
-            this.refs["toast"].show('Removed from Likes ❤', 500);
+            this.refs["toast"].show('Removed from ❤', 500);
         }
 
         // update database
@@ -747,7 +747,7 @@ export default class Post extends React.Component<InjectedProps> {
         let showSettingsButton = false;
 
         distance = Util.getDistance(post.location, Vars.location);
-        if (distance === '? km away') showSettingsButton = true;
+        if (distance === '? km away' || distance === '? miles away') showSettingsButton = true;
 
         const averageRating = post.averageRating;
 

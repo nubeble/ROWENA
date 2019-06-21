@@ -85,7 +85,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'EditMain';
+        Vars.focusedScreen = 'EditMain';
 
         this.focused = true;
     }

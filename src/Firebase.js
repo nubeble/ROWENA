@@ -1905,7 +1905,7 @@ export default class Firebase {
         let result;
 
         await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
-            if (!snapshot.exists()) throw 'Chat - uid data does not exist.';
+            if (!snapshot.exists()) throw 'Chat - uid data does not exist!';
 
             snapshot.forEach(async item => {
                 // console.log(item.key, item.val());

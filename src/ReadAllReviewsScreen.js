@@ -100,7 +100,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'ReadAllReviewsScreen';
+        Vars.focusedScreen = 'ReadAllReviewsScreen';
 
         this.focused = true;
     }

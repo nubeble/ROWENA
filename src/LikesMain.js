@@ -96,7 +96,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     onFocus() {
         console.log('LikesMain.onFocus');
 
-        Vars.currentScreenName = 'LikesMain';
+        Vars.focusedScreen = 'LikesMain';
 
         const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
         if (this.lastChangedTime !== lastChangedTime) {

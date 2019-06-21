@@ -863,7 +863,8 @@ export default class GooglePlacesAutocomplete extends Component {
         }
 
         const description = rowData.description;
-        console.log('description', description);
+        // console.log('description', description);
+
         /*
         const index = description.indexOf(',');
 

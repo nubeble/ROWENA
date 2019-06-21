@@ -189,7 +189,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'UserMain';
+        Vars.focusedScreen = 'UserMain';
 
         this.focused = true;
     }

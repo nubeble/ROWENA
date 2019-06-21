@@ -70,16 +70,21 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
             this.reloadInterval = setInterval(() => {
                 user.reload().then(() => {
-                    if (this.reloadInterval && user.emailVerified) {
-                        clearInterval(this.reloadInterval);
-                        this.reloadInterval = null;
-
+                    if (user.emailVerified) {
                         //// verification success ////
                         console.log('reload success.', user);
 
-                        // stop timer
-                        clearInterval(this.clockCall);
-                        this.clockCall = null;
+                        // stop reload timer
+                        if (this.reloadInterval) {
+                            clearInterval(this.reloadInterval);
+                            this.reloadInterval = null;
+                        }
+
+                        // stop clock timer
+                        if (this.clockCall) {
+                            clearInterval(this.clockCall);
+                            this.clockCall = null;
+                        }
 
                         // show check hourglass
                         !this.closed && this.setState({ emailVerificationState: 2 });
@@ -101,6 +106,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         }, 2000); // 2 sec
                     }
                 }, error => {
+                    // stop reload timer
                     if (this.reloadInterval) {
                         clearInterval(this.reloadInterval);
                         this.reloadInterval = null;
@@ -109,9 +115,11 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         // console.log('registerUserAndWaitEmailVerification: reload failed ! ' + error.message + ' (' + error.code + ')');
                         console.log('reload failed!', error.message + ' (' + error.code + ')');
 
-                        // stop timer
-                        clearInterval(this.clockCall);
-                        this.clockCall = null;
+                        // stop clock timer
+                        if (this.clockCall) {
+                            clearInterval(this.clockCall);
+                            this.clockCall = null;
+                        }
 
                         // hide hourglass
                         !this.closed && this.setState({ emailVerificationState: 0 });
@@ -151,10 +159,16 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
-        // timer
+        // stop clock timer
         if (this.clockCall) {
             clearInterval(this.clockCall);
             this.clockCall = null;
+        }
+
+        // stop reload timer
+        if (this.reloadInterval) {
+            clearInterval(this.reloadInterval);
+            this.reloadInterval = null;
         }
 
         this.closed = true;
@@ -206,12 +220,16 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     decrementClock = () => {
         if (this.state.timer === 0) {
             // stop timer
-            clearInterval(this.clockCall);
-            this.clockCall = null;
+            if (this.clockCall) {
+                clearInterval(this.clockCall);
+                this.clockCall = null;
+            }
 
-            // stop reload
-            clearInterval(this.reloadInterval);
-            this.reloadInterval = null;
+            // stop reload timer
+            if (this.reloadInterval) {
+                clearInterval(this.reloadInterval);
+                this.reloadInterval = null;
+            }
 
             console.log('Verification time is up.');
 
@@ -514,13 +532,17 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
 
     goBack() {
         this.openDialog('alert', 'New account', 'Are you sure you want to stop email verification and create new account?', async () => {
-            // stop timer
-            clearInterval(this.clockCall);
-            this.clockCall = null;
+            // stop clock timer
+            if (this.clockCall) {
+                clearInterval(this.clockCall);
+                this.clockCall = null;
+            }
 
-            // stop reload
-            clearInterval(this.reloadInterval);
-            this.reloadInterval = null;
+            // stop reload timer
+            if (this.reloadInterval) {
+                clearInterval(this.reloadInterval);
+                this.reloadInterval = null;
+            }
 
             // delete auth, delete token, user
             // --

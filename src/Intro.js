@@ -8,7 +8,7 @@ import { Constants, Location, Permissions, Linking } from "expo";
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { inject, observer } from "mobx-react/native";
-// import ProfileStore from "./rnff/src/home/ProfileStore";
+import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";
 import type { ScreenProps } from "./rnff/src/components/Types";
 import { FontAwesome, AntDesign, Ionicons } from 'react-native-vector-icons';
@@ -28,12 +28,10 @@ import Util from './Util';
 type ExploreState = {
     scrollAnimation: Animated.Value
 };
-
+*/
 type InjectedProps = {
-    feedStore: FeedStore,
     profileStore: ProfileStore
 };
-*/
 
 const DEFAULT_PLACE_COUNT = 6;
 const DEFAULT_FEED_COUNT = 6;
@@ -52,9 +50,9 @@ const skeletonViewHeight = (4 + (Dimensions.get('window').width - 4 * 2 * 3) / 2
 */
 
 
-// @inject("feedStore", "profileStore") @observer
-// export default class Intro extends React.Component<ScreenProps<> & InjectedProps, ExploreState> {
-export default class Intro extends React.Component {
+@inject("profileStore")
+@observer
+export default class Intro extends React.Component<InjectedProps> {
     static __flatList = null;
 
     static places = [];
@@ -177,11 +175,45 @@ export default class Intro extends React.Component {
 
     // --
     componentWillMount() {
-        if (Platform.OS === 'android' && !Constants.isDevice) {
-            console.log('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
-        } else {
-            this._getLocationAsync();
+        if (!Vars.location) {
+            if (Platform.OS === 'android' && !Constants.isDevice) {
+                console.log('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
+            } else {
+                this._getLocationAsync();
+            }
         }
+
+        if (!Vars.distanceUnit) {
+            this._getDistanceUnit();
+        }
+    }
+
+    async _getDistanceUnit() {
+        this.profileInterval = setInterval(() => {
+            const { profile } = this.props.profileStore;
+            if (profile) {
+                // stop profile timer
+                if (this.profileInterval) {
+                    clearInterval(this.profileInterval);
+                    this.profileInterval = null;
+                }
+
+                const place = profile.place;
+                if (place) {
+                    const country = Util.getCountryName(place);
+                    if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more
+                        Vars.distanceUnit = 'mile';
+                        console.log('mile unit');
+                    } else {
+                        Vars.distanceUnit = 'meter';
+                        console.log('meter unit');
+                    }
+                } else {
+                    Vars.distanceUnit = 'meter';
+                    console.log('meter unit');
+                }
+            }
+        }, 100); // 0.1 sec
     }
 
     _getLocationAsync = async () => {
@@ -232,6 +264,12 @@ export default class Intro extends React.Component {
 
         this.onFocusListener.remove();
         this.hardwareBackPressListener.remove();
+
+        // stop profile timer
+        if (this.profileInterval) {
+            clearInterval(this.profileInterval);
+            this.profileInterval = null;
+        }
 
         this.closed = true;
     }
@@ -321,7 +359,7 @@ export default class Intro extends React.Component {
 
     @autobind
     onFocus() {
-        Vars.currentScreenName = 'Intro';
+        Vars.focusedScreen = 'Intro';
     }
 
     async getPlaces() {
@@ -597,9 +635,6 @@ export default class Intro extends React.Component {
     }
 
     render(): React.Node {
-        // const { feedStore, profileStore, navigation } = this.props;
-        // const { profile } = profileStore;
-
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]

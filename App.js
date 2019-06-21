@@ -198,7 +198,7 @@ export default class App extends React.Component {
             if (data) {
                 switch (Number(data.type)) {
                     case Cons.pushNotification.chat: {
-                        if (Vars.currentScreenName !== 'ChatMain') {
+                        if (Vars.focusedScreen !== 'ChatMain') {
                             // show badge
                             // this.setState({ badgeOnChatCount: this.state.badgeOnChatCount + 1, showBadgeOnChat: true });
                             this.setState({ showBadgeOnChat: true, badgeOnChatCount: 0 });
@@ -206,21 +206,21 @@ export default class App extends React.Component {
                     } break;
 
                     case Cons.pushNotification.review: {
-                        if (Vars.currentScreenName !== 'ProfileMain') {
+                        if (Vars.focusedScreen !== 'ProfileMain') {
                             // show badge
                             this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                         }
                     } break;
 
                     case Cons.pushNotification.reply: {
-                        if (Vars.currentScreenName !== 'ProfileMain') {
+                        if (Vars.focusedScreen !== 'ProfileMain') {
                             // show badge
                             this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                         }
                     } break;
 
                     case Cons.pushNotification.comment: {
-                        if (Vars.currentScreenName !== 'ProfileMain') {
+                        if (Vars.focusedScreen !== 'ProfileMain') {
                             // show badge
                             this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                         }
@@ -1150,9 +1150,9 @@ function _navigationOptions(navigation, screenProps) {
 
                     if (diff < 500) {
                         // double click
-                        if (Vars.currentScreenName === 'Intro') Intro.scrollToTop();
-                        if (Vars.currentScreenName === 'Explore') Explore.scrollToTop();
-                        if (Vars.currentScreenName === 'Post') Post.scrollToTop();
+                        if (Vars.focusedScreen === 'Intro') Intro.scrollToTop();
+                        if (Vars.focusedScreen === 'Explore') Explore.scrollToTop();
+                        if (Vars.focusedScreen === 'Post') Post.scrollToTop();
                     }
                 } else {
                     routeName = 'home';
@@ -1175,7 +1175,7 @@ function _navigationOptions(navigation, screenProps) {
 
                     if (diff < 500) {
                         // double click
-                        if (Vars.currentScreenName === 'LikesMain') LikesMain.scrollToTop();
+                        if (Vars.focusedScreen === 'LikesMain') LikesMain.scrollToTop();
                     }
                 } else {
                     routeName = 'likes';
@@ -1198,7 +1198,7 @@ function _navigationOptions(navigation, screenProps) {
 
                     if (diff < 500) {
                         // double click
-                        if (Vars.currentScreenName === 'ChatMain') ChatMain.scrollToTop();
+                        if (Vars.focusedScreen === 'ChatMain') ChatMain.scrollToTop();
                     }
                 } else {
                     routeName = 'chat';
@@ -1221,7 +1221,7 @@ function _navigationOptions(navigation, screenProps) {
 
                     if (diff < 500) {
                         // double click
-                        if (Vars.currentScreenName === 'ProfileMain') ProfileMain.scrollToTop();
+                        if (Vars.focusedScreen === 'ProfileMain') ProfileMain.scrollToTop();
                     }
                 } else {
                     routeName = 'profile';
