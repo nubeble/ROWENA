@@ -38,7 +38,7 @@ const textInputHeight = 34;
 
 // --
 // message box pos
-const messageBoxW = Dimensions.get('window').width / 3 * 2;
+const messageBoxW = Dimensions.get('window').width / 12 * 7;
 const messageBoxH = 60;
 
 const V1 = 10;
@@ -468,7 +468,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         // update Vars.distanceUnit
         const country = Util.getCountryName(place);
-        if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more
+        if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
             Vars.distanceUnit = 'mile';
             console.log('mile unit');
         } else {
@@ -769,8 +769,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                const msg = "Your name. People all over the world find you on Rowena.";
                                 this.showMessageBox(msg, -17); // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -820,8 +819,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                const msg = "You must be at least 18 years old to use Rowena.";
                                 this.showMessageBox(msg, this.nameY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -870,15 +868,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                const msg = "Your gender is what you decide. You might be a boy or a girl, or maybe you don't like to decide that.";
                                 this.showMessageBox(msg, this.birthdayY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusGender()} // NOT work in Android
+                        onOpen={() => this.onFocusGender()} // NOT working in Android
                         placeholder={{
                             label: "Select your gender",
                             value: null

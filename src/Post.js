@@ -26,6 +26,7 @@ import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
+// import LikesMain from './LikesMain';
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -421,7 +422,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     @autobind
-    async toggle() {
+    async toggleLikes() {
         if (this.toggling) return;
 
         const post = this.state.post;
@@ -439,6 +440,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.toggling = true;
 
+        let showBadge = false;
+
         if (!this.state.liked) {
             !this.closed && this.setState({ liked: true });
 
@@ -452,12 +455,15 @@ export default class Post extends React.Component<InjectedProps> {
             }).start();
 
             // toast
-            this.refs["toast"].show('Saved to ❤', 500);
+            // this.refs["toast"].show('Saved to ❤', 500);
+
+            // show badge on likes
+            showBadge = true;
         } else {
             !this.closed && this.setState({ liked: false });
 
             // toast
-            this.refs["toast"].show('Removed from ❤', 500);
+            // this.refs["toast"].show('Removed from ❤', 500);
         }
 
         // update database
@@ -479,6 +485,8 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
+        if (showBadge && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnLikes(true, 0);
+
         // update likes to state post
         console.log('update likes to state post');
 
@@ -494,7 +502,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ post: newPost });
 
-        // update feedStore - NOT needed for likes
+        // update feedStore - NOT needed to update likes
         // const { feedStore } = this.props;
         // feedStore.updateFeed(newPost);
 
@@ -601,7 +609,7 @@ export default class Post extends React.Component<InjectedProps> {
                             </TouchableOpacity>
                             :
                             // like button
-                            <TouchableWithoutFeedback onPress={this.toggle}>
+                            <TouchableWithoutFeedback onPress={this.toggleLikes}>
                                 <View style={{
                                     width: 48,
                                     height: 48,
@@ -674,19 +682,18 @@ export default class Post extends React.Component<InjectedProps> {
                                 height: '90%',
                                 */
                                 flex: 0.85,
+                                borderRadius: 5,
 
-                                // padding: 8, // not working in ios
+                                // padding: 10, // not working in ios
                                 paddingTop: 10,
                                 paddingBottom: 10,
                                 paddingLeft: 10,
                                 paddingRight: 10,
 
-                                borderRadius: 5,
-                                fontSize: 14,
-                                fontFamily: "Roboto-Regular",
-                                color: Theme.color.title,
-                                textAlign: 'justify',
+                                fontSize: 14, fontFamily: "Roboto-Regular", color: Theme.color.title,
+
                                 textAlignVertical: 'top',
+
                                 backgroundColor: '#212121'
                             }}
                             placeholder='Reply to a review'

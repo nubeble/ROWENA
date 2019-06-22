@@ -201,7 +201,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 const place = profile.place;
                 if (place) {
                     const country = Util.getCountryName(place);
-                    if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more
+                    if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
                         Vars.distanceUnit = 'mile';
                         console.log('mile unit');
                     } else {
@@ -240,6 +240,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');
+
         console.log('uid', Firebase.user().uid);
         console.log('width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
@@ -366,7 +367,7 @@ export default class Intro extends React.Component<InjectedProps> {
         const size = DEFAULT_PLACE_COUNT;
 
         const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
-        // if (snap.size > 0) {
+        if (snap.size > 0) {
         let places = [...this.state.places];
         let index = 0;
 
@@ -437,7 +438,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 }
             }
         });
-        // }
+        }
     }
 
     async getPopularFeeds() {

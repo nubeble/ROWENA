@@ -187,11 +187,13 @@ export default class FeedStore {
 
                 callback(post);
 
-                this.feed.forEach((entry, index) => {
-                    if (entry.post.id === id) {
-                        this.feed[index].post = post;
-                    }
-                });
+                if (this.feed) {
+                    this.feed.forEach((entry, index) => {
+                        if (entry.post.id === id) {
+                            this.feed[index].post = post;
+                        }
+                    });
+                }
             },
             error => {
                 console.log('FeedStore.subscribeToPost, error', error);
@@ -227,11 +229,13 @@ export default class FeedStore {
 
                 callback(profile);
 
-                this.feed.forEach((entry, index) => {
-                    if (entry.post.uid === id) {
-                        this.feed[index].profile = profile;
-                    }
-                });
+                if (this.feed) {
+                    this.feed.forEach((entry, index) => {
+                        if (entry.post.uid === id) {
+                            this.feed[index].profile = profile;
+                        }
+                    });
+                }
             },
             error => {
                 console.log('FeedStore.subscribeToProfile, error', error);
@@ -265,12 +269,12 @@ export default class FeedStore {
     }
 
     updateFeed(post) {
-        if (!this.feed) return;
-
-        this.feed.forEach((entry, index) => {
-            if (entry.post.id === post.id) {
-                this.feed[index].post = post;
-            }
-        });
+        if (this.feed) {
+            this.feed.forEach((entry, index) => {
+                if (entry.post.id === post.id) {
+                    this.feed[index].post = post;
+                }
+            });
+        }
     }
 }

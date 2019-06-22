@@ -240,17 +240,18 @@ export default class ReadAllReviewsScreen extends React.Component {
                             numberOfLines={3}
                             style={{
                                 flex: 0.85,
+                                borderRadius: 5,
 
+                                // padding: 10, // not working in ios
                                 paddingTop: 10,
                                 paddingBottom: 10,
                                 paddingLeft: 10,
                                 paddingRight: 10,
 
-                                borderRadius: 5,
-                                fontSize: 14,
-                                fontFamily: "Roboto-Regular",
-                                color: "white", textAlign: 'justify',
+                                fontSize: 14, fontFamily: "Roboto-Regular", color: Theme.color.title,
+
                                 textAlignVertical: 'top',
+
                                 backgroundColor: '#212121'
                             }}
                             placeholder='Reply to a review'

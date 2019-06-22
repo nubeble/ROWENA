@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard,
-    KeyboardAvoidingView, Animated, StatusBar, BackHandler, ActivityIndicator
+    Platform, Animated, StatusBar, BackHandler, ActivityIndicator
 } from 'react-native';
 import { Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -259,21 +259,24 @@ export default class WriteReviewScreen extends React.Component {
                         multiline={true}
                         numberOfLines={4}
                         style={{
-                            // padding: 12, // not working in ios
+                            width: '100%',
+                            height: Dimensions.get('window').height / 5,
+                            borderRadius: 5,
+
+                            // padding: 12, // paddingVertical not working in ios
                             paddingTop: 12,
                             paddingBottom: 12,
                             paddingLeft: 12,
                             paddingRight: 12,
 
-                            borderRadius: 5,
-                            width: '100%',
-                            height: Dimensions.get('window').height / 5,
-                            fontSize: 16, fontFamily: "Roboto-Regular",
-                            color: "white", textAlign: 'justify',
-                            textAlignVertical: 'top',
+                            fontSize: 18, fontFamily: "Roboto-Regular", color: Theme.color.title,
+
+                            textAlignVertical: 'top', // only supported on android
+
                             backgroundColor: '#212121'
                         }}
                         placeholder='Share details of your own experience'
+                        // placeholder='Share details of your experience'
                         placeholderTextColor={Theme.color.placeholder}
                         onChangeText={(text) => this.onChangeText(text)}
                         selectionColor={Theme.color.selection}

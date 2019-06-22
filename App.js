@@ -376,7 +376,7 @@ export default class App extends React.Component {
                     </Provider>
                     */}
                     <Provider {...{ feedStore, profileStore }}>
-                        <MainSwitchNavigator
+                        <AppContainer
                             ref={navigatorRef => {
                                 NavigationService.setTopLevelNavigator(navigatorRef);
                             }}
@@ -428,8 +428,9 @@ export default class App extends React.Component {
 
 
 
-import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator } from "react-navigation";
-import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
+import { createSwitchNavigator, createStackNavigator, createBottomTabNavigator, createAppContainer } from "react-navigation";
+// import StackViewStyleInterpolator from 'react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator';
+import StackViewStyleInterpolator from 'react-navigation-stack/src/views/StackView/StackViewStyleInterpolator';
 import { BottomTabBar } from 'react-navigation-tabs';
 // import { TabBarBottom } from 'react-navigation'; // not working in S7
 import IconWithBadge from './src/IconWithBadge';
@@ -733,7 +734,8 @@ class IntroStackNavigatorWrapper extends React.Component {
             <IntroStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -769,7 +771,8 @@ class HomeStackNavigatorWrapper extends React.Component {
             <HomeStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -796,7 +799,8 @@ class HomeSwitchNavigatorWrapper extends React.Component {
             <HomeSwitchNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -831,7 +835,8 @@ class PostStackNavigatorWrapper extends React.Component {
             <PostStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -905,7 +910,8 @@ class ChatRoomStackNavigatorWrapper extends React.Component {
             <ChatRoomStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -976,7 +982,8 @@ class ReviewStackNavigatorWrapper extends React.Component {
             <ReviewStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1388,7 +1395,8 @@ class MapSearchStackNavigatorWrapper extends React.Component {
             <MapSearchStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1489,3 +1497,5 @@ const MainSwitchNavigator = createSwitchNavigator(
         // initialRouteName: 'loading'
     }
 );
+
+const AppContainer = createAppContainer(MainSwitchNavigator);

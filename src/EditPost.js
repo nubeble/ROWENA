@@ -44,7 +44,7 @@ const imageHeight = imageWidth / 3 * 2;
 
 // --
 // message box pos
-const messageBoxW = Dimensions.get('window').width / 3 * 2;
+const messageBoxW = Dimensions.get('window').width / 12 * 7;
 const messageBoxH = 60;
 
 const V1 = 10;
@@ -1285,8 +1285,7 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                const msg = "Your name (or your friend's name). People all over the world find you on Rowena.";
                                 this.showMessageBox(msg, -17); // 0: base of inputview
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1336,8 +1335,7 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
+                                const msg = "You must be at least 18 years old to use Rowena.";
                                 this.showMessageBox(msg, this.nameY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1385,19 +1383,16 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                        /*
-                        onPress={() => {
-                            // ToDo: show description with pop-up message box
-                            const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                            this.showMessageBox(msg, this.birthdayY);
-                        }}
-                        */
+                            onPress={() => {
+                                const msg = "Your gender is what you decide. You might be a boy or a girl, or maybe you don't like to decide that.";
+                                this.showMessageBox(msg, this.birthdayY);
+                            }}
                         >
-                            <Ionicons name='md-alert' color='transparent' size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusGender()} // NOT work in Android
+                        onOpen={() => this.onFocusGender()} // NOT working in Android
                         placeholder={{
                             label: "Select your gender",
                             value: null
@@ -1574,7 +1569,7 @@ export default class EditPost extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusBodyType()} // NOT work in Android
+                        onOpen={() => this.onFocusBodyType()} // NOT working in Android
                         placeholder={{
                             // label: "Fit",
                             label: "What's your body type?",
@@ -1649,7 +1644,7 @@ export default class EditPost extends React.Component {
                             this.inputRefs.favSport0 = el;
                         }}
                         */
-                        onOpen={() => this.onFocusBreasts()} // NOT work in Android
+                        onOpen={() => this.onFocusBreasts()} // NOT working in Android
                         placeholder={{
                             // label: "C cup",
                             label: "What's your bra size?",
