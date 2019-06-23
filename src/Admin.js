@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, TouchableOpacity, BackHandler, AsyncStorage, Dimensions } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { Ionicons } from 'react-native-vector-icons';
 import SmartImage from './rnff/src/components/SmartImage';
 import { Permissions, Linking, ImagePicker } from 'expo';
 import { NavigationActions } from 'react-navigation';
