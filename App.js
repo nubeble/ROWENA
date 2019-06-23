@@ -9,7 +9,8 @@ import { Provider } from "mobx-react/native";
 import { FeedStore, Theme, Text } from './src/rnff/src/components';
 import { ProfileStore } from "./src/rnff/src/home";
 import autobind from "autobind-decorator";
-import { Notifications, Constants } from 'expo';
+import { Notifications } from 'expo';
+import Constants from 'expo-constants';
 import Firebase from './src/Firebase';
 import { Cons, Vars } from './src/Globals';
 

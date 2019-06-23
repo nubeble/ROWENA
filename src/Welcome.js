@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, View, Image, Button, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
-import { Constants } from "expo";
+import Constants from 'expo-constants';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
 import { Text, Theme } from "./rnff/src/components";

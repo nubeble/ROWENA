@@ -4,7 +4,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
     TouchableWithoutFeedback, Animated
 } from 'react-native';
-import { Constants, Permissions, ImagePicker } from "expo";
+import { Permissions, ImagePicker } from "expo";
+import Constants from 'expo-constants';
 import SmartImage from "./rnff/src/components/SmartImage";
 import { Ionicons, AntDesign, Feather, MaterialCommunityIcons } from "react-native-vector-icons";
 import { inject, observer } from "mobx-react/native";

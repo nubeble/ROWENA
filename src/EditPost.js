@@ -3,7 +3,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, Haptic, Linking, Permissions, ImagePicker } from "expo";
+import { Linking, Permissions, ImagePicker } from "expo";
+import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Feather } from "react-native-vector-icons";

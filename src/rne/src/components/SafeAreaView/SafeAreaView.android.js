@@ -2,7 +2,7 @@
 import * as React from "react";
 import { StyleSheet, View } from "react-native";
 import { type ____ViewStyleProp_Internal as ViewStyle } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import { Constants } from "expo";
+import Constants from 'expo-constants';
 
 const styles = StyleSheet.create({
     container: {
@@ -11,9 +11,9 @@ const styles = StyleSheet.create({
 });
 
 type SafeAreaViewProps = {
-  top: boolean,
-  children: React.Node,
-  style: ViewStyle
+    top: boolean,
+    children: React.Node,
+    style: ViewStyle
 };
 
 export default class extends React.PureComponent<SafeAreaViewProps> {

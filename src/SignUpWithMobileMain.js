@@ -3,7 +3,8 @@ import {
     StyleSheet, View, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
     Keyboard, Dimensions, Platform, TextInput, Button
 } from 'react-native';
-import { Constants, Linking, WebBrowser } from "expo";
+import { Linking, WebBrowser } from "expo";
+import Constants from 'expo-constants';
 import { Ionicons, AntDesign } from "react-native-vector-icons";
 // import * as firebase from 'firebase';
 import Firebase from './Firebase'

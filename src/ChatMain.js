@@ -8,7 +8,6 @@ import { NavigationActions } from 'react-navigation';
 import autobind from "autobind-decorator";
 import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
-import { Constants } from "expo";
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';

@@ -1,7 +1,7 @@
 import {
     Dimensions, Platform
 } from 'react-native';
-import { Constants } from "expo";
+import Constants from 'expo-constants';
 
 export var Vars = {
     focusedScreen: null, // string

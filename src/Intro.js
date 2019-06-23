@@ -4,7 +4,8 @@ import {
     StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, Animated
 } from "react-native";
 import { Header } from 'react-navigation';
-import { Constants, Location, Permissions, Linking } from "expo";
+import { Location, Permissions, Linking } from "expo";
+import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { inject, observer } from "mobx-react/native";
@@ -86,7 +87,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 uri: null,
                 lat: 0,
                 lng: 0,
-                key: 'one'
+                key: 'one',
+                newPostAdded: false
             },
             {
                 place_id: null,
@@ -95,7 +97,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 uri: null,
                 lat: 0,
                 lng: 0,
-                key: 'two'
+                key: 'two',
+                newPostAdded: false
             },
             {
                 place_id: null,
@@ -104,7 +107,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 uri: null,
                 lat: 0,
                 lng: 0,
-                key: 'three'
+                key: 'three',
+                newPostAdded: false
             },
             {
                 place_id: null,
@@ -113,7 +117,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 uri: null,
                 lat: 0,
                 lng: 0,
-                key: 'four'
+                key: 'four',
+                newPostAdded: false
             },
             {
                 place_id: null,
@@ -122,7 +127,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 uri: null,
                 lat: 0,
                 lng: 0,
-                key: 'five'
+                key: 'five',
+                newPostAdded: false
             },
             {
                 place_id: null,
@@ -131,7 +137,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 uri: null,
                 lat: 0,
                 lng: 0,
-                key: 'six'
+                key: 'six',
+                newPostAdded: false
             }
         ],
         popularFeeds: [],
@@ -367,7 +374,7 @@ export default class Intro extends React.Component<InjectedProps> {
         const size = DEFAULT_PLACE_COUNT;
 
         const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
-        if (snap.size > 0) {
+        // if (snap.size > 0) {
         let places = [...this.state.places];
         let index = 0;
 
@@ -385,7 +392,8 @@ export default class Intro extends React.Component<InjectedProps> {
                     uri,
                     lat: data.lat,
                     lng: data.lng,
-                    key: doc.id
+                    key: doc.id,
+                    newPostAdded: false
                 };
 
                 index++;
@@ -411,6 +419,11 @@ export default class Intro extends React.Component<InjectedProps> {
                             return;
                         }
 
+                        // show badge on bottom tab navigator
+                        let showBadge1 = false;
+                        let showBadge2 = false;
+                        if (Intro.feedCountList.get(doc.id) !== -1) showBadge1 = true;
+
                         // update Intro.feedCountList
                         Intro.feedCountList.set(doc.id, newPlace.count);
 
@@ -420,10 +433,18 @@ export default class Intro extends React.Component<InjectedProps> {
                         if (__index !== -1) {
                             let __place = __places[__index];
                             __place.length = newPlace.count;
+
+                            showBadge2 = true;
+                            if (showBadge1) __place.newPostAdded = true;
+
                             __places[__index] = __place;
 
                             Intro.places = __places;
                             !this.closed && this.setState({ places: __places });
+                        }
+
+                        if (showBadge1 && showBadge2) {
+                            if (this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnHome(true, 0);
                         }
                     });
 
@@ -438,7 +459,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 }
             }
         });
-        }
+        // }
     }
 
     async getPopularFeeds() {
@@ -850,6 +871,20 @@ export default class Intro extends React.Component<InjectedProps> {
                                             return;
                                         }
 
+                                        // hide badge
+                                        let __places = [...this.state.places];
+                                        let __index = __places.findIndex(el => el.place_id === place_id);
+                                        if (__index !== -1) {
+                                            let __place = __places[__index];
+                                            __place.newPostAdded = true;
+
+                                            __places[__index] = __place;
+
+                                            Intro.places = __places;
+                                            !this.closed && this.setState({ places: __places });
+                                        }
+
+
                                         let newPlace = _.clone(place);
                                         newPlace.length = feedSize;
 
@@ -857,13 +892,6 @@ export default class Intro extends React.Component<InjectedProps> {
                                     }}
                                 >
                                     <View style={styles.pictureContainer}>
-                                        {/*
-                                        <Image
-                                            style={styles.picture}
-                                            source={{ uri: imageUri }}
-                                        // fadeDuration={0}
-                                        />
-                                        */}
                                         <SmartImage
                                             style={styles.item}
                                             showSpinner={false}
@@ -910,6 +938,18 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 textShadowRadius: 1
                                             }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
+                                        {
+                                            item.newPostAdded &&
+                                            <View style={{
+                                                position: 'absolute',
+                                                top: 5,
+                                                right: 5,
+                                                backgroundColor: 'red',
+                                                borderRadius: Cons.redDotWidth / 2,
+                                                width: Cons.redDotWidth,
+                                                height: Cons.redDotWidth
+                                            }} />
+                                        }
                                     </View>
                                 </TouchableOpacity>
                             );

@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, View, Dimensions, TouchableOpacity, BackHandler, Platform, Image, StatusBar } from 'react-native';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { Text, Theme, FeedStore } from "./rnff/src/components";

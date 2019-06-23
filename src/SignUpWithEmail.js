@@ -4,7 +4,7 @@ import {
     Keyboard, Dimensions, Platform, TextInput
 } from 'react-native';
 // import { Form, Item, Input, Label } from 'native-base';
-import { Constants } from "expo";
+import Constants from 'expo-constants';
 import { Ionicons, AntDesign } from "react-native-vector-icons";
 // import * as firebase from 'firebase';
 import Firebase from './Firebase'

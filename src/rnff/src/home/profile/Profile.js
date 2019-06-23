@@ -4,7 +4,8 @@ import * as React from "react";
 import { View, StyleSheet, Dimensions, TouchableOpacity, Image } from "react-native";
 import { Feather as Icon } from "@expo/vector-icons";
 import { inject, observer } from "mobx-react/native";
-import { Constants, LinearGradient } from "expo";
+import { LinearGradient } from "expo";
+import Constants from 'expo-constants';
 
 import ProfileStore from "../ProfileStore";
 

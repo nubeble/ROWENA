@@ -4,7 +4,7 @@ import {
     TouchableOpacity, Platform, ActivityIndicator
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import { Constants, Permissions, Linking, ImagePicker } from "expo";
+import Constants from 'expo-constants';
 import PreloadImage from './PreloadImage';
 import SmartImage from "./rnff/src/components/SmartImage";
 import { inject, observer } from "mobx-react/native";

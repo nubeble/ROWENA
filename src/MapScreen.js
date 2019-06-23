@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, BackHandler, Dimensions, Platform, Image, StatusBar } from 'react-native';
-// import { MapView, Constants } from 'expo';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text, Theme } from "./rnff/src/components";

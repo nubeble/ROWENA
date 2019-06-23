@@ -3,7 +3,7 @@ import {
     StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator, ImageBackground,
     Animated, Dimensions, Platform, Image, BackHandler
 } from 'react-native';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { EvilIcons, Ionicons, FontAwesome } from "react-native-vector-icons";
 import Firebase from './Firebase';
 import * as firebase from "firebase";

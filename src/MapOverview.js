@@ -1,6 +1,5 @@
 import React from 'react';
 import { StyleSheet, View, TouchableOpacity, BackHandler } from 'react-native';
-import { MapView, Constants } from 'expo';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";

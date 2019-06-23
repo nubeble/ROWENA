@@ -2,9 +2,7 @@
 import * as React from "react";
 import { FlatList, StyleSheet, View, Animated, Dimensions, TextInput, TouchableOpacity } from "react-native";
 import { Header } from 'react-navigation';
-import { Constants } from "expo";
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import AntDesign from "react-native-vector-icons/AntDesign";
+import Constants from 'expo-constants';
 import Image from "./Image";
 import NavigationBar from "./NavigationBar";
 import Text from "./Text";
@@ -49,16 +47,6 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
     renderItem = (item: {item: T}): React.Node => {
         const {renderItem} = this.props;
         return renderItem(item.item);
-    }
-
-    startEditing() {
-        // add animation
-        // alert('startEditing()');
-    }
-
-    leaveEditing() {
-        // add animation
-        // alert('leaveEditing()');
     }
 
     render(): React.Node {
@@ -187,6 +175,16 @@ class Feed<T: FeedItem> extends React.Component<FeedProps<T>, FeedState> {
             </View>
         );
     }
+
+    startEditing() {
+        // add animation
+        // alert('startEditing()');
+    }
+
+    leaveEditing() {
+        // add animation
+        // alert('leaveEditing()');
+    }
 }
 
 const styles = StyleSheet.create({
@@ -201,8 +199,6 @@ const styles = StyleSheet.create({
         // backgroundColor: '#303030'
         backgroundColor: 'black'
     },
-
-
     header: {
         padding: StyleGuide.spacing.small
         // padding: StyleGuide.spacing.tiny
@@ -215,7 +211,7 @@ const styles = StyleSheet.create({
     },
     extraHeader: {
         backgroundColor: StyleGuide.palette.white,
-    ...StyleGuide.styles.shadow
+        ...StyleGuide.styles.shadow
     },
     columnWrapperStyle: {
         marginRight: StyleGuide.spacing.small,
@@ -227,16 +223,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'center'
     },
-
-
     ad: {
         width: (Dimensions.get('window').width) - 2,
         height: (Dimensions.get('window').width - 2) / 21 * 9,
         marginBottom: StyleGuide.spacing.small
     }
-
-
-
 });
 
 export default withTheme(Feed);

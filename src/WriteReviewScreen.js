@@ -3,7 +3,7 @@ import {
     StyleSheet, Dimensions, View, TouchableOpacity, TouchableWithoutFeedback, TextInput, Keyboard,
     Platform, Animated, StatusBar, BackHandler, ActivityIndicator
 } from 'react-native';
-import { Constants } from 'expo';
+import Constants from 'expo-constants';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Text, Theme } from './rnff/src/components';
 import { AirbnbRating } from './react-native-ratings/src';

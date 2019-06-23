@@ -5,7 +5,7 @@ import {
     StyleSheet, View, Animated, Platform, Dimensions, StatusBar, FlatList, BackHandler,
     ActivityIndicator, TouchableOpacity, Keyboard, TextInput, TouchableWithoutFeedback
 } from "react-native";
-import { Constants } from "expo";
+import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import { Text, Theme, Avatar } from "./rnff/src/components";
 // import type { ScreenProps } from "./rnff/src/components/Types";

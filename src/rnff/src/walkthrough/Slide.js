@@ -1,9 +1,10 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, Dimensions, View} from "react-native";
-import {LinearGradient, Constants} from "expo";
+import { StyleSheet, Dimensions, View } from "react-native";
+import { LinearGradient } from "expo";
+import Constants from 'expo-constants';
 
-import {Text, Theme} from "../components";
+import { Text, Theme } from "../components";
 
 type SlideProps = {
     title: string,
@@ -14,7 +15,7 @@ type SlideProps = {
 export default class Slide extends React.PureComponent<SlideProps> {
 
     render(): React.Node {
-        const {title, description, icon} = this.props;
+        const { title, description, icon } = this.props;
         return (
             <View>
                 <LinearGradient colors={["#0059FF", "#00AAFF"]} style={styles.gradient}>
@@ -31,7 +32,7 @@ export default class Slide extends React.PureComponent<SlideProps> {
     }
 }
 
-const {height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const styles = StyleSheet.create({
     slide: {
         paddingHorizontal: Theme.spacing.base * 2,

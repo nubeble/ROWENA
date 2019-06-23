@@ -6,8 +6,6 @@ import {
     StyleSheet, View, Animated, SafeAreaView, TouchableWithoutFeedback, BackHandler,
     Platform, Dimensions, TouchableOpacity, TextInput, StatusBar, FlatList, Image, ActivityIndicator
 } from "react-native";
-import { Header, NavigationActions, StackActions } from 'react-navigation';
-import { Constants } from "expo";
 import { inject, observer } from "mobx-react/native";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "./rnff/src/components";

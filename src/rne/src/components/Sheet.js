@@ -3,9 +3,9 @@ import * as React from "react";
 import {
     StyleSheet, View, TouchableWithoutFeedback, TouchableOpacity, Dimensions, SafeAreaView, ScrollView
 } from "react-native";
-import {Constants} from "expo";
+import Constants from 'expo-constants';
 
-import {StyleGuide, type StyleProps} from "./theme";
+import { StyleGuide, type StyleProps } from "./theme";
 import Text from "./Text";
 import Icon from "./Icon";
 
@@ -30,7 +30,7 @@ export default class Sheet extends React.PureComponent<SheetProps> {
     };
 
     render(): React.Node {
-        const {style, toggle, title, subtitle, rightAction, noSafeArea, scrollable} = this.props;
+        const { style, toggle, title, subtitle, rightAction, noSafeArea, scrollable } = this.props;
         const children = noSafeArea ? this.props.children : <SafeAreaView>{this.props.children}</SafeAreaView>;
         return (
             <View style={[styles.content, style]}>
@@ -64,7 +64,7 @@ export default class Sheet extends React.PureComponent<SheetProps> {
     }
 }
 
-const {height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const styles = StyleSheet.create({
     content: {
         backgroundColor: StyleGuide.palette.white,

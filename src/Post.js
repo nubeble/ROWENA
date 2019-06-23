@@ -3,7 +3,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { Constants, Haptic, Linking } from "expo";
+import Constants from 'expo-constants';
+import * as Haptic from 'expo-haptics';
 import * as Svg from 'react-native-svg';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
 import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation } from "react-native-vector-icons";
@@ -1026,49 +1027,45 @@ export default class Post extends React.Component<InjectedProps> {
                 {/* map */}
                 <View style={styles.mapContainer}>
                     <Text style={styles.location}>{post.location.description}</Text>
-                    <TouchableOpacity activeOpacity={0.5}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
+                    <View style={styles.mapView}>
+                        <MapView
+                            onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
 
-                            setTimeout(() => {
-                                if (this.closed) return;
                                 this.props.navigation.navigate("map", { post: post });
-                            }, Cons.buttonTimeoutShort);
-                        }}
-                    >
-                        <View style={styles.mapView}>
-                            <MapView
-                                ref={map => { this.map = map }}
-                                provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-                                style={styles.map}
-                                mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                initialRegion={{
+                            }}
+                            ref={map => { this.map = map }}
+                            provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                            style={styles.map}
+                            // mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                            // legalLabelInsets={{ top: 25, bottom: 25 }}
+                            initialRegion={{
+                                longitude: post.location.longitude,
+                                latitude: post.location.latitude,
+                                latitudeDelta: 0.008,
+                                longitudeDelta: 0.008 * ASPECT_RATIO
+                            }}
+                            scrollEnabled={false}
+                            zoomEnabled={false}
+                            rotateEnabled={false}
+                            pitchEnabled={false}
+                        >
+                            <MapView.Marker
+                                coordinate={{
                                     longitude: post.location.longitude,
-                                    latitude: post.location.latitude,
-                                    latitudeDelta: 0.008,
-                                    longitudeDelta: 0.008 * ASPECT_RATIO
+                                    latitude: post.location.latitude
                                 }}
-                                scrollEnabled={false}
-                                zoomEnabled={false}
-                                rotateEnabled={false}
-                                pitchEnabled={false}
+                            // title={'title'}
+                            // description={'description'}
                             >
-                                <MapView.Marker
-                                    coordinate={{
-                                        longitude: post.location.longitude,
-                                        latitude: post.location.latitude
-                                    }}
-                                // title={'title'}
-                                // description={'description'}
-                                >
-                                    <View style={{ width: 32, height: 50 }}>
-                                        <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
-                                        <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
-                                    </View>
-                                </MapView.Marker>
-                                {/*
+                                <View style={{ width: 32, height: 50 }}>
+                                    <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
+                                    <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                                </View>
+                            </MapView.Marker>
+                            {/*
                                                     <MapView.Circle
                                                         center={{
                                                             latitude: post.location.latitude,
@@ -1080,9 +1077,8 @@ export default class Post extends React.Component<InjectedProps> {
                                                         fillColor={'rgba(62, 165, 255, 0.5)'}
                                                     />
                                                     */}
-                            </MapView>
-                        </View>
-                    </TouchableOpacity>
+                        </MapView>
+                    </View>
                 </View>
 
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
@@ -1163,16 +1159,16 @@ export default class Post extends React.Component<InjectedProps> {
                         const x = e.nativeEvent.locationX;
 
                         if (x <= boundary) { // left
-                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                            if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                             else Vibration.vibrate(30);
                         } else { // right
                             if (post.pictures.two.uri) {
                                 this.swiper.scrollBy(1, false);
-                                if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                                if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
                             } else {
                                 // right end
-                                if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                                if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                                 else Vibration.vibrate(30);
                             }
                         }
@@ -1199,16 +1195,16 @@ export default class Post extends React.Component<InjectedProps> {
 
                         if (x <= boundary) { // left
                             this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
                             if (post.pictures.three.uri) {
                                 this.swiper.scrollBy(1, false);
-                                if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                                if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
                             } else {
                                 // right end
-                                if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                                if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                                 else Vibration.vibrate(30);
                             }
                         }
@@ -1235,16 +1231,16 @@ export default class Post extends React.Component<InjectedProps> {
 
                         if (x <= boundary) { // left
                             this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
                             if (post.pictures.four.uri) {
                                 this.swiper.scrollBy(1, false);
-                                if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                                if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
                             } else {
                                 // right end
-                                if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                                if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                                 else Vibration.vibrate(30);
                             }
                         }
@@ -1271,10 +1267,10 @@ export default class Post extends React.Component<InjectedProps> {
 
                         if (x <= boundary) { // left
                             this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Light);
+                            if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
-                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                            if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                             else Vibration.vibrate(30);
                         }
                     }}>
@@ -1300,10 +1296,10 @@ export default class Post extends React.Component<InjectedProps> {
 
                         if (x <= boundary) { // left
                             this.swiper.scrollBy(-1, false);
-                            if (Platform.OS === 'ios') Haptic.impact(Haptic.ImpactFeedbackStyle.Success);
+                            if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Success);
                             else Vibration.vibrate(30);
                         } else { // right
-                            if (Platform.OS === 'ios') Haptic.notification(Haptic.NotificationFeedbackType.Success);
+                            if (Platform.OS === 'ios') Haptic.notificationAsync(Haptic.NotificationFeedbackType.Success);
                             else Vibration.vibrate(30);
                         }
                     }}

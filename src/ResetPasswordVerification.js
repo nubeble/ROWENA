@@ -4,7 +4,7 @@ import {
     ImageBackground, Animated, Keyboard, Platform, TextInput, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, Firebase } from './rnff/src/components';
-import { Constants, Linking, WebBrowser } from "expo";
+import Constants from 'expo-constants';
 import { Ionicons, AntDesign } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';

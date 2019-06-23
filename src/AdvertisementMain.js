@@ -3,7 +3,8 @@ import {
     StyleSheet, TouchableOpacity, View, BackHandler, Dimensions, Image, TextInput, Easing,
     Platform, FlatList, Animated, TouchableWithoutFeedback, Keyboard, ActivityIndicator
 } from 'react-native';
-import { Permissions, Linking, ImagePicker, Constants } from 'expo';
+import { Permissions, Linking, ImagePicker } from 'expo';
+import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { Text, Theme, RefreshIndicator } from './rnff/src/components';
