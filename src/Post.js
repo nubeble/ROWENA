@@ -285,21 +285,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     reloadPost() {
-        /*
-        const postDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
-        if (postDoc.exists) {
-            const post = postDoc.data();
-
-            // update feedStore
-            const { feedStore } = this.props;
-            feedStore.updateFeed(post);
-
-            return post;
-        }
-
-        return null;
-        */
-
         const post = this.feed;
 
         // update feedStore
