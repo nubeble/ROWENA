@@ -635,8 +635,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        // paddingBottom: 8,
-        paddingBottom: 4,
+        paddingBottom: 8,
+        // paddingBottom: 6,
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },

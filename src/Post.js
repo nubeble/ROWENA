@@ -828,7 +828,7 @@ export default class Post extends React.Component<InjectedProps> {
                 }
                 <View style={styles.infoContainer}>
                     {/* dates */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 0 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         {/* 1. post date */}
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 2 }}>
                             <MaterialCommunityIcons name="clock-outline" color={Theme.color.text2} size={14} />
@@ -2555,10 +2555,8 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         flex: 1,
-        //justifyContent: 'center',
-        //alignItems: 'center',
-        // padding: Theme.spacing.small,
-        paddingTop: Theme.spacing.tiny,
+        // paddingTop: Theme.spacing.tiny,
+        paddingTop: Theme.spacing.xSmall,
         paddingBottom: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.small,
         paddingRight: Theme.spacing.small

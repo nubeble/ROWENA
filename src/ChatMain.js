@@ -896,15 +896,15 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        // paddingBottom: 8,
-        paddingBottom: 4,
+        paddingBottom: 8,
+        // paddingBottom: 6,
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
     contentContainer: {
         flexGrow: 1,
-        paddingTop: Theme.spacing.small,
-        paddingBottom: Theme.spacing.small,
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.tiny,
         paddingRight: Theme.spacing.tiny
     },

@@ -495,8 +495,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         <View>
                             <View style={styles.infoContainer}>
                                 {/* avatar view */}
-                                <View
-                                    style={{ marginTop: 20 }}
+                                <View style={{ marginTop: 8 }}
                                 >
                                     <View style={{
                                         width: '100%', height: Dimensions.get('window').height / 8,

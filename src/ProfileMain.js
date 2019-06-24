@@ -610,7 +610,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
                                     <TouchableOpacity
-                                        style={{ marginTop: 20 }}
+                                        style={{ marginTop: 8 }}
                                         onPress={() => {
                                             if (!profile) return;
 
@@ -1444,8 +1444,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        // paddingBottom: 8,
-        paddingBottom: 4,
+        paddingBottom: 8,
+        // paddingBottom: 6,
         flexDirection: 'column',
         justifyContent: 'flex-end'
     },
