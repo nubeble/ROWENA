@@ -800,6 +800,9 @@ export default class Post extends React.Component<InjectedProps> {
             else circleColor = 'green';
         }
 
+        const visits = this.getVisitCount(post.visits);
+        const likes = post.likes.length;
+
         return (
             <View>
                 {/* profile pictures */}
@@ -1020,11 +1023,11 @@ export default class Post extends React.Component<InjectedProps> {
                     }
 
                     {
-                        // ToDo: add views & likes
+                        // views & likes
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
-                            <Text style={styles.views}>{'1,274 views'}</Text>
+                            <Text style={styles.views}>{visits + ' views'}</Text>
                             <Octicons style={{ marginTop: 2, marginHorizontal: 10 }} name='primitive-dot' color={Theme.color.title} size={12} />
-                            <Text style={styles.likes}>{'682 likes'}</Text>
+                            <Text style={styles.likes}>{likes + ' likes'}</Text>
                         </View>
                     }
 
