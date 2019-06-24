@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 import * as Haptic from 'expo-haptics';
 import * as Svg from 'react-native-svg';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation, Octicons } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation, Octicons, Entypo } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -1522,7 +1522,7 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         statement.type === 100 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <AntDesign name='like2' color={Theme.color.text3} size={18} />
+                            <Entypo name='price-ribbon' color={Theme.color.text3} size={18} />
                         </View>
                     }
                     {
@@ -1540,7 +1540,7 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         statement.type === 400 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Foundation name='magnifying-glass' color={Theme.color.text3} size={18} />
+                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={18} />
                         </View>
                     }
                     <Text style={{
