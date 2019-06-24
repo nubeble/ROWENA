@@ -1,6 +1,5 @@
 import React from 'react';
 import { createBottomTabNavigator } from 'react-navigation';
-// import { TabNavigatorOptions, StackNavigatorOptions } from "./components/Navigation"; // ToDo: StackNavigatorOptions
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import Stacks from './Stacks';

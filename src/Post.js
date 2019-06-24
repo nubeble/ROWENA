@@ -300,7 +300,7 @@ export default class Post extends React.Component<InjectedProps> {
         let visitCount = 0; // people
         let totalVisitCount = 0;
         let visitCountPerDay = 0; // people
-        if (post.visits) { // ToDo: tmp
+        if (post.visits) { // Consider: tmp
             visitCount = post.visits.length;
             totalVisitCount = this.getVisitCount(post.visits);
             visitCountPerDay = this.getVisitCountPerDay(post.visits);
@@ -390,7 +390,7 @@ export default class Post extends React.Component<InjectedProps> {
         let visitCount = 0;
         let totalVisitCount = 0;
         let visitCountPerDay = 0;
-        if (post.visits) { // ToDo: tmp
+        if (post.visits) { // Consider: tmp
             visitCount = post.visits.length;
             totalVisitCount = this.getVisitCount(post.visits);
             visitCountPerDay = this.getVisitCountPerDay(post.visits);
@@ -800,8 +800,25 @@ export default class Post extends React.Component<InjectedProps> {
             else circleColor = 'green';
         }
 
+        let views = null;
         const visits = this.getVisitCount(post.visits);
-        const likes = post.likes.length;
+        if (visits === 0) {
+            views = 'No views yet';
+        } else if (visits === 1) {
+            views = '1 view';
+        } else {
+            views = visits + ' views';
+        }
+
+        let likes = null;
+        const _likes = post.likes.length;
+        if (_likes === 0) {
+            likes = 'No likes yet';
+        } else if (_likes === 1) {
+            likes = '1 like';
+        } else {
+            likes = visits + ' likes';
+        }
 
         return (
             <View>
@@ -848,18 +865,11 @@ export default class Post extends React.Component<InjectedProps> {
                     </View>
 
                     {/* likes & reviews */}
-                    {
-                        likes > 0 ?
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 8 }}>
-                                <Text style={styles.views}>{visits + ' views'}</Text>
-                                <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
-                                <Text style={styles.likes}>{likes + ' likes'}</Text>
-                            </View>
-                            :
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 8 }}>
-                                <Text style={styles.views}>{visits + ' views'}</Text>
-                            </View>
-                    }
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 8 }}>
+                        <Text style={styles.views}>{views}</Text>
+                        <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
+                        <Text style={styles.likes}>{likes}</Text>
+                    </View>
 
                     <Text style={styles.name}>{post.name}</Text>
 
@@ -1544,19 +1554,19 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         statement.type === 200 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name="md-heart-empty" color={Theme.color.text3} size={16} />
+                            <Ionicons name="md-heart" color={Theme.color.text3} size={16} />
                         </View>
                     }
                     {
                         statement.type === 300 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={16} />
+                            <Ionicons name='md-people' color={Theme.color.text3} size={16} />
                         </View>
                     }
                     {
                         statement.type === 400 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={16} />
+                            <Ionicons name='md-people' color={Theme.color.text3} size={16} />
                         </View>
                     }
                     <Text style={{
@@ -2584,10 +2594,9 @@ const styles = StyleSheet.create({
     bodyInfoTitle: {
         color: Theme.color.title,
         fontSize: 16,
-        fontFamily: "Roboto-Medium",
-        // paddingTop: Cons.bodyInfoTitlePaddingTop(),
+        // fontFamily: "Roboto-Medium",
+        fontFamily: "Roboto-Regular",
         paddingTop: 3,
-        // paddingLeft: Theme.spacing.tiny,
         paddingLeft: Theme.spacing.xSmall,
     },
     distance: {
@@ -2631,12 +2640,12 @@ const styles = StyleSheet.create({
     views: {
         color: Theme.color.text2,
         fontSize: 16,
-        fontFamily: "Roboto-Medium"
+        fontFamily: "Roboto-Regular"
     },
     likes: {
         color: Theme.color.text2,
         fontSize: 16,
-        fontFamily: "Roboto-Medium"
+        fontFamily: "Roboto-Regular"
     },
     /*
     note: {
