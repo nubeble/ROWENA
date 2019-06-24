@@ -115,11 +115,20 @@ export default class App extends React.Component {
 
             Alert.alert(
                 'Network connection',
-                'You are currently offline',
+                'You are currently offline.',
                 [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
                 { cancelable: false }
             );
-        } else if (connectionInfo.type !== 'none') { // connected / reconnected
+        } else if (connectionInfo.type === 'unknown') { // error case
+            this.setState({ connectionState: 1 });
+
+            Alert.alert(
+                'Network connection',
+                'An unkown network error has occurred.',
+                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                { cancelable: false }
+            );
+        } else { // connected / reconnected
             const preState = this.state.connectionState;
 
             if (preState === 1) { // reconnected
