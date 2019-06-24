@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 import * as Haptic from 'expo-haptics';
 import * as Svg from 'react-native-svg';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation, Octicons, Entypo } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, EvilIcons, Octicons, Entypo } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -810,8 +810,8 @@ export default class Post extends React.Component<InjectedProps> {
                     this.renderSwiper(post)
                 }
                 <View style={styles.infoContainer}>
-
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+                    {/* dates */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 0 }}>
                         {/* 1. post date */}
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 2 }}>
                             <MaterialCommunityIcons name="clock-outline" color={Theme.color.text2} size={14} />
@@ -847,9 +847,23 @@ export default class Post extends React.Component<InjectedProps> {
                         </TouchableOpacity>
                     </View>
 
+                    {/* likes & reviews */}
+                    {
+                        likes > 0 ?
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 8 }}>
+                                <Text style={styles.views}>{visits + ' views'}</Text>
+                                <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
+                                <Text style={styles.likes}>{likes + ' likes'}</Text>
+                            </View>
+                            :
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 8 }}>
+                                <Text style={styles.views}>{visits + ' views'}</Text>
+                            </View>
+                    }
+
                     <Text style={styles.name}>{post.name}</Text>
 
-                    <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: 12 }}>
+                    <View style={{ paddingTop: Theme.spacing.xSmall, paddingBottom: 10 }}>
                         {/* 1 row */}
                         <View style={{
                             width: '100%',
@@ -858,7 +872,7 @@ export default class Post extends React.Component<InjectedProps> {
                             alignItems: 'center', justifyContent: 'center'
                         }}>
                             <View style={{
-                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
@@ -866,7 +880,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 {/*
                                 <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
@@ -874,12 +888,12 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.bodyInfoTitle}>{ageText}</Text>
                             </View>
                             <View style={{
-                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
                             </View>
                             <View style={{
-                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
                             </View>
@@ -893,7 +907,7 @@ export default class Post extends React.Component<InjectedProps> {
                             alignItems: 'center', justifyContent: 'center'
                         }}>
                             <View style={{
-                                width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 16, height: 16, tintColor: Theme.color.subtitle }}
@@ -901,12 +915,12 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
                             </View>
                             <View style={{
-                                width: '20%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
@@ -914,7 +928,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                             </View>
@@ -928,17 +942,17 @@ export default class Post extends React.Component<InjectedProps> {
                             alignItems: 'center', justifyContent: 'center'
                         }}>
                             <View style={{
-                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
                             </View>
                             <View style={{
-                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
                             </View>
                             <View style={{
-                                width: '20%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
@@ -946,14 +960,14 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '30%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
                             </View>
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
                         <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                         <Text style={styles.distance}>{distance}</Text>
                         {
@@ -1023,12 +1037,14 @@ export default class Post extends React.Component<InjectedProps> {
                     }
 
                     {
+                        /*
                         // views & likes
                         <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
                             <Text style={styles.views}>{visits + ' views'}</Text>
                             <Octicons style={{ marginTop: 2, marginHorizontal: 10 }} name='primitive-dot' color={Theme.color.title} size={12} />
                             <Text style={styles.likes}>{likes + ' likes'}</Text>
                         </View>
+                        */
                     }
 
                     {
@@ -1522,25 +1538,25 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         statement.type === 100 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Entypo name='price-ribbon' color={Theme.color.text3} size={18} />
+                            <Ionicons name='ios-trophy' color={Theme.color.text3} size={16} />
                         </View>
                     }
                     {
                         statement.type === 200 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name="md-heart-empty" color={Theme.color.text3} size={18} />
+                            <Ionicons name="md-heart-empty" color={Theme.color.text3} size={16} />
                         </View>
                     }
                     {
                         statement.type === 300 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={18} />
+                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={16} />
                         </View>
                     }
                     {
                         statement.type === 400 &&
                         <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={18} />
+                            <MaterialIcons name='person-outline' color={Theme.color.text3} size={16} />
                         </View>
                     }
                     <Text style={{
@@ -2571,7 +2587,8 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Medium",
         // paddingTop: Cons.bodyInfoTitlePaddingTop(),
         paddingTop: 3,
-        paddingLeft: Theme.spacing.tiny,
+        // paddingLeft: Theme.spacing.tiny,
+        paddingLeft: Theme.spacing.xSmall,
     },
     distance: {
         // paddingLeft: 5,
@@ -2612,20 +2629,14 @@ const styles = StyleSheet.create({
         paddingTop: 2
     },
     views: {
-        // paddingHorizontal: 6,
-        color: Theme.color.title,
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Medium",
-        paddingTop: 2
+        color: Theme.color.text2,
+        fontSize: 16,
+        fontFamily: "Roboto-Medium"
     },
     likes: {
-        // paddingHorizontal: 6,
-        color: Theme.color.title,
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Medium",
-        paddingTop: 2
+        color: Theme.color.text2,
+        fontSize: 16,
+        fontFamily: "Roboto-Medium"
     },
     /*
     note: {
@@ -2645,7 +2656,7 @@ const styles = StyleSheet.create({
     },
     */
     note: {
-        marginTop: Theme.spacing.tiny,
+        marginTop: Theme.spacing.small,
 
         color: Theme.color.text2,
         fontSize: 16,
