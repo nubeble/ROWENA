@@ -1,10 +1,10 @@
 // @flow
 import * as _ from "lodash";
 import * as React from "react";
-import {Image as RNImage, Animated, StyleSheet, View, Platform} from "react-native";
-import {BlurView} from "expo";
-import {type ____ViewStyleProp_Internal as Style} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
-import type {ImageSourcePropType} from "react-native/Libraries/Image/ImageSourcePropType";
+import { Image as RNImage, Animated, StyleSheet, View, Platform } from "react-native";
+import { BlurView } from 'expo-blur';
+import { type ____ViewStyleProp_Internal as Style } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import type { ImageSourcePropType } from "react-native/Libraries/Image/ImageSourcePropType";
 
 import CacheManager from "./CacheManager";
 
@@ -35,7 +35,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
         intensity: new Animated.Value(100)
     };
 
-    async load({uri}: ImageProps): Promise<void> {
+    async load({ uri }: ImageProps): Promise<void> {
         if (uri) {
             const entry = CacheManager.get(uri);
             const path = await entry.getPath();
@@ -49,8 +49,8 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     }
 
     componentDidUpdate(prevProps: ImageProps, prevState: ImageState) {
-        const {preview} = this.props;
-        const {uri, intensity} = this.state;
+        const { preview } = this.props;
+        const { uri, intensity } = this.state;
         if (this.props.uri !== prevProps.uri) {
             this.load(this.props);
         } else if (uri && preview && prevState.uri === undefined) {
@@ -65,8 +65,8 @@ export default class Image extends React.Component<ImageProps, ImageState> {
     }
 
     render(): React.Node {
-        const {preview, style, defaultSource, ...otherProps} = this.props;
-        const {uri, intensity} = this.state;
+        const { preview, style, defaultSource, ...otherProps } = this.props;
+        const { uri, intensity } = this.state;
         const hasDefaultSource = !!defaultSource;
         const hasPreview = !!preview;
         const isImageReady = !!uri;
@@ -83,7 +83,7 @@ export default class Image extends React.Component<ImageProps, ImageState> {
             )
         ];
         return (
-            <View {...{style}}>
+            <View {...{ style }}>
                 {
                     (hasDefaultSource && !hasPreview && !isImageReady) && (
                         <RNImage
@@ -114,12 +114,12 @@ export default class Image extends React.Component<ImageProps, ImageState> {
                 }
                 {
                     hasPreview && Platform.OS === "ios" && (
-                        <AnimatedBlurView tint="dark" style={computedStyle} {...{intensity}}/>
+                        <AnimatedBlurView tint="dark" style={computedStyle} {...{ intensity }} />
                     )
                 }
                 {
                     hasPreview && Platform.OS === "android" && (
-                        <Animated.View style={[computedStyle, { backgroundColor: black, opacity }]}/>
+                        <Animated.View style={[computedStyle, { backgroundColor: black, opacity }]} />
                     )
                 }
             </View>

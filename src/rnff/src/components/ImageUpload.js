@@ -1,5 +1,5 @@
 // @flow
-import {ImageManipulator} from "expo";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 import Firebase from "../../../Firebase";
 
@@ -9,7 +9,7 @@ export type Picture = {
     height: number
 };
 
-const {manipulate} = ImageManipulator;
+const { manipulate } = ImageManipulator;
 const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
 export default class ImageUpload {
@@ -19,7 +19,7 @@ export default class ImageUpload {
     }
 
     static async preview({ uri }: Picture): Promise<string> {
-        const result = await manipulate(uri, [{ resize: { width: 10, height: 10 }}], { base64: true });
+        const result = await manipulate(uri, [{ resize: { width: 10, height: 10 } }], { base64: true });
         return `data:image/jpeg;base64,${result.base64 || ""}`;
     }
 

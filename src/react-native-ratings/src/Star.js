@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { StyleSheet, Animated, TouchableOpacity } from 'react-native';
-import { Asset } from 'expo';
+import { Asset } from 'expo-asset';
 
 const STAR_IMAGE = require('./images/airbnb-star.png');
 const STAR_SELECTED_IMAGE = require('./images/airbnb-star-selected.png');

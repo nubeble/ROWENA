@@ -1,11 +1,11 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, TouchableOpacity, Animated, Dimensions, Platform} from "react-native";
-import {BlurView} from "expo";
+import { StyleSheet, View, TouchableOpacity, Animated, Dimensions, Platform } from "react-native";
+import { BlurView } from 'expo-blur';
 // import Modal from "expo/src/modal/Modal";
 import { Modal } from 'react-native'; // ToDo: 'jest-expo'
 
-import {StyleGuide} from "./theme";
+import { StyleGuide } from "./theme";
 import Sheet from "./Sheet";
 
 type ActionSheetProps = {
@@ -44,7 +44,7 @@ export default class ActionSheet extends React.Component<ActionSheetProps, Actio
     onRequestClose = () => this.toggle();
 
     async toggle(): Promise<void> {
-        const {animation, visible} = this.state;
+        const { animation, visible } = this.state;
         if (!visible) {
             await this.setVisibility(true);
         }
@@ -63,9 +63,9 @@ export default class ActionSheet extends React.Component<ActionSheetProps, Actio
     }
 
     render(): React.Node {
-        const {onRequestClose} = this;
-        const {title, subtitle, rightAction, children, noSafeArea, scrollable} = this.props;
-        const {animation, visible} = this.state;
+        const { onRequestClose } = this;
+        const { title, subtitle, rightAction, children, noSafeArea, scrollable } = this.props;
+        const { animation, visible } = this.state;
         const opacity = animation.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 0.5]
@@ -79,7 +79,7 @@ export default class ActionSheet extends React.Component<ActionSheetProps, Actio
             outputRange: [height, 0]
         });
         return (
-            <Modal onRequestClose={onRequestClose} transparent {...{visible}}>
+            <Modal onRequestClose={onRequestClose} transparent {...{ visible }}>
                 <View style={styles.modal}>
                     {
                         Platform.OS === "android" && (
@@ -90,20 +90,20 @@ export default class ActionSheet extends React.Component<ActionSheetProps, Actio
                                     opacity
                                 }}
                             >
-                                <TouchableOpacity style={styles.exit} onPress={onRequestClose}/>
+                                <TouchableOpacity style={styles.exit} onPress={onRequestClose} />
                             </Animated.View>
                         )
                     }
                     {
                         Platform.OS === "ios" && (
-                            <AnimatedBlurView tint="dark" style={StyleSheet.absoluteFill} {...{intensity}}>
-                                <TouchableOpacity style={styles.exit} onPress={onRequestClose}/>
+                            <AnimatedBlurView tint="dark" style={StyleSheet.absoluteFill} {...{ intensity }}>
+                                <TouchableOpacity style={styles.exit} onPress={onRequestClose} />
                             </AnimatedBlurView>
                         )
                     }
                     <AnimatedSheet
                         style={{ transform: [{ translateY }] }}
-                        {...{toggle: onRequestClose, title, subtitle, rightAction, noSafeArea, scrollable}}
+                        {...{ toggle: onRequestClose, title, subtitle, rightAction, noSafeArea, scrollable }}
                     >
                         {children}
                     </AnimatedSheet>
@@ -113,7 +113,7 @@ export default class ActionSheet extends React.Component<ActionSheetProps, Actio
     }
 }
 
-const {height} = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 const duration = 350;
 const useNativeDriver = Platform.OS === "android";
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);

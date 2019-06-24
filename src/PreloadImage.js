@@ -1,4 +1,4 @@
-import { Asset } from "expo";
+import { Asset } from 'expo-asset';
 
 const Splash = require('../assets/splash.png');
 const Title = require('../assets/title.png');
