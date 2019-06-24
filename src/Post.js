@@ -7,7 +7,7 @@ import Constants from 'expo-constants';
 import * as Haptic from 'expo-haptics';
 import * as Svg from 'react-native-svg';
 import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT } from 'react-native-maps';
-import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation } from "react-native-vector-icons";
+import { Ionicons, AntDesign, FontAwesome, MaterialIcons, MaterialCommunityIcons, Foundation, Octicons } from "react-native-vector-icons";
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
@@ -809,10 +809,13 @@ export default class Post extends React.Component<InjectedProps> {
                 <View style={styles.infoContainer}>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-                        <View style={{ justifyContent: 'center', alignItems: 'flex-start', paddingVertical: 2 }}>
-                            <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Light" }}>Posted {moment(post.timestamp).fromNow()}</Text>
+                        {/* 1. post date */}
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 2 }}>
+                            <MaterialCommunityIcons name="clock-outline" color={Theme.color.text2} size={14} />
+                            <Text style={{ marginLeft: 6, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Light" }}>Posted {moment(post.timestamp).fromNow()}</Text>
                         </View>
 
+                        {/* 2. activate date */}
                         <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingLeft: 10, paddingVertical: 2 }}
                             onPress={async () => {
                                 if (this.state.showPostLoader) return;
@@ -974,7 +977,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {
                         post.reviewCount > 0 ?
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 8 - 4 }}>
                                 <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                     <AirbnbRating
                                         count={5}
@@ -1002,7 +1005,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 </View>
                             </View>
                             */
-                            <View style={{ marginBottom: 9 }}>
+                            <View style={{ marginBottom: 9 - 4 }}>
                                 <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
                                     <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
                                     <Text style={{
@@ -1014,6 +1017,15 @@ export default class Post extends React.Component<InjectedProps> {
                                     }}>Newly posted</Text>
                                 </View>
                             </View>
+                    }
+
+                    {
+                        // ToDo: add views & likes
+                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
+                            <Text style={styles.views}>{'1,274 views'}</Text>
+                            <Octicons style={{ marginTop: 2, marginHorizontal: 10 }} name='primitive-dot' color={Theme.color.title} size={12} />
+                            <Text style={styles.likes}>{'682 likes'}</Text>
+                        </View>
                     }
 
                     {
@@ -2529,7 +2541,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(70, 154, 32)'
     },
     date: {
-        marginLeft: 8,
+        // marginLeft: 8,
+        marginLeft: 6,
         color: Theme.color.text2,
         fontSize: 14,
         fontFamily: "Roboto-Light"
@@ -2593,6 +2606,22 @@ const styles = StyleSheet.create({
         // lineHeight: 18,
         fontFamily: "Roboto-Regular",
         // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
+        paddingTop: 2
+    },
+    views: {
+        // paddingHorizontal: 6,
+        color: Theme.color.title,
+        fontSize: 18,
+        // lineHeight: 18,
+        fontFamily: "Roboto-Medium",
+        paddingTop: 2
+    },
+    likes: {
+        // paddingHorizontal: 6,
+        color: Theme.color.title,
+        fontSize: 18,
+        // lineHeight: 18,
+        fontFamily: "Roboto-Medium",
         paddingTop: 2
     },
     /*
