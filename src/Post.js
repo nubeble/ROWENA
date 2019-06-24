@@ -166,10 +166,25 @@ export default class Post extends React.Component<InjectedProps> {
         const fi = Firebase.subscribeToFeed(post.placeId, post.id, newFeed => {
             if (newFeed === undefined) {
                 this.feed = null;
+
+                // nothing to do
+
                 return;
             }
 
             this.feed = newFeed;
+
+            // update views & likes
+            const { visits, likes } = newFeed;
+
+            let newPost = this.state.post;
+            newPost.visits = visits;
+            newPost.likes = likes;
+            !this.closed && this.setState({ post: newPost });
+
+            // update feedStore - NO need to update views & likes
+            // const { feedStore } = this.props;
+            // feedStore.updateFeed(newPost);
         });
 
         this.feedUnsubscribe = fi;
@@ -184,6 +199,7 @@ export default class Post extends React.Component<InjectedProps> {
                 this.user = null;
 
                 this.setState({ lastLogInTime: null });
+
                 return;
             }
 
@@ -489,6 +505,7 @@ export default class Post extends React.Component<InjectedProps> {
         if (showBadge && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnLikes(true, 0);
 
         // update likes to state post
+        /*
         console.log('update likes to state post');
 
         let newPost = this.state.post;
@@ -502,6 +519,7 @@ export default class Post extends React.Component<InjectedProps> {
         newPost.likes = likes;
 
         !this.closed && this.setState({ post: newPost });
+        */
 
         // update feedStore - NOT needed to update likes
         // const { feedStore } = this.props;
@@ -817,7 +835,7 @@ export default class Post extends React.Component<InjectedProps> {
         } else if (_likes === 1) {
             likes = '1 like';
         } else {
-            likes = visits + ' likes';
+            likes = _likes + ' likes';
         }
 
         return (
