@@ -425,22 +425,24 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     async toggleLikes() {
-        if (this.toggling) return;
+        if (this.__toggleLikes) return;
+
+        this.__toggleLikes = true;
 
         const post = this.state.post;
 
         // check the owner of the post
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
+            this.__toggleLikes = false;
             return;
         }
 
         if (!this.feed) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
+            this.__toggleLikes = false;
             return;
         }
-
-        this.toggling = true;
 
         let showBadge = false;
 
@@ -483,7 +485,7 @@ export default class Post extends React.Component<InjectedProps> {
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500);
-            this.toggling = false;
+            this.__toggleLikes = false;
             return;
         }
 
@@ -510,7 +512,7 @@ export default class Post extends React.Component<InjectedProps> {
         // const { feedStore } = this.props;
         // feedStore.updateFeed(newPost);
 
-        this.toggling = false;
+        this.__toggleLikes = false;
     }
 
     checkLiked(likes) {
@@ -2416,6 +2418,10 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     async addReply(message) {
+        if (this.__addReply) return;
+
+        this.__addReply = true;
+
         const post = this.state.post;
 
         const placeId = post.placeId;
@@ -2424,13 +2430,9 @@ export default class Post extends React.Component<InjectedProps> {
         const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
         const userUid = Firebase.user().uid;
 
-        /*
-        const result = await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
-        if (!result) {
-            this.refs["toast"].show('The user no longer exists.', 500);
-        }
-        */
         await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
+
+        this.__addReply = false;
     };
 
     async removeReview(index) {
