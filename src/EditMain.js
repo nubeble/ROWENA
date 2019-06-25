@@ -24,7 +24,7 @@ import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient
 const DEFAULT_REVIEW_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
-const profilePictureWidth = Dimensions.get('window').height / 12;
+const profilePictureWidth = Dimensions.get('window').height / 11;
 // const replyViewHeight = Dimensions.get('window').height / 9;
 
 type InjectedProps = {
@@ -386,11 +386,15 @@ export default class EditMain extends React.Component<InjectedProps> {
         let picture = null;
         let placeName = null;
         let name = null;
+        let avatarName = null;
+        let avatarColor = 'black';
 
         if (post) {
             picture = post.pictures.one.uri;
             placeName = post.placeName;
             name = post.name;
+            avatarName = Util.getAvatarName(name);
+            avatarColor = Util.getAvatarColor(post.id);
         } else {
             // ToDo: tmp
             picture = _review.picture;
@@ -403,23 +407,15 @@ export default class EditMain extends React.Component<InjectedProps> {
             isMyComment = true;
         }
 
-        let avatarName = '';
-        let avatarColor = 'black';
-        if (!picture) {
-            avatarName = Util.getAvatarName(name);
-            avatarColor = Util.getAvatarColor(post.id);
-        }
-
         return (
             <View style={{ paddingHorizontal: Theme.spacing.base, paddingVertical: Theme.spacing.small }}>
-
-                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                <Text style={styles.reviewText}>{_review.comment}</Text>
-                {/*}
-                <Text style={styles.reviewText}>{tmp}</Text>
-                */}
-
-                <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
+                    <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                    <Text style={styles.reviewText}>{_review.comment}</Text>
+                </View>
+                <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
                         picture ?
                             <SmartImage
@@ -429,50 +425,35 @@ export default class EditMain extends React.Component<InjectedProps> {
                                 uri={picture}
                             />
                             :
-                            /*
-                            <Image
-                                style={{
-                                    backgroundColor: 'black',
-                                    width: profilePictureWidth, height: profilePictureWidth,
-                                    borderRadius: profilePictureWidth / 2,
-                                    resizeMode: 'cover'
-                                }}
-                                source={PreloadImage.user}
-                            />
-                            */
                             <View
                                 style={{
                                     width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                 }}
                             >
-                                <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
                                     {avatarName}
                                 </Text>
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
+                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
                             {name}</Text>
                         <Text style={{
                             marginTop: 4,
-                            color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
+                            color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
                         }}>{placeName}</Text>
                     </View>
                 </View>
                 {
-                    isMyComment && (
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                onPress={() => this.removeComment(index)}
-                            >
-                                {/*
-                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
-                                */}
-                                <MaterialIcons name='close' color={'silver'} size={20} />
-                            </TouchableOpacity>
-                        </View>
-                    )
+                    isMyComment &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                            onPress={() => this.removeComment(index)}
+                        >
+                            <MaterialIcons name='close' color={'silver'} size={20} />
+                        </TouchableOpacity>
+                    </View>
                 }
             </View>
         );
@@ -658,15 +639,13 @@ const styles = StyleSheet.create({
     },
     reviewDate: {
         color: Theme.color.text3,
-        fontSize: 13,
+        fontSize: 14,
         fontFamily: "Roboto-Light"
     },
     reviewText: {
         color: Theme.color.text2,
-        fontSize: 15,
+        fontSize: 16,
         lineHeight: 22,
-        fontFamily: "Roboto-Regular",
-
-        paddingVertical: Theme.spacing.tiny
+        fontFamily: "Roboto-Regular"
     }
 });

@@ -20,7 +20,10 @@ import Dialog from "react-native-dialog";
 import { Cons, Vars } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
+import Util from './Util';
 
+// const profilePictureWidth = Dimensions.get('window').height / 12;
+const profilePictureWidth = Dimensions.get('window').height / 11;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 
@@ -330,64 +333,87 @@ export default class ReadAllReviewsScreen extends React.Component {
         const _profile = item.profile;
         const _review = item.review;
 
-        const ref = item.review.id;
-
+        const ref = _review.id;
         const reply = _review.reply;
 
         const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
-
-        let isMyReply = undefined;
+        let isMyReply = false;
         if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
-        return (
-            <View style={{ paddingBottom: Theme.spacing.tiny }} onLayout={(event) => this.onItemLayout(event, index)}>
-                {/* // ToDo: add profile image */}
+        const avatarName = Util.getAvatarName(_profile.name);
+        const avatarColor = Util.getAvatarColor(_profile.uid);
 
-                <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.base, paddingBottom: Theme.spacing.tiny }}>
-                    <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Anonymous'}</Text>
+        return (
+            <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={_review.rating}
+                                size={14}
+                                margin={1}
+                            />
+                        </View>
+                        <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+                    </View>
+
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
 
-                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: Theme.spacing.tiny }}>
-                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                        <AirbnbRating
-                            count={5}
-                            readOnly={true}
-                            showRating={false}
-                            defaultRating={_review.rating}
-                            size={14}
-                            margin={1}
-                        />
-                    </View>
-                    <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
-                </View>
-
-                <View style={{ paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.tiny }}>
-                    {/*
-                    <Text style={styles.reviewText}>{tmp}</Text>
-                    */}
+                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
                     <Text style={styles.reviewText}>{_review.comment}</Text>
                 </View>
 
-                {
-                    isMyReview && !reply && (
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                onPress={() => this.removeReview(index)}
+                <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
+                    {
+                        _profile.picture.uri ?
+                            <SmartImage
+                                style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                                showSpinner={false}
+                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={_profile.picture.uri}
+                            />
+                            :
+                            <View
+                                style={{
+                                    width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
+                                    backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                }}
                             >
-                                {/*
-                                <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Delete</Text>
-                                */}
-                                <MaterialIcons name='close' color={'silver'} size={20} />
-                            </TouchableOpacity>
-                        </View>
-                    )
+                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
+                                    {avatarName}
+                                </Text>
+                            </View>
+                    }
+                    <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
+                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
+                            {_profile.name}</Text>
+                        <Text style={{
+                            marginTop: 4,
+                            color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
+                        }}>{_profile.place}</Text>
+                    </View>
+                </View>
+                {
+                    isMyReview && !reply &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                            onPress={() => this.removeReview(index)}
+                        >
+                            <MaterialIcons name='close' color={'silver'} size={20} />
+                        </TouchableOpacity>
+                    </View>
                 }
 
                 {
                     // comment, id, timestamp, uid
-                    reply && (
+                    reply &&
                         <View style={{
+                            marginTop: Theme.spacing.tiny,
                             paddingTop: Theme.spacing.small,
                             paddingBottom: Theme.spacing.small,
                             paddingLeft: Theme.spacing.small,
@@ -395,52 +421,36 @@ export default class ReadAllReviewsScreen extends React.Component {
                             backgroundColor: Theme.color.highlight, borderRadius: 2
                         }}>
 
-                            <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.small }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.tiny }}>
                                 <Text style={styles.replyOwner}>Owner Response</Text>
                                 <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                             </View>
 
-                            {/*
-                                <Text style={styles.reviewText}>{tmp}</Text>
-                            */}
-                            <Text style={styles.replyComment}>{reply.comment}</Text>
-
+                            <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                                <Text style={styles.replyComment}>{reply.comment}</Text>
+                            </View>
                             {
-                                isMyReply && (
+                                isMyReply &&
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
                                             onPress={() => this.removeReply(index)}
                                         >
-                                            {/*
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Delete</Text>
-                                            */}
                                             <MaterialIcons name='close' color={'silver'} size={20} />
                                         </TouchableOpacity>
                                     </View>
-                                )
                             }
                         </View>
-                    )
                 }
 
                 {
-                    this.state.isOwner && !reply ?
-                        (
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingBottom: Theme.spacing.base }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                    onPress={() => this.openKeyboard(ref, index, _profile.uid)}
-                                >
-                                    {/*
-                                    <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 16 }}>Reply</Text>
-                                    */}
-                                    <MaterialIcons name='reply' color={'silver'} size={20} />
-                                </TouchableOpacity>
-                            </View>
-                        )
-                        :
-                        (
-                            <View style={{ paddingTop: Theme.spacing.base - Theme.spacing.tiny }} />
-                        )
+                    this.state.isOwner && !reply &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                            onPress={() => this.openKeyboard(ref, index, _profile.uid)}
+                        >
+                            <MaterialIcons name='reply' color={'silver'} size={20} />
+                        </TouchableOpacity>
+                    </View>
                 }
             </View>
         );
@@ -866,32 +876,16 @@ const styles = StyleSheet.create({
         paddingLeft: Theme.spacing.base,
         paddingRight: Theme.spacing.base
     },
-    reviewContainer: {
-        marginHorizontal: 10,
-        padding: 10,
-        // borderRadius: 3,
-        // borderColor: 'rgba(0,0,0,0.1)',
-        // borderWidth: 1,
-        // backgroundColor: 'yellow',
-    },
-    reviewName: {
-        color: Theme.color.title,
-        fontSize: 16,
-        fontFamily: "Roboto-Medium"
-    },
-    reviewDate: {
-        color: Theme.color.text3,
-        fontSize: 14,
-        fontFamily: "Roboto-Light",
-        marginLeft: 'auto'
-    },
     reviewRating: {
         marginLeft: 4,
         color: '#f1c40f',
         fontSize: 16,
-        // lineHeight: 15,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Theme.spacing.xSmall
+        fontFamily: "Roboto-Regular"
+    },
+    reviewDate: {
+        color: Theme.color.text3,
+        fontSize: 14,
+        fontFamily: "Roboto-Light"
     },
     reviewText: {
         color: Theme.color.text2,
@@ -900,19 +894,17 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Regular"
     },
     replyOwner: {
-        // color: "#E5E5E5",
-        color: Theme.color.title,
-        fontSize: 16,
-        fontFamily: "Roboto-MediumItalic"
-    },
-    replyDate: {
         color: Theme.color.text2,
         fontSize: 14,
-        fontFamily: "Roboto-Light",
-        marginLeft: 'auto'
+        fontFamily: "Roboto-Italic"
+    },
+    replyDate: {
+        color: Theme.color.text3,
+        fontSize: 14,
+        fontFamily: "Roboto-Light"
     },
     replyComment: {
-        color: Theme.color.title,
+        color: Theme.color.text2,
         fontSize: 16,
         lineHeight: 22,
         fontFamily: "Roboto-Italic"

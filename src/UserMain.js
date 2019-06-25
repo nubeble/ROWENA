@@ -28,7 +28,7 @@ import Dialog from "react-native-dialog";
 const DEFAULT_REVIEW_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
-const profilePictureWidth = Dimensions.get('window').height / 12;
+const profilePictureWidth = Dimensions.get('window').height / 11;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 // const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
@@ -775,11 +775,15 @@ export default class UserMain extends React.Component<InjectedProps> {
         let picture = null;
         let placeName = null;
         let name = null;
+        let avatarName = null;
+        let avatarColor = 'black';
 
         if (post) {
             picture = post.pictures.one.uri;
             placeName = post.placeName;
             name = post.name;
+            avatarName = Util.getAvatarName(name);
+            avatarColor = Util.getAvatarColor(post.id);
         } else {
             // ToDo: tmp
             picture = _review.picture;
@@ -792,23 +796,15 @@ export default class UserMain extends React.Component<InjectedProps> {
             isMyComment = true;
         }
 
-        let avatarName = '';
-        let avatarColor = 'black';
-        if (!picture) {
-            avatarName = Util.getAvatarName(name);
-            avatarColor = Util.getAvatarColor(post.id);
-        }
-
         return (
             <View style={{ paddingHorizontal: Theme.spacing.base, paddingVertical: Theme.spacing.small }}>
-
-                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                <Text style={styles.reviewText}>{_review.comment}</Text>
-                {/*}
-                <Text style={styles.reviewText}>{tmp}</Text>
-                */}
-
-                <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.xSmall, flexDirection: 'row', alignItems: 'center' }}>
+                <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
+                    <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                </View>
+                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                    <Text style={styles.reviewText}>{_review.comment}</Text>
+                </View>
+                <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
                         picture ?
                             <SmartImage
@@ -818,50 +814,35 @@ export default class UserMain extends React.Component<InjectedProps> {
                                 uri={picture}
                             />
                             :
-                            /*
-                            <Image
-                                style={{
-                                    backgroundColor: 'black',
-                                    width: profilePictureWidth, height: profilePictureWidth,
-                                    borderRadius: profilePictureWidth / 2,
-                                    resizeMode: 'cover'
-                                }}
-                                source={PreloadImage.user}
-                            />
-                            */
                             <View
                                 style={{
                                     width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                 }}
                             >
-                                <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
                                     {avatarName}
                                 </Text>
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
+                        <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
                             {name}</Text>
                         <Text style={{
                             marginTop: 4,
-                            color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
+                            color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
                         }}>{placeName}</Text>
                     </View>
                 </View>
                 {
-                    isMyComment && (
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                onPress={() => this.removeComment(index)}
-                            >
-                                {/*
-                                <Text style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
-                                */}
-                                <MaterialIcons name='close' color={'silver'} size={20} />
-                            </TouchableOpacity>
-                        </View>
-                    )
+                    isMyComment &&
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                            onPress={() => this.removeComment(index)}
+                        >
+                            <MaterialIcons name='close' color={'silver'} size={20} />
+                        </TouchableOpacity>
+                    </View>
                 }
             </View>
         );
@@ -1156,7 +1137,6 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         flex: 1,
-        // width: '100%',
         // paddingBottom: Theme.spacing.tiny
     },
     /*
@@ -1212,21 +1192,14 @@ const styles = StyleSheet.create({
     },
     reviewDate: {
         color: Theme.color.text3,
-        fontSize: 13,
+        fontSize: 14,
         fontFamily: "Roboto-Light"
     },
     reviewText: {
         color: Theme.color.text2,
-        fontSize: 15,
+        fontSize: 16,
         lineHeight: 22,
-        fontFamily: "Roboto-Regular",
-
-        paddingVertical: Theme.spacing.tiny
-    },
-    reviewName: {
-        color: Theme.color.text2,
-        fontSize: 15,
-        fontFamily: "Roboto-Medium",
+        fontFamily: "Roboto-Regular"
     },
     notification: {
         // width: '100%',

@@ -38,6 +38,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 const DEFAULT_REVIEW_COUNT = 3;
 
+const profilePictureWidth = Dimensions.get('window').height / 12;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 // 3:2 image
@@ -1861,7 +1862,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReviews(reviews) { // draw items up to 4
-        console.log('Post.renderReviews');
+        // console.log('Post.renderReviews');
 
         if (reviews === undefined) {
             // draw skeleton
@@ -1920,38 +1921,34 @@ export default class Post extends React.Component<InjectedProps> {
                     {reviewArray}
                 </View>
             );
-        } else {
-            if (reviews.length === 0) {
-                return null;
-            }
-            const post = this.state.post;
+        }
 
-            let reviewArray = [];
+        if (reviews.length === 0) return null;
 
-            for (var i = 0; i < reviews.length; i++) {
-                if (i >= DEFAULT_REVIEW_COUNT) break;
+        let reviewArray = [];
 
-                const review = reviews[i];
+        for (let i = 0; i < reviews.length; i++) {
+            if (i >= DEFAULT_REVIEW_COUNT) break;
 
-                const _profile = review.profile;
-                const _review = review.review;
-                const ref = _review.id;
-                const index = i;
-                const reply = _review.reply;
-                const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
-                let isMyReply = undefined;
-                if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
+            const review = reviews[i];
 
-                reviewArray.push(
-                    <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
-                        {/* // Consider: add profile image */}
+            const _profile = review.profile;
+            const _review = review.review;
+            const ref = _review.id;
+            const index = i;
+            const reply = _review.reply;
+            const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
+            let isMyReply = false;
+            if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
-                        <View style={{ flexDirection: 'row', paddingTop: Theme.spacing.xSmall, paddingBottom: Theme.spacing.xSmall }}>
-                            <Text style={styles.reviewName}>{_profile.name ? _profile.name : 'Anonymous'}</Text>
-                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                        </View>
+            const avatarName = Util.getAvatarName(_profile.name);
+            const avatarColor = Util.getAvatarColor(_profile.uid);
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
+            reviewArray.push(
+                <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
+
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: Theme.spacing.xSmall }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                 <AirbnbRating
                                     count={5}
@@ -1965,138 +1962,163 @@ export default class Post extends React.Component<InjectedProps> {
                             <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
                         </View>
 
-                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                            <ReadMore
-                                numberOfLines={2}
-                            // onReady={() => this.readingCompleted()}
-                            >
-                                <Text style={styles.reviewText}>{_review.comment}</Text>
-                            </ReadMore>
-                        </View>
+                        <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                    </View>
 
+                    <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                        <ReadMore
+                            numberOfLines={2}
+                        // onReady={() => this.readingCompleted()}
+                        >
+                            <Text style={styles.reviewText}>{_review.comment}</Text>
+                        </ReadMore>
+                    </View>
+
+                    <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny, flexDirection: 'row', alignItems: 'center' }}>
                         {
-                            isMyReview && !reply &&
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                    onPress={() => this.removeReview(index)}
+                            _profile.picture.uri ?
+                                <SmartImage
+                                    style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                                    showSpinner={false}
+                                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                    uri={_profile.picture.uri}
+                                />
+                                :
+                                <View
+                                    style={{
+                                        width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
+                                        backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                    }}
                                 >
-                                    {/*
-                                    <Text ref='delete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
-                                    */}
-                                    <MaterialIcons name='close' color={'silver'} size={20} />
-                                </TouchableOpacity>
-                            </View>
-                        }
-
-                        {
-                            // comment, id, timestamp, uid
-                            reply &&
-                            <View style={{
-                                paddingTop: Theme.spacing.tiny,
-                                paddingBottom: Theme.spacing.tiny,
-                                paddingLeft: Theme.spacing.tiny,
-                                paddingRight: Theme.spacing.tiny,
-                                backgroundColor: Theme.color.highlight, borderRadius: 2
-                            }}>
-
-                                <View style={{ flexDirection: 'row', paddingBottom: Theme.spacing.xSmall }}>
-                                    <Text style={styles.replyOwner}>Owner Response</Text>
-                                    <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
+                                    <Text style={{ color: 'white', fontSize: 22, lineHeight: 26, fontFamily: "Roboto-Medium" }}>
+                                        {avatarName}
+                                    </Text>
                                 </View>
+                        }
+                        <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
+                            <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
+                                {_profile.name}</Text>
+                            <Text style={{
+                                marginTop: 4,
+                                color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
+                            }}>{_profile.place}</Text>
+                        </View>
+                    </View>
+                    {
+                        isMyReview && !reply &&
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                onPress={() => this.removeReview(index)}
+                            >
+                                <MaterialIcons name='close' color={'silver'} size={20} />
+                            </TouchableOpacity>
+                        </View>
+                    }
 
-                                <ReadMore
-                                    numberOfLines={2}
-                                >
+                    {
+                        // comment, id, timestamp, uid
+                        reply &&
+                        <View style={{
+                            marginTop: Theme.spacing.xSmall,
+                            paddingTop: Theme.spacing.tiny,
+                            paddingBottom: Theme.spacing.tiny,
+                            paddingLeft: Theme.spacing.tiny,
+                            paddingRight: Theme.spacing.tiny,
+                            backgroundColor: Theme.color.highlight, borderRadius: 2
+                        }}>
+
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.xSmall }}>
+                                <Text style={styles.replyOwner}>Owner Response</Text>
+                                <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
+                            </View>
+
+                            <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                                <ReadMore numberOfLines={2}>
                                     <Text style={styles.replyComment}>{reply.comment}</Text>
                                 </ReadMore>
-
-                                {
-                                    isMyReply &&
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                            onPress={() => this.removeReply(index)}
-                                        >
-                                            {/*
-                                            <Text ref='replyDelete' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Delete</Text>
-                                            */}
-                                            <MaterialIcons name='close' color={'silver'} size={20} />
-                                        </TouchableOpacity>
-                                    </View>
-                                }
                             </View>
-                        }
-
-                        {
-                            this.state.isOwner && !reply &&
-                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                    onPress={() => this.openKeyboard(ref, index, _profile.uid)}
-                                >
-                                    {/*
-                                    <Text ref='reply' style={{ marginLeft: 4, fontFamily: "Roboto-Regular", color: "silver", fontSize: 14 }}>Reply</Text>
-                                    */}
-                                    <MaterialIcons name='reply' color={'silver'} size={20} />
-                                </TouchableOpacity>
-                            </View>
-                        }
-
-                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
-                    </View>
-                );
-            } // end of for
-
-            return (
-                <View style={styles.reviewContainer}
-                    onLayout={(e) => {
-                        const { y } = e.nativeEvent.layout;
-                        this.reviewContainerY = y;
-                    }}
-                >
-                    {reviewArray}
-
-                    {/* Read all ??? reviews button */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
+                            {
+                                isMyReply &&
+                                <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                        onPress={() => this.removeReply(index)}
+                                    >
+                                        <MaterialIcons name='close' color={'silver'} size={20} />
+                                    </TouchableOpacity>
+                                </View>
                             }
-
-                            setTimeout(() => {
-                                if (this.closed) return;
-
-                                if (!this.feed) {
-                                    this.refs["toast"].show('The post has been removed by its owner.', 500);
-                                    return;
-                                }
-
-                                this.props.navigation.navigate("readReview",
-                                    {
-                                        reviewStore: this.reviewStore,
-                                        isOwner: this.state.isOwner,
-                                        placeId: this.props.navigation.state.params.post.placeId,
-                                        feedId: this.props.navigation.state.params.post.id,
-                                        initFromReadAllReviews: () => this.initFromReadAllReviews()
-                                    });
-                            }, Cons.buttonTimeoutShort);
-                        }}>
-                        <View style={{
-                            width: '100%', height: Dimensions.get('window').height / 14,
-                            justifyContent: 'center',
-                            // alignItems: 'center',
-                            // backgroundColor: 'blue',
-                            // borderTopWidth: 1,
-                            // borderBottomWidth: 1,
-                            // borderColor: 'rgb(34, 34, 34)'
-                        }}>
-                            <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {post.reviewCount}+ reviews</Text>
-                            <FontAwesome name='chevron-right' color="#f1c40f" size={20} style={{ position: 'absolute', right: 0 }} />
                         </View>
-                    </TouchableOpacity>
+                    }
 
-                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                    {
+                        this.state.isOwner && !reply &&
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                onPress={() => this.openKeyboard(ref, index, _profile.uid)}
+                            >
+                                <MaterialIcons name='reply' color={'silver'} size={20} />
+                            </TouchableOpacity>
+                        </View>
+                    }
+
+                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: 10, marginBottom: Theme.spacing.tiny }} />
                 </View>
             );
-        }
+        } // end of for
+
+        const reviewCount = this.state.post.reviewCount;
+
+        return (
+            <View style={styles.reviewContainer}
+                onLayout={(e) => {
+                    const { y } = e.nativeEvent.layout;
+                    this.reviewContainerY = y;
+                }}
+            >
+                {reviewArray}
+
+                {/* Read all ??? reviews button */}
+                <TouchableOpacity
+                    onPress={() => {
+                        if (this._showNotification) {
+                            this.hideNotification();
+                        }
+
+                        setTimeout(() => {
+                            if (this.closed) return;
+
+                            if (!this.feed) {
+                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                return;
+                            }
+
+                            this.props.navigation.navigate("readReview",
+                                {
+                                    reviewStore: this.reviewStore,
+                                    isOwner: this.state.isOwner,
+                                    placeId: this.props.navigation.state.params.post.placeId,
+                                    feedId: this.props.navigation.state.params.post.id,
+                                    initFromReadAllReviews: () => this.initFromReadAllReviews()
+                                });
+                        }, Cons.buttonTimeoutShort);
+                    }}>
+                    <View style={{
+                        width: '100%', height: Dimensions.get('window').height / 14,
+                        justifyContent: 'center',
+                        // alignItems: 'center',
+                        // backgroundColor: 'blue',
+                        // borderTopWidth: 1,
+                        // borderBottomWidth: 1,
+                        // borderColor: 'rgb(34, 34, 34)'
+                    }}>
+                        <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {reviewCount}+ reviews</Text>
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={20} style={{ position: 'absolute', right: 0 }} />
+                    </View>
+                </TouchableOpacity>
+
+                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+            </View>
+        );
     }
 
     onLayoutReviewsContainer = (event) => {
@@ -2724,25 +2746,16 @@ const styles = StyleSheet.create({
         // marginHorizontal: 10,
         padding: 10,
     },
-    reviewName: {
-        color: Theme.color.title,
-        fontSize: 14,
-        fontFamily: "Roboto-Medium",
-    },
-    reviewDate: {
-        color: Theme.color.text3,
-        fontSize: 12,
-        fontFamily: "Roboto-Light",
-        marginLeft: 'auto'
-    },
     reviewRating: {
         marginLeft: 4,
         color: '#f1c40f',
         fontSize: 14,
-        // lineHeight: 13,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Theme.spacing.xSmall
-        // paddingTop: 1
+        fontFamily: "Roboto-Regular"
+    },
+    reviewDate: {
+        color: Theme.color.text3,
+        fontSize: 12,
+        fontFamily: "Roboto-Light"
     },
     reviewText: {
         color: Theme.color.text2,
@@ -2751,15 +2764,14 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto-Regular"
     },
     replyOwner: {
-        color: Theme.color.title,
-        fontSize: 14,
-        fontFamily: "Roboto-MediumItalic"
+        color: Theme.color.text2,
+        fontSize: 13,
+        fontFamily: "Roboto-Italic"
     },
     replyDate: {
         color: Theme.color.text3,
         fontSize: 12,
-        fontFamily: "Roboto-Light",
-        marginLeft: 'auto'
+        fontFamily: "Roboto-Light"
     },
     replyComment: {
         color: Theme.color.text2,
