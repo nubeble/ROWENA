@@ -466,6 +466,7 @@ import SearchScreen from './src/SearchScreen';
 import Explore from './src/Explore';
 import Post from './src/Post';
 import EditPost from './src/EditPost';
+import CheckLikes from './src/CheckLikes';
 import MapScreen from './src/MapScreen';
 import WriteReviewScreen from './src/WriteReviewScreen';
 import ReadAllReviewsScreen from './src/ReadAllReviewsScreen';
@@ -1414,6 +1415,41 @@ class MapSearchStackNavigatorWrapper extends React.Component {
 }
 // -- end of MapSearchStackNavigatorWrapper
 
+const CheckLikesStackNavigator = createStackNavigator(
+    {
+        home: { screen: CheckLikes },
+        // post: { screen: Post }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class CheckLikesStackNavigatorWrapper extends React.Component {
+    static router = CheckLikesStackNavigator.router;
+
+    render() {
+        return (
+            <CheckLikesStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
+                }}
+            />
+        );
+    }
+}
+
+
+
 // -- start of AdminNavigatorWrapper
 const AdminNavigator = createStackNavigator(
     {
@@ -1454,6 +1490,8 @@ const MainStackNavigator = createStackNavigator(
 
         mapSearch: { screen: MapSearchStackNavigatorWrapper },
 
+        // checkLikes: { screeen: CheckLikesStackNavigatorWrapper },
+        checkLikes: { screen: CheckLikes },
         map: { screen: MapScreen },
         readReview: { screen: ReadAllReviewsScreen },
         writeReview: { screen: WriteReviewScreen },

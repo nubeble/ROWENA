@@ -38,7 +38,7 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 const DEFAULT_REVIEW_COUNT = 3;
 
-const profilePictureWidth = Dimensions.get('window').height / 12;
+const profilePictureWidth = 50;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 // 3:2 image
@@ -876,7 +876,9 @@ export default class Post extends React.Component<InjectedProps> {
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 12 }}>
                         <Text style={styles.views}>{views}</Text>
                         <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
-                        <Text style={styles.likes}>{likes}</Text>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
+                            <Text style={styles.likes}>{likes}</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <Text style={styles.name}>{post.name}</Text>
@@ -1861,7 +1863,7 @@ export default class Post extends React.Component<InjectedProps> {
         // }
     }
 
-    renderReviews(reviews) { // draw items up to 4
+    renderReviews(reviews) {
         // console.log('Post.renderReviews');
 
         if (reviews === undefined) {
@@ -1871,7 +1873,7 @@ export default class Post extends React.Component<InjectedProps> {
             // const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
             const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 2;
 
-            for (var i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
+            for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
                     <View key={i} style={{ paddingVertical: 4 }}>
                         <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={124}>
@@ -1990,7 +1992,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                     }}
                                 >
-                                    <Text style={{ color: 'white', fontSize: 22, lineHeight: 26, fontFamily: "Roboto-Medium" }}>
+                                    <Text style={{ color: 'white', fontSize: 20, lineHeight: 24, fontFamily: "Roboto-Medium" }}>
                                         {avatarName}
                                     </Text>
                                 </View>

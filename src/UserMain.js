@@ -28,7 +28,7 @@ import Dialog from "react-native-dialog";
 const DEFAULT_REVIEW_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
-const profilePictureWidth = Dimensions.get('window').height / 11;
+const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 // const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
@@ -801,7 +801,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                 <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
-                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                <View style={{ paddingBottom: 6 }}>
                     <Text style={styles.reviewText}>{_review.comment}</Text>
                 </View>
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
@@ -820,7 +820,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                 }}
                             >
-                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ color: 'white', fontSize: 22, lineHeight: 26, fontFamily: "Roboto-Medium" }}>
                                     {avatarName}
                                 </Text>
                             </View>

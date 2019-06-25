@@ -22,8 +22,7 @@ import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import Util from './Util';
 
-// const profilePictureWidth = Dimensions.get('window').height / 12;
-const profilePictureWidth = Dimensions.get('window').height / 11;
+const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
 
@@ -384,7 +383,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                 }}
                             >
-                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ color: 'white', fontSize: 22, lineHeight: 26, fontFamily: "Roboto-Medium" }}>
                                     {avatarName}
                                 </Text>
                             </View>

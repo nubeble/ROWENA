@@ -24,7 +24,7 @@ import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient
 const DEFAULT_REVIEW_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
-const profilePictureWidth = Dimensions.get('window').height / 11;
+const profilePictureWidth = 56;
 // const replyViewHeight = Dimensions.get('window').height / 9;
 
 type InjectedProps = {
@@ -412,7 +412,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                 <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
-                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                <View style={{ paddingBottom: 6 }}>
                     <Text style={styles.reviewText}>{_review.comment}</Text>
                 </View>
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
@@ -431,7 +431,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                 }}
                             >
-                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ color: 'white', fontSize: 22, lineHeight: 26, fontFamily: "Roboto-Medium" }}>
                                     {avatarName}
                                 </Text>
                             </View>
