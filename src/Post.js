@@ -872,7 +872,7 @@ export default class Post extends React.Component<InjectedProps> {
                     </View>
 
                     {/* likes & reviews */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 8 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 12 }}>
                         <Text style={styles.views}>{views}</Text>
                         <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
                         <Text style={styles.likes}>{likes}</Text>
@@ -2675,7 +2675,8 @@ const styles = StyleSheet.create({
         color: Theme.color.text2,
         fontSize: 16,
         lineHeight: 26,
-        fontFamily: "Roboto-Light"
+        // fontFamily: "Roboto-Light"
+        fontFamily: "Roboto-Regular"
     },
     mapContainer: {
         paddingTop: Theme.spacing.tiny,
