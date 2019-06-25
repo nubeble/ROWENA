@@ -751,46 +751,14 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
         if (!post) return null;
 
-        let distance = '';
-        let integer = 0;
-        let number = '';
-        let ageText = '';
-        let showSettingsButton = false;
-
-        distance = Util.getDistance(post.location, Vars.location);
-        if (distance === '? km away' || distance === '? miles away') showSettingsButton = true;
-
-        const averageRating = post.averageRating;
-
-        integer = Math.floor(averageRating);
-
-        if (Number.isInteger(averageRating)) {
-            number = averageRating + '.0';
-        } else {
-            number = averageRating.toString();
-        }
-
-        const age = Util.getAge(post.birthday);
-        if (age > 1) {
-            ageText = age.toString() + ' years old';
-        } else {
-            ageText = age.toString() + ' year old';
-        }
-
-        let markerImage = null;
-        switch (integer) {
-            case 0: markerImage = PreloadImage.emoji0; break;
-            case 1: markerImage = PreloadImage.emoji1; break;
-            case 2: markerImage = PreloadImage.emoji2; break;
-            case 3: markerImage = PreloadImage.emoji3; break;
-            case 4: markerImage = PreloadImage.emoji4; break;
-            case 5: markerImage = PreloadImage.emoji5; break;
-        }
-
-        let lastLogInTime = null;
+        let lastLogInTime = 'Activated a long time ago';
         let circleColor = 'grey'; // green, yellow, grey
         if (this.state.lastLogInTime) {
-            lastLogInTime = moment(this.state.lastLogInTime).fromNow();
+            if (Math.abs(moment().diff(this.state.lastLogInTime, 'minutes')) < 2) {
+                lastLogInTime = 'Online now';
+            } else {
+                lastLogInTime = 'Activated ' + moment(this.state.lastLogInTime).fromNow();
+            }
 
             const now = Date.now();
             const difference = now - this.state.lastLogInTime;
@@ -821,6 +789,40 @@ export default class Post extends React.Component<InjectedProps> {
             likes = '1 like';
         } else {
             likes = _likes + ' likes';
+        }
+
+        let showSettingsButton = false;
+
+        const distance = Util.getDistance(post.location, Vars.location);
+        if (distance === '? km away' || distance === '? miles away') showSettingsButton = true;
+
+        const averageRating = post.averageRating;
+
+        const integer = Math.floor(averageRating);
+
+        let number = '';
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
+
+        let ageText = '';
+        const age = Util.getAge(post.birthday);
+        if (age > 1) {
+            ageText = age.toString() + ' years old';
+        } else {
+            ageText = age.toString() + ' year old';
+        }
+
+        let markerImage = null;
+        switch (integer) {
+            case 0: markerImage = PreloadImage.emoji0; break;
+            case 1: markerImage = PreloadImage.emoji1; break;
+            case 2: markerImage = PreloadImage.emoji2; break;
+            case 3: markerImage = PreloadImage.emoji3; break;
+            case 4: markerImage = PreloadImage.emoji4; break;
+            case 5: markerImage = PreloadImage.emoji5; break;
         }
 
         return (
@@ -863,7 +865,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     :
                                     <View style={[styles.circle, { backgroundColor: circleColor }]}></View>
                             }
-                            <Text style={styles.date}>Activated {lastLogInTime ? lastLogInTime : 'long time ago'}</Text>
+                            <Text style={styles.date}>{lastLogInTime}</Text>
                         </TouchableOpacity>
                     </View>
 
