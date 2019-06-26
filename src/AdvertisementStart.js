@@ -69,7 +69,7 @@ export default class AdvertisementStart extends React.Component {
                         fontSize: 28,
                         lineHeight: 32,
                         color: 'black',
-                        fontFamily: "Roboto-Medium",
+                        fontFamily: "ConcertOne-Regular",
                         // textAlign: 'center'
                     }}>Let's set up your advertisement</Text>
 

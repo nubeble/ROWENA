@@ -38,6 +38,7 @@ export default class Explore extends React.Component<InjectedProps> {
         // scrollAnimation: new Animated.Value(0),
 
         searchText: '',
+        titleText: '',
         feedSize: 0,
         placeId: null,
         latitude: 0,
@@ -120,9 +121,10 @@ export default class Explore extends React.Component<InjectedProps> {
 
     init(place) {
         let placeName = place.name;
-        placeName = Util.getPlaceName(placeName);
+        const searchText = Util.getPlaceName(placeName);
+        const titleText = placeName;
 
-        this.setState({ searchText: placeName, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
+        this.setState({ searchText, titleText, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
 
         const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
@@ -527,7 +529,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>
-                                        {`${(this.state.feedSize) ? 'Explore ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.searchText}
+                                        {`${(this.state.feedSize) ? 'Explore ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.titleText}
                                     </Text>
                                 </View>
                                 {
@@ -632,7 +634,8 @@ export default class Explore extends React.Component<InjectedProps> {
                 longitude: this.state.longitude
             };
 
-            const placeName = this.state.searchText;
+            // const placeName = this.state.searchText;
+            const placeName = this.state.titleText;
             const placeId = this.state.placeId;
             const feedSize = this.state.feedSize;
 

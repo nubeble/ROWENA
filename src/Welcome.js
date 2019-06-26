@@ -77,7 +77,7 @@ export default class Welcome extends React.Component {
                         fontSize: 32,
                         paddingTop: 12,
                         // backgroundColor: 'green',
-                        fontFamily: "Roboto-Medium",
+                        fontFamily: "ConcertOne-Regular",
                         textAlign: 'center'
                     }}>Welcome!</Text>
 

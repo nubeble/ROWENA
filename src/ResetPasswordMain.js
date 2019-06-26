@@ -17,6 +17,7 @@ export default class ResetPasswordMain extends React.Component {
     state = {
         email: '',
         emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
+        emailY: -1,
 
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
@@ -30,12 +31,6 @@ export default class ResetPasswordMain extends React.Component {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
-
-    constructor(props) {
-        super(props);
-
-        this.emailY = 0;
-    }
 
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -261,13 +256,13 @@ export default class ResetPasswordMain extends React.Component {
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
-                                    this.emailY = y;
+                                    this.setState({ emailY: y });
                                 }}
                             />
                             {/* to block shaking */}
-                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
+                            {this.state.emailY !== -1 && emailIcon === 0 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {this.state.emailY !== -1 && emailIcon === 1 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {this.state.emailY !== -1 && emailIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
                         </View>
                     </View>
 

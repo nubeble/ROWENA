@@ -17,6 +17,7 @@ export default class SignUpWithMobileName extends React.Component {
     state = {
         name: '',
         nameIcon: 0, // 0: disappeared, 1: exclamation, 2: check
+        nameY: -1,
 
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
@@ -29,12 +30,6 @@ export default class SignUpWithMobileName extends React.Component {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
-
-    constructor(props) {
-        super(props);
-
-        this.nameY = 0;
-    }
 
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -275,13 +270,13 @@ export default class SignUpWithMobileName extends React.Component {
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
-                                    this.namelY = y;
+                                    this.setState({ nameY: y });
                                 }}
                             />
                             {/* to block shaking */}
-                            {(nameIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
-                            {(nameIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
-                            {(nameIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.namelY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
+                            {this.state.nameY !== -1 && nameIcon === 0 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {this.state.nameY !== -1 && nameIcon === 1 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {this.state.nameY !== -1 && nameIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
                         </View>
 
                         {

@@ -239,14 +239,14 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                     color: Theme.color.text2,
                                     fontSize: 24,
                                     paddingTop: 4,
-                                    fontFamily: "Roboto-Medium"
+                                    fontFamily: "ConcertOne-Regular"
                                 }}>No reviewed girls</Text>
 
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 18,
-                                    fontFamily: "Roboto-Medium"
+                                    fontFamily: "ConcertOne-Regular"
                                 }}>Let's find some hot chicks</Text>
 
                                 <TouchableOpacity

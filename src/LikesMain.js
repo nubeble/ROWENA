@@ -585,14 +585,14 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                     color: Theme.color.text2,
                                     fontSize: 24,
                                     paddingTop: 4,
-                                    fontFamily: "Roboto-Medium"
+                                    fontFamily: "ConcertOne-Regular"
                                 }}>No selected girls</Text>
 
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 18,
-                                    fontFamily: "Roboto-Medium"
+                                    fontFamily: "ConcertOne-Regular"
                                 }}>Start exploring girls for your next trip</Text>
 
                                 <TouchableOpacity

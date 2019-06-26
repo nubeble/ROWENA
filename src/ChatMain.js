@@ -458,21 +458,21 @@ export default class ChatMain extends React.Component {
                                 color: Theme.color.text2,
                                 fontSize: 24,
                                 paddingTop: 4,
-                                fontFamily: "Roboto-Medium"
+                                fontFamily: "ConcertOne-Regular"
                             }}>No new messages</Text>
 
                             <Text style={{
                                 marginTop: 10,
                                 color: Theme.color.text3,
                                 fontSize: 18,
-                                fontFamily: "Roboto-Medium"
+                                fontFamily: "ConcertOne-Regular"
                             }}>Let's find some hot chicks</Text>
 
                             <Image
                                 style={{
                                     marginTop: 20,
-                                    width: illustWidth * 0.4,
-                                    height: illustHeight * 0.4,
+                                    width: illustWidth * 0.2,
+                                    height: illustHeight * 0.2,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.chat}

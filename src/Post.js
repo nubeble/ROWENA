@@ -1401,7 +1401,7 @@ export default class Post extends React.Component<InjectedProps> {
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,
                         paddingTop: 4,
-                        fontFamily: "Roboto-Medium"
+                        fontFamily: "ConcertOne-Regular"
                     }}>Please write the first review.</Text>
 
                     <Image

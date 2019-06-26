@@ -24,6 +24,9 @@ export default class SignUpWithEmail extends React.Component {
         emailIcon: 0, // 0: disappeared, 1: exclamation, 2: check
         pwIcon: 0, // 0: disappeared, 1: exclamation, 2: check
 
+        emailY: -1,
+        passwordY: -1,
+
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
 
@@ -40,13 +43,6 @@ export default class SignUpWithEmail extends React.Component {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
-
-    constructor(props) {
-        super(props);
-
-        this.emailY = 0;
-        this.passwordY = 0;
-    }
 
     componentDidMount() {
         console.log('SignUpWithEmail.componentDidMount');
@@ -578,13 +574,13 @@ export default class SignUpWithEmail extends React.Component {
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
-                                    this.emailY = y;
+                                    this.setState({ emailY: y });
                                 }}
                             />
                             {/* to block shaking */}
-                            {(emailIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
-                            {(emailIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
-                            {(emailIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
+                            {this.state.emailY !== -1 && emailIcon === 0 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {this.state.emailY !== -1 && emailIcon === 1 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {this.state.emailY !== -1 && emailIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
 
                             <Text style={{ marginTop: 4, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                 {'PASSWORD'}
@@ -638,13 +634,13 @@ export default class SignUpWithEmail extends React.Component {
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;
-                                    this.passwordY = y;
+                                    this.setState({ passwordY: y });
                                 }}
                             />
                             {/* to block shaking */}
-                            {(pwIcon === 0) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
-                            {(pwIcon === 1) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
-                            {(pwIcon === 2) && <AntDesign style={{ position: 'absolute', right: 24, top: this.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
+                            {this.state.passwordY !== -1 && pwIcon === 0 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.passwordY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {this.state.passwordY !== -1 && pwIcon === 1 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.passwordY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
+                            {this.state.passwordY !== -1 && pwIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.passwordY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
                         </View>
                         {
                             from === 'logIn' &&

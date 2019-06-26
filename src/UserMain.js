@@ -949,7 +949,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                     color: 'rgb(247, 178, 57)',
                     fontSize: 24,
                     paddingTop: 4,
-                    fontFamily: "Roboto-Medium"
+                    fontFamily: "ConcertOne-Regular"
                 }}>No customer reviews yet</Text>
 
                 {/*
@@ -957,7 +957,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                     marginTop: 10,
                     color: Theme.color.text3,
                     fontSize: 18,
-                    fontFamily: "Roboto-Medium"
+                    fontFamily: "ConcertOne-Regular"
                 }}>Start exploring girls for your next trip</Text>
                 */}
 

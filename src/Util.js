@@ -1590,7 +1590,8 @@ export default class Util extends React.Component {
 
         let words = name.split(' ');
         if (words.length === 1) {
-            avatarName = name;
+            // avatarName = name;
+            avatarName = words[0][0];
         } else {
             for (let i = 0; i < words.length; i++) {
                 avatarName += words[i][0];
@@ -1610,7 +1611,7 @@ export default class Util extends React.Component {
         return color;
     }
 
-    static getPlaceName(name) {
+    static getPlaceName(name) { // city + country
         // Consider: To avoid "Kyiv, Ukraine, 02000"
         const words = name.split(', ');
         if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
@@ -1631,7 +1632,7 @@ export default class Util extends React.Component {
         return name;
     }
 
-    static getCityName(name) {
+    static getCityName(name) { // city
         if (!name) return null;
 
         const words = name.split(', ');
@@ -1658,7 +1659,7 @@ export default class Util extends React.Component {
         return words[words.length - 2] + ', ' + words[words.length - 1];
     }
 
-    static getCountry(name) { // only country
+    static getCountry(name) { // country
         if (!name) return null;
 
         // Consider: To avoid "Kyiv, Ukraine, 02000"
