@@ -207,7 +207,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
                 const place = profile.place;
                 if (place) {
-                    const country = Util.getCountryName(place);
+                    const country = Util.getCountry(place);
                     if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
                         Vars.distanceUnit = 'mile';
                         console.log('mile unit');
@@ -811,7 +811,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                 }
                                 */
                                 city = Util.getCityName(name);
-                                country = Util.getCountryName(name);
+                                // country = Util.getCountryName(name);
+                                country = Util.getCountry(name);
 
                                 imageUri = place.uri;
                             } else {
@@ -833,7 +834,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                     }
                                     */
                                     city = Util.getCityName(name);
-                                    country = Util.getCountryName(name);
+                                    // country = Util.getCountryName(name);
+                                    country = Util.getCountry(name);
 
                                     imageUri = place.uri;
                                 } else {

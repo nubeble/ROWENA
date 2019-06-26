@@ -583,15 +583,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 <View style={styles.searchBar}>
 
                     <TouchableOpacity activeOpacity={1.0} onPress={() => this.openAdmin()}>
-                        <Text
-                            style={{
-                                color: Theme.color.text1,
-                                fontSize: 20,
-                                fontFamily: "Roboto-Medium",
-                                alignSelf: 'flex-start',
-                                marginLeft: 16
-                            }}
-                        >Profile</Text>
+                        <Text style={{
+                            color: Theme.color.text1,
+                            fontSize: 20,
+                            fontFamily: "Roboto-Medium",
+                            alignSelf: 'flex-start',
+                            marginLeft: 16
+                        }}>Profile</Text>
                     </TouchableOpacity>
 
                 </View>
@@ -968,7 +966,16 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 {
                                     this.state.totalFeedsSize > 0 &&
                                     <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
-                                        <Text style={styles.title}>Your post ({this.state.totalFeedsSize})</Text>
+                                        <Text style={styles.title}>Your post
+                                        {
+                                                this.state.totalFeedsSize > 0 &&
+                                                <Text style={{
+                                                    color: Theme.color.text4,
+                                                    fontSize: 18,
+                                                    fontFamily: "Roboto-Medium"
+                                                }}> {this.state.totalFeedsSize}</Text>
+                                            }
+                                        </Text>
                                     </View>
                                 }
                             </View>
@@ -1444,9 +1451,9 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        // paddingBottom: 6,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        paddingBottom: 14,
+        // flexDirection: 'column',
         justifyContent: 'flex-end'
     },
     columnWrapperStyle: {

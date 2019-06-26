@@ -18,6 +18,10 @@ const DEFAULT_FEED_COUNT = 10;
 
 const profilePictureWidth = 64;
 
+// 1:1
+const illustHeight = 340;
+const illustWidth = 340;
+
 
 export default class CheckLikes extends React.Component {
     state = {
@@ -103,6 +107,31 @@ export default class CheckLikes extends React.Component {
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        marginLeft: 40 + 16
+                    }}>Liked By
+                        {
+                            this.state.totalUserCount > 0 &&
+                            <Text style={{
+                                color: Theme.color.text4,
+                                fontSize: 20,
+                                fontFamily: "Roboto-Medium",
+                            }}> {this.state.totalUserCount}</Text>
+                        }
+                    </Text>
+
+                    {
+                        /*
+                        this.state.totalUserCount > 0 &&
+                        <View style={{ paddingBottom: 8 }}>
+                            <Text style={styles.title}>Liked by {this.state.totalUserCount > 1 ? this.state.totalUserCount + ' people' : this.state.totalUserCount + ' person'}</Text>
+                        </View>
+                        */
+                    }
                 </View>
 
                 <FlatList
@@ -110,6 +139,7 @@ export default class CheckLikes extends React.Component {
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={true}
 
+                    /*
                     ListHeaderComponent={
                         this.state.totalUserCount > 0 &&
                         <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
@@ -117,6 +147,7 @@ export default class CheckLikes extends React.Component {
                             <View style={{ borderBottomColor: Theme.color.title, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.xSmall, marginBottom: Theme.spacing.xSmall }} />
                         </View>
                     }
+                    */
 
                     data={this.state.users}
                     keyExtractor={item => item.uid}
@@ -170,50 +201,50 @@ export default class CheckLikes extends React.Component {
                             this.getUsers();
                         }
                     }}
-                // onRefresh={this.handleRefresh}
-                // refreshing={this.state.refreshing}
+                    // onRefresh={this.handleRefresh}
+                    // refreshing={this.state.refreshing}
 
-                /*
-                ListEmptyComponent={{
-                    // ToDo: render design
-                    // !this.state.isLoadingFeeds &&
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{
-                            color: Theme.color.text2,
-                            fontSize: 24,
-                            paddingTop: 4,
-                            fontFamily: "Roboto-Medium"
-                        }}>No reviewed girls</Text>
+                    ListEmptyComponent={
+                        // ToDo: render design
+                        // !this.state.isLoadingFeeds &&
 
-                        <Text style={{
-                            marginTop: 10,
-                            color: Theme.color.text3,
-                            fontSize: 18,
-                            fontFamily: "Roboto-Medium"
-                        }}>Let's find some hot chicks</Text>
+                        this.state.totalUserCount === 0 &&
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <Text style={{
+                                color: Theme.color.text2,
+                                fontSize: 24,
+                                paddingTop: 4,
+                                fontFamily: "Roboto-Medium"
+                            }}>No likes from customers</Text>
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                setTimeout(() => {
-                                    if (this.closed) return;
-                                    // Consider: set scroll position 0
+                            <Text style={{
+                                marginTop: 10,
+                                color: Theme.color.text3,
+                                fontSize: 18,
+                                fontFamily: "Roboto-Medium"
+                            }}>Let's find some hot chicks</Text>
 
-                                    // this.props.navigation.navigate("intro");
-                                }, Cons.buttonTimeoutShort);
-                            }}
-                            style={{ marginTop: 20 }}>
-                            <Image
-                                style={{
-                                    width: illustWidth,
-                                    height: illustHeight,
-                                    resizeMode: 'cover'
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setTimeout(() => {
+                                        if (this.closed) return;
+                                        // Consider: set scroll position 0
+
+                                        // this.props.navigation.navigate("intro");
+                                    }, Cons.buttonTimeoutShort);
                                 }}
-                                source={PreloadImage.review}
-                            />
-                        </TouchableOpacity>
-                    </View>
-                }}
-                */
+                                style={{ marginTop: 20 }}>
+                                <Image
+                                    style={{
+                                        width: illustWidth,
+                                        height: illustHeight,
+                                        resizeMode: 'cover'
+                                    }}
+                                    source={PreloadImage.review}
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    }
                 />
 
                 {
@@ -282,7 +313,7 @@ export default class CheckLikes extends React.Component {
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingUsers: false });
-        }, 250);
+        }, 1000); // 250
 
         console.log('CheckLikes', 'loading feeds done!');
     }
@@ -433,10 +464,10 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        // alignItems: 'center',
+        paddingBottom: 14,
         justifyContent: 'flex-end'
     },
     contentContainer: {

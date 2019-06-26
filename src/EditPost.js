@@ -975,6 +975,15 @@ export default class EditPost extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        // marginLeft: 40 + 16
+                        alignSelf: 'center'
+                    }}>Edit Post
+                    </Text>
+
                     {/* delete button */}
                     <TouchableOpacity
                         style={{
@@ -2453,8 +2462,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        paddingBottom: 14,
         justifyContent: 'flex-end'
     },
     container: {

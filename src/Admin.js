@@ -64,6 +64,12 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 cities) 🔥</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => this.makeInit()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Init)</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => this.makeSingapore()}
                         style={styles.bottomButton}
                     >
@@ -298,6 +304,19 @@ export default class Admin extends React.Component {
         return note;
     }
 
+    async makeInit() {
+        this.makeSingapore();
+        this.makeBangkok();
+        this.makePattaya();
+        this.makeHCM();
+        this.makeHanoi();
+        this.makeManila(0);
+        this.makeCebu();
+        this.makeVientiane();
+        this.makePP();
+        this.makeKL();
+    }
+
     async makeSingapore() {
         for (let i = 0; i < 10; i++) {
 
@@ -310,7 +329,7 @@ export default class Admin extends React.Component {
             const LATITUDE = 1.352083;
             const LONGITUDE = 103.819836;
             const location = {
-                description: '?, Singapore',
+                description: '?, 22 Orange Grove Rd, Singapore',
                 latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
                 longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
             };
@@ -468,7 +487,7 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
-        const placeName = 'Pattaya City, Thailand';
+        const placeName = 'Pattaya, Bang Lamung District, Chon Buri, Thailand';
 
         /*
         const location = {

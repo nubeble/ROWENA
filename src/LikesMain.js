@@ -406,15 +406,40 @@ export default class LikesMain extends React.Component<InjectedProps> {
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
 
-                    <Text
-                        style={{
-                            color: Theme.color.text1,
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        // alignSelf: 'flex-start',
+                        marginLeft: 16
+                    }}>Saved
+                    {
+                        this.state.totalFeedsSize > 0 &&
+                        <Text style={{
+                            color: Theme.color.text4,
                             fontSize: 20,
                             fontFamily: "Roboto-Medium",
-                            alignSelf: 'flex-start',
-                            marginLeft: 16
-                        }}
-                    >Saved</Text>
+                            // paddingLeft: 4
+                        }}> {this.state.totalFeedsSize}</Text>
+                    }
+                    </Text>
+
+                    {
+                        /*
+                        this.state.totalFeedsSize > 0 &&
+                        <View style={{
+                            position: 'absolute',
+                            left: 80,
+                            top: 20,
+                        }}>
+                            <Text style={{
+                                color: Theme.color.text4,
+                                fontSize: 18,
+                                fontFamily: "Roboto-Medium"
+                            }}>{this.state.totalFeedsSize}</Text>
+                        </View>
+                        */
+                    }
 
                 </View>
                 {
@@ -427,12 +452,14 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
 
+                        /*
                         ListHeaderComponent={
                             this.state.totalFeedsSize > 0 &&
                             <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 0 }]}>
                                 <Text style={styles.title}>You picked {this.state.totalFeedsSize} girls</Text>
                             </View>
                         }
+                        */
 
                         data={this.state.feeds}
                         keyExtractor={item => item.id}
@@ -635,9 +662,8 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        // paddingBottom: 6,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        paddingBottom: 14,
         justifyContent: 'flex-end'
     },
     contentContainer: {

@@ -468,7 +468,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         await this.updateProfile(data);
 
         // update Vars.distanceUnit
-        const country = Util.getCountryName(place);
+        const country = Util.getCountry(place);
         if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
             Vars.distanceUnit = 'mile';
             console.log('mile unit');
@@ -574,10 +574,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    {/* text */}
-                    {/*
-                    <Text style={styles.searchBarTitle}>{'Edit Profile'}</Text>
-                    */}
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        // marginLeft: 40 + 16
+                        alignSelf: 'center'
+                    }}>Edit Profile
+                    </Text>
 
                     {/* check button */}
                     {/*
@@ -1560,18 +1564,16 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        alignItems: 'center'
+        // paddingBottom: 8,
+        // alignItems: 'center',
+        paddingBottom: 14,
+        justifyContent: 'flex-end'
     },
-    searchBarTitle: {
+    title: {
+        color: Theme.color.title,
         fontSize: 18,
-        fontFamily: "Roboto-Medium",
-        color: 'rgba(255, 255, 255, 0.8)',
-        paddingBottom: 8
+        fontFamily: "Roboto-Medium"
     },
     contactButton: {
         width: '85%',

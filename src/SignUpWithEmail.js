@@ -41,6 +41,13 @@ export default class SignUpWithEmail extends React.Component {
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
 
+    constructor(props) {
+        super(props);
+
+        this.emailY = 0;
+        this.passwordY = 0;
+    }
+
     componentDidMount() {
         console.log('SignUpWithEmail.componentDidMount');
 

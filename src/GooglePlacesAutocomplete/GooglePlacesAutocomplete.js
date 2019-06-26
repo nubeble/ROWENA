@@ -863,9 +863,9 @@ export default class GooglePlacesAutocomplete extends Component {
         }
 
         const description = rowData.description;
-        // console.log('description', description);
-
         /*
+        console.log('description', description);
+
         const index = description.indexOf(',');
 
         let city = '';
@@ -920,7 +920,6 @@ export default class GooglePlacesAutocomplete extends Component {
                                         style={[defaultStyles.description, this.props.styles.description,
                                         this.props.styles.predefinedPlacesDescription,
                                         { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
-                                        numberOfLines={this.props.numberOfLines}
                                     >{state}</Text>
                                 </View>
                                 :
@@ -928,8 +927,7 @@ export default class GooglePlacesAutocomplete extends Component {
                                     <Text
                                         style={[defaultStyles.description, this.props.styles.description,
                                         this.props.styles.predefinedPlacesDescription,
-                                        { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
-                                        numberOfLines={this.props.numberOfLines}
+                                        { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }]}
                                     >{state}</Text>
                                 </View>
                         }

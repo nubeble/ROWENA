@@ -1641,7 +1641,24 @@ export default class Util extends React.Component {
         return words[0];
     }
 
-    static getCountryName(name) {
+    static getCountryName(name) { // state + country
+        if (!name) return null;
+
+        // Consider: To avoid "Kyiv, Ukraine, 02000"
+        const words = name.split(', ');
+        if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
+            return words[1];
+        }
+
+        if (words.length <= 1) return name;
+
+        if (words.length === 2) return words[1];
+
+        // text가 3개 이상일 때 뒤에 2개를 끊어낸다.
+        return words[words.length - 2] + ', ' + words[words.length - 1];
+    }
+
+    static getCountry(name) { // only country
         if (!name) return null;
 
         // Consider: To avoid "Kyiv, Ukraine, 02000"

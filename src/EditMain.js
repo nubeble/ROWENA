@@ -209,15 +209,9 @@ export default class EditMain extends React.Component<InjectedProps> {
                     </TouchableOpacity>
 
                     {/*
-                    <Text
-                        style={{
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 20,
-                            fontFamily: "Roboto-Medium",
-                            alignSelf: 'center',
-                            paddingBottom: 4
-                        }}
-                    >{post.name}</Text>
+                    <View style={{ paddingBottom: 8 }}>
+                        <Text style={styles.title}>{'View & Edit Profile'}</Text>
+                    </View>
                     */}
 
                     <TouchableOpacity
@@ -612,8 +606,9 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        // alignItems: 'center',
+        paddingBottom: 14,
         justifyContent: 'flex-end'
     },
     contentContainer: {

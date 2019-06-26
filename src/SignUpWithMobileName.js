@@ -30,6 +30,12 @@ export default class SignUpWithMobileName extends React.Component {
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1)
     };
 
+    constructor(props) {
+        super(props);
+
+        this.nameY = 0;
+    }
+
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);

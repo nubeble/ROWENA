@@ -61,6 +61,12 @@ export default class SignUpWithMobileMain extends React.Component {
         signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight // 60: gap
     };
 
+    constructor(props) {
+        super(props);
+
+        this.emailY = 0;
+    }
+
     componentDidMount() {
         console.log('SignUpWithMobileMain.componentDidMount');
 

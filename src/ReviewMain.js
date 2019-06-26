@@ -141,6 +141,22 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
+
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        marginLeft: 40 + 16
+                    }}>Reviewed Girls
+                        {
+                            this.state.totalFeedsSize > 0 &&
+                            <Text style={{
+                                color: Theme.color.text4,
+                                fontSize: 20,
+                                fontFamily: "Roboto-Medium",
+                            }}> {this.state.totalFeedsSize}</Text>
+                        }
+                    </Text>
                 </View>
 
                 {
@@ -199,12 +215,14 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         onRefresh={this.handleRefresh}
                         refreshing={this.state.refreshing}
 
+                        /*
                         ListHeaderComponent={
                             this.state.totalFeedsSize > 0 &&
                             <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
                                 <Text style={styles.title}>Your girls ({this.state.totalFeedsSize})</Text>
                             </View>
                         }
+                        */
 
                         ListEmptyComponent={
                             // ToDo: render design
@@ -536,10 +554,10 @@ const styles = StyleSheet.create({
         backgroundColor: Theme.color.background
     },
     searchBar: {
-        // backgroundColor: '#123456',
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        paddingBottom: 14,
+        // alignItems: 'center',
         justifyContent: 'flex-end'
     },
     contentContainer: {

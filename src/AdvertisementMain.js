@@ -1049,7 +1049,14 @@ export default class AdvertisementMain extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    <Text style={styles.searchBarTitle}>{'New Post'}</Text>
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        // marginLeft: 40 + 16
+                        alignSelf: 'center'
+                    }}>New Post
+                    </Text>
                 </View>
 
                 <FlatList
@@ -2377,16 +2384,15 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        alignItems: 'center'
+        // paddingBottom: 8,
+        // alignItems: 'center',
+        paddingBottom: 14,
+        justifyContent: 'flex-end'
     },
-    searchBarTitle: {
+    title: {
+        color: Theme.color.title,
         fontSize: 18,
-        fontFamily: "Roboto-Medium",
-        color: 'rgba(255, 255, 255, 0.8)',
-        paddingBottom: 8
+        fontFamily: "Roboto-Medium"
     },
     contactButton: {
         width: '85%',

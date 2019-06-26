@@ -754,6 +754,13 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
         if (!post) return null;
 
+        let postedTime = '';
+        if (Math.abs(moment().diff(post.timestamp, 'minutes')) < 2) {
+            postedTime = 'Just posted';
+        } else {
+            postedTime = 'Posted ' + moment(post.timestamp).fromNow();
+        }
+
         let lastLogInTime = 'Activated a long time ago';
         let circleColor = 'grey'; // green, yellow, grey
         if (this.state.lastLogInTime) {
@@ -840,7 +847,7 @@ export default class Post extends React.Component<InjectedProps> {
                         {/* 1. post date */}
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 2 }}>
                             <MaterialCommunityIcons name="clock-outline" color={Theme.color.text2} size={14} />
-                            <Text style={{ marginLeft: 6, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Light" }}>Posted {moment(post.timestamp).fromNow()}</Text>
+                            <Text style={{ marginLeft: 6, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Light" }}>{postedTime}</Text>
                         </View>
 
                         {/* 2. activate date */}

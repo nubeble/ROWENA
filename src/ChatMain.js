@@ -18,8 +18,8 @@ import _ from 'lodash';
 const DEFAULT_ROOM_COUNT = 6;
 
 // 1:1
-const illustHeight = 300;
-const illustWidth = 300;
+const illustWidth = 1228;
+const illustHeight = 1264;
 
 
 export default class ChatMain extends React.Component {
@@ -409,15 +409,13 @@ export default class ChatMain extends React.Component {
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
 
-                    <Text
-                        style={{
-                            color: Theme.color.text1,
-                            fontSize: 20,
-                            fontFamily: "Roboto-Medium",
-                            alignSelf: 'flex-start',
-                            marginLeft: 16
-                        }}
-                    >Messages</Text>
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        alignSelf: 'flex-start',
+                        marginLeft: 16
+                    }}>Messages</Text>
 
                 </View>
 
@@ -470,30 +468,15 @@ export default class ChatMain extends React.Component {
                                 fontFamily: "Roboto-Medium"
                             }}>Let's find some hot chicks</Text>
 
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setTimeout(() => {
-                                        // Consider: set scroll position 0
-
-                                        // !this.closed && this.props.navigation.navigate("intro");
-                                    }, Cons.buttonTimeoutShort);
+                            <Image
+                                style={{
+                                    marginTop: 20,
+                                    width: illustWidth * 0.8,
+                                    height: illustHeight * 0.8,
+                                    resizeMode: 'cover'
                                 }}
-                                style={{ marginTop: 20 }}>
-
-                                <View style={{
-                                    width: illustWidth, height: illustHeight,
-                                    justifyContent: 'center', alignItems: 'center'
-                                }}>
-                                    <Image
-                                        style={{
-                                            width: illustWidth * 0.6,
-                                            height: illustHeight * 0.6,
-                                            resizeMode: 'cover'
-                                        }}
-                                        source={PreloadImage.chat}
-                                    />
-                                </View>
-                            </TouchableOpacity>
+                                source={PreloadImage.chat}
+                            />
                         </View>
                     }
                 />
@@ -896,9 +879,9 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        paddingBottom: 8,
-        // paddingBottom: 6,
-        flexDirection: 'column',
+        // paddingBottom: 8,
+        paddingBottom: 14,
+        // flexDirection: 'column',
         justifyContent: 'flex-end'
     },
     contentContainer: {
