@@ -113,7 +113,7 @@ export default class EditMain extends React.Component<InjectedProps> {
         if (!profile) return null;
 
         let avatarName = 'Anonymous';
-        let address = "No address registered";
+        let place = "Not specified";
         let count = 0;
         let picture = null;
         let dateText = null;
@@ -137,7 +137,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                 }
             }
         }
-        if (profile.place) address = profile.place;
+        if (profile.place) place = profile.place;
         count = profile.receivedCommentsCount;
         picture = profile.picture.uri;
         dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
@@ -303,7 +303,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                             style={{ width: 20, height: 20, resizeMode: 'cover' }}
                                             source={PreloadImage.home}
                                         />
-                                        <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{place}</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
@@ -442,7 +442,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                         <Text style={{
                             marginTop: 4,
                             color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
-                        }}>{placeName}</Text>
+                        }}>{placeName ? placeName : 'Notspecified'}</Text>
                     </View>
                 </View>
                 {

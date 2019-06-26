@@ -113,7 +113,8 @@ export default class CheckLikes extends React.Component {
                     ListHeaderComponent={
                         this.state.totalUserCount > 0 &&
                         <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
-                            <Text style={styles.title}>Liked by {this.state.totalUserCount} people</Text>
+                            <Text style={styles.title}>Liked by {this.state.totalUserCount > 1 ? this.state.totalUserCount + ' people' : this.state.totalUserCount + ' person'}</Text>
+                            <View style={{ borderBottomColor: Theme.color.title, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.xSmall, marginBottom: Theme.spacing.xSmall }} />
                         </View>
                     }
 
@@ -127,8 +128,8 @@ export default class CheckLikes extends React.Component {
                         const avatarColor = Util.getAvatarColor(item.uid);
 
                         return (
-                            <View style={{ paddingHorizontal: 24 }}>
-                                <View style={{ marginTop: 16, marginBottom: 16, flexDirection: 'row', alignItems: 'center' }}>
+                            <View style={{ paddingHorizontal: Theme.spacing.small }}>
+                                <View style={{ marginTop: 12, marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
                                     {
                                         picture ?
                                             <SmartImage

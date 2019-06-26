@@ -374,7 +374,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         if (!guest) return null;
 
         let avatarName = 'Anonymous';
-        let address = "No address registered";
+        let address = "Not specified";
         let reviewText = 'loading...';
         // let labelText = null;
         let imageUri = null;
@@ -831,7 +831,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         <Text style={{
                             marginTop: 4,
                             color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
-                        }}>{placeName}</Text>
+                        }}>{placeName ? placeName : 'Not specified'}</Text>
                     </View>
                 </View>
                 {

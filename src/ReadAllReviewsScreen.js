@@ -394,7 +394,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                         <Text style={{
                             marginTop: 4,
                             color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
-                        }}>{_profile.place}</Text>
+                        }}>{_profile.place ? _profile.place : 'Not specified'}</Text>
                     </View>
                 </View>
                 {
@@ -411,34 +411,34 @@ export default class ReadAllReviewsScreen extends React.Component {
                 {
                     // comment, id, timestamp, uid
                     reply &&
-                        <View style={{
-                            marginTop: Theme.spacing.tiny,
-                            paddingTop: Theme.spacing.small,
-                            paddingBottom: Theme.spacing.small,
-                            paddingLeft: Theme.spacing.small,
-                            paddingRight: Theme.spacing.small,
-                            backgroundColor: Theme.color.highlight, borderRadius: 2
-                        }}>
+                    <View style={{
+                        marginTop: Theme.spacing.tiny,
+                        paddingTop: Theme.spacing.small,
+                        paddingBottom: Theme.spacing.small,
+                        paddingLeft: Theme.spacing.small,
+                        paddingRight: Theme.spacing.small,
+                        backgroundColor: Theme.color.highlight, borderRadius: 2
+                    }}>
 
-                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.tiny }}>
-                                <Text style={styles.replyOwner}>Owner Response</Text>
-                                <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
-                            </View>
-
-                            <View style={{ paddingTop: 10, paddingBottom: 6 }}>
-                                <Text style={styles.replyComment}>{reply.comment}</Text>
-                            </View>
-                            {
-                                isMyReply &&
-                                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                            onPress={() => this.removeReply(index)}
-                                        >
-                                            <MaterialIcons name='close' color={'silver'} size={20} />
-                                        </TouchableOpacity>
-                                    </View>
-                            }
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.tiny }}>
+                            <Text style={styles.replyOwner}>Owner Response</Text>
+                            <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                         </View>
+
+                        <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                            <Text style={styles.replyComment}>{reply.comment}</Text>
+                        </View>
+                        {
+                            isMyReply &&
+                            <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                    onPress={() => this.removeReply(index)}
+                                >
+                                    <MaterialIcons name='close' color={'silver'} size={20} />
+                                </TouchableOpacity>
+                            </View>
+                        }
+                    </View>
                 }
 
                 {

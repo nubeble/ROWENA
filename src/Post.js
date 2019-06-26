@@ -2003,7 +2003,7 @@ export default class Post extends React.Component<InjectedProps> {
                             <Text style={{
                                 marginTop: 4,
                                 color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
-                            }}>{_profile.place}</Text>
+                            }}>{_profile.place ? _profile.place : 'Not specified'}</Text>
                         </View>
                     </View>
                     {
