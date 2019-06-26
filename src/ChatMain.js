@@ -471,8 +471,8 @@ export default class ChatMain extends React.Component {
                             <Image
                                 style={{
                                     marginTop: 20,
-                                    width: illustWidth * 0.8,
-                                    height: illustHeight * 0.8,
+                                    width: illustWidth * 0.4,
+                                    height: illustHeight * 0.4,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.chat}
