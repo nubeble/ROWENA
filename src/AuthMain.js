@@ -1,4 +1,5 @@
 import React from 'react';
+import * as Facebook from 'expo-facebook';
 import {
     StyleSheet, View, StatusBar, TouchableOpacity, ActivityIndicator, ImageBackground,
     Animated, Dimensions, Platform, Image, BackHandler
@@ -117,7 +118,7 @@ export default class AuthMain extends React.Component {
             expires,
             permissions,
             declinedPermissions,
-        } = await Expo.Facebook.logInWithReadPermissionsAsync('367256380681542',
+        } = await Facebook.logInWithReadPermissionsAsync('367256380681542',
             {
                 // permissions: ['public_profile', 'email', 'user_gender', 'user_location'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
                 permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
