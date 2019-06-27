@@ -72,7 +72,7 @@ export default class AdvertisementFinish extends React.Component {
                         fontSize: 28,
                         lineHeight: 32,
                         color: Theme.color.text2,
-                        fontFamily: "ConcertOne-Regular",
+                        fontFamily: "Chewy-Regular",
                         // textAlign: 'center'
                     }}>Let's wait awhile</Text>
 

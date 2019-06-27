@@ -14,6 +14,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 import _ from 'lodash';
+import moment from 'moment';
 
 const DEFAULT_ROOM_COUNT = 6;
 
@@ -39,7 +40,6 @@ export default class ChatMain extends React.Component {
         this.allChatRoomsLoaded = false;
 
         this.deletedChatRoomList = [];
-        // this.onLoading = false;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -81,8 +81,10 @@ export default class ChatMain extends React.Component {
                     // this.allChatRoomsLoaded = false;
 
                     // Consider: On sending a message
-                    // 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트!
                     // this.setState({ chatRoomList: list });
+
+                    // 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트! 없으면 밑에 subscribe에서 업데이트 된다.
+                    // 또, user profile을 검색해서 대화방 상대방의 정보가 있으면, lastLogInTime 업데이트! 없으면 밑에 subscribe에서 업데이트 된다.
                     this.updateList(list);
 
                     // subscribe profile, post, feed count
@@ -138,9 +140,9 @@ export default class ChatMain extends React.Component {
             const you = users[1];
 
             // check if customer or girl
-            if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
-                this.subscribeToProfile(you.uid);
-            }
+            // if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
+            this.subscribeToProfile(you.uid);
+            // }
 
             // if (you.uid === owner) { // I am a customer. Then subscribe girl(post).
             this.subscribeToPost(room.placeId, room.feedId, room.id);
@@ -163,27 +165,33 @@ export default class ChatMain extends React.Component {
 
             this.customerProfileList.set(uid, user);
 
-            // update chatRoomList
+            // update state
             const name = user.name;
             const picture = user.picture.uri;
+            const lastLogInTime = user.lastLogInTime;
 
             let list = [...this.state.chatRoomList];
             for (let i = 0; i < list.length; i++) {
                 let room = list[i];
+                let opponent = room.users[1];
                 if (room.users[0].uid === room.owner && room.users[1].uid === uid) {
-                    let opponent = room.users[1];
-
                     let changed = false;
                     if (opponent.name !== name || opponent.picture !== picture) changed = true;
 
                     opponent.name = name;
                     opponent.picture = picture;
+                    opponent.lastLogInTime = lastLogInTime;
 
                     room.users[1] = opponent;
                     list[i] = room;
 
                     // update database
                     if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
+                } else {
+                    opponent.lastLogInTime = lastLogInTime;
+
+                    room.users[1] = opponent;
+                    list[i] = room;
                 }
             }
 
@@ -207,7 +215,7 @@ export default class ChatMain extends React.Component {
 
             this.feedList.set(feedId, newFeed);
 
-            // update chatRoomList
+            // update state
             const name = newFeed.name;
             const picture = newFeed.pictures.one.uri;
 
@@ -298,11 +306,20 @@ export default class ChatMain extends React.Component {
         for (let i = 0; i < newList.length; i++) {
             let newRoom = newList[i];
 
-            // find existing one
+            // find existing room
             const room = this.checkRoomExistence(newRoom.id);
             if (room) {
+                // keep opponent's info
                 const opponent = room.users[1];
                 newRoom.users[1] = opponent;
+                newList[i] = newRoom;
+            }
+
+            // find user profile
+            const user = this.customerProfileList.get(newRoom.users[1].uid);
+            if (user) {
+                const lastLogInTime = user.lastLogInTime;
+                newRoom.users[1].lastLogInTime = lastLogInTime;
                 newList[i] = newRoom;
             }
         }
@@ -458,14 +475,14 @@ export default class ChatMain extends React.Component {
                                 color: Theme.color.text2,
                                 fontSize: 24,
                                 paddingTop: 4,
-                                fontFamily: "ConcertOne-Regular"
+                                fontFamily: "Chewy-Regular"
                             }}>No new messages</Text>
 
                             <Text style={{
                                 marginTop: 10,
                                 color: Theme.color.text3,
                                 fontSize: 18,
-                                fontFamily: "ConcertOne-Regular"
+                                fontFamily: "Chewy-Regular"
                             }}>Let's find some hot chicks</Text>
 
                             <Image
@@ -522,6 +539,7 @@ export default class ChatMain extends React.Component {
             _contents = contents;
         }
         const update = this.checkUpdate(item.lastReadMessageId, item.mid);
+        console.log(_contents, 'update', item.id, item.lastReadMessageId, item.mid, update);
         // const viewHeight = Dimensions.get('window').height / 10;
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
@@ -533,6 +551,18 @@ export default class ChatMain extends React.Component {
             avatarName = Util.getAvatarName(opponent.name);
             // avatarColor = Util.getAvatarColor(id);
             avatarColor = Util.getAvatarColor(opponent.uid);
+        }
+
+        let circleColor = 'grey'; // green, yellow, grey
+        if (opponent.lastLogInTime) {
+            const now = Date.now();
+            const difference = now - opponent.lastLogInTime;
+            const minutesDifference = Math.floor(difference / 1000 / 60 / 60 / 24 / 24 / 60);
+
+            if (minutesDifference < 5) circleColor = 'green'; // 5 mins
+            else if (minutesDifference < 60) circleColor = 'yellow'; // 1 hour
+            else if (minutesDifference < 1440) circleColor = 'grey'; // 1 day
+            else circleColor = 'black';
         }
 
         return (
@@ -574,6 +604,19 @@ export default class ChatMain extends React.Component {
                                     </Text>
                                 </View>
                         }
+
+                        <View style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            right: 0,
+                            backgroundColor: circleColor,
+                            borderColor: Theme.color.background,
+                            borderWidth: Cons.logInDotWidth / 6,
+                            borderRadius: Cons.logInDotWidth / 2,
+                            width: Cons.logInDotWidth,
+                            height: Cons.logInDotWidth
+                        }} />
+
                         {
                             update &&
                             <View style={{
@@ -662,7 +705,7 @@ export default class ChatMain extends React.Component {
                 // remove the chat room
                 Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
 
-                // update delete chatroom list
+                // update state
                 this.deleteChatRoom(item.id);
             });
 
@@ -700,7 +743,7 @@ export default class ChatMain extends React.Component {
                     // remove the chat room
                     Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
 
-                    // update delete chatroom list
+                    // update state
                     this.deleteChatRoom(item.id);
                 });
 
@@ -753,14 +796,11 @@ export default class ChatMain extends React.Component {
     loadMore() {
         if (!this.isFocused) return;
 
-        // if (this.onLoading) return;
         if (this.state.isLoadingChat) return;
 
         if (this.state.chatRoomList.length <= 0) return;
 
         if (this.allChatRoomsLoaded) return;
-
-        // this.onLoading = true;
 
         this.setState({ isLoadingChat: true });
 
@@ -787,7 +827,7 @@ export default class ChatMain extends React.Component {
                     if (result) {
                         this.allChatRoomsLoaded = true;
                     } else {
-                        this.addList(list)
+                        this.addList(list);
 
                         // subscribe profile, post, feed count
                         this.subscribe(list);
@@ -796,8 +836,6 @@ export default class ChatMain extends React.Component {
             } else {
                 this.allChatRoomsLoaded = true;
             }
-
-            // this.onLoading = false;
 
             this.setState({ isLoadingChat: false });
         });
@@ -841,14 +879,14 @@ export default class ChatMain extends React.Component {
             const me = users[0];
             const you = users[1];
 
-            // check if customer or girl
-            if (me.uid === owner) { // I am a girl. Then check if customer(you)'s user profile is in the subscribe list.
-                const profile = this.getProfile(you.uid);
-                if (profile) {
-                    const name = profile.name;
-                    const picture = profile.picture.uri;
+            const profile = this.getProfile(you.uid); // opponent's profile
+            if (profile) {
+                const name = profile.name;
+                const picture = profile.picture.uri;
+                const lastLogInTime = profile.lastLogInTime;
 
-                    // check if the values are not same
+                if (me.uid === owner) { // This means that I'm a girl. Then update name, picture from user's profile.
+
                     if (you.name !== name || you.picture !== picture) {
                         // 1. update room
                         _list[i].users[1].name = name;
@@ -857,11 +895,17 @@ export default class ChatMain extends React.Component {
                         // 2. update database
                         Firebase.updateChatRoom(me.uid, you.uid, room.id, _list[i].users);
                     }
+
+                    _list[i].users[1].lastLogInTime = lastLogInTime;
+                } else { // This means that I'm a normal user. then update only lastLogInTime.
+
+                    _list[i].users[1].lastLogInTime = lastLogInTime;
+
                 }
             }
         }
 
-        // update state list
+        // update state
         let newList = [...this.state.chatRoomList];
         for (let i = 0; i < _list.length; i++) {
             newList.push(_list[i]);

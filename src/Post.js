@@ -78,7 +78,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         showPostLoader: false,
 
-        lastLogInTime: null,
+        // lastLogInTime: null,
 
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
@@ -191,6 +191,7 @@ export default class Post extends React.Component<InjectedProps> {
         this.feedUnsubscribe = fi;
     }
 
+    /*
     subscribeToProfile(uid) {
         // this will be updated in subscribe
         // this.user = null;
@@ -213,6 +214,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.userUnsubscribe = instance;
     }
+    */
 
     edit() {
         if (!this.feed) {
@@ -369,7 +371,7 @@ export default class Post extends React.Component<InjectedProps> {
         this.setState({ post });
 
         this.subscribeToPost(post);
-        this.subscribeToProfile(post.uid);
+        // this.subscribeToProfile(post.uid);
 
         const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
@@ -491,6 +493,12 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         if (showBadge && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnLikes(true, 0);
+
+        // ToDo
+        // sendPushNotification
+
+
+
 
         // update likes to state post
         /*
@@ -754,20 +762,23 @@ export default class Post extends React.Component<InjectedProps> {
         const post = this.state.post;
         if (!post) return null;
 
+        /*
         let postedTime = '';
         if (Math.abs(moment().diff(post.timestamp, 'minutes')) < 2) {
             postedTime = 'Just posted';
         } else {
             postedTime = 'Posted ' + moment(post.timestamp).fromNow();
         }
+        */
 
-        let lastLogInTime = 'Activated a long time ago';
+        /*
+        let lastLogInTime = 'Activate a long time ago';
         let circleColor = 'grey'; // green, yellow, grey
         if (this.state.lastLogInTime) {
             if (Math.abs(moment().diff(this.state.lastLogInTime, 'minutes')) < 2) {
                 lastLogInTime = 'Online now';
             } else {
-                lastLogInTime = 'Activated ' + moment(this.state.lastLogInTime).fromNow();
+                lastLogInTime = 'Activate ' + moment(this.state.lastLogInTime).fromNow();
             }
 
             const now = Date.now();
@@ -780,6 +791,7 @@ export default class Post extends React.Component<InjectedProps> {
             else if (daysDifference > 1) circleColor = 'yellow';
             else circleColor = 'green';
         }
+        */
 
         let views = null;
         const visits = this.getVisitCount(post.visits);
@@ -842,16 +854,34 @@ export default class Post extends React.Component<InjectedProps> {
                     this.renderSwiper(post)
                 }
                 <View style={styles.infoContainer}>
-                    {/* dates */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        {/* 1. post date */}
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingVertical: 2 }}>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 4, marginBottom: 16 }}>
+                        {/* post date */}
+                        {/*
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <MaterialCommunityIcons name="clock-outline" color={Theme.color.text2} size={14} />
                             <Text style={{ marginLeft: 6, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Light" }}>{postedTime}</Text>
                         </View>
+                        */}
 
-                        {/* 2. activate date */}
-                        <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', paddingLeft: 10, paddingVertical: 2 }}
+                        {/* views & likes */}
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={styles.views}>{views}</Text>
+                            <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
+                                <Text style={styles.likes}>{likes}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* dates */}
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+
+                        <Text style={styles.name}>{post.name}</Text>
+
+                        {/* activate date */}
+                        {/*
+                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 10, paddingVertical: 2 }}
                             onPress={async () => {
                                 if (this.state.showPostLoader) return;
 
@@ -877,18 +907,8 @@ export default class Post extends React.Component<InjectedProps> {
                             }
                             <Text style={styles.date}>{lastLogInTime}</Text>
                         </TouchableOpacity>
+                        */}
                     </View>
-
-                    {/* likes & reviews */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 12 }}>
-                        <Text style={styles.views}>{views}</Text>
-                        <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
-                            <Text style={styles.likes}>{likes}</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <Text style={styles.name}>{post.name}</Text>
 
                     <View style={{ paddingTop: Theme.spacing.xSmall, paddingBottom: 10 }}>
                         {/* 1 row */}
@@ -1061,17 +1081,6 @@ export default class Post extends React.Component<InjectedProps> {
                                     }}>Newly posted</Text>
                                 </View>
                             </View>
-                    }
-
-                    {
-                        /*
-                        // views & likes
-                        <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.xSmall }}>
-                            <Text style={styles.views}>{visits + ' views'}</Text>
-                            <Octicons style={{ marginTop: 2, marginHorizontal: 10 }} name='primitive-dot' color={Theme.color.title} size={12} />
-                            <Text style={styles.likes}>{likes + ' likes'}</Text>
-                        </View>
-                        */
                     }
 
                     {
@@ -1401,7 +1410,7 @@ export default class Post extends React.Component<InjectedProps> {
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,
                         paddingTop: 4,
-                        fontFamily: "ConcertOne-Regular"
+                        fontFamily: "Chewy-Regular"
                     }}>Please write the first review.</Text>
 
                     <Image
@@ -1953,6 +1962,9 @@ export default class Post extends React.Component<InjectedProps> {
             const avatarName = Util.getAvatarName(_profile.name);
             const avatarColor = Util.getAvatarColor(_profile.uid);
 
+            const place = _profile.place ? _profile.place : 'Not specified';
+            const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text3;
+
             reviewArray.push(
                 <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
 
@@ -2009,8 +2021,8 @@ export default class Post extends React.Component<InjectedProps> {
                                 {_profile.name}</Text>
                             <Text style={{
                                 marginTop: 4,
-                                color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular"
-                            }}>{_profile.place ? _profile.place : 'Not specified'}</Text>
+                                color: placeColor, fontSize: 13, fontFamily: "Roboto-Regular"
+                            }}>{place}</Text>
                         </View>
                     </View>
                     {

@@ -124,7 +124,7 @@ export default class ChatRoom extends React.Component {
         return true;
     }
 
-    moveToChatMain() {
+    async moveToChatMain() {
         // save last message
         const item = this.props.navigation.state.params.item;
 
@@ -135,7 +135,7 @@ export default class ChatRoom extends React.Component {
             const mid = message._id;
 
             if (lastReadMessageId !== mid) {
-                Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+                await Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
             }
         }
 

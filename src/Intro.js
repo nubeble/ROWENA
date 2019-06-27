@@ -285,9 +285,8 @@ export default class Intro extends React.Component<InjectedProps> {
     async initFromSearch(result) {
         console.log('Intro.initFromSearch', result);
 
-        // get city, country
         let name = result.description;
-        name = Util.getPlaceName(name);
+        // name = Util.getPlaceName(name); // city + country
 
         /*
         // load count from database (no need to subscribe!)
@@ -861,7 +860,20 @@ export default class Intro extends React.Component<InjectedProps> {
                             return (
                                 <TouchableOpacity
                                     onPress={async () => {
-                                        const feedSize = this.getFeedSize(place.place_id);
+                                        // hide badge
+                                        let __places = [...this.state.places];
+                                        let __index = __places.findIndex(el => el.place_id === place_id);
+                                        if (__index !== -1) {
+                                            let __place = __places[__index];
+                                            __place.newPostAdded = false;
+
+                                            __places[__index] = __place;
+
+                                            Intro.places = __places;
+                                            !this.closed && this.setState({ places: __places });
+                                        }
+
+                                        const feedSize = this.getFeedSize(place_id);
                                         if (feedSize === -1) {
                                             this.refs["toast"].show('Please try again.', 500);
                                             return;
@@ -873,22 +885,15 @@ export default class Intro extends React.Component<InjectedProps> {
                                             return;
                                         }
 
-                                        // hide badge
-                                        let __places = [...this.state.places];
-                                        let __index = __places.findIndex(el => el.place_id === place_id);
-                                        if (__index !== -1) {
-                                            let __place = __places[__index];
-                                            __place.newPostAdded = true;
-
-                                            __places[__index] = __place;
-
-                                            Intro.places = __places;
-                                            !this.closed && this.setState({ places: __places });
-                                        }
-
-
-                                        let newPlace = _.clone(place);
-                                        newPlace.length = feedSize;
+                                        // let newPlace = _.clone(place);
+                                        // newPlace.length = feedSize;
+                                        const newPlace = {
+                                            name,
+                                            place_id,
+                                            length: feedSize,
+                                            lat: place.lat,
+                                            lng: place.lng
+                                        };
 
                                         this.props.navigation.navigate("home", { place: newPlace });
                                     }}

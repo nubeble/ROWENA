@@ -114,6 +114,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         let avatarName = 'Anonymous';
         let place = "Not specified";
+        let placeColor = Theme.color.text3;
         let count = 0;
         let picture = null;
         let dateText = null;
@@ -137,7 +138,10 @@ export default class EditMain extends React.Component<InjectedProps> {
                 }
             }
         }
-        if (profile.place) place = profile.place;
+        if (profile.place) {
+            place = profile.place;
+            placeColor = Theme.color.text2;
+        }
         count = profile.receivedCommentsCount;
         picture = profile.picture.uri;
         dateText = Util.getJoinedDate(profile.timestamp); // 'Joined in September 26, 2018'
@@ -297,7 +301,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                                             style={{ width: 20, height: 20, resizeMode: 'cover' }}
                                             source={PreloadImage.home}
                                         />
-                                        <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{place}</Text>
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: placeColor, fontFamily: "Roboto-Light" }}>{place}</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
@@ -553,7 +557,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                     color: 'rgb(247, 178, 57)',
                     fontSize: 24,
                     paddingTop: 4,
-                    fontFamily: "ConcertOne-Regular"
+                    fontFamily: "Chewy-Regular"
                 }}>No customer reviews yet</Text>
 
                 {/*
@@ -561,7 +565,7 @@ export default class EditMain extends React.Component<InjectedProps> {
                     marginTop: 10,
                     color: Theme.color.text3,
                     fontSize: 18,
-                    fontFamily: "ConcertOne-Regular"
+                    fontFamily: "Chewy-Regular"
                 }}>Start exploring girls for your next trip</Text>
                 */}
 

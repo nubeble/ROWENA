@@ -1731,7 +1731,7 @@ export default class Firebase {
     };
 
     static async saveLastReadMessageId(uid, id, mid) {
-        console.log('Firebase.saveLastReadMessageId');
+        console.log('Firebase.saveLastReadMessageId', uid, id, mid);
 
         const updateData = {
             lastReadMessageId: mid

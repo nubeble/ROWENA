@@ -232,14 +232,14 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     color: Theme.color.text2,
                                     fontSize: 24,
                                     paddingTop: 4,
-                                    fontFamily: "ConcertOne-Regular"
+                                    fontFamily: "Chewy-Regular"
                                 }}>No reviewed girls</Text>
 
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
                                     fontSize: 18,
-                                    fontFamily: "ConcertOne-Regular"
+                                    fontFamily: "Chewy-Regular"
                                 }}>Let's find some hot chicks</Text>
 
                                 <TouchableOpacity

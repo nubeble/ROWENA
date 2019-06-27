@@ -51,6 +51,7 @@ const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regula
 // const SansSerif = require("../fonts/Sans-Serif.ttf");
 
 const ConcertOneRegular = require("../fonts/ConcertOne-Regular.ttf");
+const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -175,7 +176,8 @@ export default class Loading extends React.Component<InjectedProps> {
 
             "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,
             // "SansSerif": SansSerif
-            "ConcertOne-Regular": ConcertOneRegular
+            "ConcertOne-Regular": ConcertOneRegular,
+            "Chewy-Regular": ChewyRegular
         });
 
         // const images = Images.downloadAsync(); // logo

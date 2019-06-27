@@ -375,6 +375,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         let avatarName = 'Anonymous';
         let address = "Not specified";
+        let addressColor = Theme.color.text3;
         let reviewText = 'loading...';
         // let labelText = null;
         let imageUri = null;
@@ -392,7 +393,10 @@ export default class UserMain extends React.Component<InjectedProps> {
         if (guest.name) avatarName = guest.name;
 
         // address
-        if (guest.address) address = guest.address;
+        if (guest.address) {
+            address = guest.address;
+            addressColor = Theme.color.text2;
+        }
 
         const count = guest.receivedCommentsCount;
 
@@ -563,7 +567,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             style={{ width: 20, height: 20, resizeMode: 'cover' }}
                                             source={PreloadImage.home}
                                         />
-                                        <Text style={{ marginLeft: 12, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{address}</Text>
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: addressColor, fontFamily: "Roboto-Light" }}>{address}</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
@@ -949,7 +953,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                     color: 'rgb(247, 178, 57)',
                     fontSize: 24,
                     paddingTop: 4,
-                    fontFamily: "ConcertOne-Regular"
+                    fontFamily: "Chewy-Regular"
                 }}>No customer reviews yet</Text>
 
                 {/*
@@ -957,7 +961,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                     marginTop: 10,
                     color: Theme.color.text3,
                     fontSize: 18,
-                    fontFamily: "ConcertOne-Regular"
+                    fontFamily: "Chewy-Regular"
                 }}>Start exploring girls for your next trip</Text>
                 */}
 

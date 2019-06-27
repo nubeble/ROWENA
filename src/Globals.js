@@ -15,9 +15,9 @@ export var Vars = {
 };
 
 export const Cons = {
-    version: '0.9.44',
+    version: '0.9.45',
     buildNumber: '93088300',
-    lastUpdatedDate: 'Jun 26, 2019 16:45',
+    lastUpdatedDate: 'Jun 27, 2019 21:45',
 
     // push notification type
     pushNotification: {
@@ -29,6 +29,9 @@ export const Cons = {
 
     // red dot badge
     redDotWidth: Math.round(Dimensions.get('window').height / 100) + 1,
+
+    // log-in dot badge
+    logInDotWidth: Math.round(Dimensions.get('window').height / 30),
 
     // button press short, long timeout
     buttonTimeoutShort: 100,

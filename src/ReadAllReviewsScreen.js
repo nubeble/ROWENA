@@ -342,6 +342,9 @@ export default class ReadAllReviewsScreen extends React.Component {
         const avatarName = Util.getAvatarName(_profile.name);
         const avatarColor = Util.getAvatarColor(_profile.uid);
 
+        const place = _profile.place ? _profile.place : 'Not specified';
+        const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text3;
+
         return (
             <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>
 
@@ -393,8 +396,8 @@ export default class ReadAllReviewsScreen extends React.Component {
                             {_profile.name}</Text>
                         <Text style={{
                             marginTop: 4,
-                            color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
-                        }}>{_profile.place ? _profile.place : 'Not specified'}</Text>
+                            color: placeColor, fontSize: 14, fontFamily: "Roboto-Regular"
+                        }}>{place}</Text>
                     </View>
                 </View>
                 {
@@ -568,7 +571,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     color: 'rgb(247, 178, 57)',
                     fontSize: 24,
                     paddingTop: 4,
-                    fontFamily: "ConcertOne-Regular"
+                    fontFamily: "Chewy-Regular"
                 }}>No customer reviews yet</Text>
 
                 {/*
@@ -576,7 +579,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     marginTop: 10,
                     color: Theme.color.text3,
                     fontSize: 18,
-                    fontFamily: "ConcertOne-Regular"
+                    fontFamily: "Chewy-Regular"
                 }}>Start exploring girls for your next trip</Text>
                 */}
 

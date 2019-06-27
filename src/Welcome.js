@@ -77,7 +77,7 @@ export default class Welcome extends React.Component {
                         fontSize: 32,
                         paddingTop: 12,
                         // backgroundColor: 'green',
-                        fontFamily: "ConcertOne-Regular",
+                        fontFamily: "Chewy-Regular",
                         textAlign: 'center'
                     }}>Welcome!</Text>
 
@@ -97,7 +97,7 @@ export default class Welcome extends React.Component {
                         color: 'rgba(255, 255, 255, 0.8)',
                         fontSize: 16,
                         lineHeight: 24,
-                        fontFamily: "Roboto-Light",
+                        fontFamily: "Chewy-Regular",
                         textAlign: 'center'
                     }}>{this.contentText}</Text>
                 </View>
