@@ -3,7 +3,8 @@ import {
     StyleSheet, View, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
     Keyboard, Dimensions, Platform, TextInput, Button
 } from 'react-native';
-import { Linking, WebBrowser } from "expo";
+import { Linking } from "expo";
+import * as WebBrowser from 'expo-web-browser';
 import Constants from 'expo-constants';
 import { Ionicons, AntDesign } from "react-native-vector-icons";
 // import * as firebase from 'firebase';
@@ -491,6 +492,8 @@ export default class SignUpWithMobileMain extends React.Component {
 
             const tokenEncoded = Linking.parse(url).queryParams['token'];
             if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
+
+            console.log('token', token);
         }
 
         Linking.addEventListener('url', listener);

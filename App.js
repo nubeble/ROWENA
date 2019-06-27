@@ -1415,6 +1415,7 @@ class MapSearchStackNavigatorWrapper extends React.Component {
 }
 // -- end of MapSearchStackNavigatorWrapper
 
+/*
 const CheckLikesStackNavigator = createStackNavigator(
     {
         home: { screen: CheckLikes },
@@ -1447,8 +1448,7 @@ class CheckLikesStackNavigatorWrapper extends React.Component {
         );
     }
 }
-
-
+*/
 
 // -- start of AdminNavigatorWrapper
 const AdminNavigator = createStackNavigator(

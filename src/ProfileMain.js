@@ -608,7 +608,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 <View style={styles.infoContainer}>
                                     {/* avatar view */}
                                     <TouchableOpacity
-                                        style={{ marginTop: 8 }}
                                         onPress={() => {
                                             if (!profile) return;
 
