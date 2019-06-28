@@ -960,12 +960,13 @@ const styles = StyleSheet.create({
     },
     contents: {
         marginTop: 8,
+        marginBottom: 2,
         color: Theme.color.text3,
         fontSize: 18,
         fontFamily: "Roboto-Regular"
     },
     logInState: {
-        paddingBottom: 2,
+        // paddingBottom: 2,
         color: Theme.color.text4,
         fontSize: 10,
         fontFamily: "Roboto-Light"
