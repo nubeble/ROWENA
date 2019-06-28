@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, NetInfo } from 'react-native';
+import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, NetInfo, AppState } from 'react-native';
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -76,6 +76,7 @@ export default class App extends React.Component {
 
         // StatusBar.setHidden(true);
 
+        AppState.addEventListener('change', this.handleAppStateChange);
         this.networkListener = NetInfo.addEventListener('connectionChange', this.handleConnectionChange);
 
         // Handle notifications that are received or selected while the app
@@ -104,8 +105,37 @@ export default class App extends React.Component {
     }
 
     componentWillUnmount() {
+        AppState.removeEventListener('change', this.handleAppStateChange);
         this.networkListener.remove();
         this.notificationListener.remove();
+    }
+
+    @autobind
+    handleAppStateChange(state) { // "active" | "background" | "inactive"
+        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+        console.log('AppState', state);
+        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
+
+        const { profileStore } = this;
+        const profile = profileStore.profile;
+
+        if (!profile) return;
+
+        if (state === 'active') {
+            const data = {
+                activating: true,
+                lastLogInTime: Date.now()
+            };
+
+            Firebase.updateProfile(profile.uid, data, false);
+        } else if (state === "background" || state === 'inactive') {
+            const data = {
+                activating: false,
+                lastLogInTime: Date.now()
+            };
+
+            Firebase.updateProfile(profile.uid, data, false);
+        }
     }
 
     @autobind

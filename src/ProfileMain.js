@@ -1439,7 +1439,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             ref
         };
 
-        await Firebase.updateProfile(profile.uid, data);
+        await Firebase.updateProfilePicture(profile.uid, data);
     }
 }
 

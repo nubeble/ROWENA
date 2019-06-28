@@ -118,6 +118,7 @@ export default class Firebase {
             receivedCommentsCount: 0,
             commentAdded: false,
             timestamp: time,
+            activating: false,
             lastLogInTime: time
         };
 
@@ -143,19 +144,36 @@ export default class Firebase {
         await Firebase.storage.ref(ref).delete();
     }
 
-    static async updateProfile(uid, profile) {
+    static async updateProfile(uid, profile, updateAuth) {
         // 2. update user doc
         await Firebase.firestore.collection("users").doc(uid).update(profile);
 
         // 3. update firebase auth
-        const name = profile.name;
-        let uri = null;
-        if (profile.picture.uri) uri = profile.picture.uri;
-        const user = Firebase.auth.currentUser;
+        if (updateAuth) {
+            const name = profile.name;
+            let uri = null;
+            if (profile.picture.uri) uri = profile.picture.uri;
+            const user = Firebase.auth.currentUser;
+            await user.updateProfile({
+                // displayName: "Jane Q. User",
+                // photoURL: "https://example.com/jane-q-user/profile.jpg"
+                displayName: name,
+                photoURL: uri
+            }).then(function () {
+                // Update successful.
+                console.log('Firebase.updateProfile', 'update successful.');
+            }).catch(function (error) {
+                // An error happened.
+                console.log('Firebase.updateProfile', error);
+            });
+        }
+    }
+
+    static async updateProfilePicture(uid, data) {
+        await Firebase.firestore.collection("users").doc(uid).update(data);
+
+        const uri = data.picture.uri;
         await user.updateProfile({
-            // displayName: "Jane Q. User",
-            // photoURL: "https://example.com/jane-q-user/profile.jpg"
-            displayName: name,
             photoURL: uri
         }).then(function () {
             // Update successful.

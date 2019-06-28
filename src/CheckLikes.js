@@ -154,7 +154,7 @@ export default class CheckLikes extends React.Component {
                     renderItem={({ item, index }) => {
                         const name = item.name;
                         const place = item.place ? item.place : 'Not specified';
-                        const placeColor = item.place ? Theme.color.text2 : Theme.color.text3;
+                        const placeColor = item.place ? Theme.color.text2 : Theme.color.text4;
                         const picture = item.picture;
                         const avatarName = Util.getAvatarName(name);
                         const avatarColor = Util.getAvatarColor(item.uid);

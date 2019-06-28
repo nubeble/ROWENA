@@ -114,7 +114,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
         let avatarName = 'Anonymous';
         let place = "Not specified";
-        let placeColor = Theme.color.text3;
+        let placeColor = Theme.color.text4;
         let count = 0;
         let picture = null;
         let dateText = null;

@@ -375,7 +375,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         let avatarName = 'Anonymous';
         let address = "Not specified";
-        let addressColor = Theme.color.text3;
+        let addressColor = Theme.color.text4;
         let reviewText = 'loading...';
         // let labelText = null;
         let imageUri = null;
@@ -776,7 +776,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         const _review = item.comment;
 
         let picture = null;
-        let placeName = null;
+        let placeName = 'Not specified';
+        let placeColor = Theme.color.text4;
         let name = null;
         let avatarName = null;
         let avatarColor = 'black';
@@ -784,12 +785,14 @@ export default class UserMain extends React.Component<InjectedProps> {
         if (post) {
             picture = post.pictures.one.uri;
             placeName = post.placeName;
+            if (placeName) placeColor = Theme.color.text2;
             name = post.name;
             avatarName = Util.getAvatarName(name);
             avatarColor = Util.getAvatarColor(post.id);
         } else {
             // ToDo: tmp
             picture = _review.picture;
+            if (placeName) placeColor = Theme.color.text2;
             placeName = _review.place;
             name = _review.name;
         }
@@ -833,8 +836,8 @@ export default class UserMain extends React.Component<InjectedProps> {
                             {name}</Text>
                         <Text style={{
                             marginTop: 4,
-                            color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular"
-                        }}>{placeName ? placeName : 'Not specified'}</Text>
+                            color: placeColor, fontSize: 14, fontFamily: "Roboto-Regular"
+                        }}>{placeName}</Text>
                     </View>
                 </View>
                 {

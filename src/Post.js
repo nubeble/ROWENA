@@ -1963,7 +1963,7 @@ export default class Post extends React.Component<InjectedProps> {
             const avatarColor = Util.getAvatarColor(_profile.uid);
 
             const place = _profile.place ? _profile.place : 'Not specified';
-            const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text3;
+            const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
 
             reviewArray.push(
                 <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>

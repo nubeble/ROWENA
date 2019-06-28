@@ -343,7 +343,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         const avatarColor = Util.getAvatarColor(_profile.uid);
 
         const place = _profile.place ? _profile.place : 'Not specified';
-        const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text3;
+        const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
 
         return (
             <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>

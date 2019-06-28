@@ -1362,7 +1362,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         profile.email = data.email;
         profile.phoneNumber = data.phoneNumber;
 
-        await Firebase.updateProfile(profile.uid, profile);
+        await Firebase.updateProfile(profile.uid, profile, true);
     }
 
     showDateTimePicker(title) {

@@ -73,6 +73,7 @@ export type Profile = {
     receivedCommentsCount: number, // 내가 받은 comment 개수
     commentAdded: boolean,
     timestamp: number,
+    activating: boolean,
     lastLogInTime: number
 };
 

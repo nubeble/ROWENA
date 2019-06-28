@@ -168,6 +168,7 @@ export default class ChatMain extends React.Component {
             // update state
             const name = user.name;
             const picture = user.picture.uri;
+            const activating = user.activating;
             const lastLogInTime = user.lastLogInTime;
 
             let list = [...this.state.chatRoomList];
@@ -180,6 +181,7 @@ export default class ChatMain extends React.Component {
 
                     opponent.name = name;
                     opponent.picture = picture;
+                    opponent.activating = activating;
                     opponent.lastLogInTime = lastLogInTime;
 
                     room.users[1] = opponent;
@@ -188,6 +190,7 @@ export default class ChatMain extends React.Component {
                     // update database
                     if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
                 } else {
+                    opponent.activating = activating;
                     opponent.lastLogInTime = lastLogInTime;
 
                     room.users[1] = opponent;
@@ -318,7 +321,10 @@ export default class ChatMain extends React.Component {
             // find user profile
             const user = this.customerProfileList.get(newRoom.users[1].uid);
             if (user) {
+                const activating = user.activating;
                 const lastLogInTime = user.lastLogInTime;
+
+                newRoom.users[1].activating = activating;
                 newRoom.users[1].lastLogInTime = lastLogInTime;
                 newList[i] = newRoom;
             }
@@ -541,7 +547,7 @@ export default class ChatMain extends React.Component {
         const update = this.checkUpdate(item.lastReadMessageId, item.mid);
         console.log(_contents, 'update', item.id, item.lastReadMessageId, item.mid, update);
         // const viewHeight = Dimensions.get('window').height / 10;
-        const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2) * 0.24; // (view width - container padding) * 24%
+        const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2 * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
         // const avatarHeight = viewHeight * 0.8;
 
@@ -553,16 +559,31 @@ export default class ChatMain extends React.Component {
             avatarColor = Util.getAvatarColor(opponent.uid);
         }
 
-        let circleColor = 'grey'; // green, yellow, grey
-        if (opponent.lastLogInTime) {
-            const now = Date.now();
-            const difference = now - opponent.lastLogInTime;
-            const minutesDifference = Math.floor(difference / 1000 / 60 / 60 / 24 / 24 / 60);
+        let circleColor = '#808080'; // grey
+        let logInState = null;
+        if (opponent.activating) {
+            circleColor = '#3cb44b'; // green
+            logInState = 'Active now';
+        } else {
+            if (opponent.lastLogInTime) {
+                const now = Date.now();
+                const difference = now - opponent.lastLogInTime;
+                const minutesDifference = Math.floor(difference / 1000 / 60 / 60 / 24 / 24 / 60);
 
-            if (minutesDifference < 5) circleColor = 'green'; // 5 mins
-            else if (minutesDifference < 60) circleColor = 'yellow'; // 1 hour
-            else if (minutesDifference < 1440) circleColor = 'grey'; // 1 day
-            else circleColor = 'black';
+                if (minutesDifference <= 1) {
+                    circleColor = '#ffe119'; // yellow
+                    logInState = 'Active 1 minute ago';
+                } else if (minutesDifference < 60) {
+                    circleColor = '#ffe119'; // yellow
+                    logInState = 'Active ' + minutesDifference + ' minutes ago';
+                } else if (minutesDifference < 1440) { // 1 day
+                    circleColor = '#ffe119'; // yellow
+                    logInState = 'Active ' + moment(opponent.lastLogInTime).fromNow();
+                } else {
+                    circleColor = '#808080'; // 1 grey
+                    logInState = 'Active ' + moment(opponent.lastLogInTime).fromNow();
+                }
+            }
         }
 
         return (
@@ -577,13 +598,8 @@ export default class ChatMain extends React.Component {
                     this.refs["toast"].show('The room no longer exists.', 500);
                 }
             }}>
-                <View style={{ flexDirection: 'row', flex: 1, paddingTop: Theme.spacing.small, paddingBottom: Theme.spacing.small }}>
-                    <View style={{
-                        width: '24%', height: viewHeight,
-                        // backgroundColor: 'green',
-                        // justifyContent: 'center', alignItems: 'flex-start', paddingLeft: Theme.spacing.xSmall
-                        justifyContent: 'center', alignItems: 'center'
-                    }}>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: Theme.spacing.xSmall, paddingVertical: Theme.spacing.small }}>
+                    <View style={{ width: '24%', height: viewHeight, justifyContent: 'center', alignItems: 'center' }}>
                         {
                             opponent.picture ?
                                 <SmartImage
@@ -635,32 +651,19 @@ export default class ChatMain extends React.Component {
                             }} />
                         }
                     </View>
-                    {/*
-                    <View style={{
-                        width: '46%', height: viewHeight,
-                        // backgroundColor: 'green',
-                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10
-                    }}>
-                        <Text style={styles.name}>{opponent.name}</Text>
-                        <Text style={styles.contents}>{contents}</Text>
-                    </View>
 
-                    <View style={{
-                        width: '30%', height: viewHeight,
-                        // backgroundColor: 'green',
-                        justifyContent: 'flex-start', alignItems: 'flex-end', paddingRight: Theme.spacing.xSmall
-                    }}>
-                        <Text style={styles.time}>{time}</Text>
-                    </View>
-                    */}
                     <View style={{
                         width: '76%', height: viewHeight,
                         // backgroundColor: 'green',
-                        justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 10
+                        justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: 10
                     }}>
-                        <Text style={styles.time}>{time}</Text>
+                        <View style={{ width: '100%', alignItems: 'flex-end', marginTop: -10 }}>
+                            <Text style={styles.time}>{time}</Text>
+                        </View>
+
                         <Text style={styles.name}>{opponent.name}</Text>
                         <Text style={styles.contents}>{_contents}</Text>
+                        <Text style={styles.logInState}>{logInState}</Text>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -883,10 +886,11 @@ export default class ChatMain extends React.Component {
             if (profile) {
                 const name = profile.name;
                 const picture = profile.picture.uri;
+
+                const activating = profile.activating;
                 const lastLogInTime = profile.lastLogInTime;
 
                 if (me.uid === owner) { // This means that I'm a girl. Then update name, picture from user's profile.
-
                     if (you.name !== name || you.picture !== picture) {
                         // 1. update room
                         _list[i].users[1].name = name;
@@ -896,11 +900,11 @@ export default class ChatMain extends React.Component {
                         Firebase.updateChatRoom(me.uid, you.uid, room.id, _list[i].users);
                     }
 
+                    _list[i].users[1].activating = activating;
                     _list[i].users[1].lastLogInTime = lastLogInTime;
                 } else { // This means that I'm a normal user. then update only lastLogInTime.
-
+                    _list[i].users[1].activating = activating;
                     _list[i].users[1].lastLogInTime = lastLogInTime;
-
                 }
             }
         }
@@ -935,27 +939,35 @@ const styles = StyleSheet.create({
         paddingLeft: Theme.spacing.tiny,
         paddingRight: Theme.spacing.tiny
     },
+    /*
+    time: {
+        position: 'absolute',
+        top: (Theme.spacing.small / 3) * -1, right: Theme.spacing.xSmall,
+        color: Theme.color.text3,
+        fontSize: 14,
+        fontFamily: "Roboto-Regular"
+    },
+    */
+    time: {
+        color: Theme.color.text3,
+        fontSize: 12,
+        fontFamily: "Roboto-Light"
+    },
     name: {
         color: Theme.color.text2,
         fontSize: 18,
         fontFamily: "Roboto-Medium"
     },
     contents: {
-        marginTop: Dimensions.get('window').height / 60,
+        marginTop: 8,
         color: Theme.color.text3,
         fontSize: 18,
         fontFamily: "Roboto-Regular"
     },
-    time: {
-        /*
-        color: Theme.color.text3,
-        fontSize: 14,
-        fontFamily: "Roboto-Regular"
-        */
-        position: 'absolute',
-        top: (Theme.spacing.small / 3) * -1, right: Theme.spacing.xSmall,
-        color: Theme.color.text3,
-        fontSize: 14,
-        fontFamily: "Roboto-Regular"
+    logInState: {
+        paddingBottom: 2,
+        color: Theme.color.text4,
+        fontSize: 10,
+        fontFamily: "Roboto-Light"
     }
 });
