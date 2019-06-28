@@ -188,7 +188,26 @@ export default class ChatMain extends React.Component {
                     list[i] = room;
 
                     // update database
-                    if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
+                    // if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
+                    if (changed) {
+                        let users = [];
+                        const user1 = {
+                            uid: room.users[0].uid,
+                            name: room.users[0].name,
+                            picture: room.users[0].picture
+                        };
+
+                        const user2 = {
+                            uid: room.users[1].uid,
+                            name: room.users[1].name,
+                            picture: room.users[1].picture
+                        };
+
+                        users.push(user1);
+                        users.push(user2);
+
+                        Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, users);
+                    }
                 } else {
                     opponent.activating = activating;
                     opponent.lastLogInTime = lastLogInTime;
@@ -326,6 +345,7 @@ export default class ChatMain extends React.Component {
 
                 newRoom.users[1].activating = activating;
                 newRoom.users[1].lastLogInTime = lastLogInTime;
+
                 newList[i] = newRoom;
             }
         }
@@ -545,7 +565,7 @@ export default class ChatMain extends React.Component {
             _contents = contents;
         }
         const update = this.checkUpdate(item.lastReadMessageId, item.mid);
-        console.log(_contents, 'update', item.id, item.lastReadMessageId, item.mid, update);
+        // console.log(_contents, 'update', item.id, item.lastReadMessageId, item.mid, update);
         // const viewHeight = Dimensions.get('window').height / 10;
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2 * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
@@ -566,21 +586,22 @@ export default class ChatMain extends React.Component {
             logInState = 'Active now';
         } else {
             if (opponent.lastLogInTime) {
+                console.log(_contents, item.id, opponent.lastLogInTime);
                 const now = Date.now();
                 const difference = now - opponent.lastLogInTime;
-                const minutesDifference = Math.floor(difference / 1000 / 60 / 60 / 24 / 24 / 60);
+                const minutesDifference = Math.round(difference / 60000);
 
                 if (minutesDifference <= 1) {
                     circleColor = '#ffe119'; // yellow
                     logInState = 'Active 1 minute ago';
-                } else if (minutesDifference < 60) {
+                } else if (1 < minutesDifference && minutesDifference < 60) {
                     circleColor = '#ffe119'; // yellow
                     logInState = 'Active ' + minutesDifference + ' minutes ago';
-                } else if (minutesDifference < 1440) { // 1 day
+                } else if (60 <= minutesDifference && minutesDifference < 1440) { // 1 day
                     circleColor = '#ffe119'; // yellow
                     logInState = 'Active ' + moment(opponent.lastLogInTime).fromNow();
                 } else {
-                    circleColor = '#808080'; // 1 grey
+                    circleColor = '#808080'; // grey
                     logInState = 'Active ' + moment(opponent.lastLogInTime).fromNow();
                 }
             }
