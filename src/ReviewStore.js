@@ -172,7 +172,7 @@ export default class ReviewStore {
     async init(placeId: string, feedId: string): Promise<void> { // get [{review: profile}] in real time
         // console.log('placeId', placeId, 'feedId', feedId);
 
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
 
         query.onSnapshot(async snap => {
             const reviews: Promise<ReviewEntry>[] = [];
@@ -200,12 +200,12 @@ export default class ReviewStore {
         let userUid = review.uid;
         let reviewId = review.id;
 
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
+        await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
 
         // 업데이트 2개 - averageRating, postedReviews
 
-        let feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        let feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         let size = await Firebase.getReviewsSize(placeId, feedId);

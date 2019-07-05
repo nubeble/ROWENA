@@ -282,7 +282,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.setState({ totalFeedsSize: length });
 
         if (length === 0) {
-            if (this.state.feeds.length > 0) this.setState({ feeds: [] });
+            this.setState({ feeds: [] });
             return;
         }
 
@@ -623,7 +623,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                         }}>
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-
                                                 <View style={{ flexDirection: 'row' }}>
                                                     <View style={{ marginTop: Cons.redDotWidth / 2, alignSelf: 'flex-start' }}>
                                                         <Text style={{ paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
@@ -721,7 +720,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: Dimensions.get('window').height / 14,
+                                                width: '100%', height: Dimensions.get('window').height / 16,
                                                 // justifyContent: 'center', paddingLeft: 2
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
@@ -755,7 +754,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: Dimensions.get('window').height / 14,
+                                                width: '100%', height: Dimensions.get('window').height / 16,
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
@@ -780,7 +779,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 <View style={{
-                                                    width: '100%', height: Dimensions.get('window').height / 14,
+                                                    width: '100%', height: Dimensions.get('window').height / 16,
                                                     // justifyContent: 'center', paddingLeft: 2
                                                     flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
@@ -874,7 +873,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: Dimensions.get('window').height / 14,
+                                                width: '100%', height: Dimensions.get('window').height / 16,
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
@@ -952,7 +951,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 {
                                     this.state.totalFeedsSize === 0 &&
                                     <View style={{
-                                        width: '100%', height: Dimensions.get('window').height / 14,
+                                        width: '100%', height: Dimensions.get('window').height / 16,
                                         justifyContent: 'center', alignItems: 'center'
                                     }}>
                                         <TouchableOpacity onPress={() => {

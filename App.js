@@ -112,14 +112,12 @@ export default class App extends React.Component {
 
     @autobind
     handleAppStateChange(state) { // "active" | "background" | "inactive"
-        console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-        console.log('AppState', state);
-        console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-
         const { profileStore } = this;
         const profile = profileStore.profile;
 
         if (!profile) return;
+
+        console.log('AppState', state);
 
         if (state === 'active') {
             const data = {
@@ -265,6 +263,13 @@ export default class App extends React.Component {
                             this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
                         }
                     } break;
+
+                    case Cons.pushNotification.like: {
+                        if (Vars.focusedScreen !== 'ProfileMain') {
+                            // show badge
+                            // this.setState({ showBadgeOnProfile: true, badgeOnProfileCount: 0 });
+                        }
+                    } break;
                 }
             }
         } else if (origin === 'selected') {
@@ -274,7 +279,7 @@ export default class App extends React.Component {
                         // hide badge
                         this.setState({ showBadgeOnChat: false, badgeOnChatCount: -1 });
 
-                        const message = data.userData.message;
+                        // const message = data.userData.message;
                         const chatRoomId = data.userData.chatRoomId;
 
                         this.moveToChatRoom(chatRoomId);
@@ -284,7 +289,7 @@ export default class App extends React.Component {
                         // hide badge
                         this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
 
-                        const message = data.userData.message;
+                        // const message = data.userData.message;
                         const placeId = data.userData.placeId;
                         const feedId = data.userData.feedId;
 
@@ -296,7 +301,7 @@ export default class App extends React.Component {
                         // hide badge
                         this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
 
-                        const message = data.userData.message;
+                        // const message = data.userData.message;
                         const placeId = data.userData.placeId;
                         const feedId = data.userData.feedId;
 
@@ -308,10 +313,23 @@ export default class App extends React.Component {
                         // hide badge
                         this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
 
-                        const message = data.userData.message;
+                        // const message = data.userData.message;
 
                         // move to check profile
                         this.moveToCheckProfile();
+                    } break;
+
+                    // ToDo
+                    case Cons.pushNotification.like: {
+                        // hide badge
+                        // this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
+
+                        // const message = data.userData.message;
+                        const placeId = data.userData.placeId;
+                        const feedId = data.userData.feedId;
+
+                        // move to post preview
+                        this.moveToUserPost(placeId, feedId);
                     } break;
                 }
             }
@@ -373,10 +391,10 @@ export default class App extends React.Component {
     }
 
     async moveToUserPost(placeId, feedId) {
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
         if (!placeDoc.exists) return;
 
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        const feedDoc = await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).get();
         if (!feedDoc.exists) return;
 
         const extra = {
@@ -490,6 +508,8 @@ import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import UserMain from './src/UserMain';
 import LikesMain from './src/LikesMain';
+import SavedMain from './src/SavedMain';
+import SavedPlace from './src/SavedPlace';
 import ProfileMain from './src/ProfileMain';
 import Intro from './src/Intro';
 import SearchScreen from './src/SearchScreen';
@@ -1122,14 +1142,57 @@ const _tabBarOptions = { // style (bar), labelStyle (label), tabStyle (tab)
     //    }
 };
 
+
+
+
+
+
+const SavedStackNavigator = createStackNavigator(
+    {
+        savedMain: { screen: SavedMain },
+        // savedPlace: { screen: SavedPlace }
+    },
+    {
+        // initialRouteName: 'advertisementStart',
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class SavedStackNavigatorWrapper extends React.Component {
+    static router = SavedStackNavigator.router;
+
+    render() {
+        return (
+            <SavedStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
+
+
+
+
 const MainBottomTabNavigator = createBottomTabNavigator(
     {
         home: {
             screen: HomeSwitchNavigatorWrapper,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
-        likes: {
-            screen: LikesMain,
+        likes: { // saved
+            // screen: LikesMain,
+            screen: SavedStackNavigatorWrapper,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         chat: {
@@ -1223,7 +1286,9 @@ function _navigationOptions(navigation, screenProps) {
 
                     if (diff < 500) {
                         // double click
-                        if (Vars.focusedScreen === 'LikesMain') LikesMain.scrollToTop();
+                        // if (Vars.focusedScreen === 'LikesMain') LikesMain.scrollToTop();
+                        if (Vars.focusedScreen === 'SavedMain') SavedMain.scrollToTop();
+                        if (Vars.focusedScreen === 'SavedPlace') SavedPlace.scrollToTop();
                     }
                 } else {
                     routeName = 'likes';
@@ -1527,7 +1592,10 @@ const MainStackNavigator = createStackNavigator(
         writeReview: { screen: WriteReviewScreen },
         chatRoom: { screen: ChatRoomStackNavigatorWrapper },
 
+        savedPlace: { screen: SavedPlace },
+
         edit: { screen: EditStackNavigatorWrapper },
+
         checkReview: { screen: ReviewStackNavigatorWrapper },
         advertisement: { screen: AdvertisementStackNavigatorWrapper },
         checkComment: { screen: CommentStackNavigatorWrapper },

@@ -267,8 +267,7 @@ export default class Feed extends React.Component<FeedProps> {
 const styles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
-        // paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.tiny
+        paddingBottom: Theme.spacing.tiny // Explore.js styles.orderTab.marginBottom
     },
     list: {
         flex: 1

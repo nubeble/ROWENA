@@ -24,7 +24,8 @@ export const Cons = {
         chat: 1,
         review: 2,
         reply: 3,
-        comment: 4
+        comment: 4,
+        like: 5
     },
 
     // red dot badge

@@ -27,7 +27,6 @@ import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
-// import LikesMain from './LikesMain';
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -124,7 +123,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.init(post, extra);
 
-        if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
+        // if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
+        if (from === 'Profile' || from === 'ChatRoom' || from === 'SavedPlace') {
             this.setState({ isModal: true });
         } else {
             this.setState({ isModal: false });
@@ -276,7 +276,7 @@ export default class Post extends React.Component<InjectedProps> {
     reloadReviews() {
         // 1. reload reviews
         const post = this.state.post;
-        const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
         // 2. reload review count & calc chart
@@ -373,7 +373,7 @@ export default class Post extends React.Component<InjectedProps> {
         this.subscribeToPost(post);
         // this.subscribeToProfile(post.uid);
 
-        const query = Firebase.firestore.collection("place").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
         const isOwner = this.isOwner(post.uid, Firebase.user().uid);
@@ -494,11 +494,14 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (showBadge && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnLikes(true, 0);
 
-        // ToDo
-        // sendPushNotification
-
-
-
+        // send push notification
+        const { profile } = this.props.profileStore;
+        const data = {
+            message: null,
+            placeId: post.placeId,
+            feedId: post.id
+        };
+        sendPushNotification(uid, profile.name, this.owner, Cons.pushNotification.like, data);
 
         // update likes to state post
         /*

@@ -1611,6 +1611,7 @@ export default class Util extends React.Component {
         return color;
     }
 
+    // ToDo: remove
     static getPlaceName(name) { // city + country
         // Consider: To avoid "Kyiv, Ukraine, 02000"
         const words = name.split(', ');
@@ -1632,7 +1633,24 @@ export default class Util extends React.Component {
         return name;
     }
 
-    static getCityName(name) { // city
+    static getCountry(name) {
+        if (!name) return null;
+
+        const words = name.split(', ');
+        // Consider: To avoid "Kyiv, Ukraine, 02000"
+        if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+            // "02000"
+            if (words.length === 1) return null;
+
+            return words[words.length - 2];
+        }
+
+        if (words.length === 1) return name;
+
+        return words[words.length - 1];
+    }
+
+    static getCity(name) {
         if (!name) return null;
 
         const words = name.split(', ');
@@ -1642,10 +1660,74 @@ export default class Util extends React.Component {
         return words[0];
     }
 
-    static getCountryName(name) { // state + country
+    static getStreet(name) {
+        if (!name || name.length === 0) return null;
+
+        let size = 0;
+
+        const words = name.split(', ');
+        if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+            size = words.length - 2;
+        } else {
+            size = words.length - 1;
+        }
+
+        let street = null;
+        for (let i = 0; i <= size; i++) {
+            if (i === size) street = words[i];
+            else street = words[i] + ', ';
+        }
+
+        return street;
+    }
+
+    static getStateAndCountry(name) { // return country or state + country
         if (!name) return null;
 
+        // ToDo: check federal state
+        const country = Util.getCountry(name);
+        const code = Util.getCountyCode(country);
+        const federation = Util.isFederation(code);
+        // const federation = true;
+
+        if (federation) {
+
+            const words = name.split(', ');
+            // Consider: To avoid "Kyiv, Ukraine, 02000"
+            if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+                // "02000"
+                if (words.length === 1) return null;
+
+                // "country, 02000"
+                if (words.length === 2) return null;
+
+                // "state, country, 02000"
+                return words[words.length - 3] + ', ' + words[words.length - 2];
+            } else {
+                // "country"
+                if (words.length === 1) return null;
+
+                return words[words.length - 2] + ', ' + words[words.length - 1];
+            }
+
+        } else {
+
+            const words = name.split(', ');
+            // Consider: To avoid "Kyiv, Ukraine, 02000"
+            if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+                // "02000"
+                if (words.length === 1) return null;
+
+                // "country, 02000"
+                return words[words.length - 2];
+            } else {
+                return words[words.length - 1];
+            }
+
+        }
+
         // Consider: To avoid "Kyiv, Ukraine, 02000"
+        /*
         const words = name.split(', ');
         if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
             return words[1];
@@ -1657,20 +1739,7 @@ export default class Util extends React.Component {
 
         // text가 3개 이상일 때 뒤에 2개를 끊어낸다.
         return words[words.length - 2] + ', ' + words[words.length - 1];
-    }
-
-    static getCountry(name) { // country
-        if (!name) return null;
-
-        // Consider: To avoid "Kyiv, Ukraine, 02000"
-        const words = name.split(', ');
-        if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
-            return words[1];
-        }
-
-        if (words.length <= 1) return name;
-
-        return words[words.length - 1];
+        */
     }
 
     static getQuotes() {

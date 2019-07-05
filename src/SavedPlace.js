@@ -4,24 +4,21 @@ import {
     TouchableOpacity, Platform, ActivityIndicator
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import Constants from 'expo-constants';
 import PreloadImage from './PreloadImage';
 import SmartImage from "./rnff/src/components/SmartImage";
 import { inject, observer } from "mobx-react/native";
 import Firebase from "./Firebase";
 import Util from "./Util";
-// import type { FeedEntry } from "./rnff/src/components/Model";
-// import type { ScreenProps } from "./rnff/src/components/Types";
 import { Cons, Vars } from "./Globals";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import autobind from 'autobind-decorator';
-import { Text, Theme, RefreshIndicator, FeedStore } from "./rnff/src/components";
+import { Text, Theme, RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type InjectedProps = {
-    feedStore: FeedStore,
     profileStore: ProfileStore
 };
 
@@ -32,27 +29,25 @@ const illustHeight = 300;
 const illustWidth = 300 / 510 * 600;
 
 
-@inject("feedStore", "profileStore")
+@inject("profileStore")
 @observer
-export default class LikesMain extends React.Component<InjectedProps> {
+export default class SavedPlace extends React.Component<InjectedProps> {
     static __flatList = null;
 
     state = {
-        // renderList: false,
         feeds: [],
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
-        refreshing: false,
+        // refreshing: false,
         totalFeedsSize: 0
     };
 
     constructor(props) {
         super(props);
 
-        this.reload = true;
+        // this.reload = true;
         this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
-        // this.onLoading = false;
+        // this.lastChangedTime = 0;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -62,29 +57,23 @@ export default class LikesMain extends React.Component<InjectedProps> {
     }
 
     static scrollToTop() {
-        LikesMain.__flatList.scrollToOffset({ offset: 0, animated: true });
+        SavedPlace.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     componentDidMount() {
-        console.log('LikesMain.componentDidMount');
+        console.log('SavedPlace.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        // this.getSavedFeeds();
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderList: true });
-        }, 0);
-        */
+        this.getFeeds();
     }
 
     @autobind
     handleHardwareBackPress() {
-        console.log('LikesMain.handleHardwareBackPress');
+        console.log('SavedPlace.handleHardwareBackPress');
 
         // this.props.navigation.navigate("intro");
         this.props.navigation.dispatch(NavigationActions.back());
@@ -94,51 +83,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        console.log('LikesMain.onFocus');
+        console.log('SavedPlace.onFocus');
 
-        Vars.focusedScreen = 'LikesMain';
-
-        const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            // reload from the start
-            this.getSavedFeeds();
-
-            // move scroll top
-            // this._flatList.scrollToOffset({ offset: 0, animated: true });
-        }
-
-        /*
-        if (Vars.postLikeButtonPressed) { // could take awhile updating user profile database
-            await this.getSavedFeeds();
-            Vars.postLikeButtonPressed = false;
-
-            // already reload from the beginning. so pass this.
-            Vars.updatedPostsForLikes = [];
-        } else {
-            if (Vars.updatedPostsForLikes.length > 0) {
-                // this.setState({ isLoadingFeeds: true });
-                this.setState({ isLoadingFeeds: true, loadingType: 100 });
-
-                let feeds = [...this.state.feeds];
-
-                for (var i = 0; i < Vars.updatedPostsForLikes.length; i++) {
-                    const newPost = Vars.updatedPostsForLikes[i];
-
-                    let index = feeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
-                    if (index !== -1) {
-                        feeds[index] = newPost;
-                    }
-                }
-
-                !this.closed && this.setState({ feeds });
-
-                // this.setState({ isLoadingFeeds: false });
-                this.setState({ isLoadingFeeds: false, loadingType: 0 });
-
-                Vars.updatedPostsForLikes = [];
-            }
-        }
-        */
+        Vars.focusedScreen = 'SavedPlace';
 
         this.focused = true;
     }
@@ -154,7 +101,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
     };
 
     componentWillUnmount() {
-        console.log('LikesMain.componentWillUnmount');
+        console.log('SavedPlace.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -173,8 +120,106 @@ export default class LikesMain extends React.Component<InjectedProps> {
         this.closed = true;
     }
 
+    getFeeds() {
+        if (this.state.isLoadingFeeds) return;
+
+        const feeds = this.props.navigation.state.params.feeds;
+        const length = feeds.length;
+
+        this.setState({ totalFeedsSize: length });
+
+        if (length === 0) {
+            this.setState({ feeds: [] });
+            return;
+        }
+
+        // all loaded
+        if (this.lastLoadedFeedIndex >= length - 1) return;
+
+        console.log('SavedPlace', 'loading users...');
+
+        let newFeeds = [];
+
+        let reload = false;
+        let startIndex = 0;
+
+        if (this.lastLoadedFeedIndex === -1) {
+            reload = true;
+            startIndex = 0;
+
+            this.setState({ isLoadingFeeds: true, loadingType: 100 });
+        } else {
+            startIndex = this.lastLoadedFeedIndex + 1;
+
+            this.setState({ isLoadingFeeds: true, loadingType: 200 });
+        }
+
+        let count = 0;
+
+        for (let i = startIndex; i < length; i++) {
+            if (count >= DEFAULT_FEED_COUNT) break;
+
+            const feed = feeds[i];
+
+            const placeId = feed.placeId;
+            const feedId = feed.feedId;
+            const name = feed.name;
+            const placeName = feed.placeName;
+            const picture = feed.picture;
+
+            if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
+                const __feed = this.feedList.get(feedId);
+
+                const newFeed = {
+                    name: __feed.name,
+                    placeName: __feed.placeName,
+                    placeId: __feed.placeId,
+                    feedId: __feed.id,
+                    picture: __feed.pictures.one.uri,
+                    reviewCount: __feed.reviewCount,
+                    averageRating: __feed.averageRating
+                };
+
+                newFeeds.push(newFeed);
+            } else {
+                const newFeed = {
+                    name,
+                    placeName,
+                    placeId,
+                    feedId,
+                    picture,
+                    reviewCount: -1,
+                    averageRating: -1
+                };
+
+                newFeeds.push(newFeed);
+
+                // subscribe post
+                this.subscribeToPost(placeId, feedId);
+
+                // subscribe count
+                this.subscribeToPlace(placeId);
+            }
+
+            this.lastLoadedFeedIndex = i;
+
+            count++;
+        }
+
+        if (reload)
+            this.setState({ feeds: newFeeds });
+        else
+            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
+
+        console.log('SavedPlace', 'loading feeds done!');
+
+        setTimeout(() => {
+            !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
+        }, 250);
+    }
+
+    /*
     getSavedFeeds() {
-        // if (this.onLoading) return;
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
@@ -203,11 +248,9 @@ export default class LikesMain extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
-        // this.onLoading = true;
-
         // this.setState({ isLoadingFeeds: true });
 
-        console.log('LikesMain', 'loading feeds...');
+        console.log('SavedPlace', 'loading feeds...');
 
         let newFeeds = [];
 
@@ -275,15 +318,13 @@ export default class LikesMain extends React.Component<InjectedProps> {
             this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
         }
 
-        console.log('LikesMain', 'loading feeds done!');
+        console.log('SavedPlace', 'loading feeds done!');
 
-        // this.setState({ isLoadingFeeds: false, loadingType: 0 });
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
-
-        // this.onLoading = false;
     }
+    */
 
     subscribeToPost(placeId, feedId) {
         const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
@@ -293,7 +334,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 // update state feed & UI
                 let feeds = [...this.state.feeds];
-                const index = feeds.findIndex(el => el.placeId === placeId && el.id === feedId);
+                const index = feeds.findIndex(el => el.placeId === placeId && el.feedId === feedId);
                 if (index !== -1) {
                     feeds.splice(index, 1);
                     !this.closed && this.setState({ feeds });
@@ -311,12 +352,26 @@ export default class LikesMain extends React.Component<InjectedProps> {
             // update state feed & UI
             let changed = false;
             let feeds = [...this.state.feeds];
-            const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.id === newFeed.id);
+            const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
             if (index !== -1) {
                 const item = feeds[index];
-                if (item.name !== newFeed.name || item.placeName !== newFeed.placeName || item.pictures.one.uri !== newFeed.pictures.one.uri) changed = true;
+                if (item.name !== newFeed.name || item.placeName !== newFeed.placeName || item.picture !== newFeed.pictures.one.uri) changed = true;
+                // if (item.name !== newFeed.name || item.placeName !== newFeed.location.description || item.picture !== newFeed.pictures.one.uri) changed = true;
 
-                feeds[index] = newFeed;
+                const street = Util.getStreet(newFeed.location.description);
+
+                const __newFeed = {
+                    name: newFeed.name,
+                    // placeName: newFeed.placeName,
+                    placeName: street,
+                    placeId: newFeed.placeId,
+                    feedId: newFeed.id,
+                    picture: newFeed.pictures.one.uri,
+                    reviewCount: newFeed.reviewCount,
+                    averageRating: newFeed.averageRating
+                };
+
+                feeds[index] = __newFeed;
                 !this.closed && this.setState({ feeds });
             }
 
@@ -324,6 +379,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
             if (changed) {
                 const name = newFeed.name;
                 const placeName = newFeed.placeName;
+                // const placeName = newFeed.location.description;
                 const picture = newFeed.pictures.one.uri;
                 Firebase.updateLikes(Firebase.user().uid, placeId, feedId, name, placeName, picture);
             }
@@ -376,7 +432,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
         };
 
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'LikesMain' });
+        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'SavedPlace' });
     }
 
     getFeedSize(placeId) {
@@ -405,23 +461,38 @@ export default class LikesMain extends React.Component<InjectedProps> {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            left: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            this.props.navigation.dispatch(NavigationActions.back());
+                        }}
+                    >
+                        <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                    </TouchableOpacity>
 
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
                         // alignSelf: 'flex-start',
-                        marginLeft: 16
+                        marginLeft: 40 + 16
                     }}>Saved
                     {
-                        this.state.totalFeedsSize > 0 &&
-                        <Text style={{
-                            color: Theme.color.text4,
-                            fontSize: 20,
-                            fontFamily: "Roboto-Medium",
-                            // paddingLeft: 4
-                        }}> {this.state.totalFeedsSize}</Text>
-                    }
+                            this.state.totalFeedsSize > 0 &&
+                            <Text style={{
+                                color: Theme.color.text4,
+                                fontSize: 20,
+                                fontFamily: "Roboto-Medium",
+                                // paddingLeft: 4
+                            }}> {this.state.totalFeedsSize}</Text>
+                        }
                     </Text>
 
                     {
@@ -447,7 +518,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                     <FlatList
                         ref={(fl) => {
                             this._flatList = fl;
-                            LikesMain.__flatList = fl;
+                            SavedPlace.__flatList = fl;
                         }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
@@ -462,11 +533,12 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         */
 
                         data={this.state.feeds}
-                        keyExtractor={item => item.id}
+                        // keyExtractor={item => item.id}
+                        keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             // placeName
                             let placeName = item.placeName;
-                            placeName = Util.getPlaceName(placeName);
+                            // placeName = Util.getPlaceName(placeName);
 
                             // defaultRating, averageRating
                             let integer = 0;
@@ -494,7 +566,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             style={styles.picture}
                                             showSpinner={false}
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={item.pictures.one.uri}
+                                            uri={item.picture}
                                         />
                                         <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
@@ -555,13 +627,14 @@ export default class LikesMain extends React.Component<InjectedProps> {
                             if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
-                                this.getSavedFeeds();
+                                // this.getSavedFeeds();
+                                this.getFeeds();
                             }
                         }}
                         // scrollEventThrottle={1}
 
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
+                        // onRefresh={this.handleRefresh}
+                        // refreshing={this.state.refreshing}
 
                         ListFooterComponent={
                             // this.state.isLoadingFeeds &&
@@ -668,19 +741,15 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        // paddingLeft: Theme.spacing.base,
-        // paddingRight: Theme.spacing.base,
-        // paddingTop: Theme.spacing.base,
-        // paddingBottom: Theme.spacing.base
+        paddingBottom: Theme.spacing.tiny
     },
     pictureContainer: {
         // 3:2 image
-        width: (Dimensions.get('window').width - Theme.spacing.base * 2),
-        height: (Dimensions.get('window').width - Theme.spacing.base * 2) / 3 * 2,
-
+        width: (Dimensions.get('window').width - Theme.spacing.small * 2),
+        height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 3 * 2,
         borderRadius: 2,
-        marginVertical: Theme.spacing.base,
-        marginHorizontal: Theme.spacing.base
+        marginVertical: Theme.spacing.small,
+        marginHorizontal: Theme.spacing.small
     },
     picture: {
         width: '100%',

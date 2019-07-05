@@ -126,7 +126,7 @@ export default class CommentStore {
             // console.log('CommentStore.joinPost, uniqBy', item.placeId, item.feedId);
 
             try {
-                const feedDoc = await Firebase.firestore.collection("place").doc(item.placeId).collection("feed").doc(item.feedId).get();
+                const feedDoc = await Firebase.firestore.collection("places").doc(item.placeId).collection("feed").doc(item.feedId).get();
                 if (feedDoc.exists) this.posts[item.id] = feedDoc.data();
             } catch (e) {
                 console.log('CommentStore.joinPost, feed not exists. (old comment');

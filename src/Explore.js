@@ -126,7 +126,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         this.setState({ searchText, titleText, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
 
-        const query = Firebase.firestore.collection("place").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
 
         this._feed.disableScroll();
@@ -136,7 +136,7 @@ export default class Explore extends React.Component<InjectedProps> {
         console.log('Explore.initFromSearch', result);
 
         // load length from database
-        const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
+        const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
         let count = 0;
         if (placeDoc.exists) {
             let field = placeDoc.data().count;
@@ -621,7 +621,7 @@ export default class Explore extends React.Component<InjectedProps> {
         // const params = this.props.navigation.state.params;
         // let place = params.place;
 
-        const query = Firebase.firestore.collection("place").doc(this.state.placeId).collection("feed").orderBy(order, "desc");
+        const query = Firebase.firestore.collection("places").doc(this.state.placeId).collection("feed").orderBy(order, "desc");
         this.props.feedStore.init(query, order);
 
         this._feed.disableScroll();

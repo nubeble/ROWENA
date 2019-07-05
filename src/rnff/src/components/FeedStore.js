@@ -161,8 +161,8 @@ export default class FeedStore {
     subscribeToPost(placeId: string, id: string, callback: Post => void): Subscription {
         console.log('FeedStore.subscribeToPost', placeId, id);
         /*
-        // return Firebase.firestore.collection("place").doc(placeId).collection("feed").where("id", "==", id).onSnapshot(async snap => {
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
+        // return Firebase.firestore.collection("places").doc(placeId).collection("feed").where("id", "==", id).onSnapshot(async snap => {
+        return Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
             // const post = snap.docs[0].data();
             const post = snap.data();
             console.log('FeedStore, feed changed.');
@@ -175,7 +175,7 @@ export default class FeedStore {
             });
         });
         */
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(id).onSnapshot(
+        return Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(id).onSnapshot(
             snap => {
                 const post = snap.data();
 

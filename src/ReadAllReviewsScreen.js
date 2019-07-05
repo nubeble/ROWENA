@@ -795,7 +795,7 @@ export default class ReadAllReviewsScreen extends React.Component {
     /*
     refreshReviews(placeId, feedId, count) {
         // reload whole reviews
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
+        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
         const { reviewStore } = this.props.navigation.state.params;
         reviewStore.init(query, count);
     }

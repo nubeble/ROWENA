@@ -304,7 +304,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.setState({ totalFeedsSize: length });
 
         if (length === 0) {
-            if (this.state.feeds.length > 0) this.setState({ feeds: [] });
+            this.setState({ feeds: [] });
             return;
         }
 

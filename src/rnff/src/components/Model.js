@@ -68,7 +68,7 @@ export type Profile = {
     feeds: FeedRef[], // 내가 만든 feed
     reviews: ReviewRef[], // 내가 남긴 review
     replies: ReplyRef[], // 내가 남긴 reply
-    likes: LikeRef[], // 내가 초이스한 feed
+    likes: LikeRef[], // 내가 찜한 feed
     comments: CommentRef[], // 내가 남긴 comment (내가 받은 comment는 comments collection에 달린다)
     receivedCommentsCount: number, // 내가 받은 comment 개수
     commentAdded: boolean,
@@ -95,7 +95,7 @@ export type Post = {
     uid: string, // user uid
     id: string,
     placeId: string,
-    placeName: string,
+    placeName: string, // country | city, country | city, state, country
     location: Location,
     note: string,
     pictures: Pictures,

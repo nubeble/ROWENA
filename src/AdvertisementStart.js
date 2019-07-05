@@ -90,7 +90,7 @@ export default class AdvertisementStart extends React.Component {
                         color: 'black',
                         fontSize: 16,
                         lineHeight: 24,
-                        fontFamily: "Roboto-Light",
+                        fontFamily: "Chewy-Regular",
                         textAlign: 'center'
                     }}>{this.contentText}</Text>
                 </View>

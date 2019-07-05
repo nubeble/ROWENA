@@ -263,7 +263,7 @@ export default class Firebase {
         const random = Util.getRandomNumber();
         // console.log('random', random);
 
-        const postsRef = Firebase.firestore.collection("place").doc(placeId).collection("feed");
+        const postsRef = Firebase.firestore.collection("places").doc(placeId).collection("feed");
         const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
         if (snap1.docs.length === 0) {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
@@ -298,7 +298,7 @@ export default class Firebase {
 
         const random = Util.getRandomNumber();
 
-        const postsRef = Firebase.firestore.collection("place");
+        const postsRef = Firebase.firestore.collection("places");
         const snap1 = await postsRef.where("rn", ">", random).orderBy("rn").limit(1).get();
         if (snap1.docs.length === 0) {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
@@ -329,7 +329,7 @@ export default class Firebase {
     static async getRandomPlaces(size) {
         let places = [];
 
-        const postsRef = Firebase.firestore.collection("place");
+        const postsRef = Firebase.firestore.collection("places");
         const snap = await postsRef.orderBy("timestamp", "desc").limit(size).get();
         snap.forEach(doc => {
             // const data = doc.data();
@@ -340,7 +340,7 @@ export default class Firebase {
     }
 
     static subscribeToFeed(placeId, feedId, callback) {
-        return Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).onSnapshot(
+        return Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).onSnapshot(
             snap => {
                 const feed = snap.data();
                 console.log('Firebase.subscribeToFeed, feed changed.');
@@ -353,7 +353,7 @@ export default class Firebase {
     }
 
     static subscribeToPlace(placeId, callback) {
-        return Firebase.firestore.collection("place").doc(placeId).onSnapshot(
+        return Firebase.firestore.collection("places").doc(placeId).onSnapshot(
             snap => {
                 /*
                 let count = 0;
@@ -392,7 +392,7 @@ export default class Firebase {
     static async getFeedByAverageRating(placeId) { // 평점이 가장 높은 포스트
         let feed = null;
 
-        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(1).get();
+        const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(1).get();
         snap.forEach(feedDoc => {
             feed = feedDoc.data();
             // console.log('Firebase.getFeedByAverageRating, feed', feed);
@@ -404,7 +404,7 @@ export default class Firebase {
     static async getFeedByAverageRating(placeId, size) {
         let feeds = [];
 
-        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(size).get();
+        const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("averageRating", "desc").limit(size).get();
         snap.forEach(feedDoc => {
             const feed = feedDoc.data();
             feeds.push(feed);
@@ -417,7 +417,7 @@ export default class Firebase {
     static async getFeedByTimestamp(placeId) { // 가장 최근에 생성된 포스트
         let feed = null;
 
-        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(1).get();
+        const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(1).get();
         snap.forEach(feedDoc => {
             feed = feedDoc.data();
         });
@@ -428,7 +428,7 @@ export default class Firebase {
     static async getFeedByTimestamp(placeId, size) {
         let feeds = [];
 
-        const snap = await Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(size).get();
+        const snap = await Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("timestamp", "desc").limit(size).get();
         snap.forEach(feedDoc => {
             const feed = feedDoc.data();
             feeds.push(feed);
@@ -440,7 +440,7 @@ export default class Firebase {
 
     /*
     static subscribeToPlaceSize(placeId, callback) {
-        return Firebase.firestore.collection("place").doc(placeId).onSnapshot(snap => {
+        return Firebase.firestore.collection("places").doc(placeId).onSnapshot(snap => {
             let count = 0;
 
             if (snap.exists) {
@@ -470,11 +470,11 @@ export default class Firebase {
 
 
         // 1. add feed
-        await Firebase.firestore.collection("place").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
+        await Firebase.firestore.collection("places").doc(feed.placeId).collection("feed").doc(feed.id).set(feed);
 
         // 2. update user profile & place
         const userRef = Firebase.firestore.collection("users").doc(feed.uid);
-        const placeRef = Firebase.firestore.collection("place").doc(feed.placeId);
+        const placeRef = Firebase.firestore.collection("places").doc(feed.placeId);
 
         await Firebase.firestore.runTransaction(async transaction => {
             // 2-1. place
@@ -513,7 +513,7 @@ export default class Firebase {
     }
 
     static async updateFeed(uid, placeId, feedId, feed) {
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).update(feed);
+        await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).update(feed);
 
         // update feeds in user profile
         const picture = feed.pictures.one.uri;
@@ -544,14 +544,14 @@ export default class Firebase {
     }
 
     static async getPost(placeId, feedId) {
-        const feedDoc = await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).get();
+        const feedDoc = await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).get();
         if (feedDoc.exists) return feedDoc.data();
 
         return null;
     }
 
     static async getFeedSize(placeId) {
-        const placeDoc = await Firebase.firestore.collection("place").doc(placeId).get();
+        const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
         if (placeDoc.exists) return placeDoc.data().count;
 
         return 0;
@@ -561,12 +561,12 @@ export default class Firebase {
         let result;
 
         // remove reviews collection
-        const db = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const db = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
         const path = "reviews";
         Firebase.deleteCollection(db, path, 10);
 
-        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
-        const placeRef = Firebase.firestore.collection("place").doc(placeId);
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
+        const placeRef = Firebase.firestore.collection("places").doc(placeId);
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -718,7 +718,7 @@ export default class Firebase {
 
             var value = feeds.get(key);
 
-            const feedDoc = await Firebase.firestore.collection("place").doc(value.placeId).collection("feed").doc(value.feedId).get();
+            const feedDoc = await Firebase.firestore.collection("places").doc(value.placeId).collection("feed").doc(value.feedId).get();
 
             userFeeds.push(feedDoc.data());
         }
@@ -732,7 +732,7 @@ export default class Firebase {
     static async addVisits(uid, placeId, feedId) {
         console.log('Firebase.addVisits', placeId, feedId);
 
-        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
 
         await Firebase.firestore.runTransaction(async transaction => {
             const postDoc = await transaction.get(feedRef);
@@ -780,7 +780,7 @@ export default class Firebase {
     static async toggleLikes(uid, placeId, feedId, name, placeName, uri) {
         let result;
 
-        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -949,7 +949,7 @@ export default class Firebase {
         };
 
         // update - averageRating, reviewCount, reviews, stats
-        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -1039,7 +1039,7 @@ export default class Firebase {
         if (!result) return false;
 
         // add
-        await Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
+        await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
         // update owner profile
         /*
@@ -1105,8 +1105,8 @@ export default class Firebase {
     static async removeReview(placeId, feedId, reviewId, userUid) {
         let result;
 
-        const reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
-        const feedRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId);
+        const reviewRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
         const userRef = Firebase.firestore.collection("users").doc(userUid);
 
         // get rating
@@ -1263,7 +1263,7 @@ export default class Firebase {
         };
 
         // add reply ref in profile (userUid)
-        let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+        let reviewRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(async transaction => {
@@ -1288,7 +1288,7 @@ export default class Firebase {
     };
 
     static async removeReply(placeId, feedId, reviewId, replyId, userUid) {
-        let reviewRef = Firebase.firestore.collection("place").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
+        let reviewRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(reviewId);
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         await Firebase.firestore.runTransaction(async transaction => {

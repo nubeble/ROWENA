@@ -100,6 +100,12 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macau)</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => this.makeHanoi()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Hanoi)</Text>
+                    </TouchableOpacity>
+
                     {/*
                     <TouchableOpacity
                         onPress={async () => await this.removeFeed()}
@@ -107,7 +113,6 @@ export default class Admin extends React.Component {
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
                     </TouchableOpacity>
-                    */}
 
                     <TouchableOpacity
                         onPress={async () => await this.clearStorage()}
@@ -127,6 +132,7 @@ export default class Admin extends React.Component {
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Comment</Text>
                     </TouchableOpacity>
+                    */}
                 </View>
 
             </View>
@@ -487,7 +493,8 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
-        const placeName = 'Pattaya, Bang Lamung District, Chon Buri, Thailand';
+        // const placeName = 'Pattaya, Bang Lamung District, Chon Buri, Thailand';
+        const placeName = 'Pattaya, Thailand';
 
         /*
         const location = {
@@ -657,7 +664,8 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJoRyG2ZurNTERqRfKcnt_iOc';
-        const placeName = 'Hanoi, Hoàn Kiếm, Hanoi, Vietnam';
+        // const placeName = 'Hanoi, Hoàn Kiếm, Hanoi, Vietnam';
+        const placeName = 'Hanoi, Vietnam';
 
         /*
         const location = {
@@ -822,7 +830,8 @@ export default class Admin extends React.Component {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
         const placeId = 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk';
-        const placeName = 'Manila, Metro Manila, Philippines';
+        // const placeName = 'Manila, Metro Manila, Philippines';
+        const placeName = 'Manila, Philippines';
 
         /*
         const location = {

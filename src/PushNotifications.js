@@ -147,6 +147,10 @@ export function sendPushNotification(sender, senderName, receiver, type, data) {
         formData.append("feedId", data.feedId);
     } else if (type === Cons.pushNotification.comment) {
         formData.append("message", data.message);
+    } else if (type === Cons.pushNotification.like) {
+        formData.append("message", data.message);
+        formData.append("placeId", data.placeId);
+        formData.append("feedId", data.feedId);
     }
 
     return fetch(SERVER_ENDPOINT + "sendPushNotification", {

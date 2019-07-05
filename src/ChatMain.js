@@ -579,29 +579,29 @@ export default class ChatMain extends React.Component {
             avatarColor = Util.getAvatarColor(opponent.uid);
         }
 
-        let circleColor = '#808080'; // grey
+        let circleColor = '#999999'; // grey
         let logInState = null;
         if (opponent.activating) {
-            circleColor = '#3cb44b'; // green
+            circleColor = '#1BF118'; // green
             logInState = 'Active now';
         } else {
             if (opponent.lastLogInTime) {
-                console.log(_contents, item.id, opponent.lastLogInTime);
+                // console.log(_contents, item.id, opponent.lastLogInTime);
                 const now = Date.now();
                 const difference = now - opponent.lastLogInTime;
                 const minutesDifference = Math.round(difference / 60000);
 
                 if (minutesDifference <= 1) {
-                    circleColor = '#ffe119'; // yellow
+                    circleColor = '#FEF720'; // yellow
                     logInState = 'Active 1 minute ago';
                 } else if (1 < minutesDifference && minutesDifference < 60) {
-                    circleColor = '#ffe119'; // yellow
+                    circleColor = '#FEF720'; // yellow
                     logInState = 'Active ' + minutesDifference + ' minutes ago';
                 } else if (60 <= minutesDifference && minutesDifference < 1440) { // 1 day
-                    circleColor = '#ffe119'; // yellow
+                    circleColor = '#FEF720'; // yellow
                     logInState = 'Active ' + moment(opponent.lastLogInTime).fromNow();
                 } else {
-                    circleColor = '#808080'; // grey
+                    circleColor = '#999999'; // grey
                     logInState = 'Active ' + moment(opponent.lastLogInTime).fromNow();
                 }
             }

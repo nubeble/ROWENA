@@ -463,9 +463,7 @@ export default class GooglePlacesAutocomplete extends Component {
         for (let i = 0; i < rows.length; i++) {
             if ((rows[i].place_id === rowData.place_id) || (rows[i].isCurrentLocation === true && rowData.isCurrentLocation === true)) {
                 rows[i].isLoading = true;
-                !this.closed && this.setState({
-                    dataSource: rows
-                });
+                !this.closed && this.setState({ dataSource: rows });
                 break;
             }
         }
@@ -479,9 +477,7 @@ export default class GooglePlacesAutocomplete extends Component {
                 }
             }
 
-            !this.closed && this.setState({
-                dataSource: this.buildRowsFromResults(this._results),
-            });
+            !this.closed && this.setState({ dataSource: this.buildRowsFromResults(this._results) });
         }
     }
 
@@ -617,6 +613,7 @@ export default class GooglePlacesAutocomplete extends Component {
         return results;
     }
 
+    /*
     _requestNearby = (latitude, longitude) => {
         this._abortRequests();
 
@@ -651,9 +648,11 @@ export default class GooglePlacesAutocomplete extends Component {
                                 console.log('_requestNearby GooglePlacesSearch results', results);
                             }
 
-                            !this.closed && this.setState({
-                                dataSource: this.buildRowsFromResults(results)
-                            });
+                            // remove duplicates
+                            results = this.removeDuplicates(results);
+
+                            this._results = results;
+                            !this.closed && this.setState({ dataSource: this.buildRowsFromResults(results) });
                         }
                     }
 
@@ -689,11 +688,10 @@ export default class GooglePlacesAutocomplete extends Component {
             request.send();
         } else {
             this._results = [];
-            !this.closed && this.setState({
-                dataSource: this.buildRowsFromResults([]),
-            });
+            !this.closed && this.setState({ dataSource: this.buildRowsFromResults([]) });
         }
     }
+    */
 
     _request = (text) => {
         this._abortRequests();
@@ -749,10 +747,11 @@ export default class GooglePlacesAutocomplete extends Component {
                                 }
                             }
 
+                            // remove duplicates
+                            results = this.removeDuplicates(results);
+
                             this._results = results;
-                            !this.closed && this.setState({
-                                dataSource: this.buildRowsFromResults(results)
-                            });
+                            !this.closed && this.setState({ dataSource: this.buildRowsFromResults(results) });
                         }
                     }
 
@@ -777,9 +776,7 @@ export default class GooglePlacesAutocomplete extends Component {
             request.send();
         } else {
             this._results = [];
-            !this.closed && this.setState({
-                dataSource: this.buildRowsFromResults([])
-            });
+            !this.closed && this.setState({ dataSource: this.buildRowsFromResults([]) });
         }
     }
 
@@ -884,8 +881,8 @@ export default class GooglePlacesAutocomplete extends Component {
             // console.log('state', state);
         }
         */
-        const city = Util.getCityName(description);
-        const state = Util.getCountryName(description);
+        const city = Util.getCity(description);
+        const state = Util.getStateAndCountry(description);
 
         let texts = false;
         if (city && state) texts = true;
@@ -1001,13 +998,13 @@ export default class GooglePlacesAutocomplete extends Component {
                 <TouchableHighlight
                     // style={{ width: WINDOW.width, height: (WINDOW.height / 80) * 5 }}
                     onPress={() => this._onPress(rowData)}
-                // underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
+                    // underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
                 >
                     <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
                         {this._renderRowData(rowData)}
-                        {
-                            // this._renderLoader(rowData)
-                        }
+                        {/*
+                        {this._renderLoader(rowData)}
+                        */}
                     </View>
                 </TouchableHighlight>
             </ScrollView>
@@ -1360,6 +1357,58 @@ export default class GooglePlacesAutocomplete extends Component {
 
         request.send();
         */
+    }
+
+    removeDuplicates(results) {
+        if (results.length === 0) return results;
+
+        let __results = [];
+
+        // console.log('1111111111111111', results);
+
+        for (let i = 0; i < results.length; i++) {
+            let obj = results[i];
+            const description = obj.description;
+            const city = Util.getCity(description);
+            const state = Util.getStateAndCountry(description);
+
+            // null, Singapore
+            // Hanoi, Vietnam
+            // Penang, Penang, Malaysia
+
+            // check
+            // const exists = this.exists(obj, city, state);
+            const exists = this.exists(__results, city, state);
+            if (exists) {
+                // skip
+            } else {
+                // add
+                /*
+                obj.__city = city;
+                obj.__state = state;
+                results[i] = obj;
+                */
+                __results.push(obj);
+            }
+        }
+
+        // console.log('2222222222222', __results);
+
+        // results = __results;
+        return __results;
+    }
+
+    exists(__results, __city, __state) {
+        for (let i = 0; i < __results.length; i++) {
+            let obj = __results[i];
+            const description = obj.description;
+            const city = Util.getCity(description);
+            const state = Util.getStateAndCountry(description);
+
+            if (city === __city && state === __state) return true;
+        }
+
+        return false;
     }
 }
 

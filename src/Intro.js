@@ -290,7 +290,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
         /*
         // load count from database (no need to subscribe!)
-        const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
+        const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
         let count = 0;
         if (placeDoc.exists) {
             let field = placeDoc.data().count;
@@ -310,7 +310,7 @@ export default class Intro extends React.Component<InjectedProps> {
             // the place is removed or not exists
 
             // load count from database (then subscribe)
-            const placeDoc = await Firebase.firestore.collection("place").doc(result.place_id).get();
+            const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
             if (placeDoc.exists) {
                 let field = placeDoc.data().count;
                 if (field) count = field;
@@ -372,7 +372,7 @@ export default class Intro extends React.Component<InjectedProps> {
     async getPlaces() {
         const size = DEFAULT_PLACE_COUNT;
 
-        const snap = await Firebase.firestore.collection("place").orderBy("count", "desc").limit(size).get();
+        const snap = await Firebase.firestore.collection("places").orderBy("count", "desc").limit(size).get();
         // if (snap.size > 0) {
         let places = [...this.state.places];
         let index = 0;
@@ -809,8 +809,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                     city = name;
                                 }
                                 */
-                                city = Util.getCityName(name);
-                                // country = Util.getCountryName(name);
+                                city = Util.getCity(name);
+                                // country = Util.getStateAndCountry(name);
                                 country = Util.getCountry(name);
 
                                 imageUri = place.uri;
@@ -832,8 +832,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                         city = name;
                                     }
                                     */
-                                    city = Util.getCityName(name);
-                                    // country = Util.getCountryName(name);
+                                    city = Util.getCity(name);
+                                    // country = Util.getStateAndCountry(name);
                                     country = Util.getCountry(name);
 
                                     imageUri = place.uri;

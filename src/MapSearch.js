@@ -106,7 +106,7 @@ export default class MapSearch extends React.Component {
         /*
         const { placeId } = this.props.navigation.state.params;
 
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed").orderBy("averageRating", "desc");
+        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("averageRating", "desc");
         this.feedStore.init(query, 'averageRating');
 
         this.setState({ loading: true });
@@ -141,7 +141,7 @@ export default class MapSearch extends React.Component {
         let feeds = [];
 
         const { placeId } = this.props.navigation.state.params;
-        const geocollection: GeoCollectionReference = this.gf.collection("place").doc(placeId).collection("feed");
+        const geocollection: GeoCollectionReference = this.gf.collection("places").doc(placeId).collection("feed");
 
         // get kilometers by region
         const oneDegreeOfLatitudeInMeters = 111.32;
@@ -686,7 +686,7 @@ export default class MapSearch extends React.Component {
         const lesserGeopoint = new firebase.firestore.GeoPoint(s, w); // SW
         const greaterGeopoint = new firebase.firestore.GeoPoint(n, e); // NE
 
-        const query = Firebase.firestore.collection("place").doc(placeId).collection("feed")
+        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed")
             .where('location.gp', '>', lesserGeopoint).where('location.gp', '<', greaterGeopoint);
 
         this.feedStore.init(query, null);

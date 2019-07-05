@@ -93,7 +93,7 @@ export default class AdvertisementFinish extends React.Component {
                         color: Theme.color.text3,
                         fontSize: 16,
                         lineHeight: 24,
-                        fontFamily: "Roboto-Light",
+                        fontFamily: "Chewy-Regular",
                         textAlign: 'center'
                     }}>{this.contentText}</Text>
                 </View>
