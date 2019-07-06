@@ -107,7 +107,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.onBlurListener.remove();
         this.hardwareBackPressListener.remove();
 
-        for (var i = 0; i < this.customersUnsubscribes.length; i++) {
+        for (let i = 0; i < this.customersUnsubscribes.length; i++) {
             const instance = this.customersUnsubscribes[i];
             instance();
         }
@@ -338,7 +338,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         let count = 0;
 
-        for (var i = startIndex; i >= 0; i--) {
+        for (let i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
             const comment = comments[i];

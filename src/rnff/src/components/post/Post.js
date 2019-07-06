@@ -153,7 +153,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={post.pictures.one.uri}
                     />
-                    <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                         <Text style={styles.feedItemText}>{post.name}</Text>
                         <Text style={styles.feedItemText}>{distance}</Text>
                         {
@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "Roboto-Medium",
-        paddingLeft: 2,
+        paddingHorizontal: 2,
 
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },

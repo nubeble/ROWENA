@@ -300,7 +300,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             console.log('clean image files');
 
             const formData = new FormData();
-            for (var i = 0; i < this.imageRefs.length; i++) {
+            for (let i = 0; i < this.imageRefs.length; i++) {
                 const ref = this.imageRefs[i];
 
                 const number = i + 1;
@@ -1291,7 +1291,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
     async uploadImage(uri, cb) {
         const fileName = uri.split('/').pop();
-        var ext = fileName.split('.').pop();
+        let ext = fileName.split('.').pop();
 
         if (!Util.isImage(ext)) {
             const msg = 'Invalid image file (' + ext + ').';
@@ -1299,7 +1299,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             return;
         }
 
-        var type = Util.getImageType(ext);
+        let type = Util.getImageType(ext);
         // console.log('file type:', type);
 
         const formData = new FormData();

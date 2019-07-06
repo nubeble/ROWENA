@@ -237,9 +237,9 @@ export default class Util extends React.Component {
 
     /*
     static getRandomColor() {
-        var letters = '0123456789ABCDEF';
-        var color = '#';
-        for (var i = 0; i < 6; i++) {
+        let letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
             color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
@@ -251,9 +251,9 @@ export default class Util extends React.Component {
         switch (code) {
             case 'AR':
             case 'AU':
-            case 'AT':
+            // case 'AT':
             case 'BE':
-            case 'BA':
+            // case 'BA':
             case 'BR':
             case 'CA':
             case 'KM':
@@ -557,11 +557,13 @@ export default class Util extends React.Component {
             },
             {
                 code: "BO",
-                name: "Bolivia, Plurinational State of"
+                // name: "Bolivia, Plurinational State of"
+                name: "Bolivia"
             },
             {
                 code: "BQ",
-                name: "Bonaire, Sint Eustatius and Saba"
+                // name: "Bonaire, Sint Eustatius and Saba"
+                name: "Bonaire"
             },
             {
                 code: "BA",
@@ -1197,7 +1199,8 @@ export default class Util extends React.Component {
             },
             {
                 code: "RU",
-                name: "Russian Federation"
+                // name: "Russian Federation"
+                name: "Russia"
             },
             {
                 code: "RW",
@@ -1412,7 +1415,8 @@ export default class Util extends React.Component {
             },
             {
                 code: "US",
-                name: "United States"
+                // name: "United States"
+                name: "USA"
             },
             {
                 code: "UM",
@@ -1612,8 +1616,9 @@ export default class Util extends React.Component {
     }
 
     // ToDo: remove
+    /*
     static getPlaceName(name) { // city + country
-        // Consider: To avoid "Kyiv, Ukraine, 02000"
+        // filter "Kyiv, Ukraine, 02000"
         const words = name.split(', ');
         if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
             const result = words[0] + ', ' + words[1];
@@ -1632,21 +1637,56 @@ export default class Util extends React.Component {
 
         return name;
     }
+    */
+
+    // filter "Kyiv, Ukraine, 02000"
+    static filterNumber(description) {
+        const words = description.split(', ');
+        if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+            let str = '';
+            for (let i = 0; i <= words.length - 2; i++) {
+                if (i === words.length - 2) str = words[i];
+                else str = words[i] + ', ';
+            }
+
+            return str;
+        }
+
+        return description;
+    }
+
+    static getPlace(name) { // country | city, country | city, state, country
+        if (!name) return null;
+
+        const city = Util.getCity(name);
+        const country = Util.getStateAndCountry(name);
+
+        if (city && !country) return city;
+
+        if (!city && country) return country;
+
+        if (city && country) return city + ', ' + country;
+
+        return null;
+    }
 
     static getCountry(name) {
         if (!name) return null;
 
+        /*
         const words = name.split(', ');
-        // Consider: To avoid "Kyiv, Ukraine, 02000"
+        // filter "Kyiv, Ukraine, 02000"
         if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
             // "02000"
             if (words.length === 1) return null;
 
             return words[words.length - 2];
         }
+        */
 
-        if (words.length === 1) return name;
+        // if (words.length === 1) return name;
 
+        const words = name.split(', ');
         return words[words.length - 1];
     }
 
@@ -1663,8 +1703,9 @@ export default class Util extends React.Component {
     static getStreet(name) {
         if (!name || name.length === 0) return null;
 
+        /*
         let size = 0;
-
+        
         const words = name.split(', ');
         if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
             size = words.length - 2;
@@ -1677,23 +1718,31 @@ export default class Util extends React.Component {
             if (i === size) street = words[i];
             else street = words[i] + ', ';
         }
+        */
+
+        let street = '';
+        const words = name.split(', ');
+        const size = words.length - 1;
+        for (let i = 0; i < size; i++) {
+            street += words[i];
+            if (i != size - 1) street += ', ';
+        }
 
         return street;
     }
 
-    static getStateAndCountry(name) { // return country or state + country
+    static getStateAndCountry(name) { // country | state, country
         if (!name) return null;
 
         // ToDo: check federal state
         const country = Util.getCountry(name);
         const code = Util.getCountyCode(country);
         const federation = Util.isFederation(code);
-        // const federation = true;
 
         if (federation) {
-
+            /*
             const words = name.split(', ');
-            // Consider: To avoid "Kyiv, Ukraine, 02000"
+            // filter "Kyiv, Ukraine, 02000"
             if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
                 // "02000"
                 if (words.length === 1) return null;
@@ -1709,11 +1758,15 @@ export default class Util extends React.Component {
 
                 return words[words.length - 2] + ', ' + words[words.length - 1];
             }
-
-        } else {
+            */
 
             const words = name.split(', ');
-            // Consider: To avoid "Kyiv, Ukraine, 02000"
+            if (words.length === 1) return null;
+            return words[words.length - 2] + ', ' + words[words.length - 1];
+        } else {
+            /*
+            const words = name.split(', ');
+            // filter "Kyiv, Ukraine, 02000"
             if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
                 // "02000"
                 if (words.length === 1) return null;
@@ -1723,23 +1776,11 @@ export default class Util extends React.Component {
             } else {
                 return words[words.length - 1];
             }
+            */
 
+            const words = name.split(', ');
+            return words[words.length - 1];
         }
-
-        // Consider: To avoid "Kyiv, Ukraine, 02000"
-        /*
-        const words = name.split(', ');
-        if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
-            return words[1];
-        }
-
-        if (words.length <= 1) return name;
-
-        if (words.length === 2) return words[1];
-
-        // text가 3개 이상일 때 뒤에 2개를 끊어낸다.
-        return words[words.length - 2] + ', ' + words[words.length - 1];
-        */
     }
 
     static getQuotes() {

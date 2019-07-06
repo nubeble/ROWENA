@@ -382,6 +382,8 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     keyExtractor={item => item.placeId}
                     renderItem={({ item, index }) => {
                         const placeName = item.placeName;
+                        const words = placeName.split(', ');
+                        const city = words[0];
                         const feedsSize = item.feeds.length;
 
                         return (
@@ -398,7 +400,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         uri={item.picture}
                                     />
                                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                        <Text style={styles.feedItemText}>{placeName}
+                                        <Text style={styles.feedItemText}>{city}
                                             <Text style={[styles.feedItemText, { color: Theme.color.text3 }]}> {feedsSize}</Text>
                                         </Text>
                                     </View>
@@ -443,7 +445,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                         uri={item.pictures.one.uri}
                                     />
-                                    <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                         <Text style={styles.feedItemText}>{item.name}</Text>
                                         <Text style={styles.feedItemText}>{placeName}</Text>
                                         {
@@ -642,7 +644,7 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 18,
         fontFamily: "Roboto-Medium",
-        paddingLeft: 2,
+        paddingHorizontal: 2,
 
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },

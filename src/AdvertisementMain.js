@@ -162,8 +162,8 @@ export default class AdvertisementMain extends React.Component {
         countryCode: null,
 
         street: null,
-        city: '',
-        state: '',
+        // city: '',
+        // state: '',
         streetInfo: null,
         cityInfo: null,
 
@@ -224,7 +224,7 @@ export default class AdvertisementMain extends React.Component {
 
         this.setState({
             country: result.name, countryCode: result.code,
-            street: null, city: '', state: '', streetInfo: null, cityInfo: null
+            street: null, /* city: '', state: '', */ streetInfo: null, cityInfo: null
         });
     }
 
@@ -240,7 +240,9 @@ export default class AdvertisementMain extends React.Component {
         "place_id": "ChIJAYY89hOhfDURvKmQf1zQ_eA"
         }
         */
-        const location = { // streetInfo
+
+        // streetInfo
+        const location = {
             description: result1.description,
             // streetId: result1.place_id,
             longitude: result1.location.lng,
@@ -253,80 +255,11 @@ export default class AdvertisementMain extends React.Component {
             location: result2.location
         };
 
-        /*
-        let street = null;
-        let state = '';
-        let city = '';
+        const street = Util.getStreet(result1.description);
+        // let state = '';
+        // let city = '';
 
-        const words2 = result2.name.split(', '); // "23 Limslättsväg, 22920, Åland Islands"
-
-        // get street text
-        const words1 = result1.description.split(', '); // "23 Limslättsväg, Åland Islands"
-        const length = words1.length - words2.length;
-
-        if (length <= 0) {
-            if (words1.length === 0) {
-                // someting is wrong
-            } else if (words1.length === 1) {
-                // someting is wrong
-            } else if (words1.length === 2) {
-                street = words1[0];
-            } else if (words1.length === 3) {
-                street = words1[0];
-                city = words1[1];
-            } else if (words1.length === 4) {
-                street = words1[0];
-                city = words1[1];
-                state = words1[2];
-            } else {
-                street = '';
-                for (var i = 0; i < words1.length - 3; i++) {
-                    street += words1[i];
-
-                    if (i !== words1.length - 3 - 1) street += ', ';
-                }
-
-                city = words1[words1.length - 3];
-                state = words1[words1.length - 2];
-            }
-        } else {
-            street = '';
-            for (var i = 0; i < length; i++) {
-                street += words1[i];
-
-                if (i !== length - 1) street += ', ';
-            }
-
-            // get city, state
-            if (words2.length === 0) {
-                // someting is wrong
-            } else if (words2.length === 1) {
-                // someting is wrong
-            } else if (words2.length === 2) {
-                city = words2[0];
-            } else if (words2.length === 3) {
-                city = words2[0];
-                state = words2[1];
-            } else {
-                city = words2[words2.length - 3];
-                state = words2[words2.length - 2];
-            }
-        }
-        */
-
-        let street = null;
-        let state = '';
-        let city = '';
-
-        street = ''; // remove country
-        const words1 = result1.description.split(', ');
-        const size = words1.length - 1;
-        for (var i = 0; i < size; i++) {
-            street += words1[i];
-            if (i != size - 1) street += ', ';
-        }
-
-        this.setState({ street: street, city: city, state: state, streetInfo: location, cityInfo: cityInfo });
+        this.setState({ street: street, /* city: city, state: state, */ streetInfo: location, cityInfo: cityInfo });
     }
 
     @autobind
@@ -2047,7 +1980,7 @@ export default class AdvertisementMain extends React.Component {
 
     async uploadImage(uri, index, cb) {
         const fileName = uri.split('/').pop();
-        var ext = fileName.split('.').pop();
+        let ext = fileName.split('.').pop();
 
         if (!Util.isImage(ext)) {
             const msg = 'Invalid image file (' + ext + ').';
@@ -2055,7 +1988,7 @@ export default class AdvertisementMain extends React.Component {
             return;
         }
 
-        var type = Util.getImageType(ext);
+        let type = Util.getImageType(ext);
         // console.log('file type:', type);
 
         const formData = new FormData();

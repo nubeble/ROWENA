@@ -147,7 +147,7 @@ export default class extends Component {
             return 0;
         }
 
-        for (var i = 1; i < length; i++) {
+        for (let i = 1; i < length; i++) {
             let start = 20 + _itemWidth / 2 + (i - 1) * (_itemWidth + 10);
             let end = start + _itemWidth + 10;
 

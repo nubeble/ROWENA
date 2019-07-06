@@ -229,9 +229,13 @@ export default class SearchScreen extends React.Component {
 
                             if (!details) this.props.navigation.goBack();
 
+                            // filter "Kyiv, Ukraine, 02000"
+                            let description1 = data.description;
+                            description1 = Util.filterNumber(description1);
+
                             const location = details.geometry.location;
                             const result = {
-                                description: data.description,
+                                description: description1,
                                 place_id: data.place_id,
                                 location: {
                                     lat: location.lat,
@@ -280,14 +284,14 @@ export default class SearchScreen extends React.Component {
                                     // Consider: exception
                                     // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
-                                    // Consider: exception
-                                    //--
                                     let address = obj.formatted_address;
-                                    address = Util.getPlaceName(address);
-                                    //--
+
+                                    // filter "Kyiv, Ukraine, 02000"
+                                    address = Util.filterNumber(address);
+
+                                    address = Util.getPlace(address);
 
                                     const city = {
-                                        // name: obj.formatted_address,
                                         name: address,
                                         placeId: obj.place_id,
                                         location: {

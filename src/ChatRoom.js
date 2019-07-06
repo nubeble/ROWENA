@@ -498,7 +498,7 @@ export default class ChatRoom extends React.Component {
 
         let found = false;
 
-        for (var i = 0; i < unreadChatRoom.length; i++) {
+        for (let i = 0; i < unreadChatRoom.length; i++) {
             const room = unreadChatRoom[i];
             const id = room.id;
 

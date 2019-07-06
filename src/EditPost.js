@@ -327,14 +327,7 @@ export default class EditPost extends React.Component {
             longitude: location.longitude,
             latitude: location.latitude
         };
-
-        let street = ''; // remove country
-        const words1 = location.description.split(', ');
-        const size = words1.length - 1;
-        for (let i = 0; i < size; i++) {
-            street += words1[i];
-            if (i != size - 1) street += ', ';
-        }
+        const street = Util.getStreet(location.description);
 
         const country = words1[words1.length - 1];
         const countryCode = Util.getCountyCode(country);
@@ -426,7 +419,7 @@ export default class EditPost extends React.Component {
         street = ''; // remove country
         const words1 = result1.description.split(', ');
         const size = words1.length - 1;
-        for (var i = 0; i < size; i++) {
+        for (let i = 0; i < size; i++) {
             street += words1[i];
             if (i != size - 1) street += ', ';
         }
@@ -2155,7 +2148,7 @@ export default class EditPost extends React.Component {
 
     async uploadImage(uri, index, cb) {
         const fileName = uri.split('/').pop();
-        var ext = fileName.split('.').pop();
+        let ext = fileName.split('.').pop();
 
         if (!Util.isImage(ext)) {
             const msg = 'Invalid image file (' + ext + ').';
@@ -2163,7 +2156,7 @@ export default class EditPost extends React.Component {
             return;
         }
 
-        var type = Util.getImageType(ext);
+        let type = Util.getImageType(ext);
 
         const formData = new FormData();
         formData.append("type", "post");

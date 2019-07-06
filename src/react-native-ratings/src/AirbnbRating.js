@@ -24,7 +24,7 @@ export default class AirbnbRating extends Component {
 
     /*
     stopAnimation() {
-        for (var i = 0; i < this.refList.length; i++) {
+        for (let i = 0; i < this.refList.length; i++) {
             const ref = this.refList[i];
             ref.stopAnimation();
         }

@@ -566,8 +566,8 @@ export const getAlphabet = () => {
             {
                 dial: '+225',
                 code: "CI",
-                // name: "Côte d'Ivoire"
-                name: "Cote d\'Ivoire"
+                name: "Côte d'Ivoire"
+                // name: "Cote d\'Ivoire"
             },
             {
                 dial: '+385',
@@ -582,8 +582,8 @@ export const getAlphabet = () => {
             {
                 dial: '+599',
                 code: "CW",
-                // name: "Curaçao"
-                name: "Curacao"
+                name: "Curaçao"
+                // name: "Curacao"
             },
             {
                 dial: '+357',
@@ -1228,8 +1228,8 @@ export const getAlphabet = () => {
             {
                 dial: '+262',
                 code: "RE",
-                // name: "Réunion"
-                name: "Reunion"
+                name: "Réunion"
+                // name: "Reunion"
             },
             {
                 dial: '+40',

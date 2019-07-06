@@ -267,7 +267,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         let count = 0;
 
-        for (var i = startIndex; i >= 0; i--) {
+        for (let i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
             const feed = feeds[i];
@@ -408,7 +408,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     }
 
     async openPost(item, index) {
-        const post = this.state.feeds[index];
+        // const post = this.state.feeds[index];
+        const post = this.feedList.get(item.feedId);
+
         if (!post) {
             // this should never happen
             // this.refs["toast"].show('The post has been removed by its owner.', 500);
@@ -432,7 +434,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         };
 
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-        this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'SavedPlace' });
+        this.props.navigation.navigate("postPreview", { post, extra, from: 'SavedPlace' });
     }
 
     getFeedSize(placeId) {
@@ -536,9 +538,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         // keyExtractor={item => item.id}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
-                            // placeName
                             let placeName = item.placeName;
-                            // placeName = Util.getPlaceName(placeName);
 
                             // defaultRating, averageRating
                             let integer = 0;
@@ -568,7 +568,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.picture}
                                         />
-                                        <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
                                             <Text style={styles.feedItemText}>{placeName}</Text>
                                             {
@@ -768,7 +768,7 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "Roboto-Medium",
-        paddingLeft: 2,
+        paddingHorizontal: 2,
 
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },

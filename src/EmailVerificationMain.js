@@ -55,7 +55,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     };
 
     sendVerificationEmail() {
-        var user = Firebase.auth.currentUser;
+        let user = Firebase.auth.currentUser;
         user.sendEmailVerification().then(() => {
             // Email sent.
             console.log('Email sent.');

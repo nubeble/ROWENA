@@ -388,7 +388,7 @@ export default class ChatMain extends React.Component {
     }
 
     deleted(id) {
-        for (var i = 0; i < this.deletedChatRoomList.length; i++) {
+        for (let i = 0; i < this.deletedChatRoomList.length; i++) {
             const item = this.deletedChatRoomList[i];
             if (item === id) return true;
         }
@@ -397,7 +397,7 @@ export default class ChatMain extends React.Component {
     }
 
     findIndex(list, id) {
-        for (var i = 0; i < list.length; i++) {
+        for (let i = 0; i < list.length; i++) {
             const item = list[i];
             console.log('id', item);
             if (item.id === id) return i;
@@ -411,7 +411,7 @@ export default class ChatMain extends React.Component {
         this.deletedChatRoomList.push(roomId);
 
         // update state
-        var list = [...this.state.chatRoomList];
+        let list = [...this.state.chatRoomList];
         const index = this.findIndex(list, roomId);
         // console.log('index', index);
         if (index !== -1) { // if the item inside of 10 rooms is removed then automatically updated in database, state array and index = -1
@@ -424,7 +424,7 @@ export default class ChatMain extends React.Component {
     onGoBack(index, callback) { // back from deleting
         console.log('index', index);
     
-        var array = [...this.state.chatRoomList];
+        let array = [...this.state.chatRoomList];
         array.splice(index, 1);
         this.setState({chatRoomList: array}, () => callback());
     }

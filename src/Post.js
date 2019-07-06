@@ -532,7 +532,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         const uid = Firebase.user().uid;
 
-        for (var i = 0; i < likes.length; i++) {
+        for (let i = 0; i < likes.length; i++) {
             const _uid = likes[i];
             if (uid === _uid) {
                 liked = true;
@@ -1453,9 +1453,9 @@ export default class Post extends React.Component<InjectedProps> {
 
         // calc bar size
         let rate = [];
-        for (var i = 0; i < stats.length; i++) {
-            var value = Math.round(stats[i] / reviewCount * 100);
-            var percentage = value.toString() + '%';
+        for (let i = 0; i < stats.length; i++) {
+            let value = Math.round(stats[i] / reviewCount * 100);
+            let percentage = value.toString() + '%';
             rate[i] = percentage;
         }
 
@@ -2190,8 +2190,8 @@ export default class Post extends React.Component<InjectedProps> {
         if (!this.selectedItem) return;
 
         let totalHeights = 0;
-        for (var i = 0; i < this.selectedItemIndex; i++) {
-            var h = this.itemHeights[i];
+        for (let i = 0; i < this.selectedItemIndex; i++) {
+            let h = this.itemHeights[i];
             if (h) {
                 totalHeights += h;
             }

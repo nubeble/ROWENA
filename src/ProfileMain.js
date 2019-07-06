@@ -853,7 +853,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     const feeds = profile.feeds;
                                                     const length = feeds.length;
 
-                                                    for (var i = 0; i < length; i++) {
+                                                    for (let i = 0; i < length; i++) {
                                                         const feed = feeds[i];
                                                         await Firebase.removeFeed(uid, feed.placeId, feed.feedId);
                                                     }
@@ -1331,7 +1331,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     async uploadImage(uri, cb) {
         const fileName = uri.split('/').pop();
-        var ext = fileName.split('.').pop();
+        let ext = fileName.split('.').pop();
 
         if (!Util.isImage(ext)) {
             const msg = 'Invalid image file (' + ext + ').';
@@ -1339,7 +1339,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return;
         }
 
-        var type = Util.getImageType(ext);
+        let type = Util.getImageType(ext);
         // console.log('file type:', type);
 
         const formData = new FormData();

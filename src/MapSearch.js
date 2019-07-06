@@ -157,7 +157,7 @@ export default class MapSearch extends React.Component {
             // console.log(value.docs); // All docs returned by GeoQuery
 
             const docs = value.docs;
-            for (var i = 0; i < docs.length; i++) {
+            for (let i = 0; i < docs.length; i++) {
                 const data = docs[i].data();
 
                 feeds.push(data);
@@ -331,7 +331,7 @@ export default class MapSearch extends React.Component {
 
         let array = [];
 
-        for (var i = 0; i < feeds.length; i++) {
+        for (let i = 0; i < feeds.length; i++) {
             const post = feeds[i];
 
             const latitude = post.location.latitude;
@@ -362,7 +362,7 @@ export default class MapSearch extends React.Component {
         }
 
         let markers = [];
-        for (var i = 0; i < array.length; i++) {
+        for (let i = 0; i < array.length; i++) {
             const marker = array[i];
 
             markers.push(
@@ -502,7 +502,7 @@ export default class MapSearch extends React.Component {
 
         let pictures = [];
 
-        for (var i = 0; i < feeds.length; i++) {
+        for (let i = 0; i < feeds.length; i++) {
             const post = feeds[i];
 
             if (i === 0) {
@@ -624,7 +624,7 @@ export default class MapSearch extends React.Component {
                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                     uri={post.pictures.one.uri}
                 />
-                <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{post.name}</Text>
                     <Text style={styles.feedItemText}>{distance}</Text>
                     {
@@ -753,7 +753,7 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "Roboto-Medium",
-        paddingLeft: 2,
+        paddingHorizontal: 2,
 
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },

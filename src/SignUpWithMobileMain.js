@@ -199,7 +199,7 @@ export default class SignUpWithMobileMain extends React.Component {
         let result = true;
         let newText = '';
         let numbers = '0123456789';
-        for (var i = 0; i < text.length; i++) {
+        for (let i = 0; i < text.length; i++) {
             if (numbers.indexOf(text[i]) > -1) {
                 newText = newText + text[i];
             } else {

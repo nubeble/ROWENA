@@ -170,21 +170,6 @@ export default class CountrySelection extends React.Component {
             </View>
         );
     }
-
-    /*
-getCountryCode(name) {
-const length = countryCodes.length;
- 
-for (var i = 0; i < length; i++) {
-    const item = countryCodes[i];
-    if (item.Name === name) {
-        return item.Code;
-    }
-}
-
-return null;
-}
-*/
 }
 
 const styles = StyleSheet.create({

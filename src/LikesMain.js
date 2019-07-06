@@ -121,7 +121,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
                 let feeds = [...this.state.feeds];
 
-                for (var i = 0; i < Vars.updatedPostsForLikes.length; i++) {
+                for (let i = 0; i < Vars.updatedPostsForLikes.length; i++) {
                     const newPost = Vars.updatedPostsForLikes[i];
 
                     let index = feeds.findIndex(el => el.placeId === newPost.placeId && el.id === newPost.id);
@@ -224,7 +224,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
 
         let count = 0;
 
-        for (var i = startIndex; i >= 0; i--) {
+        for (let i = startIndex; i >= 0; i--) {
             if (count >= DEFAULT_FEED_COUNT) break;
 
             const feed = feeds[i];
@@ -496,7 +496,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.pictures.one.uri}
                                         />
-                                        <View style={[{ paddingLeft: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
                                             <Text style={styles.feedItemText}>{placeName}</Text>
                                             {
@@ -699,7 +699,7 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 14,
         fontFamily: "Roboto-Medium",
-        paddingLeft: 2,
+        paddingHorizontal: 2,
 
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },

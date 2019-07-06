@@ -121,7 +121,10 @@ export default class Explore extends React.Component<InjectedProps> {
 
     init(place) {
         let placeName = place.name;
-        const searchText = Util.getPlaceName(placeName);
+
+        const words = placeName.split(', ');
+        searchText = words[0];
+
         const titleText = placeName;
 
         this.setState({ searchText, titleText, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });

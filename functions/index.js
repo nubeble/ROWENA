@@ -424,7 +424,7 @@ const getToken = async(function (uid) {
 });
 
 const sendPushNotification = async(function (chunks) {
-    var result = [];
+    let result = [];
     for (let chunk of chunks) {
         try {
             let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
@@ -699,7 +699,7 @@ const deleteFiles = async(function () {
     let refs = [];
 
     const length = Object.keys(fields).length;
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
         const number = i + 1;
         const key = 'file' + number.toString();
         const value = fields[key];
@@ -762,7 +762,7 @@ const signOut = async(function () {
 
     // Revoke all refresh tokens for a specified user for whatever reason.
     // Retrieve the timestamp of the revocation, in seconds since the epoch.
-    var result = await(admin.auth().revokeRefreshTokens(uid).then(() => {
+    let result = await(admin.auth().revokeRefreshTokens(uid).then(() => {
         console.log('revoke success.', uid);
         return admin.auth().getUser(uid);
     }).then((userRecord) => {

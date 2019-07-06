@@ -40,8 +40,8 @@ export default class Firebase {
     //// firestore ////
 
     static deleteCollection(db, collectionPath, batchSize) {
-        var collectionRef = db.collection(collectionPath);
-        var query = collectionRef.orderBy('__name__').limit(batchSize);
+        let collectionRef = db.collection(collectionPath);
+        let query = collectionRef.orderBy('__name__').limit(batchSize);
 
         return new Promise((resolve, reject) => {
             Firebase.deleteQueryBatch(db, query, batchSize, resolve, reject);
@@ -56,8 +56,8 @@ export default class Firebase {
             }
 
             // Delete documents in a batch
-            // var batch = db.batch();
-            var batch = Firebase.firestore.batch();
+            // let batch = db.batch();
+            let batch = Firebase.firestore.batch();
             snapshot.docs.forEach((doc) => {
                 batch.delete(doc.ref);
             });
@@ -646,7 +646,7 @@ export default class Firebase {
             const { feeds } = userDoc.data();
             let index = -1;
 
-            for (var i = 0; i < feeds.length; i++) {
+            for (let i = 0; i < feeds.length; i++) {
                 const item = feeds[i];
                 if (item.placeId === placeId && item.feedId === feedId) {
                     index = i;
@@ -713,10 +713,10 @@ export default class Firebase {
         let userFeeds = [];
 
         for (i = 0; i < keys.length; i++) { // map
-            var num = i;
-            var key = num.toString();
+            let num = i;
+            let key = num.toString();
 
-            var value = feeds.get(key);
+            let value = feeds.get(key);
 
             const feedDoc = await Firebase.firestore.collection("places").doc(value.placeId).collection("feed").doc(value.feedId).get();
 

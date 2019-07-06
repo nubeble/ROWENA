@@ -603,8 +603,8 @@ export default class ReadAllReviewsScreen extends React.Component {
         if (!this.selectedItem) return;
 
         let totalHeights = 0;
-        for (var i = 0; i < this.selectedItemIndex; i++) {
-            var h = this.itemHeights[i];
+        for (let i = 0; i < this.selectedItemIndex; i++) {
+            let h = this.itemHeights[i];
             if (h) {
                 totalHeights += h + 1; // separator width
             }
