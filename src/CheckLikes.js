@@ -227,7 +227,7 @@ export default class CheckLikes extends React.Component {
 
                             <Image
                                 style={{
-                                    marginTop: 20,
+                                    marginTop: 30,
                                     width: illustWidth * 0.5,
                                     height: illustHeight * 0.5,
                                     resizeMode: 'cover'

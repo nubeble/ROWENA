@@ -26,11 +26,12 @@ const home = require('../assets/icon/home.png');
 
 // illustration
 const feed = require('../assets/sample/feed.png');
-const explore = require('../assets/sample/explore.jpg');
+const welcome = require('../assets/sample/welcome.jpg');
 const advertisement = require('../assets/sample/write.jpg');
 const find = require('../assets/sample/find.png');
 
 
+const explore = require('../assets/sanrio/explore.png'); // 490 x 328
 const likes = require('../assets/sanrio/likes.png'); // 581 x 277
 const chat = require('../assets/sanrio/chat.png'); // 554 x 340
 const review = require('../assets/sanrio/review.png'); // 560 x 304
@@ -96,11 +97,12 @@ export default class PreloadImage {
     static home = home;
 
     static feed = feed;
-    static explore = explore;
+    static welcome = welcome;
     static advertisement = advertisement;
     static find = find;
 
 
+    static explore = explore;
     static likes = likes;
     static chat = chat;
     static review = review;
@@ -166,11 +168,12 @@ export default class PreloadImage {
                 PreloadImage.home,
 
                 PreloadImage.feed,
-                PreloadImage.explore,
+                PreloadImage.welcome,
                 PreloadImage.advertisement,
                 PreloadImage.find,
 
 
+                PreloadImage.explore,
                 PreloadImage.likes,
                 PreloadImage.chat,
                 PreloadImage.review,

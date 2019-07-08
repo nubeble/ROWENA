@@ -88,7 +88,7 @@ export default class Welcome extends React.Component {
                             height: illustHeight,
                             resizeMode: 'cover'
                         }}
-                        source={PreloadImage.explore}
+                        source={PreloadImage.welcome}
                     />
 
                     <Text style={{

@@ -54,7 +54,7 @@ export default class MapSearch extends React.Component {
         this.ready = false;
 
         this.state = {
-            renderMap: false,
+            // renderMap: false,
             showSearchButton: true,
             loading: false,
             region: { // current region
@@ -82,19 +82,15 @@ export default class MapSearch extends React.Component {
 
         this.setState({ place: placeName });
 
-        let _region = null;
-        if (region) {
-            _region = {
-                latitude: region.latitude,
-                longitude: region.longitude,
-                latitudeDelta: 0.2,
-                longitudeDelta: 0.2 * ASPECT_RATIO
-            };
-        }
+        let __region = {
+            latitude: region.latitude,
+            longitude: region.longitude,
+            latitudeDelta: 0.2,
+            longitudeDelta: 0.2 * ASPECT_RATIO
+        };
+        this.setState({ region: __region });
 
-        if (_region) this.setState({ region: _region });
-
-        this.setState({ renderMap: true });
+        // this.setState({ renderMap: true });
 
         /*
         const { store } = this.props.navigation.state.params;
@@ -115,12 +111,12 @@ export default class MapSearch extends React.Component {
 
         this.setState({ loading: true });
 
-        const feeds = await this.loadFeeds(_region);
-        !this.closed && this.setState({ feeds: feeds });
+        const feeds = await this.loadFeeds(__region);
+        this.setState({ feeds: feeds });
 
-        !this.closed && this.setState({ loading: false });
+        this.setState({ loading: false });
 
-        !this.closed && this.setState({ showSearchButton: false });
+        this.setState({ showSearchButton: false });
 
         /*
         setTimeout(() => {
@@ -196,7 +192,7 @@ export default class MapSearch extends React.Component {
         return (
             <View style={styles.flex}>
                 {
-                    this.state.renderMap &&
+                    // this.state.renderMap &&
                     this.renderMap()
                 }
 
@@ -300,7 +296,7 @@ export default class MapSearch extends React.Component {
 
                 <View style={styles.container}>
                     {
-                        this.state.renderMap &&
+                        // this.state.renderMap &&
                         this.renderPosts()
                     }
                 </View>
@@ -677,13 +673,12 @@ export default class MapSearch extends React.Component {
     }
 
     async reload() {
-        const { placeId } = this.props.navigation.state.params;
-
+        // const { placeId } = this.props.navigation.state.params;
         // console.log('placeId', placeId);
-        // console.log(37.2596306, 127.042358);
 
         const { region } = this.state;
 
+        /*
         const s = region.latitude - (region.latitudeDelta / 2);
         const n = region.latitude + (region.latitudeDelta / 2);
         const w = region.longitude - (region.longitudeDelta / 2);
@@ -691,7 +686,6 @@ export default class MapSearch extends React.Component {
 
         console.log(s, n, w, e);
 
-        /*
         const lesserGeopoint = new firebase.firestore.GeoPoint(s, w); // SW
         const greaterGeopoint = new firebase.firestore.GeoPoint(n, e); // NE
 
