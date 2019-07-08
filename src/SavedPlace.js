@@ -17,6 +17,7 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import { AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -39,6 +40,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
         // refreshing: false,
+
+        placeName: null,
         totalFeedsSize: 0
     };
 
@@ -132,6 +135,10 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             this.setState({ feeds: [] });
             return;
         }
+
+        const placeName = feeds[0].placeName;
+        const words = placeName.split(', ');
+        this.setState({ placeName: words[0] });
 
         // all loaded
         if (this.lastLoadedFeedIndex >= length - 1) return;
@@ -352,11 +359,11 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             // update state feed & UI
             let changed = false;
             let feeds = [...this.state.feeds];
-            const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
+            const index = feeds.findIndex(el => el.placeId === placeId && el.feedId === feedId);
             if (index !== -1) {
                 const item = feeds[index];
+
                 if (item.name !== newFeed.name || item.placeName !== newFeed.placeName || item.picture !== newFeed.pictures.one.uri) changed = true;
-                // if (item.name !== newFeed.name || item.placeName !== newFeed.location.description || item.picture !== newFeed.pictures.one.uri) changed = true;
 
                 const street = Util.getStreet(newFeed.location.description);
 
@@ -379,7 +386,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             if (changed) {
                 const name = newFeed.name;
                 const placeName = newFeed.placeName;
-                // const placeName = newFeed.location.description;
                 const picture = newFeed.pictures.one.uri;
                 Firebase.updateLikes(Firebase.user().uid, placeId, feedId, name, placeName, picture);
             }
@@ -434,7 +440,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         };
 
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-        this.props.navigation.navigate("postPreview", { post, extra, from: 'SavedPlace' });
+        this.props.navigation.navigate("savedPost", { post, extra, from: 'SavedPlace' });
     }
 
     getFeedSize(placeId) {
@@ -479,41 +485,37 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    <Text style={{
-                        color: Theme.color.text1,
-                        fontSize: 20,
-                        fontFamily: "Roboto-Medium",
-                        // alignSelf: 'flex-start',
-                        marginLeft: 40 + 16
-                    }}>Saved
                     {
-                            this.state.totalFeedsSize > 0 &&
-                            <Text style={{
-                                color: Theme.color.text4,
-                                fontSize: 20,
-                                fontFamily: "Roboto-Medium",
-                                // paddingLeft: 4
-                            }}> {this.state.totalFeedsSize}</Text>
-                        }
-                    </Text>
-
-                    {
-                        /*
-                        this.state.totalFeedsSize > 0 &&
-                        <View style={{
-                            position: 'absolute',
-                            left: 80,
-                            top: 20,
-                        }}>
-                            <Text style={{
-                                color: Theme.color.text4,
-                                fontSize: 18,
-                                fontFamily: "Roboto-Medium"
-                            }}>{this.state.totalFeedsSize}</Text>
-                        </View>
-                        */
+                        this.state.totalFeedsSize > 0 ?
+                            <View style={{ justifyContent: 'center', marginLeft: 40 + 16, marginBottom: -8 }}>
+                                <Text style={{
+                                    color: Theme.color.text1,
+                                    fontSize: 14,
+                                    fontFamily: "Roboto-Medium",
+                                    // marginLeft: 40 + 16
+                                }}>Saved</Text>
+                                <Text style={{
+                                    color: Theme.color.text1,
+                                    fontSize: 20,
+                                    fontFamily: "Roboto-Medium",
+                                }}>{this.state.placeName}
+                                    <Text style={{
+                                        color: Theme.color.text4,
+                                        fontSize: 20,
+                                        fontFamily: "Roboto-Medium",
+                                    }}> {this.state.totalFeedsSize}</Text>
+                                </Text>
+                            </View>
+                            :
+                            <View>
+                                <Text style={{
+                                    color: Theme.color.text1,
+                                    fontSize: 20,
+                                    fontFamily: "Roboto-Medium",
+                                    marginLeft: 40 + 16
+                                }}>Saved</Text>
+                            </View>
                     }
-
                 </View>
                 {
                     // this.state.renderList &&
@@ -539,6 +541,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             let placeName = item.placeName;
+
+                            let distance = null;
+
+                            const post = this.feedList.get(item.feedId);
+                            if (post) distance = Util.getDistance(post.location, Vars.location);
+                            else distance = placeName;
 
                             // defaultRating, averageRating
                             let integer = 0;
@@ -568,9 +576,17 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.picture}
                                         />
+
+                                        <LinearGradient
+                                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                            start={[0, 0]}
+                                            end={[0, 1]}
+                                            style={StyleSheet.absoluteFill}
+                                        />
+
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{item.name}</Text>
-                                            <Text style={styles.feedItemText}>{placeName}</Text>
+                                            <Text style={styles.feedItemText}>{distance}</Text>
                                             {
                                                 item.reviewCount === -1 &&
                                                 <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
@@ -598,7 +614,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                                     <View style={{
                                                         flexDirection: 'row', alignItems: 'center',
                                                         marginLeft: 2,
-                                                        width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
                                                     }}>
                                                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                             <AirbnbRating
@@ -769,10 +785,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         paddingHorizontal: 2,
-
+        /*
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },
         textShadowRadius: Platform.OS === 'android' ? 10 : 4
+        */
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

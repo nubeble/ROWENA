@@ -24,6 +24,7 @@ import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
+import { LinearGradient } from 'expo-linear-gradient';
 
 /*
 type ExploreState = {
@@ -63,7 +64,7 @@ export default class Intro extends React.Component<InjectedProps> {
     static feedList = new Map();
     static feedCountList = new Map();
 
-    // do not unsibscribe
+    // do not unsibscribe except logout
     // --
     static popularFeedsUnsubscribes = [];
     static recentFeedsUnsubscribes = [];
@@ -329,6 +330,8 @@ export default class Intro extends React.Component<InjectedProps> {
                         return;
                     }
 
+                    this.updatePlace(result.place_id, newPlace);
+
                     // update Intro.feedCountList
                     Intro.feedCountList.set(result.place_id, newPlace.count);
                 });
@@ -407,6 +410,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 */
 
                 // subscribe feed count
+                // --
                 if (!Intro.feedCountList.has(doc.id)) {
                     // this will be updated in subscribe
                     Intro.feedCountList.set(doc.id, -1);
@@ -418,37 +422,15 @@ export default class Intro extends React.Component<InjectedProps> {
                             return;
                         }
 
-                        // show badge on bottom tab navigator
-                        let showBadge1 = false;
-                        let showBadge2 = false;
-                        if (Intro.feedCountList.get(doc.id) !== -1) showBadge1 = true;
+                        this.updatePlace(doc.id, newPlace);
 
                         // update Intro.feedCountList
                         Intro.feedCountList.set(doc.id, newPlace.count);
-
-                        // update UI
-                        let __places = [...this.state.places];
-                        let __index = __places.findIndex(el => el.place_id === doc.id);
-                        if (__index !== -1) {
-                            let __place = __places[__index];
-                            __place.length = newPlace.count;
-
-                            showBadge2 = true;
-                            if (showBadge1) __place.newPostAdded = true;
-
-                            __places[__index] = __place;
-
-                            Intro.places = __places;
-                            !this.closed && this.setState({ places: __places });
-                        }
-
-                        if (showBadge1 && showBadge2) {
-                            if (this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnHome(true, 0);
-                        }
                     });
 
                     Intro.countsUnsubscribes.push(ci);
                 }
+                // --
             } else { // data.count === 0
                 index++;
 
@@ -459,6 +441,37 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         });
         // }
+    }
+
+    updatePlace(placeId, place) {
+        // show badge on bottom tab navigator
+        let showBadge1 = false;
+        let showBadge2 = false;
+        if (Intro.feedCountList.get(placeId) !== -1) showBadge1 = true;
+
+        // update Intro.feedCountList
+        // Intro.feedCountList.set(placeId, place.count);
+
+        // update UI (number, badge)
+        let __places = [...this.state.places];
+        let __index = __places.findIndex(el => el.place_id === placeId);
+        if (__index !== -1) {
+            console.log(__index);
+            let __place = __places[__index];
+            __place.length = place.count;
+
+            showBadge2 = true;
+            if (showBadge1) __place.newPostAdded = true;
+
+            __places[__index] = __place;
+
+            Intro.places = __places;
+            !this.closed && this.setState({ places: __places });
+        }
+
+        if (showBadge1 && showBadge2) {
+            if (Vars.focusedScreen !== 'Intro' && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnHome(true, 0);
+        }
     }
 
     async getPopularFeeds() {
@@ -544,6 +557,8 @@ export default class Intro extends React.Component<InjectedProps> {
                         Intro.feedCountList.delete(feed.placeId);
                         return;
                     }
+
+                    this.updatePlace(feed.placeId, newPlace);
 
                     // update Intro.feedCountList
                     Intro.feedCountList.set(feed.placeId, newPlace.count);
@@ -638,6 +653,8 @@ export default class Intro extends React.Component<InjectedProps> {
                         Intro.feedCountList.delete(feed.placeId);
                         return;
                     }
+
+                    this.updatePlace(feed.placeId, newPlace);
 
                     // update Intro.feedCountList
                     Intro.feedCountList.set(feed.placeId, newPlace.count);
@@ -788,30 +805,30 @@ export default class Intro extends React.Component<InjectedProps> {
                             let place = null;
                             let place_id = null;
                             let length = 0;
-                            let name = null;
-                            let city = '';
-                            let country = '';
+                            let placeName = null;
+
+                            let city = null;
+                            let state = null;
+                            let country = null;
+
                             let imageUri = null;
 
                             place_id = item.place_id;
                             if (place_id) {
                                 place = item;
                                 length = place.length;
-                                name = place.name;
+                                placeName = place.name;
 
                                 // get city, country
-                                /*
-                                const words = name.split(', ');
-                                if (words.length > 1) {
-                                    city = words[0];
-                                    country = words[words.length - 1];
-                                } else {
-                                    city = name;
+                                city = Util.getCity(placeName);
+                                const stateAndcountry = Util.getStateAndCountry(placeName);
+                                const words = stateAndcountry.split(', ');
+                                if (words.length === 1) { // country
+                                    country = words[0];
+                                } else if (words.length === 2) { // state, country
+                                    state = words[0];
+                                    country = words[1];
                                 }
-                                */
-                                city = Util.getCity(name);
-                                // country = Util.getStateAndCountry(name);
-                                country = Util.getCountry(name);
 
                                 imageUri = place.uri;
                             } else {
@@ -820,21 +837,18 @@ export default class Intro extends React.Component<InjectedProps> {
                                 if (place) {
                                     place_id = place.place_id;
                                     length = place.length;
-                                    name = place.name;
+                                    placeName = place.name;
 
                                     // get city, country
-                                    /*
-                                    const words = name.split(', ');
-                                    if (words.length > 1) {
-                                        city = words[0];
-                                        country = words[words.length - 1];
-                                    } else {
-                                        city = name;
+                                    city = Util.getCity(placeName);
+                                    const stateAndcountry = Util.getStateAndCountry(placeName);
+                                    const words = stateAndcountry.split(', ');
+                                    if (words.length === 1) { // country
+                                        country = words[0];
+                                    } else if (words.length === 2) { // state, country
+                                        state = words[0];
+                                        country = words[1];
                                     }
-                                    */
-                                    city = Util.getCity(name);
-                                    // country = Util.getStateAndCountry(name);
-                                    country = Util.getCountry(name);
 
                                     imageUri = place.uri;
                                 } else {
@@ -856,6 +870,9 @@ export default class Intro extends React.Component<InjectedProps> {
                                     </View>
                                 );
                             }
+
+                            const fontSize = this.getLabelFontSize(city, state, country);
+                            const lineHeight = this.getLabelLineHeight(fontSize);
 
                             return (
                                 <TouchableOpacity
@@ -888,7 +905,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                         // let newPlace = _.clone(place);
                                         // newPlace.length = feedSize;
                                         const newPlace = {
-                                            name,
+                                            name: placeName,
                                             place_id,
                                             length: feedSize,
                                             lat: place.lat,
@@ -911,39 +928,60 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 <Text style={{
                                                     textAlign: 'center',
                                                     color: Theme.color.title,
-                                                    fontSize: 20,
+                                                    fontSize: fontSize,
+                                                    lineHeight: lineHeight,
                                                     fontFamily: "Roboto-Bold",
 
                                                     textShadowColor: 'black',
-                                                    textShadowOffset: { width: 1, height: 1 },
+                                                    textShadowOffset: { width: 1.2, height: 1.2 },
                                                     textShadowRadius: 1
                                                 }}>{city}</Text>
                                             }
                                             {
-                                                country &&
+                                                state &&
                                                 <Text style={{
-                                                    marginTop: 8,
+                                                    // marginTop: 8,
                                                     textAlign: 'center',
                                                     color: Theme.color.title,
-                                                    fontSize: 20,
+                                                    fontSize: fontSize,
+                                                    lineHeight: lineHeight,
                                                     fontFamily: "Roboto-Bold",
+
+                                                    textShadowColor: 'black',
+                                                    textShadowOffset: { width: 1.2, height: 1.2 },
+                                                    textShadowRadius: 1
+                                                }}>{state}</Text>
+                                            }
+                                            {
+                                                country &&
+                                                <Text style={{
+                                                    // marginTop: 8,
+                                                    textAlign: 'center',
+                                                    color: Theme.color.title,
+                                                    fontSize: fontSize,
+                                                    lineHeight: lineHeight,
+                                                    fontFamily: "Roboto-Bold",
+
+                                                    textShadowColor: 'black',
+                                                    textShadowOffset: { width: 1.2, height: 1.2 },
+                                                    textShadowRadius: 1
+                                                }}>{country}</Text>
+                                            }
+                                            {
+                                                length > 0 &&
+                                                <Text style={{
+                                                    // marginTop: 8,
+                                                    textAlign: 'center',
+                                                    color: Theme.color.subtitle,
+                                                    fontSize: 14,
+                                                    lineHeight: 20,
+                                                    fontFamily: "Roboto-Medium",
 
                                                     textShadowColor: 'black',
                                                     textShadowOffset: { width: 1, height: 1 },
                                                     textShadowRadius: 1
-                                                }}>{country}</Text>
+                                                }}>{length + '+ girls'}</Text>
                                             }
-                                            <Text style={{
-                                                marginTop: 8,
-                                                // backgroundColor: 'green',
-                                                textAlign: 'center',
-                                                color: Theme.color.subtitle,
-                                                fontSize: 14,
-                                                fontFamily: "Roboto-Medium",
-                                                textShadowColor: 'black',
-                                                textShadowOffset: { width: 1, height: 1 },
-                                                textShadowRadius: 1
-                                            }}>{`${(length > 0) ? length + '+ girls' : ''}`}</Text>
                                         </View>
                                         {
                                             item.newPostAdded &&
@@ -992,6 +1030,33 @@ export default class Intro extends React.Component<InjectedProps> {
             </View>
         );
     } // end of render()
+
+    getLabelFontSize(city, state, country) {
+        let cityLength = 0;
+        let stateLength = 0;
+        let countryLength = 0;
+
+        if (city) cityLength = city.length;
+        if (state) stateLength = state.length;
+        if (country) countryLength = country.length;
+
+        // get max
+        const max = Math.max(cityLength, stateLength, countryLength);
+
+        if (max >= 14) return 16;
+        if (max >= 13) return 18;
+        if (max >= 12) return 20;
+
+        return 20;
+    }
+
+    getLabelLineHeight(fontSize) {
+        if (fontSize === 16) return 22;
+        if (fontSize === 18) return 26;
+        if (fontSize === 20) return 28;
+
+        return 20;
+    }
 
     renderPopularFeeds() {
         // very first loading
@@ -1271,6 +1336,14 @@ export default class Intro extends React.Component<InjectedProps> {
                     style={styles.item}
                     source={{ uri: feed.pictures.one.uri }}
                 />
+
+                <LinearGradient
+                    colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                    start={[0, 0]}
+                    end={[0, 1]}
+                    style={StyleSheet.absoluteFill}
+                />
+
                 <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{feed.name}</Text>
                     <Text style={styles.feedItemText}>{placeName}</Text>
@@ -1280,7 +1353,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                 <View style={{
                                     flexDirection: 'row', alignItems: 'center',
                                     marginLeft: 2,
-                                    width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                    width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
                                 }}>
                                     <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                         <AirbnbRating
@@ -1477,10 +1550,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         paddingHorizontal: 2,
-
+        /*
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },
         textShadowRadius: Platform.OS === 'android' ? 10 : 4
+        */
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

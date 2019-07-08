@@ -82,6 +82,12 @@ export default class Admin extends React.Component {
                         <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
                     </TouchableOpacity>
 
+                    <TouchableOpacity onPress={() => this.makeKL()}
+                        style={styles.bottomButton}
+                    >
+                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (KL)</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity onPress={() => this.makePattaya()}
                         style={styles.bottomButton}
                     >

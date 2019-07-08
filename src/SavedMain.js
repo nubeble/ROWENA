@@ -16,13 +16,14 @@ import { Text, Theme, RefreshIndicator } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { LinearGradient } from 'expo-linear-gradient';
 
 type InjectedProps = {
     profileStore: ProfileStore
 };
 
-// const DEFAULT_FEED_COUNT = 6;
-const DEFAULT_FEED_COUNT = 3; // ToDo: test
+const DEFAULT_FEED_COUNT = 6;
+// const DEFAULT_FEED_COUNT = 3; // ToDo: test
 
 // 600, 510
 const illustHeight = 300;
@@ -183,17 +184,18 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
             const placeId = this.order[i];
 
-            // ToDo: make image, no need to subscribe
+            // no need to subscribe
             const feeds = this.getValue(placeId);
-            // const picture = this.makeImage(feeds);
+            const pictures = this.getPictures(feeds);
 
             const _placeName = feeds[0].placeName;
-            const _picture = feeds[0].picture; // ToDo: test
+            // const _picture = feeds[0].picture; // test
             const _placeId = feeds[0].placeId;
 
             const newFeed = {
                 placeName: _placeName, // city, state, country | city, country
-                picture: _picture,
+                // picture: _picture,
+                pictures,
                 placeId: _placeId,
                 feeds // array
             };
@@ -215,6 +217,23 @@ export default class SavedMain extends React.Component<InjectedProps> {
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
+    }
+
+    getPictures(feeds) {
+        let pictures = [];
+
+        let count = 0;
+        for (let i = 0; i < feeds.length; i++) {
+            if (count >= 4) break;
+
+            const picture = feeds[i].picture;
+            pictures.push(picture);
+            count++;
+        }
+
+        console.log('pictures length', pictures.length);
+
+        return pictures;
     }
 
     getSavedFeeds() {
@@ -349,18 +368,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
-                    <Text
-                        style={{
-                            color: Theme.color.text1,
-                            fontSize: 20,
-                            fontFamily: "Roboto-Medium",
-                            // alignSelf: 'flex-start',
-                            marginLeft: 16
-                        }}
-                    >
-                        {'Saved'}
-                    </Text>
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        marginLeft: 16
+                    }}>Saved</Text>
                 </View>
+
                 <FlatList
                     ref={(fl) => {
                         this._flatList = fl;
@@ -386,118 +401,188 @@ export default class SavedMain extends React.Component<InjectedProps> {
                         const city = words[0];
                         const feedsSize = item.feeds.length;
 
-                        return (
-                            <TouchableWithoutFeedback
-                                onPress={async () => {
-                                    this.props.navigation.navigate("savedPlace", { feeds: item.feeds });
-                                }}
-                            >
+                        if (item.pictures.length === 1) {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                    <View style={styles.pictureContainer}>
+                                        <SmartImage
+                                            style={styles.picture}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[0]}
+                                        />
+
+                                        <LinearGradient
+                                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                            start={[0, 0]}
+                                            end={[0, 1]}
+                                            style={StyleSheet.absoluteFill}
+                                        />
+
+                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            );
+                        } else if (item.pictures.length === 2) {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                    <View style={styles.pictureContainer}>
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '100%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[0]}
+                                        />
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '100%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                right: 0,
+                                                top: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[1]}
+                                        />
+                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            );
+                        } else if (item.pictures.length === 3) {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                    <View style={styles.pictureContainer}>
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '100%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[0]}
+                                        />
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '50%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                right: 0,
+                                                top: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[1]}
+                                        />
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '50%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                right: 0,
+                                                bottom: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[2]}
+                                        />
+                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            );
+                        } else if (item.pictures.length === 4) {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                    <View style={styles.pictureContainer}>
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '50%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                left: 0,
+                                                top: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[0]}
+                                        />
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '50%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                right: 0,
+                                                top: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[1]}
+                                        />
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '50%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                left: 0,
+                                                bottom: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[2]}
+                                        />
+                                        <SmartImage
+                                            style={{
+                                                width: '50%',
+                                                height: '50%',
+                                                borderRadius: 2,
+                                                position: 'absolute',
+                                                right: 0,
+                                                bottom: 0
+                                            }}
+                                            showSpinner={false}
+                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                            uri={item.pictures[3]}
+                                        />
+                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                        </View>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            );
+                        } else {
+                            return (
                                 <View style={styles.pictureContainer}>
                                     <SmartImage
                                         style={styles.picture}
                                         showSpinner={false}
                                         preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={item.picture}
                                     />
-                                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                        <Text style={styles.feedItemText}>{city}
-                                            <Text style={[styles.feedItemText, { color: Theme.color.text3 }]}> {feedsSize}</Text>
-                                        </Text>
-                                    </View>
                                 </View>
-                            </TouchableWithoutFeedback>
-                        );
-
-
-
-
-
-                        /*
-                        // placeName
-                        let placeName = item.placeName;
-                        placeName = Util.getPlaceName(placeName);
-
-                        // defaultRating, averageRating
-                        let integer = 0;
-                        let number = '';
-
-                        const averageRating = item.averageRating;
-                        if (averageRating !== -1) {
-                            integer = Math.floor(averageRating);
-
-                            if (Number.isInteger(averageRating)) {
-                                number = averageRating + '.0';
-                            } else {
-                                number = averageRating.toString();
-                            }
+                            );
                         }
-
-                        return (
-                            <TouchableWithoutFeedback
-                                onPress={async () => {
-                                    if (averageRating !== -1 && item.reviewCount !== -1) await this.openPost(item, index);
-                                }}
-                            >
-                                <View style={styles.pictureContainer}>
-                                    <SmartImage
-                                        style={styles.picture}
-                                        showSpinner={false}
-                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                        uri={item.pictures.one.uri}
-                                    />
-                                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                        <Text style={styles.feedItemText}>{item.name}</Text>
-                                        <Text style={styles.feedItemText}>{placeName}</Text>
-                                        {
-                                            item.reviewCount === -1 &&
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
-                                                    <ActivityIndicator animating={true} size={'small'} color={Theme.color.selection} />
-                                                </View>
-                                            </View>
-                                        }
-                                        {
-                                            item.reviewCount === 0 &&
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                <View style={{
-                                                    marginLeft: 2,
-                                                    width: 36, height: 21, borderRadius: 3,
-                                                    backgroundColor: Theme.color.new,
-                                                    justifyContent: 'center', alignItems: 'center'
-                                                }}>
-                                                    <Text style={styles.new}>new</Text>
-                                                </View>
-                                            </View>
-                                        }
-                                        {
-                                            item.reviewCount > 0 &&
-                                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                <View style={{
-                                                    flexDirection: 'row', alignItems: 'center',
-                                                    marginLeft: 2,
-                                                    width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
-                                                }}>
-                                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                        <AirbnbRating
-                                                            count={5}
-                                                            readOnly={true}
-                                                            showRating={false}
-                                                            defaultRating={integer}
-                                                            size={12}
-                                                            margin={1}
-                                                        />
-                                                    </View>
-                                                    <Text style={styles.rating}>{number}</Text>
-                                                    <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                                    <Text style={styles.reviewCount}>{item.reviewCount}</Text>
-                                                </View>
-                                            </View>
-                                        }
-                                    </View>
-                                </View>
-                            </TouchableWithoutFeedback>
-                        );
-                        */
                     }}
                     // onEndReachedThreshold={0.5}
                     // onEndReached={this.handleScrollEnd}
@@ -645,10 +730,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontFamily: "Roboto-Medium",
         paddingHorizontal: 2,
-
+        /*
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },
         textShadowRadius: Platform.OS === 'android' ? 10 : 4
+        */
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

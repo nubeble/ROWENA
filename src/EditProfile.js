@@ -573,15 +573,21 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
-
+                    {/*
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
                         // marginLeft: 40 + 16
                         alignSelf: 'center'
-                    }}>Edit Profile
-                    </Text>
+                    }}>Edit Profile</Text>
+                    */}
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        marginLeft: 40 + 16
+                    }}>Edit Profile</Text>
 
                     {/* check button */}
                     {/*
@@ -1062,14 +1068,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         onPress={() => {
                             /*
                             if (this.state.onUploadingImage) return;
-
+ 
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
                             }
-
+ 
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
-
+ 
                             setTimeout(() => {
                                 // ToDo:
                             }, Cons.buttonTimeoutShort);
@@ -1122,14 +1128,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         onPress={() => {
                             /*
                             if (this.state.onUploadingImage) return;
-
+ 
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
                             }
-
+ 
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY, animated: true });
-
+ 
                             setTimeout(() => {
                                 // ToDo:
                             }, Cons.buttonTimeoutShort);
@@ -1338,7 +1344,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.showNotification('An error happened. Please try again.');
 
             // stop indicator
-            // this.setState({ refreshing: false });
+            // this.setState({refreshing: false });
 
             // show alert icon
             this.setState({ showPictureAlertIcon: true });

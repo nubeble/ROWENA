@@ -282,7 +282,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         // check verification if EMAIL user
                         if (user.email && !user.emailVerified && user) {
                             if (user.providerData && user.providerData.length > 0 && user.providerData[0].providerId === "facebook.com") {
-                                console.log('email user is not verified. but facebook user NOT need to email verification.');
+                                console.log("email user is not verified. but facebook users don't need to email verification.");
                                 await this.checkUpdates();
                                 StatusBar.setHidden(false);
                             } else {

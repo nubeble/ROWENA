@@ -35,7 +35,7 @@ type InjectedProps = {
 
 @inject("feedStore", "profileStore")
 @observer // for commentStore
-export default class EditMain extends React.Component<InjectedProps> {
+export default class EditProfileMain extends React.Component<InjectedProps> {
     commentStore: CommentStore = new CommentStore();
 
     state = {
@@ -44,7 +44,7 @@ export default class EditMain extends React.Component<InjectedProps> {
     };
 
     componentDidMount() {
-        console.log('EditMain.componentDidMount');
+        console.log('EditProfileMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -67,7 +67,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     onAddToReviewFinished() {
-        console.log('EditMain.onAddToReviewFinished');
+        console.log('EditProfileMain.onAddToReviewFinished');
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
@@ -76,7 +76,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('EditMain.handleHardwareBackPress');
+        console.log('EditProfileMain.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -85,7 +85,7 @@ export default class EditMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        Vars.focusedScreen = 'EditMain';
+        Vars.focusedScreen = 'EditProfileMain';
 
         this.focused = true;
     }

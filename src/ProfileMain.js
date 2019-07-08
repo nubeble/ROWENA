@@ -274,7 +274,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
-        // if (!profile) return;
+        if (!profile) return;
 
         const feeds = profile.feeds;
         const length = feeds.length;
@@ -415,7 +415,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (item.reviewAdded) {
             // update reviewAdded in user profile
             const { profile } = this.props.profileStore;
-            // if (!profile) return;
+            if (!profile) return;
 
             /*
             const result = await Firebase.updateReviewChecked(profile.uid, item.placeId, item.feedId, false);
@@ -511,6 +511,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         };
 
         const { profile } = this.props.profileStore;
+        if (!profile) return null;
 
         const uid = profile.uid;
         const name = profile.name;
@@ -614,7 +615,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             setTimeout(() => {
                                                 if (this.closed) return;
                                                 Firebase.updateCommentChecked(uid, false);
-                                                this.props.navigation.navigate("edit");
+                                                this.props.navigation.navigate("editProfile");
                                             }, Cons.buttonTimeoutShort);
                                         }}
                                     >
@@ -715,7 +716,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                                 setTimeout(() => {
                                                     if (this.closed) return;
-                                                    this.props.navigation.navigate("checkReview");
+                                                    this.props.navigation.navigate("reviewGirls");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
                                         >
@@ -774,7 +775,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                                     setTimeout(() => {
                                                         if (this.closed) return;
-                                                        this.props.navigation.navigate("checkComment");
+                                                        this.props.navigation.navigate("reviewCustomers");
                                                     }, Cons.buttonTimeoutShort);
                                                 }}
                                             >
@@ -811,7 +812,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 if (!profile) return;
 
-                                                this.openDialog('alert', 'Log out', 'Are you sure you want to logout?', async () => {
+                                                this.openDialog('alert', 'Log out', 'Are you sure you want to log out?', async () => {
                                                     // show indicator
                                                     !this.closed && this.setState({ isLoadingFeeds: true });
 
@@ -1207,7 +1208,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         const { profileStore } = this.props;
         const { profile } = profileStore;
-
         if (!profile) return false;
 
         // check reviews on my post
@@ -1238,7 +1238,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         const { profileStore } = this.props;
         const { profile } = profileStore;
-
         if (!profile) return false;
 
         // check replies on my review
@@ -1426,6 +1425,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     async updateProfilePicture(uri, ref) {
         const { profile } = this.props.profileStore;
+        if (!profile) return;
 
         if (profile.picture.ref) {
             const ref = profile.picture.ref;

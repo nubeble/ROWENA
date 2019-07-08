@@ -20,6 +20,7 @@ import { GeoCollectionReference, GeoFirestore, GeoQuery, GeoQuerySnapshot } from
 import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
 import Util from "./Util";
+import { LinearGradient } from 'expo-linear-gradient';
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -624,6 +625,14 @@ export default class MapSearch extends React.Component {
                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                     uri={post.pictures.one.uri}
                 />
+
+                <LinearGradient
+                    colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                    start={[0, 0]}
+                    end={[0, 1]}
+                    style={StyleSheet.absoluteFill}
+                />
+
                 <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{post.name}</Text>
                     <Text style={styles.feedItemText}>{distance}</Text>
@@ -633,7 +642,7 @@ export default class MapSearch extends React.Component {
                                 <View style={{
                                     flexDirection: 'row', alignItems: 'center',
                                     marginLeft: 2,
-                                    width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                    width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
                                 }}>
                                     <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                         <AirbnbRating
@@ -754,10 +763,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         paddingHorizontal: 2,
-
+        /*
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },
         textShadowRadius: Platform.OS === 'android' ? 10 : 4
+        */
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

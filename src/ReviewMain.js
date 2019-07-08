@@ -29,6 +29,8 @@ const illustWidth = 340;
 @inject("profileStore")
 @observer
 export default class ReviewMain extends React.Component<InjectedProps> {
+    static __flatList = null;
+
     state = {
         // renderFeed: false,
         feeds: [],
@@ -50,6 +52,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         this.feedsUnsubscribes = [];
         this.countsUnsubscribes = [];
+    }
+
+    static scrollToTop() {
+        ReviewMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     componentDidMount() {
@@ -162,7 +168,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                 {
                     // this.state.renderFeed &&
                     <FlatList
-                        ref={(fl) => this._flatList = fl}
+                        ref={(fl) => {
+                            this._flatList = fl;
+                            ReviewMain.__flatList = fl;
+                        }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
 
@@ -291,6 +300,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
+        if (!profile) return;
+
         const reviews = profile.reviews;
         const length = reviews.length;
 
@@ -432,6 +443,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         if (item.replyAdded) {
             // update replyAdded in user profile
             const { profile } = this.props.profileStore;
+            if (!profile) return;
 
             await Firebase.updateReplyChecked(item.placeId, item.feedId, profile.uid, item.reviewId, false);
 

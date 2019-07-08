@@ -175,45 +175,48 @@ export default class ChatMain extends React.Component {
             for (let i = 0; i < list.length; i++) {
                 let room = list[i];
                 let opponent = room.users[1];
-                if (room.users[0].uid === room.owner && room.users[1].uid === uid) {
-                    let changed = false;
-                    if (opponent.name !== name || opponent.picture !== picture) changed = true;
 
-                    opponent.name = name;
-                    opponent.picture = picture;
-                    opponent.activating = activating;
-                    opponent.lastLogInTime = lastLogInTime;
+                if (opponent.uid === uid) {
+                    if (room.users[0].uid === room.owner) {
+                        let changed = false;
+                        if (opponent.name !== name || opponent.picture !== picture) changed = true;
 
-                    room.users[1] = opponent;
-                    list[i] = room;
+                        opponent.name = name;
+                        opponent.picture = picture;
+                        opponent.activating = activating;
+                        opponent.lastLogInTime = lastLogInTime;
 
-                    // update database
-                    // if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
-                    if (changed) {
-                        let users = [];
-                        const user1 = {
-                            uid: room.users[0].uid,
-                            name: room.users[0].name,
-                            picture: room.users[0].picture
-                        };
+                        room.users[1] = opponent;
+                        list[i] = room;
 
-                        const user2 = {
-                            uid: room.users[1].uid,
-                            name: room.users[1].name,
-                            picture: room.users[1].picture
-                        };
+                        // update database
+                        // if (changed) Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, room.users);
+                        if (changed) {
+                            let users = [];
+                            const user1 = {
+                                uid: room.users[0].uid,
+                                name: room.users[0].name,
+                                picture: room.users[0].picture
+                            };
 
-                        users.push(user1);
-                        users.push(user2);
+                            const user2 = {
+                                uid: room.users[1].uid,
+                                name: room.users[1].name,
+                                picture: room.users[1].picture
+                            };
 
-                        Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, users);
+                            users.push(user1);
+                            users.push(user2);
+
+                            Firebase.updateChatRoom(room.users[0].uid, room.users[1].uid, room.id, users);
+                        }
+                    } else {
+                        opponent.activating = activating;
+                        opponent.lastLogInTime = lastLogInTime;
+
+                        room.users[1] = opponent;
+                        list[i] = room;
                     }
-                } else {
-                    opponent.activating = activating;
-                    opponent.lastLogInTime = lastLogInTime;
-
-                    room.users[1] = opponent;
-                    list[i] = room;
                 }
             }
 

@@ -19,12 +19,16 @@ import PreloadImage from './PreloadImage';
 import { NavigationActions } from 'react-navigation';
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
-const textInputPaddingTop = (Dimensions.get('window').height / 26);
+
+const inputToolbarMarginBottom = 20; // ios only
+
 const textInputPaddingLeft = (Dimensions.get('window').width / 20);
 const textInputPaddingRight = (Dimensions.get('window').width / 20);
-const textInputMarginBottom = (Platform.OS === 'ios') ? 20 : 12;
-const sendButtonMarginBottom = (Dimensions.get('window').height / 40);
-const inputToolbarHeight = (Dimensions.get('window').height / 10);
+
+const textInputMarginBottom = 4;
+
+const sendButtonMarginBottom = 7;
+const inputToolbarHeight = 48;
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
@@ -62,6 +66,10 @@ export default class ChatRoom extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+
+        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+        this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
+
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const item = this.props.navigation.state.params.item;
@@ -164,16 +172,22 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        // this.keyboardHeight = e.endCoordinates.height;
-
-        if (!this.state.onKeyboard) this.setState({ onKeyboard: true });
+        this.setState({ onKeyboard: true });
     }
 
     @autobind
     _keyboardDidHide(e) {
-        // this.keyboardHeight = 0;
+        this.setState({ onKeyboard: false });
+    }
 
-        if (this.state.onKeyboard) this.setState({ onKeyboard: false });
+    @autobind
+    _keyboardWillShow(e) {
+        this.setState({ onKeyboard: true });
+    }
+
+    @autobind
+    _keyboardWillHide(e) {
+        this.setState({ onKeyboard: false });
     }
 
     get user() {
@@ -186,6 +200,10 @@ export default class ChatRoom extends React.Component {
     }
 
     render() {
+        const _inputToolbarMarginBottom = this.state.onKeyboard ? 0 : inputToolbarMarginBottom;
+
+
+
         const showPost = this.state.messages.length > 1 ? false : true;
 
         const top1 = (Dimensions.get('window').height - postHeight) / 2; // center
@@ -271,7 +289,8 @@ export default class ChatRoom extends React.Component {
 
                 <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView}>
                     <GiftedChat
-                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
+                        // minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
+                        minInputToolbarHeight={Platform.OS === 'ios' ? inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom : inputToolbarHeight + textInputMarginBottom}
                         minComposerHeight={0}
                         maxComposerHeight={0}
 
@@ -310,7 +329,10 @@ export default class ChatRoom extends React.Component {
                                 this.textInputHeight = layout.height;
                             },
                             */
-                            style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
+
+                            // style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
+                            style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : styles.androidTextInput,
+
                             selectionColor: Theme.color.selection,
                             // keyboardAppearance: 'dark',
                             underlineColorAndroid: "transparent",
@@ -444,6 +466,8 @@ export default class ChatRoom extends React.Component {
     }
 
     async sendMessage(isSameDay, message) {
+        if (message.text.length === 0) return;
+
         const item = this.props.navigation.state.params.item;
 
         // save the message to database & update UI
@@ -591,8 +615,16 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     renderSend(props) {
+        const _inputToolbarMarginBottom = this.state.onKeyboard ? 0 : inputToolbarMarginBottom;
+
         return (
-            <Send {...props} containerStyle={{ marginBottom: textInputMarginBottom + sendButtonMarginBottom }}>
+            // <Send {...props} containerStyle={{ marginTop: -4, marginBottom: textInputMarginBottom + sendButtonMarginBottom }}>
+            <Send {...props}
+                containerStyle={{
+                    marginTop: -4,
+                    marginBottom: Platform.OS === 'ios' ? textInputMarginBottom + sendButtonMarginBottom + _inputToolbarMarginBottom : textInputMarginBottom + sendButtonMarginBottom
+                }}
+            >
                 <View style={styles.sendButton}>
                     <Ionicons name='ios-send' color={this.state.opponentLeft ? Theme.color.placeholder : Theme.color.selection} size={28} />
 
@@ -681,7 +713,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Roboto-Regular",
         color: "white",
-        backgroundColor: Theme.color.background,
+        // backgroundColor: Theme.color.background,
         // backgroundColor: 'green',
         marginBottom: textInputMarginBottom,
 
@@ -694,23 +726,22 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Roboto-Regular",
         color: "white",
-        backgroundColor: Theme.color.background,
+        // backgroundColor: Theme.color.background,
         // backgroundColor: 'green',
         marginBottom: textInputMarginBottom,
 
         paddingLeft: textInputPaddingLeft,
         paddingRight: textInputPaddingRight,
 
-        paddingTop: textInputPaddingTop
+        paddingTop: 14
     },
     sendButton: {
-        backgroundColor: Theme.color.background,
-        width: (Dimensions.get('window').width / 10),
-        height: (Dimensions.get('window').width / 10),
+        // backgroundColor: Theme.color.background,
+        // backgroundColor: 'red',
+        width: 36,
+        height: 36,
         alignItems: 'center',
-        justifyContent: 'center',
-
-        // marginBottom: textInputMarginBottom + sendButtonMarginBottom
+        justifyContent: 'center'
     },
     post: {
         width: postWidth,

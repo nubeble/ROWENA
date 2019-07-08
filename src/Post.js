@@ -123,8 +123,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.init(post, extra);
 
-        // if (from === 'Profile' || from === 'ChatRoom' || from === 'LikesMain') {
-        if (from === 'Profile' || from === 'ChatRoom' || from === 'SavedPlace') {
+        if (from === 'Profile' || from === 'ChatRoom') {
             this.setState({ isModal: true });
         } else {
             this.setState({ isModal: false });
@@ -492,7 +491,9 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
-        if (showBadge && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnLikes(true, 0);
+        if (showBadge) {
+            if (Vars.focusedScreen !== 'SavedMain' && Vars.focusedScreen !== 'SavedPlace' && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnLikes(true, 0);
+        }
 
         // send push notification
         const { profile } = this.props.profileStore;

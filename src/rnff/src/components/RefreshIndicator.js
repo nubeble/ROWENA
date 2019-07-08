@@ -77,7 +77,7 @@ export default class RefreshIndicator extends React.PureComponent<RefreshIndicat
         }
 
         let circleArray = [];
-        for (var i = 0; i < total; i++) {
+        for (let i = 0; i < total; i++) {
             circleArray.push(
                 <Circle key={i} order={i + 1} total={total} size={size} color={color} />
             );

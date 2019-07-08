@@ -57,7 +57,7 @@ export default class AdvertisementStart extends React.Component {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-arrow-back' color="black" size={24} />
+                        <Ionicons name='md-close' color="black" size={24} />
                     </TouchableOpacity>
                 </View>
 

@@ -30,6 +30,8 @@ const illustWidth = 340;
 @inject("profileStore")
 @observer
 export default class CommentMain extends React.Component<InjectedProps> {
+    static __flatList = null;
+
     state = {
         // renderFeed: false,
         feeds: [], // customers profile
@@ -49,6 +51,10 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         this.customerList = new Map();
         this.customersUnsubscribes = [];
+    }
+
+    static scrollToTop() {
+        CommentMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     componentDidMount() {
@@ -155,7 +161,10 @@ export default class CommentMain extends React.Component<InjectedProps> {
                 {
                     // this.state.renderFeed &&
                     <FlatList
-                        ref={(fl) => this._flatList = fl}
+                        ref={(fl) => {
+                            this._flatList = fl;
+                            CommentMain.__flatList = fl;
+                        }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}
                         columnWrapperStyle={{ flex: 1, justifyContent: 'flex-start' }}
@@ -298,6 +307,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
+        if (!profile) return;
+
         const comments = profile.comments;
         const length = comments.length;
 
@@ -421,6 +432,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     // update database
                     if (changed) {
                         const { profile } = this.props.profileStore;
+                        if (!profile) return;
+
                         Firebase.updateComments(profile.uid, newUser.uid, newUser.name, newUser.place, newUser.picture.uri);
                     }
                 });
@@ -461,6 +474,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         // !this.closed && this.setState({ showPostIndicator: index });
 
         const { profile } = this.props.profileStore;
+        if (!profile) return;
 
         const host = {
             uid: profile.uid,

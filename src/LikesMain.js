@@ -410,7 +410,6 @@ export default class LikesMain extends React.Component<InjectedProps> {
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
-                        // alignSelf: 'flex-start',
                         marginLeft: 16
                     }}>Saved
                     {
@@ -526,7 +525,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                                                     <View style={{
                                                         flexDirection: 'row', alignItems: 'center',
                                                         marginLeft: 2,
-                                                        width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
                                                     }}>
                                                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                                             <AirbnbRating
@@ -700,10 +699,11 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         paddingHorizontal: 2,
-
+        /*
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },
         textShadowRadius: Platform.OS === 'android' ? 10 : 4
+        */
     },
     rating: {
         marginLeft: 5,

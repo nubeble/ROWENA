@@ -1516,7 +1516,7 @@ export default class Util extends React.Component {
             unit = ' miles away';
         }
 
-        if (!location2) return '?' + unit;
+        if (!location1 || !location2) return '?' + unit;
 
         let lat1, lon1, lat2, lon2;
         lat1 = location1.latitude;

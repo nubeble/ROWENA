@@ -982,14 +982,22 @@ export default class AdvertisementMain extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
+                    {/*
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
                         // marginLeft: 40 + 16
                         alignSelf: 'center'
-                    }}>New Post
-                    </Text>
+                    }}>New Post</Text>
+                    */}
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        marginLeft: 40 + 16
+                    }}>New Post</Text>
+
                 </View>
 
                 <FlatList

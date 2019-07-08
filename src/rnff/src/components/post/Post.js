@@ -5,6 +5,7 @@ import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { AirbnbRating } from '../../../../react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import FeedStore from "../FeedStore";
 import { Theme } from "../Theme";
@@ -109,8 +110,10 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             placeName = city + ', ' + country;
         }
         */
+
         const distance = Util.getDistance(post.location, Vars.location);
 
+        // defaultRating, averageRating
         const averageRating = post.averageRating;
 
         const integer = Math.floor(averageRating);
@@ -121,21 +124,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             number = averageRating + '.0';
         } else {
             number = averageRating.toString();
-        }
-
-        // const { likes, comments } = post;
-        const contentStyle = [styles.content];
-        const nameStyle = [styles.name];
-        const textStyle = [styles.text];
-        const dateStyle = [];
-
-        if (post.pictures.one.uri) {
-            contentStyle.push(StyleSheet.absoluteFill);
-            // contentStyle.push({ backgroundColor: "rgba(0, 0, 0, 0.25)", borderRadius: 2 });
-            contentStyle.push({ backgroundColor: "transparent", borderRadius: 2 });
-            nameStyle.push({ color: "white" });
-            textStyle.push({ color: "white" });
-            dateStyle.push({ color: "rgba(255, 255, 255, 0.8)" });
         }
 
         return (
@@ -153,6 +141,14 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                         uri={post.pictures.one.uri}
                     />
+
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                        start={[0, 0]}
+                        end={[0, 1]}
+                        style={StyleSheet.absoluteFill}
+                    />
+
                     <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                         <Text style={styles.feedItemText}>{post.name}</Text>
                         <Text style={styles.feedItemText}>{distance}</Text>
@@ -162,7 +158,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                     <View style={{
                                         flexDirection: 'row', alignItems: 'center',
                                         marginLeft: 2,
-                                        width: 'auto', height: 'auto', paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)', borderRadius: 3
+                                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
                                     }}>
                                         <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                             <AirbnbRating
@@ -247,10 +243,14 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontFamily: "Roboto-Medium",
         paddingHorizontal: 2,
-
+        /*
         textShadowColor: 'black',
         textShadowOffset: { width: -0.3, height: -0.3 },
         textShadowRadius: Platform.OS === 'android' ? 10 : 4
+        */
+        textShadowColor: 'black',
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 1
     },
     rating: {
         marginLeft: 5,

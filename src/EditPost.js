@@ -328,8 +328,7 @@ export default class EditPost extends React.Component {
             latitude: location.latitude
         };
         const street = Util.getStreet(location.description);
-
-        const country = words1[words1.length - 1];
+        const country = Util.getCountry(location.description);
         const countryCode = Util.getCountyCode(country);
 
         const note = post.note;
@@ -968,14 +967,21 @@ export default class EditPost extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
+                    {/*
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
                         // marginLeft: 40 + 16
                         alignSelf: 'center'
-                    }}>Edit Post
-                    </Text>
+                    }}>Edit Post</Text>
+                    */}
+                    <Text style={{
+                        color: Theme.color.text1,
+                        fontSize: 20,
+                        fontFamily: "Roboto-Medium",
+                        marginLeft: 40 + 16
+                    }}>Edit Post</Text>
 
                     {/* delete button */}
                     <TouchableOpacity
