@@ -214,40 +214,30 @@ export default class Feed extends React.Component<FeedProps> {
             // ToDo: render design
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
-                    // color: Theme.color.text2,
-                    color: 'rgb(247, 178, 57)',
-                    fontSize: 24,
-                    paddingTop: 4,
+                    // color: 'rgb(250, 203, 205)',
+                    color: Theme.color.text2,
+                    fontSize: 26,
+                    lineHeight: 30,
                     fontFamily: "Chewy-Regular"
                 }}>No registered girls yet</Text>
 
-                {/*
                 <Text style={{
-                    marginTop: 10,
+                    marginTop: 8,
                     color: Theme.color.text3,
                     fontSize: 18,
+                    lineHeight: 22,
                     fontFamily: "Chewy-Regular"
-                }}>Start exploring girls for your next trip</Text>
-                */}
+                }}>Let's wait awhile</Text>
 
-                <TouchableOpacity
-                    onPress={() => {
-                        setTimeout(() => {
-                            if (this.closed) return;
-                            // this.props.navigation.navigate("intro");
-                        }, Cons.buttonTimeoutShort);
+                <Image
+                    style={{
+                        marginTop: 20,
+                        width: 566 * 0.4,
+                        height: 352 * 0.4,
+                        resizeMode: 'cover'
                     }}
-                    style={{ marginTop: 6 }}>
-
-                    <Image
-                        style={{
-                            width: 140,
-                            height: 140,
-                            resizeMode: 'cover'
-                        }}
-                        source={PreloadImage.feed}
-                    />
-                </TouchableOpacity>
+                    source={PreloadImage.post}
+                />
             </View>
         );
     }

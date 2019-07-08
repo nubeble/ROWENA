@@ -218,7 +218,9 @@ export default class WriteReviewScreen extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
+                    {/*
                     <Text style={styles.searchBarTitle}>{this.state.name}</Text>
+                    */}
 
                     {/*
                     <TouchableOpacity

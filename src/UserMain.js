@@ -951,30 +951,29 @@ export default class UserMain extends React.Component<InjectedProps> {
             // ToDo: render design
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
-                    // color: Theme.color.text2,
-                    color: 'rgb(247, 178, 57)',
-                    fontSize: 24,
-                    paddingTop: 4,
+                    // color: 'rgb(250, 203, 205)',
+                    color: Theme.color.text2,
+                    fontSize: 26,
+                    lineHeight: 30,
                     fontFamily: "Chewy-Regular"
                 }}>No customer reviews yet</Text>
 
-                {/*
                 <Text style={{
-                    marginTop: 10,
+                    marginTop: 8,
                     color: Theme.color.text3,
                     fontSize: 18,
+                    lineHeight: 22,
                     fontFamily: "Chewy-Regular"
-                }}>Start exploring girls for your next trip</Text>
-                */}
+                }}>Stop expecting, start exploring</Text>
 
                 <Image
                     style={{
                         marginTop: 20,
-                        width: 200 / 510 * 600,
-                        height: 200,
+                        width: 446 * 0.5,
+                        height: 250 * 0.5,
                         resizeMode: 'cover'
                     }}
-                    source={PreloadImage.find}
+                    source={PreloadImage.customer}
                 />
             </View>
         );

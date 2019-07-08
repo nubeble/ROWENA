@@ -22,10 +22,6 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 18; // 3 x 6
 
-// 1:1
-const illustHeight = 340;
-const illustWidth = 340;
-
 
 @inject("profileStore")
 @observer
@@ -243,39 +239,32 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         ListEmptyComponent={
                             // ToDo: render design
                             // !this.state.isLoadingFeeds &&
-                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                            <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                                 <Text style={{
+                                    marginTop: 100,
                                     color: Theme.color.text2,
-                                    fontSize: 24,
-                                    paddingTop: 4,
+                                    fontSize: 28,
+                                    lineHeight: 32,
                                     fontFamily: "Chewy-Regular"
-                                }}>No reviewed girls</Text>
+                                }}>No reviewed customers</Text>
 
                                 <Text style={{
                                     marginTop: 10,
                                     color: Theme.color.text3,
-                                    fontSize: 18,
+                                    fontSize: 20,
+                                    lineHeight: 24,
                                     fontFamily: "Chewy-Regular"
-                                }}>Let's find some hot chicks</Text>
+                                }}>Let's find some hot guys</Text>
 
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        setTimeout(() => {
-                                            // Consider: set scroll position 0
-
-                                            // !this.closed && this.props.navigation.navigate("intro");
-                                        }, Cons.buttonTimeoutShort);
+                                <Image
+                                    style={{
+                                        marginTop: 30,
+                                        width: 496 * 0.5,
+                                        height: 403 * 0.5,
+                                        resizeMode: 'cover'
                                     }}
-                                    style={{ marginTop: 20 }}>
-                                    <Image
-                                        style={{
-                                            width: illustWidth,
-                                            height: illustHeight,
-                                            resizeMode: 'cover'
-                                        }}
-                                        source={PreloadImage.review}
-                                    />
-                                </TouchableOpacity>
+                                    source={PreloadImage.customer2}
+                                />
                             </View>
                         }
                     />
@@ -563,6 +552,8 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         // paddingTop: Theme.spacing.base,
         // paddingBottom: Theme.spacing.small,
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny
     },
     pictureContainer: {
         width: (Dimensions.get('window').width - 2 * 6) / 3,

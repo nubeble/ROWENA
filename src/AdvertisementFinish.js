@@ -74,17 +74,17 @@ export default class AdvertisementFinish extends React.Component {
                         color: Theme.color.text2,
                         fontFamily: "Chewy-Regular",
                         // textAlign: 'center'
-                    }}>Let's wait awhile</Text>
+                    }}>Hope you find it</Text>
 
                     <Image
                         style={{
                             marginTop: 80,
-                            width: illustWidth * 0.7,
-                            height: illustHeight * 0.7,
-                            alignSelf: 'center',
-                            resizeMode: 'cover'
+                            width: 474 * 0.5,
+                            height: 394 * 0.5,
+                            resizeMode: 'cover',
+                            alignSelf: 'center'
                         }}
-                        source={PreloadImage.wait}
+                        source={PreloadImage.hope}
                     />
 
                     <Text style={{

@@ -44,8 +44,8 @@ const replyViewHeight = Dimensions.get('window').height / 9;
 const imageWidth = Dimensions.get('window').width;
 const imageHeight = imageWidth / 3 * 2;
 
-const illustWidth = Dimensions.get('window').width - (Theme.spacing.small * 2);
-const illustHeight = illustWidth / 2321 * 1890;
+const illustWidth = 2321;
+const illustHeight = 1890;
 
 const bodyInfoItemHeight = Dimensions.get('window').height / 24;
 
@@ -1410,19 +1410,17 @@ export default class Post extends React.Component<InjectedProps> {
                 // ToDo: render design
                 <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
                     <Text style={{
-                        // color: Theme.color.text3,
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,
-                        paddingTop: 4,
+                        lineHeight: 28,
                         fontFamily: "Chewy-Regular"
                     }}>Please write the first review.</Text>
 
                     <Image
                         style={{
-                            marginTop: 30,
-                            marginBottom: 8,
-                            width: illustWidth * 0.4,
-                            height: illustHeight * 0.4,
+                            marginTop: 16,
+                            width: illustWidth * 0.06,
+                            height: illustHeight * 0.06,
                             resizeMode: 'cover'
                         }}
                         source={PreloadImage.keyboard}

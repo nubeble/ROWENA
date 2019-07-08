@@ -18,9 +18,8 @@ import moment from 'moment';
 
 const DEFAULT_ROOM_COUNT = 6;
 
-// 1:1
-const illustWidth = 1228;
-const illustHeight = 1264;
+const illustWidth = 554;
+const illustHeight = 340;
 
 
 export default class ChatMain extends React.Component {
@@ -454,15 +453,13 @@ export default class ChatMain extends React.Component {
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
-
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
-                        alignSelf: 'flex-start',
+                        // alignSelf: 'flex-start',
                         marginLeft: 16
                     }}>Messages</Text>
-
                 </View>
 
                 <FlatList
@@ -497,28 +494,29 @@ export default class ChatMain extends React.Component {
                     ListEmptyComponent={
                         // ToDo: render design
                         // !this.state.isLoadingChat &&
-
                         this.state.ready &&
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Text style={{
+                                marginTop: 100,
                                 color: Theme.color.text2,
-                                fontSize: 24,
-                                paddingTop: 4,
+                                fontSize: 28,
+                                lineHeight: 32,
                                 fontFamily: "Chewy-Regular"
                             }}>No new messages</Text>
 
                             <Text style={{
                                 marginTop: 10,
                                 color: Theme.color.text3,
-                                fontSize: 18,
+                                fontSize: 20,
+                                lineHeight: 24,
                                 fontFamily: "Chewy-Regular"
                             }}>Let's find some hot chicks</Text>
 
                             <Image
                                 style={{
                                     marginTop: 20,
-                                    width: illustWidth * 0.2,
-                                    height: illustHeight * 0.2,
+                                    width: illustWidth * 0.5,
+                                    height: illustHeight * 0.5,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.chat}

@@ -23,11 +23,9 @@ type InjectedProps = {
 };
 
 const DEFAULT_FEED_COUNT = 6;
-// const DEFAULT_FEED_COUNT = 3; // ToDo: test
 
-// 600, 510
-const illustHeight = 300;
-const illustWidth = 300 / 510 * 600;
+const illustWidth = 581;
+const illustHeight = 277;
 
 
 @inject("profileStore")
@@ -254,115 +252,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
         this.drawPlaces();
     }
-
-    /*
-    getSavedFeeds() {
-        if (this.state.isLoadingFeeds) return;
-
-        const { profile } = this.props.profileStore;
-
-        const feeds = profile.likes;
-        const length = feeds.length;
-
-        this.setState({ totalFeedsSize: length });
-
-        if (length === 0) {
-            this.setState({ feeds: [] });
-            return;
-        }
-
-        // check update
-        const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            this.lastChangedTime = lastChangedTime;
-
-            // reload from the start
-            this.reload = true;
-            this.lastLoadedFeedIndex = -1;
-        }
-
-        // all loaded
-        if (this.lastLoadedFeedIndex === 0) return;
-
-        // this.setState({ isLoadingFeeds: true });
-
-        console.log('SavedMain', 'loading feeds...');
-
-        let newFeeds = [];
-
-        let startIndex = 0;
-        if (this.reload) {
-            startIndex = length - 1;
-
-            this.setState({ isLoadingFeeds: true, loadingType: 100 });
-        } else {
-            startIndex = this.lastLoadedFeedIndex - 1;
-
-            this.setState({ isLoadingFeeds: true, loadingType: 200 });
-        }
-
-        let count = 0;
-
-        for (let i = startIndex; i >= 0; i--) {
-            if (count >= DEFAULT_FEED_COUNT) break;
-
-            const feed = feeds[i];
-
-            const placeId = feed.placeId;
-            const feedId = feed.feedId;
-            const name = feed.name;
-            const placeName = feed.placeName;
-            const picture = feed.picture;
-
-            // subscribe
-            if (this.feedList.has(feedId)) { // for now, use only feed id (no need place id)
-                const newFeed = this.feedList.get(feedId);
-                newFeeds.push(newFeed);
-            } else {
-                const newFeed = {
-                    name,
-                    placeName,
-                    placeId,
-                    id: feedId,
-                    pictures: {
-                        one: {
-                            uri: picture
-                        }
-                    },
-                    reviewCount: -1,
-                    averageRating: -1
-                };
-
-                newFeeds.push(newFeed);
-
-                // subscribe post
-                this.subscribeToPost(placeId, feedId);
-
-                // subscribe count
-                this.subscribeToPlace(placeId);
-            }
-
-            this.lastLoadedFeedIndex = i;
-
-            count++;
-        }
-
-        if (this.reload) {
-            this.reload = false;
-
-            this.setState({ feeds: newFeeds });
-        } else {
-            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
-        }
-
-        console.log('SavedMain', 'loading feeds done!');
-
-        // this.setState({ isLoadingFeeds: false, loadingType: 0 });
-        setTimeout(() => {
-            !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
-        }, 250);
-    }
-    */
 
     render() {
         return (
@@ -639,40 +528,32 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
                         // ToDo: render design
                         // !this.state.isLoadingFeeds &&
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Text style={{
+                                marginTop: 100,
                                 color: Theme.color.text2,
-                                fontSize: 24,
-                                paddingTop: 4,
+                                fontSize: 28,
+                                lineHeight: 32,
                                 fontFamily: "Chewy-Regular"
                             }}>No selected girls</Text>
 
                             <Text style={{
                                 marginTop: 10,
                                 color: Theme.color.text3,
-                                fontSize: 18,
+                                fontSize: 20,
+                                lineHeight: 24,
                                 fontFamily: "Chewy-Regular"
                             }}>Start exploring girls for your next trip</Text>
 
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setTimeout(() => {
-                                        // Consider: set scroll position 0
-
-                                        // !this.closed && this.props.navigation.navigate("intro");
-                                    }, Cons.buttonTimeoutShort);
+                            <Image
+                                style={{
+                                    marginTop: 30,
+                                    width: illustWidth * 0.5,
+                                    height: illustHeight * 0.5,
+                                    resizeMode: 'cover'
                                 }}
-                                style={{ marginTop: 20 }}>
-                                <Image
-                                    style={{
-                                        width: illustWidth,
-                                        height: illustHeight,
-                                        resizeMode: 'cover'
-                                    }}
-                                    source={PreloadImage.find}
-
-                                />
-                            </TouchableOpacity>
+                                source={PreloadImage.likes}
+                            />
                         </View>
                     }
                 />
@@ -726,6 +607,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
+        paddingTop: Theme.spacing.tiny,
         paddingBottom: Theme.spacing.tiny
     },
     pictureContainer: {

@@ -18,9 +18,8 @@ const DEFAULT_FEED_COUNT = 10;
 
 const profilePictureWidth = 64;
 
-// 1:1
-const illustHeight = 340;
-const illustWidth = 340;
+const illustWidth = 560;
+const illustHeight = 304;
 
 
 export default class CheckLikes extends React.Component {
@@ -208,42 +207,33 @@ export default class CheckLikes extends React.Component {
                     ListEmptyComponent={
                         // ToDo: render design
                         // !this.state.isLoadingFeeds &&
-
                         this.state.totalUserCount === 0 &&
-                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Text style={{
+                                marginTop: 100,
                                 color: Theme.color.text2,
-                                fontSize: 24,
-                                paddingTop: 4,
+                                fontSize: 28,
+                                lineHeight: 32,
                                 fontFamily: "Chewy-Regular"
                             }}>No likes from customers</Text>
 
                             <Text style={{
                                 marginTop: 10,
                                 color: Theme.color.text3,
-                                fontSize: 18,
+                                fontSize: 20,
+                                lineHeight: 24,
                                 fontFamily: "Chewy-Regular"
-                            }}>Let's find some hot chicks</Text>
+                            }}>Just give it some time</Text>
 
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setTimeout(() => {
-                                        if (this.closed) return;
-                                        // Consider: set scroll position 0
-
-                                        // this.props.navigation.navigate("intro");
-                                    }, Cons.buttonTimeoutShort);
+                            <Image
+                                style={{
+                                    marginTop: 20,
+                                    width: illustWidth * 0.5,
+                                    height: illustHeight * 0.5,
+                                    resizeMode: 'cover'
                                 }}
-                                style={{ marginTop: 20 }}>
-                                <Image
-                                    style={{
-                                        width: illustWidth,
-                                        height: illustHeight,
-                                        resizeMode: 'cover'
-                                    }}
-                                    source={PreloadImage.review}
-                                />
-                            </TouchableOpacity>
+                                source={PreloadImage.review}
+                            />
                         </View>
                     }
                 />
@@ -472,7 +462,9 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     contentContainer: {
-        flexGrow: 1
+        flexGrow: 1,
+        paddingTop: Theme.spacing.tiny,
+        paddingBottom: Theme.spacing.tiny
     },
     pictureContainer: {
         width: (Dimensions.get('window').width - 2 * 6) / 3,

@@ -21,6 +21,7 @@ import { Cons, Vars } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import Util from './Util';
+import PreloadImage from './PreloadImage';
 
 const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
@@ -565,6 +566,35 @@ export default class ReadAllReviewsScreen extends React.Component {
     renderEmptyImage() {
         return (
             // ToDo: render design
+            <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
+                <Text style={{
+                    marginTop: 100,
+                    color: Theme.color.text2,
+                    fontSize: 28,
+                    lineHeight: 32,
+                    fontFamily: "Chewy-Regular"
+                }}>No customer reviews yet</Text>
+
+                <Text style={{
+                    marginTop: 10,
+                    color: Theme.color.text3,
+                    fontSize: 20,
+                    lineHeight: 24,
+                    fontFamily: "Chewy-Regular"
+                }}>Stop expecting, start exploring</Text>
+
+                <Image
+                    style={{
+                        marginTop: 30,
+                        width: 496 * 0.5,
+                        height: 403 * 0.5,
+                        resizeMode: 'cover'
+                    }}
+                    source={PreloadImage.customer2}
+                />
+            </View>
+
+            /*
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
                     // color: Theme.color.text2,
@@ -573,15 +603,6 @@ export default class ReadAllReviewsScreen extends React.Component {
                     paddingTop: 4,
                     fontFamily: "Chewy-Regular"
                 }}>No customer reviews yet</Text>
-
-                {/*
-                <Text style={{
-                    marginTop: 10,
-                    color: Theme.color.text3,
-                    fontSize: 18,
-                    fontFamily: "Chewy-Regular"
-                }}>Start exploring girls for your next trip</Text>
-                */}
 
                 <Image
                     style={{
@@ -593,6 +614,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     source={PreloadImage.find}
                 />
             </View>
+            */
         );
     }
 
