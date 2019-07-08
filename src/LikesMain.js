@@ -300,7 +300,7 @@ export default class LikesMain extends React.Component<InjectedProps> {
                 }
 
                 // update database
-                Firebase.removeLike(Firebase.user().uid, placeId, feedId);
+                Firebase.removeLikes(Firebase.user().uid, placeId, feedId);
 
                 return;
             }

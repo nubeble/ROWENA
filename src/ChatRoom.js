@@ -323,6 +323,8 @@ export default class ChatRoom extends React.Component {
                         onLongPress={() => undefined}
 
                         textInputProps={{
+                            // multiline: true,
+                            // numberOfLines: 2,
                             /*
                             onLayout: (event) => {
                                 const layout = event.nativeEvent.layout;

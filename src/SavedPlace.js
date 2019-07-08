@@ -348,7 +348,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 }
 
                 // update database
-                Firebase.removeLike(Firebase.user().uid, placeId, feedId);
+                Firebase.removeLikes(Firebase.user().uid, placeId, feedId);
 
                 return;
             }
@@ -365,12 +365,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                 if (item.name !== newFeed.name || item.placeName !== newFeed.placeName || item.picture !== newFeed.pictures.one.uri) changed = true;
 
-                const street = Util.getStreet(newFeed.location.description);
+                // const street = Util.getStreet(newFeed.location.description);
 
                 const __newFeed = {
                     name: newFeed.name,
-                    // placeName: newFeed.placeName,
-                    placeName: street,
+                    placeName: newFeed.placeName,
+                    // placeName: street,
                     placeId: newFeed.placeId,
                     feedId: newFeed.id,
                     picture: newFeed.pictures.one.uri,

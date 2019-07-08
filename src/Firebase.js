@@ -850,15 +850,14 @@ export default class Firebase {
             for (let i = 0; i < likes.length; i++) {
                 let item = likes[i];
                 if (item.placeId === placeId && item.feedId === feedId) {
-
                     item.name = name;
                     item.placeName = placeName;
                     item.picture = picture;
 
+                    likes[i] = item;
+
                     break;
                 }
-
-                likes[i] = item;
             }
 
             transaction.update(userRef, { likes });
@@ -870,7 +869,7 @@ export default class Firebase {
     }
 
     // update like in user profile
-    static async removeLike(uid, placeId, feedId) {
+    static async removeLikes(uid, placeId, feedId) {
         let result;
 
         const userRef = Firebase.firestore.collection("users").doc(uid);
@@ -894,7 +893,7 @@ export default class Firebase {
         }).then(() => {
             result = true;
         }).catch((error) => {
-            console.log('Firebase.removeLike', error);
+            console.log('Firebase.removeLikes', error);
             result = false;
         });
 

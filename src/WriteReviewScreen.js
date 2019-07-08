@@ -12,13 +12,17 @@ import Firebase from "./Firebase";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { Cons } from "./Globals";
 import { sendPushNotification } from './PushNotifications';
+import SmartImage from "./rnff/src/components/SmartImage";
 
 
 export default class WriteReviewScreen extends React.Component {
     state = {
         showPostLoader: false,
 
+        name: null,
+        picture: null,
         rating: 5,
+
         invalid: false, // Consider: not used
         bottomPosition: Dimensions.get('window').height,
         postButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
@@ -29,13 +33,14 @@ export default class WriteReviewScreen extends React.Component {
     };
 
     componentDidMount() {
-        const { post, rating } = this.props.navigation.state.params;
-
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.setState({ rating });
+        const { post, rating } = this.props.navigation.state.params;
+
+        this.setState({ name: post.name, picture: post.pictures.one.uri, rating });
+
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
 
         // Consider: move to onFocus
@@ -165,8 +170,6 @@ export default class WriteReviewScreen extends React.Component {
     }
 
     render() {
-        const { post } = this.props.navigation.state.params;
-
         const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
@@ -215,7 +218,7 @@ export default class WriteReviewScreen extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    <Text style={styles.searchBarTitle}>{post.name}</Text>
+                    <Text style={styles.searchBarTitle}>{this.state.name}</Text>
 
                     {/*
                     <TouchableOpacity
@@ -233,14 +236,24 @@ export default class WriteReviewScreen extends React.Component {
                 </View>
 
                 <View style={styles.infoContainer}>
+                    {/* exceptional marginTop */}
+                    <View style={{ marginTop: -8, alignItems: 'center' }}>
+                        <SmartImage
+                            style={{ width: 80, height: 80, borderRadius: 80 / 2 }}
+                            showSpinner={false}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={this.state.picture}
+                        />
+                    </View>
+
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            // console.log('TouchableWithoutFeedback onPress');
                             // hide keyboard
                             this.refs['comment'].blur();
                         }}
                     >
-                        <View style={{ marginBottom: 10 + 16 }}>
+                        <View style={{ marginBottom: 10 }}>
+                            <Text style={styles.label}>How would your rate this girl, {this.state.name}?</Text>
                             <AirbnbRating
                                 ref='rating'
                                 onFinishRating={this.ratingCompleted}
@@ -257,10 +270,11 @@ export default class WriteReviewScreen extends React.Component {
                         // autoFocus
                         ref='comment'
                         multiline={true}
-                        numberOfLines={4}
+                        numberOfLines={3}
                         style={{
                             width: '100%',
-                            height: Dimensions.get('window').height / 5,
+                            // height: Dimensions.get('window').height / 5,
+                            height: 80,
                             borderRadius: 5,
 
                             // padding: 12, // paddingVertical not working in ios
@@ -269,14 +283,14 @@ export default class WriteReviewScreen extends React.Component {
                             paddingLeft: 12,
                             paddingRight: 12,
 
-                            fontSize: 18, fontFamily: "Roboto-Regular", color: Theme.color.title,
+                            fontSize: 16, fontFamily: "Roboto-Regular", color: Theme.color.text2,
 
                             textAlignVertical: 'top', // only supported on android
 
                             backgroundColor: '#212121'
                         }}
-                        placeholder='Share details of your own experience'
-                        // placeholder='Share details of your experience'
+                        // placeholder='Share details of your own experience'
+                        placeholder='Share details of your experience'
                         placeholderTextColor={Theme.color.placeholder}
                         onChangeText={(text) => this.onChangeText(text)}
                         selectionColor={Theme.color.selection}
@@ -448,16 +462,24 @@ const styles = StyleSheet.create({
     },
     infoContainer: {
         // flex: 1,
-        //justifyContent: 'center',
-        //alignItems: 'center',
-        // padding: Theme.spacing.small,
-        paddingTop: Theme.spacing.tiny,
-        paddingBottom: Theme.spacing.small,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // paddingTop: Theme.spacing.tiny,
+        // paddingBottom: Theme.spacing.small,
         paddingLeft: Theme.spacing.small,
         paddingRight: Theme.spacing.small
 
         // backgroundColor: 'rgb(27,27,27)'
         // backgroundColor: 'red'
+    },
+    label: {
+        color: Theme.color.text2,
+        textAlign: 'center',
+        fontSize: 16,
+        // lineHeight: 16,
+        fontFamily: "Roboto-Regular",
+        paddingTop: 10,
+        paddingBottom: 10
     },
     review: {
         color: 'grey',

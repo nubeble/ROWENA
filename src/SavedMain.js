@@ -231,7 +231,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
             count++;
         }
 
-        console.log('pictures length', pictures.length);
+        // console.log('pictures length', pictures.length);
 
         return pictures;
     }
@@ -455,6 +455,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.pictures[1]}
                                         />
+
+                                        <LinearGradient
+                                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                            start={[0, 0]}
+                                            end={[0, 1]}
+                                            style={StyleSheet.absoluteFill}
+                                        />
+
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
                                         </View>
@@ -504,6 +512,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.pictures[2]}
                                         />
+
+                                        <LinearGradient
+                                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                            start={[0, 0]}
+                                            end={[0, 1]}
+                                            style={StyleSheet.absoluteFill}
+                                        />
+
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
                                         </View>
@@ -566,6 +582,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
                                             uri={item.pictures[3]}
                                         />
+
+                                        <LinearGradient
+                                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                            start={[0, 0]}
+                                            end={[0, 1]}
+                                            style={StyleSheet.absoluteFill}
+                                        />
+
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
                                         </View>
