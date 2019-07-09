@@ -25,7 +25,7 @@ const DEFAULT_FEED_COUNT = 18; // 3 x 6
 @inject("profileStore")
 @observer
 export default class ReviewMain extends React.Component<InjectedProps> {
-    static __flatList = null;
+    // static __flatList = null;
 
     state = {
         // renderFeed: false,
@@ -50,9 +50,11 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.countsUnsubscribes = [];
     }
 
+    /*
     static scrollToTop() {
         ReviewMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
+    */
 
     componentDidMount() {
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -166,7 +168,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     <FlatList
                         ref={(fl) => {
                             this._flatList = fl;
-                            ReviewMain.__flatList = fl;
+                            // ReviewMain.__flatList = fl;
                         }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}

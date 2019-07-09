@@ -57,7 +57,7 @@ const useGoogleMaps = Platform.OS === 'android' ? true : false;
 @inject("feedStore", "profileStore")
 @observer // for reviewStore
 export default class Post extends React.Component<InjectedProps> {
-    static __flatList = null;
+    // static __flatList = null;
 
     reviewStore: ReviewStore = new ReviewStore();
 
@@ -107,9 +107,11 @@ export default class Post extends React.Component<InjectedProps> {
         this.contentText = Util.getQuotes();
     }
 
+    /*
     static scrollToTop() {
         Post.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
+    */
 
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
@@ -658,7 +660,7 @@ export default class Post extends React.Component<InjectedProps> {
                         <FlatList
                             ref={(fl) => {
                                 this._flatList = fl;
-                                Post.__flatList = fl;
+                                // Post.__flatList = fl;
                             }}
                             contentContainerStyle={styles.container}
                             showsVerticalScrollIndicator={true}
@@ -1403,6 +1405,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderChart(data) {
+        // this should never happen
         if (!data) return null;
 
         if (data.reviewCount === 0) {
@@ -1436,7 +1439,6 @@ export default class Post extends React.Component<InjectedProps> {
         const stats = data.reviewStats; // 5
         // const ranking = data.ranking;
         const statement = this.getStatement(data);
-
 
         /*
         // test
@@ -1628,7 +1630,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 backgroundColor: Theme.color.chartBar,
                                 borderRadius: 14
                             }} />
-
                         </View>
                         <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[0])}</Text>
                     </View>
@@ -1654,7 +1655,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 backgroundColor: Theme.color.chartBar,
                                 borderRadius: 14
                             }} />
-
                         </View>
                         <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[1])}</Text>
                     </View>
@@ -1680,7 +1680,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 backgroundColor: Theme.color.chartBar,
                                 borderRadius: 14
                             }} />
-
                         </View>
                         <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[2])}</Text>
                     </View>
@@ -1706,7 +1705,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 backgroundColor: Theme.color.chartBar,
                                 borderRadius: 14
                             }} />
-
                         </View>
                         <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[3])}</Text>
                     </View>
@@ -1732,7 +1730,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 backgroundColor: Theme.color.chartBar,
                                 borderRadius: 14
                             }} />
-
                         </View>
                         <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[4])}</Text>
                     </View>
@@ -1888,7 +1885,6 @@ export default class Post extends React.Component<InjectedProps> {
             // draw skeleton
 
             let reviewArray = [];
-            // const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 4;
             const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 2;
 
             for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {

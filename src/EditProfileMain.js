@@ -480,9 +480,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         const { profile } = this.props.profileStore;
         if (!profile) return null;
 
-        // const receivedCommentsCount = profile.receivedCommentsCount;
-        // if (receivedCommentsCount === 0) return null;
-        // if (receivedCommentsCount === 0) return this.renderEmptyImage();
+        // if (profile.receivedCommentsCount === 0) return this.renderEmptyImage();
 
         const { reviews } = this.commentStore;
 

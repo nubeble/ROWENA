@@ -56,7 +56,6 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     static scrollToTop() {
-        // this._feed.scrollToTop();
         Explore.__feed.scrollToTop();
     }
 

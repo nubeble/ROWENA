@@ -28,8 +28,6 @@ const DEFAULT_FEED_COUNT = 6;
 @inject("profileStore")
 @observer
 export default class SavedMain extends React.Component<InjectedProps> {
-    static __flatList = null;
-
     state = {
         feeds: [],
         isLoadingFeeds: false,
@@ -46,10 +44,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
         // this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
-    }
-
-    static scrollToTop() {
-        SavedMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
 
     initMap() {
@@ -73,6 +67,12 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
     componentDidMount() {
         console.log('SavedMain.componentDidMount');
+
+        this.props.navigation.setParams({
+            scrollToTop: () => {
+                this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+        });
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -265,7 +265,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
                 <FlatList
                     ref={(fl) => {
                         this._flatList = fl;
-                        SavedMain.__flatList = fl;
                     }}
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={true}

@@ -23,8 +23,6 @@ const illustHeight = 340;
 
 
 export default class ChatMain extends React.Component {
-    static __flatList = null;
-
     state = {
         ready: false,
 
@@ -49,10 +47,6 @@ export default class ChatMain extends React.Component {
         this.customersUnsubscribes = [];
     }
 
-    static scrollToTop() {
-        ChatMain.__flatList.scrollToOffset({ offset: 0, animated: true });
-    }
-
     static final() {
         console.log('ChatMain.final');
 
@@ -62,6 +56,12 @@ export default class ChatMain extends React.Component {
 
     componentDidMount() {
         console.log('ChatMain.componentDidMount');
+
+        this.props.navigation.setParams({
+            scrollToTop: () => {
+                this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+        });
 
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
@@ -441,7 +441,6 @@ export default class ChatMain extends React.Component {
     handleHardwareBackPress() {
         console.log('ChatMain.handleHardwareBackPress');
 
-        // this.props.navigation.navigate("intro");
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -465,7 +464,6 @@ export default class ChatMain extends React.Component {
                 <FlatList
                     ref={(fl) => {
                         this._flatList = fl;
-                        ChatMain.__flatList = fl;
                     }}
                     data={this.state.chatRoomList}
                     keyExtractor={this.keyExtractor}

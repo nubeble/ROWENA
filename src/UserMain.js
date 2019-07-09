@@ -879,7 +879,6 @@ export default class UserMain extends React.Component<InjectedProps> {
         const { guest } = this.state;
         if (!guest) return null;
 
-        // if (guest.receivedCommentsCount === 0) return null;
         // if (guest.receivedCommentsCount === 0) return this.renderEmptyImage();
 
         const { reviews } = this.commentStore;

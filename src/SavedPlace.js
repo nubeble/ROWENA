@@ -32,7 +32,7 @@ const illustHeight = 277;
 @inject("profileStore")
 @observer
 export default class SavedPlace extends React.Component<InjectedProps> {
-    static __flatList = null;
+    // static __flatList = null;
 
     state = {
         feeds: [],
@@ -58,9 +58,11 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         this.countsUnsubscribes = [];
     }
 
+    /*
     static scrollToTop() {
         SavedPlace.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
+    */
 
     componentDidMount() {
         console.log('SavedPlace.componentDidMount');
@@ -412,7 +414,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     <FlatList
                         ref={(fl) => {
                             this._flatList = fl;
-                            SavedPlace.__flatList = fl;
+                            // SavedPlace.__flatList = fl;
                         }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}

@@ -38,8 +38,6 @@ const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 @inject("profileStore")
 @observer
 export default class ProfileMain extends React.Component<InjectedProps> {
-    static __flatList = null;
-
     state = {
         // renderFeed: false,
         // showIndicator: false,
@@ -92,12 +90,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.reviewAddedFeedHashTable = new Map();
     }
 
-    static scrollToTop() {
-        ProfileMain.__flatList.scrollToOffset({ offset: 0, animated: true });
-    }
-
     componentDidMount() {
         console.log('ProfileMain.componentDidMount');
+
+        this.props.navigation.setParams({
+            scrollToTop: () => {
+                this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+        });
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -182,7 +182,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return true;
         }
 
-        // this.props.navigation.navigate("intro");
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -601,7 +600,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     <FlatList
                         ref={(fl) => {
                             this._flatList = fl;
-                            ProfileMain.__flatList = fl;
                         }}
                         contentContainerStyle={{ flexGrow: 1 }}
                         showsVerticalScrollIndicator={true}

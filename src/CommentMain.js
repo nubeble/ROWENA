@@ -26,7 +26,7 @@ const DEFAULT_FEED_COUNT = 18; // 3 x 6
 @inject("profileStore")
 @observer
 export default class CommentMain extends React.Component<InjectedProps> {
-    static __flatList = null;
+    // static __flatList = null;
 
     state = {
         // renderFeed: false,
@@ -49,9 +49,11 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.customersUnsubscribes = [];
     }
 
+    /*
     static scrollToTop() {
         CommentMain.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
+    */
 
     componentDidMount() {
         console.log('CommentMain.componentDidMount');
@@ -159,7 +161,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                     <FlatList
                         ref={(fl) => {
                             this._flatList = fl;
-                            CommentMain.__flatList = fl;
+                            // CommentMain.__flatList = fl;
                         }}
                         contentContainerStyle={styles.contentContainer}
                         showsVerticalScrollIndicator={true}

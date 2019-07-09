@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert, NetInfo, AppState } from 'react-native';
+// import { StackActions } from "react-navigation";
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
@@ -319,7 +320,6 @@ export default class App extends React.Component {
                         this.moveToCheckProfile();
                     } break;
 
-                    // ToDo: check
                     case Cons.pushNotification.like: {
                         // hide badge
                         // this.setState({ showBadgeOnProfile: false, badgeOnProfileCount: -1 });
@@ -507,7 +507,6 @@ import ResetPasswordVerification from './src/ResetPasswordVerification';
 import ChatMain from './src/ChatMain';
 import ChatRoom from './src/ChatRoom';
 import UserMain from './src/UserMain';
-// import LikesMain from './src/LikesMain';
 import SavedMain from './src/SavedMain';
 import SavedPlace from './src/SavedPlace';
 import ProfileMain from './src/ProfileMain';
@@ -951,7 +950,8 @@ class UserStackNavigatorWrapper extends React.Component {
             <UserStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1029,7 +1029,7 @@ const ReviewStackNavigator = createStackNavigator(
     {
         reviewMain: { screen: ReviewMain },
         reviewPost: { screen: PostStackNavigatorWrapper }
-        // test: { screen: HidingHeader } // ToDo: test
+        // test: { screen: HidingHeader }
     },
     {
         mode: 'modal',
@@ -1120,7 +1120,8 @@ class CommentStackNavigatorWrapper extends React.Component {
             <CommentStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
+                    rootNavigation: this.props.navigation,
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1188,7 +1189,7 @@ class ProfileStackNavigatorWrapper extends React.Component {
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation,
-                    data: this.props.screenProps.data // ToDo: check
+                    data: this.props.screenProps.data
                 }}
             />
         );
@@ -1214,15 +1215,26 @@ let routeName = null;
 let timestamp = 0;
 
 function _navigationOptions(navigation, screenProps) {
-    // console.log('_navigationOptions, data', screenProps.data);
+    const data = screenProps.data;
+
+    // console.log('_navigationOptions, screenProps.data', screenProps.data);
+    // console.log('_navigationOptions, navigation.state', navigation.state);
+
+    let name = null;
+    let scrollToTop = null;
+
+    if (navigation.state.index === 0) {
+        const navigationInRoute = navigation.getChildNavigation(navigation.state.routes[0].key);
+        if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.routeName) name = navigationInRoute.state.routeName;
+        if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.params && !!navigationInRoute.state.params.scrollToTop) scrollToTop = navigationInRoute.state.params.scrollToTop;
+    }
+
+    console.log('_navigationOptions', name);
 
     return {
-        // title: `${navigation.state.params.name}'s Profile!`,
-        title: 'title',
+        title: navigation.state.routeName,
         tabBarLabel: navigation.state.routeName,
         tabBarIcon: ({ tintColor, focused }) => {
-            const data = screenProps.data;
-
             if (navigation.state.routeName === 'home') {
                 return (
                     <IconWithBadge type={'Ionicons'} name={'md-compass'} size={30} color={tintColor} badgeCount={data.badgeOnHomeCount} animate={data.showBadgeOnHome} />
@@ -1242,22 +1254,27 @@ function _navigationOptions(navigation, screenProps) {
             }
         },
         tabBarOnPress: ({ defaultHandler, navigation }) => {
-            const data = screenProps.data;
-
             if (navigation.state.routeName === 'home') {
                 console.log('home');
 
                 const now = Date.now();
 
                 if (routeName === 'home') {
-                    const diff = now - timestamp;
-                    console.log('diff', diff);
+                    // ToDo: go back to top
+                    if (Vars.focusedScreen !== 'Intro' && Vars.focusedScreen !== 'Explore') {
+                        // navigation.dispatch(StackActions.popToTop());
+                        navigation.popToTop();
+                    } else {
+                        const diff = now - timestamp;
+                        console.log('diff', diff);
 
-                    if (diff < 500) {
-                        // double click
-                        if (Vars.focusedScreen === 'Intro') Intro.scrollToTop();
-                        if (Vars.focusedScreen === 'Explore') Explore.scrollToTop();
-                        if (Vars.focusedScreen === 'Post') Post.scrollToTop();
+                        if (diff < 500) { // double click
+                            // ToDo: scroll
+                            // if (name === "introHome") scrollToTop();
+                            if (Vars.focusedScreen === 'Intro') Intro.scrollToTop();
+                            if (Vars.focusedScreen === 'Explore') Explore.scrollToTop();
+                            // if (Vars.focusedScreen === 'Post') Post.scrollToTop();
+                        }
                     }
                 } else {
                     routeName = 'home';
@@ -1265,10 +1282,8 @@ function _navigationOptions(navigation, screenProps) {
 
                 timestamp = now;
 
-                if (data.showBadgeOnHome) {
-                    // hide badge
-                    data.changeBadgeOnHome(false, -1);
-                }
+                // hide badge
+                if (data.showBadgeOnHome) data.changeBadgeOnHome(false, -1);
             } else if (navigation.state.routeName === 'likes') {
                 console.log('likes');
 
@@ -1278,11 +1293,8 @@ function _navigationOptions(navigation, screenProps) {
                     const diff = now - timestamp;
                     console.log('diff', diff);
 
-                    if (diff < 500) {
-                        // double click
-                        // if (Vars.focusedScreen === 'LikesMain') LikesMain.scrollToTop();
-                        if (Vars.focusedScreen === 'SavedMain') SavedMain.scrollToTop();
-                        if (Vars.focusedScreen === 'SavedPlace') SavedPlace.scrollToTop();
+                    if (diff < 500) { // double click
+                        if (name === "savedMain") scrollToTop();
                     }
                 } else {
                     routeName = 'likes';
@@ -1290,10 +1302,8 @@ function _navigationOptions(navigation, screenProps) {
 
                 timestamp = now;
 
-                if (data.showBadgeOnLikes) {
-                    // hide badge
-                    data.changeBadgeOnLikes(false, -1);
-                }
+                // hide badge
+                if (data.showBadgeOnLikes) data.changeBadgeOnLikes(false, -1);
             } else if (navigation.state.routeName === 'chat') {
                 console.log('chat');
 
@@ -1303,9 +1313,8 @@ function _navigationOptions(navigation, screenProps) {
                     const diff = now - timestamp;
                     console.log('diff', diff);
 
-                    if (diff < 500) {
-                        // double click
-                        if (Vars.focusedScreen === 'ChatMain') ChatMain.scrollToTop();
+                    if (diff < 500) { // double click
+                        if (name === "chat") scrollToTop();
                     }
                 } else {
                     routeName = 'chat';
@@ -1313,10 +1322,8 @@ function _navigationOptions(navigation, screenProps) {
 
                 timestamp = now;
 
-                if (data.showBadgeOnChat) {
-                    // hide badge
-                    data.changeBadgeOnChat(false, -1);
-                }
+                // hide badge
+                if (data.showBadgeOnChat) data.changeBadgeOnChat(false, -1);
             } else if (navigation.state.routeName === 'profile') {
                 console.log('profile');
 
@@ -1326,11 +1333,8 @@ function _navigationOptions(navigation, screenProps) {
                     const diff = now - timestamp;
                     console.log('diff', diff);
 
-                    if (diff < 500) {
-                        // double click
-                        if (Vars.focusedScreen === 'ProfileMain') ProfileMain.scrollToTop();
-                        if (Vars.focusedScreen === 'ReviewMain') ReviewMain.scrollToTop();
-                        if (Vars.focusedScreen === 'CommentMain') CommentMain.scrollToTop();
+                    if (diff < 500) { // double click
+                        if (name === "profileMain") scrollToTop();
                     }
                 } else {
                     routeName = 'profile';
@@ -1338,10 +1342,8 @@ function _navigationOptions(navigation, screenProps) {
 
                 timestamp = now;
 
-                if (data.showBadgeOnProfile) {
-                    // hide badge
-                    data.changeBadgeOnProfile(false, -1);
-                }
+                // hide badge
+                if (data.showBadgeOnProfile) data.changeBadgeOnProfile(false, -1);
             }
 
             defaultHandler();
