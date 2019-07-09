@@ -7,10 +7,6 @@ import { Text, Theme } from "./rnff/src/components";
 import autobind from 'autobind-decorator';
 import Util from "./Util";
 
-// const titlePosition = Dimensions.get('window').height / 8;
-const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
-const illustHeight = illustWidth / 16 * 9;
-
 
 export default class Welcome extends React.Component {
     constructor(props) {
@@ -71,22 +67,21 @@ export default class Welcome extends React.Component {
                 {/* // ToDo: render design */}
                 <View style={styles.container}>
                     <Text style={{
-                        // marginTop: titlePosition,
-                        marginTop: 10,
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        fontSize: 32,
-                        paddingTop: 12,
-                        // backgroundColor: 'green',
-                        fontFamily: "Chewy-Regular",
-                        textAlign: 'center'
+                        marginTop: 8,
+                        paddingHorizontal: 22,
+                        fontSize: 28,
+                        lineHeight: 32,
+                        color: 'white',
+                        fontFamily: "Chewy-Regular"
                     }}>Welcome!</Text>
 
                     <Image
                         style={{
-                            marginTop: 30,
-                            width: illustWidth,
-                            height: illustHeight,
-                            resizeMode: 'cover'
+                            marginTop: 40,
+                            width: 1280 * 0.25,
+                            height: 720 * 0.25,
+                            resizeMode: 'cover',
+                            alignSelf: 'center'
                         }}
                         source={PreloadImage.welcome}
                     />
@@ -94,7 +89,7 @@ export default class Welcome extends React.Component {
                     <Text style={{
                         marginTop: 10,
                         paddingHorizontal: Theme.spacing.base,
-                        color: 'rgba(255, 255, 255, 0.8)',
+                        color: 'white',
                         fontSize: 16,
                         lineHeight: 24,
                         fontFamily: "Chewy-Regular",

@@ -4,7 +4,7 @@ import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { Permissions, Linking, ImagePicker } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 

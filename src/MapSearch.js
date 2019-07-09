@@ -85,8 +85,8 @@ export default class MapSearch extends React.Component {
         let __region = {
             latitude: region.latitude,
             longitude: region.longitude,
-            latitudeDelta: 0.2,
-            longitudeDelta: 0.2 * ASPECT_RATIO
+            latitudeDelta: 0.8,
+            longitudeDelta: 0.8 * ASPECT_RATIO
         };
         this.setState({ region: __region });
 

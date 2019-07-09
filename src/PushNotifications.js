@@ -1,4 +1,5 @@
-import { Permissions, Notifications, Linking } from 'expo';
+import { Notifications } from 'expo';
+import * as Permissions from 'expo-permissions';
 import Firebase from './Firebase';
 import { Cons } from './Globals';
 // import Util from './Util';
@@ -59,7 +60,7 @@ export async function registerExpoPushToken(uid, name) {
         uid,
         name
     };
-    
+
     await Firebase.setToken(uid, data);
 }
 

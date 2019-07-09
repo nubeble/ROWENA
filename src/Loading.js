@@ -265,16 +265,6 @@ export default class Loading extends React.Component<InjectedProps> {
                     await Firebase.createProfile(user.uid, name, email, mobile, photoURL);
                 }
 
-                // const { uid } = Firebase.auth.currentUser;
-                /*
-                const feedQuery = Firebase.firestore.collection("feed").orderBy("timestamp", "desc"); // 전체 feed
-                feedStore.init(feedQuery);
-
-                profileStore.init();
-
-                const userFeedQuery = Firebase.firestore.collection("feed").where("uid", "==", uid).orderBy("timestamp", "desc"); // 내가 올린 feed
-                userFeedStore.init(userFeedQuery);
-                */
                 await profileStore.init();
 
                 if (Loading.userAutoAuthenticated) {

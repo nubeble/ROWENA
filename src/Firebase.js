@@ -177,10 +177,10 @@ export default class Firebase {
             photoURL: uri
         }).then(function () {
             // Update successful.
-            console.log('Firebase.updateProfile', 'update successful.');
+            console.log('Firebase.updateProfilePicture', 'update successful.');
         }).catch(function (error) {
             // An error happened.
-            console.log('Firebase.updateProfile', error);
+            console.log('Firebase.updateProfilePicture', error);
         });
     }
 

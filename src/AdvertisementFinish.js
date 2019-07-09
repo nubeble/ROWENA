@@ -5,7 +5,7 @@ import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { Permissions, Linking, ImagePicker } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Util from "./Util";
@@ -67,13 +67,12 @@ export default class AdvertisementFinish extends React.Component {
                 {/* // ToDo: render design */}
                 <View style={styles.container}>
                     <Text style={{
-                        marginTop: Theme.spacing.tiny,
+                        marginTop: 8,
                         paddingHorizontal: 22,
                         fontSize: 28,
                         lineHeight: 32,
-                        color: Theme.color.text2,
-                        fontFamily: "Chewy-Regular",
-                        // textAlign: 'center'
+                        color: 'white',
+                        fontFamily: "Chewy-Regular"
                     }}>Hope you find it</Text>
 
                     <Image
@@ -90,7 +89,7 @@ export default class AdvertisementFinish extends React.Component {
                     <Text style={{
                         marginTop: 20,
                         paddingHorizontal: Theme.spacing.base,
-                        color: Theme.color.text3,
+                        color: 'white',
                         fontSize: 16,
                         lineHeight: 24,
                         fontFamily: "Chewy-Regular",

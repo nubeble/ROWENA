@@ -5,7 +5,7 @@ import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { Permissions, Linking, ImagePicker } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Util from './Util';
@@ -64,22 +64,21 @@ export default class AdvertisementStart extends React.Component {
                 {/* // ToDo: render design */}
                 <View style={styles.container}>
                     <Text style={{
-                        marginTop: Theme.spacing.tiny,
+                        marginTop: 8,
                         paddingHorizontal: 22,
                         fontSize: 28,
                         lineHeight: 32,
                         color: 'black',
-                        fontFamily: "Chewy-Regular",
-                        // textAlign: 'center'
+                        fontFamily: "Chewy-Regular"
                     }}>Let's set up your advertisement</Text>
 
                     <Image
                         style={{
-                            marginTop: 10,
+                            marginTop: 20,
                             width: illustWidth * 0.7,
                             height: illustHeight * 0.7,
-                            alignSelf: 'center',
-                            resizeMode: 'cover'
+                            resizeMode: 'cover',
+                            alignSelf: 'center'
                         }}
                         source={PreloadImage.advertisement}
                     />

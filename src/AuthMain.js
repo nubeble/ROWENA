@@ -137,23 +137,6 @@ export default class AuthMain extends React.Component {
                 // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
                 await registerExpoPushToken(user.user.uid, user.user.displayName);
                 // }
-
-                /*
-                const profile = await Firebase.getProfile(user.user.uid);
-                if (profile) {
-                    // update
-                    const data = {
-                        name: user.user.displayName,
-                        email: user.user.email,
-                        phoneNumber: user.user.phoneNumber
-                    };
-    
-                    await Firebase.updateProfile(user.user.uid, data);
-                } else {
-                    // create
-                    await Firebase.createProfile(user.user.uid, user.user.displayName, user.user.email, user.user.phoneNumber);
-                }
-                */
             } catch (error) {
                 console.log('signInAndRetrieveDataWithCredential error', error);
 

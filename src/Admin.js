@@ -4,7 +4,7 @@ import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons } from 'react-native-vector-icons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { Permissions, Linking, ImagePicker } from 'expo';
+import * as Permissions from 'expo-permissions';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
@@ -67,7 +67,7 @@ export default class Admin extends React.Component {
                     <TouchableOpacity onPress={() => this.makeInit()}
                         style={styles.bottomButton}
                     >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Init)</Text>
+                        <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (12 cities) 🔥</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity onPress={() => this.makeSingapore()}
@@ -317,16 +317,26 @@ export default class Admin extends React.Component {
     }
 
     async makeInit() {
-        this.makeSingapore();
         this.makeBangkok();
         this.makePattaya();
+
         this.makeHCM();
         this.makeHanoi();
+
         this.makeManila(0);
         this.makeCebu();
+
         this.makeVientiane();
+
         this.makePP();
+
+        this.makeMacau();
+
+        this.makeJakarta();
+
         this.makeKL();
+
+        this.makeSingapore();
     }
 
     async makeSingapore() {
