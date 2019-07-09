@@ -90,7 +90,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 lat: 0,
                 lng: 0,
                 key: 'one',
-                newPostAdded: false
+                newPostAdded: undefined
             },
             {
                 place_id: null,
@@ -100,7 +100,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 lat: 0,
                 lng: 0,
                 key: 'two',
-                newPostAdded: false
+                newPostAdded: undefined
             },
             {
                 place_id: null,
@@ -110,7 +110,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 lat: 0,
                 lng: 0,
                 key: 'three',
-                newPostAdded: false
+                newPostAdded: undefined
             },
             {
                 place_id: null,
@@ -120,7 +120,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 lat: 0,
                 lng: 0,
                 key: 'four',
-                newPostAdded: false
+                newPostAdded: undefined
             },
             {
                 place_id: null,
@@ -130,7 +130,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 lat: 0,
                 lng: 0,
                 key: 'five',
-                newPostAdded: false
+                newPostAdded: undefined
             },
             {
                 place_id: null,
@@ -140,7 +140,7 @@ export default class Intro extends React.Component<InjectedProps> {
                 lat: 0,
                 lng: 0,
                 key: 'six',
-                newPostAdded: false
+                newPostAdded: undefined
             }
         ],
         popularFeeds: [],
@@ -263,7 +263,7 @@ export default class Intro extends React.Component<InjectedProps> {
         }, 0);
         */
 
-        if (Intro.places.length === 0) this.getPlaces();
+        if (Intro.places.length === 0) await this.getPlaces();
 
         this.getPopularFeeds();
         this.getRecentFeeds();
@@ -331,10 +331,10 @@ export default class Intro extends React.Component<InjectedProps> {
                         return;
                     }
 
-                    this.updatePlace(result.place_id, newPlace);
-
                     // update Intro.feedCountList
                     Intro.feedCountList.set(result.place_id, newPlace.count);
+
+                    this.updatePlace(result.place_id, newPlace);
                 });
 
                 Intro.countsUnsubscribes.push(ci);
@@ -396,42 +396,38 @@ export default class Intro extends React.Component<InjectedProps> {
                     lat: data.lat,
                     lng: data.lng,
                     key: doc.id,
-                    newPostAdded: false
+                    newPostAdded: undefined
                 };
 
                 index++;
 
                 if (index === snap.docs.length) {
                     Intro.places = places;
-                    !this.closed && this.setState({ places });
-                }
-                /*
-                Intro.places = places;
-                !this.closed && this.setState({ places });
-                */
+                    !this.closed && this.setState({ places }, () => {
+                        // subscribe feed count
+                        // --
+                        if (!Intro.feedCountList.has(doc.id)) {
+                            // this will be updated in subscribe
+                            Intro.feedCountList.set(doc.id, -1);
 
-                // subscribe feed count
-                // --
-                if (!Intro.feedCountList.has(doc.id)) {
-                    // this will be updated in subscribe
-                    Intro.feedCountList.set(doc.id, -1);
+                            const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
+                                if (newPlace === undefined) {
+                                    // update Intro.feedCountList
+                                    Intro.feedCountList.delete(doc.id);
+                                    return;
+                                }
 
-                    const ci = Firebase.subscribeToPlace(doc.id, newPlace => {
-                        if (newPlace === undefined) {
-                            // update Intro.feedCountList
-                            Intro.feedCountList.delete(doc.id);
-                            return;
+                                // update Intro.feedCountList
+                                Intro.feedCountList.set(doc.id, newPlace.count);
+
+                                this.updatePlace(doc.id, newPlace);
+                            });
+
+                            Intro.countsUnsubscribes.push(ci);
                         }
-
-                        this.updatePlace(doc.id, newPlace);
-
-                        // update Intro.feedCountList
-                        Intro.feedCountList.set(doc.id, newPlace.count);
+                        // --
                     });
-
-                    Intro.countsUnsubscribes.push(ci);
                 }
-                // --
             } else { // data.count === 0
                 index++;
 
@@ -445,10 +441,10 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     updatePlace(placeId, place) {
+        console.log('Intro.updatePlace, place.count', place.count);
+
         // show badge on bottom tab navigator
-        let showBadge1 = false;
-        let showBadge2 = false;
-        if (Intro.feedCountList.get(placeId) !== -1) showBadge1 = true;
+        let showBadge = false;
 
         // update Intro.feedCountList
         // Intro.feedCountList.set(placeId, place.count);
@@ -456,13 +452,18 @@ export default class Intro extends React.Component<InjectedProps> {
         // update UI (number, badge)
         let __places = [...this.state.places];
         let __index = __places.findIndex(el => el.place_id === placeId);
+        console.log('Intro.updatePlace, index', __index);
         if (__index !== -1) {
-            console.log(__index);
             let __place = __places[__index];
             __place.length = place.count;
 
-            showBadge2 = true;
-            if (showBadge1) __place.newPostAdded = true;
+            if (typeof __place.newPostAdded === 'undefined') {
+                __place.newPostAdded = false;
+            } else {
+                __place.newPostAdded = true;
+
+                showBadge = true;
+            }
 
             __places[__index] = __place;
 
@@ -470,7 +471,7 @@ export default class Intro extends React.Component<InjectedProps> {
             !this.closed && this.setState({ places: __places });
         }
 
-        if (showBadge1 && showBadge2) {
+        if (showBadge) {
             if (Vars.focusedScreen !== 'Intro' && this.props.screenProps.data) this.props.screenProps.data.changeBadgeOnHome(true, 0);
         }
     }
@@ -508,67 +509,67 @@ export default class Intro extends React.Component<InjectedProps> {
 
         console.log('popularFeeds', popularFeeds.length);
 
-        !this.closed && this.setState({ popularFeeds });
-        Intro.popularFeeds = popularFeeds;
+        !this.closed && this.setState({ popularFeeds }, () => {
+            for (let i = 0; i < popularFeeds.length; i++) {
+                const feed = popularFeeds[i];
 
-        for (let i = 0; i < popularFeeds.length; i++) {
-            const feed = popularFeeds[i];
+                // subscribe post
+                // --
+                if (!Intro.feedList.has(feed.id)) {
+                    // this will be updated in subscribe
+                    Intro.feedList.set(feed.id, null);
 
-            // subscribe post
-            // --
-            if (!Intro.feedList.has(feed.id)) {
-                // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
+                    const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                        if (newFeed === undefined) {
+                            // update Intro.feedList
+                            Intro.feedList.delete(feed.id);
+                            return;
+                        }
 
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                    if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
-                        return;
-                    }
+                        Intro.feedList.set(feed.id, newFeed);
 
-                    // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
+                        // update
+                        let _popularFeeds = [...this.state.popularFeeds];
+                        const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+                        if (index !== -1) {
+                            console.log('popularFeeds[', index, '] changed.');
+                            _popularFeeds[index] = newFeed;
+                            !this.closed && this.setState({ popularFeeds: _popularFeeds });
 
-                    // update
-                    let _popularFeeds = [...this.state.popularFeeds];
-                    const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
-                    if (index !== -1) {
-                        console.log('popularFeeds[', index, '] changed.');
-                        _popularFeeds[index] = newFeed;
-                        !this.closed && this.setState({ popularFeeds: _popularFeeds });
+                            Intro.popularFeeds[index] = newFeed;
+                        }
+                    });
 
-                        Intro.popularFeeds[index] = newFeed;
-                    }
-                });
+                    Intro.popularFeedsUnsubscribes.push(fi);
+                }
+                // --
 
-                Intro.popularFeedsUnsubscribes.push(fi);
-            }
-            // --
+                // subscribe feed count
+                // --
+                if (!Intro.feedCountList.has(feed.placeId)) {
+                    // this will be updated in subscribe
+                    Intro.feedCountList.set(feed.placeId, -1);
 
-            // subscribe feed count
-            // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
-                // this will be updated in subscribe
-                Intro.feedCountList.set(feed.placeId, -1);
+                    const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                        if (newPlace === undefined) {
+                            // update Intro.feedCountList
+                            Intro.feedCountList.delete(feed.placeId);
+                            return;
+                        }
 
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                    if (newPlace === undefined) {
                         // update Intro.feedCountList
-                        Intro.feedCountList.delete(feed.placeId);
-                        return;
-                    }
+                        Intro.feedCountList.set(feed.placeId, newPlace.count);
 
-                    this.updatePlace(feed.placeId, newPlace);
+                        this.updatePlace(feed.placeId, newPlace);
+                    });
 
-                    // update Intro.feedCountList
-                    Intro.feedCountList.set(feed.placeId, newPlace.count);
-                });
-
-                Intro.countsUnsubscribes.push(ci);
+                    Intro.countsUnsubscribes.push(ci);
+                }
+                // --
             }
-            // --
-        }
+        });
+        Intro.popularFeeds = popularFeeds;
     }
 
     async getRecentFeeds() {
@@ -604,67 +605,67 @@ export default class Intro extends React.Component<InjectedProps> {
 
         console.log('recentFeeds', recentFeeds.length);
 
-        !this.closed && this.setState({ recentFeeds });
-        Intro.recentFeeds = recentFeeds;
+        !this.closed && this.setState({ recentFeeds }, () => {
+            for (let i = 0; i < recentFeeds.length; i++) {
+                const feed = recentFeeds[i];
 
-        for (let i = 0; i < recentFeeds.length; i++) {
-            const feed = recentFeeds[i];
+                // subscribe post
+                // --
+                if (!Intro.feedList.has(feed.id)) {
+                    // this will be updated in subscribe
+                    Intro.feedList.set(feed.id, null);
 
-            // subscribe post
-            // --
-            if (!Intro.feedList.has(feed.id)) {
-                // this will be updated in subscribe
-                Intro.feedList.set(feed.id, null);
+                    const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                        if (newFeed === undefined) {
+                            // update Intro.feedList
+                            Intro.feedList.delete(feed.id);
+                            return;
+                        }
 
-                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                    if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.delete(feed.id);
-                        return;
-                    }
+                        Intro.feedList.set(feed.id, newFeed);
 
-                    // update Intro.feedList
-                    Intro.feedList.set(feed.id, newFeed);
+                        // update
+                        let _recentFeeds = [...this.state.recentFeeds];
+                        const index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+                        if (index !== -1) {
+                            console.log('recentFeeds[', index, '] changed.');
+                            _recentFeeds[index] = newFeed;
+                            !this.closed && this.setState({ recentFeeds: _recentFeeds });
 
-                    // update
-                    let _recentFeeds = [...this.state.recentFeeds];
-                    const index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
-                    if (index !== -1) {
-                        console.log('recentFeeds[', index, '] changed.');
-                        _recentFeeds[index] = newFeed;
-                        !this.closed && this.setState({ recentFeeds: _recentFeeds });
+                            Intro.recentFeeds[index] = newFeed;
+                        }
+                    });
 
-                        Intro.recentFeeds[index] = newFeed;
-                    }
-                });
+                    Intro.recentFeedsUnsubscribes.push(fi);
+                }
+                // --
 
-                Intro.recentFeedsUnsubscribes.push(fi);
-            }
-            // --
+                // subscribe feed count
+                // --
+                if (!Intro.feedCountList.has(feed.placeId)) {
+                    // this will be updated in subscribe
+                    Intro.feedCountList.set(feed.placeId, -1);
 
-            // subscribe feed count
-            // --
-            if (!Intro.feedCountList.has(feed.placeId)) {
-                // this will be updated in subscribe
-                Intro.feedCountList.set(feed.placeId, -1);
+                    const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                        if (newPlace === undefined) {
+                            // update Intro.feedCountList
+                            Intro.feedCountList.delete(feed.placeId);
+                            return;
+                        }
 
-                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                    if (newPlace === undefined) {
                         // update Intro.feedCountList
-                        Intro.feedCountList.delete(feed.placeId);
-                        return;
-                    }
+                        Intro.feedCountList.set(feed.placeId, newPlace.count);
 
-                    this.updatePlace(feed.placeId, newPlace);
+                        this.updatePlace(feed.placeId, newPlace);
+                    });
 
-                    // update Intro.feedCountList
-                    Intro.feedCountList.set(feed.placeId, newPlace.count);
-                });
-
-                Intro.countsUnsubscribes.push(ci);
+                    Intro.countsUnsubscribes.push(ci);
+                }
+                // --
             }
-            // --
-        }
+        });
+        Intro.recentFeeds = recentFeeds;
     }
 
     openSearch() {
@@ -985,7 +986,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                             }
                                         </View>
                                         {
-                                            item.newPostAdded &&
+                                            item.newPostAdded === true &&
                                             <View style={{
                                                 position: 'absolute',
                                                 top: 5,

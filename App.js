@@ -1229,7 +1229,7 @@ function _navigationOptions(navigation, screenProps) {
         if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.params && !!navigationInRoute.state.params.scrollToTop) scrollToTop = navigationInRoute.state.params.scrollToTop;
     }
 
-    console.log('_navigationOptions', name);
+    // console.log('_navigationOptions', name);
 
     return {
         title: navigation.state.routeName,
