@@ -44,9 +44,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     constructor(props) {
         super(props);
 
-        // this.reload = true;
+        this.__feeds = null; // from param
+
+        this.placeId = null;
+
         this.lastLoadedFeedIndex = -1;
-        // this.lastChangedTime = 0;
+        this.lastChangedTime = 0;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -69,6 +72,20 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
+        const feeds = this.props.navigation.state.params.feeds;
+
+        // placeName, placeId
+        if (feeds.length > 0) {
+            const placeName = feeds[0].placeName;
+            const words = placeName.split(', ');
+            this.setState({ placeName: words[0] });
+
+            const placeId = feeds[0].placeId;
+            this.placeId = placeId;
+        }
+
+        this.__feeds = feeds;
+
         this.getFeeds();
     }
 
@@ -86,6 +103,15 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         console.log('SavedPlace.onFocus');
 
         Vars.focusedScreen = 'SavedPlace';
+
+        const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
+        if (this.lastChangedTime !== lastChangedTime) {
+            // reload from the start
+            this.getFeedsFromStart();
+
+            this.lastLoadedFeedIndex = -1;
+            this.getFeeds();
+        }
 
         this.focused = true;
     }
@@ -123,7 +149,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     getFeeds() {
         if (this.state.isLoadingFeeds) return;
 
-        const feeds = this.props.navigation.state.params.feeds;
+        const feeds = this.__feeds;
         const length = feeds.length;
 
         this.setState({ totalFeedsSize: length });
@@ -132,10 +158,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             this.setState({ feeds: [] });
             return;
         }
-
-        const placeName = feeds[0].placeName;
-        const words = placeName.split(', ');
-        this.setState({ placeName: words[0] });
 
         // all loaded
         if (this.lastLoadedFeedIndex >= length - 1) return;
@@ -198,6 +220,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                 newFeeds.push(newFeed);
 
+                // ToDo: subscribe post after set state feeds
                 // subscribe post
                 this.subscribeToPost(placeId, feedId);
 
@@ -220,6 +243,33 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
+    }
+
+    getFeedsFromStart() {
+        const { profile } = this.props.profileStore;
+        const likes = profile.likes;
+        const length = likes.length;
+
+        // this.setState({ totalFeedsSize: length });
+
+        /*
+        if (length === 0) {
+            return;
+        }
+        */
+
+        let newFeeds = [];
+
+        for (let i = length - 1; i >= 0; i--) {
+            const like = likes[i];
+            const placeId = like.placeId;
+
+            if (placeId === this.placeId) {
+                newFeeds.push(like);
+            }
+        }
+
+        this.__feeds = newFeeds;
     }
 
     subscribeToPost(placeId, feedId) {
@@ -532,7 +582,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                             if (!this.focused) return;
 
                             if (this.isCloseToBottom(nativeEvent)) {
-                                // this.getSavedFeeds();
                                 this.getFeeds();
                             }
                         }}
@@ -612,6 +661,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         );
     }
 
+    /*
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
@@ -623,6 +673,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ refreshing: false });
     }
+    */
 }
 
 const styles = StyleSheet.create({

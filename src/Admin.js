@@ -1,14 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, BackHandler, AsyncStorage, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, BackHandler, AsyncStorage, Dimensions, FlatList } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons } from 'react-native-vector-icons';
-import SmartImage from './rnff/src/components/SmartImage';
-import * as Permissions from 'expo-permissions';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Firebase from './Firebase';
-import * as firebase from "firebase";
 import Util from './Util';
 
 const { width, height } = Dimensions.get('window');
@@ -56,77 +53,87 @@ export default class Admin extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
-                <View style={styles.container}>
-                    <TouchableOpacity
-                        onPress={() => this.makeDummyData()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 cities) 🔥</Text>
-                    </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeInit()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (12 cities) 🔥</Text>
-                    </TouchableOpacity>
+                <FlatList
+                    contentContainerStyle={{ flexGrow: 1 }}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={this.renderContainer()}
+                />
+            </View>
+        );
+    }
 
-                    <TouchableOpacity onPress={() => this.makeSingapore()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Singapore)</Text>
-                    </TouchableOpacity>
+    renderContainer() {
+        return (
+            <View style={styles.container}>
+                <TouchableOpacity onPress={() => this.makeDummyData()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 cities) 🔥</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeBangkok()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeInit()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (12 cities) 🔥</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeKL()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (KL)</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeSingapore()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Singapore)</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makePattaya()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeBangkok()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Bangkok)</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeManila(0)}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeKL()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (KL)</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeMacau()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macau)</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makePattaya()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Pattaya)</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => this.makeHanoi()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Hanoi)</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeManila(0)}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Manila)</Text>
+                </TouchableOpacity>
 
-                    {/*
-                    <TouchableOpacity
-                        onPress={async () => await this.removeFeed()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Remove Feed</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeMacau()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Macau)</Text>
+                </TouchableOpacity>
 
-                    <TouchableOpacity
-                        onPress={async () => await this.clearStorage()}
-                        style={styles.bottomButton}
-                    >
-                        <Text style={{ fontSize: 16, color: 'white' }}>Clear Storage</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity onPress={() => this.makeHanoi()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Hanoi)</Text>
+                </TouchableOpacity>
 
+                <TouchableOpacity onPress={() => this.makeSeattle()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Create Feed (Seattle, WA)</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    onPress={async () => await this.clearStorage()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Clear Storage</Text>
+                </TouchableOpacity>
+
+                {/*
                     <TouchableOpacity onPress={() => this.addComment()}
                         style={styles.bottomButton}
                     >
@@ -138,9 +145,7 @@ export default class Admin extends React.Component {
                     >
                         <Text style={{ fontSize: 16, color: 'white' }}>Remove Comment</Text>
                     </TouchableOpacity>
-                    */}
-                </View>
-
+                */}
             </View>
         );
     }
@@ -757,6 +762,83 @@ export default class Admin extends React.Component {
         await Firebase.createFeed(feed, extra);
 
         // Vars.userFeedsChanged = true;
+    }
+
+    async makeSeattle() {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+        const placeId = 'ChIJVTPokywQkFQRmtVEaUZlJRA';
+        const placeName = 'Seattle, WA, USA';
+        const LATITUDE = 47.6062095;
+        const LONGITUDE = -122.3320708;
+        const location = {
+            description: '?, Seattle Center, Harrison Street, Seattle, WA, USA',
+            latitude: LATITUDE + ((Math.random() - 0.5) * (LATITUDE_DELTA / 2)),
+            longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
+        };
+
+        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
+
+        // --
+        /*
+        const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5
+        const images = this.getRandomImage(number);
+        let image1Uri = images[0];
+        let image2Uri = images[1];
+        let image3Uri = images[2];
+        let image4Uri = images[3];
+        */
+        // --
+        let image1Uri = "https://static01.nyt.com/images/2017/06/01/arts/01DUALIPA/01DUALIPA-facebookJumbo-v3.jpg";
+        let image2Uri = "https://i2-prod.mirror.co.uk/incoming/article13237879.ece/ALTERNATES/s1200/0_Lollapalooza-Berlin-2018-Germany-08-Sep-2018.jpg";
+        let image3Uri = "https://ichef.bbci.co.uk/images/ic/720x405/p054bldr.jpg";
+        let image4Uri = "https://media.them.us/photos/5b9bb05a85bf450011783c5d/master/w_1280,c_limit/DuaLipa.jpg";
+
+        const name = 'Dua Lipa';
+        const birthday = '22081995';
+        const height = 173;
+        const weight = 56;
+        const bust = 'B';
+
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        const pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+
+        const extra = {
+            lat: 21.0277644,
+            lng: 105.8341598
+        };
+
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
+        await Firebase.createFeed(feed, extra);
     }
 
     getRandomLocationManila(_number) {

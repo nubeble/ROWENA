@@ -53,7 +53,7 @@ export default class FeedStore {
         this.addToFeedFinishedCallback = cb;
     }
 
-    loadFeedFromTheStart() {
+    loadFeedFromStart() {
         if (this.query && this.order) this.init(this.query, this.order);
     }
 

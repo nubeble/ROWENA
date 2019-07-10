@@ -185,7 +185,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const about = profile.about;
         let noteLength = 0;
         if (about) noteLength = about.length;
-        // ToDo: test
+
+        // test
         /*
         const name = 'Jay Kim';
         const birthday = Util.getBirthdayText('03111982'); // DDMMYYYY

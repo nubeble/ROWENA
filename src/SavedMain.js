@@ -41,7 +41,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
         this.map = {}; // place id : feed list
         this.order = []; // place id
 
-        // this.reload = true;
         this.lastLoadedFeedIndex = -1;
         this.lastChangedTime = 0;
     }
@@ -139,7 +138,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
         if (length === 0) return;
 
-        // for (let i = 0; i < length; i++) {
         for (let i = length - 1; i >= 0; i--) {
             const like = likes[i];
             const placeId = like.placeId;
@@ -305,7 +303,9 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                            <Text style={styles.feedItemText}>{city}
+                                                <Text style={[styles.feedItemText, { color: Theme.color.subtitle }]}> {feedsSize}</Text>
+                                            </Text>
                                         </View>
                                     </View>
                                 </TouchableWithoutFeedback>
@@ -349,7 +349,9 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                            <Text style={styles.feedItemText}>{city}
+                                                <Text style={[styles.feedItemText, { color: Theme.color.text4 }]}> {feedsSize}</Text>
+                                            </Text>
                                         </View>
                                     </View>
                                 </TouchableWithoutFeedback>
@@ -406,7 +408,9 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                            <Text style={styles.feedItemText}>{city}
+                                                <Text style={[styles.feedItemText, { color: Theme.color.text4 }]}> {feedsSize}</Text>
+                                            </Text>
                                         </View>
                                     </View>
                                 </TouchableWithoutFeedback>
@@ -476,7 +480,9 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city} {feedsSize}</Text>
+                                            <Text style={styles.feedItemText}>{city}
+                                                <Text style={[styles.feedItemText, { color: Theme.color.text4 }]}> {feedsSize}</Text>
+                                            </Text>
                                         </View>
                                     </View>
                                 </TouchableWithoutFeedback>
@@ -499,7 +505,8 @@ export default class SavedMain extends React.Component<InjectedProps> {
                         if (!this.focused) return;
 
                         if (this.isCloseToBottom(nativeEvent)) {
-                            this.getSavedFeeds();
+                            // this.getSavedFeeds();
+                            this.drawPlaces();
                         }
                     }}
                     // scrollEventThrottle={1}

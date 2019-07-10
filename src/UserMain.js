@@ -789,13 +789,15 @@ export default class UserMain extends React.Component<InjectedProps> {
             name = post.name;
             avatarName = Util.getAvatarName(name);
             avatarColor = Util.getAvatarColor(post.id);
-        } else {
-            // ToDo: tmp
+        }
+        /*
+        else {
             picture = _review.picture;
             if (placeName) placeColor = Theme.color.text2;
             placeName = _review.place;
             name = _review.name;
         }
+        */
 
         let isMyComment = false;
         if (_review.uid === Firebase.user().uid) {
