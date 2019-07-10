@@ -967,12 +967,12 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                 <Image
                     style={{
-                        marginTop: 20,
-                        width: 446 * 0.5,
-                        height: 250 * 0.5,
+                        marginTop: 30,
+                        width: Cons.stickerWidth,
+                        height: Cons.stickerHeight,
                         resizeMode: 'cover'
                     }}
-                    source={PreloadImage.customer}
+                    source={PreloadImage.comments}
                 />
             </View>
         );

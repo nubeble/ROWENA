@@ -261,11 +261,11 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                 <Image
                                     style={{
                                         marginTop: 30,
-                                        width: 496 * 0.5,
-                                        height: 403 * 0.5,
+                                        width: Cons.stickerWidth,
+                                        height: Cons.stickerHeight,
                                         resizeMode: 'cover'
                                     }}
-                                    source={PreloadImage.customer2}
+                                    source={PreloadImage.find}
                                 />
                             </View>
                         }

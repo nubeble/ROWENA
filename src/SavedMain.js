@@ -544,8 +544,8 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             <Image
                                 style={{
                                     marginTop: 30,
-                                    width: 490 * 0.52,
-                                    height: 328 * 0.52,
+                                    width: Cons.stickerWidth,
+                                    height: Cons.stickerHeight,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.explore}

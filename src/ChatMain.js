@@ -18,9 +18,6 @@ import moment from 'moment';
 
 const DEFAULT_ROOM_COUNT = 6;
 
-const illustWidth = 554;
-const illustHeight = 340;
-
 
 export default class ChatMain extends React.Component {
     state = {
@@ -513,8 +510,8 @@ export default class ChatMain extends React.Component {
                             <Image
                                 style={{
                                     marginTop: 30,
-                                    width: illustWidth * 0.5,
-                                    height: illustHeight * 0.5,
+                                    width: Cons.stickerWidth,
+                                    height: Cons.stickerHeight,
                                     resizeMode: 'cover'
                                 }}
                                 source={PreloadImage.chat}

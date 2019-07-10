@@ -24,26 +24,19 @@ const scale = require('../assets/icon/scale.png');
 const comment = require('../assets/icon/comment.png');
 const home = require('../assets/icon/home.png');
 
-// illustration
-const feed = require('../assets/sample/feed.png');
-const welcome = require('../assets/sample/welcome.jpg');
-const advertisement = require('../assets/sample/write.jpg');
-const find = require('../assets/sample/find.png');
-
-
-const explore = require('../assets/sanrio/explore.png'); // 490 x 328
-const likes = require('../assets/sanrio/likes.png'); // 581 x 277
-const chat = require('../assets/sanrio/chat.png'); // 554 x 340
-const review = require('../assets/sanrio/review.png'); // 560 x 304
-const customer = require('../assets/sanrio/customer.png'); // 446 x 250
-const customer2 = require('../assets/sanrio/customer2.png'); // 496 x 403
-const post = require('../assets/sanrio/post.png'); // 566 x 352
-const hope = require('../assets/sanrio/hope.png'); // 474 x 394
-
-
-const wait = require('../assets/sample/wait.png');
 const keyboard = require('../assets/sample/keyboard.png');
+const advertisement = require('../assets/sample/write.jpg');
+const welcome = require('../assets/sample/welcome.jpg');
+const hope = require('../assets/sanrio/hope.png');
 
+// sticker
+const explore = require('../assets/sticker/explore.png');
+const chat = require('../assets/sticker/chat.png');
+const likes = require('../assets/sticker/likes.png');
+const find = require('../assets/sticker/find.png');
+const reviews = require('../assets/sticker/reviews.png');
+const comments = require('../assets/sticker/comments.png');
+const post = require('../assets/sticker/post.png');
 
 // emoji
 const pin = require('../assets/icon/pin.png');
@@ -96,24 +89,19 @@ export default class PreloadImage {
     static comment = comment;
     static home = home;
 
-    static feed = feed;
-    static welcome = welcome;
+    static keyboard = keyboard;
     static advertisement = advertisement;
-    static find = find;
-
-
-    static explore = explore;
-    static likes = likes;
-    static chat = chat;
-    static review = review;
-    static customer = customer;
-    static customer2 = customer2;
-    static post = post;
+    static welcome = welcome;
     static hope = hope;
 
-
-    static wait = wait;
-    static keyboard = keyboard;
+    // sticker
+    static explore = explore;
+    static chat = chat;
+    static likes = likes;
+    static find = find;
+    static reviews = reviews;
+    static comments = comments;
+    static post = post;
 
     static pin = pin;
     static emoji0 = emoji0;
@@ -167,24 +155,19 @@ export default class PreloadImage {
                 PreloadImage.comment,
                 PreloadImage.home,
 
-                PreloadImage.feed,
-                PreloadImage.welcome,
+                PreloadImage.keyboard,
                 PreloadImage.advertisement,
-                PreloadImage.find,
-
-
-                PreloadImage.explore,
-                PreloadImage.likes,
-                PreloadImage.chat,
-                PreloadImage.review,
-                PreloadImage.customer,
-                PreloadImage.customer2,
-                PreloadImage.post,
+                PreloadImage.welcome,
                 PreloadImage.hope,
 
-
-                PreloadImage.wait,
-                PreloadImage.keyboard,
+                // sticker
+                PreloadImage.explore,
+                PreloadImage.chat,
+                PreloadImage.likes,
+                PreloadImage.find,
+                PreloadImage.reviews,
+                PreloadImage.comments,
+                PreloadImage.post,
 
                 PreloadImage.pin,
                 PreloadImage.emoji0,

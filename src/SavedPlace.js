@@ -25,9 +25,6 @@ type InjectedProps = {
 
 const DEFAULT_FEED_COUNT = 6;
 
-const illustWidth = 581;
-const illustHeight = 277;
-
 
 @inject("profileStore")
 @observer
@@ -581,11 +578,11 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 <Image
                                     style={{
                                         marginTop: 30,
-                                        width: illustWidth * 0.5,
-                                        height: illustHeight * 0.5,
+                                        width: Cons.stickerWidth,
+                                        height: Cons.stickerHeight,
                                         resizeMode: 'cover'
                                     }}
-                                    source={PreloadImage.likes}
+                                    source={PreloadImage.explore}
                                 />
                             </View>
                         }

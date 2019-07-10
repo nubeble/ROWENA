@@ -232,8 +232,8 @@ export default class Feed extends React.Component<FeedProps> {
                 <Image
                     style={{
                         marginTop: 20,
-                        width: 566 * 0.4,
-                        height: 352 * 0.4,
+                        width: Cons.stickerWidth,
+                        height: Cons.stickerHeight,
                         resizeMode: 'cover'
                     }}
                     source={PreloadImage.post}

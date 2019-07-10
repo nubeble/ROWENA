@@ -18,9 +18,6 @@ const DEFAULT_FEED_COUNT = 10;
 
 const profilePictureWidth = 64;
 
-const illustWidth = 560;
-const illustHeight = 304;
-
 
 export default class CheckLikes extends React.Component {
     state = {
@@ -228,11 +225,11 @@ export default class CheckLikes extends React.Component {
                             <Image
                                 style={{
                                     marginTop: 30,
-                                    width: illustWidth * 0.5,
-                                    height: illustHeight * 0.5,
+                                    width: Cons.stickerWidth,
+                                    height: Cons.stickerHeight,
                                     resizeMode: 'cover'
                                 }}
-                                source={PreloadImage.review}
+                                source={PreloadImage.likes}
                             />
                         </View>
                     }

@@ -586,35 +586,13 @@ export default class ReadAllReviewsScreen extends React.Component {
                 <Image
                     style={{
                         marginTop: 30,
-                        width: 496 * 0.5,
-                        height: 403 * 0.5,
+                        width: Cons.stickerWidth,
+                        height: Cons.stickerHeight,
                         resizeMode: 'cover'
                     }}
-                    source={PreloadImage.customer2}
+                    source={PreloadImage.reviews}
                 />
             </View>
-
-            /*
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text style={{
-                    // color: Theme.color.text2,
-                    color: 'rgb(247, 178, 57)',
-                    fontSize: 24,
-                    paddingTop: 4,
-                    fontFamily: "Chewy-Regular"
-                }}>No customer reviews yet</Text>
-
-                <Image
-                    style={{
-                        marginTop: 20,
-                        width: 200 / 510 * 600,
-                        height: 200,
-                        resizeMode: 'cover'
-                    }}
-                    source={PreloadImage.find}
-                />
-            </View>
-            */
         );
     }
 

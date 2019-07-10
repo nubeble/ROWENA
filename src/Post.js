@@ -302,14 +302,9 @@ export default class Post extends React.Component<InjectedProps> {
         const chart = this.state.chartInfo;
         if (!chart) return null;
 
-        let visitCount = 0; // people
-        let totalVisitCount = 0;
-        let visitCountPerDay = 0; // people
-        if (post.visits) { // Consider: tmp
-            visitCount = post.visits.length;
-            totalVisitCount = this.getVisitCount(post.visits);
-            visitCountPerDay = this.getVisitCountPerDay(post.visits);
-        }
+        const visitCount = post.visits.length;
+        const totalVisitCount = this.getVisitCount(post.visits);
+        const visitCountPerDay = this.getVisitCountPerDay(post.visits);
 
         const newChart = {
             cityName: chart.cityName,
@@ -392,14 +387,9 @@ export default class Post extends React.Component<InjectedProps> {
         const cityName = words[0];
 
         // 2) statement
-        let visitCount = 0;
-        let totalVisitCount = 0;
-        let visitCountPerDay = 0;
-        if (post.visits) { // Consider: tmp
-            visitCount = post.visits.length;
-            totalVisitCount = this.getVisitCount(post.visits);
-            visitCountPerDay = this.getVisitCountPerDay(post.visits);
-        }
+        const visitCount = post.visits.length;
+        const totalVisitCount = this.getVisitCount(post.visits);
+        const visitCountPerDay = this.getVisitCountPerDay(post.visits);
 
         const chart = {
             // cityName: extra.cityName,
