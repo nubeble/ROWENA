@@ -531,16 +531,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         // update Intro.feedList
                         Intro.feedList.set(feed.id, newFeed);
 
-                        // update
-                        let _popularFeeds = [...this.state.popularFeeds];
-                        const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
-                        if (index !== -1) {
-                            console.log('popularFeeds[', index, '] changed.');
-                            _popularFeeds[index] = newFeed;
-                            !this.closed && this.setState({ popularFeeds: _popularFeeds });
-
-                            Intro.popularFeeds[index] = newFeed;
-                        }
+                        this.updateFeed(newFeed);
                     });
 
                     Intro.popularFeedsUnsubscribes.push(fi);
@@ -627,16 +618,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         // update Intro.feedList
                         Intro.feedList.set(feed.id, newFeed);
 
-                        // update
-                        let _recentFeeds = [...this.state.recentFeeds];
-                        const index = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
-                        if (index !== -1) {
-                            console.log('recentFeeds[', index, '] changed.');
-                            _recentFeeds[index] = newFeed;
-                            !this.closed && this.setState({ recentFeeds: _recentFeeds });
-
-                            Intro.recentFeeds[index] = newFeed;
-                        }
+                        this.updateFeed(newFeed);
                     });
 
                     Intro.recentFeedsUnsubscribes.push(fi);
@@ -668,6 +650,30 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         });
         Intro.recentFeeds = recentFeeds;
+    }
+
+    updateFeed(newFeed) {
+        // update popularFeeds
+        let _popularFeeds = [...this.state.popularFeeds];
+        const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+        if (index !== -1) {
+            console.log('popularFeeds[', index, '] changed.');
+            _popularFeeds[index] = newFeed;
+            !this.closed && this.setState({ popularFeeds: _popularFeeds });
+
+            Intro.popularFeeds[index] = newFeed;
+        }
+
+        // update recentFeeds
+        let _recentFeeds = [...this.state.recentFeeds];
+        const index2 = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
+        if (index2 !== -1) {
+            console.log('recentFeeds[', index2, '] changed.');
+            _recentFeeds[index2] = newFeed;
+            !this.closed && this.setState({ recentFeeds: _recentFeeds });
+
+            Intro.recentFeeds[index2] = newFeed;
+        }
     }
 
     openSearch() {

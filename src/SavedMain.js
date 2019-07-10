@@ -96,11 +96,13 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
         const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
-            // reload from the start
-            this.getSavedFeeds();
+            this.lastChangedTime = lastChangedTime;
 
-            // move scroll top
-            // this._flatList.scrollToOffset({ offset: 0, animated: true });
+            // reload from the start
+            this.getPlaces();
+
+            this.lastLoadedFeedIndex = -1;
+            this.drawPlaces();
         }
 
         this.focused = true;
@@ -127,7 +129,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     getPlaces() {
-        console.log('getPlaces()');
+        // console.log('getPlaces()');
 
         this.initMap();
 
@@ -147,7 +149,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     drawPlaces() { // set state feeds
-        console.log('drawPlaces()');
+        if (this.state.isLoadingFeeds) return;
 
         // all loaded
         if (this.lastLoadedFeedIndex >= this.order.length - 1) return;
@@ -179,18 +181,18 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
             // no need to subscribe
             const feeds = this.getValue(placeId);
+            const feedsSize = feeds.length;
             const pictures = this.getPictures(feeds);
 
             const _placeName = feeds[0].placeName;
-            // const _picture = feeds[0].picture; // test
             const _placeId = feeds[0].placeId;
 
             const newFeed = {
+                feedsSize,
                 placeName: _placeName, // city, state, country | city, country
-                // picture: _picture,
                 pictures,
                 placeId: _placeId,
-                feeds // array
+                // feeds // array
             };
 
             newFeeds.push(newFeed);
@@ -229,25 +231,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
         return pictures;
     }
 
-    getSavedFeeds() {
-        console.log('getSavedFeeds()');
-
-        if (this.state.isLoadingFeeds) return;
-
-        // check update
-        const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            this.lastChangedTime = lastChangedTime;
-
-            // reload from the start
-            this.getPlaces();
-
-            this.lastLoadedFeedIndex = -1;
-        }
-
-        this.drawPlaces();
-    }
-
     render() {
         return (
             <View style={styles.flex}>
@@ -267,26 +250,19 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={true}
 
-                    /*
-                    ListHeaderComponent={
-                        this.state.totalFeedsSize > 0 &&
-                        <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 0 }]}>
-                            <Text style={styles.title}>You picked {this.state.totalFeedsSize} girls</Text>
-                        </View>
-                    }
-                    */
-
                     data={this.state.feeds}
                     keyExtractor={item => item.placeId}
                     renderItem={({ item, index }) => {
                         const placeName = item.placeName;
                         const words = placeName.split(', ');
                         const city = words[0];
-                        const feedsSize = item.feeds.length;
+                        // const feedsSize = item.feeds.length;
+                        const feedsSize = item.feedsSize;
 
                         if (item.pictures.length === 1) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                // <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={styles.picture}
@@ -312,7 +288,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             );
                         } else if (item.pictures.length === 2) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={{
@@ -358,7 +334,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             );
                         } else if (item.pictures.length === 3) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={{
@@ -417,7 +393,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             );
                         } else if (item.pictures.length === 4) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
+                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={{
@@ -505,7 +481,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
                         if (!this.focused) return;
 
                         if (this.isCloseToBottom(nativeEvent)) {
-                            // this.getSavedFeeds();
                             this.drawPlaces();
                         }
                     }}
@@ -515,7 +490,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     refreshing={this.state.refreshing}
 
                     ListFooterComponent={
-                        // this.state.isLoadingFeeds &&
                         this.state.isLoadingFeeds && this.state.loadingType === 200 &&
                         <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
@@ -562,7 +536,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
                 />
 
                 {
-                    // this.state.isLoadingFeeds &&
                     this.state.isLoadingFeeds && this.state.loadingType === 100 &&
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator
@@ -590,8 +563,10 @@ export default class SavedMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
-        this.lastChangedTime = 0;
-        this.getSavedFeeds();
+        this.getPlaces();
+
+        this.lastLoadedFeedIndex = -1;
+        this.drawPlaces();
 
         !this.closed && this.setState({ refreshing: false });
     }

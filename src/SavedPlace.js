@@ -33,12 +33,11 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
     state = {
         feeds: [],
+        placeName: null,
+        totalFeedsSize: 0,
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
-        // refreshing: false,
-
-        placeName: null,
-        totalFeedsSize: 0
+        refreshing: false
     };
 
     constructor(props) {
@@ -72,6 +71,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
+        // placeName, placeId
+        const { placeId, city } = this.props.navigation.state.params;
+
+        this.placeId = placeId;
+        this.setState({ placeName: city });
+
+        /*
         const feeds = this.props.navigation.state.params.feeds;
 
         // placeName, placeId
@@ -83,10 +89,11 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             const placeId = feeds[0].placeId;
             this.placeId = placeId;
         }
+        */
 
-        this.__feeds = feeds;
+        // this.__feeds = feeds;
 
-        this.getFeeds();
+        // this.getFeeds();
     }
 
     @autobind
@@ -106,6 +113,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
+            this.lastChangedTime = lastChangedTime;
+
             // reload from the start
             this.getFeedsFromStart();
 
@@ -249,14 +258,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         const { profile } = this.props.profileStore;
         const likes = profile.likes;
         const length = likes.length;
-
-        // this.setState({ totalFeedsSize: length });
-
-        /*
-        if (length === 0) {
-            return;
-        }
-        */
 
         let newFeeds = [];
 
@@ -425,35 +426,37 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     </TouchableOpacity>
 
                     {
-                        this.state.totalFeedsSize > 0 ?
-                            <View style={{ justifyContent: 'center', marginLeft: 40 + 16, marginBottom: -8 }}>
+                        // this.state.totalFeedsSize > 0 ?
+                        <View style={{ justifyContent: 'center', marginLeft: 40 + 16, marginBottom: -8 }}>
+                            <Text style={{
+                                color: Theme.color.text1,
+                                fontSize: 14,
+                                fontFamily: "Roboto-Medium",
+                                // marginLeft: 40 + 16
+                            }}>Saved</Text>
+                            <Text style={{
+                                color: Theme.color.text1,
+                                fontSize: 20,
+                                fontFamily: "Roboto-Medium",
+                            }}>{this.state.placeName}
                                 <Text style={{
-                                    color: Theme.color.text1,
-                                    fontSize: 14,
-                                    fontFamily: "Roboto-Medium",
-                                    // marginLeft: 40 + 16
-                                }}>Saved</Text>
-                                <Text style={{
-                                    color: Theme.color.text1,
+                                    color: Theme.color.text4,
                                     fontSize: 20,
                                     fontFamily: "Roboto-Medium",
-                                }}>{this.state.placeName}
-                                    <Text style={{
-                                        color: Theme.color.text4,
-                                        fontSize: 20,
-                                        fontFamily: "Roboto-Medium",
-                                    }}> {this.state.totalFeedsSize}</Text>
-                                </Text>
-                            </View>
-                            :
-                            <View>
-                                <Text style={{
-                                    color: Theme.color.text1,
-                                    fontSize: 20,
-                                    fontFamily: "Roboto-Medium",
-                                    marginLeft: 40 + 16
-                                }}>Saved</Text>
-                            </View>
+                                }}> {this.state.totalFeedsSize}</Text>
+                            </Text>
+                        </View>
+                        /*
+                        :
+                        <View>
+                            <Text style={{
+                                color: Theme.color.text1,
+                                fontSize: 20,
+                                fontFamily: "Roboto-Medium",
+                                marginLeft: 40 + 16
+                            }}>Saved</Text>
+                        </View>
+                        */
                     }
                 </View>
                 {
@@ -587,8 +590,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         }}
                         // scrollEventThrottle={1}
 
-                        // onRefresh={this.handleRefresh}
-                        // refreshing={this.state.refreshing}
+                        onRefresh={this.handleRefresh}
+                        refreshing={this.state.refreshing}
 
                         ListFooterComponent={
                             // this.state.isLoadingFeeds &&
@@ -661,19 +664,19 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         );
     }
 
-    /*
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
-        this.lastChangedTime = 0;
-        this.getSavedFeeds();
+        this.getFeedsFromStart();
+
+        this.lastLoadedFeedIndex = -1;
+        this.getFeeds();
 
         !this.closed && this.setState({ refreshing: false });
     }
-    */
 }
 
 const styles = StyleSheet.create({
