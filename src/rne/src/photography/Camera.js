@@ -1,21 +1,21 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, ActivityIndicator, TouchableOpacity, Dimensions} from "react-native";
-import {Camera, Permissions} from "expo";
-
+import { StyleSheet, View, ActivityIndicator, TouchableOpacity, Dimensions } from "react-native";
+import { Camera } from "expo";
+import * as Permissions from 'expo-permissions';
 import {
     IconButton, Icon, StyleGuide, notImplementedYet, withTheme, SafeAreaView, type ThemeProps, type NavigationProps
 } from "../components";
 
-import {EnableCameraPermission} from "./components";
+import { EnableCameraPermission } from "./components";
 
 type PermissionStatus = 'undetermined' | 'granted' | 'denied';
 type CameraProps = NavigationProps<> & ThemeProps;
 type CameraState = {
-  hasCameraPermission: null | boolean,
-  type: number,
-  flashMode: number,
-  showGrid: boolean
+    hasCameraPermission: null | boolean,
+    type: number,
+    flashMode: number,
+    showGrid: boolean
 };
 
 class CameraScreen extends React.Component<CameraProps, CameraState> {
@@ -32,8 +32,8 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
     }
 
     toggleFlash = () => {
-        const {flashMode} = this.state;
-        const {on, off} = Camera.Constants.FlashMode;
+        const { flashMode } = this.state;
+        const { on, off } = Camera.Constants.FlashMode;
         this.setState({ flashMode: flashMode === on ? off : on });
     }
 
@@ -42,8 +42,8 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
     }
 
     toggleCamera = () => {
-        const {type} = this.state;
-        const {front, back} = Camera.Constants.Type;
+        const { type } = this.state;
+        const { front, back } = Camera.Constants.Type;
         this.setState({ type: type === back ? front : back });
     }
 
@@ -52,14 +52,14 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
     }
 
     async componentDidMount(): Promise<void> {
-        const {status} = await Permissions.askAsync(Permissions.CAMERA);
+        const { status } = await Permissions.askAsync(Permissions.CAMERA);
         this.setCameraPermission(status);
     }
 
     render(): React.Node {
-        const {toggleFlash, toggleCamera, goBack, toggleGrid} = this;
-        const {hasCameraPermission, type, flashMode, showGrid} = this.state;
-        const {theme} = this.props;
+        const { toggleFlash, toggleCamera, goBack, toggleGrid } = this;
+        const { hasCameraPermission, type, flashMode, showGrid } = this.state;
+        const { theme } = this.props;
         if (hasCameraPermission === null) {
             return (
                 <View style={styles.loading}>
@@ -70,10 +70,10 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
             return <EnableCameraPermission />;
         }
         return (
-            <Camera style={styles.camera} {...{type, flashMode}}>
+            <Camera style={styles.camera} {...{ type, flashMode }}>
                 <SafeAreaView style={styles.cameraSafeArea} top>
                     <View style={styles.header}>
-                        <IconButton name="grid" onPress={toggleGrid}/>
+                        <IconButton name="grid" onPress={toggleGrid} />
                         <IconButton
                             name="flash"
                             onPress={toggleFlash}
@@ -84,22 +84,22 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
                         showGrid && (
                             <View style={styles.grid}>
                                 <View style={styles.row}>
-                                    <View style={styles.cell}/>
-                                    <View style={styles.cell}/>
+                                    <View style={styles.cell} />
+                                    <View style={styles.cell} />
                                 </View>
                                 <View style={styles.row}>
-                                    <View style={styles.cell}/>
-                                    <View style={styles.cell}/>
+                                    <View style={styles.cell} />
+                                    <View style={styles.cell} />
                                 </View>
                                 <View style={styles.row}>
-                                    <View style={styles.cell}/>
-                                    <View style={styles.cell}/>
+                                    <View style={styles.cell} />
+                                    <View style={styles.cell} />
                                 </View>
                             </View>
                         )
                     }
                     <View style={styles.footer}>
-                        <IconButton name="cross" onPress={goBack}/>
+                        <IconButton name="cross" onPress={goBack} />
                         <TouchableOpacity onPress={notImplementedYet}>
                             <View style={styles.snapButton}>
                                 <View style={[styles.innerSnapButton, { backgroundColor: theme.palette.primary }]}>
@@ -107,7 +107,7 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                        <IconButton name="reverse" onPress={toggleCamera}/>
+                        <IconButton name="reverse" onPress={toggleCamera} />
                     </View>
                 </SafeAreaView>
             </Camera>
@@ -115,7 +115,7 @@ class CameraScreen extends React.Component<CameraProps, CameraState> {
     }
 }
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const styles = StyleSheet.create({
     loading: {
         flex: 1,

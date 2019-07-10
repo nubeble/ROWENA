@@ -1,17 +1,17 @@
 // @flow
 import * as React from "react";
-import {StyleSheet} from "react-native";
-import {MapView} from "expo";
+import { StyleSheet } from "react-native";
+import { MapView } from "expo";
 import ClusteredMapView from "react-native-maps-super-cluster";
 
-import {type NavigationProps} from "../../components";
-import {type Photo} from "../api";
+import { type NavigationProps } from "../../components";
+import { type Photo } from "../api";
 import PhotoThumbnail from "./PhotoThumbnail";
 import PhotoCluster from "./PhotoCluster";
 
 const mapStyle = require("../../components/mapStyle");
 
-const {Marker} = MapView;
+const { Marker } = MapView;
 
 type Location = { latitude: number, longitude: number };
 type Cluster = {
@@ -45,40 +45,40 @@ export default class PhotoMap extends React.Component<PhotoMapProps> {
     }
 
     onPressMarker(photo: Photo) {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         const from = photo.location ? photo.location.city : "";
         navigation.navigate("Photo", { photo, from });
     }
 
     onPressCluster(photos: Photo[]) {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         navigation.navigate("Place", { photos });
     }
 
     renderMarker = (dp: { location: Location, photo: Photo }): React.Node => {
-        const {navigation} = this.props;
-        const {photo} = dp;
+        const { navigation } = this.props;
+        const { photo } = dp;
         return (
             <Marker coordinate={dp.location} key={photo.id} onPress={() => this.onPressMarker(photo)}>
-                <PhotoThumbnail size={60} from="" {...{photo, navigation}}/>
+                <PhotoThumbnail size={60} from="" {...{ photo, navigation }} />
             </Marker>
         );
     }
 
     renderCluster = (cluster: Cluster): React.Node => {
-        const {navigation} = this.props;
-        const {pointCount: count, clusterId, coordinate} = cluster;
+        const { navigation } = this.props;
+        const { pointCount: count, clusterId, coordinate } = cluster;
         const clusteredPoints = this.map.getClusteringEngine().getLeaves(clusterId, 100);
         const photos = clusteredPoints.map(clusterPoint => clusterPoint.properties.item.photo);
         return (
             <Marker coordinate={coordinate} onPress={() => this.onPressCluster(photos)}>
-                <PhotoCluster {...{photos, navigation, count}}/>
+                <PhotoCluster {...{ photos, navigation, count }} />
             </Marker>
         );
     }
 
     render(): React.Node {
-        const {photos} = this.props;
+        const { photos } = this.props;
         const data = photos.map(photo => ({ photo, location: photo.location && photo.location.position }));
         return (
             <ClusteredMapView

@@ -3,11 +3,11 @@
 import * as _ from "lodash";
 
 import * as React from "react";
-import {Animated, Dimensions} from "react-native";
-import {Audio} from "expo";
+import { Animated, Dimensions } from "react-native";
+import { Audio } from "expo";
 
-import type {PlaybackStatus} from "expo/src/av/AV";
-import type {Playlist, PlaylistEntry} from "../api";
+import type { PlaybackStatus } from "expo/src/av/AV";
+import type { Playlist, PlaylistEntry } from "../api";
 
 type CompositeAnimation = {
     start: () => void,
@@ -34,7 +34,7 @@ type PlayerProviderState = {
 
 export default class PlayerProvider extends React.Component<PlayerProviderProps, PlayerProviderState> {
 
-  static instance: PlayerProvider | null = null;
+    static instance: PlayerProvider | null = null;
 
     progressAnimation: CompositeAnimation;
     sound: Audio.Sound;
@@ -70,23 +70,23 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
     resetProgress() { this.setState({ progress: new Animated.Value(0) }); }
 
     async play(playlist: Playlist, playlistEntry: PlaylistEntry): Promise<void> {
-        const {locked} = this.state;
+        const { locked } = this.state;
         if (!locked) {
             this.load(playlist, playlistEntry);
         }
     }
 
     async load(playlist: Playlist, playlistEntry: PlaylistEntry): Promise<void> {
-        const {sliding, progress} = this.state;
+        const { sliding, progress } = this.state;
         this.lock();
-        const {uri} = playlistEntry.track;
+        const { uri } = playlistEntry.track;
         Animated.timing(sliding, { duration: 300, toValue: 0, useNativeDriver }).start();
         this.setState({ playlist, playlistEntry });
         if (this.sound) {
             this.resetProgress();
             await this.sound.unloadAsync();
         }
-        const {sound, status} = await Audio.Sound.create({ uri }, { shouldPlay: true }, this.statusUpdate, false);
+        const { sound, status } = await Audio.Sound.create({ uri }, { shouldPlay: true }, this.statusUpdate, false);
         this.sound = sound;
         if (status.durationMillis) {
             const duration = status.durationMillis;
@@ -102,18 +102,18 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
     }
 
     isPlaylistPlaying(playlist: Playlist): boolean {
-        const {isPlaying} = this.state;
+        const { isPlaying } = this.state;
         return isPlaying && this.state.playlist != null && this.state.playlist.id === playlist.id;
     }
 
     isSongPlaying(playlist: Playlist, playlistEntry: PlaylistEntry): boolean {
         return this.state.playlist != null && this.state.playlistEntry != null &&
-         playlist.id === this.state.playlist.id &&
-         this.state.playlistEntry.track.uri === playlistEntry.track.uri;
+            playlist.id === this.state.playlist.id &&
+            this.state.playlistEntry.track.uri === playlistEntry.track.uri;
     }
 
     toggle = async (): Promise<void> => {
-        const {progress, isPlaying} = this.state;
+        const { progress, isPlaying } = this.state;
         if (isPlaying) {
             await this.sound.pauseAsync();
             this.progressAnimation.stop();
@@ -147,7 +147,7 @@ export default class PlayerProvider extends React.Component<PlayerProviderProps,
     }
 
     render(): React.Node {
-        const {children} = this.props;
+        const { children } = this.props;
         return (
             <PlayerContext.Provider value={this.state}>
                 {children}
@@ -162,13 +162,13 @@ export type PlayerProps = {
 };
 
 // eslint-disable-next-line max-len
-export function withPlayer<Props: {}, Comp: React.ComponentType<Props>>(C: Comp): React.ComponentType<$Diff<React.ElementConfig<Comp>, PlayerProps>> {
+export function withPlayer<Props: { }, Comp: React.ComponentType < Props >> (C: Comp): React.ComponentType < $Diff < React.ElementConfig < Comp >, PlayerProps >> {
     return props => (
         <PlayerContext.Consumer>
-            {player => <C {...{ player }} {...props}/>}
+            {player => <C {...{ player }} {...props} />}
         </PlayerContext.Consumer>
     );
 }
 
 const useNativeDriver = true;
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");

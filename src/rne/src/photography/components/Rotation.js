@@ -1,10 +1,10 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, ScrollView, Animated, Dimensions} from "react-native";
+import { StyleSheet, View, ScrollView, Animated, Dimensions } from "react-native";
 
-import {LinearGradient} from "expo";
+import { LinearGradient } from "expo";
 
-import {StyleGuide, withTheme, type ThemeProps} from "../../components";
+import { StyleGuide, withTheme, type ThemeProps } from "../../components";
 
 import Degrees from "./Degrees";
 
@@ -16,10 +16,10 @@ class Rotation extends React.Component<RotationProps> {
 
 
     render(): React.Node {
-        const {theme, rotation} = this.props;
+        const { theme, rotation } = this.props;
         return (
             <View style={styles.root}>
-                <Degrees {...{rotation}}/>
+                <Degrees {...{ rotation }} />
                 <View style={styles.scroll}>
                     <LinearGradient
                         style={{ ...StyleSheet.absoluteFillObject }}
@@ -43,7 +43,7 @@ class Rotation extends React.Component<RotationProps> {
                         horizontal
                     >
                         {
-                            repeat(ticks + 2).map(tick => <View style={styles.tick} key={tick}/>)
+                            repeat(ticks + 2).map(tick => <View style={styles.tick} key={tick} />)
                         }
                     </ScrollView>
                 </View>

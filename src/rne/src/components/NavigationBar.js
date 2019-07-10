@@ -1,20 +1,20 @@
 // @flow
 import * as React from "react";
 
-import {View, Animated, StyleSheet} from "react-native";
-import {LinearGradient} from "expo";
+import { View, Animated, StyleSheet } from "react-native";
+import { LinearGradient } from "expo";
 
-import type {____ViewStyleProp_Internal as Style} from "react-native/Libraries/StyleSheet/StyleSheetTypes";
+import type { ____ViewStyleProp_Internal as Style } from "react-native/Libraries/StyleSheet/StyleSheetTypes";
 
 import LeftAction from "./LeftAction";
 import Text from "./Text";
 import IconButton from "./IconButton";
 import SafeAreaView from "./SafeAreaView";
-import {withTheme, StyleGuide} from "./theme";
+import { withTheme, StyleGuide } from "./theme";
 
-import type {ThemeProps} from "./theme";
-import type {NavigationProps} from "./Navigation";
-import type {Action} from "./Model";
+import type { ThemeProps } from "./theme";
+import type { NavigationProps } from "./Navigation";
+import type { Action } from "./Model";
 
 type NavigationBarType = "opaque" | "transparent";
 
@@ -40,7 +40,7 @@ class NavigationBar extends React.Component<NavigationBarProps> {
     };
 
     goBack = () => {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         navigation.goBack();
     }
 
@@ -56,7 +56,7 @@ class NavigationBar extends React.Component<NavigationBarProps> {
             <SafeAreaView style={containerStyle} top>
                 <View style={styles.content}>
                     <View style={[styles.leftBlock]}>
-                        {back && <LeftAction onPress={this.goBack} name="arrow-left" label={back}/>}
+                        {back && <LeftAction onPress={this.goBack} name="arrow-left" label={back} />}
                     </View>
                     {
                         (title !== "" && !expanded) && (

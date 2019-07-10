@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, SafeAreaView} from "react-native";
-import {LinearGradient} from "expo";
+import { StyleSheet, View, SafeAreaView } from "react-native";
+import { LinearGradient } from "expo";
 
-import {StyleGuide} from "./theme";
+import { StyleGuide } from "./theme";
 
 type TransparentHeaderProps = {
     children: React.Node
@@ -12,7 +12,7 @@ type TransparentHeaderProps = {
 export default class TransparentHeader extends React.PureComponent<TransparentHeaderProps> {
 
     render(): React.Node {
-        const {children} = this.props;
+        const { children } = this.props;
         return (
             <LinearGradient colors={["black", "transparent"]}>
                 <SafeAreaView>

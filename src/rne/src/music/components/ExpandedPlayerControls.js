@@ -2,15 +2,15 @@
 import * as _ from "lodash";
 
 import * as React from "react";
-import {StyleSheet, View, Dimensions, Animated, Slider, ActivityIndicator} from "react-native";
-import {LinearGradient} from "expo";
-import {SafeAreaView} from "react-navigation";
+import { StyleSheet, View, Dimensions, Animated, Slider, ActivityIndicator } from "react-native";
+import { LinearGradient } from "expo";
+import { SafeAreaView } from "react-navigation";
 
-import {IconButton, StyleGuide, withTheme, type ThemeProps} from "../../components";
+import { IconButton, StyleGuide, withTheme, type ThemeProps } from "../../components";
 
-import type {Track, Playlist} from "../api";
+import type { Track, Playlist } from "../api";
 
-import PlayerProvider, {withPlayer, type PlayerProps} from "./Player";
+import PlayerProvider, { withPlayer, type PlayerProps } from "./Player";
 
 type InjectedProps = ThemeProps & PlayerProps;
 type ExpandedPlayerControlsProps = InjectedProps & {
@@ -41,21 +41,21 @@ class ExpandedPlayerControls extends React.Component<ExpandedPlayerControlsProps
 
     shuffle = async (): Promise<void> => {
         const playerProvider = PlayerProvider.getInstance();
-        const {playlist, switchTrack} = this.props;
+        const { playlist, switchTrack } = this.props;
         const entry = await playerProvider.shuffle(playlist);
         switchTrack(entry.track);
     }
 
     replay = () => {
         const playerProvider = PlayerProvider.getInstance();
-        const {playlist, track} = this.props;
+        const { playlist, track } = this.props;
         const entry = _.find(playlist.entries, e => e.track.uri === track.uri);
         playerProvider.play(playlist, entry);
     }
 
     play = async (): Promise<void> => {
         const playerProvider = PlayerProvider.getInstance();
-        const {playlist, track, switchTrack} = this.props;
+        const { playlist, track, switchTrack } = this.props;
         const entry = _.find(playlist.entries, e => e.track.uri === track.uri);
         await playerProvider.play(playlist, entry);
         switchTrack(track);
@@ -68,8 +68,8 @@ class ExpandedPlayerControls extends React.Component<ExpandedPlayerControlsProps
 
     render(): React.Node {
         const playerProvider = PlayerProvider.getInstance();
-        const {playlist, track, player, theme} = this.props;
-        const {repeat, shuffleMode} = this.state;
+        const { playlist, track, player, theme } = this.props;
+        const { repeat, shuffleMode } = this.state;
         const entry = _.find(playlist.entries, e => e.track.uri === track.uri);
         const isSongPlaying = playerProvider.isSongPlaying(playlist, entry);
         const translateX = isSongPlaying ? player.progress.interpolate({
@@ -80,7 +80,7 @@ class ExpandedPlayerControls extends React.Component<ExpandedPlayerControlsProps
             <View>
                 <AnimatedLinearGradient
                     colors={["white", theme.palette.secondary]}
-                    style={[styles.progress, { transform: [{ translateX }]}]}
+                    style={[styles.progress, { transform: [{ translateX }] }]}
                 />
                 <SafeAreaView>
                     <View style={styles.buttons}>
@@ -108,7 +108,7 @@ class ExpandedPlayerControls extends React.Component<ExpandedPlayerControlsProps
                         }
                         {
                             (!player.isLoaded) && (
-                                <ActivityIndicator color={theme.palette.primary}/>
+                                <ActivityIndicator color={theme.palette.primary} />
                             )
                         }
                         <IconButton
@@ -147,7 +147,7 @@ class ExpandedPlayerControls extends React.Component<ExpandedPlayerControlsProps
     }
 }
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 const styles = StyleSheet.create({
     progress: {

@@ -1,13 +1,13 @@
 // @flow
 import * as React from "react";
-import {View, StyleSheet, ActivityIndicator, Animated, Dimensions, TouchableWithoutFeedback} from "react-native";
-import {LinearGradient} from "expo";
+import { View, StyleSheet, ActivityIndicator, Animated, Dimensions, TouchableWithoutFeedback } from "react-native";
+import { LinearGradient } from "expo";
 
-import {IconButton, Text, Image, withTheme} from "../../components";
-import {StyleGuide, type ThemeProps} from "../../components/theme";
+import { IconButton, Text, Image, withTheme } from "../../components";
+import { StyleGuide, type ThemeProps } from "../../components/theme";
 
 import PlayerActionSheet from "./PlayerActionSheet";
-import PlayerProvider, {withPlayer, type PlayerProps} from "./Player";
+import PlayerProvider, { withPlayer, type PlayerProps } from "./Player";
 
 type PlayerControlsProps = PlayerProps & ThemeProps;
 
@@ -22,15 +22,15 @@ class PlayerControls extends React.Component<PlayerControlsProps> {
     }
 
     toggle = () => {
-        const {player} = this.props;
+        const { player } = this.props;
         if (player.playlistEntry && player.playlist) {
             this.playerActionSheet.toggle(player.playlist, player.playlistEntry.track);
         }
     }
 
     render(): React.Node {
-        const {theme, player} = this.props;
-        const {isLoaded, sliding, progress, playlistEntry, isPlaying, playlist} = player;
+        const { theme, player } = this.props;
+        const { isLoaded, sliding, progress, playlistEntry, isPlaying, playlist } = player;
         const playerProvider = PlayerProvider.getInstance();
         const translateY = sliding.interpolate({
             inputRange: [0, 64],
@@ -42,16 +42,16 @@ class PlayerControls extends React.Component<PlayerControlsProps> {
         });
         const borderColor = theme.palette.primary;
         return (
-            <Animated.View style={[styles.container, { transform: [{ translateY }]}]}>
+            <Animated.View style={[styles.container, { transform: [{ translateY }] }]}>
                 <AnimatedLinearGradient
                     colors={["white", theme.palette.secondary]}
-                    style={[styles.progress, { borderColor, transform: [{ translateX }]}]}
+                    style={[styles.progress, { borderColor, transform: [{ translateX }] }]}
                 />
                 <TouchableWithoutFeedback onPress={this.toggle}>
                     <View style={styles.controls}>
                         {
                             !isLoaded && (
-                                <ActivityIndicator color={theme.palette.primary}/>
+                                <ActivityIndicator color={theme.palette.primary} />
                             )
                         }
                         {
@@ -75,14 +75,14 @@ class PlayerControls extends React.Component<PlayerControlsProps> {
                         }
                         {
                             playlistEntry && (
-                                <Image style={styles.cover} {...playlistEntry.album.picture}/>
+                                <Image style={styles.cover} {...playlistEntry.album.picture} />
                             )
                         }
                     </View>
                 </TouchableWithoutFeedback>
                 {
                     playlist && (
-                        <PlayerActionSheet ref={this.setPlayerActionSheet} playlist={playlist}/>
+                        <PlayerActionSheet ref={this.setPlayerActionSheet} playlist={playlist} />
                     )
                 }
             </Animated.View>
@@ -90,7 +90,7 @@ class PlayerControls extends React.Component<PlayerControlsProps> {
     }
 }
 
-const {width} = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
 const styles = StyleSheet.create({
     container: {

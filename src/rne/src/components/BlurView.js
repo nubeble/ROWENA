@@ -2,7 +2,6 @@
 import * as React from "react";
 import { Animated, Platform } from "react-native";
 import AnimatedInterpolation from "react-native/Libraries/Animated/src/nodes/AnimatedInterpolation";
-// import {BlurView as ExpoBlurView} from "expo";
 import { BlurView as ExpoBlurView } from 'expo-blur';
 
 import { StyleGuide, type StyleProps } from "./theme";

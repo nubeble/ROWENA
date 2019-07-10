@@ -1,18 +1,19 @@
 // @flow
 import autobind from "autobind-decorator";
 import * as React from "react";
-import {StyleSheet, View, TouchableWithoutFeedback, Image} from "react-native";
-import {ImagePicker, Permissions} from "expo";
-import {Content} from "native-base";
-import {Feather as Icon} from "@expo/vector-icons";
+import { StyleSheet, View, TouchableWithoutFeedback, Image } from "react-native";
+import { ImagePicker } from "expo";
+import * as Permissions from 'expo-permissions';
+import { Content } from "native-base";
+import { Feather as Icon } from "@expo/vector-icons";
 import {
     NavHeader, Button, TextField, Theme, ImageUpload, serializeException, RefreshIndicator
 } from "../../components";
 import Firebase from "../../../../Firebase"
 import EnableCameraRollPermission from "./EnableCameraRollPermission";
-import type {ScreenParams} from "../../components/Types";
-import type {Profile} from "../../components/Model";
-import type {Picture} from "../../components/ImageUpload";
+import type { ScreenParams } from "../../components/Types";
+import type { Profile } from "../../components/Model";
+import type { Picture } from "../../components/ImageUpload";
 
 type SettingsState = {
     name: string,
@@ -35,24 +36,24 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
     };
 
     async componentDidMount(): Promise<void> {
-        const {navigation} = this.props;
-        const {profile} = navigation.state.params;
+        const { navigation } = this.props;
+        const { profile } = navigation.state.params;
         const picture = {
             uri: profile.picture.uri,
             height: 0,
             width: 0
         };
         this.setState({ name: profile.name, picture, loading: false, hasCameraRollPermission: null });
-        const {status} = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+        const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
         this.setState({ hasCameraRollPermission: status === "granted" });
     }
 
     @autobind
     async save(): Promise<void> {
-        const {navigation} = this.props;
+        const { navigation } = this.props;
         const originalProfile = navigation.state.params.profile;
-        const {name, picture} = this.state;
-        const {uid} = Firebase.auth.currentUser;
+        const { name, picture } = this.state;
+        const { uid } = Firebase.auth.currentUser;
         this.setState({ loading: true });
         try {
             if (name !== originalProfile.name) {
@@ -79,7 +80,7 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
             aspect: [4, 3]
         });
         if (result.cancelled === false) {
-            const {uri, width, height} = result;
+            const { uri, width, height } = result;
             const picture: Picture = {
                 uri,
                 width,
@@ -95,8 +96,8 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
     }
 
     render(): React.Node {
-        const {navigation} = this.props;
-        const {name, picture, loading, hasCameraRollPermission} = this.state;
+        const { navigation } = this.props;
+        const { name, picture, loading, hasCameraRollPermission } = this.state;
         if (hasCameraRollPermission === null) {
             return (
                 <View style={styles.refreshContainer}>
@@ -108,13 +109,13 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
         }
         return (
             <View style={styles.container}>
-                <NavHeader title="Settings" back {...{navigation}}/>
+                <NavHeader title="Settings" back {...{ navigation }} />
                 <Content style={styles.content}>
                     <View style={styles.avatarContainer}>
                         <TouchableWithoutFeedback onPress={this.setPicture}>
                             <View style={styles.avatar}>
-                                <Image style={styles.profilePic} source={{ uri: picture.uri }}/>
-                                <Icon name="camera" size={25} color="white" style={styles.editIcon}/>
+                                <Image style={styles.profilePic} source={{ uri: picture.uri }} />
+                                <Icon name="camera" size={25} color="white" style={styles.editIcon} />
                             </View>
                         </TouchableWithoutFeedback>
                     </View>
@@ -127,8 +128,8 @@ export default class Settings extends React.Component<ScreenParams<{ profile: Pr
                         onSubmitEditing={this.save}
                         onChangeText={this.setName}
                     />
-                    <Button label="Save" full primary onPress={this.save} {...{loading}}/>
-                    <Button label="Sign-Out" full onPress={logout}/>
+                    <Button label="Save" full primary onPress={this.save} {...{ loading }} />
+                    <Button label="Sign-Out" full onPress={logout} />
                 </Content>
             </View>
         );

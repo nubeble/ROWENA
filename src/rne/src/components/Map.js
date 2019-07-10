@@ -1,12 +1,12 @@
 // @flow
 import * as React from "react";
-import {View, StyleSheet} from "react-native";
-import {LinearGradient, MapView} from "expo";
+import { View, StyleSheet } from "react-native";
+import { LinearGradient, MapView } from "expo";
 
-import {withTheme} from "./theme";
+import { withTheme } from "./theme";
 
-import type {ThemeProps} from "./theme";
-import type {Location, Marker} from "./Model";
+import type { ThemeProps } from "./theme";
+import type { Location, Marker } from "./Model";
 
 const mapStyle = require("../components/mapStyle");
 
@@ -27,7 +27,7 @@ class Map extends React.Component<MapProps> {
     map: MapView;
 
     componentDidMount() {
-        const {coordinate} = this.props;
+        const { coordinate } = this.props;
         // eslint-disable-next-line no-undef
         requestAnimationFrame(() => {
             this.map.animateToRegion({
@@ -43,7 +43,7 @@ class Map extends React.Component<MapProps> {
     }
 
     render(): React.Node {
-        const {markers, height, theme} = this.props;
+        const { markers, height, theme } = this.props;
         return (
             <View style={{ height }}>
                 <MapView

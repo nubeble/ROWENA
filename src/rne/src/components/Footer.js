@@ -1,9 +1,9 @@
 // @flow
 import * as React from "react";
-import {StyleSheet, View, SafeAreaView} from "react-native";
-import {LinearGradient} from "expo";
+import { StyleSheet, View, SafeAreaView } from "react-native";
+import { LinearGradient } from "expo";
 
-import {StyleGuide} from "./theme";
+import { StyleGuide } from "./theme";
 
 type FooterProps = {
     children: React.Node
@@ -12,7 +12,7 @@ type FooterProps = {
 export default class Footer extends React.PureComponent<FooterProps> {
 
     render(): React.Node {
-        const {children} = this.props;
+        const { children } = this.props;
         const justifyContent = React.Children.count(children) === 1 ? "flex-end" : "space-between";
         return (
             <LinearGradient colors={["transparent", "black"]}>
