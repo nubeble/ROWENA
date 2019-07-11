@@ -1883,8 +1883,8 @@ export default class Post extends React.Component<InjectedProps> {
 
             for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
-                    <View style={{ alignItems: 'center', paddingVertical: 4 }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140}>
+                    <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140 + 8}>
                             <Svg.Rect
                                 x={0}
                                 y={10}
@@ -1928,13 +1928,13 @@ export default class Post extends React.Component<InjectedProps> {
                             />
                         </SvgAnimatedLinearGradient>
 
-                        <View style={{ marginTop: 8, borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
                     </View>
                 );
             }
 
             return (
-                <View>
+                <View style={{ paddingBottom: 10, marginBottom: Theme.spacing.tiny }}>
                     {reviewArray}
                 </View>
             );
@@ -2453,7 +2453,7 @@ export default class Post extends React.Component<InjectedProps> {
         const { profile } = this.props.profileStore;
         const post = this.state.post;
         const data = {
-            message: message,
+            message: profile.name + ' replied to your review: ' + message,
             placeId: post.placeId,
             feedId: post.id
         };

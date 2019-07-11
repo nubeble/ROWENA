@@ -161,7 +161,7 @@ export default class WriteReviewScreen extends React.Component {
         const receiver = post.uid; // owner
 
         const data = {
-            message: message,
+            message: senderName + ' wrote a review: ' + message,
             placeId: post.placeId,
             feedId: post.id
         };

@@ -322,7 +322,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         const receiver = guest.uid;
 
         const data = {
-            message: message
+            message: senderName + ' wrote a review: ' + message
         };
 
         sendPushNotification(sender, senderName, receiver, Cons.pushNotification.comment, data);
@@ -753,6 +753,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         let picture = null;
         let placeName = 'Not specified';
         let placeColor = Theme.color.text4;
+        let placeFont = "Roboto-Italic";
         let name = null;
         let avatarName = null;
         let avatarColor = 'black';
@@ -760,7 +761,10 @@ export default class UserMain extends React.Component<InjectedProps> {
         if (post) {
             picture = post.pictures.one.uri;
             placeName = post.placeName;
-            if (placeName) placeColor = Theme.color.text2;
+            if (placeName) {
+                placeColor = Theme.color.text2;
+                placeFont = "Roboto-Regular";
+            }
             name = post.name;
             avatarName = Util.getAvatarName(name);
             avatarColor = Util.getAvatarColor(post.id);
@@ -813,7 +817,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                             {name}</Text>
                         <Text style={{
                             marginTop: 4,
-                            color: placeColor, fontSize: 14, fontFamily: "Roboto-Regular"
+                            color: placeColor, fontSize: 14, fontFamily: placeFont
                         }}>{placeName}</Text>
                     </View>
                 </View>
@@ -870,47 +874,47 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             for (let i = 0; i < 4; i++) {
                 reviewArray.push(
-                    <View style={{ paddingVertical: 6, alignItems: 'center' }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={130}>
+                    <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={134 + 12}>
                             <Svg.Rect
                                 x={width - 100}
-                                y={8}
+                                y={10}
                                 width={100}
                                 height={6}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={8 + 20}
+                                y={10 + 20}
                                 width={'100%'}
                                 height={8}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={8 + 20 + 8 + 12}
+                                y={10 + 20 + 8 + 12}
                                 width={'60%'}
                                 height={8}
                             />
                             <Svg.Circle
                                 cx={24}
-                                cy={98}
+                                cy={100}
                                 r={24}
                             />
                             <Svg.Rect
                                 x={24 * 2 + 16}
-                                y={98 - 8 - 6}
+                                y={100 - 8 - 6}
                                 width={80}
                                 height={8}
                             />
                             <Svg.Rect
                                 x={24 * 2 + 16}
-                                y={98 + 6}
+                                y={100 + 6}
                                 width={80}
                                 height={8}
                             />
                         </SvgAnimatedLinearGradient>
                         {
                             i !== 3 &&
-                            <View style={{ marginTop: 12, width: Dimensions.get('window').width - 20 * 2, borderBottomColor: Theme.color.line, borderBottomWidth: 1 }} />
+                            <View style={{ width: Dimensions.get('window').width - 20 * 2, borderBottomColor: Theme.color.line, borderBottomWidth: 1 }} />
                         }
                     </View>
                 );
