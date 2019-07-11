@@ -199,7 +199,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                                 />
                                                 */
                                                 <View
-                                                    style={{ width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor }}
+                                                    style={{ width: '100%', height: '100%', borderRadius: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor }}
                                                 >
                                                     <Text style={{ color: 'white', fontSize: 34, paddingTop: 16, fontFamily: "Roboto-Medium" }}>
                                                         {avatarName}

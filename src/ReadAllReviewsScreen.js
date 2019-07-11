@@ -345,6 +345,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         const place = _profile.place ? _profile.place : 'Not specified';
         const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
+        const placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
 
         return (
             <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -397,7 +398,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                             {_profile.name}</Text>
                         <Text style={{
                             marginTop: 4,
-                            color: placeColor, fontSize: 14, fontFamily: "Roboto-Regular"
+                            color: placeColor, fontSize: 14, fontFamily: placeFont
                         }}>{place}</Text>
                     </View>
                 </View>
@@ -500,61 +501,77 @@ export default class ReadAllReviewsScreen extends React.Component {
     renderListEmptyComponent() {
         const { reviewStore } = this.props.navigation.state.params;
         const { reviews } = reviewStore;
-
         const loading = reviews === undefined;
 
         if (loading) {
+            // render skeleton
+
             const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
             let reviewArray = [];
 
             for (let i = 0; i < 5; i++) {
                 reviewArray.push(
-                    <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
-                            <Svg.Circle
-                                cx={18 + 2}
-                                cy={18 + 2}
-                                r={18}
+                    <View style={{ alignItems: 'center', paddingVertical: 8 }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={162}>
+                            <Svg.Rect
+                                x={0}
+                                y={10}
+                                width={100}
+                                height={8}
                             />
                             <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 - 12}
-                                width={60}
-                                height={6}
-                            />
-                            <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 + 6}
+                                x={width - 100}
+                                y={11}
                                 width={100}
                                 height={6}
                             />
-
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14}
+                                y={36}
                                 width={'100%'}
-                                height={6}
+                                height={8}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14}
+                                y={36 + 8 + 12}
                                 width={'100%'}
-                                height={6}
+                                height={8}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 14}
-                                width={'80%'}
-                                height={6}
+                                y={36 + 8 + 12 + 8 + 12}
+                                width={'60%'}
+                                height={8}
+                            />
+                            <Svg.Circle
+                                cx={26}
+                                cy={126}
+                                r={26}
+                            />
+                            <Svg.Rect
+                                x={26 * 2 + 16}
+                                y={126 - 8 - 6}
+                                width={80}
+                                height={8}
+                            />
+                            <Svg.Rect
+                                x={26 * 2 + 16}
+                                y={126 + 6}
+                                width={80}
+                                height={8}
                             />
                         </SvgAnimatedLinearGradient>
+                        {
+                            i !== 4 &&
+                            <View style={{ marginTop: 18, borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                        }
                     </View>
                 );
             }
 
             return (
-                <View style={{ paddingVertical: Theme.spacing.small }}>
+                <View>
                     {reviewArray}
                 </View>
             );

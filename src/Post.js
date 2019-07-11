@@ -1875,58 +1875,66 @@ export default class Post extends React.Component<InjectedProps> {
         // console.log('Post.renderReviews');
 
         if (reviews === undefined) {
-            // draw skeleton
+            // render skeleton
+
+            const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 2;
 
             let reviewArray = [];
-            const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 2;
 
             for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
-                    <View key={i} style={{ paddingVertical: 4 }}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={124}>
-                            <Svg.Circle
-                                cx={18 + 2}
-                                cy={18 + 2}
-                                r={18}
+                    <View style={{ alignItems: 'center', paddingVertical: 4 }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140}>
+                            <Svg.Rect
+                                x={0}
+                                y={10}
+                                width={100}
+                                height={8}
                             />
                             <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 - 12}
-                                width={60}
-                                height={6}
-                            />
-                            <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 + 6}
+                                x={width - 100}
+                                y={11}
                                 width={100}
                                 height={6}
                             />
-
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14}
+                                y={36}
                                 width={'100%'}
-                                height={6}
+                                height={8}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14}
-                                width={'100%'}
-                                height={6}
+                                y={36 + 8 + 12}
+                                width={'60%'}
+                                height={8}
+                            />
+                            <Svg.Circle
+                                cx={24}
+                                cy={106}
+                                r={24}
                             />
                             <Svg.Rect
-                                x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 14}
-                                width={'80%'}
-                                height={6}
+                                x={24 * 2 + 16}
+                                y={106 - 8 - 6}
+                                width={80}
+                                height={8}
+                            />
+                            <Svg.Rect
+                                x={24 * 2 + 16}
+                                y={106 + 6}
+                                width={80}
+                                height={8}
                             />
                         </SvgAnimatedLinearGradient>
+
+                        <View style={{ marginTop: 8, borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
                     </View>
                 );
             }
 
             return (
-                <View style={styles.reviewContainer}>
+                <View>
                     {reviewArray}
                 </View>
             );
@@ -1955,6 +1963,7 @@ export default class Post extends React.Component<InjectedProps> {
 
             const place = _profile.place ? _profile.place : 'Not specified';
             const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
+            const placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
 
             reviewArray.push(
                 <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -2012,7 +2021,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 {_profile.name}</Text>
                             <Text style={{
                                 marginTop: 4,
-                                color: placeColor, fontSize: 13, fontFamily: "Roboto-Regular"
+                                color: placeColor, fontSize: 13, fontFamily: placeFont
                             }}>{place}</Text>
                         </View>
                     </View>

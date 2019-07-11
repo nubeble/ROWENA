@@ -115,6 +115,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         let avatarName = 'Anonymous';
         let place = "Not specified";
         let placeColor = Theme.color.text4;
+        let placeFont = "Roboto-LightItalic";
         let count = 0;
         let picture = null;
         let dateText = null;
@@ -141,6 +142,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         if (profile.place) {
             place = profile.place;
             placeColor = Theme.color.text2;
+            placeFont = "Roboto-Light";
         }
         count = profile.receivedCommentsCount;
         picture = profile.picture.uri;
@@ -301,7 +303,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                                             style={{ width: 20, height: 20, resizeMode: 'cover' }}
                                             source={PreloadImage.home}
                                         />
-                                        <Text style={{ marginLeft: 12, fontSize: 18, color: placeColor, fontFamily: "Roboto-Light" }}>{place}</Text>
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: placeColor, fontFamily: placeFont }}>{place}</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
@@ -483,53 +485,53 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         // if (profile.receivedCommentsCount === 0) return this.renderEmptyImage();
 
         const { reviews } = this.commentStore;
-
         const loading = reviews === undefined;
 
         if (loading) {
+            // render skeleton
+
             const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
             let reviewArray = [];
 
             for (let i = 0; i < 4; i++) {
                 reviewArray.push(
-                    <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={156}>
-                            <Svg.Circle
-                                cx={18 + 2}
-                                cy={18 + 2 + 28}
-                                r={18}
-                            />
+                    <View style={{ alignItems: 'center' }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
                             <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 - 12 + 28}
-                                width={60}
-                                height={6}
-                            />
-                            <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 + 6 + 28}
+                                x={width - 100}
+                                y={8}
                                 width={100}
                                 height={6}
                             />
-
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 28}
+                                y={8 + 20}
                                 width={'100%'}
-                                height={6}
+                                height={8}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 28}
-                                width={'100%'}
-                                height={6}
+                                y={8 + 20 + 8 + 12}
+                                width={'60%'}
+                                height={8}
+                            />
+                            <Svg.Circle
+                                cx={24}
+                                cy={98}
+                                r={24}
                             />
                             <Svg.Rect
-                                x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 14 + 28}
-                                width={'80%'}
-                                height={6}
+                                x={24 * 2 + 16}
+                                y={98 - 8 - 6}
+                                width={80}
+                                height={8}
+                            />
+                            <Svg.Rect
+                                x={24 * 2 + 16}
+                                y={98 + 6}
+                                width={80}
+                                height={8}
                             />
                         </SvgAnimatedLinearGradient>
                     </View>

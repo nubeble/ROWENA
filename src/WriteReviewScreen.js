@@ -320,7 +320,7 @@ export default class WriteReviewScreen extends React.Component {
                 <Toast
                     ref="toast"
                     position='top'
-                    positionValue={Dimensions.get('window').height / 2}
+                    positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 /*
                 style={{backgroundColor:'red'}}

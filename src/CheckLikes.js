@@ -151,6 +151,7 @@ export default class CheckLikes extends React.Component {
                         const name = item.name;
                         const place = item.place ? item.place : 'Not specified';
                         const placeColor = item.place ? Theme.color.text2 : Theme.color.text4;
+                        const placeFont = item.place ? "Roboto-Regular" : "Roboto-Italic";
                         const picture = item.picture;
                         const avatarName = Util.getAvatarName(name);
                         const avatarColor = Util.getAvatarColor(item.uid);
@@ -183,7 +184,7 @@ export default class CheckLikes extends React.Component {
                                             {name}</Text>
                                         <Text style={{
                                             marginTop: 6,
-                                            color: placeColor, fontSize: 15, fontFamily: "Roboto-Regular"
+                                            color: placeColor, fontSize: 15, fontFamily: placeFont
                                         }}>{place}</Text>
                                     </View>
                                 </View>

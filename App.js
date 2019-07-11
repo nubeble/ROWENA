@@ -169,7 +169,7 @@ export default class App extends React.Component {
                 { cancelable: false }
             );
             */
-            this.refs["toast"].show('An unkown network error has occurred.', 500);
+            this.refs["toast"].show('Unstable network connection. Please check your connection and try again.', 500);
         } else { // connected / reconnected
             const preState = this.state.connectionState;
 

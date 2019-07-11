@@ -349,6 +349,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         let avatarName = 'Anonymous';
         let address = "Not specified";
         let addressColor = Theme.color.text4;
+        let addressFont = "Roboto-LightItalic";
         let reviewText = 'loading...';
         // let labelText = null;
         let imageUri = null;
@@ -369,6 +370,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         if (guest.address) {
             address = guest.address;
             addressColor = Theme.color.text2;
+            addressFont = "Roboto-Light";
         }
 
         const count = guest.receivedCommentsCount;
@@ -539,7 +541,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             style={{ width: 20, height: 20, resizeMode: 'cover' }}
                                             source={PreloadImage.home}
                                         />
-                                        <Text style={{ marginLeft: 12, fontSize: 18, color: addressColor, fontFamily: "Roboto-Light" }}>{address}</Text>
+                                        <Text style={{ marginLeft: 12, fontSize: 18, color: addressColor, fontFamily: addressFont }}>{address}</Text>
                                     </View>
 
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: Theme.spacing.small }}>
@@ -857,53 +859,53 @@ export default class UserMain extends React.Component<InjectedProps> {
         // if (guest.receivedCommentsCount === 0) return this.renderEmptyImage();
 
         const { reviews } = this.commentStore;
-
         const loading = reviews === undefined;
 
         if (loading) {
+            // render skeleton
+
             const width = Dimensions.get('window').width - Theme.spacing.base * 2;
 
             let reviewArray = [];
 
             for (let i = 0; i < 4; i++) {
                 reviewArray.push(
-                    <View key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={156}>
-                            <Svg.Circle
-                                cx={18 + 2}
-                                cy={18 + 2 + 28}
-                                r={18}
-                            />
+                    <View style={{ alignItems: 'center' }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
                             <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 - 12 + 28}
-                                width={60}
-                                height={6}
-                            />
-                            <Svg.Rect
-                                x={2 + 18 * 2 + 10}
-                                y={2 + 18 + 6 + 28}
+                                x={width - 100}
+                                y={8}
                                 width={100}
                                 height={6}
                             />
-
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 28}
+                                y={8 + 20}
                                 width={'100%'}
-                                height={6}
+                                height={8}
                             />
                             <Svg.Rect
                                 x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 28}
-                                width={'100%'}
-                                height={6}
+                                y={8 + 20 + 8 + 12}
+                                width={'60%'}
+                                height={8}
+                            />
+                            <Svg.Circle
+                                cx={24}
+                                cy={98}
+                                r={24}
                             />
                             <Svg.Rect
-                                x={0}
-                                y={2 + 18 * 2 + 14 + 14 + 14 + 28}
-                                width={'80%'}
-                                height={6}
+                                x={24 * 2 + 16}
+                                y={98 - 8 - 6}
+                                width={80}
+                                height={8}
+                            />
+                            <Svg.Rect
+                                x={24 * 2 + 16}
+                                y={98 + 6}
+                                width={80}
+                                height={8}
                             />
                         </SvgAnimatedLinearGradient>
                     </View>
