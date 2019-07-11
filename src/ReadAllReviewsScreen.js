@@ -627,7 +627,6 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
-        this.owner = undefined;
 
         /*
         if (this._showNotification) {
@@ -645,7 +644,6 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         this.selectedItem = ref;
         this.selectedItemIndex = index;
-        this.owner = owner;
     }
 
     showNotification(msg) {
@@ -706,7 +704,17 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         this.addReply(message);
 
-        this.sendPushNotification(message);
+        // send push notification
+        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
+        const receiver = reviewStore.reviews[this.selectedItemIndex].profile.uid;
+
+        const data = {
+            message: message,
+            placeId,
+            feedId
+        };
+
+        sendPushNotification(Firebase.user().uid, Firebase.user().name, receiver, Cons.pushNotification.reply, data);
 
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (!this.closed) {
@@ -836,21 +844,6 @@ export default class ReadAllReviewsScreen extends React.Component {
         }
 
         this.hideDialog();
-    }
-
-    sendPushNotification(message) {
-        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-
-        const sender = Firebase.user().uid;
-        const senderName = Firebase.user().name;
-        const receiver = this.owner;
-        const data = {
-            message: message,
-            placeId: placeId,
-            feedId, feedId
-        };
-
-        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.reply, data);
     }
 }
 

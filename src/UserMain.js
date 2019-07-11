@@ -315,19 +315,6 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     sendPushNotification(message) {
-        /*
-        const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-
-        const sender = Firebase.user().uid;
-        const senderName = Firebase.user().name;
-        const receiver = this.owner;
-        const data = {
-            message: message,
-            placeId: placeId,
-            feedId, feedId
-        };
-        */
-
         const { host, guest } = this.state;
 
         const sender = host.uid;

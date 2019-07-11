@@ -17,7 +17,7 @@ export var Vars = {
 export const Cons = {
     version: '0.9.52',
     buildNumber: '93088300',
-    lastUpdatedDate: 'Jul 10, 2019 10:40',
+    lastUpdatedDate: 'Jul 10, 2019 15:03',
 
     // push notification type
     pushNotification: {
@@ -77,6 +77,6 @@ export const Cons = {
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
 
-    stickerWidth: 150,
-    stickerHeight: 140
+    stickerWidth: 185,
+    stickerHeight: 160
 };

@@ -419,28 +419,29 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     async toggleLikes() {
-        if (this.__toggleLikes) return;
+        if (this.toggling) return;
 
-        this.__toggleLikes = true;
+        this.toggling = true;
 
         const post = this.state.post;
 
         // check the owner of the post
         if (Firebase.user().uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
-            this.__toggleLikes = false;
+            this.toggling = false;
             return;
         }
 
         if (!this.feed) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
-            this.__toggleLikes = false;
+            this.toggling = false;
             return;
         }
 
         let showBadge = false;
 
-        if (!this.state.liked) {
+        const liked = this.state.liked;
+        if (!liked) {
             !this.closed && this.setState({ liked: true });
 
             this.springValue.setValue(2);
@@ -465,10 +466,9 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         // update database
+        const uid = Firebase.user().uid;
         const placeId = post.placeId;
         const feedId = post.id;
-        const uid = Firebase.user().uid;
-
         const name = post.name;
         const placeName = post.placeName;
         // const averageRating = post.averageRating;
@@ -479,7 +479,7 @@ export default class Post extends React.Component<InjectedProps> {
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500);
-            this.__toggleLikes = false;
+            this.toggling = false;
             return;
         }
 
@@ -488,13 +488,16 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         // send push notification
-        const { profile } = this.props.profileStore;
-        const data = {
-            message: null,
-            placeId: post.placeId,
-            feedId: post.id
-        };
-        sendPushNotification(uid, profile.name, this.owner, Cons.pushNotification.like, data);
+        if (!liked) {
+            const { profile } = this.props.profileStore;
+            const data = {
+                message: profile.name + ' likes your post. ❤',
+                placeId: post.placeId,
+                feedId: post.id
+            };
+
+            sendPushNotification(uid, profile.name, post.uid, Cons.pushNotification.like, data);
+        }
 
         // update likes to state post
         /*
@@ -517,7 +520,7 @@ export default class Post extends React.Component<InjectedProps> {
         // const { feedStore } = this.props;
         // feedStore.updateFeed(newPost);
 
-        this.__toggleLikes = false;
+        this.toggling = false;
     }
 
     checkLiked(likes) {
@@ -750,7 +753,7 @@ export default class Post extends React.Component<InjectedProps> {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-            </View >
+            </View>
         );
     }
 
@@ -2201,7 +2204,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;
-        this.owner = undefined;
 
         /*
         if (this._showNotification) {
@@ -2219,7 +2221,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.selectedItem = ref;
         this.selectedItemIndex = index;
-        this.owner = owner;
     }
 
     showNotification(msg) {
@@ -2439,7 +2440,16 @@ export default class Post extends React.Component<InjectedProps> {
 
         this.addReply(message);
 
-        this.sendPushNotification(message);
+        // send push notification
+        const { profile } = this.props.profileStore;
+        const post = this.state.post;
+        const data = {
+            message: message,
+            placeId: post.placeId,
+            feedId: post.id
+        };
+
+        sendPushNotification(Firebase.user().uid, profile.name, post.uid, Cons.pushNotification.reply, data);
 
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (this.closed) return;
@@ -2543,25 +2553,6 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         this.hideDialog();
-    }
-
-    sendPushNotification(message) {
-        const { profile } = this.props.profileStore;
-
-        const post = this.state.post;
-
-        const sender = Firebase.user().uid;
-        // const senderName = Firebase.user().name; // use profile store
-        const senderName = profile.name;
-        // const receiver = post.uid; // owner
-        const receiver = this.owner;
-        const data = {
-            message: message,
-            placeId: post.placeId,
-            feedId: post.id
-        };
-
-        sendPushNotification(sender, senderName, receiver, Cons.pushNotification.reply, data);
     }
 }
 

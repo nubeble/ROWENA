@@ -14,6 +14,7 @@ import { Notifications } from 'expo';
 import Constants from 'expo-constants';
 import Firebase from './src/Firebase';
 import { Cons, Vars } from './src/Globals';
+import Toast from 'react-native-easy-toast';
 
 // disable mobx strict mode
 // configure({ enforceActions: 'observed' })
@@ -63,6 +64,11 @@ export default class App extends React.Component {
         badgeOnProfileCount: -1
     };
 
+    componentWillReceiveProps(nextProps) {
+        console.log('nextProps', nextProps);
+        console.log('this.props', this.props);
+    }
+
     componentDidMount() {
         console.log('App.componentDidMount');
         console.log('width', Dimensions.get('window').width);
@@ -88,16 +94,17 @@ export default class App extends React.Component {
         this.notificationListener = Notifications.addListener(this.handleNotification);
 
         // ToDo: test this.props.exp.notification
-        // console.log('props.exp.notification', this.props.exp.notification);
         if (this.props.exp.notification) {
             console.log('props.exp.notification', this.props.exp.notification);
 
+            /*
             Alert.alert(
                 'props.exp.notification',
                 this.props.exp.notification,
                 [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
                 { cancelable: false }
             );
+            */
         }
 
         // check the releaseChannel
@@ -142,31 +149,40 @@ export default class App extends React.Component {
         if (connectionInfo.type === 'none') { // disconnected
             this.setState({ connectionState: 1 });
 
+            /*
             Alert.alert(
                 'Network connection',
                 'You are currently offline.',
                 [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
                 { cancelable: false }
             );
+            */
+            this.refs["toast"].show('You are currently offline.', 500);
         } else if (connectionInfo.type === 'unknown') { // error case
             this.setState({ connectionState: 1 });
 
+            /*
             Alert.alert(
                 'Network connection',
                 'An unkown network error has occurred.',
                 [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
                 { cancelable: false }
             );
+            */
+            this.refs["toast"].show('An unkown network error has occurred.', 500);
         } else { // connected / reconnected
             const preState = this.state.connectionState;
 
             if (preState === 1) { // reconnected
+                /*
                 Alert.alert(
                     'Network connection',
                     'You are connected again.',
                     [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
                     { cancelable: false }
                 );
+                */
+                this.refs["toast"].show('You are connected again.', 500);
             }
 
             this.setState({ connectionState: 2 });
@@ -424,9 +440,19 @@ export default class App extends React.Component {
             />
         );
 
+        const toast = (
+            <Toast
+                ref="toast"
+                position='top'
+                positionValue={Dimensions.get('window').height / 2 - 20}
+                opacity={0.6}
+            />
+        );
+
         return (
             <React.Fragment>
                 {statusBar}
+                {toast}
                 <StyleProvider style={getTheme(variables)}>
                     {/*
                     <Provider {...{ feedStore, profileStore, userFeedStore }}>
