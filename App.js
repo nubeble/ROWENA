@@ -1492,7 +1492,6 @@ class MainBottomTabNavigatorWrapper extends React.Component {
         );
     }
 }
-// -- end of MainBottomTabNavigatorWrapper
 
 const RootStackNavigator = createStackNavigator(
     {
