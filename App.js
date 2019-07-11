@@ -64,11 +64,6 @@ export default class App extends React.Component {
         badgeOnProfileCount: -1
     };
 
-    componentWillReceiveProps(nextProps) {
-        console.log('nextProps', nextProps);
-        console.log('this.props', this.props);
-    }
-
     componentDidMount() {
         console.log('App.componentDidMount');
         console.log('width', Dimensions.get('window').width);
@@ -93,9 +88,14 @@ export default class App extends React.Component {
         // with the notification data.
         this.notificationListener = Notifications.addListener(this.handleNotification);
 
-        // ToDo: test this.props.exp.notification
+        // Was the app opened from a push notification?
         if (this.props.exp.notification) {
             console.log('props.exp.notification', this.props.exp.notification);
+
+            const origin = "selected";
+            const data = this.props.exp.notification;
+            const e = { origin, data };
+            this.handleNotification(e);
 
             /*
             Alert.alert(
