@@ -129,9 +129,7 @@ export default class AuthMain extends React.Component {
 
             try {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
-                console.log('Firebase.auth.signInAndRetrieveDataWithCredential', '----------------------------------------');
                 console.log('Firebase.auth.signInAndRetrieveDataWithCredential, user', user);
-                console.log('Firebase.auth.signInAndRetrieveDataWithCredential', '----------------------------------------');
 
                 // save token
                 // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {

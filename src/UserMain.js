@@ -106,18 +106,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         // this.disableScroll();
 
-        // ----
-        /*
-        const userDoc = await Firebase.firestore.collection("users").doc(uid).get();
-        if (!userDoc.exists) {
-            this.refs["toast"].show('The user no longer exists.', 500);
-            return;
-        }
-
-        const opponentUser = userDoc.data();
-        this.opponentUser = opponentUser;
-        */
-
         // subscribe here
         // --
         const instance = Firebase.subscribeToProfile(uid, user => {
@@ -153,8 +141,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         this.opponentUserUnsubscribe = instance;
         // --
-        // ----
-
 
         /*
         setTimeout(() => {

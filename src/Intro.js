@@ -78,8 +78,6 @@ export default class Intro extends React.Component<InjectedProps> {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
-        // renderList: false,
-
         // set the initial places (DEFAULT_PLACE_COUNT)
         places: [
             {
@@ -256,12 +254,6 @@ export default class Intro extends React.Component<InjectedProps> {
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderList: true });
-        }, 0);
-        */
 
         if (Intro.places.length === 0) await this.getPlaces();
 
@@ -741,91 +733,109 @@ export default class Intro extends React.Component<InjectedProps> {
                     </View>
                 </View>
 
-                {
-                    // this.state.renderList &&
-                    <FlatList
-                        // ref={(fl) => this._flatList = fl}
-                        ref={(fl) => Intro.__flatList = fl}
+                <FlatList
+                    // ref={(fl) => this._flatList = fl}
+                    ref={(fl) => Intro.__flatList = fl}
 
-                        contentContainerStyle={styles.contentContainer}
-                        showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={
-                            <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
-                                <Text style={styles.title}>{'Popular destinations'}</Text>
-                            </View>
-                        }
+                    contentContainerStyle={styles.contentContainer}
+                    showsVerticalScrollIndicator={true}
+                    ListHeaderComponent={
+                        <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
+                            <Text style={styles.title}>{'Popular destinations'}</Text>
+                        </View>
+                    }
 
-                        /*
-                        ListEmptyComponent={
-                            <View>
-                                <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={skeletonViewWidth} height={skeletonViewHeight}>
-                                    <Svg.Rect
-                                        x={8}
-                                        y={8}
-                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    />
+                    /*
+                    ListEmptyComponent={
+                        <View>
+                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton} secondaryColor="grey" width={skeletonViewWidth} height={skeletonViewHeight}>
+                                <Svg.Rect
+                                    x={8}
+                                    y={8}
+                                    width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
 
-                                    <Svg.Rect
-                                        x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        y={8}
-                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    />
+                                <Svg.Rect
+                                    x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    y={8}
+                                    width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
 
-                                    <Svg.Rect
-                                        x={8}
-                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    />
+                                <Svg.Rect
+                                    x={8}
+                                    y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
 
-                                    <Svg.Rect
-                                        x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    />
+                                <Svg.Rect
+                                    x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
 
-                                    <Svg.Rect
-                                        x={8}
-                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    />
+                                <Svg.Rect
+                                    x={8}
+                                    y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
 
-                                    <Svg.Rect
-                                        x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
-                                        width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                        height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
-                                    />
-                                </SvgAnimatedLinearGradient>
-                            </View>
-                        }
-                        */
+                                <Svg.Rect
+                                    x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
+                                    width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                    height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
+                                />
+                            </SvgAnimatedLinearGradient>
+                        </View>
+                    }
+                    */
 
-                        columnWrapperStyle={styles.columnWrapperStyle}
-                        numColumns={2}
-                        data={this.state.places}
-                        // keyExtractor={item => item.place_id}
-                        keyExtractor={item => item.key}
+                    columnWrapperStyle={styles.columnWrapperStyle}
+                    numColumns={2}
+                    data={this.state.places}
+                    // keyExtractor={item => item.place_id}
+                    keyExtractor={item => item.key}
 
-                        renderItem={({ item, index }) => {
-                            let place = null;
-                            let place_id = null;
-                            let length = 0;
-                            let placeName = null;
+                    renderItem={({ item, index }) => {
+                        let place = null;
+                        let place_id = null;
+                        let length = 0;
+                        let placeName = null;
 
-                            let city = null;
-                            let state = null;
-                            let country = null;
+                        let city = null;
+                        let state = null;
+                        let country = null;
 
-                            let imageUri = null;
+                        let imageUri = null;
 
-                            place_id = item.place_id;
-                            if (place_id) {
-                                place = item;
+                        place_id = item.place_id;
+                        if (place_id) {
+                            place = item;
+                            length = place.length;
+                            placeName = place.name;
+
+                            // get city, country
+                            city = Util.getCity(placeName);
+                            const stateAndcountry = Util.getStateAndCountry(placeName);
+                            const words = stateAndcountry.split(', ');
+                            if (words.length === 1) { // country
+                                country = words[0];
+                            } else if (words.length === 2) { // state, country
+                                state = words[0];
+                                country = words[1];
+                            }
+
+                            imageUri = place.uri;
+                        } else {
+                            // use static value
+                            place = Intro.places[index];
+                            if (place) {
+                                place_id = place.place_id;
                                 length = place.length;
                                 placeName = place.name;
 
@@ -842,195 +852,175 @@ export default class Intro extends React.Component<InjectedProps> {
 
                                 imageUri = place.uri;
                             } else {
-                                // use static value
-                                place = Intro.places[index];
-                                if (place) {
-                                    place_id = place.place_id;
-                                    length = place.length;
-                                    placeName = place.name;
-
-                                    // get city, country
-                                    city = Util.getCity(placeName);
-                                    const stateAndcountry = Util.getStateAndCountry(placeName);
-                                    const words = stateAndcountry.split(', ');
-                                    if (words.length === 1) { // country
-                                        country = words[0];
-                                    } else if (words.length === 2) { // state, country
-                                        state = words[0];
-                                        country = words[1];
-                                    }
-
-                                    imageUri = place.uri;
-                                } else {
-                                    // nothing to do
-                                }
+                                // nothing to do
                             }
-
-                            if (!place_id) {
-                                return (
-                                    <View style={styles.pictureContainer}>
-                                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={imageWidth} height={imageHeight}>
-                                            <Svg.Rect
-                                                x={0}
-                                                y={0}
-                                                width={imageWidth}
-                                                height={imageHeight}
-                                            />
-                                        </SvgAnimatedLinearGradient>
-                                    </View>
-                                );
-                            }
-
-                            const fontSize = this.getLabelFontSize(city, state, country);
-                            const lineHeight = this.getLabelLineHeight(fontSize);
-
-                            return (
-                                <TouchableOpacity
-                                    onPress={async () => {
-                                        // hide badge
-                                        let __places = [...this.state.places];
-                                        let __index = __places.findIndex(el => el.place_id === place_id);
-                                        if (__index !== -1) {
-                                            let __place = __places[__index];
-                                            __place.newPostAdded = false;
-
-                                            __places[__index] = __place;
-
-                                            Intro.places = __places;
-                                            !this.closed && this.setState({ places: __places });
-                                        }
-
-                                        const feedSize = this.getFeedSize(place_id);
-                                        if (feedSize === -1) {
-                                            this.refs["toast"].show('Please try again.', 500);
-                                            return;
-                                        }
-
-                                        if (feedSize === undefined) {
-                                            // place is removed
-                                            // this should never happen
-                                            return;
-                                        }
-
-                                        // let newPlace = _.clone(place);
-                                        // newPlace.length = feedSize;
-                                        const newPlace = {
-                                            name: placeName,
-                                            place_id,
-                                            length: feedSize,
-                                            lat: place.lat,
-                                            lng: place.lng
-                                        };
-
-                                        this.props.navigation.navigate("home", { place: newPlace });
-                                    }}
-                                >
-                                    <View style={styles.pictureContainer}>
-                                        <SmartImage
-                                            style={styles.item}
-                                            showSpinner={false}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={imageUri}
-                                        />
-                                        <View style={styles.content}>
-                                            {
-                                                city &&
-                                                <Text style={{
-                                                    textAlign: 'center',
-                                                    color: Theme.color.title,
-                                                    fontSize: fontSize,
-                                                    lineHeight: lineHeight,
-                                                    fontFamily: "Roboto-Bold",
-
-                                                    textShadowColor: 'black',
-                                                    textShadowOffset: { width: 1.2, height: 1.2 },
-                                                    textShadowRadius: 1
-                                                }}>{city}</Text>
-                                            }
-                                            {
-                                                state &&
-                                                <Text style={{
-                                                    // marginTop: 8,
-                                                    textAlign: 'center',
-                                                    color: Theme.color.title,
-                                                    fontSize: fontSize,
-                                                    lineHeight: lineHeight,
-                                                    fontFamily: "Roboto-Bold",
-
-                                                    textShadowColor: 'black',
-                                                    textShadowOffset: { width: 1.2, height: 1.2 },
-                                                    textShadowRadius: 1
-                                                }}>{state}</Text>
-                                            }
-                                            {
-                                                country &&
-                                                <Text style={{
-                                                    // marginTop: 8,
-                                                    textAlign: 'center',
-                                                    color: Theme.color.title,
-                                                    fontSize: fontSize,
-                                                    lineHeight: lineHeight,
-                                                    fontFamily: "Roboto-Bold",
-
-                                                    textShadowColor: 'black',
-                                                    textShadowOffset: { width: 1.2, height: 1.2 },
-                                                    textShadowRadius: 1
-                                                }}>{country}</Text>
-                                            }
-                                            {
-                                                length > 0 &&
-                                                <Text style={{
-                                                    // marginTop: 8,
-                                                    textAlign: 'center',
-                                                    color: Theme.color.subtitle,
-                                                    fontSize: 14,
-                                                    lineHeight: 20,
-                                                    fontFamily: "Roboto-Medium",
-
-                                                    textShadowColor: 'black',
-                                                    textShadowOffset: { width: 1, height: 1 },
-                                                    textShadowRadius: 1
-                                                }}>{length + '+ girls'}</Text>
-                                            }
-                                        </View>
-                                        {
-                                            item.newPostAdded === true &&
-                                            <View style={{
-                                                position: 'absolute',
-                                                top: 5,
-                                                right: 5,
-                                                backgroundColor: 'red',
-                                                borderRadius: Cons.redDotWidth / 2,
-                                                width: Cons.redDotWidth,
-                                                height: Cons.redDotWidth
-                                            }} />
-                                        }
-                                    </View>
-                                </TouchableOpacity>
-                            );
-                        }}
-
-                        ListFooterComponent={
-                            <View style={{ marginTop: 20, marginBottom: 8 }}>
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>{'Top-rated girls'}</Text>
-                                </View>
-                                {
-                                    this.renderPopularFeeds()
-                                }
-                                <View style={styles.titleContainer}>
-                                    <Text style={styles.title}>{'Recently posted girls'}</Text>
-                                </View>
-                                {
-                                    this.renderRecentFeeds()
-                                }
-                            </View>
                         }
 
-                        onRefresh={this.handleRefresh}
-                        refreshing={this.state.refreshing}
-                    />
-                }
+                        if (!place_id) {
+                            return (
+                                <View style={styles.pictureContainer}>
+                                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={imageWidth} height={imageHeight}>
+                                        <Svg.Rect
+                                            x={0}
+                                            y={0}
+                                            width={imageWidth}
+                                            height={imageHeight}
+                                        />
+                                    </SvgAnimatedLinearGradient>
+                                </View>
+                            );
+                        }
+
+                        const fontSize = this.getLabelFontSize(city, state, country);
+                        const lineHeight = this.getLabelLineHeight(fontSize);
+
+                        return (
+                            <TouchableOpacity
+                                onPress={async () => {
+                                    // hide badge
+                                    let __places = [...this.state.places];
+                                    let __index = __places.findIndex(el => el.place_id === place_id);
+                                    if (__index !== -1) {
+                                        let __place = __places[__index];
+                                        __place.newPostAdded = false;
+
+                                        __places[__index] = __place;
+
+                                        Intro.places = __places;
+                                        !this.closed && this.setState({ places: __places });
+                                    }
+
+                                    const feedSize = this.getFeedSize(place_id);
+                                    if (feedSize === -1) {
+                                        this.refs["toast"].show('Please try again.', 500);
+                                        return;
+                                    }
+
+                                    if (feedSize === undefined) {
+                                        // place is removed
+                                        // this should never happen
+                                        return;
+                                    }
+
+                                    // let newPlace = _.clone(place);
+                                    // newPlace.length = feedSize;
+                                    const newPlace = {
+                                        name: placeName,
+                                        place_id,
+                                        length: feedSize,
+                                        lat: place.lat,
+                                        lng: place.lng
+                                    };
+
+                                    this.props.navigation.navigate("home", { place: newPlace });
+                                }}
+                            >
+                                <View style={styles.pictureContainer}>
+                                    <SmartImage
+                                        style={styles.item}
+                                        showSpinner={false}
+                                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                        uri={imageUri}
+                                    />
+                                    <View style={styles.content}>
+                                        {
+                                            city &&
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: fontSize,
+                                                lineHeight: lineHeight,
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1.2, height: 1.2 },
+                                                textShadowRadius: 1
+                                            }}>{city}</Text>
+                                        }
+                                        {
+                                            state &&
+                                            <Text style={{
+                                                // marginTop: 8,
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: fontSize,
+                                                lineHeight: lineHeight,
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1.2, height: 1.2 },
+                                                textShadowRadius: 1
+                                            }}>{state}</Text>
+                                        }
+                                        {
+                                            country &&
+                                            <Text style={{
+                                                // marginTop: 8,
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: fontSize,
+                                                lineHeight: lineHeight,
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1.2, height: 1.2 },
+                                                textShadowRadius: 1
+                                            }}>{country}</Text>
+                                        }
+                                        {
+                                            length > 0 &&
+                                            <Text style={{
+                                                // marginTop: 8,
+                                                textAlign: 'center',
+                                                color: Theme.color.subtitle,
+                                                fontSize: 14,
+                                                lineHeight: 20,
+                                                fontFamily: "Roboto-Medium",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1, height: 1 },
+                                                textShadowRadius: 1
+                                            }}>{length + '+ girls'}</Text>
+                                        }
+                                    </View>
+                                    {
+                                        item.newPostAdded === true &&
+                                        <View style={{
+                                            position: 'absolute',
+                                            top: 5,
+                                            right: 5,
+                                            backgroundColor: 'red',
+                                            borderRadius: Cons.redDotWidth / 2,
+                                            width: Cons.redDotWidth,
+                                            height: Cons.redDotWidth
+                                        }} />
+                                    }
+                                </View>
+                            </TouchableOpacity>
+                        );
+                    }}
+
+                    ListFooterComponent={
+                        <View style={{ marginTop: 20, marginBottom: 8 }}>
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{'Top-rated girls'}</Text>
+                            </View>
+                            {
+                                this.renderPopularFeeds()
+                            }
+                            <View style={styles.titleContainer}>
+                                <Text style={styles.title}>{'Recently posted girls'}</Text>
+                            </View>
+                            {
+                                this.renderRecentFeeds()
+                            }
+                        </View>
+                    }
+
+                    onRefresh={this.handleRefresh}
+                    refreshing={this.state.refreshing}
+                />
+
                 <Toast
                     ref="toast"
                     position='top'

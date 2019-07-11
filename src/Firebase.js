@@ -80,7 +80,11 @@ export default class Firebase {
     }
 
     static async setToken(uid, data) {
-        await Firebase.firestore.collection("tokens").doc(uid).set(data);
+        await Firebase.firestore.collection("tokens").doc(uid).set(data).then(function () {
+            console.log('Firebase.setToken', 'set successful.');
+        }).catch(function (error) {
+            console.log('Firebase.setToken', error);
+        });
     }
 
     static async deleteToken(uid) {
@@ -132,10 +136,8 @@ export default class Firebase {
             displayName: name,
             photoURL
         }).then(function () {
-            // Update successful.
             console.log('Firebase.createProfile', 'update successful.');
         }).catch(function (error) {
-            // An error happened.
             console.log('Firebase.createProfile', error);
         });
     }
@@ -146,7 +148,11 @@ export default class Firebase {
 
     static async updateProfile(uid, profile, updateAuth) {
         // 2. update user doc
-        await Firebase.firestore.collection("users").doc(uid).update(profile);
+        await Firebase.firestore.collection("users").doc(uid).update(profile).then(function () {
+            console.log('Firebase.updateProfile', 'update successful.');
+        }).catch(function (error) {
+            console.log('Firebase.updateProfile', error);
+        });
 
         // 3. update firebase auth
         if (updateAuth) {
@@ -160,11 +166,9 @@ export default class Firebase {
                 displayName: name,
                 photoURL: uri
             }).then(function () {
-                // Update successful.
-                console.log('Firebase.updateProfile', 'update successful.');
+                console.log('Firebase.updateProfile, update firebase auth', 'update successful.');
             }).catch(function (error) {
-                // An error happened.
-                console.log('Firebase.updateProfile', error);
+                console.log('Firebase.updateProfile, update firebase auth', error);
             });
         }
     }
@@ -176,10 +180,8 @@ export default class Firebase {
         await user.updateProfile({
             photoURL: uri
         }).then(function () {
-            // Update successful.
             console.log('Firebase.updateProfilePicture', 'update successful.');
         }).catch(function (error) {
-            // An error happened.
             console.log('Firebase.updateProfilePicture', error);
         });
     }
@@ -1668,10 +1670,8 @@ export default class Firebase {
 
         if (user !== null) {
             name = user.displayName;
-            // if (!name) name = 'Anonymous'; // ToDo: test
             email = user.email;
             photoUrl = user.photoURL;
-            // if (!photoUrl) photoUrl = "http://images.coocha.co.kr//upload/2018/09/mrsst/18/thumb4_139961481.jpg"; // ToDo: test
             emailVerified = user.emailVerified;
             uid = user.uid;
         }
