@@ -512,7 +512,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             for (let i = 0; i < 5; i++) {
                 reviewArray.push(
-                    <View style={{ alignItems: 'center', paddingVertical: 8 }} key={i}>
+                    <View style={{ alignItems: 'center', paddingVertical: 10 }} key={i}>
                         <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={162}>
                             <Svg.Rect
                                 x={0}
@@ -564,7 +564,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                         </SvgAnimatedLinearGradient>
                         {
                             i !== 4 &&
-                            <View style={{ marginTop: 18, borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                            <View style={{ marginTop: 16, borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
                         }
                     </View>
                 );

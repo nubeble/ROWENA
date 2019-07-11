@@ -870,8 +870,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             for (let i = 0; i < 4; i++) {
                 reviewArray.push(
-                    <View style={{ alignItems: 'center' }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={160}>
+                    <View style={{ paddingVertical: 6, alignItems: 'center' }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={130}>
                             <Svg.Rect
                                 x={width - 100}
                                 y={8}
@@ -908,12 +908,16 @@ export default class UserMain extends React.Component<InjectedProps> {
                                 height={8}
                             />
                         </SvgAnimatedLinearGradient>
+                        {
+                            i !== 3 &&
+                            <View style={{ marginTop: 12, width: Dimensions.get('window').width - 20 * 2, borderBottomColor: Theme.color.line, borderBottomWidth: 1 }} />
+                        }
                     </View>
                 );
             }
 
             return (
-                <View style={{ paddingVertical: Theme.spacing.small, paddingHorizontal: 20 }}>
+                <View>
                     {reviewArray}
                 </View>
             );
