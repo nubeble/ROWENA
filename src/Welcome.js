@@ -64,7 +64,7 @@ export default class Welcome extends React.Component {
                     }
                 </View>
 
-                {/* // ToDo: render design */}
+                {/* // render illustration */}
                 <View style={styles.container}>
                     <Text style={{
                         marginTop: 8,

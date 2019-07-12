@@ -517,6 +517,7 @@ export default class GooglePlacesAutocomplete extends Component {
         return results;
     }
 
+    /*
     _filterByALLTypes = (unfilteredResults, types) => {
         if (types.length === 0) return unfilteredResults;
 
@@ -526,13 +527,6 @@ export default class GooglePlacesAutocomplete extends Component {
             let count = 0; // count of false
 
             for (let j = 0; j < types.length; j++) {
-                /*
-                if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
-                    found = false;
-                    break;
-                }
-                */
-
                 const type = types[j]; // ["locality", "political", "geocode"]
 
                 for (let k = 0; k < type.length; k++) {
@@ -552,10 +546,9 @@ export default class GooglePlacesAutocomplete extends Component {
 
         return results;
     }
+    */
 
     _filterResultsByCity = (unfilteredResults, typesArray) => {
-        if (typesArray.length === 0) return unfilteredResults; // this will never happen
-
         let results = [];
 
         for (let h = 0; h < typesArray.length; h++) {
@@ -563,25 +556,21 @@ export default class GooglePlacesAutocomplete extends Component {
 
             // --
             for (let i = 0; i < unfilteredResults.length; i++) {
-                if (unfilteredResults[i].types.length !== types.length) continue;
+                const result = unfilteredResults[i];
+                if (result.types.length !== types.length) continue;
 
                 let found = true;
 
                 for (let j = 0; j < types.length; j++) {
-                    if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
+                    if (result.types.indexOf(types[j]) === -1) {
                         found = false;
                         break;
                     }
                 }
 
-                if (found === true) {
-                    results.push(unfilteredResults[i]);
-                    break;
-                }
+                if (found === true) results.push(result);
             }
             // --
-
-            if (results.length > 0) break;
         }
 
         return results;
@@ -592,21 +581,19 @@ export default class GooglePlacesAutocomplete extends Component {
 
         // --
         for (let i = 0; i < unfilteredResults.length; i++) {
-            if (unfilteredResults[i].types.length !== types.length) continue;
+            const result = unfilteredResults[i];
+            if (result.types.length !== types.length) continue;
 
             let found = true;
 
             for (let j = 0; j < types.length; j++) {
-                if (unfilteredResults[i].types.indexOf(types[j]) === -1) {
+                if (result.types.indexOf(types[j]) === -1) {
                     found = false;
                     break;
                 }
             }
 
-            if (found === true) {
-                results.push(unfilteredResults[i]);
-                break;
-            }
+            if (found === true) results.push(result);
         }
         // --
 
@@ -702,31 +689,31 @@ export default class GooglePlacesAutocomplete extends Component {
             request.timeout = this.props.timeout;
             request.ontimeout = this.props.onTimeout;
             request.onreadystatechange = () => {
-                if (request.readyState !== 4) {
-                    return;
-                }
+                if (request.readyState !== 4) return;
 
                 if (request.status === 200) {
                     const responseJSON = JSON.parse(request.responseText);
 
                     if (typeof responseJSON.predictions !== 'undefined') {
-                        if (!this.closed) {
-                            // console.log('predictions', responseJSON.predictions);
+                        if (this.closed) return;
 
-                            /*
-                            const results = this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
-                                ? this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes)
-                                : responseJSON.predictions;
-                            */
+                        // console.log('predictions', responseJSON.predictions);
 
-                            let results = [];
-                            if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-                                console.log('_request GoogleReverseGeocoding pre results', responseJSON.predictions);
-                                results = this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes);
-                                console.log('_request GoogleReverseGeocoding results', results);
-                            } else { // GooglePlacesSearch
-                                // results = responseJSON.predictions;
+                        /*
+                        const results = this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
+                            ? this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes)
+                            : responseJSON.predictions;
+                        */
 
+                        let results = [];
+                        if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
+                            console.log('_request GoogleReverseGeocoding pre results', responseJSON.predictions);
+                            results = this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes);
+                            console.log('_request GoogleReverseGeocoding results', results);
+                        } else { // GooglePlacesSearch
+                            if (this.props.filterPlacesSearchByTypes.length === 0) { // searching streets in AdvertisementMain
+                                results = responseJSON.predictions;
+                            } else {
                                 console.log('_request GooglePlacesSearch pre results', responseJSON.predictions);
                                 results = this._filterResultsByCity(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
                                 console.log('_request GooglePlacesSearch results', results);
@@ -746,13 +733,13 @@ export default class GooglePlacesAutocomplete extends Component {
                                     }
                                 }
                             }
-
-                            // remove duplicates
-                            results = this.removeDuplicates(results);
-
-                            this._results = results;
-                            !this.closed && this.setState({ dataSource: this.buildRowsFromResults(results) });
                         }
+
+                        // remove duplicates
+                        results = this.removeDuplicates(results);
+
+                        this._results = results;
+                        !this.closed && this.setState({ dataSource: this.buildRowsFromResults(results) });
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
@@ -998,7 +985,7 @@ export default class GooglePlacesAutocomplete extends Component {
                 <TouchableHighlight
                     // style={{ width: WINDOW.width, height: (WINDOW.height / 80) * 5 }}
                     onPress={() => this._onPress(rowData)}
-                    // underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
+                // underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
                 >
                     <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
                         {this._renderRowData(rowData)}

@@ -487,7 +487,7 @@ export default class ChatMain extends React.Component {
                     */
 
                     ListEmptyComponent={
-                        // ToDo: render design
+                        // render illustration
                         // !this.state.isLoadingChat &&
                         this.state.ready &&
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>

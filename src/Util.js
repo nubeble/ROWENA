@@ -1615,30 +1615,6 @@ export default class Util extends React.Component {
         return color;
     }
 
-    // ToDo: remove
-    /*
-    static getPlaceName(name) { // city + country
-        // filter "Kyiv, Ukraine, 02000"
-        const words = name.split(', ');
-        if (words.length === 3 && words[2].match(/^[0-9]+$/) !== null) {
-            const result = words[0] + ', ' + words[1];
-
-            return result;
-        }
-
-        if (words.length > 1) {
-            const city = words[0];
-            const country = words[words.length - 1];
-            const result = city + ', ' + country;
-
-            return result;
-        }
-
-
-        return name;
-    }
-    */
-
     // filter "Kyiv, Ukraine, 02000"
     static filterNumber(description) {
         const words = description.split(', ');

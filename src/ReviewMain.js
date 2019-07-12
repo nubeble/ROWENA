@@ -232,7 +232,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         */
 
                         ListEmptyComponent={
-                            // ToDo: render design
+                            // render illustration
                             // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                                 <Text style={{
@@ -513,10 +513,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             feedSize: feedSize
         };
 
-        // setTimeout(() => {
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-        this.props.navigation.navigate("reviewPost", { post: post, extra: extra, from: 'Profile' });
-        // }, Cons.buttonTimeoutShort);
+        this.props.navigation.navigate("reviewPost", { from: 'ReviewMain', post: post, extra: extra });
 
         // hide indicator
         // !this.closed && this.setState({ showPostIndicator: -1 });

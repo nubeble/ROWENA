@@ -608,7 +608,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 :
                             */
 
-                            // ToDo: render design
+                            // render illustration
                             // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                                 <Text style={{

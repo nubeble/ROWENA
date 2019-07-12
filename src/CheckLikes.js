@@ -203,7 +203,7 @@ export default class CheckLikes extends React.Component {
                     // refreshing={this.state.refreshing}
 
                     ListEmptyComponent={
-                        // ToDo: render design
+                        // render illustration
                         // !this.state.isLoadingFeeds &&
                         this.state.totalUserCount === 0 &&
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>

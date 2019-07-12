@@ -940,7 +940,6 @@ export default class Intro extends React.Component<InjectedProps> {
                                         {
                                             state &&
                                             <Text style={{
-                                                // marginTop: 8,
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: fontSize,
@@ -955,7 +954,6 @@ export default class Intro extends React.Component<InjectedProps> {
                                         {
                                             country &&
                                             <Text style={{
-                                                // marginTop: 8,
                                                 textAlign: 'center',
                                                 color: Theme.color.title,
                                                 fontSize: fontSize,
@@ -970,7 +968,6 @@ export default class Intro extends React.Component<InjectedProps> {
                                         {
                                             length > 0 &&
                                             <Text style={{
-                                                // marginTop: 8,
                                                 textAlign: 'center',
                                                 color: Theme.color.subtitle,
                                                 fontSize: 14,

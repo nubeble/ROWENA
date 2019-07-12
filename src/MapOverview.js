@@ -71,9 +71,8 @@ export default class MapOverview extends React.Component {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421
         },
-        // ready: false,
-        renderMap: false,
 
+        renderMap: false,
 
         Component: null,
         useGoogleMaps: ANDROID
@@ -147,9 +146,6 @@ export default class MapOverview extends React.Component {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-
-        // ToDo
-        // this.getCurrentPosition();
 
         setTimeout(() => {
             !this.closed && this.setState({ renderMap: true });
@@ -334,7 +330,6 @@ export default class MapOverview extends React.Component {
     }
 
     moveRegion(region) {
-        // if (this.state.ready) {
         if (this.ready) {
             setTimeout(() => !this.closed && this.map.animateToRegion(region), 10);
 
@@ -342,20 +337,18 @@ export default class MapOverview extends React.Component {
         }
     }
 
-    onMapReady = (e) => {
-        /*
-        if (!this.state.ready) {
-            this.setState({ ready: true });
-        }
-        */
+    @autobind
+    onMapReady(e) {
         this.ready = true;
     };
 
-    onRegionChange = (region) => {
+    @autobind
+    onRegionChange(region) {
         // console.log('onRegionChange', region);
     };
 
-    onRegionChangeComplete = (region) => {
+    @autobind
+    onRegionChangeComplete(region) {
         // console.log('onRegionChangeComplete', region);
     };
 }

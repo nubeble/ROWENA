@@ -561,7 +561,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
     renderEmptyImage() {
         return (
-            // ToDo: render design
+            // render illustration
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
                     // color: 'rgb(250, 203, 205)',

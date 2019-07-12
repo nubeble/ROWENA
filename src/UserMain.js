@@ -53,6 +53,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         host: null,
         guest: null,
 
+        isModal: false,
         showReviewButton: false,
         disableReviewButton: false,
 
@@ -90,20 +91,24 @@ export default class UserMain extends React.Component<InjectedProps> {
         // const item = this.props.navigation.state.params.item;
         const { from, item } = this.props.navigation.state.params;
 
+        let isModal = false;
         let showReviewButton = false;
-        if (from === 'ChatRoom') {
-            showReviewButton = true;
-        } else { // CommentMain
-            showReviewButton = false;
-        }
-
         let disableReviewButton = false;
-        if (!item.placeId || !item.feedId) disableReviewButton = true; // from CommentMain
+
+        if (from === 'ChatRoom') {
+            isModal = true;
+            showReviewButton = true;
+            disableReviewButton = true;
+        } else { // CommentMain
+            isModal = false;
+            showReviewButton = false;
+            disableReviewButton = false;
+        }
 
         const guest = item.guest;
         const host = item.host;
 
-        this.setState({ showReviewButton, disableReviewButton, guest: guest, host: host });
+        this.setState({ isModal, showReviewButton, disableReviewButton, guest: guest, host: host });
 
         const uid = guest.uid;
 
@@ -352,6 +357,9 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     render() {
+        let paddingBottom = 0;
+        if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
+
         const { guest } = this.state; // undefined at loading
         if (!guest) return null;
 
@@ -426,7 +434,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+            <View style={[styles.flex, { paddingBottom }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -459,7 +467,12 @@ export default class UserMain extends React.Component<InjectedProps> {
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        {
+                            this.state.isModal ?
+                                <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                                :
+                                <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        }
                     </TouchableOpacity>
 
                     {/*
@@ -920,7 +933,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     renderEmptyImage() {
         return (
-            // ToDo: render design
+            // render illustration
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
                     // color: 'rgb(250, 203, 205)',

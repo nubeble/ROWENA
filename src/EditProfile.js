@@ -1079,7 +1079,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
  
                             setTimeout(() => {
-                                // ToDo:
+                                // navigate
                             }, Cons.buttonTimeoutShort);
                             */
                             this.refs["toast"].show("Can't change email address!", 500);
@@ -1139,7 +1139,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY, animated: true });
  
                             setTimeout(() => {
-                                // ToDo:
+                                // navigate
                             }, Cons.buttonTimeoutShort);
                             */
                             this.refs["toast"].show("Can't change phone number!", 500);

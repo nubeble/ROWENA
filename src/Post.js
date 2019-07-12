@@ -492,7 +492,7 @@ export default class Post extends React.Component<InjectedProps> {
             const { profile } = this.props.profileStore;
             const data = {
                 // message: profile.name + ' likes your post. ❤',
-                message: null,
+                message: '',
                 placeId: post.placeId,
                 feedId: post.id
             };
@@ -1404,7 +1404,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (data.reviewCount === 0) {
             return (
-                // ToDo: render design
+                // render illustration
                 <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
                     <Text style={{
                         color: 'rgb(221, 184, 128)',

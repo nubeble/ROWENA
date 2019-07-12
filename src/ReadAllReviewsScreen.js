@@ -581,7 +581,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     renderEmptyImage() {
         return (
-            // ToDo: render design
+            // render illustration
             <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                 <Text style={{
                     marginTop: 100,

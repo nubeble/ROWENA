@@ -250,9 +250,7 @@ const uploadImageToStorage = (file, fileDir) => {
         blobStream.on("error", error => reject(error));
 
         blobStream.on("finish", () => {
-            fileUpload.getMetadata().then(metadata => {
-                resolve(metadata);
-            }).catch(error => reject(error));
+            fileUpload.getMetadata().then(metadata => resolve(metadata)).catch(error => reject(error));
         });
 
         blobStream.end(file.buffer);

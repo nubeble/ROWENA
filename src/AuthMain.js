@@ -81,7 +81,7 @@ export default class AuthMain extends React.Component {
                 StatusBar.setHidden(false);
             });
 
-            // ToDo: screen blinking issue on blur animation
+            // Consider: screen blinking issue on blur animation
             /*
             console.log('animation start');
             Animated.timing(this.state.blurRadius, { duration: 3000, toValue: 5, useNativeDriver: true }).start(() => {
@@ -105,12 +105,13 @@ export default class AuthMain extends React.Component {
     }
 
     async continueWithFacebook() {
+        if (this.loading) return;
+        this.loading = true;
+
         Vars.signUpType = 'FACEBOOK';
 
         // show indicator
         // this.setState({ showFacebookLoader: true });
-
-        // ToDo: disable buttons
 
         const {
             type,
@@ -164,10 +165,10 @@ export default class AuthMain extends React.Component {
             this.showNotification(str);
         }
 
-        // ToDo: enable buttons
-
         // hide indicator
         // !this.closed && this.setState({ showFacebookLoader: false });
+
+        this.loading = false;
     }
 
     isStandaloneApp = () => {
@@ -188,15 +189,25 @@ export default class AuthMain extends React.Component {
     }
 
     signUpWithEmail() {
+        if (this.loading) return;
+        this.loading = true;
+
         Vars.signUpType = 'EMAIL';
 
         this.props.navigation.navigate("email", { from: 'email' });
+
+        this.loading = false;
     }
 
     signUpWithMobile() {
+        if (this.loading) return;
+        this.loading = true;
+
         Vars.signUpType = 'MOBILE';
 
         this.props.navigation.navigate("mobile", { from: 'mobile' });
+
+        this.loading = false;
     }
 
     render() {

@@ -61,7 +61,7 @@ export default class AdvertisementStart extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                {/* // ToDo: render design */}
+                {/* // render illustration */}
                 <View style={styles.container}>
                     <Text style={{
                         marginTop: 8,

@@ -80,15 +80,14 @@ export default class MapSearch extends React.Component {
 
         const { placeName, region } = this.props.navigation.state.params;
 
-        this.setState({ place: placeName });
-
         let __region = {
             latitude: region.latitude,
             longitude: region.longitude,
             latitudeDelta: 0.8,
             longitudeDelta: 0.8 * ASPECT_RATIO
         };
-        this.setState({ region: __region });
+
+        this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
 
         // this.setState({ renderMap: true });
 
@@ -112,11 +111,8 @@ export default class MapSearch extends React.Component {
         this.setState({ loading: true });
 
         const feeds = await this.loadFeeds(__region);
-        this.setState({ feeds: feeds });
 
-        this.setState({ loading: false });
-
-        this.setState({ showSearchButton: false });
+        this.setState({ loading: false, feeds: feeds, showSearchButton: false });
 
         /*
         setTimeout(() => {
@@ -334,7 +330,7 @@ export default class MapSearch extends React.Component {
             const latitude = post.location.latitude;
             const longitude = post.location.longitude;
             const rating = Math.floor(post.averageRating);
-            // const rating = i % 6; // ToDo: test
+            // const rating = i % 6; // test
 
             let image = null;
             switch (rating) {
@@ -447,21 +443,9 @@ export default class MapSearch extends React.Component {
         );
     }
 
-    onMapReady = (e) => {
+    @autobind
+    onMapReady(e) {
         this.ready = true;
-
-
-        // ToDo: set boundaries
-        /*
-        this.map.setMapBoundaries(
-            {
-                latitude: 14.562181, longitude:121.11852
-            },
-            {
-                latitude: 14.46491, longitude:121.0222239
-            }
-        );
-        */
     };
 
     moveRegion(region, duration) {
@@ -704,6 +688,41 @@ export default class MapSearch extends React.Component {
         !this.closed && this.setState({ loading: false });
 
         !this.closed && this.setState({ showSearchButton: false });
+    }
+
+    setBoundaries(region) {
+        const boundaries = this.getBoundingBox(region);
+        const lngDelta = region.longitudeDelta / 4;
+        const latDelta = region.latitudeDelta / 4;
+
+        this.map.setMapBoundaries(
+            {
+                latitude: boundaries.northEast.latitude + latDelta,
+                longitude: boundaries.northEast.longitude + lngDelta
+            },
+            {
+                latitude: boundaries.southWest.latitude - latDelta,
+                longitude: boundaries.southWest.longitude - lngDelta
+            }
+        );
+    }
+
+    getBoundingBox(region) {
+        const westLng = region.longitude - region.longitudeDelta / 2; // westLng - min lng
+        const southLat = region.latitude - region.latitudeDelta / 2; // southLat - min lat
+        const eastLng = region.longitude + region.longitudeDelta / 2; // eastLng - max lng
+        const northLat = region.latitude + region.latitudeDelta / 2; // northLat - max lat
+
+        const boundaries = {
+            northEast: {
+                latitude: northLat, longitude: eastLng
+            },
+            southWest: {
+                latitude: southLat, longitude: westLng
+            }
+        }
+
+        return boundaries;
     }
 }
 

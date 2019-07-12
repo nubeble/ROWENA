@@ -2105,7 +2105,9 @@ export default class EditPost extends React.Component {
             // upload image
             this.uploadImage(result.uri, index, (uri) => {
                 if (!uri) {
+                    this.hideFlash();
                     this.showNotification('An error happened. Please try again.');
+                    this.showAlertIcon(index);
                     this.setState({ onUploadingImage: false });
                     return;
                 }
@@ -2197,20 +2199,20 @@ export default class EditPost extends React.Component {
 
             // console.log('responseJson', await response.json());
 
-            cb(responseJson.downloadUrl);
+            if (responseJson.downloadUrl) cb(responseJson.downloadUrl);
+            else cb(null);
         } catch (error) {
             console.error(error);
 
-            this.showNotification('An error happened. Please try again.');
-
-            // show alert icon
-            if (index === 0) this.setState({ showPicture1AlertIcon: true });
-            if (index === 1) this.setState({ showPicture2AlertIcon: true });
-            if (index === 2) this.setState({ showPicture3AlertIcon: true });
-            if (index === 3) this.setState({ showPicture4AlertIcon: true });
-
             cb(null);
         }
+    }
+
+    showAlertIcon(index) {
+        if (index === 0) this.setState({ showPicture1AlertIcon: true });
+        if (index === 1) this.setState({ showPicture2AlertIcon: true });
+        if (index === 2) this.setState({ showPicture3AlertIcon: true });
+        if (index === 3) this.setState({ showPicture4AlertIcon: true });
     }
 
     openKeyboard(ref, index, owner) {

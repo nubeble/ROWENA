@@ -157,7 +157,7 @@ export default class App extends React.Component {
                 { cancelable: false }
             );
             */
-            this.refs["toast"].show('You are currently offline.', 500);
+            this.refs["toast"].show('You are currently offline.', 2000);
         } else if (connectionInfo.type === 'unknown') { // error case
             this.setState({ connectionState: 1 });
 
@@ -169,7 +169,7 @@ export default class App extends React.Component {
                 { cancelable: false }
             );
             */
-            this.refs["toast"].show('Unstable network connection. Please check your connection and try again.', 500);
+            this.refs["toast"].show('Unstable network connection. Please check your connection and try again.', 2000);
         } else { // connected / reconnected
             const preState = this.state.connectionState;
 
@@ -182,7 +182,7 @@ export default class App extends React.Component {
                     { cancelable: false }
                 );
                 */
-                this.refs["toast"].show('You are connected again.', 500);
+                this.refs["toast"].show('You are connected again.', 2000);
             }
 
             this.setState({ connectionState: 2 });
@@ -1058,13 +1058,13 @@ const ReviewStackNavigator = createStackNavigator(
         // test: { screen: HidingHeader }
     },
     {
-        mode: 'modal',
+        mode: 'card',
         headerMode: 'none',
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
     }
 );
@@ -1127,13 +1127,13 @@ const CommentStackNavigator = createStackNavigator(
         userPost: { screen: UserStackNavigatorWrapper }
     },
     {
-        mode: 'modal',
+        mode: 'card',
         headerMode: 'none',
         navigationOptions: {
             gesturesEnabled: false
         },
         transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forVertical
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
         })
     }
 );
@@ -1286,7 +1286,7 @@ function _navigationOptions(navigation, screenProps) {
                 const now = Date.now();
 
                 if (routeName === 'home') {
-                    // ToDo: go back to top
+                    // go back to top
                     if (Vars.focusedScreen !== 'Intro' && Vars.focusedScreen !== 'Explore') {
                         // navigation.dispatch(StackActions.popToTop());
                         navigation.popToTop();
@@ -1295,7 +1295,6 @@ function _navigationOptions(navigation, screenProps) {
                         console.log('diff', diff);
 
                         if (diff < 500) { // double click
-                            // ToDo: scroll
                             // if (name === "introHome") scrollToTop();
                             if (Vars.focusedScreen === 'Intro') Intro.scrollToTop();
                             if (Vars.focusedScreen === 'Explore') Explore.scrollToTop();
@@ -1460,7 +1459,6 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         profile: {
-            // screen: ProfileMain,
             screen: ProfileStackNavigatorWrapper,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         }

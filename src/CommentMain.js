@@ -239,7 +239,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                         */
 
                         ListEmptyComponent={
-                            // ToDo: render design
+                            // render illustration
                             // !this.state.isLoadingFeeds &&
                             <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                                 <Text style={{
@@ -516,10 +516,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             guest
         };
 
-        setTimeout(() => {
-            !this.closed && this.props.navigation.navigate("userPost", { from: 'CommentMain', item: _item });
-        }, Cons.buttonTimeoutShort);
-
+        this.props.navigation.navigate("userPost", { from: 'CommentMain', item: _item });
 
         // hide indicator
         // !this.closed && this.setState({ showPostIndicator: -1 });

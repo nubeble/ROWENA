@@ -254,9 +254,11 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     keyExtractor={item => item.placeId}
                     renderItem={({ item, index }) => {
                         const placeName = item.placeName;
+
+                        let city = null;
                         const words = placeName.split(', ');
-                        const city = words[0];
-                        // const feedsSize = item.feeds.length;
+                        city = words[0];
+
                         const feedsSize = item.feedsSize;
 
                         if (item.pictures.length === 1) {
@@ -279,7 +281,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city}
+                                            <Text style={styles.feedItemText}>{placeName}
                                                 <Text style={[styles.feedItemText, { color: Theme.color.subtitle }]}> {feedsSize}</Text>
                                             </Text>
                                         </View>
@@ -325,7 +327,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city}
+                                            <Text style={styles.feedItemText}>{placeName}
                                                 <Text style={[styles.feedItemText, { color: Theme.color.text4 }]}> {feedsSize}</Text>
                                             </Text>
                                         </View>
@@ -384,7 +386,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city}
+                                            <Text style={styles.feedItemText}>{placeName}
                                                 <Text style={[styles.feedItemText, { color: Theme.color.text4 }]}> {feedsSize}</Text>
                                             </Text>
                                         </View>
@@ -456,7 +458,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                         />
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{city}
+                                            <Text style={styles.feedItemText}>{placeName}
                                                 <Text style={[styles.feedItemText, { color: Theme.color.text4 }]}> {feedsSize}</Text>
                                             </Text>
                                         </View>
@@ -503,7 +505,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             :
                         */
 
-                        // ToDo: render design
+                        // render illustration
                         // !this.state.isLoadingFeeds &&
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Text style={{
