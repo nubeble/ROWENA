@@ -503,6 +503,8 @@ const processPushNotification = async(function () {
 
         userData['users'] = users;
         */
+
+        nameFooter = ' sent you a message. 👄';
     } else if (fields.type === '2') { // review
         userData['message'] = fields.message;
         userData['placeId'] = fields.placeId;

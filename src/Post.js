@@ -491,7 +491,8 @@ export default class Post extends React.Component<InjectedProps> {
         if (!liked) {
             const { profile } = this.props.profileStore;
             const data = {
-                message: profile.name + ' likes your post. ❤',
+                // message: profile.name + ' likes your post. ❤',
+                message: null,
                 placeId: post.placeId,
                 feedId: post.id
             };
@@ -2453,7 +2454,8 @@ export default class Post extends React.Component<InjectedProps> {
         const { profile } = this.props.profileStore;
         const post = this.state.post;
         const data = {
-            message: profile.name + ' replied to your review: ' + message,
+            // message: profile.name + ' replied to your review: ' + message,
+            message,
             placeId: post.placeId,
             feedId: post.id
         };

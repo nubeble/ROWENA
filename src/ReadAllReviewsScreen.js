@@ -725,7 +725,8 @@ export default class ReadAllReviewsScreen extends React.Component {
         const receiver = reviewStore.reviews[this.selectedItemIndex].profile.uid;
 
         const data = {
-            message: Firebase.user().name + ' replied to your review: ' + message,
+            // message: Firebase.user().name + ' replied to your review: ' + message,
+            message,
             placeId,
             feedId
         };

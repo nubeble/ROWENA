@@ -330,7 +330,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         const receiver = guest.uid;
 
         const data = {
-            message: senderName + ' wrote a review: ' + message
+            // message: senderName + ' wrote a review: ' + message
+            message
         };
 
         sendPushNotification(sender, senderName, receiver, Cons.pushNotification.comment, data);
