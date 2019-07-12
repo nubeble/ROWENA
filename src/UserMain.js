@@ -53,6 +53,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         host: null,
         guest: null,
 
+        showReviewButton: false,
         disableReviewButton: false,
 
         showKeyboard: false,
@@ -76,7 +77,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        // console.log('UserMain.componentDidMount');
+        console.log('UserMain.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
@@ -86,8 +87,15 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
-        const item = this.props.navigation.state.params.item;
-        // console.log('UserMain.componentDidMount', item);
+        // const item = this.props.navigation.state.params.item;
+        const { from, item } = this.props.navigation.state.params;
+
+        let showReviewButton = false;
+        if (from === 'ChatRoom') {
+            showReviewButton = true;
+        } else { // CommentMain
+            showReviewButton = false;
+        }
 
         let disableReviewButton = false;
         if (!item.placeId || !item.feedId) disableReviewButton = true; // from CommentMain
@@ -95,7 +103,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         const guest = item.guest;
         const host = item.host;
 
-        this.setState({ disableReviewButton, guest: guest, host: host });
+        this.setState({ showReviewButton, disableReviewButton, guest: guest, host: host });
 
         const uid = guest.uid;
 
@@ -560,85 +568,68 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         }}
                                     />
 
-                                    <Text style={{
-                                        // paddingHorizontal: Theme.spacing.base,
+                                    {
+                                        this.state.showReviewButton &&
+                                        <View style={{ paddingTop: Theme.spacing.tiny, alignItems: 'center' }}>
+                                            <Text style={{
+                                                paddingHorizontal: Theme.spacing.base,
+                                                width: Dimensions.get('window').width * 0.85,
+                                                marginBottom: Theme.spacing.small,
+                                                fontSize: 14, lineHeight: 24,
+                                                fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                                                textAlign: 'center'
+                                            }}>Share your experience to help others</Text>
 
-                                        width: Dimensions.get('window').width * 0.85,
-                                        alignSelf: 'center',
+                                            <TouchableOpacity
+                                                style={[styles.contactButton,
+                                                {
+                                                    marginBottom: Theme.spacing.small,
+                                                    backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
+                                                }
+                                                ]}
+                                                onPress={() => {
+                                                    if (this.state.disableReviewButton) {
+                                                        this.refs["toast"].show("Can't add a review here.", 500);
+                                                        return;
+                                                    }
 
-                                        marginTop: Theme.spacing.tiny,
-                                        marginBottom: Theme.spacing.small,
-                                        fontSize: 14, fontFamily: "Roboto-Light",
-                                        color: Theme.color.placeholder,
-                                        textAlign: 'center', lineHeight: 24
-                                    }}>Share your experience to help others</Text>
+                                                    if (!this.state.guest) {
+                                                        this.refs["toast"].show('The user no longer exists.', 500);
+                                                        return;
+                                                    }
 
-                                    <TouchableOpacity
-                                        style={[styles.contactButton,
-                                        {
-                                            marginBottom: Theme.spacing.tiny,
-                                            // borderColor: this.state.showKeyboard ? 'black' : "rgba(255, 255, 255, 0.8)",
-                                            backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
-                                        }
-                                        ]}
-                                        onPress={() => {
-                                            if (this.state.disableReviewButton) {
-                                                this.refs["toast"].show("Can't add a review here.", 500);
-                                                return;
-                                            }
+                                                    setTimeout(() => {
+                                                        if (this.closed) return;
+                                                        // this.props.navigation.navigate("writeComment");
+                                                        this.openKeyboard();
 
-                                            if (!this.state.guest) {
-                                                this.refs["toast"].show('The user no longer exists.', 500);
-                                                return;
-                                            }
+                                                        // move scroll top
+                                                        // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
+                                                        // console.log('gap', gap);
+                                                        // this._flatList.scrollToOffset({ offset: gap, animated: true });
+                                                        this._flatList.scrollToOffset({ offset: 0, animated: true });
+                                                    }, Cons.buttonTimeoutShort);
+                                                }}
+                                            >
+                                                <Text style={{
+                                                    fontSize: 16, fontFamily: "Roboto-Medium",
+                                                    // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
+                                                    color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
+                                                }}>{'Add a Review'}</Text>
+                                            </TouchableOpacity>
 
-                                            setTimeout(() => {
-                                                if (this.closed) return;
-                                                // this.props.navigation.navigate("writeComment");
-                                                this.openKeyboard();
+                                            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }} />
+                                        </View>
+                                    }
 
-                                                // move scroll top
-                                                // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
-                                                // console.log('gap', gap);
-                                                // this._flatList.scrollToOffset({ offset: gap, animated: true });
-                                                this._flatList.scrollToOffset({ offset: 0, animated: true });
-                                            }, Cons.buttonTimeoutShort);
-                                        }}
-                                    >
-                                        <Text style={{
-                                            fontSize: 16, fontFamily: "Roboto-Medium",
-                                            // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
-                                            color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
-                                        }}>{'Add a Review'}</Text>
-                                    </TouchableOpacity>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }} />
                                 </View>
                             </View>
-                            {/*
-                                {
-                                    labelText &&
-                                    <View style={styles.titleContainer}>
-                                        <Text style={styles.title}>
-                                            {
-                                                labelText
-                                            }
-                                        </Text>
-                                    </View>
-                                }
-                                {
-                                    labelText &&
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, alignSelf: 'center', width: Dimensions.get('window').width - 20 * 2 }} />
-                                }
-*/}
                         </View>
                     }
                     data={reviews}
                     keyExtractor={item => item.comment.id}
                     renderItem={this.renderItem}
-
-                    // onEndReachedThreshold={0.5}
-                    // onEndReached={this.onScrollHandler}
+                    ItemSeparatorComponent={this.itemSeparatorComponent}
                     onScroll={({ nativeEvent }) => {
                         if (!this.focused) return;
 
@@ -646,10 +637,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                             this.loadMore();
                         }
                     }}
-                    // scrollEventThrottle={1}
-
-                    ItemSeparatorComponent={this.itemSeparatorComponent}
-
                     onRefresh={this.handleRefresh}
                     refreshing={this.state.refreshing}
 
@@ -874,8 +861,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             for (let i = 0; i < 4; i++) {
                 reviewArray.push(
-                    <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={134 + 12}>
+                    <View style={{ alignItems: 'center', paddingTop: 14 }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={134 + 14}>
                             <Svg.Rect
                                 x={width - 100}
                                 y={10}
@@ -1081,11 +1068,6 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1
-    },
-    columnWrapperStyle: {
-        flex: 1,
-        // justifyContent: 'center'
-        justifyContent: 'flex-start'
     },
     pictureContainer: {
         width: (Dimensions.get('window').width - 2 * 6) / 3,

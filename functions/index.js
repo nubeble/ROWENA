@@ -508,15 +508,23 @@ const processPushNotification = async(function () {
         userData['placeId'] = fields.placeId;
         userData['feedId'] = fields.feedId;
 
-        // nameFooter = '님이 댓글을 남겼습니다.';
-        nameFooter = ' wrote a review of your post.';
+        nameFooter = ' wrote a review of your post. ✍🏼';
     } else if (fields.type === '3') { // reply
         userData['message'] = fields.message;
         userData['placeId'] = fields.placeId;
         userData['feedId'] = fields.feedId;
 
-        // nameFooter = '님이 댓글의 답장을 달았습니다.';
-        nameFooter = ' replied to your review.';
+        nameFooter = ' replied to your review. 🙋';
+    } else if (fields.type === '4') { // comment
+        userData['message'] = fields.message;
+
+        nameFooter = ' wrote a review of you. ✍🏻';
+    } else if (fields.type === '5') { // like
+        userData['message'] = fields.message;
+        userData['placeId'] = fields.placeId;
+        userData['feedId'] = fields.feedId;
+
+        nameFooter = ' liked your post. ❤';
     }
 
     let messages = [];

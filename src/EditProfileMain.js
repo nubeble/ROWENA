@@ -350,7 +350,6 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                             </View>
                         </View>
                     }
-                    // columnWrapperStyle={styles.columnWrapperStyle}
                     data={reviews}
                     keyExtractor={item => item.comment.id}
                     renderItem={this.renderItem}
@@ -504,8 +503,8 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
             for (let i = 0; i < 4; i++) {
                 reviewArray.push(
-                    <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={134 + 12}>
+                    <View style={{ alignItems: 'center', paddingTop: 14 }} key={i}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={134 + 14}>
                             <Svg.Rect
                                 x={width - 100}
                                 y={10}
@@ -628,11 +627,6 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1
-    },
-    columnWrapperStyle: {
-        flex: 1,
-        // justifyContent: 'center'
-        justifyContent: 'flex-start'
     },
     titleContainer: {
         padding: Theme.spacing.small,

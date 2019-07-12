@@ -1884,7 +1884,7 @@ export default class Post extends React.Component<InjectedProps> {
             for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
                 reviewArray.push(
                     <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140 + 8}>
+                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140 + 10}>
                             <Svg.Rect
                                 x={0}
                                 y={10}

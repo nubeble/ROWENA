@@ -517,7 +517,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         };
 
         setTimeout(() => {
-            !this.closed && this.props.navigation.navigate("userPost", { item: _item });
+            !this.closed && this.props.navigation.navigate("userPost", { from: 'CommentMain', item: _item });
         }, Cons.buttonTimeoutShort);
 
 
