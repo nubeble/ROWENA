@@ -48,6 +48,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         totalFeedsSize: 0,
         // showPostIndicator: -1,
 
+        replyAdded: false,
+
         notification: '',
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
@@ -71,9 +73,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     constructor(props) {
         super(props);
 
-        this.reload = true;
+        // this.reload = true;
         this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
 
         this.lastCommentsUpdatedTime = 0;
 
@@ -86,8 +88,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // this.imageRefs = []; // for cleaning files in server
 
         // used in checkUpdateOnUserFeed
-        // this.reviewAddedFeedHashTable = [];
-        this.reviewAddedFeedHashTable = new Map();
+        // this.reviewAddedFeedHashTable = new Map();
     }
 
     componentDidMount() {
@@ -104,13 +105,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        // this.getUserFeeds();
+        this.props.profileStore.setFeedsUpdatedCallback(this.onFeedsUpdated); // user post add / remove detection
+        this.props.profileStore.setReviewAddedOnFeedCallback(this.onReviewAddedOnFeed);
+        this.props.profileStore.setReplyAddedOnReviewCallback(this.onReplyAddedOnReview);
 
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderFeed: true });
-        }, 0);
-        */
+        this.getUserFeeds();
+
+        this.checkReplyOnReview();
     }
 
     componentWillUnmount() {
@@ -188,11 +189,74 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     @autobind
+    onFeedsUpdated() {
+        console.log('ProfileMain.onFeedsUpdated');
+
+        // reload from the start
+        this.lastLoadedFeedIndex = -1;
+        this.getUserFeeds();
+    }
+
+    @autobind
+    onReviewAddedOnFeed() {
+        console.log('ProfileMain.onReviewAddedOnFeed');
+
+        // reload from the start
+        // render feeds from 0 to current index
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+        const length = profile.feeds.length;
+        const count = length - this.lastLoadedFeedIndex;
+        console.log('ProfileMain.onReviewAddedOnFeed', count);
+
+        this.lastLoadedFeedIndex = -1;
+        this.getUserFeeds(count);
+    }
+
+    // copied from Loading.js
+    /*
+    checkUpdateOnUserFeed() {
+        // 내 post에 리뷰가 달린 경우만 체크!
+
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+        if (!profile) return false;
+
+        // check reviews on my post
+        let result = false;
+
+        const feeds = profile.feeds;
+        for (let i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+            if (feed.reviewAdded) {
+                const saved = this.reviewAddedFeedHashTable.has(feed.feedId);
+                if (saved) { // saved. means already applied.
+                    // skip
+                } else {
+                    this.reviewAddedFeedHashTable.set(feed.feedId, 1); // check
+                    result = true;
+                }
+            }
+        }
+
+        return result;
+    }
+    */
+
+    @autobind
+    onReplyAddedOnReview() {
+        console.log('ProfileMain.onReplyAddedOnReview');
+
+        !this.closed && this.setState({ replyAdded: true });
+    }
+
+    @autobind
     onFocus() {
-        console.log('ProfileMain.onFocus');
+        // console.log('ProfileMain.onFocus');
 
         Vars.focusedScreen = 'ProfileMain';
 
+        /*
         // check user feed updates
         if (this.checkUpdateOnUserFeed() === true) {
             this.lastChangedTime = 0;
@@ -202,11 +266,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             if (this.lastChangedTime !== lastChangedTime) {
                 // reload from the start
                 this.getUserFeeds();
-
-                // move scroll top
-                // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
             }
         }
+        */
 
         this.focused = true;
     }
@@ -270,7 +332,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
-    getUserFeeds() {
+    getUserFeeds(count = DEFAULT_FEED_COUNT) {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
@@ -286,6 +348,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return;
         }
 
+        /*
         // check update
         const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
@@ -295,27 +358,37 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.reload = true;
             this.lastLoadedFeedIndex = -1;
         }
+        */
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('ProfileMain', 'loading feeds...');
+        console.log('ProfileMain', 'loading feeds ...');
 
         let newFeeds = [];
 
-        let startIndex = 0;
+        /*
         if (this.reload) {
             startIndex = length - 1;
         } else {
             startIndex = this.lastLoadedFeedIndex - 1;
         }
+        */
+        let reload = false;
+        let startIndex = 0;
+        if (this.lastLoadedFeedIndex === -1) {
+            reload = true;
+            startIndex = length - 1;
+        } else {
+            startIndex = this.lastLoadedFeedIndex - 1;
+        }
 
-        let count = 0;
+        let _count = 0;
 
         for (let i = startIndex; i >= 0; i--) {
-            if (count >= DEFAULT_FEED_COUNT) break;
+            if (_count >= count) break;
 
             let feed = feeds[i];
 
@@ -390,12 +463,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             this.lastLoadedFeedIndex = i;
 
-            count++;
+            _count++;
         }
 
-        if (this.reload) {
-            this.reload = false;
-
+        if (reload) {
             // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
             this.setState({ feeds: newFeeds });
         } else {
@@ -543,7 +614,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             _avatarColor = Util.getAvatarColor(uid);
         }
 
-        const replyAdded = this.checkUpdateOnReview();
+        // const replyAdded = this.checkUpdateOnReview();
+        const replyAdded = this.state.replyAdded;
 
         return (
             <View style={styles.flex}>
@@ -715,6 +787,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                                 setTimeout(() => {
                                                     if (this.closed) return;
+
+                                                    this.setState({ replyAdded: false });
+
                                                     this.props.navigation.navigate("reviewGirls");
                                                 }, Cons.buttonTimeoutShort);
                                             }}
@@ -1063,13 +1138,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     </View>
                 }
 
-                <Toast
-                    ref="toast"
-                    position='top'
-                    positionValue={Dimensions.get('window').height / 2 - 20}
-                    opacity={0.6}
-                />
-
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
                     <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
@@ -1086,6 +1154,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
                     <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                 </Dialog.Container>
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
             </View>
         );
     } // end of render()
@@ -1113,10 +1188,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.setState({ refreshing: true });
 
         // reload from the start
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
+        this.lastLoadedFeedIndex = -1;
         this.getUserFeeds();
-
-        // if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
 
         this.setState({ refreshing: false });
     }
@@ -1201,54 +1275,23 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
     */
 
-    // copied from Loading.js
-    checkUpdateOnUserFeed() {
-        // 내가 올린 post에 리뷰가 달린 경우만 체크!
-
+    // red dot on Girls You've Reviewed
+    checkReplyOnReview() {
         const { profileStore } = this.props;
         const { profile } = profileStore;
-        if (!profile) return false;
+        if (!profile) return;
 
-        // check reviews on my post
-        let result = false;
-
-        const feeds = profile.feeds;
-        for (let i = 0; i < feeds.length; i++) {
-            const feed = feeds[i];
-            if (feed.reviewAdded) {
-                // const saved = this.reviewAddedFeedHashTable[i];
-                const saved = this.reviewAddedFeedHashTable.has(feed.feedId);
-                if (saved) { // saved. means already applied.
-                    // skip
-                } else {
-                    // this.reviewAddedFeedHashTable[i] = 1;
-                    this.reviewAddedFeedHashTable.set(feed.feedId, 1);
-                    result = true;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    checkUpdateOnReview() {
-        // Girls You've Reviewed
-        // customer의 경우, 내가 쓴 review에 답글이 달린 경우
-
-        const { profileStore } = this.props;
-        const { profile } = profileStore;
-        if (!profile) return false;
-
-        // check replies on my review
         const reviews = profile.reviews;
+        let replyAdded = false;
         for (let i = 0; i < reviews.length; i++) {
             const review = reviews[i];
             if (review.replyAdded) {
-                return true;
+                replyAdded = true;
+                break;
             }
         }
 
-        return false;
+        this.setState({ replyAdded });
     }
 
     uploadPicture() {

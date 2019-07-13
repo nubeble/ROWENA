@@ -275,12 +275,11 @@ export default class CheckLikes extends React.Component {
 
         this.setState({ isLoadingUsers: true });
 
-        console.log('CheckLikes', 'loading users...');
+        console.log('CheckLikes', 'loading feeds ...');
 
         // let newUsers = [];
 
-        let startIndex;
-
+        let startIndex = 0;
         if (this.lastLoadedUserIndex === -1) {
             startIndex = length - 1;
         } else {
@@ -354,6 +353,7 @@ export default class CheckLikes extends React.Component {
         this.customersUnsubscribes.push(instance);
     }
 
+    /*
     async postClick(item) {
         if (item.replyAdded) {
             // update replyAdded in user profile
@@ -392,15 +392,6 @@ export default class CheckLikes extends React.Component {
         if (post === undefined) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
-                // update picture
-                /*
-                let feeds = [...this.state.feeds];
-                const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
-                if (index !== -1) {
-                    feeds.splice(index, 1);
-                    !this.closed && this.setState({ feeds });
-                }
-                */
                 let feeds = [...this.state.feeds];
                 for (let i = 0; i < feeds.length; i++) {
                     const feed = feeds[i];
@@ -445,6 +436,7 @@ export default class CheckLikes extends React.Component {
         // hide indicator
         // !this.closed && this.setState({ showPostIndicator: -1 });
     }
+    */
 }
 
 const styles = StyleSheet.create({

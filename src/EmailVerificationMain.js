@@ -148,7 +148,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
         this.sendVerificationEmail();
     }
@@ -157,7 +157,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
+        // this.onFocusListener.remove();
 
         // stop clock timer
         if (this.clockCall) {
@@ -205,10 +205,12 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         return true;
     }
 
+    /*
     @autobind
     onFocus() {
-        // if (this.refs['nameInput']) this.refs['nameInput'].focus();
+        if (this.refs['nameInput']) this.refs['nameInput'].focus();
     }
+    */
 
     // timer
     startTimer = () => {

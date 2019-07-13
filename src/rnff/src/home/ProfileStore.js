@@ -36,6 +36,12 @@ export default class ProfileStore {
     lastTimeReviewsUpdated: number;
     lastTimeCommentsUpdated: number;
 
+    feedsUpdatedCallbackList = [];
+    likesUpdatedCallbackList = [];
+    reviewsUpdatedCallbackList = [];
+    commentsUpdatedCallbackList = [];
+
+    replyAddedOnReviewCallbackList = [];
 
     // @observable _profile: Profile = DEFAULT_PROFILE;
     @observable _profile: Profile;
@@ -43,42 +49,132 @@ export default class ProfileStore {
     @computed get profile(): Profile { return this._profile; }
     set profile(profile: Profile) { this._profile = profile; }
 
+
+    setFeedsUpdatedCallback(cb) {
+        // this.feedsUpdatedCallback = cb;
+        this.feedsUpdatedCallbackList.push(cb);
+    }
+
+    callFeedsUpdatedCallback() {
+        for (let i = 0; i < this.feedsUpdatedCallbackList.length; i++) {
+            const cb = this.feedsUpdatedCallbackList[i];
+            cb();
+        }
+    }
+
+
+    setLikesUpdatedCallback(cb) {
+        // this.likesUpdatedCallback = cb;
+        this.likesUpdatedCallbackList.push(cb);
+    }
+
+    callLikesUpdatedCallback() {
+        for (let i = 0; i < this.likesUpdatedCallbackList.length; i++) {
+            const cb = this.likesUpdatedCallbackList[i];
+            cb();
+        }
+    }
+
+
+    setReviewsUpdatedCallback(cb) {
+        // this.reviewsUpdatedCallback = cb;
+        this.reviewsUpdatedCallbackList.push(cb);
+    }
+
+    callReviewsUpdatedCallback() {
+        for (let i = 0; i < this.reviewsUpdatedCallbackList.length; i++) {
+            const cb = this.reviewsUpdatedCallbackList[i];
+            cb();
+        }
+    }
+
+
+    setCommentsUpdatedCallback(cb) {
+        // this.commentsUpdatedCallback = cb;
+        this.commentsUpdatedCallbackList.push(cb);
+    }
+
+    callCommentsUpdatedCallback() {
+        for (let i = 0; i < this.commentsUpdatedCallbackList.length; i++) {
+            const cb = this.commentsUpdatedCallbackList[i];
+            cb();
+        }
+    }
+
+
+    // if review added on my feed
+    setReviewAddedOnFeedCallback(cb) {
+        this.reviewAddedOnFeedCallback = cb;
+    }
+
+    // if reply added on my review
+    setReplyAddedOnReviewCallback(cb) {
+        // this.replyAddedOnReviewCallback = cb;
+        this.replyAddedOnReviewCallbackList.push(cb);
+    }
+
+    callReplyAddedOnReviewCallback() {
+        for (let i = 0; i < this.replyAddedOnReviewCallbackList.length; i++) {
+            const cb = this.replyAddedOnReviewCallbackList[i];
+            cb();
+        }
+    }
+
+
     async init(): Promise<void> {
         const uid = Firebase.user().uid;
         this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(
             snap => {
                 if (snap.exists) {
-                    console.log('ProfileStore, profile changed.');
+                    console.log('ProfileStore, profile changed');
 
                     const data = snap.data();
 
+                    const __profile = this.profile;
+                    this.profile = data;
+
                     this.lastChangedTime = Date.now();
 
-                    if (this.profile) {
+                    if (__profile) {
                         // 1. check if feeds changed
-                        const oldFeeds = this.profile.feeds;
+                        const oldFeeds = __profile.feeds;
                         const newFeeds = data.feeds;
                         const resultFeeds = this.compareFeeds(oldFeeds, newFeeds);
-                        if (!resultFeeds) this.lastTimeFeedsUpdated = this.lastChangedTime;
+                        if (!resultFeeds) {
+                            this.lastTimeFeedsUpdated = this.lastChangedTime;
+                            // if (this.feedsUpdatedCallback) this.feedsUpdatedCallback();
+                            this.callFeedsUpdatedCallback();
+                        }
 
                         // 2. check if likes changed
-                        const oldLikes = this.profile.likes;
+                        const oldLikes = __profile.likes;
                         const newLikes = data.likes;
                         const resultLikes = this.compareLikes(oldLikes, newLikes);
-                        if (!resultLikes) this.lastTimeLikesUpdated = this.lastChangedTime;
+                        if (!resultLikes) {
+                            this.lastTimeLikesUpdated = this.lastChangedTime;
+                            // if (this.likesUpdatedCallback) this.likesUpdatedCallback();
+                            this.callLikesUpdatedCallback();
+                        }
 
                         // 3. check if reviews changed
-                        const oldReviews = this.profile.reviews;
+                        const oldReviews = __profile.reviews;
                         const newReviews = data.reviews;
                         const resultReviews = this.compareReviews(oldReviews, newReviews);
-                        if (!resultReviews) this.lastTimeReviewsUpdated = this.lastChangedTime;
+                        if (!resultReviews) {
+                            this.lastTimeReviewsUpdated = this.lastChangedTime;
+                            // if (this.reviewsUpdatedCallback) this.reviewsUpdatedCallback();
+                            this.callReviewsUpdatedCallback();
+                        }
 
                         // 4. check if comments changed
-                        const oldComments = this.profile.comments;
+                        const oldComments = __profile.comments;
                         const newComments = data.comments;
                         const resultComments = this.compareComments(oldComments, newComments);
-                        if (!resultComments) this.lastTimeCommentsUpdated = this.lastChangedTime;
-
+                        if (!resultComments) {
+                            this.lastTimeCommentsUpdated = this.lastChangedTime;
+                            // if (this.commentsUpdatedCallback) this.commentsUpdatedCallback();
+                            this.callCommentsUpdatedCallback();
+                        }
                     } else {
                         this.lastTimeFeedsUpdated = this.lastChangedTime;
                         this.lastTimeLikesUpdated = this.lastChangedTime;
@@ -86,11 +182,23 @@ export default class ProfileStore {
                         this.lastTimeCommentsUpdated = this.lastChangedTime;
                     }
 
-                    this.profile = data;
+                    // check if a review added on my feed
+                    const resultReview = this.checkReviewAddedOnFeed(data.feeds);
+                    if (resultReview) {
+                        if (this.reviewAddedOnFeedCallback) this.reviewAddedOnFeedCallback();
+                    }
+
+                    // check if a reply added on my review
+                    const resultReply = this.checkReplyAddedOnReview(data.reviews);
+                    if (resultReply) {
+                        // if (this.replyAddedOnReviewCallback) this.replyAddedOnReviewCallback();
+                        this.callReplyAddedOnReviewCallback();
+                    }
                 } else {
-                    console.log('ProfileStore, profile removed.');
+                    console.log('ProfileStore, profile removed');
 
                     this.profile = undefined;
+
                     /*
                     // create default
                     await Firebase.firestore.collection("users").doc(uid).set(DEFAULT_PROFILE);
@@ -99,7 +207,7 @@ export default class ProfileStore {
                 }
             },
             error => {
-                console.log('ProfileStore, an error happened.', error);
+                console.log('ProfileStore, an error happened', error);
             }
         );
     }
@@ -174,5 +282,23 @@ export default class ProfileStore {
         }
 
         return true;
+    }
+
+    checkReviewAddedOnFeed(feeds) {
+        for (let i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+            if (feed.reviewAdded) return true;
+        }
+
+        return false;
+    }
+
+    checkReplyAddedOnReview(reviews) {
+        for (let i = 0; i < reviews.length; i++) {
+            const review = reviews[i];
+            if (review.replyAdded) return true;
+        }
+
+        return false;
     }
 }

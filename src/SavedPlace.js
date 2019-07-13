@@ -18,6 +18,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
+import Dialog from "react-native-dialog";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -37,7 +38,11 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         totalFeedsSize: 0,
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
-        refreshing: false
+        refreshing: false,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
@@ -48,7 +53,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         this.placeId = null;
 
         this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -70,6 +75,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+
+        this.props.profileStore.setLikesUpdatedCallback(this.onLikesUpdated);
 
         // placeName, placeId
         const { placeId, city } = this.props.navigation.state.params;
@@ -94,6 +101,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         // this.__feeds = feeds;
 
         // this.getFeeds();
+
+        // reload from the start
+        this.getFeedsFromStart();
+
+        this.lastLoadedFeedIndex = -1;
+        this.getFeeds();
     }
 
     @autobind
@@ -106,11 +119,23 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     }
 
     @autobind
+    onLikesUpdated() {
+        console.log('SavedPlace.onLikesUpdated');
+
+        // reload from the start
+        this.getFeedsFromStart();
+
+        this.lastLoadedFeedIndex = -1;
+        this.getFeeds();
+    }
+
+    @autobind
     onFocus() {
-        console.log('SavedPlace.onFocus');
+        // console.log('SavedPlace.onFocus');
 
         Vars.focusedScreen = 'SavedPlace';
 
+        /*
         const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             this.lastChangedTime = lastChangedTime;
@@ -121,6 +146,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             this.lastLoadedFeedIndex = -1;
             this.getFeeds();
         }
+        */
 
         this.focused = true;
     }
@@ -161,32 +187,31 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         const feeds = this.__feeds;
         const length = feeds.length;
 
-        this.setState({ totalFeedsSize: length });
+        !this.closed && this.setState({ totalFeedsSize: length });
 
         if (length === 0) {
-            this.setState({ feeds: [] });
+            !this.closed && this.setState({ feeds: [] });
             return;
         }
 
         // all loaded
         if (this.lastLoadedFeedIndex >= length - 1) return;
 
-        console.log('SavedPlace', 'loading users...');
+        console.log('SavedPlace', 'loading feeds ...');
 
         let newFeeds = [];
 
         let reload = false;
         let startIndex = 0;
-
         if (this.lastLoadedFeedIndex === -1) {
             reload = true;
             startIndex = 0;
 
-            this.setState({ isLoadingFeeds: true, loadingType: 100 });
+            !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
         } else {
             startIndex = this.lastLoadedFeedIndex + 1;
 
-            this.setState({ isLoadingFeeds: true, loadingType: 200 });
+            !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 200 });
         }
 
         let count = 0;
@@ -243,9 +268,9 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         }
 
         if (reload)
-            this.setState({ feeds: newFeeds });
+            !this.closed && this.setState({ feeds: newFeeds });
         else
-            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
+            !this.closed && this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
 
         console.log('SavedPlace', 'loading feeds done!');
 
@@ -510,6 +535,22 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     onPress={async () => {
                                         if (averageRating !== -1 && item.reviewCount !== -1) await this.openPost(item, index);
                                     }}
+                                    onLongPress={() => {
+                                        this.openDialog('Remove likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
+                                            // remove likes
+
+                                            // toast?
+
+                                            // update database
+                                            const uid = Firebase.user().uid;
+                                            const placeId = post.placeId;
+                                            const feedId = post.id;
+                                            const name = post.name;
+                                            const placeName = post.placeName;
+                                            const uri = post.pictures.one.uri;
+                                            Firebase.toggleLikes(uid, placeId, feedId, name, placeName, uri);
+                                        });
+                                    }}
                                 >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
@@ -654,6 +695,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     </View>
                 }
 
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
                 <Toast
                     ref="toast"
                     position='top'
@@ -676,6 +724,35 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         this.getFeeds();
 
         !this.closed && this.setState({ refreshing: false });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

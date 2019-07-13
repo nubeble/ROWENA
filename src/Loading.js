@@ -128,8 +128,16 @@ export default class Loading extends React.Component<InjectedProps> {
                         <RefreshIndicator refreshing total={3} size={5} color='white' />
                     </View>
                 }
+                {/*
                 <Text style={{ position: 'absolute', bottom: 30 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Date Published ' + Cons.lastUpdatedDate}</Text>
                 <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Version: ' + Cons.version}</Text>
+                */}
+                <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
+                    <Text style={{ fontSize: 18, color: 'white' }}>{'Date Published '}
+                        <Text style={{ fontSize: 18, color: 'red' }}>{Cons.lastUpdatedDate}</Text>
+                    </Text>
+                    <Text style={{ fontSize: 18, color: 'white' }}>{'Version: ' + Cons.version}</Text>
+                </View>
                 <Animated.Image
                     style={{
                         position: 'absolute',

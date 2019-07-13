@@ -327,7 +327,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('CommentMain', 'loading feeds...');
+        console.log('CommentMain', 'loading feeds ...');
 
         let newFeeds = [];
 

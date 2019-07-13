@@ -42,7 +42,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
         this.order = []; // place id
 
         this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
     }
 
     initMap() {
@@ -77,6 +77,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
         // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
+
+        this.props.profileStore.setLikesUpdatedCallback(this.onLikesUpdated);
+
+        // reload from the start
+        this.getPlaces();
+
+        this.lastLoadedFeedIndex = -1;
+        this.drawPlaces();
     }
 
     @autobind
@@ -89,11 +97,23 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     @autobind
+    onLikesUpdated() {
+        console.log('SavedMain.onLikesUpdated');
+
+        // reload from the start
+        this.getPlaces();
+
+        this.lastLoadedFeedIndex = -1;
+        this.drawPlaces();
+    }
+
+    @autobind
     onFocus() {
-        console.log('SavedMain.onFocus');
+        // console.log('SavedMain.onFocus');
 
         Vars.focusedScreen = 'SavedMain';
 
+        /*
         const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             this.lastChangedTime = lastChangedTime;
@@ -104,6 +124,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
             this.lastLoadedFeedIndex = -1;
             this.drawPlaces();
         }
+        */
 
         this.focused = true;
     }
@@ -138,6 +159,8 @@ export default class SavedMain extends React.Component<InjectedProps> {
         const likes = profile.likes;
         const length = likes.length;
 
+        console.log('SavedMain.getPlaces()', length);
+
         if (length === 0) return;
 
         for (let i = length - 1; i >= 0; i--) {
@@ -151,16 +174,20 @@ export default class SavedMain extends React.Component<InjectedProps> {
     drawPlaces() { // set state feeds
         if (this.state.isLoadingFeeds) return;
 
+        if (this.order.length === 0) {
+            !this.closed && this.setState({ feeds: [] });
+            return;
+        }
+
         // all loaded
         if (this.lastLoadedFeedIndex >= this.order.length - 1) return;
 
-        console.log('SavedMain', 'loading feeds...');
+        console.log('SavedMain', 'loading feeds ...');
 
         let newFeeds = [];
 
         let reload = false;
         let startIndex = 0;
-
         if (this.lastLoadedFeedIndex === -1) {
             reload = true;
             startIndex = 0;
@@ -263,7 +290,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
                         if (item.pictures.length === 1) {
                             return (
-                                // <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { feeds: item.feeds }) }}>
                                 <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage

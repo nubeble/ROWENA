@@ -184,6 +184,19 @@ export default class Post extends React.Component<InjectedProps> {
             newPost.likes = likes;
             !this.closed && this.setState({ post: newPost });
 
+            // update liked
+            let liked = false;
+            const uid = Firebase.user().uid;
+            for (let i = 0; i < likes.length; i++) {
+                const item = likes[i]; // uid
+                if (uid === item) {
+                    liked = true;
+                    break;
+                }
+            }
+            !this.closed && this.setState({ liked });
+
+
             // update feedStore - NO need to update views & likes
             // const { feedStore } = this.props;
             // feedStore.updateFeed(newPost);
@@ -866,9 +879,9 @@ export default class Post extends React.Component<InjectedProps> {
 
                         {/* views & likes */}
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={styles.views}>{views}</Text>
-                            <Octicons style={{ marginHorizontal: 8 }} name='primitive-dot' color={Theme.color.title} size={10} />
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
+                            <Text style={[styles.views, { marginRight: 4 }]}>{views}</Text>
+                            <Octicons name='primitive-dot' color={Theme.color.title} size={10} style={{ marginHorizontal: 4 }} />
+                            <TouchableOpacity style={{ marginLeft: 4 }} onPress={() => this.props.navigation.navigate("checkLikes", { likes: this.state.post.likes })}>
                                 <Text style={styles.likes}>{likes}</Text>
                             </TouchableOpacity>
                         </View>

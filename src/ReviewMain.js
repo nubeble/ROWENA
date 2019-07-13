@@ -39,9 +39,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     constructor(props) {
         super(props);
 
-        this.reload = true;
+        // this.reload = true;
         this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
 
         this.feedList = new Map();
         this.feedCountList = new Map();
@@ -57,18 +57,15 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     */
 
     componentDidMount() {
-        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        // this.getReviewedFeeds();
+        this.props.profileStore.setReviewsUpdatedCallback(this.onReviewsUpdated);
+        this.props.profileStore.setReplyAddedOnReviewCallback(this.onReplyAddedOnReview);
 
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderFeed: true });
-        }, 0);
-        */
+        this.getReviewedFeeds();
     }
 
     componentWillUnmount() {
@@ -99,19 +96,43 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     }
 
     @autobind
+    onReviewsUpdated() { // review add / remove detection
+        console.log('ReviewMain.onReplyAddedOnReview');
+
+        // reload from the start
+        this.lastLoadedFeedIndex = -1;
+        this.getReviewedFeeds();
+    }
+
+    @autobind
+    onReplyAddedOnReview() {
+        console.log('ReviewMain.onReplyAddedOnReview');
+
+        // reload from the start
+        // render feeds from 0 to current index
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+        const length = profile.reviews.length;
+        const count = length - this.lastLoadedFeedIndex;
+        console.log('ReviewMain.onReplyAddedOnReview', count);
+
+        this.lastLoadedFeedIndex = -1;
+        this.getReviewedFeeds(count);
+    }
+
+    @autobind
     onFocus() {
-        console.log('ReviewMain.onFocus', this.lastChangedTime, this.props.profileStore.lastTimeReviewsUpdated);
+        // console.log('ReviewMain.onFocus', this.lastChangedTime, this.props.profileStore.lastTimeReviewsUpdated);
 
         Vars.focusedScreen = 'ReviewMain';
 
+        /*
         const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             // reload from the start
             this.getReviewedFeeds();
-
-            // move scroll top
-            // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
+        */
 
         this.focused = true;
     }
@@ -286,7 +307,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         );
     }
 
-    getReviewedFeeds() {
+    getReviewedFeeds(count = DEFAULT_FEED_COUNT) {
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
@@ -302,6 +323,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             return;
         }
 
+        /*
         // check update
         const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
@@ -311,27 +333,38 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             this.reload = true;
             this.lastLoadedFeedIndex = -1;
         }
+        */
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('ReviewMain', 'loading feeds...');
+        console.log('ReviewMain', 'loading feeds ...');
 
         let newFeeds = [];
 
+        /*
         let startIndex = 0;
         if (this.reload) {
             startIndex = length - 1;
         } else {
             startIndex = this.lastLoadedFeedIndex - 1;
         }
+        */
+        let reload = false;
+        let startIndex = 0;
+        if (this.lastLoadedFeedIndex === -1) {
+            reload = true;
+            startIndex = length - 1;
+        } else {
+            startIndex = this.lastLoadedFeedIndex - 1;
+        }
 
-        let count = 0;
+        let _count = 0;
 
         for (let i = startIndex; i >= 0; i--) {
-            if (count >= DEFAULT_FEED_COUNT) break;
+            if (_count >= count) break;
 
             let review = reviews[i];
 
@@ -409,12 +442,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
             this.lastLoadedFeedIndex = i;
 
-            count++;
+            _count++;
         }
 
-        if (this.reload) {
-            this.reload = false;
-
+        if (reload) {
             // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
             this.setState({ feeds: newFeeds });
         } else {
@@ -490,7 +521,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                 Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
 
                 // await Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
-                // this.onFocus();
+                // this.onFocus(); // ToDo
             });
 
             return;
@@ -541,7 +572,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
+        this.lastLoadedFeedIndex = -1;
         this.getReviewedFeeds();
 
         !this.closed && this.setState({ refreshing: false });

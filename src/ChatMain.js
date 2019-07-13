@@ -15,6 +15,7 @@ import Util from "./Util";
 import { Cons, Vars } from "./Globals";
 import _ from 'lodash';
 import moment from 'moment';
+import Dialog from "react-native-dialog";
 
 const DEFAULT_ROOM_COUNT = 6;
 
@@ -25,7 +26,11 @@ export default class ChatMain extends React.Component {
 
         // renderChat: false,
         isLoadingChat: false,
-        chatRoomList: []
+        chatRoomList: [],
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
@@ -531,6 +536,13 @@ export default class ChatMain extends React.Component {
                     </View>
                 }
 
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
                 <Toast
                     ref="toast"
                     position='top'
@@ -604,17 +616,37 @@ export default class ChatMain extends React.Component {
         }
 
         return (
-            <TouchableHighlight onPress={() => {
-                let list = [...this.state.chatRoomList];
-                const itemIndex = list.findIndex(el => el.id === id);
-                if (itemIndex !== -1) {
-                    const chatRoom = list[itemIndex];
-                    this.moveToChatRoom(chatRoom);
-                } else {
-                    // this should never happen
-                    this.refs["toast"].show('The room no longer exists.', 500);
-                }
-            }}>
+            <TouchableHighlight
+                onPress={() => {
+                    let list = [...this.state.chatRoomList];
+                    const itemIndex = list.findIndex(el => el.id === id);
+                    if (itemIndex !== -1) {
+                        const chatRoom = list[itemIndex];
+                        this.moveToChatRoom(chatRoom);
+                    } else {
+                        // this should never happen
+                        this.refs["toast"].show('The room no longer exists.', 500);
+                    }
+                }}
+                onLongPress={() => {
+                    this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + opponent.name + "?", async () => {
+                        // 1. database
+                        const myUid = users[0].uid;
+                        const myName = users[0].name;
+                        await Firebase.deleteChatRoom(myUid, myName, opponent.uid, id);
+
+                        // 2. update list
+                        const roomId = id; // room id need to get removed
+                        const result = this.deleted(roomId);
+                        if (result) { // found
+                            // means already removed. nothing to do here.
+                        } else { // not found
+                            // means need to remove here.
+                            this.deleteChatRoom(roomId);
+                        }
+                    });
+                }}
+            >
                 <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: Theme.spacing.xSmall, paddingVertical: Theme.spacing.small }}>
                     <View style={{ width: '24%', height: viewHeight, justifyContent: 'center', alignItems: 'center' }}>
                         {
@@ -934,6 +966,35 @@ export default class ChatMain extends React.Component {
         newList.sort(this.compare);
 
         this.setState({ chatRoomList: newList });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 
