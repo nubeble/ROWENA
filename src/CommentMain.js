@@ -40,12 +40,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
     constructor(props) {
         super(props);
 
-        this.reload = true;
+        // this.reload = true;
         this.lastLoadedFeedIndex = -1;
-        this.lastChangedTime = 0;
-        // this.onLoading = false;
+        // this.lastChangedTime = 0;
 
         this.customerList = new Map();
+
         this.customersUnsubscribes = [];
     }
 
@@ -64,12 +64,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         // this.getCommentedFeeds();
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderFeed: true });
-        }, 0);
-        */
     }
 
     @autobind
@@ -294,7 +288,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     getCommentedFeeds() {
-        // if (this.onLoading) return;
         if (this.state.isLoadingFeeds) return;
 
         const { profile } = this.props.profileStore;
@@ -322,8 +315,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
-
-        // this.onLoading = true;
 
         this.setState({ isLoadingFeeds: true });
 
@@ -452,8 +443,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
         }, 250);
 
         console.log('CommentMain', 'loading feeds done!');
-
-        // this.onLoading = false;
     }
 
     postClick(item) {
