@@ -58,26 +58,49 @@ export default class CommentMain extends React.Component<InjectedProps> {
     componentDidMount() {
         console.log('CommentMain.componentDidMount');
 
-        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        // this.getCommentedFeeds();
+        this.props.profileStore.setCommentsUpdatedCallback(this.onCommentsUpdated);
+
+        this.getCommentedFeeds();
+    }
+
+    componentWillUnmount() {
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+        this.hardwareBackPressListener.remove();
+
+        this.props.profileStore.unsetCommentsUpdatedCallback(this.onCommentsUpdated);
+
+        for (let i = 0; i < this.customersUnsubscribes.length; i++) {
+            const instance = this.customersUnsubscribes[i];
+            instance();
+        }
+
+        this.closed = true;
+    }
+
+    @autobind
+    onCommentsUpdated() {
+        // reload from the start
+        this.lastLoadedFeedIndex = -1;
+        this.getCommentedFeeds();
     }
 
     @autobind
     onFocus() {
         Vars.focusedScreen = 'CommentMain';
 
+        /*
         const lastChangedTime = this.props.profileStore.lastTimeCommentsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
             // reload from the start
             this.getCommentedFeeds();
-
-            // move scroll top
-            // if (this._flatList) this._flatList.scrollToOffset({ offset: 0, animated: true });
         }
+        */
 
         this.focused = true;
     }
@@ -99,19 +122,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
         const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
-
-    componentWillUnmount() {
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-        this.hardwareBackPressListener.remove();
-
-        for (let i = 0; i < this.customersUnsubscribes.length; i++) {
-            const instance = this.customersUnsubscribes[i];
-            instance();
-        }
-
-        this.closed = true;
-    }
 
     render() {
         return (
@@ -303,6 +313,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             return;
         }
 
+        /*
         // check update
         const lastChangedTime = this.props.profileStore.lastTimeCommentsUpdated;
         if (this.lastChangedTime !== lastChangedTime) {
@@ -312,6 +323,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             this.reload = true;
             this.lastLoadedFeedIndex = -1;
         }
+        */
 
         // all loaded
         if (this.lastLoadedFeedIndex === 0) return;
@@ -322,8 +334,18 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         let newFeeds = [];
 
+        /*
         let startIndex = 0;
         if (this.reload) {
+            startIndex = length - 1;
+        } else {
+            startIndex = this.lastLoadedFeedIndex - 1;
+        }
+        */
+        let reload = false;
+        let startIndex = 0;
+        if (this.lastLoadedFeedIndex === -1) {
+            reload = true;
             startIndex = length - 1;
         } else {
             startIndex = this.lastLoadedFeedIndex - 1;
@@ -339,7 +361,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
             // newFeeds.push(comment);
 
 
-
+            // subscribe post
+            // --
             const uid = comment.userUid;
             const commentId = comment.commentId;
             const name = comment.name;
@@ -422,15 +445,14 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                 this.customersUnsubscribes.push(instance);
             }
+            // --
 
             this.lastLoadedFeedIndex = i;
 
             count++;
         }
 
-        if (this.reload) {
-            this.reload = false;
-
+        if (reload) {
             // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
             this.setState({ feeds: newFeeds });
         } else {
@@ -454,7 +476,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         // !this.closed && this.setState({ showPostIndicator: index });
 
         const { profile } = this.props.profileStore;
-        if (!profile) return;
+        // if (!profile) return;
 
         const host = {
             uid: profile.uid,
@@ -517,7 +539,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
-        this.lastChangedTime = 0;
+        // this.lastChangedTime = 0;
+        this.lastLoadedFeedIndex = -1;
         this.getCommentedFeeds();
 
         !this.closed && this.setState({ refreshing: false });

@@ -365,14 +365,33 @@ export default class ChatMain extends React.Component {
         return null;
     }
 
+    componentWillReceiveProps() {
+        console.log('ChatMain.componentWillReceiveProps');
+
+        const params = this.props.navigation.state.params;
+        if (params && params.roomId) {
+            const roomId = params.roomId; // room id need to get removed
+
+            const result = this.deleted(roomId);
+            if (result) { // found
+                // means already removed. nothing to do here.
+            } else { // not found
+                // means need to remove here.
+                this.deleteChatRoom(roomId);
+
+                // move scroll top
+                // this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+        }
+    }
+
     @autobind
     onFocus() {
         console.log('ChatMain.onFocus');
 
-        this.isFocused = true;
-
         Vars.focusedScreen = 'ChatMain';
 
+        /*
         const params = this.props.navigation.state.params;
         if (params) {
             const roomId = params.roomId; // room id need to get removed
@@ -389,6 +408,9 @@ export default class ChatMain extends React.Component {
                 // this._flatList.scrollToOffset({ offset: 0, animated: true });
             }
         }
+        */
+
+        this.isFocused = true;
     }
 
     deleted(id) {

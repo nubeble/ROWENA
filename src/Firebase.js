@@ -196,7 +196,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(db);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             // remove storage
             const picture = userDoc.data().picture;
@@ -523,7 +523,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             let { feeds } = userDoc.data();
 
@@ -573,13 +573,13 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const feedDoc = await transaction.get(feedRef);
-            if (!feedDoc.exists) throw 'Feed document does not exist!';
+            if (!feedDoc.exists) throw 'Feed document not exist!';
 
             const placeDoc = await transaction.get(placeRef);
-            if (!placeDoc.exists) throw 'Place document does not exist!';
+            if (!placeDoc.exists) throw 'Place document not exist!';
 
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
 
             // 1. delete storage
@@ -643,7 +643,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             const { feeds } = userDoc.data();
             let index = -1;
@@ -681,7 +681,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             let { feeds } = userDoc.data();
 
@@ -738,7 +738,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const postDoc = await transaction.get(feedRef);
-            if (!postDoc.exists) throw 'Post document does not exist!';
+            if (!postDoc.exists) throw 'Post document not exist!';
 
             let { visits } = postDoc.data();
 
@@ -786,10 +786,10 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const postDoc = await transaction.get(feedRef);
-            if (!postDoc.exists) throw 'Post document does not exist!';
+            if (!postDoc.exists) throw 'Post document not exist!';
 
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'Profile document does not exist!';
+            if (!userDoc.exists) throw 'Profile document not exist!';
 
 
             // 1.
@@ -839,12 +839,73 @@ export default class Firebase {
         return result;
     }
 
-    static async updateLikes(uid, placeId, feedId, name, placeName, picture) {
+    static async removeLikes(feeds, uid) {
+        if (feeds.length === 0) return;
+
+        // update posts
+        for (let i = 0; i < feeds.length; i++) {
+            const feed = feeds[i];
+            const placeId = feed.placeId;
+            const feedId = feed.feedId;
+
+            const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
+
+            await Firebase.firestore.runTransaction(async transaction => {
+                const postDoc = await transaction.get(feedRef);
+                if (!postDoc.exists) throw 'Feed document not exist!';
+
+                let { likes } = postDoc.data();
+                const index = likes.indexOf(uid);
+                if (index !== -1) likes.splice(index, 1);
+
+                transaction.update(feedRef, { likes });
+            }).then(() => {
+                // console.log("Firebase.removeLikes, success.");
+            }).catch((error) => {
+                console.log('Firebase.removeLikes', error);
+            });
+        }
+
+        // update user profile
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
+
+            let { likes } = userDoc.data();
+
+            for (let i = 0; i < feeds.length; i++) {
+                const feed = feeds[i];
+                const placeId = feed.placeId;
+                const feedId = feed.feedId;
+
+                let index = -1;
+                for (let j = 0; i < likes.length; j++) {
+                    const item = likes[j];
+                    if (item.placeId === placeId && item.feedId === feedId) {
+                        index = j;
+                        break;
+                    }
+                }
+
+                if (index !== -1) likes.splice(index, 1);
+            }
+
+            transaction.update(userRef, { likes });
+        }).then(() => {
+            // console.log("Firebase.removeLikes, success.");
+        }).catch((error) => {
+            console.log('Firebase.removeLikes', error);
+        });
+    }
+
+    static async updateLikesFromProfile(uid, placeId, feedId, name, placeName, picture) {
+        const userRef = Firebase.firestore.collection("users").doc(uid);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const userDoc = await transaction.get(userRef);
+            if (!userDoc.exists) throw 'User document not exist!';
 
             let { likes } = userDoc.data();
 
@@ -870,14 +931,14 @@ export default class Firebase {
     }
 
     // update like in user profile
-    static async removeLikes(uid, placeId, feedId) {
+    static async removeLikesFromProfile(uid, placeId, feedId) {
         let result;
 
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'Profile document does not exist!';
+            if (!userDoc.exists) throw 'Profile document not exist!';
 
             let { likes } = userDoc.data();
             let index = -1;
@@ -908,7 +969,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const ownerDoc = await transaction.get(ownerRef);
-            if (!ownerDoc.exists) throw 'Owner document does not exist!';
+            if (!ownerDoc.exists) throw 'Owner document not exist!';
 
 
             let { feeds } = ownerDoc.data();
@@ -954,7 +1015,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const feedDoc = await transaction.get(feedRef);
-            if (!feedDoc.exists) throw 'Post document does not exist!';
+            if (!feedDoc.exists) throw 'Post document not exist!';
 
             // reviewCount
             let reviewCount = feedDoc.data().reviewCount;
@@ -1057,7 +1118,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             let { reviews } = userDoc.data();
 
@@ -1117,10 +1178,10 @@ export default class Firebase {
         // update - averageRating, reviewCount, reviews
         await Firebase.firestore.runTransaction(async transaction => {
             const feedDoc = await transaction.get(feedRef);
-            if (!feedDoc.exists) throw 'Post document does not exist!';
+            if (!feedDoc.exists) throw 'Post document not exist!';
 
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
 
             // 1. reviewCount
@@ -1223,7 +1284,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
 
             let { reviews } = userDoc.data();
@@ -1293,7 +1354,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             transaction.update(reviewRef, { reply: firebase.firestore.FieldValue.delete() });
 
@@ -1352,7 +1413,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(receiverRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             // 1. update receivedCommentsCount in receiver (guest) user profile
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
@@ -1398,7 +1459,7 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const userDoc = await transaction.get(userRef);
-            if (!userDoc.exists) throw 'User document does not exist!';
+            if (!userDoc.exists) throw 'User document not exist!';
 
             let { comments } = userDoc.data(); // array
 
@@ -1461,10 +1522,10 @@ export default class Firebase {
 
         await Firebase.firestore.runTransaction(async transaction => {
             const writerDoc = await transaction.get(writerRef);
-            if (!writerDoc.exists) throw 'User document does not exist!';
+            if (!writerDoc.exists) throw 'User document not exist!';
 
             const receiverDoc = await transaction.get(receiverRef);
-            if (!receiverDoc.exists) throw 'User document does not exist!';
+            if (!receiverDoc.exists) throw 'User document not exist!';
 
             // 1. update receivedCommentsCount in receiver (guest) user profile
             let receivedCommentsCount = receiverDoc.data().receivedCommentsCount;
@@ -1824,7 +1885,7 @@ export default class Firebase {
         let result;
 
         await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
-            if (!snapshot.exists()) throw 'Chat - uid data does not exist!';
+            if (!snapshot.exists()) throw 'Chat - uid data not exist!';
 
             let BreakException = {};
 
@@ -1921,7 +1982,7 @@ export default class Firebase {
         let result;
 
         await Firebase.database.ref('chat').child(myUid).once('value').then(snapshot => {
-            if (!snapshot.exists()) throw 'Chat - uid data does not exist!';
+            if (!snapshot.exists()) throw 'Chat - uid data not exist!';
 
             snapshot.forEach(async item => {
                 // console.log(item.key, item.val());
@@ -1952,7 +2013,7 @@ export default class Firebase {
     static async updateChatRoom(myUid, opponentUid, roomId, myUsers) {
         // update my chat room
         await Firebase.database.ref('chat').child(myUid).child(roomId).once('value').then(snapshot => {
-            if (!snapshot.exists()) throw 'Database data does not exist! (User left the chat room.)';
+            if (!snapshot.exists()) throw 'Database data not exist! (User left the chat room.)';
 
             // update
             const updateData = {
@@ -1968,7 +2029,7 @@ export default class Firebase {
 
         // update the opponent chat room
         await Firebase.database.ref('chat').child(opponentUid).child(roomId).once('value').then(snapshot => {
-            if (!snapshot.exists()) throw 'Opponent chat room does not exist! (User left the chat room.)';
+            if (!snapshot.exists()) throw 'Opponent chat room not exist! (User left the chat room.)';
 
             let users = [];
             users.push(myUsers[1]);

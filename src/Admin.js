@@ -351,6 +351,11 @@ export default class Admin extends React.Component {
         const placeId = 'ChIJdZOLiiMR2jERxPWrUs9peIg';
         const placeName = 'Singapore';
 
+        const extra = {
+            lat: 1.352083,
+            lng: 103.819836
+        };
+
         const LATITUDE = 1.2494041;
         const LONGITUDE = 103.8303209;
         const location = {
@@ -409,12 +414,6 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 1.352083,
-            lng: 103.819836
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -427,6 +426,11 @@ export default class Admin extends React.Component {
 
         const placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
         const placeName = 'Bangkok, Thailand';
+
+        const extra = {
+            lat: 13.7563309,
+            lng: 100.5017651
+        };
 
         /*
         const location = {
@@ -493,12 +497,6 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 13.7563309,
-            lng: 100.5017651
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -510,9 +508,15 @@ export default class Admin extends React.Component {
     async makePattaya() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
         // const placeName = 'Pattaya, Bang Lamung District, Chon Buri, Thailand';
         const placeName = 'Pattaya, Thailand';
+
+        const extra = {
+            lat: 12.9235557,
+            lng: 100.8824551
+        };
 
         /*
         const location = {
@@ -579,25 +583,23 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 12.9235557,
-            lng: 100.8824551
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeHCM() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
         const placeName = 'Ho Chi Minh City, Vietnam';
+
+        const extra = {
+            lat: 10.8230989,
+            lng: 106.6296638
+        };
 
         /*
         const location = {
@@ -664,26 +666,24 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 10.8230989,
-            lng: 106.6296638
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeHanoi() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJoRyG2ZurNTERqRfKcnt_iOc';
         // const placeName = 'Hanoi, Hoàn Kiếm, Hanoi, Vietnam';
         const placeName = 'Hanoi, Vietnam';
+
+        const extra = {
+            lat: 21.0277644,
+            lng: 105.8341598
+        };
 
         /*
         const location = {
@@ -750,25 +750,24 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 21.0277644,
-            lng: 105.8341598
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeSeattle() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJVTPokywQkFQRmtVEaUZlJRA';
         const placeName = 'Seattle, WA, USA';
+
+        const extra = {
+            lat: 47.6062095,
+            lng: -122.3320708
+        };
+
         const LATITUDE = 47.6062095;
         const LONGITUDE = -122.3320708;
         const location = {
@@ -829,12 +828,6 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 21.0277644,
-            lng: 105.8341598
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -924,9 +917,15 @@ export default class Admin extends React.Component {
     async makeManila(_number) {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJi8MeVwPKlzMRH8FpEHXV0Wk';
         // const placeName = 'Manila, Metro Manila, Philippines';
         const placeName = 'Manila, Philippines';
+
+        const extra = {
+            lat: 14.5995124,
+            lng: 120.9842195
+        };
 
         /*
         const location = {
@@ -987,25 +986,23 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 14.5995124,
-            lng: 120.9842195
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeCebu() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ_S3NjSWZqTMRBzXT2wwDNEw';
         const placeName = 'Cebu, Philippines';
+
+        const extra = {
+            lat: 10.3156992,
+            lng: 123.8854366
+        };
 
         /*
         const location = {
@@ -1072,25 +1069,23 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 10.3156992,
-            lng: 123.8854366
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeVientiane() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJIXvtBoZoJDER3-7BGIaxkx8';
         const placeName = 'Vientiane, Laos';
+
+        const extra = {
+            lat: 17.9757058,
+            lng: 102.6331035
+        };
 
         /*
         const location = {
@@ -1157,25 +1152,23 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 17.9757058,
-            lng: 102.6331035
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makePP() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ42tqxz1RCTERuyW1WugOAZw';
         const placeName = 'Phnom Penh, Cambodia';
+
+        const extra = {
+            lat: 11.5563738,
+            lng: 104.9282099
+        };
 
         /*
         const location = {
@@ -1242,25 +1235,23 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 11.5563738,
-            lng: 104.9282099
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeMacau() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ88g14uB6ATQR9qyFtCzje8Y';
         const placeName = 'Macau';
+
+        const extra = {
+            lat: 22.1980994,
+            lng: 113.5435639
+        };
 
         /*
         const location = {
@@ -1327,18 +1318,10 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 22.1980994,
-            lng: 113.5435639
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeJakarta() {
@@ -1347,6 +1330,12 @@ export default class Admin extends React.Component {
 
         const placeId = 'ChIJnUvjRenzaS4RoobX2g-_cVM';
         const placeName = 'Jakarta, Indonesia';
+
+        const extra = {
+            lat: -6.180495,
+            lng: 106.8283415
+        };
+
         const LATITUDE = -6.2087634;
         const LONGITUDE = 106.845599;
         const location = {
@@ -1405,25 +1394,23 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: -6.180495,
-            lng: 106.8283415
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async makeKL() {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
+
         const placeId = 'ChIJ5-rvAcdJzDERfSgcL1uO2fQ';
         const placeName = "Kuala Lumpur, Federal Territory of Kuala Lumpur, Malaysia";
+
+        const extra = {
+            lat: 3.139003,
+            lng: 101.686855
+        };
 
         /*
         const location = {
@@ -1490,18 +1477,10 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
-
-        const extra = {
-            lat: 3.139003,
-            lng: 101.686855
-        };
-
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
-
-        // Vars.userFeedsChanged = true;
     }
 
     async clearStorage() {

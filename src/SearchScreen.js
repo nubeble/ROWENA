@@ -39,6 +39,13 @@ export default class SearchScreen extends React.Component {
         */
     }
 
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+
+        this.closed = true;
+    }
+
     @autobind
     handleHardwareBackPress() {
         console.log('SearchScreen.handleHardwareBackPress');
@@ -51,13 +58,6 @@ export default class SearchScreen extends React.Component {
     @autobind
     onFocus() {
         Vars.focusedScreen = 'SearchScreen';
-    }
-
-    componentWillUnmount() {
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-
-        this.closed = true;
     }
 
     render() {
@@ -311,7 +311,7 @@ export default class SearchScreen extends React.Component {
 
                                     this.props.navigation.state.params.initFromSearch(result);
                                     this.props.navigation.goBack();
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }
                         }}
 

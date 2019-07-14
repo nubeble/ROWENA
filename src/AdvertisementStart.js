@@ -98,7 +98,7 @@ export default class AdvertisementStart extends React.Component {
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             !this.closed && this.props.navigation.navigate("advertisementMain");
-                        }, Cons.buttonTimeoutShort);
+                        }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>
                     </TouchableOpacity>
@@ -160,40 +160,5 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-
-
-
-
-
-    header: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#ff9a9a',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    title: {
-        width: '100%',
-        height: '20%',
-        backgroundColor: '#9aa9ff',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    content: {
-        flex: 1,
-        backgroundColor: '#d6ca1a',
-
-        // justifyContent: 'center',
-        alignItems: 'stretch',
-        padding: 10
-    },
-    footer: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#1ad657',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
+    }
 });

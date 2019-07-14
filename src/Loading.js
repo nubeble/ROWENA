@@ -134,7 +134,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 */}
                 <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
                     <Text style={{ fontSize: 18, color: 'white' }}>{'Date Published '}
-                        <Text style={{ fontSize: 18, color: 'red' }}>{Cons.lastUpdatedDate}</Text>
+                        <Text style={{ fontSize: 18, color: 'black' }}>{Cons.lastUpdatedDate}</Text>
                     </Text>
                     <Text style={{ fontSize: 18, color: 'white' }}>{'Version: ' + Cons.version}</Text>
                 </View>

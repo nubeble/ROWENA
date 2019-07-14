@@ -232,7 +232,7 @@ export default class ResetPasswordVerification extends React.Component {
                                     }
 
                                     this.props.navigation.dismiss();
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                         >
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Close</Text>

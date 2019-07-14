@@ -272,7 +272,7 @@ export default class ResetPasswordMain extends React.Component {
                                 setTimeout(() => {
                                     if (this.closed) return;
                                     this.submit(this.state.email);
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                         >
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Next</Text>

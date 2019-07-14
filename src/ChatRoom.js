@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, SafeAreaView
+    StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
@@ -202,10 +202,6 @@ export default class ChatRoom extends React.Component {
     render() {
         const _inputToolbarMarginBottom = this.state.onKeyboard ? 0 : inputToolbarMarginBottom;
 
-
-
-        const showPost = this.state.messages.length > 1 ? false : true;
-
         const top1 = (Dimensions.get('window').height - postHeight) / 2; // center
         const top2 = Cons.searchBarHeight;
 
@@ -393,8 +389,7 @@ export default class ChatRoom extends React.Component {
                 }
 
                 {
-                    // Consider: apply fade in animation
-                    this.state.renderPost && showPost &&
+                    this.state.renderPost && this.state.messages.length <= 1 &&
                     <View style={[styles.post, { top: _postTop }]}>
                         <Text>
                             <Text style={styles.text1}>{'You picked '}</Text>
@@ -418,6 +413,17 @@ export default class ChatRoom extends React.Component {
                         {/*
                         <Text style={styles.text2}>{text2}</Text>
                         */}
+                    </View>
+                }
+
+                {
+                    !this.state.renderPost && this.state.messages.length === 0 &&
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            animating={true}
+                            size="large"
+                            color={Theme.color.selection}
+                        />
                     </View>
                 }
 
@@ -555,7 +561,7 @@ export default class ChatRoom extends React.Component {
 
             Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
             this.props.navigation.navigate("post", { post, extra, from: 'ChatRoom' });
-        }, Cons.buttonTimeoutShort);
+        }, Cons.buttonTimeout);
     }
 
     getPost(item) {
@@ -611,7 +617,7 @@ export default class ChatRoom extends React.Component {
 
             setTimeout(() => {
                 !this.closed && this.props.navigation.navigate("user", { from: 'ChatRoom', item: _item });
-            }, Cons.buttonTimeoutShort);
+            }, Cons.buttonTimeout);
         }
     }
 

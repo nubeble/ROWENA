@@ -167,7 +167,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
         setTimeout(() => {
             !this.closed && this.refs.textInput && this.refs.textInput.focus();
-        }, Cons.buttonTimeoutLong);
+        }, 300);
     }
 
     componentWillReceiveProps(nextProps) {

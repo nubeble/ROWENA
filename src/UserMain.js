@@ -31,8 +31,6 @@ const avatarWidth = Dimensions.get('window').height / 11;
 const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
-// const tmp = "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you\nAnd all the tears you cried, that called my name\nAnd when you needed me I came through\nI paint a picture of the days gone by\nWhen love went blind and you would make me see\nI'd stare a lifetime into your eyes\nSo that I knew you were there here for me\nTime after time you there for me\nRemember yesterday, walking hand in hand\nLove letters in the sand, I remember you\nThrough the sleepless nights through every endless day\nI'd want to hear you say, I remember you";
-
 type InjectedProps = {
     feedStore: FeedStore,
     profileStore: ProfileStore
@@ -45,8 +43,6 @@ export default class UserMain extends React.Component<InjectedProps> {
     commentStore: CommentStore = new CommentStore();
 
     state = {
-        // renderFeed: false,
-
         isLoadingFeeds: false,
         refreshing: false,
 
@@ -88,7 +84,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
-        // const item = this.props.navigation.state.params.item;
         const { from, item } = this.props.navigation.state.params;
 
         let isModal = false;
@@ -154,12 +149,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         this.opponentUserUnsubscribe = instance;
         // --
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderFeed: true });
-        }, 0);
-        */
     }
 
     @autobind
@@ -622,7 +611,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                         // console.log('gap', gap);
                                                         // this._flatList.scrollToOffset({ offset: gap, animated: true });
                                                         this._flatList.scrollToOffset({ offset: 0, animated: true });
-                                                    }, Cons.buttonTimeoutShort);
+                                                    }, Cons.buttonTimeout);
                                                 }}
                                             >
                                                 <Text style={{

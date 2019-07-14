@@ -671,7 +671,7 @@ export default class Intro extends React.Component<InjectedProps> {
     openSearch() {
         setTimeout(() => {
             !this.closed && this.props.navigation.navigate("search", { from: 'Intro', initFromSearch: (result) => this.initFromSearch(result) });
-        }, Cons.buttonTimeoutShort);
+        }, Cons.buttonTimeout);
     }
 
     render(): React.Node {

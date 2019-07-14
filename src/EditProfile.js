@@ -7,7 +7,8 @@ import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign } from 'react-native-vector-icons';
 import SmartImage from './rnff/src/components/SmartImage';
-import { ImagePicker } from 'expo';
+// import { ImagePicker } from 'expo';
+import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
@@ -968,7 +969,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("editSearch",
                                     { from: 'EditProfile', initFromSearch: (result) => this.initFromSearch(result) });
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                         }}
                     >
                         <Text
@@ -1080,7 +1081,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
  
                             setTimeout(() => {
                                 // navigate
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                             */
                             this.refs["toast"].show("Can't change email address!", 500);
                         }}
@@ -1140,7 +1141,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
  
                             setTimeout(() => {
                                 // navigate
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                             */
                             this.refs["toast"].show("Can't change phone number!", 500);
                         }}
@@ -1256,9 +1257,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
             }
         }
 
-        let result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: [1, 1], // ToDo: android only! (only square image in IOS)
+            aspect: [1, 1],
             quality: 1.0
         });
 
@@ -1267,18 +1268,20 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (!result.cancelled) {
             this.setState({ onUploadingImage: true });
 
+            const path = result.uri;
+
             // show indicator & progress bar
-            this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+            this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
             // upload image
-            this.uploadImage(result.uri, (uri) => {
+            this.uploadImage(path, (uri) => {
                 if (!uri) {
                     this.showNotification('An error happened. Please try again.');
                     this.setState({ onUploadingImage: false });
                     return;
                 }
 
-                const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
+                const ref = 'images/' + Firebase.user().uid + '/profile/' + path.split('/').pop();
 
                 this.setState({ uploadImageUri: uri });
                 if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);

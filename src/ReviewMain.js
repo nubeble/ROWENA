@@ -62,7 +62,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.props.profileStore.setReviewsUpdatedCallback(this.onReviewsUpdated);
+        this.props.profileStore.setReviewsUpdatedCallback(this.onReviewsUpdated);  // review add / remove detection
         this.props.profileStore.setReplyAddedOnReviewCallback(this.onReplyAddedOnReview);
 
         this.getReviewedFeeds();
@@ -72,6 +72,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
         this.hardwareBackPressListener.remove();
+
+        this.props.profileStore.unsetReviewsUpdatedCallback(this.onReviewsUpdated);
+        this.props.profileStore.unsetReplyAddedOnReviewCallback(this.onReplyAddedOnReview);
 
         for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
@@ -96,7 +99,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
     }
 
     @autobind
-    onReviewsUpdated() { // review add / remove detection
+    onReviewsUpdated() {
         console.log('ReviewMain.onReplyAddedOnReview');
 
         // reload from the start

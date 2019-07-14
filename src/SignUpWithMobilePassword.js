@@ -54,7 +54,7 @@ export default class SignUpWithMobilePassword extends React.Component {
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             // this.props.navigation.navigate("mainStackNavigator");
-                        }, Cons.buttonTimeoutShort);
+                        }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>
                     </TouchableOpacity>

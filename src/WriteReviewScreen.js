@@ -46,7 +46,7 @@ export default class WriteReviewScreen extends React.Component {
         // Consider: move to onFocus
         setTimeout(() => {
             !this.closed && this.refs['comment'] && this.refs['comment'].focus();
-        }, Cons.buttonTimeoutLong);
+        }, 300);
     }
 
     componentWillUnmount() {

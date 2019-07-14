@@ -292,7 +292,7 @@ export default class SignUpWithMobileName extends React.Component {
                                         setTimeout(() => {
                                             if (this.closed) return;
                                             this.props.navigation.navigate("signUpWithMobileMain");
-                                        }, Cons.buttonTimeoutShort);
+                                        }, Cons.buttonTimeout);
                                     }}
                                 >
                                     <Text>
@@ -312,7 +312,7 @@ export default class SignUpWithMobileName extends React.Component {
                                         setTimeout(() => {
                                             if (this.closed) return;
                                             this.props.navigation.navigate("signUpWithEmailMain", { from: 'logIn' });
-                                        }, Cons.buttonTimeoutShort);
+                                        }, Cons.buttonTimeout);
                                     }}
                                 >
                                     <Text>
@@ -329,7 +329,7 @@ export default class SignUpWithMobileName extends React.Component {
                                 setTimeout(() => {
                                     if (this.closed) return;
                                     this.submit(this.state.name);
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                         >
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Next</Text>

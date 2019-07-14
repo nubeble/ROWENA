@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, TouchableWithoutFeedback, Image, BackHandler, Dimensions, FlatList,
+    StyleSheet, View, TouchableWithoutFeedback, TouchableHighlight, Image, BackHandler, Dimensions, FlatList,
     TouchableOpacity, Platform, ActivityIndicator
 } from 'react-native';
 import { NavigationActions } from 'react-navigation';
@@ -17,6 +17,7 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import { AirbnbRating } from './react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { LinearGradient } from 'expo-linear-gradient';
+import Dialog from "react-native-dialog";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -32,7 +33,11 @@ export default class SavedMain extends React.Component<InjectedProps> {
         feeds: [],
         isLoadingFeeds: false,
         loadingType: 0, // 0: none, 100: middle, 200: down
-        refreshing: false
+        refreshing: false,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
@@ -87,6 +92,18 @@ export default class SavedMain extends React.Component<InjectedProps> {
         this.drawPlaces();
     }
 
+    componentWillUnmount() {
+        console.log('SavedMain.componentWillUnmount');
+
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        this.props.profileStore.unsetLikesUpdatedCallback(this.onLikesUpdated);
+
+        this.closed = true;
+    }
+
     @autobind
     handleHardwareBackPress() {
         console.log('SavedMain.handleHardwareBackPress');
@@ -138,16 +155,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
         const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
-
-    componentWillUnmount() {
-        console.log('SavedMain.componentWillUnmount');
-
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-
-        this.closed = true;
-    }
 
     getPlaces() {
         // console.log('getPlaces()');
@@ -215,11 +222,13 @@ export default class SavedMain extends React.Component<InjectedProps> {
             const _placeId = feeds[0].placeId;
 
             const newFeed = {
+                feeds, // array
+
+
                 feedsSize,
                 placeName: _placeName, // city, state, country | city, country
                 pictures,
-                placeId: _placeId,
-                // feeds // array
+                placeId: _placeId
             };
 
             newFeeds.push(newFeed);
@@ -290,7 +299,10 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
                         if (item.pictures.length === 1) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
+                                <TouchableOpacity activeOpacity={0.5}
+                                    onPress={() => this.onPressItem(item.placeId, city)}
+                                    onLongPress={() => this.onLongPressItem(item.feeds, city)}
+                                >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={styles.picture}
@@ -312,11 +324,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             </Text>
                                         </View>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableOpacity>
                             );
                         } else if (item.pictures.length === 2) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
+                                <TouchableOpacity activeOpacity={0.5}
+                                    onPress={() => this.onPressItem(item.placeId, city)}
+                                    onLongPress={() => this.onLongPressItem(item.feeds, city)}
+                                >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={{
@@ -358,11 +373,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             </Text>
                                         </View>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableOpacity>
                             );
                         } else if (item.pictures.length === 3) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
+                                <TouchableOpacity activeOpacity={0.5}
+                                    onPress={() => this.onPressItem(item.placeId, city)}
+                                    onLongPress={() => this.onLongPressItem(item.feeds, city)}
+                                >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={{
@@ -417,11 +435,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             </Text>
                                         </View>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableOpacity>
                             );
                         } else if (item.pictures.length === 4) {
                             return (
-                                <TouchableWithoutFeedback onPress={() => { this.props.navigation.navigate("savedPlace", { placeId: item.placeId, city: city }) }}>
+                                <TouchableOpacity activeOpacity={0.5}
+                                    onPress={() => this.onPressItem(item.placeId, city)}
+                                    onLongPress={() => this.onLongPressItem(item.feeds, city)}
+                                >
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={{
@@ -489,7 +510,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                                             </Text>
                                         </View>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableOpacity>
                             );
                         } else {
                             return (
@@ -575,6 +596,13 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     </View>
                 }
 
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
                 <Toast
                     ref="toast"
                     position='top'
@@ -583,6 +611,19 @@ export default class SavedMain extends React.Component<InjectedProps> {
                 />
             </View>
         );
+    }
+
+    onPressItem(placeId, city) {
+        this.props.navigation.navigate("savedPlace", { placeId: placeId, city: city });
+    }
+
+    onLongPressItem(feeds, city) {
+        this.openDialog('Remove likes', "Are you sure you want to remove all your likes from " + city + "?", async () => {
+            // ToDo: toast?
+
+            const uid = Firebase.user().uid;
+            await Firebase.removeLikes(feeds, uid);
+        });
     }
 
     handleRefresh = () => {
@@ -597,6 +638,35 @@ export default class SavedMain extends React.Component<InjectedProps> {
         this.drawPlaces();
 
         !this.closed && this.setState({ refreshing: false });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

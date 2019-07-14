@@ -108,7 +108,7 @@ export default class CountrySelection extends React.Component {
                                 }
 
                                 this.props.navigation.dispatch(NavigationActions.back());
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                         }}
 
                         headerBackground={Theme.color.component}

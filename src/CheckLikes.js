@@ -431,7 +431,7 @@ export default class CheckLikes extends React.Component {
         // setTimeout(() => {
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("reviewPost", { post: post, extra: extra, from: 'Profile' });
-        // }, Cons.buttonTimeoutShort);
+        // }, Cons.buttonTimeout);
 
         // hide indicator
         // !this.closed && this.setState({ showPostIndicator: -1 });

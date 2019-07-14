@@ -256,7 +256,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 setTimeout(() => {
                                     console.log('move to Intro.');
                                     !this.closed && this.props.navigation.navigate("intro");
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                         >
                             <FontAwesome name='chevron-left' color="rgb(160, 160, 160)" size={16} />
@@ -266,7 +266,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             onPress={() => {
                                 setTimeout(() => {
                                     !this.closed && this.props.navigation.navigate("search", { from: 'Explore', initFromSearch: (result) => this.initFromSearch(result) });
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                         >
                             <Text
@@ -642,7 +642,7 @@ export default class Explore extends React.Component<InjectedProps> {
             const feedSize = this.state.feedSize;
 
             !this.closed && this.props.navigation.navigate("mapSearch", { region, placeName, placeId, feedSize });
-        }, Cons.buttonTimeoutShort);
+        }, Cons.buttonTimeout);
     }
 }
 

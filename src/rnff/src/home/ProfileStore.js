@@ -51,8 +51,12 @@ export default class ProfileStore {
 
 
     setFeedsUpdatedCallback(cb) {
-        // this.feedsUpdatedCallback = cb;
         this.feedsUpdatedCallbackList.push(cb);
+    }
+
+    unsetFeedsUpdatedCallback(cb) {
+        const index = this.feedsUpdatedCallbackList.indexOf(cb);
+        this.feedsUpdatedCallbackList.splice(index, 1);
     }
 
     callFeedsUpdatedCallback() {
@@ -64,8 +68,12 @@ export default class ProfileStore {
 
 
     setLikesUpdatedCallback(cb) {
-        // this.likesUpdatedCallback = cb;
         this.likesUpdatedCallbackList.push(cb);
+    }
+
+    unsetLikesUpdatedCallback(cb) {
+        const index = this.likesUpdatedCallbackList.indexOf(cb);
+        this.likesUpdatedCallbackList.splice(index, 1);
     }
 
     callLikesUpdatedCallback() {
@@ -77,8 +85,12 @@ export default class ProfileStore {
 
 
     setReviewsUpdatedCallback(cb) {
-        // this.reviewsUpdatedCallback = cb;
         this.reviewsUpdatedCallbackList.push(cb);
+    }
+
+    unsetReviewsUpdatedCallback(cb) {
+        const index = this.reviewsUpdatedCallbackList.indexOf(cb);
+        this.reviewsUpdatedCallbackList.splice(index, 1);
     }
 
     callReviewsUpdatedCallback() {
@@ -90,8 +102,12 @@ export default class ProfileStore {
 
 
     setCommentsUpdatedCallback(cb) {
-        // this.commentsUpdatedCallback = cb;
         this.commentsUpdatedCallbackList.push(cb);
+    }
+
+    unsetCommentsUpdatedCallback(cb) {
+        const index = this.commentsUpdatedCallbackList.indexOf(cb);
+        this.commentsUpdatedCallbackList.splice(index, 1);
     }
 
     callCommentsUpdatedCallback() {
@@ -107,10 +123,19 @@ export default class ProfileStore {
         this.reviewAddedOnFeedCallback = cb;
     }
 
+    unsetReviewAddedOnFeedCallback(cb) {
+        if (this.reviewAddedOnFeedCallback === cb) this.reviewAddedOnFeedCallback = undefined;
+    }
+
+
     // if reply added on my review
     setReplyAddedOnReviewCallback(cb) {
-        // this.replyAddedOnReviewCallback = cb;
         this.replyAddedOnReviewCallbackList.push(cb);
+    }
+
+    unsetReplyAddedOnReviewCallback(cb) {
+        const index = this.replyAddedOnReviewCallbackList.indexOf(cb);
+        this.replyAddedOnReviewCallbackList.splice(index, 1);
     }
 
     callReplyAddedOnReviewCallback() {
@@ -142,7 +167,6 @@ export default class ProfileStore {
                         const resultFeeds = this.compareFeeds(oldFeeds, newFeeds);
                         if (!resultFeeds) {
                             this.lastTimeFeedsUpdated = this.lastChangedTime;
-                            // if (this.feedsUpdatedCallback) this.feedsUpdatedCallback();
                             this.callFeedsUpdatedCallback();
                         }
 
@@ -152,7 +176,6 @@ export default class ProfileStore {
                         const resultLikes = this.compareLikes(oldLikes, newLikes);
                         if (!resultLikes) {
                             this.lastTimeLikesUpdated = this.lastChangedTime;
-                            // if (this.likesUpdatedCallback) this.likesUpdatedCallback();
                             this.callLikesUpdatedCallback();
                         }
 
@@ -162,7 +185,6 @@ export default class ProfileStore {
                         const resultReviews = this.compareReviews(oldReviews, newReviews);
                         if (!resultReviews) {
                             this.lastTimeReviewsUpdated = this.lastChangedTime;
-                            // if (this.reviewsUpdatedCallback) this.reviewsUpdatedCallback();
                             this.callReviewsUpdatedCallback();
                         }
 
@@ -172,7 +194,6 @@ export default class ProfileStore {
                         const resultComments = this.compareComments(oldComments, newComments);
                         if (!resultComments) {
                             this.lastTimeCommentsUpdated = this.lastChangedTime;
-                            // if (this.commentsUpdatedCallback) this.commentsUpdatedCallback();
                             this.callCommentsUpdatedCallback();
                         }
                     } else {
@@ -191,7 +212,6 @@ export default class ProfileStore {
                     // check if a reply added on my review
                     const resultReply = this.checkReplyAddedOnReview(data.reviews);
                     if (resultReply) {
-                        // if (this.replyAddedOnReviewCallback) this.replyAddedOnReviewCallback();
                         this.callReplyAddedOnReviewCallback();
                     }
                 } else {

@@ -109,6 +109,28 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         this.getFeeds();
     }
 
+    componentWillUnmount() {
+        console.log('SavedPlace.componentWillUnmount');
+
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        this.props.profileStore.unsetLikesUpdatedCallback(this.onLikesUpdated);
+
+        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
+            const instance = this.feedsUnsubscribes[i];
+            instance();
+        }
+
+        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
+            const instance = this.countsUnsubscribes[i];
+            instance();
+        }
+
+        this.closed = true;
+    }
+
     @autobind
     handleHardwareBackPress() {
         console.log('SavedPlace.handleHardwareBackPress');
@@ -160,26 +182,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
-
-    componentWillUnmount() {
-        console.log('SavedPlace.componentWillUnmount');
-
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-
-        for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
-            const instance = this.feedsUnsubscribes[i];
-            instance();
-        }
-
-        for (let i = 0; i < this.countsUnsubscribes.length; i++) {
-            const instance = this.countsUnsubscribes[i];
-            instance();
-        }
-
-        this.closed = true;
-    }
 
     getFeeds() {
         if (this.state.isLoadingFeeds) return;
@@ -255,6 +257,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 newFeeds.push(newFeed);
 
                 // ToDo: subscribe post after set state feeds
+
                 // subscribe post
                 this.subscribeToPost(placeId, feedId);
 
@@ -313,7 +316,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 }
 
                 // update database
-                Firebase.removeLikes(Firebase.user().uid, placeId, feedId);
+                Firebase.removeLikesFromProfile(Firebase.user().uid, placeId, feedId);
 
                 return;
             }
@@ -352,7 +355,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 const name = newFeed.name;
                 const placeName = newFeed.placeName;
                 const picture = newFeed.pictures.one.uri;
-                Firebase.updateLikes(Firebase.user().uid, placeId, feedId, name, placeName, picture);
+                Firebase.updateLikesFromProfile(Firebase.user().uid, placeId, feedId, name, placeName, picture);
             }
         });
 
@@ -531,24 +534,27 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                             }
 
                             return (
-                                <TouchableWithoutFeedback
+                                <TouchableOpacity activeOpacity={0.5}
                                     onPress={async () => {
                                         if (averageRating !== -1 && item.reviewCount !== -1) await this.openPost(item, index);
                                     }}
                                     onLongPress={() => {
                                         this.openDialog('Remove likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
-                                            // remove likes
-
-                                            // toast?
+                                            // ToDo: toast?
 
                                             // update database
                                             const uid = Firebase.user().uid;
                                             const placeId = post.placeId;
                                             const feedId = post.id;
-                                            const name = post.name;
-                                            const placeName = post.placeName;
-                                            const uri = post.pictures.one.uri;
-                                            Firebase.toggleLikes(uid, placeId, feedId, name, placeName, uri);
+
+                                            const feed = {
+                                                placeId, feedId
+                                            };
+
+                                            let feeds = [];
+                                            feeds.push(feed);
+
+                                            await Firebase.removeLikes(feeds, uid);
                                         });
                                     }}
                                 >
@@ -617,7 +623,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             }
                                         </View>
                                     </View>
-                                </TouchableWithoutFeedback>
+                                </TouchableOpacity>
                             );
                         }}
                         // onEndReachedThreshold={0.5}

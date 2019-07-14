@@ -103,7 +103,7 @@ export default class Welcome extends React.Component {
                             if (this.closed) return;
                             console.log('move to main.');
                             this.props.navigation.navigate("mainStackNavigator");
-                        }, Cons.buttonTimeoutShort);
+                        }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Get Started</Text>
                     </TouchableOpacity>

@@ -2135,7 +2135,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     feedId: this.props.navigation.state.params.post.id,
                                     initFromReadAllReviews: () => this.initFromReadAllReviews()
                                 });
-                        }, Cons.buttonTimeoutShort);
+                        }, Cons.buttonTimeout);
                     }}>
                     <View style={{
                         width: '100%', height: Dimensions.get('window').height / 14,
@@ -2187,7 +2187,7 @@ export default class Post extends React.Component<InjectedProps> {
             };
 
             this.props.navigation.navigate("writeReview", param);
-        }, Cons.buttonTimeoutLong);
+        }, 300);
     }
 
     @autobind

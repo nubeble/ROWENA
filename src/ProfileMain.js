@@ -4,7 +4,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, BackHandler, Dimensions, FlatList, Image,
     TouchableWithoutFeedback, Animated
 } from 'react-native';
-import { ImagePicker } from "expo";
+// import { ImagePicker } from "expo";
+import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import SmartImage from "./rnff/src/components/SmartImage";
@@ -120,6 +121,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+
+        this.props.profileStore.unsetFeedsUpdatedCallback(this.onFeedsUpdated);
+        this.props.profileStore.unsetReviewAddedOnFeedCallback(this.onReviewAddedOnFeed);
+        this.props.profileStore.unsetReplyAddedOnReviewCallback(this.onReplyAddedOnReview);
 
         for (let i = 0; i < this.feedsUnsubscribes.length; i++) {
             const instance = this.feedsUnsubscribes[i];
@@ -549,7 +554,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // setTimeout(() => {
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
-        // }, Cons.buttonTimeoutShort);
+        // }, Cons.buttonTimeout);
 
         // hide indicator
         // this.setState({ showPostIndicator: -1 });
@@ -687,7 +692,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 if (this.closed) return;
                                                 Firebase.updateCommentChecked(uid, false);
                                                 this.props.navigation.navigate("editProfile");
-                                            }, Cons.buttonTimeoutShort);
+                                            }, Cons.buttonTimeout);
                                         }}
                                     >
                                         <View style={{
@@ -791,7 +796,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     this.setState({ replyAdded: false });
 
                                                     this.props.navigation.navigate("reviewGirls");
-                                                }, Cons.buttonTimeoutShort);
+                                                }, Cons.buttonTimeout);
                                             }}
                                         >
                                             <View style={{
@@ -825,7 +830,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 setTimeout(() => {
                                                     if (this.closed) return;
                                                     this.props.navigation.navigate("advertisement");
-                                                }, Cons.buttonTimeoutShort);
+                                                }, Cons.buttonTimeout);
                                             }}
                                         >
                                             <View style={{
@@ -850,7 +855,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     setTimeout(() => {
                                                         if (this.closed) return;
                                                         this.props.navigation.navigate("reviewCustomers");
-                                                    }, Cons.buttonTimeoutShort);
+                                                    }, Cons.buttonTimeout);
                                                 }}
                                             >
                                                 <View style={{
@@ -1245,7 +1250,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 setTimeout(() => {
                     if (this.closed) return;
                     this.props.navigation.navigate("admin");
-                }, Cons.buttonTimeoutShort);
+                }, Cons.buttonTimeout);
             }
 
             this.setState({ dialogPassword: '' });
@@ -1320,25 +1325,26 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             }
         }
 
-        let result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: [1, 1], // ToDo: android only! (only square image in IOS)
+            aspect: [1, 1],
             quality: 1.0
         });
 
         console.log('result of launchImageLibraryAsync:', result);
 
         if (!result.cancelled) {
+            const path = result.uri;
 
             this.openDialog('alert', 'Edit profile', 'Are you sure you want to change your profile picture?', async () => {
 
                 this.setState({ onUploadingImage: true });
 
                 // show indicator & progress bar
-                this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+                this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
                 // upload image
-                this.uploadImage(result.uri, async (uri) => {
+                this.uploadImage(path, async (uri) => {
                     if (!uri) {
                         this.setState({ onUploadingImage: false });
                         return;
@@ -1346,7 +1352,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                     // this.setState({ uploadImageUri: uri });
 
-                    const ref = 'images/' + Firebase.user().uid + '/profile/' + result.uri.split('/').pop();
+                    const ref = 'images/' + Firebase.user().uid + '/profile/' + path.split('/').pop();
                     /*
                     this.uploadImageRef = ref;
 
@@ -1366,7 +1372,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 });
 
             });
-
         }
     }
 

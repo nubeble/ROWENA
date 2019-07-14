@@ -55,7 +55,7 @@ export default class SignUpWithEmail extends React.Component {
         /*
         setTimeout(() => {
             !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
-        }, Cons.buttonTimeoutLong);
+        }, 300);
         */
     }
 
@@ -655,7 +655,7 @@ export default class SignUpWithEmail extends React.Component {
                                     setTimeout(() => {
                                         if (this.closed) return;
                                         this.props.navigation.navigate("emailReset");
-                                    }, Cons.buttonTimeoutShort);
+                                    }, Cons.buttonTimeout);
                                 }}
                             >
                                 <Text>

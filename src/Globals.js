@@ -34,9 +34,9 @@ export const Cons = {
     // log-in dot badge
     logInDotWidth: Math.round(Dimensions.get('window').height / 30),
 
-    // button press short, long timeout
-    buttonTimeoutShort: 100,
-    buttonTimeoutLong: 300,
+    // button press timeout
+    // buttonTimeout: 100,
+    buttonTimeout: 10,
 
     // S9 (692): 40
     // buttonHeight: Dimensions.get('window').height / 17,

@@ -10,9 +10,6 @@ import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import Util from "./Util";
 
-const illustWidth = Dimensions.get('window').width - Theme.spacing.base * 2;
-const illustHeight = illustWidth / 380 * 260;
-
 
 export default class AdvertisementFinish extends React.Component {
     constructor(props) {
@@ -57,7 +54,7 @@ export default class AdvertisementFinish extends React.Component {
                         onPress={() => {
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.dismiss();
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                         }}
                     >
                         <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
@@ -71,7 +68,7 @@ export default class AdvertisementFinish extends React.Component {
                         paddingHorizontal: 22,
                         fontSize: 28,
                         lineHeight: 32,
-                        color: 'white',
+                        color: 'black',
                         fontFamily: "Chewy-Regular"
                     }}>Hope you find it</Text>
 
@@ -89,7 +86,7 @@ export default class AdvertisementFinish extends React.Component {
                     <Text style={{
                         marginTop: 20,
                         paddingHorizontal: Theme.spacing.base,
-                        color: 'white',
+                        color: 'black',
                         fontSize: 16,
                         lineHeight: 24,
                         fontFamily: "Chewy-Regular",
@@ -101,7 +98,7 @@ export default class AdvertisementFinish extends React.Component {
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             !this.closed && this.props.navigation.dismiss();
-                        }, Cons.buttonTimeoutShort);
+                        }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Finish</Text>
                     </TouchableOpacity>
@@ -153,7 +150,8 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: '#FFFFFF'
     },
     signUpButton: {
         width: '85%',
@@ -163,40 +161,5 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-
-
-
-
-
-    header: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#ff9a9a',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    title: {
-        width: '100%',
-        height: '20%',
-        backgroundColor: '#9aa9ff',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-    content: {
-        flex: 1,
-        backgroundColor: '#d6ca1a',
-
-        // justifyContent: 'center',
-        alignItems: 'stretch',
-        padding: 10
-    },
-    footer: {
-        width: '100%',
-        height: '10%',
-        backgroundColor: '#1ad657',
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
-
+    }
 });

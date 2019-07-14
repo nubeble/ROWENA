@@ -3,7 +3,8 @@ import {
     StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, Easing, Dimensions, Platform,
     FlatList, TouchableWithoutFeedback, Image, Keyboard, TextInput, StatusBar, BackHandler, Vibration
 } from 'react-native';
-import { ImagePicker } from "expo";
+// import { ImagePicker } from "expo";
+import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
@@ -1805,7 +1806,7 @@ export default class EditPost extends React.Component {
  
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                             */
                             this.refs["toast"].show("Can't change country!", 500);
                         }}
@@ -1876,7 +1877,7 @@ export default class EditPost extends React.Component {
  
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
-                            }, Cons.buttonTimeoutShort);
+                            }, Cons.buttonTimeout);
                             */
                             this.refs["toast"].show("Can't change street!", 500);
                         }}
@@ -2088,7 +2089,7 @@ export default class EditPost extends React.Component {
             }
         }
 
-        let result = await ImagePicker.launchImageLibraryAsync({
+        const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [4, 3], // ToDo: android only! (only square image in IOS)
             quality: 1.0
@@ -2099,11 +2100,13 @@ export default class EditPost extends React.Component {
         if (!result.cancelled) {
             this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
 
+            const path = result.uri;
+
             // show indicator & progress bar
-            this.showFlash('Uploading...', 'Your picture is now uploading.', result.uri);
+            this.showFlash('Uploading...', 'Your picture is now uploading.', path);
 
             // upload image
-            this.uploadImage(result.uri, index, (uri) => {
+            this.uploadImage(path, index, (uri) => {
                 if (!uri) {
                     this.hideFlash();
                     this.showNotification('An error happened. Please try again.');
@@ -2113,7 +2116,7 @@ export default class EditPost extends React.Component {
                 }
 
                 const feedId = this.state.post.id;
-                const ref = 'images/' + Firebase.user().uid + '/post/' + feedId + '/' + result.uri.split('/').pop();
+                const ref = 'images/' + Firebase.user().uid + '/post/' + feedId + '/' + path.split('/').pop();
 
                 switch (index) {
                     case 0:

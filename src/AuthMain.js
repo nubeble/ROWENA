@@ -326,7 +326,7 @@ export default class AuthMain extends React.Component {
 
                                 setTimeout(() => {
                                     !this.closed && this.continueWithFacebook();
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                             style={styles.signUpWithFacebookButton}
                         >
@@ -358,7 +358,7 @@ export default class AuthMain extends React.Component {
 
                                 setTimeout(() => {
                                     !this.closed && this.signUpWithMobile();
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                             style={styles.signUpWithMobileButton}
                         >
@@ -379,7 +379,7 @@ export default class AuthMain extends React.Component {
 
                                 setTimeout(() => {
                                     !this.closed && this.signUpWithEmail();
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                             style={styles.signUpWithEmailButton}
                         >
@@ -404,7 +404,7 @@ export default class AuthMain extends React.Component {
                                 // login
                                 setTimeout(() => {
                                     // this.props.navigation.navigate("logIn");
-                                }, Cons.buttonTimeoutShort);
+                                }, Cons.buttonTimeout);
                             }}
                         >
                             <Text>
