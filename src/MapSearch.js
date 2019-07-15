@@ -87,7 +87,9 @@ export default class MapSearch extends React.Component {
             longitudeDelta: 0.8 * ASPECT_RATIO
         };
 
-        this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
+        // ToDo:
+        // this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
+        this.setState({ place: placeName, region: __region });
 
         // this.setState({ renderMap: true });
 
