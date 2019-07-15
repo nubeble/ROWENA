@@ -2092,7 +2092,8 @@ export default class EditPost extends React.Component {
         const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [4, 3], // ToDo: android only! (only square image in IOS)
-            quality: 1.0
+            quality: 1.0,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
 
         console.log('result of launchImageLibraryAsync:', result);

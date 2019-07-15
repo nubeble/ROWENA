@@ -1260,7 +1260,8 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
             aspect: [1, 1],
-            quality: 1.0
+            quality: 1.0,
+            mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
 
         console.log('result of launchImageLibraryAsync:', result);

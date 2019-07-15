@@ -141,7 +141,8 @@ export default class Loading extends React.Component<InjectedProps> {
                 </View>
                 */}
                 <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
-                    <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate} {Cons.version}</Text>
+                    <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate}</Text>
+                    <Text style={{ fontSize: 16, color: 'white' }}>{Cons.version}</Text>
                 </View>
                 <Animated.Image
                     style={{
@@ -230,7 +231,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     Loading.userAutoAuthenticated = false;
 
                     Animated.sequence([
-                        Animated.delay(1500),
+                        // Animated.delay(1500), // ToDo: hide loader
                         Animated.timing(this.state.image2Opacity, {
                             toValue: 1,
                             duration: 500,
