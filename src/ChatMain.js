@@ -17,7 +17,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import Dialog from "react-native-dialog";
 
-const DEFAULT_ROOM_COUNT = 6;
+const DEFAULT_ROOM_COUNT = 8;
 
 
 export default class ChatMain extends React.Component {
@@ -74,7 +74,7 @@ export default class ChatMain extends React.Component {
 
         const uid = Firebase.user().uid;
 
-        Firebase.loadChatRoom(uid, list => {
+        Firebase.loadChatRoom(DEFAULT_ROOM_COUNT, uid, list => {
             if (list) {
                 if (list.length === 0) {
                     this.allChatRoomsLoaded = true;
@@ -883,7 +883,7 @@ export default class ChatMain extends React.Component {
         const timestamp = this.state.chatRoomList[this.state.chatRoomList.length - 1].timestamp;
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
-        Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => { // load 10 rooms more
+        Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => {
             if (list) {
                 if (list.length === 0) {
                     this.allChatRoomsLoaded = true;

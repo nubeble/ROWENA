@@ -1598,8 +1598,8 @@ export default class Firebase {
         return data;
     }
 
-    static loadChatRoom(uid, callback) {
-        Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(10).on('value', snapshot => {
+    static loadChatRoom(count, uid, callback) {
+        Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(count).on('value', snapshot => {
             if (snapshot.exists()) {
                 // invert the results
                 let list = [];
@@ -1697,8 +1697,8 @@ export default class Firebase {
         return array.reverse();
     };
 
-    static chatOn = (id, callback) => {
-        Firebase.database.ref('contents').child(id).orderByChild('timestamp').limitToLast(20).on('child_added', snapshot => {
+    static chatOn(count, id, callback) {
+        Firebase.database.ref('contents').child(id).orderByChild('timestamp').limitToLast(count).on('child_added', snapshot => {
             if (snapshot.exists()) {
                 callback(Firebase.parseChild(snapshot));
             }
@@ -1709,12 +1709,14 @@ export default class Firebase {
         Firebase.database.ref('contents').child(id).off();
     }
 
-    static loadMoreMessage(id, lastMessageTimestamp, lastMessageId, callback) {
+    static loadMoreMessage(count, id, lastMessageTimestamp, lastMessageId, callback) {
         console.log('loadMoreMessage', id, lastMessageTimestamp, lastMessageId);
 
-        Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(20 + 1).once('value', snapshot => {
+        Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(count + 1).once('value', snapshot => {
             if (snapshot.exists()) {
                 callback(Firebase.parseValue(snapshot, lastMessageId));
+            } else {
+                callback(null);
             }
         });
     }

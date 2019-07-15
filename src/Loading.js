@@ -132,11 +132,16 @@ export default class Loading extends React.Component<InjectedProps> {
                 <Text style={{ position: 'absolute', bottom: 30 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Date Published ' + Cons.lastUpdatedDate}</Text>
                 <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Version: ' + Cons.version}</Text>
                 */}
+                {/*
                 <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
                     <Text style={{ fontSize: 18, color: 'white' }}>{'Date Published '}
                         <Text style={{ fontSize: 18, color: 'black' }}>{Cons.lastUpdatedDate}</Text>
                     </Text>
                     <Text style={{ fontSize: 18, color: 'white' }}>{'Version: ' + Cons.version}</Text>
+                </View>
+                */}
+                <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
+                    <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate} {Cons.version}</Text>
                 </View>
                 <Animated.Image
                     style={{

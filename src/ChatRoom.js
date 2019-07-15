@@ -18,6 +18,8 @@ import Util from './Util';
 import PreloadImage from './PreloadImage';
 import { NavigationActions } from 'react-navigation';
 
+const DEFAULT_MESSAGE_COUNT = 20;
+
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 
 const inputToolbarMarginBottom = 20; // ios only
@@ -45,6 +47,8 @@ export default class ChatRoom extends React.Component {
         titleName: null,
         messages: [],
 
+        isLoadingMessages: false,
+
         dialogVisible: false,
         dialogTitle: '',
         dialogMessage: '',
@@ -58,7 +62,7 @@ export default class ChatRoom extends React.Component {
     constructor(props) {
         super(props);
 
-        this.onLoading = false;
+        this.allMessagesLoaded = false;
     }
 
     componentDidMount() {
@@ -76,7 +80,7 @@ export default class ChatRoom extends React.Component {
 
         this.setState({ id: item.id, titleImageUri: item.title.picture, titleName: item.title.name });
 
-        Firebase.chatOn(item.id, message => {
+        Firebase.chatOn(DEFAULT_MESSAGE_COUNT, item.id, message => {
             console.log('on message', message);
 
             // fill name, avatar (picture)
@@ -197,6 +201,189 @@ export default class ChatRoom extends React.Component {
             name: Firebase.user().name,
             avatar: Firebase.user().photoUrl
         };
+    }
+
+    isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
+        const threshold = 80;
+        return contentSize.height - layoutMeasurement.height - threshold <= contentOffset.y;
+    }
+
+    loadMore() {
+        if (this.allMessagesLoaded) return;
+
+        if (this.state.isLoadingMessages) return;
+
+        this.setState({ isLoadingMessages: true });
+
+        const lastMessage = this.state.messages[this.state.messages.length - 1];
+        const time = lastMessage.createdAt;
+        const date = new Date(time);
+        const timestamp = date.getTime();
+        const id = lastMessage._id;
+
+        Firebase.loadMoreMessage(DEFAULT_MESSAGE_COUNT, this.state.id, timestamp, id, message => {
+            if (message) {
+                console.log('message list', message);
+
+                !this.closed && this.setState(previousState => ({
+                    messages: GiftedChat.prepend(previousState.messages, message)
+                }));
+
+                // this.onLoading = false;
+            } else {
+                this.allMessagesLoaded = true;
+            }
+
+            this.setState({ isLoadingMessages: false });
+        });
+    }
+
+    async sendMessage(isSameDay, message) {
+        if (message.text.length === 0) return;
+
+        const item = this.props.navigation.state.params.item;
+
+        // save the message to database & update UI
+        await Firebase.sendMessage(this.state.id, message, item);
+
+        // send push notification
+        const notificationType = Cons.pushNotification.chat;
+        const sender = item.users[0].uid;
+        const senderName = item.users[0].name;
+        const receiver = item.users[1].uid; // owner
+
+        /*
+        let users = [];
+
+        const user1 = { // My info
+            // uid: sender,
+            name: Firebase.user().name,
+            picture: Firebase.user().photoUrl
+        };
+
+        const user2 = { // Your info (Post info)
+            // uid: receiver,
+            name: item.users[1].name,
+            picture: item.users[1].picture
+        };
+
+        users.push(user1);
+        users.push(user2);
+        */
+
+        const data = {
+            message: message.text,
+            placeId: item.placeId,
+            feedId: item.feedId,
+            chatRoomId: this.state.id,
+            // users: users
+        };
+
+        sendPushNotification(sender, senderName, receiver, notificationType, data);
+    }
+
+    /*
+    async saveUnreadChatRoomId() {
+        const { item } = this.props.navigation.state.params;
+        const users = item.users;
+        const opponent = users[1].uid;
+
+        // check profile
+        const { profileStore } = this.props;
+        const profile = profileStore.profile;
+        const unreadChatRoom = profile.unreadChatRoom;
+
+        let found = false;
+
+        for (let i = 0; i < unreadChatRoom.length; i++) {
+            const room = unreadChatRoom[i];
+            const id = room.id;
+
+            if (this.state.id === id) {
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            // save
+            await Firebase.saveUnreadChatRoomId(this.state.id);
+        }
+    }
+    */
+
+    async openPost() {
+        setTimeout(() => {
+            if (this.closed) return;
+
+            const item = this.props.navigation.state.params.item;
+
+            const post = item.post;
+
+            const extra = {
+                feedSize: item.feedSize
+            };
+
+            Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+            this.props.navigation.navigate("post", { post, extra, from: 'ChatRoom' });
+        }, Cons.buttonTimeout);
+    }
+
+    getPost(item) {
+        const post = this.feed;
+
+        return post;
+    }
+
+    getFeedSize(placeId) {
+        const count = this.feedCount;
+
+        return count;
+    }
+
+    async openAvatar() {
+        const item = this.props.navigation.state.params.item;
+
+        if (item.owner === item.users[1].uid) {
+            await this.openPost();
+        } else {
+            const user1 = item.users[0]; // owner (girl)
+            const user2 = item.users[1]; // customer
+
+            const customerProfile = item.customerProfile;
+
+            // const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer
+            const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = customerProfile;
+
+            const guest = { // customer
+                uid: user2.uid,
+                name,
+                picture: picture.uri,
+                address: place,
+
+                receivedCommentsCount: receivedCommentsCount,
+                timestamp,
+                birthday, gender, about
+            };
+
+            const host = { // owner (girl)
+                uid: user1.uid,
+                name: user1.name,
+                picture: user1.picture,
+                address: item.placeName
+            };
+
+            const _item = {
+                placeId: item.placeId,
+                feedId: item.feedId,
+                host,
+                guest
+            };
+
+            setTimeout(() => {
+                !this.closed && this.props.navigation.navigate("user", { from: 'ChatRoom', item: _item });
+            }, Cons.buttonTimeout);
+        }
     }
 
     render() {
@@ -427,6 +614,17 @@ export default class ChatRoom extends React.Component {
                     </View>
                 }
 
+                {
+                    this.state.isLoadingMessages &&
+                    <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator
+                            animating={true}
+                            size="large"
+                            color={Theme.color.selection}
+                        />
+                    </View>
+                }
+
                 <Dialog.Container visible={this.state.dialogVisible}>
                     <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
                     <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
@@ -443,183 +641,6 @@ export default class ChatRoom extends React.Component {
             </View>
         );
     } // end of render
-
-    isCloseToTop({ layoutMeasurement, contentOffset, contentSize }) {
-        const threshold = 80;
-        return contentSize.height - layoutMeasurement.height - threshold <= contentOffset.y;
-    }
-
-    loadMore() {
-        if (this.onLoading) return;
-
-        this.onLoading = true;
-
-        const lastMessage = this.state.messages[this.state.messages.length - 1];
-        const time = lastMessage.createdAt;
-        const date = new Date(time);
-        const timestamp = date.getTime();
-        const id = lastMessage._id;
-
-        Firebase.loadMoreMessage(this.state.id, timestamp, id, message => {
-            if (message) {
-                console.log('message list', message);
-
-                !this.closed && this.setState(previousState => ({
-                    messages: GiftedChat.prepend(previousState.messages, message)
-                }));
-
-                this.onLoading = false;
-            }
-        });
-    }
-
-    async sendMessage(isSameDay, message) {
-        if (message.text.length === 0) return;
-
-        const item = this.props.navigation.state.params.item;
-
-        // save the message to database & update UI
-        await Firebase.sendMessage(this.state.id, message, item);
-
-        // send push notification
-        const notificationType = Cons.pushNotification.chat;
-        const sender = item.users[0].uid;
-        const senderName = item.users[0].name;
-        const receiver = item.users[1].uid; // owner
-
-        /*
-        let users = [];
-
-        const user1 = { // My info
-            // uid: sender,
-            name: Firebase.user().name,
-            picture: Firebase.user().photoUrl
-        };
-
-        const user2 = { // Your info (Post info)
-            // uid: receiver,
-            name: item.users[1].name,
-            picture: item.users[1].picture
-        };
-
-        users.push(user1);
-        users.push(user2);
-        */
-
-        const data = {
-            message: message.text,
-            placeId: item.placeId,
-            feedId: item.feedId,
-            chatRoomId: this.state.id,
-            // users: users
-        };
-
-        sendPushNotification(sender, senderName, receiver, notificationType, data);
-    }
-
-    /*
-    async saveUnreadChatRoomId() {
-        const { item } = this.props.navigation.state.params;
-        const users = item.users;
-        const opponent = users[1].uid;
-
-        // check profile
-        const { profileStore } = this.props;
-        const profile = profileStore.profile;
-        const unreadChatRoom = profile.unreadChatRoom;
-
-        let found = false;
-
-        for (let i = 0; i < unreadChatRoom.length; i++) {
-            const room = unreadChatRoom[i];
-            const id = room.id;
-
-            if (this.state.id === id) {
-                found = true;
-                break;
-            }
-        }
-
-        if (!found) {
-            // save
-            await Firebase.saveUnreadChatRoomId(this.state.id);
-        }
-    }
-    */
-
-    async openPost() {
-        setTimeout(() => {
-            if (this.closed) return;
-
-            const item = this.props.navigation.state.params.item;
-
-            const post = item.post;
-
-            const extra = {
-                feedSize: item.feedSize
-            };
-
-            Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-            this.props.navigation.navigate("post", { post, extra, from: 'ChatRoom' });
-        }, Cons.buttonTimeout);
-    }
-
-    getPost(item) {
-        const post = this.feed;
-
-        return post;
-    }
-
-    getFeedSize(placeId) {
-        const count = this.feedCount;
-
-        return count;
-    }
-
-    async openAvatar() {
-        const item = this.props.navigation.state.params.item;
-
-        if (item.owner === item.users[1].uid) {
-            await this.openPost();
-        } else {
-            const user1 = item.users[0]; // owner (girl)
-            const user2 = item.users[1]; // customer
-
-            const customerProfile = item.customerProfile;
-
-            // const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer
-            const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = customerProfile;
-
-            const guest = { // customer
-                uid: user2.uid,
-                name,
-                picture: picture.uri,
-                address: place,
-
-                receivedCommentsCount: receivedCommentsCount,
-                timestamp,
-                birthday, gender, about
-            };
-
-            const host = { // owner (girl)
-                uid: user1.uid,
-                name: user1.name,
-                picture: user1.picture,
-                address: item.placeName
-            };
-
-            const _item = {
-                placeId: item.placeId,
-                feedId: item.feedId,
-                host,
-                guest
-            };
-
-            setTimeout(() => {
-                !this.closed && this.props.navigation.navigate("user", { from: 'ChatRoom', item: _item });
-            }, Cons.buttonTimeout);
-        }
-    }
 
     @autobind
     renderSend(props) {
