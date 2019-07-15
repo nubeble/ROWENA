@@ -64,6 +64,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
@@ -114,6 +115,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -180,6 +182,11 @@ export default class Explore extends React.Component<InjectedProps> {
     @autobind
     onFocus() {
         Vars.focusedScreen = 'Explore';
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
     }
 
     render(): React.Node {

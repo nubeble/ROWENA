@@ -252,8 +252,9 @@ export default class Intro extends React.Component<InjectedProps> {
         console.log('width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
         console.log('height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
-        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         if (Intro.places.length === 0) await this.getPlaces();
 
@@ -264,8 +265,9 @@ export default class Intro extends React.Component<InjectedProps> {
     componentWillUnmount() {
         console.log('Intro.componentWillUnmount');
 
-        this.onFocusListener.remove();
         this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         // stop profile timer
         if (this.profileInterval) {
@@ -363,6 +365,11 @@ export default class Intro extends React.Component<InjectedProps> {
     @autobind
     onFocus() {
         Vars.focusedScreen = 'Intro';
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
     }
 
     async getPlaces() {

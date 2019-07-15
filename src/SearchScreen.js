@@ -28,6 +28,7 @@ export default class SearchScreen extends React.Component {
     async componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const from = this.props.navigation.state.params.from;
         if (from !== 'AdvertisementMain' && from !== 'EditProfile') await this.loadHistory();
@@ -42,6 +43,7 @@ export default class SearchScreen extends React.Component {
     componentWillUnmount() {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
+        this.onBlurListener.remove();
 
         this.closed = true;
     }
@@ -58,6 +60,11 @@ export default class SearchScreen extends React.Component {
     @autobind
     onFocus() {
         Vars.focusedScreen = 'SearchScreen';
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
     }
 
     render() {

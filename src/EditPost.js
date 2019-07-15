@@ -479,6 +479,8 @@ export default class EditPost extends React.Component {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

@@ -17,7 +17,6 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 // const SPACE = 0.01;
-
 // const UP = 1.02;
 
 const useGoogleMaps = Platform.OS === 'android' ? true : false;
@@ -26,16 +25,13 @@ const useGoogleMaps = Platform.OS === 'android' ? true : false;
 export default class MapScreen extends React.Component {
     state = {
         renderMap: false,
-
         distance: '',
-
         region: { // current region
             latitude: LATITUDE,
             longitude: LONGITUDE,
             latitudeDelta: LATITUDE_DELTA,
             longitudeDelta: LONGITUDE_DELTA
         },
-
         markerImage: null
     };
 
@@ -47,9 +43,17 @@ export default class MapScreen extends React.Component {
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        StatusBar.setHidden(true);
+        setTimeout(() => {
+            this.load();
 
+            !this.closed && this.setState({ renderMap: true });
+        }, 0);
+    }
+
+    load() {
         const { post } = this.props.navigation.state.params;
         const latitude = post.location.latitude;
         const longitude = post.location.longitude;
@@ -77,10 +81,14 @@ export default class MapScreen extends React.Component {
         }
 
         this.setState({ distance, region, markerImage });
+    }
 
-        setTimeout(() => {
-            !this.closed && this.setState({ renderMap: true });
-        }, 0);
+    componentWillUnmount() {
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        this.closed = true;
     }
 
     @autobind
@@ -90,12 +98,18 @@ export default class MapScreen extends React.Component {
         return true;
     }
 
-    componentWillUnmount() {
-        this.hardwareBackPressListener.remove();
+    @autobind
+    onFocus() {
+        Vars.focusedScreen = 'MapScreen';
+
+        StatusBar.setHidden(true);
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
 
         StatusBar.setHidden(false);
-
-        this.closed = true;
     }
 
     render() {
@@ -145,8 +159,6 @@ export default class MapScreen extends React.Component {
                         */}
                     </MapView>
                 }
-
-
 
                 {/* close button */}
                 <TouchableOpacity
@@ -206,9 +218,6 @@ export default class MapScreen extends React.Component {
                         <MaterialIcons name='gps-fixed' color='rgba(0, 0, 0, 0.8)' size={26} />
                     </View>
                 </TouchableOpacity>
-
-
-
             </View>
         );
     }
@@ -223,7 +232,7 @@ export default class MapScreen extends React.Component {
                     longitudeDelta: 0.01 * ASPECT_RATIO
                 };
 
-                this.moveRegion(region, 10);
+                this.moveToRegion(region, 10);
             }, (error) => {
                 console.log('getCurrentPosition() error', error);
             });
@@ -232,11 +241,12 @@ export default class MapScreen extends React.Component {
         }
     }
 
-    onMapReady = (e) => {
+    @autobind
+    onMapReady(e) {
         this.ready = true;
     };
 
-    moveRegion(region, duration) {
+    moveToRegion(region, duration) {
         if (this.ready) {
             setTimeout(() => !this.closed && this.map.animateToRegion(region), duration);
 
@@ -244,11 +254,13 @@ export default class MapScreen extends React.Component {
         }
     }
 
-    onRegionChange = (region) => {
+    @autobind
+    onRegionChange(region) {
         console.log('onRegionChange', region);
     };
 
-    onRegionChangeComplete = (region) => {
+    @autobind
+    onRegionChangeComplete(region) {
         console.log('onRegionChangeComplete', region);
     };
 }

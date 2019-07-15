@@ -72,8 +72,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         console.log('SavedPlace.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
-        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         this.props.profileStore.setLikesUpdatedCallback(this.onLikesUpdated);
@@ -175,6 +175,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

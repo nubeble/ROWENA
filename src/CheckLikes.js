@@ -37,8 +37,8 @@ export default class CheckLikes extends React.Component {
     }
 
     componentDidMount() {
-        // this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
@@ -76,6 +76,8 @@ export default class CheckLikes extends React.Component {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

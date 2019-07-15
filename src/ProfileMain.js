@@ -257,8 +257,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        // console.log('ProfileMain.onFocus');
-
         Vars.focusedScreen = 'ProfileMain';
 
         /*
@@ -280,6 +278,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

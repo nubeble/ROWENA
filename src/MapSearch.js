@@ -4,7 +4,7 @@ import MapView, { MAP_TYPES, ProviderPropType, PROVIDER_GOOGLE, PROVIDER_DEFAULT
 import Constants from 'expo-constants';
 import * as Svg from 'react-native-svg';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
-import { Text, Theme, FeedStore } from "./rnff/src/components";
+import { Text, Theme } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Ionicons, MaterialIcons, AntDesign } from '@expo/vector-icons';
 import { Cons, Vars } from "./Globals";
@@ -31,8 +31,9 @@ const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = LATITUDE_DELTA * ASPECT_RATIO;
 
 // const SPACE = 0.01;
-
 // const UP = 1.02;
+
+const delta = Platform.OS === 'android' ? 0.8 : 0.4;
 
 const DEFAULT_FEED_COUNT = 8;
 
@@ -45,82 +46,93 @@ const itemHeight = (Dimensions.get('window').width - 40) / 3 * 2;
 
 // @observer
 export default class MapSearch extends React.Component {
-    // feedStore = new FeedStore();
     gf = new GeoFirestore(Firebase.firestore);
+
+    state = {
+        renderMap: false,
+        showSearchButton: true,
+        loading: false,
+        region: { // current region
+            latitude: LATITUDE,
+            longitude: LONGITUDE,
+            latitudeDelta: LATITUDE_DELTA,
+            longitudeDelta: LONGITUDE_DELTA
+        },
+        feeds: [],
+        selectedMarker: 0, // index
+        place: null
+    };
 
     constructor(props) {
         super(props);
 
         this.ready = false;
-
-        this.state = {
-            // renderMap: false,
-            showSearchButton: true,
-            loading: false,
-            region: { // current region
-                latitude: LATITUDE,
-                longitude: LONGITUDE,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA
-            },
-            feeds: [],
-            selectedMarker: 0, // index
-            place: null
-        };
     }
 
     async componentDidMount() {
-        // console.log('MapSearch.componentDidMount');
+        console.log('MapSearch.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
+        this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+        this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
-        // this.feedStore.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
+        setTimeout(async () => {
+            await this.load();
 
-        StatusBar.setHidden(true);
+            !this.closed && this.setState({ renderMap: true });
+        }, 0);
+    }
 
+    async load() {
         const { placeName, region } = this.props.navigation.state.params;
 
-        let __region = {
+        const __region = {
             latitude: region.latitude,
             longitude: region.longitude,
-            latitudeDelta: 0.8,
-            longitudeDelta: 0.8 * ASPECT_RATIO
+            latitudeDelta: delta,
+            longitudeDelta: delta * ASPECT_RATIO
         };
 
-        // ToDo:
-        // this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
+        /*
+        if (Platform.OS === 'ios') {
+            // ToDo
+            this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
+            // this.setState({ place: placeName, region: __region });
+        } else {
+            this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
+        }
+        */
         this.setState({ place: placeName, region: __region });
-
-        // this.setState({ renderMap: true });
-
-        /*
-        const { store } = this.props.navigation.state.params;
-        const { feed } = store; // array
-
-        this.setState({ feeds: feed });
-        */
-
-
-        /*
-        const { placeId } = this.props.navigation.state.params;
-
-        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed").orderBy("averageRating", "desc");
-        this.feedStore.init(query, 'averageRating');
-
-        this.setState({ loading: true });
-        */
 
         this.setState({ loading: true });
 
         const feeds = await this.loadFeeds(__region);
 
         this.setState({ loading: false, feeds: feeds, showSearchButton: false });
+    }
 
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderMap: true });
-        }, 0);
-        */
+    async reload() {
+        if (this.state.loading) return;
+
+        const { region } = this.state;
+
+        this.setState({ loading: true });
+
+        const feeds = await this.loadFeeds(region);
+
+        !this.closed && this.setState({ feeds: feeds, loading: false });
+    }
+
+    componentWillUnmount() {
+        console.log('MapSearch.componentWillUnmount');
+
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        // StatusBar.setHidden(false);
+
+        this.closed = true;
     }
 
     initFromPost(post) {
@@ -170,27 +182,29 @@ export default class MapSearch extends React.Component {
         return true;
     }
 
-    componentWillUnmount() {
-        console.log('MapSearch.componentWillUnmount');
+    @autobind
+    onFocus() {
+        Vars.focusedScreen = 'SavedPlace';
 
-        this.hardwareBackPressListener.remove();
+        StatusBar.setHidden(true);
+
+        // this.focused = true;
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
 
         StatusBar.setHidden(false);
 
-        this.closed = true;
+        // this.focused = false;
     }
 
     render() {
-        /*
-        const { feedStore } = this;
-        const { feed } = feedStore; // array
-        // const loading = feed === undefined;
-        */
-
         return (
             <View style={styles.flex}>
                 {
-                    // this.state.renderMap &&
+                    this.state.renderMap &&
                     this.renderMap()
                 }
 
@@ -246,9 +260,10 @@ export default class MapSearch extends React.Component {
                             // top: Constants.statusBarHeight + 30,
                             justifyContent: "center", alignItems: "center"
                         }}
-                        onPress={() => {
-                            // this.setState({ loading: true });
-                            this.reload();
+                        onPress={async () => {
+                            await this.reload();
+
+                            !this.closed && this.setState({ showSearchButton: false });
                         }}
                     >
                         <View style={{
@@ -290,8 +305,6 @@ export default class MapSearch extends React.Component {
                     </View>
                 </TouchableOpacity>
 
-
-
                 <View style={styles.container}>
                     {
                         // this.state.renderMap &&
@@ -312,7 +325,7 @@ export default class MapSearch extends React.Component {
                     longitudeDelta: 0.01 * ASPECT_RATIO
                 };
 
-                this.moveRegion(region, 10);
+                this.moveToRegion(region, 10);
             }, (error) => {
                 console.log('getCurrentPosition() error', error);
             });
@@ -425,9 +438,7 @@ export default class MapSearch extends React.Component {
                 showsUserLocation={true}
                 // showsMyLocationButton={true}
                 onRegionChange={(region) => {
-                    if (!this.state.showSearchButton) this.setState({ showSearchButton: true });
-
-                    this.setState({ region });
+                    this.setState({ showSearchButton: true, region });
                 }}
                 /*
                 onRegionChangeComplete={(region) => {
@@ -448,9 +459,11 @@ export default class MapSearch extends React.Component {
     @autobind
     onMapReady(e) {
         this.ready = true;
+
+        if (Platform.OS === 'android') this.setBoundaries(this.state.region);
     };
 
-    moveRegion(region, duration) {
+    moveToRegion(region, duration) {
         if (this.ready) {
             setTimeout(() => !this.closed && this.map.animateToRegion(region), duration);
 
@@ -544,7 +557,7 @@ export default class MapSearch extends React.Component {
                 longitudeDelta: this.state.region.longitudeDelta
             };
 
-            this.moveRegion(region, 0);
+            this.moveToRegion(region, 0);
         }
     }
 
@@ -658,40 +671,6 @@ export default class MapSearch extends React.Component {
         );
     }
 
-    async reload() {
-        // const { placeId } = this.props.navigation.state.params;
-        // console.log('placeId', placeId);
-
-        const { region } = this.state;
-
-        /*
-        const s = region.latitude - (region.latitudeDelta / 2);
-        const n = region.latitude + (region.latitudeDelta / 2);
-        const w = region.longitude - (region.longitudeDelta / 2);
-        const e = region.longitude + (region.longitudeDelta / 2);
-
-        console.log(s, n, w, e);
-
-        const lesserGeopoint = new firebase.firestore.GeoPoint(s, w); // SW
-        const greaterGeopoint = new firebase.firestore.GeoPoint(n, e); // NE
-
-        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed")
-            .where('location.gp', '>', lesserGeopoint).where('location.gp', '<', greaterGeopoint);
-
-        this.feedStore.init(query, null);
-        */
-
-
-        this.setState({ loading: true });
-
-        const feeds = await this.loadFeeds(region);
-        !this.closed && this.setState({ feeds: feeds });
-
-        !this.closed && this.setState({ loading: false });
-
-        !this.closed && this.setState({ showSearchButton: false });
-    }
-
     setBoundaries(region) {
         const boundaries = this.getBoundingBox(region);
         const lngDelta = region.longitudeDelta / 4;
@@ -730,7 +709,9 @@ export default class MapSearch extends React.Component {
 
 const styles = StyleSheet.create({
     flex: {
-        flex: 1
+        flex: 1,
+        // backgroundColor: Theme.color.background
+        backgroundColor: 'rgb(255, 255, 255)'
     },
     container: {
         position: 'absolute',

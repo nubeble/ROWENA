@@ -184,6 +184,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

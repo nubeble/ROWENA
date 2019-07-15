@@ -315,6 +315,8 @@ export default class AdvertisementMain extends React.Component {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

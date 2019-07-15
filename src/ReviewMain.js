@@ -142,6 +142,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 

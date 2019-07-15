@@ -270,6 +270,8 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     onBlur() {
+        Vars.focusedScreen = null;
+
         this.focused = false;
     }
 
