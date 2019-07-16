@@ -237,7 +237,7 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
-        this.props.navigation.navigate("editPost", { post: this.state.post });
+        this.props.navigation.navigate("editPostMain", { post: this.state.post });
     }
 
     @autobind
@@ -2198,7 +2198,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         console.log('Post._keyboardDidShow');
 
-        !this.closed && this.setState({ showKeyboard: true, bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
+        this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
         if (!this.selectedItem) return;
 
@@ -2225,7 +2225,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         console.log('Post._keyboardDidHide');
 
-        !this.closed && this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
+        this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;
         this.selectedItemIndex = undefined;

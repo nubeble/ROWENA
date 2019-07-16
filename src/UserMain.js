@@ -49,6 +49,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         host: null,
         guest: null,
 
+        // showReloadCommentsButton: false,
+
         isModal: false,
         showReviewButton: false,
         disableReviewButton: false,
@@ -133,7 +135,8 @@ export default class UserMain extends React.Component<InjectedProps> {
             }
 
             let { guest } = this.state;
-            // guest.receivedCommentsCount = user.receivedCommentsCount;
+
+            // if (guest.receivedCommentsCount !== user.receivedCommentsCount) this.setState({ showReloadCommentsButton: true });
 
             guest.name = user.name;
             guest.picture = user.picture.uri;
@@ -154,6 +157,10 @@ export default class UserMain extends React.Component<InjectedProps> {
     @autobind
     onAddToReviewFinished() {
         console.log('UserMain.onAddToReviewFinished');
+
+        const { reviews } = this.commentStore;
+        const count = reviews.length;
+        this.count = count;
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
@@ -198,59 +205,27 @@ export default class UserMain extends React.Component<InjectedProps> {
     keyboardDidShow(e) {
         this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
-        /*
-        if (!this.selectedItem) return;
+        if (this.reviewButtonPressed) {
+            const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
+            const borderY = Cons.searchBarHeight + this.infoContainerY + this.reviewButtonContainerY + this.borderY;
+            const gap = bottomPosition - replyViewHeight - borderY;
+            console.log('gap', gap);
 
-        let totalHeights = 0;
-        for (let i = 0; i < this.selectedItemIndex; i++) {
-            let h = this.itemHeights[i];
-            if (h) {
-                totalHeights += h + 1; // separator width
-            }
+            this._flatList.scrollToOffset({ offset: Math.abs(gap), animated: true });
         }
-
-        const height = this.itemHeights[this.selectedItemIndex];
-        const keyboardHeight = e.endCoordinates.height;
-        const searchBarHeight = Cons.searchBarHeight;
-
-        const y = totalHeights;
-
-        const gap = Dimensions.get('window').height - keyboardHeight - replyViewHeight - height - searchBarHeight;
-
-        this._flatList.scrollToOffset({ offset: y - gap, animated: true });
-        */
     }
 
     @autobind
     keyboardDidHide() {
         this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
-
-        /*
-        this.selectedItem = undefined;
-        this.selectedItemIndex = undefined;
-        this.owner = undefined;
-        */
-
-        /*
-        if (this._showNotification) {
-            this.hideNotification();
-        }
-        */
     }
 
-    // openKeyboard(ref, index, owner) {
     openKeyboard() {
         if (this.state.showKeyboard) return;
 
         this.setState({ showKeyboard: true }, () => {
             this._reply.focus();
         });
-
-        /*
-        this.selectedItem = ref;
-        this.selectedItemIndex = index;
-        this.owner = owner;
-        */
     }
 
     onChangeText(text) {
@@ -351,6 +326,15 @@ export default class UserMain extends React.Component<InjectedProps> {
         let paddingBottom = 0;
         if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
 
+        // const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
+
+        const notificationStyle = {
+            opacity: this.state.opacity,
+            transform: [{ translateY: this.state.offset }]
+        };
+
+
+
         const { guest } = this.state; // undefined at loading
         if (!guest) return null;
 
@@ -401,6 +385,16 @@ export default class UserMain extends React.Component<InjectedProps> {
         }
         */
 
+        // check comment store update
+        let showReloadCommentsButton = false;
+        if (this.count === undefined) {
+            this.count = count;
+        } else {
+            if (this.count !== count) {
+                showReloadCommentsButton = true;
+            }
+        }
+
         // image
         if (guest.picture) imageUri = guest.picture;
 
@@ -417,12 +411,6 @@ export default class UserMain extends React.Component<InjectedProps> {
             _avatarColor = Util.getAvatarColor(guest.uid);
         }
 
-        // const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
-
-        const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
-        };
 
         return (
             <View style={[styles.flex, { paddingBottom }]}>
@@ -485,7 +473,12 @@ export default class UserMain extends React.Component<InjectedProps> {
                     showsVerticalScrollIndicator={true}
                     ListHeaderComponent={
                         <View>
-                            <View style={styles.infoContainer}>
+                            <View style={styles.infoContainer}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.infoContainerY = y;
+                                }}
+                            >
                                 {/* avatar view */}
                                 <View>
                                     <View style={{
@@ -548,7 +541,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                                 </View>
 
                                 <View style={{ width: '100%', paddingHorizontal: 20 }}>
-
                                     <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }}>
                                         <Image
                                             style={{ width: 20, height: 20, resizeMode: 'cover' }}
@@ -563,71 +555,115 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             source={PreloadImage.comment}
                                         />
                                         <Text style={{ marginLeft: 10, fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Light" }}>{reviewText}</Text>
-                                    </View>
+                                        {
+                                            // this.state.showReloadCommentsButton &&
+                                            showReloadCommentsButton &&
+                                            <View style={{ flex: 1, justifyContent: "center" }}>
+                                                <TouchableOpacity
+                                                    style={{
+                                                        marginLeft: 8,
+                                                        width: 20,
+                                                        height: 20,
+                                                        justifyContent: "center", alignItems: "center"
+                                                    }}
+                                                    onPress={() => {
+                                                        // reload
+                                                        if (this.state.isLoadingFeeds) return;
+                                                        this.setState({ isLoadingFeeds: true });
+                                                        this.commentStore.loadReviewFromStart();
 
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                                        // this.setState({ showReloadCommentsButton: false });
+                                                    }}>
+                                                    <Ionicons name='md-refresh-circle' color={Theme.color.selection} size={20} />
+                                                </TouchableOpacity>
+                                            </View>
+                                        }
+                                    </View>
+                                </View>
+
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                /*
+                                onLayout={(event) => {
+                                    const { x, y, width, height } = event.nativeEvent.layout;
+
+                                    this.borderY = y;
+                                }}
+                                */
+                                />
+
+                                {
+                                    this.state.showReviewButton &&
+                                    <View style={{ paddingTop: Theme.spacing.tiny, alignItems: 'center' }}
                                         onLayout={(event) => {
                                             const { x, y, width, height } = event.nativeEvent.layout;
 
-                                            this.borderY = y;
+                                            this.reviewButtonContainerY = y;
                                         }}
-                                    />
+                                    >
+                                        <Text style={{
+                                            paddingHorizontal: Theme.spacing.base,
+                                            width: Dimensions.get('window').width * 0.85,
+                                            marginBottom: Theme.spacing.small,
+                                            fontSize: 14, lineHeight: 24,
+                                            fontFamily: "Roboto-Light", color: Theme.color.placeholder,
+                                            textAlign: 'center'
+                                        }}>Share your experience to help others</Text>
 
-                                    {
-                                        this.state.showReviewButton &&
-                                        <View style={{ paddingTop: Theme.spacing.tiny, alignItems: 'center' }}>
-                                            <Text style={{
-                                                paddingHorizontal: Theme.spacing.base,
-                                                width: Dimensions.get('window').width * 0.85,
+                                        <TouchableOpacity
+                                            style={[styles.contactButton,
+                                            {
                                                 marginBottom: Theme.spacing.small,
-                                                fontSize: 14, lineHeight: 24,
-                                                fontFamily: "Roboto-Light", color: Theme.color.placeholder,
-                                                textAlign: 'center'
-                                            }}>Share your experience to help others</Text>
-
-                                            <TouchableOpacity
-                                                style={[styles.contactButton,
-                                                {
-                                                    marginBottom: Theme.spacing.small,
-                                                    backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
+                                                backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
+                                            }
+                                            ]}
+                                            onPress={() => {
+                                                if (this.state.disableReviewButton) {
+                                                    this.refs["toast"].show("Can't add a review here.", 500);
+                                                    return;
                                                 }
-                                                ]}
-                                                onPress={() => {
-                                                    if (this.state.disableReviewButton) {
-                                                        this.refs["toast"].show("Can't add a review here.", 500);
-                                                        return;
-                                                    }
 
-                                                    if (!this.state.guest) {
-                                                        this.refs["toast"].show('The user no longer exists.', 500);
-                                                        return;
-                                                    }
+                                                if (!this.state.guest) {
+                                                    this.refs["toast"].show('The user no longer exists.', 500);
+                                                    return;
+                                                }
 
-                                                    setTimeout(() => {
-                                                        if (this.closed) return;
-                                                        // this.props.navigation.navigate("writeComment");
-                                                        this.openKeyboard();
+                                                setTimeout(() => {
+                                                    if (this.closed) return;
 
-                                                        // move scroll top
-                                                        // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
-                                                        // console.log('gap', gap);
-                                                        // this._flatList.scrollToOffset({ offset: gap, animated: true });
-                                                        this._flatList.scrollToOffset({ offset: 0, animated: true });
-                                                    }, Cons.buttonTimeout);
-                                                }}
-                                            >
-                                                <Text style={{
-                                                    fontSize: 16, fontFamily: "Roboto-Medium",
-                                                    // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
-                                                    color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
-                                                }}>{'Add a Review'}</Text>
-                                            </TouchableOpacity>
+                                                    this.reviewButtonPressed = true;
 
-                                            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }} />
-                                        </View>
-                                    }
+                                                    // this.props.navigation.navigate("writeComment");
+                                                    this.openKeyboard();
 
-                                </View>
+                                                    // move scroll top
+                                                    // this._flatList.scrollToOffset({ offset: 0, animated: true });
+
+
+                                                    // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
+                                                    // console.log('gap', gap);
+                                                    // this._flatList.scrollToOffset({ offset: gap, animated: true });
+
+
+                                                    // this._flatList.scrollToOffset({ offset: this.infoContainerY + this.reviewButtonContainerY + this.borderY, animated: true });
+                                                }, Cons.buttonTimeout);
+                                            }}
+                                        >
+                                            <Text style={{
+                                                fontSize: 16, fontFamily: "Roboto-Medium",
+                                                // color: this.state.showKeyboard ? 'black' : 'rgba(255, 255, 255, 0.8)'
+                                                color: this.state.showKeyboard ? 'black' : Theme.color.buttonText
+                                            }}>{'Add a Review'}</Text>
+                                        </TouchableOpacity>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width - 20 * 2, marginTop: Theme.spacing.tiny }}
+                                            onLayout={(event) => {
+                                                const { x, y, width, height } = event.nativeEvent.layout;
+
+                                                this.borderY = y;
+                                            }}
+                                        />
+                                    </View>
+                                }
                             </View>
                         </View>
                     }

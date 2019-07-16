@@ -335,15 +335,17 @@ export default class Loading extends React.Component<InjectedProps> {
     async checkUpdates() {
         // check updates (chat first.. post, likes, review, reply later)
 
+        let result;
+
         // 1. home
-        // const home = await this.checkUpdateOnHome();
+        // result = await this.checkUpdateOnHome();
 
         // 2. likes
-        // const likes = await this.checkUpdateOnLikes();
+        // result = await this.checkUpdateOnLikes();
 
         // 3. chat
-        const chatResult = await this.checkUpdateOnChat();
-        if (chatResult) {
+        result = await this.checkUpdateOnChat();
+        if (result) {
             // show badge
             setTimeout(() => {
                 if (this.closed) return;
@@ -353,8 +355,8 @@ export default class Loading extends React.Component<InjectedProps> {
         }
 
         // 4. profile
-        const profileResult = this.checkUpdateOnProfile();
-        if (profileResult) {
+        result = this.checkUpdateOnProfile();
+        if (result) {
             // show badge
             setTimeout(() => {
                 if (this.closed) return;
@@ -389,9 +391,9 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     checkUpdateOnProfile() {
-        // 1. owner의 경우, 내가 올린 post에 리뷰가 달린 경우
-        // 2. customer의 경우, 내가 쓴 review에 답글이 달린 경우
-        // 3. customer의 경우, Customer Review에 새 리뷰가 달린 경우
+        // 1. 내가 올린 post에 review가 달린 경우
+        // 2. customer의 경우, 내가 쓴 review에 reply가 달린 경우
+        // 3. (customer의 경우) 내 프로필에 새 review가 달린 경우
 
         const { profileStore } = this.props;
         const { profile } = profileStore;

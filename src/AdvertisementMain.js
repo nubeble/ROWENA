@@ -268,7 +268,7 @@ export default class AdvertisementMain extends React.Component {
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        console.log('AdvertisementMain._keyboardDidShow');
+        // console.log('AdvertisementMain._keyboardDidShow');
 
         if (this.focusedItem === 'name') {
             // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
@@ -293,7 +293,7 @@ export default class AdvertisementMain extends React.Component {
     _keyboardDidHide() {
         if (!this.focused) return;
 
-        console.log('AdvertisementMain._keyboardDidHide');
+        // console.log('AdvertisementMain._keyboardDidHide');
 
         if (this.state.onNote) this.setState({ onNote: false });
 

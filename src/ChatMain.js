@@ -24,7 +24,6 @@ export default class ChatMain extends React.Component {
     state = {
         ready: false,
 
-        // renderChat: false,
         isLoadingChat: false,
         chatRoomList: [],
 
@@ -66,7 +65,6 @@ export default class ChatMain extends React.Component {
         });
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
-        // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
@@ -97,12 +95,6 @@ export default class ChatMain extends React.Component {
 
             this.setState({ ready: true, isLoadingChat: false });
         });
-
-        /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderChat: true });
-        }, 0);
-        */
     }
 
     componentWillUnmount() {
@@ -391,26 +383,14 @@ export default class ChatMain extends React.Component {
 
         Vars.focusedScreen = 'ChatMain';
 
-        /*
-        const params = this.props.navigation.state.params;
-        if (params) {
-            const roomId = params.roomId; // room id need to get removed
-            // console.log('roomId', roomId);
-
-            const result = this.deleted(roomId);
-            if (result) { // found
-                // means already removed. nothing to do here.
-            } else { // not found
-                // means need to remove here.
-                this.deleteChatRoom(roomId);
-
-                // move scroll top
-                // this._flatList.scrollToOffset({ offset: 0, animated: true });
-            }
-        }
-        */
-
         this.isFocused = true;
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
+
+        this.isFocused = false;
     }
 
     deleted(id) {
@@ -455,13 +435,6 @@ export default class ChatMain extends React.Component {
         this.setState({chatRoomList: array}, () => callback());
     }
     */
-
-    @autobind
-    onBlur() {
-        Vars.focusedScreen = null;
-
-        this.isFocused = false;
-    }
 
     @autobind
     handleHardwareBackPress() {

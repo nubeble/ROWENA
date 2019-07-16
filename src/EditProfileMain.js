@@ -182,19 +182,18 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         }
         */
 
-        const { reviews } = this.commentStore;
-
         // check comment store update
         let showReloadCommentsButton = false;
         if (this.count === undefined) {
-            // console.log('set this.count');
             this.count = count;
         } else {
             if (this.count !== count) {
-                // console.log('show reload comment store');
                 showReloadCommentsButton = true;
             }
         }
+
+        const { reviews } = this.commentStore;
+
 
         return (
             <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
@@ -340,15 +339,8 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                                             </View>
                                         }
                                     </View>
-
-                                    <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }}
-                                        onLayout={(event) => {
-                                            const { x, y, width, height } = event.nativeEvent.layout;
-
-                                            this.borderY = y;
-                                        }}
-                                    />
                                 </View>
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width, marginTop: Theme.spacing.tiny }} />
                             </View>
                         </View>
                     }
@@ -601,6 +593,9 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         // reload from the start
         this.commentStore.loadReviewFromStart();
+
+        const { profile } = this.props.profileStore;
+        this.count = profile.receivedCommentsCount;
 
         // this.disableScroll();
     }

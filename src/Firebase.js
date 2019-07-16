@@ -57,7 +57,7 @@ export default class Firebase {
 
             // Delete documents in a batch
             // let batch = db.batch();
-            let batch = Firebase.firestore.batch();
+            const batch = Firebase.firestore.batch();
             snapshot.docs.forEach((doc) => {
                 batch.delete(doc.ref);
             });
@@ -71,8 +71,8 @@ export default class Firebase {
                 return;
             }
 
-            // Recurse on the next process tick, to avoid
-            // exploding the stack.
+            // Recurse on the next process tick, to avoid exploding the stack.
+            process.nextTick = setImmediate;
             process.nextTick(() => {
                 Firebase.deleteQueryBatch(db, query, batchSize, resolve, reject);
             });

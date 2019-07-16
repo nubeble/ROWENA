@@ -790,46 +790,15 @@ class AuthStackNavigatorWrapper extends React.Component {
     }
 }
 
-const EditPostStackNavigator = createStackNavigator(
-    {
-        editPostMain: { screen: EditPost },
-        selectCountry: { screen: CountrySelection },
-        searchStreet: { screen: SearchScreen }
-    },
-    {
-        mode: 'card',
-        headerMode: 'none',
-        navigationOptions: {
-            gesturesEnabled: false
-        },
-        transitionConfig: () => ({
-            screenInterpolator: StackViewStyleInterpolator.forHorizontal
-        })
-    }
-);
-
-class EditPostStackNavigatorWrapper extends React.Component {
-    static router = EditPostStackNavigator.router;
-
-    render() {
-        return (
-            <EditPostStackNavigator navigation={this.props.navigation}
-                screenProps={{
-                    params: this.props.navigation.state.params,
-                    rootNavigation: this.props.navigation
-                }}
-            />
-        );
-    }
-}
-
 const PostStackNavigator = createStackNavigator(
     {
         postMain: { screen: Post },
         // checkLikes: { screeen: CheckLikesStackNavigatorWrapper },
         checkLikes: { screen: CheckLikes },
         readReview: { screen: ReadAllReviewsScreen },
-        editPost: { screen: EditPostStackNavigatorWrapper }
+        editPostMain: { screen: EditPost },
+        // selectCountry: { screen: CountrySelection },
+        // searchStreet: { screen: SearchScreen }
     },
     {
         mode: 'card',
