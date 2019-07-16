@@ -60,6 +60,7 @@ export default class ChatMain extends React.Component {
 
         this.props.navigation.setParams({
             scrollToTop: () => {
+                // console.log('ChatMain.scrollToTop');
                 this._flatList.scrollToOffset({ offset: 0, animated: true });
             }
         });
@@ -578,10 +579,22 @@ export default class ChatMain extends React.Component {
 
         let avatarName = '';
         let avatarColor = 'black';
+        let nameFontSize = 28;
+        let nameLineHeight = 32;
         if (!opponent.picture) {
             avatarName = Util.getAvatarName(opponent.name);
-            // avatarColor = Util.getAvatarColor(id);
             avatarColor = Util.getAvatarColor(opponent.uid);
+
+            if (avatarName.length === 1) {
+                nameFontSize = 30;
+                nameLineHeight = 34;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 28;
+                nameLineHeight = 32;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 26;
+                nameLineHeight = 30;
+            }
         }
 
         let circleColor = '#999999'; // grey
@@ -661,7 +674,7 @@ export default class ChatMain extends React.Component {
                                         alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor
                                     }}
                                 >
-                                    <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                    <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                         {avatarName}
                                     </Text>
                                 </View>

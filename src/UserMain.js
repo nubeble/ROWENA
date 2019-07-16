@@ -352,6 +352,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         let _avatarName = '';
         let _avatarColor = 'black';
+        let nameFontSize = 28;
+        let nameLineHeight = 32;
 
         const { reviews } = this.commentStore;
 
@@ -409,6 +411,17 @@ export default class UserMain extends React.Component<InjectedProps> {
         if (!imageUri) {
             _avatarName = Util.getAvatarName(avatarName);
             _avatarColor = Util.getAvatarColor(guest.uid);
+
+            if (_avatarName.length === 1) {
+                nameFontSize = 30;
+                nameLineHeight = 34;
+            } else if (_avatarName.length === 2) {
+                nameFontSize = 28;
+                nameLineHeight = 32;
+            } else if (_avatarName.length === 3) {
+                nameFontSize = 26;
+                nameLineHeight = 30;
+            }
         }
 
 
@@ -531,7 +544,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                             backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
                                                         }}
                                                     >
-                                                        <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                                        <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                                             {_avatarName}
                                                         </Text>
                                                     </View>
@@ -785,6 +798,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         let name = null;
         let avatarName = null;
         let avatarColor = 'black';
+        let nameFontSize = 22;
+        let nameLineHeight = 26;
 
         if (post) {
             picture = post.pictures.one.uri;
@@ -796,6 +811,16 @@ export default class UserMain extends React.Component<InjectedProps> {
             name = post.name;
             avatarName = Util.getAvatarName(name);
             avatarColor = Util.getAvatarColor(post.id);
+            if (avatarName.length === 1) {
+                nameFontSize = 24;
+                nameLineHeight = 28;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 22;
+                nameLineHeight = 26;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 20;
+                nameLineHeight = 24;
+            }
         }
         /*
         else {
@@ -835,7 +860,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                 }}
                             >
-                                <Text style={{ color: 'white', fontSize: 22, lineHeight: 26, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                     {avatarName}
                                 </Text>
                             </View>

@@ -613,10 +613,23 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         let _avatarName = '';
         let _avatarColor = 'black';
+        let nameFontSize = 28;
+        let nameLineHeight = 32;
 
         if (!picture) {
             _avatarName = Util.getAvatarName(name);
             _avatarColor = Util.getAvatarColor(uid);
+
+            if (_avatarName.length === 1) {
+                nameFontSize = 30;
+                nameLineHeight = 34;
+            } else if (_avatarName.length === 2) {
+                nameFontSize = 28;
+                nameLineHeight = 32;
+            } else if (_avatarName.length === 3) {
+                nameFontSize = 26;
+                nameLineHeight = 30;
+            }
         }
 
         // const replyAdded = this.checkUpdateOnReview();
@@ -762,7 +775,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                                 backgroundColor: _avatarColor, alignItems: 'center', justifyContent: 'center'
                                                             }}
                                                         >
-                                                            <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                                            <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                                                 {_avatarName}
                                                             </Text>
                                                         </View>

@@ -1156,6 +1156,37 @@ class SavedStackNavigatorWrapper extends React.Component {
     }
 }
 
+const ChatStackNavigator = createStackNavigator(
+    {
+        chatMain: { screen: ChatMain }
+    },
+    {
+        mode: 'card',
+        headerMode: 'none',
+        navigationOptions: {
+            gesturesEnabled: false
+        },
+        transitionConfig: () => ({
+            screenInterpolator: StackViewStyleInterpolator.forHorizontal
+        })
+    }
+);
+
+class ChatStackNavigatorWrapper extends React.Component {
+    static router = ChatStackNavigator.router;
+
+    render() {
+        return (
+            <ChatStackNavigator navigation={this.props.navigation}
+                screenProps={{
+                    params: this.props.navigation.state.params,
+                    rootNavigation: this.props.navigation
+                }}
+            />
+        );
+    }
+}
+
 const ProfileStackNavigator = createStackNavigator(
     {
         profileMain: { screen: ProfileMain },
@@ -1220,6 +1251,7 @@ function _navigationOptions(navigation, screenProps) {
 
     if (navigation.state.index === 0) {
         const navigationInRoute = navigation.getChildNavigation(navigation.state.routes[0].key);
+        // console.log('navigationInRoute', navigationInRoute);
         if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.routeName) name = navigationInRoute.state.routeName;
         if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.params && !!navigationInRoute.state.params.scrollToTop) scrollToTop = navigationInRoute.state.params.scrollToTop;
     }
@@ -1308,7 +1340,7 @@ function _navigationOptions(navigation, screenProps) {
                     console.log('diff', diff);
 
                     if (diff < 500) { // double click
-                        if (name === "chat") scrollToTop();
+                        if (name === "chatMain") scrollToTop();
                     }
                 } else {
                     routeName = 'chat';
@@ -1424,7 +1456,8 @@ const MainBottomTabNavigator = createBottomTabNavigator(
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         chat: {
-            screen: ChatMain,
+            // screen: ChatMain,
+            screen: ChatStackNavigatorWrapper,
             navigationOptions: ({ navigation, screenProps }) => (_navigationOptions(navigation, screenProps))
         },
         profile: {

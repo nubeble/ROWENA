@@ -158,6 +158,21 @@ export default class CheckLikes extends React.Component {
                         const avatarName = Util.getAvatarName(name);
                         const avatarColor = Util.getAvatarColor(item.uid);
 
+                        let nameFontSize = 26;
+                        let nameLineHeight = 30;
+
+                        if (avatarName.length === 1) {
+                            nameFontSize = 28;
+                            nameLineHeight = 32;
+                        } else if (avatarName.length === 2) {
+                            nameFontSize = 26;
+                            nameLineHeight = 30;
+                        } else if (avatarName.length === 3) {
+                            nameFontSize = 24;
+                            nameLineHeight = 28;
+                        }
+
+
                         return (
                             <View style={{ paddingHorizontal: Theme.spacing.small }}>
                                 <View style={{ marginTop: 12, marginBottom: 12, flexDirection: 'row', alignItems: 'center' }}>
@@ -176,7 +191,7 @@ export default class CheckLikes extends React.Component {
                                                     backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                                 }}
                                             >
-                                                <Text style={{ color: 'white', fontSize: 24, lineHeight: 28, fontFamily: "Roboto-Medium" }}>
+                                                <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                                     {avatarName}
                                                 </Text>
                                             </View>

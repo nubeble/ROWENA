@@ -1976,6 +1976,18 @@ export default class Post extends React.Component<InjectedProps> {
 
             const avatarName = Util.getAvatarName(_profile.name);
             const avatarColor = Util.getAvatarColor(_profile.uid);
+            let nameFontSize = 20;
+            let nameLineHeight = 24;
+            if (avatarName.length === 1) {
+                nameFontSize = 22;
+                nameLineHeight = 26;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 20;
+                nameLineHeight = 24;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 18;
+                nameLineHeight = 22;
+            }
 
             const place = _profile.place ? _profile.place : 'Not specified';
             const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
@@ -2027,7 +2039,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                     }}
                                 >
-                                    <Text style={{ color: 'white', fontSize: 20, lineHeight: 24, fontFamily: "Roboto-Medium" }}>
+                                    <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                         {avatarName}
                                     </Text>
                                 </View>

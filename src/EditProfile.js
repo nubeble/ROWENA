@@ -677,10 +677,23 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         let avatarName = '';
         let avatarColor = 'black';
+        let nameFontSize = 28;
+        let nameLineHeight = 32;
         if (!uploadImageUri) {
             const { profile } = this.props.profileStore;
             avatarName = Util.getAvatarName(profile.name);
             avatarColor = Util.getAvatarColor(profile.uid);
+
+            if (avatarName.length === 1) {
+                nameFontSize = 30;
+                nameLineHeight = 34;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 28;
+                nameLineHeight = 32;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 26;
+                nameLineHeight = 30;
+            }
         }
 
         const viewStyle = {
@@ -724,7 +737,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                             backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
                                         }}
                                     >
-                                        <Text style={{ color: 'white', fontSize: 28, lineHeight: 32, fontFamily: "Roboto-Medium" }}>
+                                        <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                             {avatarName}
                                         </Text>
                                     </View>

@@ -179,10 +179,24 @@ export default class CommentMain extends React.Component<InjectedProps> {
                             let avatarName = '';
                             let avatarColor = 'black';
                             if (!item.picture) {
-                                // avatarName = 'JK';
                                 avatarName = Util.getAvatarName(item.name);
                                 avatarColor = Util.getAvatarColor(item.uid);
                             }
+
+                            let nameFontSize = 36;
+                            let nameLineHeight = 42;
+
+                            if (avatarName.length === 1) {
+                                nameFontSize = 38;
+                                nameLineHeight = 44;
+                            } else if (avatarName.length === 2) {
+                                nameFontSize = 36;
+                                nameLineHeight = 42;
+                            } else if (avatarName.length === 3) {
+                                nameFontSize = 34;
+                                nameLineHeight = 40;
+                            }
+
 
                             return (
                                 <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
@@ -207,7 +221,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                                 <View
                                                     style={{ width: '100%', height: '100%', borderRadius: 2, alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor }}
                                                 >
-                                                    <Text style={{ color: 'white', fontSize: 34, paddingTop: 16, fontFamily: "Roboto-Medium" }}>
+                                                    <Text style={{ color: 'white', /* fontSize: 34, paddingTop: 16, */ fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
                                                         {avatarName}
                                                     </Text>
                                                 </View>

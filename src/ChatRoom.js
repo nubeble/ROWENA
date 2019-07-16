@@ -83,7 +83,7 @@ export default class ChatRoom extends React.Component {
         Firebase.chatOn(DEFAULT_MESSAGE_COUNT, item.id, message => {
             console.log('on message', message);
 
-            // fill name, avatar (picture)
+            // fill name, avatar
             if (message.user) {
                 for (let i = 0; i < item.users.length; i++) {
                     const user = item.users[i];
@@ -91,7 +91,8 @@ export default class ChatRoom extends React.Component {
                     if (message.user._id === user.uid) {
                         message.user.name = user.name;
                         if (user.picture) message.user.avatar = user.picture;
-                        else message.user.avatar = PreloadImage.user;
+                        // else message.user.avatar = PreloadImage.user;
+                        else message.user.avatar = 'none'; // Consider
 
                         break;
                     }
@@ -131,12 +132,12 @@ export default class ChatRoom extends React.Component {
         console.log('ChatRoom.handleHardwareBackPress');
         // this.goBack(); // works best when the goBack is async
 
-        this.moveToChatMain();
+        this.goBack();
 
         return true;
     }
 
-    async moveToChatMain() {
+    async goBack() {
         // save last message
         const item = this.props.navigation.state.params.item;
 
@@ -312,7 +313,7 @@ export default class ChatRoom extends React.Component {
     }
     */
 
-    async openPost() {
+    openPost() {
         setTimeout(() => {
             if (this.closed) return;
 
@@ -341,11 +342,11 @@ export default class ChatRoom extends React.Component {
         return count;
     }
 
-    async openAvatar() {
+    openAvatar() {
         const item = this.props.navigation.state.params.item;
 
         if (item.owner === item.users[1].uid) {
-            await this.openPost();
+            this.openPost();
         } else {
             const user1 = item.users[0]; // owner (girl)
             const user2 = item.users[1]; // customer
@@ -425,14 +426,14 @@ export default class ChatRoom extends React.Component {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
-                            this.moveToChatMain();
+                            this.goBack();
                         }}
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
                     {/* icon + text */}
-                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={async () => await this.openPost()}>
+                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.openPost()}>
                         <SmartImage
                             // style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
                             style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
@@ -502,8 +503,8 @@ export default class ChatRoom extends React.Component {
                             await this.sendMessage(isSameDay, messages[0]);
                             // await this.saveUnreadChatRoomId();
                         }}
-                        onPressAvatar={async () => await this.openAvatar()}
-                        onLongPress={() => undefined}
+                        // onPressAvatar={async () => await this.openAvatar()}
+                        // onLongPress={() => undefined}
 
                         textInputProps={{
                             // multiline: true,
@@ -534,13 +535,53 @@ export default class ChatRoom extends React.Component {
                         renderSend={this.renderSend}
                         renderInputToolbar={this.renderInputToolbar}
 
+                        renderAvatar={(props) => {
+                            // console.log('renderAvatar', props);
+                            // console.log('renderAvatar', props.user);
 
-                        /*
-                        renderAvatar ={props => {
-                            return <CustomActions {...props} onSend={this.onSendFromUser} />
+                            const { user } = props.currentMessage;
+
+                            const avatarWidth = 36;
+
+                            let picture = user.avatar;
+                            if (picture === 'none') {
+                                picture = null;
+                            }
+
+                            const avatarColor = Util.getAvatarColor(user._id);
+                            const avatarName = Util.getAvatarName(user.name);
+
+                            let nameFontSize = 17;
+                            if (avatarName.length === 1) nameFontSize = 19;
+                            else if (avatarName.length === 2) nameFontSize = 17;
+                            else if (avatarName.length === 3) nameFontSize = 13;
+
+                            return (
+                                <TouchableOpacity
+                                    onPress={() => this.openAvatar()}>
+                                    {
+                                        picture ?
+                                            <SmartImage
+                                                style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={picture}
+                                                showSpinner={false}
+                                            />
+                                            :
+                                            <View
+                                                style={{
+                                                    width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                                    alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor
+                                                }}
+                                            >
+                                                <Text style={{ color: 'white', fontSize: nameFontSize, fontFamily: "Roboto-Medium" }}>
+                                                    {avatarName}
+                                                </Text>
+                                            </View>
+                                    }
+                                </TouchableOpacity>
+                            );
                         }}
-                        */
-
 
                         listViewProps={{
                             // scrollEventThrottle: 400,
@@ -584,7 +625,7 @@ export default class ChatRoom extends React.Component {
                             <Text style={styles.text1}>{'!'}</Text>
                         </Text>
 
-                        <TouchableOpacity onPress={async () => await this.openPost()}>
+                        <TouchableOpacity onPress={() => this.openPost()}>
                             <SmartImage
                                 style={{
                                     width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2,

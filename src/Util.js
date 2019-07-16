@@ -1600,12 +1600,14 @@ export default class Util extends React.Component {
             for (let i = 0; i < words.length; i++) {
                 avatarName += words[i][0];
             }
+
+            if (avatarName.length > 3) avatarName = avatarName.substring(0, 3);
         }
 
         return avatarName;
     }
 
-    static getAvatarColor(id) {// id: uid or chatroom id
+    static getAvatarColor(id) {// id: uid or post id
         if (avatarColorList.has(id)) {
             return avatarColorList.get(id);
         }
