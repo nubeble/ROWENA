@@ -313,33 +313,20 @@ export default class ChatRoom extends React.Component {
     }
     */
 
-    openPost() {
-        setTimeout(() => {
-            if (this.closed) return;
+    async openPost() {
+        const item = this.props.navigation.state.params.item;
+        const post = item.post;
 
-            const item = this.props.navigation.state.params.item;
-
-            const post = item.post;
-
+        const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+        if (!result) { // post removed
+            this.refs["toast"].show('The post no longer exists.', 500);
+        } else {
             const extra = {
                 feedSize: item.feedSize
             };
 
-            Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-            this.props.navigation.navigate("post", { post, extra, from: 'ChatRoom' });
-        }, Cons.buttonTimeout);
-    }
-
-    getPost(item) {
-        const post = this.feed;
-
-        return post;
-    }
-
-    getFeedSize(placeId) {
-        const count = this.feedCount;
-
-        return count;
+            this.props.navigation.navigate("post", { post: result, extra, from: 'ChatRoom' });
+        }
     }
 
     openAvatar() {
@@ -381,9 +368,7 @@ export default class ChatRoom extends React.Component {
                 guest
             };
 
-            setTimeout(() => {
-                !this.closed && this.props.navigation.navigate("user", { from: 'ChatRoom', item: _item });
-            }, Cons.buttonTimeout);
+            this.props.navigation.navigate("user", { from: 'ChatRoom', item: _item });
         }
     }
 

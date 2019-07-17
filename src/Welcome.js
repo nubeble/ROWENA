@@ -77,7 +77,7 @@ export default class Welcome extends React.Component {
 
                     <Image
                         style={{
-                            marginTop: 40,
+                            marginTop: 80,
                             width: 1280 * 0.25,
                             height: 720 * 0.25,
                             resizeMode: 'cover',

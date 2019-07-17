@@ -1970,14 +1970,36 @@ export default class Post extends React.Component<InjectedProps> {
             const ref = _review.id;
             const index = i;
             const reply = _review.reply;
+
             const isMyReview = this.isOwner(_review.uid, Firebase.user().uid);
             let isMyReply = false;
             if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
-            const avatarName = Util.getAvatarName(_profile.name);
-            const avatarColor = Util.getAvatarColor(_profile.uid);
+            let uid, picture, name, place, placeColor, placeFont;
+
+            if (_profile) {
+                uid = _profile.uid;
+                picture = _profile.picture.uri;
+                name = _profile.name;
+
+                place = _profile.place ? _profile.place : 'Not specified';
+                placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
+                placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
+            } else { // user removed
+                uid = _review.uid;
+                picture = _review.picture;
+                name = _review.name;
+
+                place = _review.place ? _review.place : 'Not specified';
+                placeColor = _review.place ? Theme.color.text2 : Theme.color.text4;
+                placeFont = _review.place ? "Roboto-Regular" : "Roboto-Italic";
+            }
+
+            const avatarName = Util.getAvatarName(name);
+            const avatarColor = Util.getAvatarColor(uid);
             let nameFontSize = 20;
             let nameLineHeight = 24;
+
             if (avatarName.length === 1) {
                 nameFontSize = 22;
                 nameLineHeight = 26;
@@ -1989,9 +2011,6 @@ export default class Post extends React.Component<InjectedProps> {
                 nameLineHeight = 22;
             }
 
-            const place = _profile.place ? _profile.place : 'Not specified';
-            const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
-            const placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
 
             reviewArray.push(
                 <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -2025,12 +2044,12 @@ export default class Post extends React.Component<InjectedProps> {
 
                     <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny, flexDirection: 'row', alignItems: 'center' }}>
                         {
-                            _profile.picture.uri ?
+                            picture ?
                                 <SmartImage
                                     style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
                                     showSpinner={false}
                                     preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                    uri={_profile.picture.uri}
+                                    uri={picture}
                                 />
                                 :
                                 <View
@@ -2046,7 +2065,7 @@ export default class Post extends React.Component<InjectedProps> {
                         }
                         <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                             <Text style={{ color: Theme.color.text2, fontSize: 13, fontFamily: "Roboto-Regular" }}>
-                                {_profile.name}</Text>
+                                {name}</Text>
                             <Text style={{
                                 marginTop: 4,
                                 color: placeColor, fontSize: 13, fontFamily: placeFont
@@ -2103,7 +2122,7 @@ export default class Post extends React.Component<InjectedProps> {
                         this.state.isOwner && !reply &&
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                             <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                                onPress={() => this.openKeyboard(ref, index, _profile.uid)}
+                                onPress={() => this.openKeyboard(ref, index)}
                             >
                                 <MaterialIcons name='reply' color={'silver'} size={20} />
                             </TouchableOpacity>
@@ -2194,9 +2213,18 @@ export default class Post extends React.Component<InjectedProps> {
 
             const post = this.state.post;
 
+            const { profile } = this.props.profileStore;
+            const user = {
+                uid: profile.uid,
+                name: profile.name,
+                place: profile.place,
+                picture: profile.picture
+            };
+
             const param = {
-                post: post,
-                rating: rating,
+                post,
+                user,
+                rating,
                 initFromWriteReview: (result) => this.initFromWriteReview(result)
             };
 
@@ -2249,7 +2277,7 @@ export default class Post extends React.Component<InjectedProps> {
         */
     }
 
-    openKeyboard(ref, index, owner) {
+    openKeyboard(ref, index) {
         if (this.state.showKeyboard) return;
 
         !this.closed && this.setState({ showKeyboard: true }, () => {

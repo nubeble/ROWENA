@@ -532,6 +532,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (post === undefined) {
             // the post is removed
+            // this should never happen
+            // this.refs["toast"].show('The post no longer exists.', 500);
             return;
         }
 
@@ -551,10 +553,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             feedSize
         };
 
-        // setTimeout(() => {
         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
         this.props.navigation.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
-        // }, Cons.buttonTimeout);
 
         // hide indicator
         // this.setState({ showPostIndicator: -1 });

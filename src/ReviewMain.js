@@ -504,15 +504,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         if (post === undefined) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {
-                // update picture
-                /*
-                let feeds = [...this.state.feeds];
-                const index = feeds.findIndex(el => el.placeId === item.placeId && el.feedId === item.feedId);
-                if (index !== -1) {
-                    feeds.splice(index, 1);
-                    !this.closed && this.setState({ feeds });
-                }
-                */
+                // update UI
                 let feeds = [...this.state.feeds];
                 for (let i = 0; i < feeds.length; i++) {
                     const feed = feeds[i];
@@ -524,9 +516,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
                 // update database
                 Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
-
-                // await Firebase.updateReview(Firebase.user().uid, item.placeId, item.feedId, null);
-                // this.onFocus(); // ToDo
             });
 
             return;
@@ -534,7 +523,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         const feedSize = this.getFeedSize(item.placeId);
         if (feedSize === -1) {
-            // console.log('getFeedSize', item.placeId);
             this.refs["toast"].show('Please try again.', 500);
             return;
         }

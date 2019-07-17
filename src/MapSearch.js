@@ -95,7 +95,7 @@ export default class MapSearch extends React.Component {
 
         /*
         if (Platform.OS === 'ios') {
-            // ToDo
+            // ToDo: setMapBoundaries NOT working in ios
             this.setState({ place: placeName, region: __region }, () => { this.setBoundaries(__region) });
             // this.setState({ place: placeName, region: __region });
         } else {
@@ -600,18 +600,18 @@ export default class MapSearch extends React.Component {
 
         return (
             <TouchableOpacity activeOpacity={1.0}
-                // onPress={async () => {
-                onPress={() => {
-                    // console.log('onpress', post.placeId, post.id);
+                onPress={async () => {
+                    const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                    if (!result) {
+                        // ToDo: toast
+                    } else {
+                        const { feedSize } = this.props.navigation.state.params;
+                        const extra = {
+                            feedSize
+                        };
 
-                    const { feedSize } = this.props.navigation.state.params;
-
-                    const extra = {
-                        feedSize
-                    };
-
-                    Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-                    this.props.navigation.navigate("post", { post: post, extra: extra, initFromPost: (result) => this.initFromPost(result) });
+                        this.props.navigation.navigate("post", { post: result, extra: extra, initFromPost: (result) => this.initFromPost(result) });
+                    }
                 }}
             >
                 <SmartImage

@@ -407,19 +407,24 @@ export default class App extends React.Component {
     }
 
     async moveToUserPost(placeId, feedId) {
-        const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
-        if (!placeDoc.exists) return;
+        const result = await Firebase.addVisits(Firebase.user().uid, placeId, feedId);
+        if (!result) return;
 
+        /*
         const feedDoc = await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).get();
         if (!feedDoc.exists) return;
+
+        const post = feedDoc.data();
+        */
+        const post = result;
+
+        const placeDoc = await Firebase.firestore.collection("places").doc(placeId).get();
+        if (!placeDoc.exists) return;
 
         const extra = {
             feedSize: placeDoc.data().count
         };
 
-        const post = feedDoc.data();
-
-        Firebase.addVisits(Firebase.user().uid, placeId, feedId);
         NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
     }
 

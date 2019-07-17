@@ -69,6 +69,12 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
     onAddToReviewFinished() {
         console.log('EditProfileMain.onAddToReviewFinished');
 
+        /*
+        const { reviews } = this.commentStore;
+        const count = reviews.length;
+        this.count = count;
+        */
+
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
         // !this.closed && this.enableScroll();
@@ -409,6 +415,31 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
             name = post.name;
             avatarName = Util.getAvatarName(name);
             avatarColor = Util.getAvatarColor(post.id);
+
+            if (avatarName.length === 1) {
+                nameFontSize = 24;
+                nameLineHeight = 28;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 22;
+                nameLineHeight = 26;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 20;
+                nameLineHeight = 24;
+            }
+        } else { // post removed
+            // console.log('EditProfileMain.renderItem', _review);
+
+            // use original data
+            picture = _review.picture;
+            placeName = _review.placeName;
+            if (placeName) {
+                placeColor = Theme.color.text2;
+                placeFont = "Roboto-Regular";
+            }
+            name = _review.name;
+            avatarName = Util.getAvatarName(name);
+            avatarColor = Util.getAvatarColor(_review.id);
+
             if (avatarName.length === 1) {
                 nameFontSize = 24;
                 nameLineHeight = 28;
@@ -420,13 +451,6 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                 nameLineHeight = 24;
             }
         }
-        /*
-        else {
-            picture = _review.picture;
-            placeName = _review.place;
-            name = _review.name;
-        }
-        */
 
         let isMyComment = false;
         if (_review.uid === Firebase.user().uid) {

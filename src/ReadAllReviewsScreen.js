@@ -334,7 +334,6 @@ export default class ReadAllReviewsScreen extends React.Component {
     renderItem({ item, index }): React.Node {
         const _profile = item.profile;
         const _review = item.review;
-
         const ref = _review.id;
         const reply = _review.reply;
 
@@ -342,10 +341,31 @@ export default class ReadAllReviewsScreen extends React.Component {
         let isMyReply = false;
         if (reply) isMyReply = this.isOwner(reply.uid, Firebase.user().uid);
 
-        const avatarName = Util.getAvatarName(_profile.name);
-        const avatarColor = Util.getAvatarColor(_profile.uid);
+        let uid, picture, name, place, placeColor, placeFont;
+
+        if (_profile) {
+            uid = _profile.uid;
+            picture = _profile.picture.uri;
+            name = _profile.name;
+
+            place = _profile.place ? _profile.place : 'Not specified';
+            placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
+            placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
+        } else { // user removed
+            uid = _review.uid;
+            picture = _review.picture;
+            name = _review.name;
+
+            place = _review.place ? _review.place : 'Not specified';
+            placeColor = _review.place ? Theme.color.text2 : Theme.color.text4;
+            placeFont = _review.place ? "Roboto-Regular" : "Roboto-Italic";
+        }
+
+        const avatarName = Util.getAvatarName(name);
+        const avatarColor = Util.getAvatarColor(uid);
         let nameFontSize = 22;
         let nameLineHeight = 26;
+
         if (avatarName.length === 1) {
             nameFontSize = 24;
             nameLineHeight = 28;
@@ -357,9 +377,6 @@ export default class ReadAllReviewsScreen extends React.Component {
             nameLineHeight = 24;
         }
 
-        const place = _profile.place ? _profile.place : 'Not specified';
-        const placeColor = _profile.place ? Theme.color.text2 : Theme.color.text4;
-        const placeFont = _profile.place ? "Roboto-Regular" : "Roboto-Italic";
 
         return (
             <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -387,12 +404,12 @@ export default class ReadAllReviewsScreen extends React.Component {
 
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
-                        _profile.picture.uri ?
+                        picture ?
                             <SmartImage
                                 style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
                                 showSpinner={false}
                                 preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                uri={_profile.picture.uri}
+                                uri={picture}
                             />
                             :
                             <View
@@ -408,7 +425,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
                         <Text style={{ color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Regular" }}>
-                            {_profile.name}</Text>
+                            {name}</Text>
                         <Text style={{
                             marginTop: 4,
                             color: placeColor, fontSize: 14, fontFamily: placeFont
@@ -463,7 +480,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     this.state.isOwner && !reply &&
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
                         <TouchableOpacity style={{ alignSelf: 'baseline' }}
-                            onPress={() => this.openKeyboard(ref, index, _profile.uid)}
+                            onPress={() => this.openKeyboard(ref, index)}
                         >
                             <MaterialIcons name='reply' color={'silver'} size={20} />
                         </TouchableOpacity>
@@ -665,7 +682,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         */
     }
 
-    openKeyboard(ref, index, owner) {
+    openKeyboard(ref, index) {
         if (this.state.showKeyboard) return;
 
         this.setState({ showKeyboard: true }, () => {

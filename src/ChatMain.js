@@ -127,10 +127,10 @@ export default class ChatMain extends React.Component {
         for (let i = 0; i < list.length; i++) {
             const room = list[i];
 
-            const owner = room.owner; // owner uid of the post
+            // const owner = room.owner; // owner uid of the post
             const users = room.users;
 
-            const me = users[0];
+            // const me = users[0];
             const you = users[1];
 
             // check if customer or girl
@@ -629,13 +629,13 @@ export default class ChatMain extends React.Component {
             <TouchableHighlight
                 onPress={() => {
                     let list = [...this.state.chatRoomList];
-                    const itemIndex = list.findIndex(el => el.id === id);
-                    if (itemIndex !== -1) {
-                        const chatRoom = list[itemIndex];
-                        this.moveToChatRoom(chatRoom);
-                    } else {
+                    const index = list.findIndex(el => el.id === id);
+                    if (index === -1) {
                         // this should never happen
                         this.refs["toast"].show('The room no longer exists.', 500);
+                    } else {
+                        const chatRoom = list[index];
+                        this.moveToChatRoom(chatRoom);
                     }
                 }}
                 onLongPress={() => {
@@ -789,31 +789,31 @@ export default class ChatMain extends React.Component {
 
         // customer profile
         let customerProfile = null;
-        if (customer) {
-            const profile = this.getProfile(customer);
-            if (profile === null) {
-                // the post is not subscribed yet
-                this.refs["toast"].show('Please try again.', 500);
-                return;
-            }
 
-            if (profile === undefined) {
-                this.refs["toast"].show('The user no longer exists.', 500, () => {
-                    const me = users[0];
-                    const you = users[1];
-
-                    // remove the chat room
-                    Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
-
-                    // update state
-                    this.deleteChatRoom(item.id);
-                });
-
-                return;
-            }
-
-            customerProfile = profile;
+        const profile = this.getProfile(customer);
+        if (profile === null) {
+            // the post is not subscribed yet
+            this.refs["toast"].show('Please try again.', 500);
+            return;
         }
+
+        if (profile === undefined) {
+            this.refs["toast"].show('The user no longer exists.', 500, () => {
+                const me = users[0];
+                const you = users[1];
+
+                // remove the chat room
+                Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+
+                // update state
+                this.deleteChatRoom(item.id);
+            });
+
+            return;
+        }
+
+        customerProfile = profile;
+
 
         const params = {
             id: item.id,

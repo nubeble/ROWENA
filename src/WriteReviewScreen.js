@@ -110,8 +110,8 @@ export default class WriteReviewScreen extends React.Component {
             return;
         }
 
-        const { post } = this.props.navigation.state.params;
-        if (Firebase.user().uid === post.uid) {
+        const { post, user } = this.props.navigation.state.params;
+        if (user.uid === post.uid) {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
@@ -126,7 +126,11 @@ export default class WriteReviewScreen extends React.Component {
 
         this.setState({ showPostLoader: true });
 
-        const result = await Firebase.addReview(post.uid, post.placeId, post.id, Firebase.user().uid, comment, this.state.rating, post.pictures.one.uri);
+        // const result = await Firebase.addReview(post.uid, post.placeId, post.id, Firebase.user().uid, comment, this.state.rating, post.pictures.one.uri);
+        const result = await Firebase.addReview(post.uid, post.placeId, post.id, post.pictures.one.uri,
+            user.uid, user.name, user.place, user.picture,
+            comment, this.state.rating);
+
         if (!result) {
             // the post is removed
             this.refs["toast"].show('The post has been removed by its owner.', 500, () => {

@@ -69,13 +69,13 @@ export default class Admin extends React.Component {
                 <TouchableOpacity onPress={() => this.makeDummyData()}
                     style={styles.bottomButton}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 cities) 🔥</Text>
+                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (11 x 10 cities) 🔥</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeInit()}
                     style={styles.bottomButton}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Dummy Data (12 cities) 🔥</Text>
+                    <Text style={{ fontSize: 16, color: 'white' }}>🔥 Make Init Data (12 cities) 🔥</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeSingapore()}

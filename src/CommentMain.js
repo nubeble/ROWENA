@@ -510,7 +510,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
         if (customer === undefined) {
             // the user is removed
             this.refs["toast"].show('The user no longer exists.', 500, () => {
-                // update picture
+                // update UI
                 let feeds = [...this.state.feeds];
                 for (let i = 0; i < feeds.length; i++) {
                     const feed = feeds[i];

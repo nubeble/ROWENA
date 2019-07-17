@@ -732,7 +732,9 @@ export default class Firebase {
     */
 
     static async addVisits(uid, placeId, feedId) {
-        console.log('Firebase.addVisits', placeId, feedId);
+        // console.log('Firebase.addVisits', placeId, feedId);
+
+        let result;
 
         const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
 
@@ -740,9 +742,9 @@ export default class Firebase {
             const postDoc = await transaction.get(feedRef);
             if (!postDoc.exists) throw 'Post document not exist!';
 
-            let { visits } = postDoc.data();
+            let post = postDoc.data();
 
-            // if (!visits) visits = [];
+            let { visits } = post;
 
             let index = -1;
             for (let i = 0; i < visits.length; i++) {
@@ -770,12 +772,18 @@ export default class Firebase {
                 visits[index] = visit;
             }
 
+            post.visits = visits;
+            result = post;
+
             transaction.update(feedRef, { visits });
         }).then(() => {
             console.log("Firebase.addVisits, success.");
         }).catch((error) => {
             console.log('Firebase.addVisits', error);
+            result = null;
         });
+
+        return result;
     }
 
     static async toggleLikes(uid, placeId, feedId, name, placeName, uri) {
@@ -995,7 +1003,8 @@ export default class Firebase {
         return result;
     }
 
-    static async addReview(ownerUid, placeId, feedId, userUid, comment, rating, picture) {
+    // static async addReview(ownerUid, placeId, feedId, userUid, comment, rating, picture) {
+    static async addReview(ownerUid, placeId, feedId, postPicture, userUid, name, place, picture, comment, rating) {
         let result;
 
         const id = Util.uid();
@@ -1003,10 +1012,14 @@ export default class Firebase {
 
         const review = {
             id: id,
-            uid: userUid,
             rating: rating,
             comment: comment,
-            timestamp: timestamp
+            timestamp: timestamp,
+            uid: userUid,
+            name,
+            place,
+            picture,
+            // reply: null
         };
 
         // update - averageRating, reviewCount, reviews, stats
@@ -1082,7 +1095,7 @@ export default class Firebase {
                 feedId: feedId,
                 reviewId: id,
                 replyAdded: false,
-                picture
+                postPicture
             };
 
             let data = {
@@ -1099,7 +1112,7 @@ export default class Firebase {
 
         if (!result) return false;
 
-        // add
+        // add to reviews collection
         await Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").doc(id).set(review);
 
         // update owner profile
@@ -1391,8 +1404,10 @@ export default class Firebase {
 
     // customer review
     // --
-    static async addComment(uid, targetUid, comment, placeId, feedId) { // uid: writer (boss, not girl), targetUid: receiver (guest)
-        // console.log(uid, targetUid, comment, placeId, feedId);
+    // static async addComment(uid, targetUid, comment, placeId, feedId) { // uid: writer (boss, not girl), targetUid: receiver (guest)
+    static async addComment(uid, targetUid, placeId, feedId, comment, name, address, picture) { // uid: writer (boss, not girl), targetUid: receiver (guest)
+        console.log(uid, targetUid, placeId, feedId, comment, name, address, picture);
+
         let result;
 
         const id = Util.uid(); // comment id
@@ -1402,9 +1417,12 @@ export default class Firebase {
             id,
             timestamp,
             uid,
-            comment,
             placeId,
-            feedId
+            feedId,
+            comment,
+            name,
+            placeName: address,
+            picture
         };
 
         const writerRef = Firebase.firestore.collection("users").doc(uid); // writer (me)

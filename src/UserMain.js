@@ -266,8 +266,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         const { host, guest } = this.state;
         const { placeId, feedId } = this.props.navigation.state.params.item;
 
-        // Firebase.addComment(host.uid, guest.uid, message, host.name, host.address, host.picture, placeId, feedId);
-        Firebase.addComment(host.uid, guest.uid, message, placeId, feedId);
+        // Firebase.addComment(host.uid, guest.uid, message, placeId, feedId);
+        Firebase.addComment(host.uid, guest.uid, placeId, feedId, message, host.name, host.address, host.picture);
     };
 
     async removeComment(index) {
@@ -811,6 +811,31 @@ export default class UserMain extends React.Component<InjectedProps> {
             name = post.name;
             avatarName = Util.getAvatarName(name);
             avatarColor = Util.getAvatarColor(post.id);
+
+            if (avatarName.length === 1) {
+                nameFontSize = 24;
+                nameLineHeight = 28;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 22;
+                nameLineHeight = 26;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 20;
+                nameLineHeight = 24;
+            }
+        } else { // post removed
+            // console.log('UserMain.renderItem', _review);
+
+            // use original data
+            picture = _review.picture;
+            placeName = _review.placeName;
+            if (placeName) {
+                placeColor = Theme.color.text2;
+                placeFont = "Roboto-Regular";
+            }
+            name = _review.name;
+            avatarName = Util.getAvatarName(name);
+            avatarColor = Util.getAvatarColor(_review.id);
+
             if (avatarName.length === 1) {
                 nameFontSize = 24;
                 nameLineHeight = 28;
@@ -822,14 +847,6 @@ export default class UserMain extends React.Component<InjectedProps> {
                 nameLineHeight = 24;
             }
         }
-        /*
-        else {
-            picture = _review.picture;
-            if (placeName) placeColor = Theme.color.text2;
-            placeName = _review.place;
-            name = _review.name;
-        }
-        */
 
         let isMyComment = false;
         if (_review.uid === Firebase.user().uid) {
