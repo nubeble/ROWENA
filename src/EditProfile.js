@@ -24,7 +24,7 @@ import Util from './Util';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 // https://github.com/lawnstarter/react-native-picker-select
 import Select from 'react-native-picker-select';
-import Toast, { DURATION } from 'react-native-easy-toast';
+import Toast from 'react-native-easy-toast';
 
 type InjectedProps = {
     profileStore: ProfileStore

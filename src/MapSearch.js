@@ -21,6 +21,7 @@ import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
 import Util from "./Util";
 import { LinearGradient } from 'expo-linear-gradient';
+import Toast from 'react-native-easy-toast';
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -311,6 +312,13 @@ export default class MapSearch extends React.Component {
                         this.renderPosts()
                     }
                 </View>
+
+                <Toast
+                    ref="toast"
+                    position='top'
+                    positionValue={Dimensions.get('window').height / 2 - 20}
+                    opacity={0.6}
+                />
             </View>
         );
     }
@@ -603,7 +611,7 @@ export default class MapSearch extends React.Component {
                 onPress={async () => {
                     const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
                     if (!result) {
-                        // ToDo: toast
+                        this.refs["toast"].show('The post no longer exists.', 500);
                     } else {
                         const { feedSize } = this.props.navigation.state.params;
                         const extra = {
