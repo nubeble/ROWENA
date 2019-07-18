@@ -732,8 +732,6 @@ export default class Firebase {
     */
 
     static async addVisits(uid, placeId, feedId) {
-        // console.log('Firebase.addVisits', placeId, feedId);
-
         let result;
 
         const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);

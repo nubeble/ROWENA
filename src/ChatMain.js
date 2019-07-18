@@ -9,7 +9,6 @@ import autobind from "autobind-decorator";
 import { Text, Theme } from "./rnff/src/components";
 import SmartImage from "./rnff/src/components/SmartImage";
 import Firebase from './Firebase';
-import Ionicons from "react-native-vector-icons/Ionicons";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
@@ -25,6 +24,8 @@ export default class ChatMain extends React.Component {
         ready: false,
 
         isLoadingChat: false,
+        loadingType: 0, // 0: none, 100: center, 200: down
+
         chatRoomList: [],
 
         dialogVisible: false,
@@ -69,7 +70,7 @@ export default class ChatMain extends React.Component {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
-        this.setState({ isLoadingChat: true });
+        this.setState({ isLoadingChat: true, loadingType: 100 });
 
         const uid = Firebase.user().uid;
 
@@ -94,7 +95,7 @@ export default class ChatMain extends React.Component {
                 this.allChatRoomsLoaded = true;
             }
 
-            this.setState({ ready: true, isLoadingChat: false });
+            this.setState({ ready: true, isLoadingChat: false, loadingType: 0 });
         });
     }
 
@@ -359,11 +360,11 @@ export default class ChatMain extends React.Component {
     }
 
     componentWillReceiveProps() {
-        console.log('ChatMain.componentWillReceiveProps');
-
         const params = this.props.navigation.state.params;
         if (params && params.roomId) {
             const roomId = params.roomId; // room id need to get removed
+
+            console.log('ChatMain.componentWillReceiveProps, roomId', params);
 
             const result = this.deleted(roomId);
             if (result) { // found
@@ -427,16 +428,6 @@ export default class ChatMain extends React.Component {
         }
     }
 
-    /*
-    onGoBack(index, callback) { // back from deleting
-        console.log('index', index);
-    
-        let array = [...this.state.chatRoomList];
-        array.splice(index, 1);
-        this.setState({chatRoomList: array}, () => callback());
-    }
-    */
-
     @autobind
     handleHardwareBackPress() {
         console.log('ChatMain.handleHardwareBackPress');
@@ -447,8 +438,6 @@ export default class ChatMain extends React.Component {
     }
 
     render(): React.Node {
-        // const { navigation } = this.props;
-
         return (
             <View style={styles.flex}>
                 <View style={styles.searchBar}>
@@ -480,18 +469,15 @@ export default class ChatMain extends React.Component {
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={true}
 
-                    /*
                     ListFooterComponent={
-                        this.state.isLoadingChat &&
+                        this.state.isLoadingChat && this.state.loadingType === 200 &&
                         <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <RefreshIndicator refreshing total={3} size={5} color={Theme.color.selection} />
                         </View>
                     }
-                    */
 
                     ListEmptyComponent={
                         // render illustration
-                        // !this.state.isLoadingChat &&
                         this.state.ready &&
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Text style={{
@@ -524,7 +510,7 @@ export default class ChatMain extends React.Component {
                 />
 
                 {
-                    this.state.isLoadingChat &&
+                    this.state.isLoadingChat && this.state.loadingType === 100 &&
                     <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center' }}>
                         <ActivityIndicator
                             animating={true}
@@ -735,9 +721,9 @@ export default class ChatMain extends React.Component {
         // title
         let titleImageUri = null;
         let titleName = null;
-        let customer = null; // customer's uid (if I'm the owner then I need customer's profile.)
+        let customer = null;
 
-        if (users[0].uid === item.owner) {
+        if (users[0].uid === item.owner) { // customer's uid (if I'm the owner then I need customer's profile.)
             titleImageUri = users[0].picture;
             titleName = users[0].name;
             customer = users[1].uid;
@@ -790,30 +776,31 @@ export default class ChatMain extends React.Component {
         // customer profile
         let customerProfile = null;
 
-        const profile = this.getProfile(customer);
-        if (profile === null) {
-            // the post is not subscribed yet
-            this.refs["toast"].show('Please try again.', 500);
-            return;
+        if (customer) {
+            const profile = this.getProfile(customer);
+            if (profile === null) {
+                // the post is not subscribed yet
+                this.refs["toast"].show('Please try again.', 500);
+                return;
+            }
+
+            if (profile === undefined) {
+                this.refs["toast"].show('The user no longer exists.', 500, () => {
+                    const me = users[0];
+                    const you = users[1];
+
+                    // remove the chat room
+                    Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
+
+                    // update state
+                    this.deleteChatRoom(item.id);
+                });
+
+                return;
+            }
+
+            customerProfile = profile;
         }
-
-        if (profile === undefined) {
-            this.refs["toast"].show('The user no longer exists.', 500, () => {
-                const me = users[0];
-                const you = users[1];
-
-                // remove the chat room
-                Firebase.deleteChatRoom(me.uid, me.name, you.uid, item.id);
-
-                // update state
-                this.deleteChatRoom(item.id);
-            });
-
-            return;
-        }
-
-        customerProfile = profile;
-
 
         const params = {
             id: item.id,
@@ -864,7 +851,7 @@ export default class ChatMain extends React.Component {
 
         if (this.allChatRoomsLoaded) return;
 
-        this.setState({ isLoadingChat: true });
+        this.setState({ isLoadingChat: true, loadingType: 200 });
 
         const uid = Firebase.user().uid;
 
@@ -899,7 +886,7 @@ export default class ChatMain extends React.Component {
                 this.allChatRoomsLoaded = true;
             }
 
-            this.setState({ isLoadingChat: false });
+            this.setState({ isLoadingChat: false, loadingType: 0 });
         });
     }
 

@@ -32,7 +32,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     state = {
         feeds: [],
         isLoadingFeeds: false,
-        loadingType: 0, // 0: none, 100: middle, 200: down
+        loadingType: 0, // 0: none, 100: center, 200: down
         refreshing: false,
 
         dialogVisible: false,
@@ -548,14 +548,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                     }
 
                     ListEmptyComponent={
-                        /*
-                        this.state.isLoadingFeeds ?
-                            <View style={{ width: '100%', height: (Dimensions.get('window').height - Cons.searchBarHeight) / 2 - 30 / 2 - Theme.spacing.base - Cons.searchBarHeight / 2 }} />
-                            :
-                        */
-
                         // render illustration
-                        // !this.state.isLoadingFeeds &&
                         <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
                             <Text style={{
                                 marginTop: 100,
@@ -592,7 +585,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
                         <ActivityIndicator
                             animating={true}
                             size="large"
-                            // color='white'
                             color={Theme.color.selection}
                         />
                     </View>

@@ -152,7 +152,6 @@ export default class ChatRoom extends React.Component {
             }
         }
 
-        // this.props.navigation.navigate("chat");
         this.props.navigation.dispatch(NavigationActions.back());
     }
 
@@ -702,15 +701,16 @@ export default class ChatRoom extends React.Component {
 
     handleLeave() {
         const item = this.props.navigation.state.params.item;
+        const roomId = item.id;
         const myUid = item.users[0].uid;
         const myName = item.users[0].name;
         const opponentUid = item.users[1].uid;
         const labelName = item.users[1].name;
 
         this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
-            await Firebase.deleteChatRoom(myUid, myName, opponentUid, item.id);
-            // this.props.screenProps.state.params.onGoBack(index, () => { this.props.navigation.goBack(); });
-            this.props.navigation.navigate("chat", { roomId: item.id });
+            await Firebase.deleteChatRoom(myUid, myName, opponentUid, roomId);
+            // this.props.navigation.navigate("chat", { roomId });
+            this.props.navigation.navigate("chatMain", { roomId });
         });
     }
 
