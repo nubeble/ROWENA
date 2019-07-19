@@ -2081,8 +2081,7 @@ export default class Post extends React.Component<InjectedProps> {
                         }
                     }}>
                         <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                            <ReadMore
-                                numberOfLines={2}
+                            <ReadMore numberOfLines={2}
                             // onReady={() => this.readingCompleted()}
                             >
                                 <Text style={styles.reviewText}>{_review.comment}</Text>

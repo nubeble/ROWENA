@@ -3,7 +3,8 @@ import {
     StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
-import { GiftedChat, InputToolbar, Send } from 'react-native-gifted-chat';
+import { GiftedChat, InputToolbar, Send, Bubble } from 'react-native-gifted-chat';
+import * as Animatable from 'react-native-animatable';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -46,6 +47,7 @@ export default class ChatRoom extends React.Component {
         titleImageUri: null,
         titleName: null,
         messages: [],
+        extraData: {},
 
         isLoadingMessages: false,
 
@@ -81,7 +83,7 @@ export default class ChatRoom extends React.Component {
         this.setState({ id: item.id, titleImageUri: item.title.picture, titleName: item.title.name });
 
         Firebase.chatOn(DEFAULT_MESSAGE_COUNT, item.id, message => {
-            console.log('on message', message);
+            // console.log('on message', message);
 
             // fill name, avatar
             if (message.user) {
@@ -223,7 +225,7 @@ export default class ChatRoom extends React.Component {
 
         Firebase.loadMoreMessage(DEFAULT_MESSAGE_COUNT, this.state.id, timestamp, id, message => {
             if (message) {
-                console.log('message list', message);
+                // console.log('message list', message);
 
                 !this.closed && this.setState(previousState => ({
                     messages: GiftedChat.prepend(previousState.messages, message)
@@ -467,6 +469,7 @@ export default class ChatRoom extends React.Component {
 
                         // forceGetKeyboardHeight={Platform.OS === 'android' && Platform.Version < 21}
                         messages={this.state.messages}
+                        extraData={this.state.extraData}
                         placeholder={this.state.opponentLeft ? "Can't type a message" : 'Type a message'}
                         placeholderTextColor={Theme.color.placeholder}
                         user={this.user}
@@ -488,7 +491,7 @@ export default class ChatRoom extends React.Component {
                             // await this.saveUnreadChatRoomId();
                         }}
                         // onPressAvatar={async () => await this.openAvatar()}
-                        // onLongPress={() => undefined}
+                        onLongPress={() => undefined}
 
                         textInputProps={{
                             // multiline: true,
@@ -518,61 +521,16 @@ export default class ChatRoom extends React.Component {
                         }}
                         renderSend={this.renderSend}
                         renderInputToolbar={this.renderInputToolbar}
-
-                        renderAvatar={(props) => {
-                            // console.log('renderAvatar', props);
-                            // console.log('renderAvatar', props.user);
-
-                            const { user } = props.currentMessage;
-
-                            const avatarWidth = 36;
-
-                            let picture = user.avatar;
-                            if (picture === 'none') {
-                                picture = null;
-                            }
-
-                            const avatarColor = Util.getAvatarColor(user._id);
-                            const avatarName = Util.getAvatarName(user.name);
-
-                            let nameFontSize = 17;
-                            if (avatarName.length === 1) nameFontSize = 19;
-                            else if (avatarName.length === 2) nameFontSize = 17;
-                            else if (avatarName.length === 3) nameFontSize = 13;
-
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => this.openAvatar()}>
-                                    {
-                                        picture ?
-                                            <SmartImage
-                                                style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
-                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                                uri={picture}
-                                                showSpinner={false}
-                                            />
-                                            :
-                                            <View
-                                                style={{
-                                                    width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
-                                                    alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor
-                                                }}
-                                            >
-                                                <Text style={{ color: 'white', fontSize: nameFontSize, fontFamily: "Roboto-Medium" }}>
-                                                    {avatarName}
-                                                </Text>
-                                            </View>
-                                    }
-                                </TouchableOpacity>
-                            );
-                        }}
+                        renderAvatar={this.renderAvatar}
+                        renderBubble={this.renderBubble}
+                        shouldUpdateMessage={this.shouldUpdateMessage}
 
                         listViewProps={{
                             // scrollEventThrottle: 400,
                             onScroll: ({ nativeEvent }) => {
                                 // console.log('nativeEvent', nativeEvent);
                                 if (this.isCloseToTop(nativeEvent)) {
-                                    console.log('close to top');
+                                    // console.log('close to top');
                                     this.loadMore();
                                 }
                             }
@@ -697,6 +655,186 @@ export default class ChatRoom extends React.Component {
             borderTopColor: Theme.color.textInput
             // borderTopWidth: 0
         }} />
+    }
+
+    @autobind
+    renderAvatar(props) {
+        // console.log('renderAvatar', props);
+        // console.log('renderAvatar', props.user);
+
+        const { user } = props.currentMessage;
+
+        const avatarWidth = 36;
+
+        let picture = user.avatar;
+        if (picture === 'none') {
+            picture = null;
+        }
+
+        const avatarColor = Util.getAvatarColor(user._id);
+        const avatarName = Util.getAvatarName(user.name);
+
+        let nameFontSize = 17;
+        if (avatarName.length === 1) nameFontSize = 19;
+        else if (avatarName.length === 2) nameFontSize = 17;
+        else if (avatarName.length === 3) nameFontSize = 13;
+
+        return (
+            <TouchableOpacity
+                onPress={() => this.openAvatar()}>
+                {
+                    picture ?
+                        <SmartImage
+                            style={{ width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2 }}
+                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={picture}
+                            showSpinner={false}
+                        />
+                        :
+                        <View
+                            style={{
+                                width: avatarWidth, height: avatarWidth, borderRadius: avatarWidth / 2,
+                                alignItems: 'center', justifyContent: 'center', backgroundColor: avatarColor
+                            }}
+                        >
+                            <Text style={{ color: 'white', fontSize: nameFontSize, fontFamily: "Roboto-Medium" }}>
+                                {avatarName}
+                            </Text>
+                        </View>
+                }
+            </TouchableOpacity>
+        );
+    }
+
+    @autobind
+    renderBubble(props) {
+
+        console.log('renderBubble, props', props);
+
+        /*
+        console.log('renderBubble, currentMessage', props.currentMessage);
+
+        if (props.currentMessage.text === 'TEST') {
+            return (
+                <Bubble {...props}
+                    wrapperStyle={{
+                        right: {
+                            backgroundColor: 'red'
+                        }
+                    }}
+                />
+            );
+        }
+        */
+
+        return (
+            // <Animatable.View animation={'bounceInLeft'} duration={400}>
+            <Bubble {...props}
+                textStyle={{
+                    left: {
+                        // color: 'orange'
+                    },
+                    right: {
+                        // color: 'yellow'
+                    }
+                }}
+
+                wrapperStyle={{
+                    left: {
+                        // backgroundColor: Theme.color.selection
+                    },
+                    right: {
+                        backgroundColor: Theme.color.selection
+                    }
+                }}
+
+                touchableProps={{
+                    onPress: () => {
+                        /*
+                        "currentMessage": Object {
+                            "_id": "-Lk7NivXcRdB0DME5-75",
+                            "createdAt": 2019-07-19T03:59:57.400Z,
+                            "text": "동작잘하는군",
+                            "user": Object {
+                                "_id": "tsIJHN1fyjZ7In095lCi7w2NAJP2",
+                                "avatar": "https://storage.googleapis.com/rowena-88cfd.appspot.com/images%2FtsIJHN1fyjZ7In095lCi7w2NAJP2%2Fpost%2Fc9722441-350a-a8b8-aba1-737864af1e18%2Fee379518-9be0-42fa-93a3-956dbb44e62f.jpg?GoogleAccessId=firebase-adminsdk-nfrft%40rowena-88cfd.iam.gserviceaccount.com&Expires=7263907200&Signature=QQovchLR6PapMBgdopORb5PIjyVmkvknEBaw3dTts6SSpTnzrMJQn4aMF5ZkS1XSFZm3m2dV1fHy5Lgi4a9wgc6S5t%2BV8wL8bNr6f65y18IwlgjxqUXbosEGAu%2BtRnUtny%2FnExAeyTTFEOS8FpcEt6CY444DdhskGTKNqs8iYGmS4a2IIlBXjyogwntUf%2BXFWWyrqnkFH6KQSaPwiqfxj8iMSVAVss9EOONH%2FBRJ8ZTchP71XFu8qLPW7L%2Bf3xAbf15pG3AcP%2B35zJlkMYB1Cn8e%2Btk6lquRgrZ2NL%2FcfG9h4wIl3R2iF9EfPiRCG4nxiQdFnj3xxnSkNWoeFvynXQ%3D%3D",
+                                "name": "매탄동 나달",
+                            },
+                        }
+                        */
+
+
+                        const currentMessage = props.currentMessage;
+                        // console.log('currentMessage', currentMessage);
+
+                        let { messages } = this.state;
+
+                        let index = -1;
+
+                        for (let i = 0; i < messages.length; i++) {
+                            const message = messages[i];
+                            if (message._id === currentMessage._id) {
+                                index = i;
+                                break;
+                            }
+                        }
+
+                        if (index !== -1) {
+                            /*
+                            let message = messages[index];
+                            message.text = "TEST"; // ToDo: translate
+                            messages[index] = message;
+
+                            // console.log('will update message', messages[index]);
+                            this.setState({ messages });
+                            */
+
+                            const message = messages[index];
+
+
+
+
+                            let extraData = props.extraData;
+                            const data = {
+                                originText: message.text,
+                                translatedText: 'ABCD ABCD ABCD' // ToDo: translate
+                            };
+
+                            extraData
+                            
+                            // extraData[index] = data;
+                            this.setState({ extraData });
+                        }
+                    }
+                }}
+            />
+            // </Animatable.View>
+        )
+    }
+
+    @autobind
+    shouldUpdateMessage(props, nextProps) {
+        /*
+            currentMessage: {};
+            nextMessage: {};
+            previousMessage: {};
+        */
+
+        const msg1 = props.currentMessage;
+        const msg2 = nextProps.currentMessage;
+        // console.log('currentMessage1', currentMessage1);
+        // console.log('currentMessage2', currentMessage2);
+
+        // ToDo: compare
+        // if (msg1.text !== msg2.text) {
+        if (msg1.text === "TEST" || msg2.text === "TEST") {
+            console.log('tmp', msg1.text, msg2.text);
+            return true;
+        }
+
+        // console.log('shouldUpdateMessage, false');
+
+        return false;
     }
 
     handleLeave() {
