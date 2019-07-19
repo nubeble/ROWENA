@@ -27,6 +27,7 @@ import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import { NavigationActions } from 'react-navigation';
 import Dialog from "react-native-dialog";
+import _ from 'lodash';
 
 type InjectedProps = {
     feedStore: FeedStore,
@@ -71,6 +72,8 @@ export default class Post extends React.Component<InjectedProps> {
         writeRating: 0,
         liked: false,
         chartInfo: null,
+
+        reviews: null,
 
         isModal: false,
         disableContactButton: false,
@@ -150,6 +153,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
+        this.reviewStore.unsetAddToReviewFinishedCallback(this.onAddToReviewFinished);
+
         if (this.feedUnsubscribe) {
             this.feedUnsubscribe();
         }
@@ -161,6 +166,41 @@ export default class Post extends React.Component<InjectedProps> {
         this.closed = true;
     }
 
+    @autobind
+    handleHardwareBackPress() {
+        console.log('Post.handleHardwareBackPress');
+
+        if (this._showNotification) {
+            this.hideNotification();
+
+            return true;
+        }
+
+        const params = this.props.navigation.state.params;
+        if (params) {
+            const initFromPost = params.initFromPost;
+            if (initFromPost) initFromPost(this.state.post);
+        }
+
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
+
+    @autobind
+    onFocus() {
+        Vars.focusedScreen = 'Post';
+
+        this.focused = true;
+    }
+
+    @autobind
+    onBlur() {
+        Vars.focusedScreen = null;
+
+        this.focused = false;
+    }
+
     subscribeToPost(post) {
         // this will be updated in subscribe
         this.feed = post;
@@ -168,8 +208,6 @@ export default class Post extends React.Component<InjectedProps> {
         const fi = Firebase.subscribeToFeed(post.placeId, post.id, newFeed => {
             if (newFeed === undefined) {
                 this.feed = null;
-
-                // nothing to do
 
                 return;
             }
@@ -240,41 +278,6 @@ export default class Post extends React.Component<InjectedProps> {
         this.props.navigation.navigate("editPostMain", { post: this.state.post });
     }
 
-    @autobind
-    handleHardwareBackPress() {
-        console.log('Post.handleHardwareBackPress');
-
-        if (this._showNotification) {
-            this.hideNotification();
-
-            return true;
-        }
-
-        const params = this.props.navigation.state.params;
-        if (params) {
-            const initFromPost = params.initFromPost;
-            if (initFromPost) initFromPost(this.state.post);
-        }
-
-        this.props.navigation.dispatch(NavigationActions.back());
-
-        return true;
-    }
-
-    @autobind
-    onFocus() {
-        Vars.focusedScreen = 'Post';
-
-        this.focused = true;
-    }
-
-    @autobind
-    onBlur() {
-        Vars.focusedScreen = null;
-
-        this.focused = false;
-    }
-
     initFromWriteReview(result) { // back from rating
         !this.closed && this.setState({ writeRating: 0 });
 
@@ -290,15 +293,24 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     reloadReviews() {
+        this.setState({ reviews: null });
+        // init
+        this.originReviewList = undefined;
+        this.translatedReviewList = undefined;
+        this.originReplyList = undefined;
+        this.translatedReplyList = undefined;
+
         // 1. reload reviews
-        const post = this.state.post;
-        const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
-        this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+        // const post = this.state.post;
+        // const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
+        // this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
+        this.reviewStore.loadReviewFromStart();
 
         // 2. reload review count & calc chart
         const newPost = this.reloadPost();
         const newChart = this.getChartInfo(newPost);
-        !this.closed && this.setState({ post: newPost, chartInfo: newChart });
+        // !this.closed && this.setState({ post: newPost, chartInfo: newChart }, () => { this.translateNote(); });
+        this.setState({ post: newPost, chartInfo: newChart });
 
         this._flatList.scrollToOffset({ offset: this.reviewsContainerY, animated: false });
     }
@@ -384,6 +396,8 @@ export default class Post extends React.Component<InjectedProps> {
         this.subscribeToPost(post);
         // this.subscribeToProfile(post.uid);
 
+        this.reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
+
         const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
 
@@ -421,7 +435,19 @@ export default class Post extends React.Component<InjectedProps> {
             likeCount: post.likes.length
         };
 
-        !this.closed && this.setState({ chartInfo: chart });
+        this.setState({ chartInfo: chart });
+    }
+
+    @autobind
+    onAddToReviewFinished() {
+        console.log('Post.onAddToReviewFinished');
+
+        const { reviews } = this.reviewStore;
+
+        // deep copy
+        let __reviews = _.cloneDeep(reviews);
+
+        !this.closed && this.setState({ reviews: __reviews });
     }
 
     isOwner(uid1, uid2) {
@@ -457,7 +483,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         const liked = this.state.liked;
         if (!liked) {
-            !this.closed && this.setState({ liked: true });
+            this.setState({ liked: true });
 
             this.springValue.setValue(2);
 
@@ -474,7 +500,7 @@ export default class Post extends React.Component<InjectedProps> {
             // show badge on likes
             showBadge = true;
         } else {
-            !this.closed && this.setState({ liked: false });
+            this.setState({ liked: false });
 
             // toast
             // this.refs["toast"].show('Removed from ❤', 500);
@@ -663,7 +689,7 @@ export default class Post extends React.Component<InjectedProps> {
                     // this.state.renderList &&
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            if (this.state.showKeyboard) !this.closed && this.setState({ showKeyboard: false });
+                            this.setState({ showKeyboard: false });
                         }}
                     >
                         <FlatList
@@ -861,6 +887,7 @@ export default class Post extends React.Component<InjectedProps> {
             case 4: markerImage = PreloadImage.emoji4; break;
             case 5: markerImage = PreloadImage.emoji5; break;
         }
+
 
         return (
             <View>
@@ -1100,7 +1127,15 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {
                         post.note &&
-                        <Text style={styles.note}>{post.note}</Text>
+                        <TouchableOpacity onPress={() => {
+                            if (this.originNote) { // means translated
+                                this.setOriginNote();
+                            } else {
+                                this.translateNote();
+                            }
+                        }}>
+                            <Text style={styles.note}>{post.note}</Text>
+                        </TouchableOpacity>
                     }
                 </View>
 
@@ -1170,7 +1205,7 @@ export default class Post extends React.Component<InjectedProps> {
                         this.renderChart(this.state.chartInfo)
                     }
                     {
-                        this.renderReviews(this.reviewStore.reviews)
+                        this.renderReviews(this.state.reviews)
                     }
                 </View>
 
@@ -1890,7 +1925,8 @@ export default class Post extends React.Component<InjectedProps> {
     renderReviews(reviews) {
         // console.log('Post.renderReviews');
 
-        if (reviews === undefined) {
+        // if (reviews === undefined) {
+        if (!reviews) {
             // render skeleton
 
             const width = Dimensions.get('window').width - Theme.spacing.small * 2 - 10 * 2;
@@ -2033,14 +2069,26 @@ export default class Post extends React.Component<InjectedProps> {
                         <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                     </View>
 
-                    <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                        <ReadMore
-                            numberOfLines={2}
-                        // onReady={() => this.readingCompleted()}
-                        >
-                            <Text style={styles.reviewText}>{_review.comment}</Text>
-                        </ReadMore>
-                    </View>
+                    <TouchableOpacity onPress={() => {
+                        // console.log('onpress', index);
+
+                        if (!this.originReviewList) this.originReviewList = [];
+
+                        if (this.originReviewList[index]) { // means translated
+                            this.setOriginReview(index);
+                        } else {
+                            this.translateReview(index);
+                        }
+                    }}>
+                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                            <ReadMore
+                                numberOfLines={2}
+                            // onReady={() => this.readingCompleted()}
+                            >
+                                <Text style={styles.reviewText}>{_review.comment}</Text>
+                            </ReadMore>
+                        </View>
+                    </TouchableOpacity>
 
                     <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny, flexDirection: 'row', alignItems: 'center' }}>
                         {
@@ -2094,17 +2142,29 @@ export default class Post extends React.Component<InjectedProps> {
                             paddingRight: Theme.spacing.tiny,
                             backgroundColor: Theme.color.highlight, borderRadius: 2
                         }}>
-
                             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.xSmall }}>
                                 <Text style={styles.replyOwner}>Owner Response</Text>
                                 <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                             </View>
 
-                            <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                                <ReadMore numberOfLines={2}>
-                                    <Text style={styles.replyComment}>{reply.comment}</Text>
-                                </ReadMore>
-                            </View>
+                            <TouchableOpacity onPress={() => {
+                                // console.log('onpress', index);
+
+                                if (!this.originReplyList) this.originReplyList = [];
+
+                                if (this.originReplyList[index]) { // means translated
+                                    this.setOriginReply(index);
+                                } else {
+                                    this.translateReply(index);
+                                }
+                            }}>
+                                <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                                    <ReadMore numberOfLines={2}>
+                                        <Text style={styles.replyComment}>{reply.comment}</Text>
+                                    </ReadMore>
+                                </View>
+                            </TouchableOpacity>
+
                             {
                                 isMyReply &&
                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -2280,7 +2340,7 @@ export default class Post extends React.Component<InjectedProps> {
     openKeyboard(ref, index) {
         if (this.state.showKeyboard) return;
 
-        !this.closed && this.setState({ showKeyboard: true }, () => {
+        this.setState({ showKeyboard: true }, () => {
             this._reply.focus();
         });
 
@@ -2508,6 +2568,7 @@ export default class Post extends React.Component<InjectedProps> {
         // send push notification
         const { profile } = this.props.profileStore;
         const post = this.state.post;
+        const receiver = this.state.reviews[this.selectedItemIndex].profile.uid;
         const data = {
             // message: profile.name + ' replied to your review: ' + message,
             message,
@@ -2515,7 +2576,7 @@ export default class Post extends React.Component<InjectedProps> {
             feedId: post.id
         };
 
-        sendPushNotification(Firebase.user().uid, profile.name, post.uid, Cons.pushNotification.reply, data);
+        sendPushNotification(Firebase.user().uid, profile.name, receiver, Cons.pushNotification.reply, data);
 
         this.refs["toast"].show('Your reply has been submitted!', 500, () => {
             if (this.closed) return;
@@ -2533,8 +2594,11 @@ export default class Post extends React.Component<InjectedProps> {
 
         const placeId = post.placeId;
         const feedId = post.id;
-        const reviewOwnerUid = this.reviewStore.reviews[this.selectedItemIndex].profile.uid;
-        const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
+        // const reviewOwnerUid = this.reviewStore.reviews[this.selectedItemIndex].profile.uid;
+        // const reviewId = this.reviewStore.reviews[this.selectedItemIndex].review.id;
+        const reviewOwnerUid = this.state.reviews[this.selectedItemIndex].profile.uid;
+        const reviewId = this.state.reviews[this.selectedItemIndex].review.id;
+
         const userUid = Firebase.user().uid;
 
         await Firebase.addReply(placeId, feedId, reviewOwnerUid, reviewId, userUid, message);
@@ -2556,7 +2620,9 @@ export default class Post extends React.Component<InjectedProps> {
 
             const placeId = post.placeId;
             const feedId = post.id;
-            const reviewId = this.reviewStore.reviews[index].review.id;
+            // const reviewId = this.reviewStore.reviews[index].review.id;
+            const reviewId = this.state.reviews[index].review.id;
+
             const userUid = Firebase.user().uid;
 
             const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
@@ -2579,8 +2645,11 @@ export default class Post extends React.Component<InjectedProps> {
 
             const placeId = post.placeId;
             const feedId = post.id;
-            const reviewId = this.reviewStore.reviews[index].review.id;
-            const replyId = this.reviewStore.reviews[index].review.reply.id;
+            // const reviewId = this.reviewStore.reviews[index].review.id;
+            // const replyId = this.reviewStore.reviews[index].review.reply.id;
+            const reviewId = this.state.reviews[index].review.id;
+            const replyId = this.state.reviews[index].review.reply.id;
+
             const userUid = Firebase.user().uid;
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
@@ -2590,6 +2659,127 @@ export default class Post extends React.Component<InjectedProps> {
                 this.reloadReviews();
             });
         });
+    }
+
+    translateNote() {
+        let { post } = this.state;
+        const { note } = post;
+
+        if (this.translatedNote) {
+            this.originNote = note;
+
+            post.note = this.translatedNote;
+            this.setState({ post });
+        } else {
+            Util.translate(note).then(translated => {
+                console.log('translated', translated);
+
+                this.originNote = note;
+
+                post.note = translated;
+                !this.closed && this.setState({ post });
+
+                this.translatedNote = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
+    }
+
+    setOriginNote() {
+        let { post } = this.state;
+        post.note = this.originNote;
+        this.setState({ post });
+
+        this.originNote = null;
+    }
+
+    translateReview(index) {
+        // console.log('translateReview', index);
+
+        let reviews = this.state.reviews;
+        const comment = reviews[index].review.comment;
+
+        if (!this.translatedReviewList) this.translatedReviewList = [];
+
+        const translatedReview = this.translatedReviewList[index];
+
+        if (translatedReview) {
+            this.originReviewList[index] = comment;
+
+            reviews[index].review.comment = translatedReview;
+            this.setState({ reviews });
+        } else {
+            Util.translate(comment).then(translated => {
+                console.log('translated', translated);
+
+                this.originReviewList[index] = comment;
+
+                reviews[index].review.comment = translated;
+                !this.closed && this.setState({ reviews });
+
+                this.translatedReviewList[index] = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
+    }
+
+    setOriginReview(index) {
+        // console.log('setOriginReview', index);
+
+        const originReview = this.originReviewList[index];
+
+        let reviews = this.state.reviews;
+
+        reviews[index].review.comment = originReview;
+        this.setState({ reviews });
+
+        this.originReviewList[index] = null;
+    }
+
+    translateReply(index) {
+        // console.log('translateReply', index);
+
+        let reviews = this.state.reviews;
+        const comment = reviews[index].review.reply.comment;
+
+        if (!this.translatedReplyList) this.translatedReplyList = [];
+
+        const translatedReply = this.translatedReplyList[index];
+
+        if (translatedReply) {
+            this.originReplyList[index] = comment;
+
+            reviews[index].review.reply.comment = translatedReply;
+            this.setState({ reviews });
+        } else {
+            Util.translate(comment).then(translated => {
+                console.log('translated', translated);
+
+                this.originReplyList[index] = comment;
+
+                reviews[index].review.reply.comment = translated;
+                !this.closed && this.setState({ reviews });
+
+                this.translatedReplyList[index] = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
+    }
+
+    setOriginReply(index) {
+        // console.log('setOriginReply', index);
+
+        const originReply = this.originReplyList[index];
+
+        let reviews = this.state.reviews;
+
+        reviews[index].review.reply.comment = originReply;
+        this.setState({ reviews });
+
+        this.originReplyList[index] = null;
     }
 
     openDialog(title, message, callback) {

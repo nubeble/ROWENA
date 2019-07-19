@@ -37,12 +37,31 @@ export default class ReviewStore {
 
     profiles: { [uid: string]: Profile } = {};
 
+    addToReviewFinishedCallbackList = [];
+
     allReviewsLoaded = false;
 
 
     // To block keeping calling loadReview() while scrolling
+    /*
     setAddToReviewFinishedCallback(cb) {
         this.addToReviewFinishedCallback = cb;
+    }
+    */
+    setAddToReviewFinishedCallback(cb) {
+        this.addToReviewFinishedCallbackList.push(cb);
+    }
+
+    unsetAddToReviewFinishedCallback(cb) {
+        const index = this.addToReviewFinishedCallbackList.indexOf(cb);
+        this.addToReviewFinishedCallbackList.splice(index, 1);
+    }
+
+    callAddToReviewFinishedCallback() {
+        for (let i = 0; i < this.addToReviewFinishedCallbackList.length; i++) {
+            const cb = this.addToReviewFinishedCallbackList[i];
+            cb();
+        }
     }
 
     loadReviewFromStart() {
@@ -75,7 +94,8 @@ export default class ReviewStore {
             }
 
             this.allReviewsLoaded = true;
-            if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+            // if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+            this.callAddToReviewFinishedCallback();
 
             return;
         }
@@ -102,7 +122,8 @@ export default class ReviewStore {
         */
         if (reviews.length < count) this.allReviewsLoaded = true;
 
-        if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+        // if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+        this.callAddToReviewFinishedCallback();
     }
 
     async joinProfiles(reviews: Review[]): Promise<ReviewEntry[]> { // mapping review and review writer

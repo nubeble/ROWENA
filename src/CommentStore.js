@@ -19,12 +19,31 @@ export default class CommentStore {
     // profiles: { [uid: string]: Profile } = {};
     posts: { [id: string]: Post } = {}; // id: comment id
 
+    addToReviewFinishedCallbackList = [];
+
     allReviewsLoaded = false;
 
 
     // To block keeping calling loadReview() while scrolling
+    /*
     setAddToReviewFinishedCallback(cb) {
         this.addToReviewFinishedCallback = cb;
+    }
+    */
+    setAddToReviewFinishedCallback(cb) {
+        this.addToReviewFinishedCallbackList.push(cb);
+    }
+
+    unsetAddToReviewFinishedCallback(cb) {
+        const index = this.addToReviewFinishedCallbackList.indexOf(cb);
+        this.addToReviewFinishedCallbackList.splice(index, 1);
+    }
+
+    callAddToReviewFinishedCallback() {
+        for (let i = 0; i < this.addToReviewFinishedCallbackList.length; i++) {
+            const cb = this.addToReviewFinishedCallbackList[i];
+            cb();
+        }
     }
 
     loadReviewFromStart() {
@@ -58,7 +77,8 @@ export default class CommentStore {
             }
 
             this.allReviewsLoaded = true;
-            if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+            // if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+            this.callAddToReviewFinishedCallback();
 
             return;
         }
@@ -86,7 +106,8 @@ export default class CommentStore {
         */
         if (reviews.length < count) this.allReviewsLoaded = true;
 
-        if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+        // if (this.addToReviewFinishedCallback) this.addToReviewFinishedCallback();
+        this.callAddToReviewFinishedCallback();
     }
 
     async joinProfiles(reviews: Comment[]): Promise<ReviewEntry[]> { // mapping review and review writer

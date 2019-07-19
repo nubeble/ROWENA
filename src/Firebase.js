@@ -2,7 +2,7 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import Util from './Util';
 import { Geokit, LatLngLiteral } from 'geokit';
-import _ from 'lodash';
+// import _ from 'lodash';
 
 const config = {
     apiKey: "AIzaSyCT1LV1HF5REJw_SePsUeUdwFalo5IzrsQ",
@@ -1140,8 +1140,11 @@ export default class Firebase {
                     if (review.placeId === placeId && review.feedId === feedId) {
                         // skip
                     } else {
+                        /*
                         const newReview = _.clone(review);
                         newReviews.push(newReview);
+                        */
+                        newReviews.push(review);
                     }
                 }
 
@@ -1156,7 +1159,7 @@ export default class Firebase {
                     if (review.placeId === placeId && review.feedId === feedId) {
                         review.picture = picture;
 
-                        reviews[i] = review;
+                        reviews[i] = review; // ToDo: not necessary for shallow copy
                         // break;
                     }
                 }
@@ -1486,8 +1489,11 @@ export default class Firebase {
                     if (comment.userUid === targetUid) {
                         // skip
                     } else {
+                        /*
                         const newComment = _.clone(comment);
                         newComments.push(newComment);
+                        */
+                        newComments.push(comment);
                     }
                 }
 
@@ -1505,7 +1511,7 @@ export default class Firebase {
                         comment.picture = picture;
                     }
 
-                    comments[i] = comment;
+                    comments[i] = comment; // ToDo: not necessary for shallow copy
                 }
 
                 const data = {

@@ -22,6 +22,7 @@ import { sendPushNotification } from './PushNotifications';
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import Util from './Util';
 import PreloadImage from './PreloadImage';
+import _ from 'lodash';
 
 const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
@@ -31,8 +32,8 @@ export default class ReadAllReviewsScreen extends React.Component {
     state = {
         renderReview: false,
         isLoadingReview: false,
-        // reviewLength: 0,
         isOwner: false,
+        reviews: null,
         showKeyboard: false,
         bottomPosition: Dimensions.get('window').height,
 
@@ -80,7 +81,13 @@ export default class ReadAllReviewsScreen extends React.Component {
     onAddToReviewFinished() {
         // console.log('onAddToReviewFinished');
 
-        !this.closed && this.setState({ isLoadingReview: false, refreshing: false });
+        const { reviewStore } = this.props.navigation.state.params;
+        const { reviews } = reviewStore;
+
+        // deep copy
+        let __reviews = _.cloneDeep(reviews);
+
+        !this.closed && this.setState({ reviews: __reviews, isLoadingReview: false, refreshing: false });
 
         // !this.closed && this.enableScroll();
     }
@@ -126,12 +133,16 @@ export default class ReadAllReviewsScreen extends React.Component {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
+        const { reviewStore } = this.props.navigation.state.params;
+        reviewStore.unsetAddToReviewFinishedCallback(this.onAddToReviewFinished);
+
         this.closed = true;
     }
 
     render(): React.Node {
-        const { reviewStore } = this.props.navigation.state.params;
-        const { reviews } = reviewStore;
+        // const { reviewStore } = this.props.navigation.state.params;
+        // const { reviews } = reviewStore;
+        const { reviews } = this.state;
 
         const notificationStyle = {
             opacity: this.state.opacity,
@@ -309,7 +320,6 @@ export default class ReadAllReviewsScreen extends React.Component {
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
-        // this.setState({ isLoadingReview: true, refreshing: true });
         this.setState({ refreshing: true });
 
         // reload from the start
@@ -317,7 +327,12 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     loadReviewFromStart() {
-        this.setState({ isLoadingReview: true });
+        this.setState({ reviews: null });
+        // init
+        this.originReviewList = undefined;
+        this.translatedReviewList = undefined;
+        this.originReplyList = undefined;
+        this.translatedReplyList = undefined;
 
         const { reviewStore } = this.props.navigation.state.params;
         reviewStore.loadReviewFromStart();
@@ -398,9 +413,21 @@ export default class ReadAllReviewsScreen extends React.Component {
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
 
-                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
-                    <Text style={styles.reviewText}>{_review.comment}</Text>
-                </View>
+                <TouchableOpacity onPress={() => {
+                    // console.log('onpress', index);
+
+                    if (!this.originReviewList) this.originReviewList = [];
+
+                    if (this.originReviewList[index]) { // means translated
+                        this.setOriginReview(index);
+                    } else {
+                        this.translateReview(index);
+                    }
+                }}>
+                    <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                        <Text style={styles.reviewText}>{_review.comment}</Text>
+                    </View>
+                </TouchableOpacity>
 
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
@@ -454,15 +481,27 @@ export default class ReadAllReviewsScreen extends React.Component {
                         paddingRight: Theme.spacing.small,
                         backgroundColor: Theme.color.highlight, borderRadius: 2
                     }}>
-
                         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingBottom: Theme.spacing.tiny }}>
                             <Text style={styles.replyOwner}>Owner Response</Text>
                             <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                         </View>
 
-                        <View style={{ paddingTop: 10, paddingBottom: 6 }}>
-                            <Text style={styles.replyComment}>{reply.comment}</Text>
-                        </View>
+                        <TouchableOpacity onPress={() => {
+                            // console.log('onpress', index);
+
+                            if (!this.originReplyList) this.originReplyList = [];
+
+                            if (this.originReplyList[index]) { // means translated
+                                this.setOriginReply(index);
+                            } else {
+                                this.translateReply(index);
+                            }
+                        }}>
+                            <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                                <Text style={styles.replyComment}>{reply.comment}</Text>
+                            </View>
+                        </TouchableOpacity>
+
                         {
                             isMyReply &&
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
@@ -529,9 +568,14 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     @autobind
     renderListEmptyComponent() {
+        /*
         const { reviewStore } = this.props.navigation.state.params;
         const { reviews } = reviewStore;
         const loading = reviews === undefined;
+        */
+
+        const { reviews } = this.state;
+        const loading = reviews === null;
 
         if (loading) {
             // render skeleton
@@ -607,6 +651,7 @@ export default class ReadAllReviewsScreen extends React.Component {
             );
         }
 
+        // this.state.reviews.length === 0
         return this.renderEmptyImage();
     }
 
@@ -753,7 +798,8 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         // send push notification
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-        const receiver = reviewStore.reviews[this.selectedItemIndex].profile.uid;
+        // const receiver = reviewStore.reviews[this.selectedItemIndex].profile.uid;
+        const receiver = this.state.reviews[this.selectedItemIndex].profile.uid;
 
         const data = {
             // message: Firebase.user().name + ' replied to your review: ' + message,
@@ -774,6 +820,9 @@ export default class ReadAllReviewsScreen extends React.Component {
                 const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
                 this.refreshReviews(placeId, feedId, 6);
                 */
+
+                // this.setState({ isLoadingReview: true });
+
                 this.loadReviewFromStart();
 
                 // move scroll top
@@ -785,8 +834,11 @@ export default class ReadAllReviewsScreen extends React.Component {
     async addReply(message) {
         const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
-        const reviewOwnerUid = reviewStore.reviews[this.selectedItemIndex].profile.uid;
-        const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
+        // const reviewOwnerUid = reviewStore.reviews[this.selectedItemIndex].profile.uid;
+        // const reviewId = reviewStore.reviews[this.selectedItemIndex].review.id;
+        const reviewOwnerUid = this.state.reviews[this.selectedItemIndex].profile.uid;
+        const reviewId = this.state.reviews[this.selectedItemIndex].review.id;
+
         const userUid = Firebase.user().uid;
 
         /*
@@ -802,7 +854,9 @@ export default class ReadAllReviewsScreen extends React.Component {
         this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
-            const reviewId = reviewStore.reviews[index].review.id;
+            // const reviewId = reviewStore.reviews[index].review.id;
+            const reviewId = this.state.reviews[index].review.id;
+
             const userUid = Firebase.user().uid;
 
             const result = await Firebase.removeReview(placeId, feedId, reviewId, userUid);
@@ -814,8 +868,8 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // reload
-                    // this.refreshReviews(placeId, feedId, 6);
+                    // this.setState({ isLoadingReview: true });
+
                     this.loadReviewFromStart();
 
                     // move scroll top
@@ -829,16 +883,19 @@ export default class ReadAllReviewsScreen extends React.Component {
         this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
-            const reviewId = reviewStore.reviews[index].review.id;
-            const replyId = reviewStore.reviews[index].review.reply.id;
+            // const reviewId = reviewStore.reviews[index].review.id;
+            // const replyId = reviewStore.reviews[index].review.reply.id;
+            const reviewId = this.state.reviews[index].review.id;
+            const replyId = this.state.reviews[index].review.reply.id;
+
             const userUid = Firebase.user().uid;
 
             await Firebase.removeReply(placeId, feedId, reviewId, replyId, userUid);
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // reload
-                    // this.refreshReviews(placeId, feedId, 6);
+                    // this.setState({ isLoadingReview: true });
+
                     this.loadReviewFromStart();
 
                     // move scroll top
@@ -848,14 +905,85 @@ export default class ReadAllReviewsScreen extends React.Component {
         });
     }
 
-    /*
-    refreshReviews(placeId, feedId, count) {
-        // reload whole reviews
-        const query = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
-        const { reviewStore } = this.props.navigation.state.params;
-        reviewStore.init(query, count);
+    translateReview(index) {
+        let reviews = this.state.reviews;
+        const comment = reviews[index].review.comment;
+
+        if (!this.translatedReviewList) this.translatedReviewList = [];
+
+        const translatedReview = this.translatedReviewList[index];
+
+        if (translatedReview) {
+            this.originReviewList[index] = comment;
+
+            reviews[index].review.comment = translatedReview;
+            this.setState({ reviews });
+        } else {
+            Util.translate(comment).then(translated => {
+                console.log('translated', translated);
+
+                this.originReviewList[index] = comment;
+
+                reviews[index].review.comment = translated;
+                !this.closed && this.setState({ reviews });
+
+                this.translatedReviewList[index] = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
     }
-    */
+
+    setOriginReview(index) {
+        const originReview = this.originReviewList[index];
+
+        let reviews = this.state.reviews;
+
+        reviews[index].review.comment = originReview;
+        this.setState({ reviews });
+
+        this.originReviewList[index] = null;
+    }
+
+    translateReply(index) {
+        let reviews = this.state.reviews;
+        const comment = reviews[index].review.reply.comment;
+
+        if (!this.translatedReplyList) this.translatedReplyList = [];
+
+        const translatedReply = this.translatedReplyList[index];
+
+        if (translatedReply) {
+            this.originReplyList[index] = comment;
+
+            reviews[index].review.reply.comment = translatedReply;
+            this.setState({ reviews });
+        } else {
+            Util.translate(comment).then(translated => {
+                console.log('translated', translated);
+
+                this.originReplyList[index] = comment;
+
+                reviews[index].review.reply.comment = translated;
+                !this.closed && this.setState({ reviews });
+
+                this.translatedReplyList[index] = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
+    }
+
+    setOriginReply(index) {
+        const originReply = this.originReplyList[index];
+
+        let reviews = this.state.reviews;
+
+        reviews[index].review.reply.comment = originReply;
+        this.setState({ reviews });
+
+        this.originReplyList[index] = null;
+    }
 
     enableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });

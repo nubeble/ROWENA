@@ -22,7 +22,6 @@ const HEIGHT = Dimensions.get('window').height;
 
 
 export default class AuthMain extends React.Component {
-    // static loaded = false;
     static animation = true;
 
     state = {
@@ -32,8 +31,6 @@ export default class AuthMain extends React.Component {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
-
-        // loaded: false,
 
         // offset: new Animated.Value(0)
         // intensity: new Animated.Value(0),

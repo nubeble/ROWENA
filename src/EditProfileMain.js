@@ -20,6 +20,7 @@ import CommentStore from "./CommentStore";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
+import _ from 'lodash';
 
 const DEFAULT_REVIEW_COUNT = 6;
 
@@ -40,6 +41,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
     state = {
         isLoadingFeeds: false,
+        reviews: null,
         refreshing: false
     };
 
@@ -57,8 +59,6 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
-        this.setState({ isLoadingReview: true });
-
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
 
@@ -75,7 +75,12 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         this.count = count;
         */
 
-        !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
+        const { reviews } = this.commentStore;
+
+        // deep copy
+        let __reviews = _.cloneDeep(reviews);
+
+        !this.closed && this.setState({ reviews: __reviews, isLoadingFeeds: false, refreshing: false });
 
         // !this.closed && this.enableScroll();
     }
@@ -112,6 +117,8 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+
+        this.commentStore.unsetAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         this.closed = true;
     }
@@ -211,7 +218,8 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
             }
         }
 
-        const { reviews } = this.commentStore;
+        // const { reviews } = this.commentStore;
+        const { reviews } = this.state;
 
 
         return (
@@ -345,13 +353,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                                                         justifyContent: "center", alignItems: "center"
                                                     }}
                                                     onPress={() => {
-                                                        // reload
-                                                        if (this.state.isLoadingFeeds) return;
-                                                        this.setState({ isLoadingFeeds: true });
-                                                        this.commentStore.loadReviewFromStart();
-
-                                                        const { profile } = this.props.profileStore;
-                                                        this.count = profile.receivedCommentsCount;
+                                                        this.loadReviewFromStart();
                                                     }}>
                                                     <Ionicons name='md-refresh-circle' color={Theme.color.selection} size={20} />
                                                 </TouchableOpacity>
@@ -388,6 +390,18 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                 />
             </View>
         );
+    }
+
+    loadReviewFromStart() {
+        this.setState({ reviews: null });
+        // init
+        this.originReviewList = undefined;
+        this.translatedReviewList = undefined;
+
+        this.commentStore.loadReviewFromStart();
+
+        const { profile } = this.props.profileStore;
+        this.count = profile.receivedCommentsCount;
     }
 
     @autobind
@@ -462,9 +476,21 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                 <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
-                <View style={{ paddingBottom: 6 }}>
-                    <Text style={styles.reviewText}>{_review.comment}</Text>
-                </View>
+
+                <TouchableOpacity onPress={() => {
+                    if (!this.originReviewList) this.originReviewList = [];
+
+                    if (this.originReviewList[index]) { // means translated
+                        this.setOriginReview(index);
+                    } else {
+                        this.translateReview(index);
+                    }
+                }}>
+                    <View style={{ paddingBottom: 6 }}>
+                        <Text style={styles.reviewText}>{_review.comment}</Text>
+                    </View>
+                </TouchableOpacity>
+
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
                         picture ?
@@ -534,8 +560,10 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         // if (profile.receivedCommentsCount === 0) return this.renderEmptyImage();
 
-        const { reviews } = this.commentStore;
-        const loading = reviews === undefined;
+        // const { reviews } = this.commentStore;
+        // const loading = reviews === undefined;
+        const { reviews } = this.state;
+        const loading = reviews === null;
 
         if (loading) {
             // render skeleton
@@ -638,15 +666,50 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
-        this.setState({ isLoadingFeeds: true, refreshing: true });
+        this.setState({ refreshing: true });
 
         // reload from the start
-        this.commentStore.loadReviewFromStart();
+        this.loadReviewFromStart();
+    }
 
-        const { profile } = this.props.profileStore;
-        this.count = profile.receivedCommentsCount;
+    translateReview(index) {
+        let reviews = this.state.reviews;
+        const comment = reviews[index].comment.comment;
 
-        // this.disableScroll();
+        if (!this.translatedReviewList) this.translatedReviewList = [];
+
+        const translatedReview = this.translatedReviewList[index];
+
+        if (translatedReview) {
+            this.originReviewList[index] = comment;
+
+            reviews[index].comment.comment = translatedReview;
+            this.setState({ reviews });
+        } else {
+            Util.translate(comment).then(translated => {
+                console.log('translated', translated);
+
+                this.originReviewList[index] = comment;
+
+                reviews[index].comment.comment = translated;
+                !this.closed && this.setState({ reviews });
+
+                this.translatedReviewList[index] = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
+    }
+
+    setOriginReview(index) {
+        const originReview = this.originReviewList[index];
+
+        let reviews = this.state.reviews;
+
+        reviews[index].comment.comment = originReview;
+        this.setState({ reviews });
+
+        this.originReviewList[index] = null;
     }
 
     enableScroll() {

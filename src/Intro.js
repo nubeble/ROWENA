@@ -20,7 +20,7 @@ import Carousel from './Carousel';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from "./Globals";
 import autobind from "autobind-decorator";
-import _ from 'lodash';
+// import _ from 'lodash';
 import { RefreshIndicator } from "./rnff/src/components";
 import { AirbnbRating } from './react-native-ratings/src';
 import Toast, { DURATION } from 'react-native-easy-toast';
@@ -56,7 +56,7 @@ const skeletonViewHeight = (4 + (Dimensions.get('window').width - 4 * 2 * 3) / 2
 @inject("profileStore")
 @observer
 export default class Intro extends React.Component<InjectedProps> {
-    static __flatList = null;
+    // static __flatList = null;
 
     static places = [];
     static popularFeeds = [];
@@ -148,9 +148,11 @@ export default class Intro extends React.Component<InjectedProps> {
         refreshing: false
     };
 
+    /*
     static scrollToTop() {
         Intro.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
+    */
 
     static final() {
         console.log('Intro.final');
@@ -182,6 +184,8 @@ export default class Intro extends React.Component<InjectedProps> {
 
     // --
     componentWillMount() {
+        Util.initTranslator();
+
         if (!Vars.location) {
             if (Platform.OS === 'android' && !Constants.isDevice) {
                 console.log('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
@@ -247,6 +251,12 @@ export default class Intro extends React.Component<InjectedProps> {
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');
+
+        this.props.navigation.setParams({
+            scrollToTop: () => {
+                this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+        });
 
         console.log('uid', Firebase.user().uid);
         console.log('width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
@@ -492,7 +502,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     count++;
                 }
             }
-
+    
             if (count >= DEFAULT_FEED_COUNT) break;
         }
         */
@@ -579,7 +589,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     count++;
                 }
             }
-
+    
             if (count >= DEFAULT_FEED_COUNT) break;
         }
         */
@@ -741,8 +751,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 </View>
 
                 <FlatList
-                    // ref={(fl) => this._flatList = fl}
-                    ref={(fl) => Intro.__flatList = fl}
+                    ref={(fl) => this._flatList = fl}
+                    // ref={(fl) => Intro.__flatList = fl}
 
                     contentContainerStyle={styles.contentContainer}
                     showsVerticalScrollIndicator={true}
@@ -762,35 +772,35 @@ export default class Intro extends React.Component<InjectedProps> {
                                     width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                 />
-
+    
                                 <Svg.Rect
                                     x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                     y={8}
                                     width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                 />
-
+    
                                 <Svg.Rect
                                     x={8}
                                     y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                     width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                 />
-
+    
                                 <Svg.Rect
                                     x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                     y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                     width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                 />
-
+    
                                 <Svg.Rect
                                     x={8}
                                     y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                     width={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                     height={(Dimensions.get('window').width - 4 * 2 * 3) / 2}
                                 />
-
+    
                                 <Svg.Rect
                                     x={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
                                     y={8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8 + (Dimensions.get('window').width - 4 * 2 * 3) / 2 + 8}
@@ -1324,6 +1334,10 @@ export default class Intro extends React.Component<InjectedProps> {
                         feedSize: feedSize
                     };
 
+                    /*
+                    const result = await Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
+                    this.props.navigation.navigate("introPost", { post: result, extra });
+                    */
                     Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
                     this.props.navigation.navigate("introPost", { post, extra });
                 }}
@@ -1397,7 +1411,7 @@ export default class Intro extends React.Component<InjectedProps> {
         if (Intro.feedList.has(id)) {
             post = Intro.feedList.get(id);
         }
-
+    
         return post;
         */
 
@@ -1410,7 +1424,7 @@ export default class Intro extends React.Component<InjectedProps> {
         if (Intro.feedCountList.has(placeId)) {
             count = Intro.feedCountList.get(placeId);
         }
-
+    
         return count;
         */
 

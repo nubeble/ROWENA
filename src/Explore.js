@@ -32,7 +32,7 @@ const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 @inject("feedStore", "profileStore")
 @observer
 export default class Explore extends React.Component<InjectedProps> {
-    static __feed = null;
+    // static __feed = null;
 
     state = {
         // scrollAnimation: new Animated.Value(0),
@@ -55,12 +55,14 @@ export default class Explore extends React.Component<InjectedProps> {
         this.ads = []; // length 4
     }
 
+    /*
     static scrollToTop() {
         Explore.__feed.scrollToTop();
     }
+    */
 
     componentDidMount() {
-        console.log('Explore.componentDidMount');
+        // console.log('Explore.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -68,6 +70,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
+        // console.log('Explore.componentDidMount', params);
+
         const place = params.place;
         this.init(place);
 
@@ -400,7 +404,7 @@ export default class Explore extends React.Component<InjectedProps> {
                     <Feed
                         ref={(feed) => {
                             this._feed = feed;
-                            Explore.__feed = feed;
+                            // Explore.__feed = feed;
                         }}
                         store={feedStore}
                         extra={extra}

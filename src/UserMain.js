@@ -24,6 +24,7 @@ import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { sendPushNotification } from './PushNotifications';
 import Dialog from "react-native-dialog";
+import _ from 'lodash';
 
 const DEFAULT_REVIEW_COUNT = 6;
 
@@ -44,6 +45,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     state = {
         isLoadingFeeds: false,
+        reviews: null,
         refreshing: false,
 
         host: null,
@@ -109,12 +111,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         const uid = guest.uid;
 
-        this.setState({ isLoadingReview: true });
-
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
-
-        // this.disableScroll();
 
         // subscribe here
         // --
@@ -162,7 +160,10 @@ export default class UserMain extends React.Component<InjectedProps> {
         const count = reviews.length;
         this.count = count;
 
-        !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
+        // deep copy
+        let __reviews = _.cloneDeep(reviews);
+
+        !this.closed && this.setState({ reviews: __reviews, isLoadingFeeds: false, refreshing: false });
 
         // !this.closed && this.enableScroll();
     }
@@ -252,9 +253,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
-                // refresh
-                this.setState({ isLoadingFeeds: true });
-                this.commentStore.loadReviewFromStart();
+                this.loadReviewFromStart();
 
                 // move scroll top
                 this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -272,7 +271,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     async removeComment(index) {
         this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
-            const { reviews } = this.commentStore;
+            // const { reviews } = this.commentStore;
+            const { reviews } = this.state;
             const { host, guest } = this.state;
 
             const commentId = reviews[index].comment.id;
@@ -284,9 +284,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500);
 
-            // refresh
-            this.setState({ isLoadingFeeds: true });
-            this.commentStore.loadReviewFromStart();
+            this.loadReviewFromStart();
 
             // move scroll top
             this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -316,6 +314,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
+
+        this.commentStore.unsetAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         if (this.opponentUserUnsubscribe) this.opponentUserUnsubscribe();
 
@@ -355,7 +355,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         let nameFontSize = 28;
         let nameLineHeight = 32;
 
-        const { reviews } = this.commentStore;
+        // const { reviews } = this.commentStore;
+        const { reviews } = this.state;
 
         // name
         if (guest.name) avatarName = guest.name;
@@ -580,10 +581,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                         justifyContent: "center", alignItems: "center"
                                                     }}
                                                     onPress={() => {
-                                                        // reload
-                                                        if (this.state.isLoadingFeeds) return;
-                                                        this.setState({ isLoadingFeeds: true });
-                                                        this.commentStore.loadReviewFromStart();
+                                                        this.loadReviewFromStart();
 
                                                         // this.setState({ showReloadCommentsButton: false });
                                                     }}>
@@ -786,6 +784,15 @@ export default class UserMain extends React.Component<InjectedProps> {
         );
     } // end of render()
 
+    loadReviewFromStart() {
+        this.setState({ reviews: null });
+        // init
+        this.originReviewList = undefined;
+        this.translatedReviewList = undefined;
+
+        this.commentStore.loadReviewFromStart();
+    }
+
     @autobind
     renderItem({ item, index }): React.Node {
         const post = item.post;
@@ -858,9 +865,21 @@ export default class UserMain extends React.Component<InjectedProps> {
                 <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
-                <View style={{ paddingBottom: 6 }}>
-                    <Text style={styles.reviewText}>{_review.comment}</Text>
-                </View>
+
+                <TouchableOpacity onPress={() => {
+                    if (!this.originReviewList) this.originReviewList = [];
+
+                    if (this.originReviewList[index]) { // means translated
+                        this.setOriginReview(index);
+                    } else {
+                        this.translateReview(index);
+                    }
+                }}>
+                    <View style={{ paddingBottom: 6 }}>
+                        <Text style={styles.reviewText}>{_review.comment}</Text>
+                    </View>
+                </TouchableOpacity>
+
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
                         picture ?
@@ -907,8 +926,6 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     loadMore() {
-        // console.log('loadMore');
-
         if (this.state.isLoadingFeeds) return;
 
         if (this.commentStore.allReviewsLoaded) return;
@@ -932,8 +949,10 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         // if (guest.receivedCommentsCount === 0) return this.renderEmptyImage();
 
-        const { reviews } = this.commentStore;
-        const loading = reviews === undefined;
+        // const { reviews } = this.commentStore;
+        // const loading = reviews === undefined;
+        const { reviews } = this.state;
+        const loading = reviews === null;
 
         if (loading) {
             // render skeleton
@@ -1036,12 +1055,50 @@ export default class UserMain extends React.Component<InjectedProps> {
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
-        this.setState({ isLoadingFeeds: true, refreshing: true });
+        this.setState({ refreshing: true });
 
         // reload from the start
         this.commentStore.loadReviewFromStart();
+    }
 
-        // this.disableScroll();
+    translateReview(index) {
+        let reviews = this.state.reviews;
+        const comment = reviews[index].comment.comment;
+
+        if (!this.translatedReviewList) this.translatedReviewList = [];
+
+        const translatedReview = this.translatedReviewList[index];
+
+        if (translatedReview) {
+            this.originReviewList[index] = comment;
+
+            reviews[index].comment.comment = translatedReview;
+            this.setState({ reviews });
+        } else {
+            Util.translate(comment).then(translated => {
+                console.log('translated', translated);
+
+                this.originReviewList[index] = comment;
+
+                reviews[index].comment.comment = translated;
+                !this.closed && this.setState({ reviews });
+
+                this.translatedReviewList[index] = translated;
+            }).catch(err => {
+                console.error('translate error', err);
+            });
+        }
+    }
+
+    setOriginReview(index) {
+        const originReview = this.originReviewList[index];
+
+        let reviews = this.state.reviews;
+
+        reviews[index].comment.comment = originReview;
+        this.setState({ reviews });
+
+        this.originReviewList[index] = null;
     }
 
     enableScroll() {

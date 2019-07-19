@@ -321,6 +321,32 @@ export default class Admin extends React.Component {
         return note;
     }
 
+    getNote(number) { // 0, 1, 2, 3
+        let note = null;
+
+        switch (number) {
+            case 0:
+                note = "教育的依据就是'爱情'和'关心'. 当优秀的老师绝对不容易, 但只当优秀的老师很危险的事. 因为学生学老师, 模仿老师. 所以教育应该不仅仅向学生传达知识.";
+                break;
+
+            case 1:
+                note = "얼굴 하나야 손바닥 둘로 푹 가리지만\n보고 싶은 마음 호수만 하니 눈 감을 수 밖에";
+                break;
+
+            case 2:
+                note = "อะไรยังเงี้ยะ\nพอดีเจอกันเขา\nน่ารัก     เหมือน  เดิม";
+                break;
+
+            case 3:
+                note = "何か お探しですか\n高すぎです\n少し まけて くれませんか\n申し訳 ありませんが、 それは 困ります";
+                break;
+        }
+
+        return note;
+    }
+
+
+
     async makeInit() {
         this.makeBangkok();
         this.makePattaya();
@@ -364,7 +390,8 @@ export default class Admin extends React.Component {
             longitude: LONGITUDE + ((Math.random() - 0.5) * (LONGITUDE_DELTA / 2))
         };
 
-        const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
+        // const note = this.getRandomNote(Math.round(Math.random() * 10) % 4);
+        const note = this.getNote(Math.round(Math.random() * 10) % 4);
 
         // --
         const number = Math.round(Math.random() * 10) % 6; // 0 ~ 5

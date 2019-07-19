@@ -30,6 +30,12 @@ const DEFAULT_PROFILE: Profile = {
 
 
 export default class ProfileStore {
+    // @observable _profile: Profile = DEFAULT_PROFILE;
+    @observable _profile: Profile;
+
+    @computed get profile(): Profile { return this._profile; }
+    set profile(profile: Profile) { this._profile = profile; }
+
     lastChangedTime: number;
     lastTimeFeedsUpdated: number;
     lastTimeLikesUpdated: number;
@@ -42,12 +48,6 @@ export default class ProfileStore {
     commentsUpdatedCallbackList = [];
 
     replyAddedOnReviewCallbackList = [];
-
-    // @observable _profile: Profile = DEFAULT_PROFILE;
-    @observable _profile: Profile;
-
-    @computed get profile(): Profile { return this._profile; }
-    set profile(profile: Profile) { this._profile = profile; }
 
 
     setFeedsUpdatedCallback(cb) {

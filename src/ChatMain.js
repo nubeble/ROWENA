@@ -12,7 +12,7 @@ import Firebase from './Firebase';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from "./Util";
 import { Cons, Vars } from "./Globals";
-import _ from 'lodash';
+// import _ from 'lodash';
 import moment from 'moment';
 import Dialog from "react-native-dialog";
 
@@ -918,7 +918,8 @@ export default class ChatMain extends React.Component {
 
     addList(list) {
         // update room before put it in the state list
-        let _list = _.clone(list);
+        // let _list = _.clone(list); // ToDo
+        let _list = list;
         for (let i = 0; i < _list.length; i++) {
             const room = _list[i];
 

@@ -24,18 +24,26 @@ type FeedProps = NavigationProps<> & {
 
 @observer
 export default class Feed extends React.Component<FeedProps> {
-    static __flatList = null;
+    // static __flatList = null;
 
     state = {
         isLoadingFeeds: false,
         refreshing: false
     };
 
+    /*
     scrollToTop() {
         Feed.__flatList.scrollToOffset({ offset: 0, animated: true });
     }
+    */
 
     componentDidMount() {
+        this.props.navigation.setParams({
+            scrollToTop: () => {
+                this._flatList.scrollToOffset({ offset: 0, animated: true });
+            }
+        });
+
         // const { feed } = this.props.store; // FeedStore
         // console.log('Feed.componentDidMount', feed);
 
@@ -52,6 +60,8 @@ export default class Feed extends React.Component<FeedProps> {
     }
 
     componentWillUnmount() {
+        this.props.store.unsetAddToFeedFinishedCallback(this.onAddToFeedFinished);
+
         this.closed = true;
     }
 
@@ -113,7 +123,7 @@ export default class Feed extends React.Component<FeedProps> {
                 <FlatList
                     ref={(fl) => {
                         this._flatList = fl;
-                        Feed.__flatList = fl;
+                        // Feed.__flatList = fl;
                     }}
                     contentContainerStyle={styles.contentContainer}
                     // showsVerticalScrollIndicator
@@ -245,7 +255,7 @@ export default class Feed extends React.Component<FeedProps> {
     handleRefresh = () => {
         if (this.state.refreshing) return;
 
-        this.setState({ isLoadingFeeds: true, refreshing: true });
+        this.setState({ refreshing: true });
 
         // reload from the start
         this.props.store.loadFeedFromStart();

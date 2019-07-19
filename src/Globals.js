@@ -11,13 +11,13 @@ export var Vars = {
     signUpType: null, // 'FACEBOOK', 'EMAIL', 'MOBILE'
     signUpName: null,
 
-    distanceUnit: null, // unit of length - 'meter', 'mile' based on user location (user profile)
+    distanceUnit: null // unit of length - 'meter', 'mile' based on user location (user profile)
 };
 
 export const Cons = {
-    version: '0.9.57',
+    version: '0.9.59',
     buildNumber: '93088300',
-    lastUpdatedDate: 'Jul 17, 2019 17:38',
+    lastUpdatedDate: 'Jul 19, 2019 12:27',
 
     // push notification type
     pushNotification: {

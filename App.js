@@ -4,7 +4,7 @@ import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
-import _ from 'lodash';
+// import _ from 'lodash';
 import { configure } from 'mobx';
 import { Provider } from "mobx-react/native";
 import { FeedStore, Theme, Text } from './src/rnff/src/components';
@@ -425,7 +425,7 @@ export default class App extends React.Component {
             feedSize: placeDoc.data().count
         };
 
-        NavigationService.navigate("postPreview", { post: post, extra: extra, from: 'Profile' });
+        NavigationService.navigate("postPreview", { post: post, extra, from: 'Profile' });
     }
 
     moveToCheckProfile() {
@@ -902,7 +902,7 @@ class HomeStackNavigatorWrapper extends React.Component {
 const HomeSwitchNavigator = createSwitchNavigator(
     {
         intro: { screen: IntroStackNavigatorWrapper },
-        homeStackNavigator: { screen: HomeStackNavigatorWrapper }
+        homeMain: { screen: HomeStackNavigatorWrapper }
     },
     {
         // initialRouteName: 'intro'
@@ -1255,13 +1255,38 @@ function _navigationOptions(navigation, screenProps) {
     let scrollToTop = null;
 
     if (navigation.state.index === 0) {
-        const navigationInRoute = navigation.getChildNavigation(navigation.state.routes[0].key);
-        // console.log('navigationInRoute', navigationInRoute);
-        if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.routeName) name = navigationInRoute.state.routeName;
-        if (!!navigationInRoute && navigationInRoute.isFocused() && !!navigationInRoute.state.params && !!navigationInRoute.state.params.scrollToTop) scrollToTop = navigationInRoute.state.params.scrollToTop;
-    }
+        const routeNavigation = navigation.getChildNavigation(navigation.state.routes[0].key);
+        if (!!routeNavigation && routeNavigation.isFocused()) {
+            if (!!routeNavigation.state.routeName) name = routeNavigation.state.routeName;
+            if (!!routeNavigation.state.params && !!routeNavigation.state.params.scrollToTop) scrollToTop = routeNavigation.state.params.scrollToTop;
 
-    // console.log('_navigationOptions', name);
+            if (name === 'intro' && routeNavigation.state.index === 0) {
+                const introHome = routeNavigation.state.routes[0];
+                // console.log('introHome', introHome);
+                if (!!introHome) {
+                    if (!!introHome.routeName) name = introHome.routeName;
+                    if (!!introHome.params && introHome.params.scrollToTop) scrollToTop = introHome.params.scrollToTop;
+                }
+            }
+        }
+    } else if (navigation.state.index === 1) {
+        const homeNavigation = navigation.getChildNavigation(navigation.state.routes[1].key);
+        if (!!homeNavigation && homeNavigation.isFocused()) {
+            // console.log('homeNavigation', homeNavigation);
+
+            if (!!homeNavigation.state.routeName) name = homeNavigation.state.routeName; // homeMain
+            // if (!!homeNavigation.state.params && !!homeNavigation.state.params.scrollToTop) scrollToTop = homeNavigation.state.params.scrollToTop;
+
+            if (name === 'homeMain' && homeNavigation.state.index === 0) {
+                const home = homeNavigation.state.routes[0];
+                // console.log('home', home);
+                if (!!home) {
+                    if (!!home.routeName) name = home.routeName;
+                    if (!!home.params && home.params.scrollToTop) scrollToTop = home.params.scrollToTop;
+                }
+            }
+        }
+    }
 
     return {
         title: navigation.state.routeName,
@@ -1287,25 +1312,32 @@ function _navigationOptions(navigation, screenProps) {
         },
         tabBarOnPress: ({ defaultHandler, navigation }) => {
             if (navigation.state.routeName === 'home') {
-                console.log('home');
+                // console.log('home');
 
+                // single click
+                if (name === 'introHome' || name === 'home') {
+                    // nothing to do
+                } else if (name === 'intro' || name === 'homeMain') {
+                    console.log('single click.', name);
+                    navigation.popToTop();
+                    // navigation.dispatch(StackActions.popToTop());
+                } else {
+                    console.log('single click. name', name);
+                    // navigation.popToTop(); // ToDo
+                    // navigation.dispatch(StackActions.popToTop());
+                }
+
+                // double click
                 const now = Date.now();
 
                 if (routeName === 'home') {
-                    // go back to top
-                    if (Vars.focusedScreen !== 'Intro' && Vars.focusedScreen !== 'Explore') {
-                        // navigation.dispatch(StackActions.popToTop());
-                        navigation.popToTop();
-                    } else {
-                        const diff = now - timestamp;
-                        console.log('diff', diff);
+                    const diff = now - timestamp;
+                    // console.log('diff', diff);
 
-                        if (diff < 500) { // double click
-                            // if (name === "introHome") scrollToTop();
-                            if (Vars.focusedScreen === 'Intro') Intro.scrollToTop();
-                            if (Vars.focusedScreen === 'Explore') Explore.scrollToTop();
-                            // if (Vars.focusedScreen === 'Post') Post.scrollToTop();
-                        }
+                    if (diff < 500) { // double click
+                        console.log('double click. name', name);
+
+                        if (name === 'introHome' || name === 'home') scrollToTop();
                     }
                 } else {
                     routeName = 'home';

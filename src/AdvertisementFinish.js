@@ -141,7 +141,8 @@ export default class AdvertisementFinish extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: Theme.color.background
+        // backgroundColor: Theme.color.background
+        backgroundColor: '#FFFFFF'
     },
     searchBar: {
         height: Cons.searchBarHeight,
@@ -150,8 +151,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     container: {
-        flex: 1,
-        backgroundColor: '#FFFFFF'
+        flex: 1
     },
     signUpButton: {
         width: '85%',

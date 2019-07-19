@@ -3,13 +3,25 @@ import { Linking } from "expo";
 import moment from "moment";
 import Qs from 'qs';
 import { Vars } from './Globals';
+import { PowerTranslator, ProviderTypes, TranslatorConfiguration, TranslatorFactory } from 'react-native-power-translator';
 
 const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
 
 const avatarColorList = new Map();
 
+const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+
 
 export default class Util extends React.Component {
+    static initTranslator() {
+        // TranslatorConfiguration.setConfig('Provider_Type', 'Your_API_Key','Target_Language', 'Source_Language');
+        TranslatorConfiguration.setConfig(ProviderTypes.Google, API_KEY, 'en');
+    }
+
+    static translate(text) {
+        const translator = TranslatorFactory.createTranslator();
+        return translator.translate(text);
+    }
 
     static uid(): string {
         // a685d8a3-4ec0-4d5d-b334-1146865e7b95
