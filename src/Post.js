@@ -954,7 +954,7 @@ export default class Post extends React.Component<InjectedProps> {
                         */}
                     </View>
 
-                    <View style={{ paddingTop: Theme.spacing.xSmall, paddingBottom: 10 }}>
+                    <View style={{ marginVertical: 4, paddingVertical: 4 }}>
                         {/* 1 row */}
                         <View style={{
                             width: '100%',
@@ -1058,23 +1058,17 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: Theme.spacing.tiny }}>
-                        <MaterialIcons style={{ marginTop: 1 }} name='location-on' color={'rgb(255, 68, 68)'} size={19} />
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 4 }}>
+                        <MaterialIcons name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                         <Text style={styles.distance}>{distance}</Text>
                         {
                             showSettingsButton &&
-                            <View style={{ flex: 1 }}>
+                            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'flex-end' }}>
                                 <TouchableOpacity
                                     style={{
-                                        flex: 1, width: 24,
-                                        alignItems: "center",
-                                        justifyContent: "flex-end",
-                                        paddingBottom: 0.6,
-                                        marginLeft: -1
+                                        width: 20, height: 20, justifyContent: 'center', alignItems: 'center'
                                     }}
                                     onPress={async () => {
-                                        console.log('open settings');
-
                                         await Util.openSettings();
                                     }}>
                                     <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1085,7 +1079,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {
                         post.reviewCount > 0 ?
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingBottom: 8 - 4 }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 2, paddingBottom: 8 - 4 }}>
                                 <View style={{ width: 'auto', alignItems: 'flex-start' }}>
                                     <AirbnbRating
                                         count={5}
@@ -1101,18 +1095,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.reviewCount}>{post.reviewCount}</Text>
                             </View>
                             :
-                            /*
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                <View style={{
-                                    marginLeft: 2,
-                                    width: 36, height: 21, borderRadius: 3,
-                                    backgroundColor: Theme.color.new,
-                                    justifyContent: 'center', alignItems: 'center'
-                                }}>
-                                    <Text style={styles.new}>new</Text>
-                                </View>
-                            </View>
-                            */
                             <View style={{ marginBottom: 9 - 4 }}>
                                 <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
                                     <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
@@ -1185,17 +1167,17 @@ export default class Post extends React.Component<InjectedProps> {
                                 </View>
                             </MapView.Marker>
                             {/*
-                                                    <MapView.Circle
-                                                        center={{
-                                                            latitude: post.location.latitude,
-                                                            longitude: post.location.longitude
-                                                        }}
-                                                        radius={150} // m
-                                                        strokeWidth={2}
-                                                        strokeColor={Theme.color.selection}
-                                                        fillColor={'rgba(62, 165, 255, 0.5)'}
-                                                    />
-                                                    */}
+                            <MapView.Circle
+                                center={{
+                                    latitude: post.location.latitude,
+                                    longitude: post.location.longitude
+                                }}
+                                radius={150} // m
+                                strokeWidth={2}
+                                strokeColor={Theme.color.selection}
+                                fillColor={'rgba(62, 165, 255, 0.5)'}
+                            />
+                            */}
                         </MapView>
                     </View>
                 </View>
@@ -2900,17 +2882,7 @@ const styles = StyleSheet.create({
         // lineHeight: 18,
         fontFamily: "Roboto-Regular",
         // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
-        paddingTop: 2
-    },
-    distanceButton: {
-        // paddingLeft: 5,
-        paddingHorizontal: 5,
-        color: Theme.color.title,
-        fontSize: 18,
-        // lineHeight: 18,
-        fontFamily: "Roboto-Regular",
-        // paddingTop: Math.round(Dimensions.get('window').height / 100) - 2
-        paddingTop: 2
+        // paddingTop: 2
     },
     rating: {
         marginLeft: 5,
@@ -2958,7 +2930,7 @@ const styles = StyleSheet.create({
     },
     */
     note: {
-        marginTop: Theme.spacing.small,
+        marginTop: 10,
 
         color: Theme.color.text2,
         fontSize: 16,

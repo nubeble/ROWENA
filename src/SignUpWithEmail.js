@@ -572,7 +572,6 @@ export default class SignUpWithEmail extends React.Component {
                             {this.state.emailY !== -1 && emailIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
 
                             <View style={{ flexDirection: 'row' }}>
-
                                 <Text style={{ marginTop: 4, paddingLeft: 18, paddingRight: 8, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                     {'PASSWORD'}
                                 </Text>
@@ -588,7 +587,6 @@ export default class SignUpWithEmail extends React.Component {
                                             <Ionicons name='md-eye-off' color={Theme.color.text2} size={20} />
                                     }
                                 </TouchableOpacity>
-
                             </View>
 
                             <TextInput
