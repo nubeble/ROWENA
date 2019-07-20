@@ -3,9 +3,8 @@ import {
     StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
-import { GiftedChat, InputToolbar, Send, Bubble } from 'react-native-gifted-chat';
-import * as Animatable from 'react-native-animatable';
-// import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { GiftedChat, InputToolbar, Send, Bubble, Time, Message, MessageText } from 'react-native-gifted-chat';
+// import * as Animatable from 'react-native-animatable';
 import Firebase from './Firebase';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Dialog from "react-native-dialog";
@@ -16,8 +15,8 @@ import { sendPushNotification } from './PushNotifications';
 import { inject, observer } from "mobx-react/native";
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
-import PreloadImage from './PreloadImage';
 import { NavigationActions } from 'react-navigation';
+import PreloadImage from './PreloadImage';
 
 const DEFAULT_MESSAGE_COUNT = 20;
 
@@ -43,11 +42,10 @@ const smallImageWidth = postHeight * 0.7;
 
 export default class ChatRoom extends React.Component {
     state = {
-        id: null,
+        // id: null,
         titleImageUri: null,
         titleName: null,
         messages: [],
-        extraData: {},
 
         isLoadingMessages: false,
 
@@ -63,6 +61,9 @@ export default class ChatRoom extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.id = null;
+        this.users = null;
 
         this.allMessagesLoaded = false;
     }
@@ -80,15 +81,19 @@ export default class ChatRoom extends React.Component {
 
         const item = this.props.navigation.state.params.item;
 
-        this.setState({ id: item.id, titleImageUri: item.title.picture, titleName: item.title.name });
+        this.id = item.id;
+        this.users = item.users;
+
+        this.setState({ titleImageUri: item.title.picture, titleName: item.title.name });
 
         Firebase.chatOn(DEFAULT_MESSAGE_COUNT, item.id, message => {
+            if (!message) return;
             // console.log('on message', message);
 
-            // fill name, avatar
+            // fill user info (name, avatar)
             if (message.user) {
-                for (let i = 0; i < item.users.length; i++) {
-                    const user = item.users[i];
+                for (let i = 0; i < this.users.length; i++) {
+                    const user = this.users[i];
 
                     if (message.user._id === user.uid) {
                         message.user.name = user.name;
@@ -112,7 +117,6 @@ export default class ChatRoom extends React.Component {
         });
 
         // show center post avatar
-        // if (item.contents === '') this.setState({ renderPost: true });
         if (item.showAvatar) this.setState({ renderPost: true });
     }
 
@@ -132,6 +136,7 @@ export default class ChatRoom extends React.Component {
     @autobind
     handleHardwareBackPress() {
         console.log('ChatRoom.handleHardwareBackPress');
+
         // this.goBack(); // works best when the goBack is async
 
         this.goBack();
@@ -150,7 +155,7 @@ export default class ChatRoom extends React.Component {
             const mid = message._id;
 
             if (lastReadMessageId !== mid) {
-                await Firebase.saveLastReadMessageId(Firebase.user().uid, this.state.id, mid);
+                await Firebase.saveLastReadMessageId(Firebase.user().uid, this.id, mid);
             }
         }
 
@@ -223,17 +228,34 @@ export default class ChatRoom extends React.Component {
         const timestamp = date.getTime();
         const id = lastMessage._id;
 
-        Firebase.loadMoreMessage(DEFAULT_MESSAGE_COUNT, this.state.id, timestamp, id, message => {
-            if (message) {
+        Firebase.loadMoreMessage(DEFAULT_MESSAGE_COUNT, this.id, timestamp, id, messages => {
+            if (!messages) {
+                this.allMessagesLoaded = true;
+            } else {
                 // console.log('message list', message);
 
-                !this.closed && this.setState(previousState => ({
-                    messages: GiftedChat.prepend(previousState.messages, message)
-                }));
+                // fill user info (name, avatar)
+                for (let i = 0; i < messages.length; i++) {
+                    let message = messages[i];
+                    if (message.user) {
+                        for (let i = 0; i < this.users.length; i++) {
+                            const user = this.users[i];
 
-                // this.onLoading = false;
-            } else {
-                this.allMessagesLoaded = true;
+                            if (message.user._id === user.uid) {
+                                message.user.name = user.name;
+                                if (user.picture) message.user.avatar = user.picture;
+                                // else message.user.avatar = PreloadImage.user;
+                                else message.user.avatar = 'none'; // Consider
+
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                !this.closed && this.setState(previousState => ({
+                    messages: GiftedChat.prepend(previousState.messages, messages)
+                }));
             }
 
             this.setState({ isLoadingMessages: false });
@@ -246,7 +268,7 @@ export default class ChatRoom extends React.Component {
         const item = this.props.navigation.state.params.item;
 
         // save the message to database & update UI
-        await Firebase.sendMessage(this.state.id, message, item);
+        await Firebase.sendMessage(this.id, message, item);
 
         // send push notification
         const notificationType = Cons.pushNotification.chat;
@@ -277,7 +299,7 @@ export default class ChatRoom extends React.Component {
             message: message.text,
             placeId: item.placeId,
             feedId: item.feedId,
-            chatRoomId: this.state.id,
+            chatRoomId: this.id,
             // users: users
         };
 
@@ -301,7 +323,7 @@ export default class ChatRoom extends React.Component {
             const room = unreadChatRoom[i];
             const id = room.id;
 
-            if (this.state.id === id) {
+            if (this.id === id) {
                 found = true;
                 break;
             }
@@ -309,7 +331,7 @@ export default class ChatRoom extends React.Component {
 
         if (!found) {
             // save
-            await Firebase.saveUnreadChatRoomId(this.state.id);
+            await Firebase.saveUnreadChatRoomId(this.id);
         }
     }
     */
@@ -341,7 +363,6 @@ export default class ChatRoom extends React.Component {
 
             const customerProfile = item.customerProfile;
 
-            // const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = this.opponentUser; // customer
             const { name, birthday, gender, place, picture, about, receivedCommentsCount, timestamp } = customerProfile;
 
             const guest = { // customer
@@ -521,8 +542,11 @@ export default class ChatRoom extends React.Component {
                         }}
                         renderSend={this.renderSend}
                         renderInputToolbar={this.renderInputToolbar}
+
                         renderAvatar={this.renderAvatar}
                         renderBubble={this.renderBubble}
+                        renderMessageText={this.renderMessageText}
+                        renderTime={this.renderTime}
                         shouldUpdateMessage={this.shouldUpdateMessage}
 
                         listViewProps={{
@@ -536,27 +560,7 @@ export default class ChatRoom extends React.Component {
                             }
                         }}
                     />
-                    {/*
-                        <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80}/>
-                    */}
-
-                    {
-
-                        // Platform.OS === 'android' ? <KeyboardSpacer /> : null
-                        // <KeyboardSpacer />
-
-                        // (Platform.OS === 'ios') && this.state.onKeyboard &&
-                        // <KeyboardSpacer />
-                    }
                 </View>
-
-                {
-                    /*
-                    Platform.OS === 'android' &&
-                    !this.state.onKeyboard &&
-                    <View style={{ width: '100%', height: Dimensions.get('window').height / 20, backgroundColor: 'red' }}/>
-                    */
-                }
 
                 {
                     this.state.renderPost && this.state.messages.length <= 1 &&
@@ -650,19 +654,28 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     renderInputToolbar(props) {
-        return <InputToolbar {...props} containerStyle={{
-            backgroundColor: Theme.color.background,
-            borderTopColor: Theme.color.textInput
-            // borderTopWidth: 0
-        }} />
+        return (
+            <InputToolbar {...props}
+                containerStyle={{
+                    backgroundColor: Theme.color.background,
+                    borderTopColor: Theme.color.textInput
+                    // borderTopWidth: 0
+                }}
+            />
+        );
     }
 
     @autobind
     renderAvatar(props) {
-        // console.log('renderAvatar', props);
-        // console.log('renderAvatar', props.user);
+        const currentMessage = props.currentMessage;
 
-        const { user } = props.currentMessage;
+        if (!currentMessage.user || !currentMessage.user._id || !currentMessage.user.avatar || !currentMessage.user.name) {
+            console.log('renderAvatar currentMessage', currentMessage);
+            return null; // system message
+        }
+
+        const { user } = currentMessage;
+        // const uid = user._id;
 
         const avatarWidth = 36;
 
@@ -673,6 +686,11 @@ export default class ChatRoom extends React.Component {
 
         const avatarColor = Util.getAvatarColor(user._id);
         const avatarName = Util.getAvatarName(user.name);
+
+        if (!avatarName) {
+            console.log('avatarName is null!!!!', user)
+            return;
+        }
 
         let nameFontSize = 17;
         if (avatarName.length === 1) nameFontSize = 19;
@@ -708,48 +726,49 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     renderBubble(props) {
+        // console.log('renderBubble, props', props);
 
-        console.log('renderBubble, props', props);
+        let wrapperStyle = null;
 
-        /*
-        console.log('renderBubble, currentMessage', props.currentMessage);
-
-        if (props.currentMessage.text === 'TEST') {
-            return (
-                <Bubble {...props}
-                    wrapperStyle={{
-                        right: {
-                            backgroundColor: 'red'
-                        }
-                    }}
-                />
-            );
+        const item = this.props.navigation.state.params.item;
+        if (item.users[0].uid === item.owner) {
+            // I'm the owner. (boss or girl)
+            wrapperStyle = {
+                left: {
+                    backgroundColor: Theme.color.selection
+                },
+                right: {
+                    backgroundColor: Theme.color.splash
+                }
+            };
+        } else {
+            // I'm a customer.
+            wrapperStyle = {
+                left: {
+                    backgroundColor: Theme.color.splash
+                },
+                right: {
+                    backgroundColor: Theme.color.selection
+                }
+            };
         }
-        */
 
         return (
             // <Animatable.View animation={'bounceInLeft'} duration={400}>
             <Bubble {...props}
                 textStyle={{
                     left: {
-                        // color: 'orange'
+                        color: 'white'
                     },
                     right: {
-                        // color: 'yellow'
+                        color: 'white'
                     }
                 }}
 
-                wrapperStyle={{
-                    left: {
-                        // backgroundColor: Theme.color.selection
-                    },
-                    right: {
-                        backgroundColor: Theme.color.selection
-                    }
-                }}
+                wrapperStyle={wrapperStyle}
 
                 touchableProps={{
-                    onPress: () => {
+                    onPress: async () => {
                         /*
                         "currentMessage": Object {
                             "_id": "-Lk7NivXcRdB0DME5-75",
@@ -780,36 +799,87 @@ export default class ChatRoom extends React.Component {
                         }
 
                         if (index !== -1) {
-                            /*
                             let message = messages[index];
-                            message.text = "TEST"; // ToDo: translate
+
+                            // re-render for custom message
+                            message.updated = true;
+
+                            const showTranslation = !!message.showTranslation;
+                            if (showTranslation) { // -> hide
+                                message.showTranslation = false;
+                            } else { // -> show
+                                message.showTranslation = true;
+                            }
+
+                            if (!message.translatedText) {
+                                message.translatedText = await Util.translate(message.text);
+                            }
+
                             messages[index] = message;
-
-                            // console.log('will update message', messages[index]);
                             this.setState({ messages });
-                            */
-
-                            const message = messages[index];
-
-
-
-
-                            let extraData = props.extraData;
-                            const data = {
-                                originText: message.text,
-                                translatedText: 'ABCD ABCD ABCD' // ToDo: translate
-                            };
-
-                            extraData
-                            
-                            // extraData[index] = data;
-                            this.setState({ extraData });
                         }
                     }
                 }}
-            />
+            >
+            </Bubble>
             // </Animatable.View>
         )
+    }
+
+    @autobind
+    renderMessageText(props) {
+        // console.log('renderMessageText', props);
+
+        const showTranslation = !!props.currentMessage.showTranslation;
+        // if (showTranslation) console.log('translated', props.currentMessage.translatedText);
+
+        return (
+            <View>
+                <MessageText {...props}
+                    linkStyle={{
+                        left: {
+                            color: 'white'
+                        },
+                        right: {
+                            color: 'white'
+                        }
+                    }}
+                />
+                {
+                    showTranslation &&
+                    <MessageText {...props}
+                        linkStyle={{
+                            left: {
+                                color: 'white'
+                            },
+                            right: {
+                                color: 'white'
+                            }
+                        }}
+                        currentMessage={{
+                            text: props.currentMessage.translatedText
+                        }}
+                    />
+                }
+            </View>
+        );
+    }
+
+    @autobind
+    renderTime(props) {
+        return (
+            <Time
+                textStyle={{
+                    left: {
+                        color: Theme.color.text2
+                    },
+                    right: {
+                        color: Theme.color.text2
+                    }
+                }}
+                {...props}
+            />
+        );
     }
 
     @autobind
@@ -822,17 +892,8 @@ export default class ChatRoom extends React.Component {
 
         const msg1 = props.currentMessage;
         const msg2 = nextProps.currentMessage;
-        // console.log('currentMessage1', currentMessage1);
-        // console.log('currentMessage2', currentMessage2);
 
-        // ToDo: compare
-        // if (msg1.text !== msg2.text) {
-        if (msg1.text === "TEST" || msg2.text === "TEST") {
-            console.log('tmp', msg1.text, msg2.text);
-            return true;
-        }
-
-        // console.log('shouldUpdateMessage, false');
+        if (msg1.updated || msg2.updated) return true;
 
         return false;
     }

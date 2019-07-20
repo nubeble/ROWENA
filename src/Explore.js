@@ -287,7 +287,6 @@ export default class Explore extends React.Component<InjectedProps> {
                                     paddingTop: 3,
                                     color: Theme.color.text2, textAlign: 'center'
                                 }}
-                                numberOfLines={1}
                             >{this.state.searchText}</Text>
                         </TouchableOpacity>
                     </View>

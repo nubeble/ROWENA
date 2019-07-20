@@ -37,7 +37,7 @@ export default class SignUpWithEmail extends React.Component {
         showSignUpLoader: false,
 
         securePwInput: true,
-        secureText: 'Show',
+        // secureText: 'Show',
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -270,22 +270,11 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     toggleSecureText() {
-        if (this.state.secureText === 'Show') {
-            console.log('toggleSecureText', 'show -> hide');
-            this.setState({ secureText: 'Hide', securePwInput: false });
+        if (this.state.securePwInput) {
+            this.setState({ securePwInput: false });
         } else {
-            console.log('toggleSecureText', 'hide -> show');
-            this.setState({ secureText: 'Show', securePwInput: true });
+            this.setState({ securePwInput: true });
         }
-
-        // Not need this in ios, not working in android!
-        /*
-        if (Platform.OS === 'android') {
-            this.refs['pwInput'].setNativeProps(
-                { selection: { start: this.state.password.length - 1, end: this.state.password.length - 1 } }
-            );
-        }
-        */
     }
 
     signUp() {
@@ -582,9 +571,26 @@ export default class SignUpWithEmail extends React.Component {
                             {this.state.emailY !== -1 && emailIcon === 1 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
                             {this.state.emailY !== -1 && emailIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
 
-                            <Text style={{ marginTop: 4, paddingHorizontal: 18, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                                {'PASSWORD'}
-                            </Text>
+                            <View style={{ flexDirection: 'row' }}>
+
+                                <Text style={{ marginTop: 4, paddingLeft: 18, paddingRight: 8, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                    {'PASSWORD'}
+                                </Text>
+
+                                <TouchableOpacity
+                                    style={{ marginTop: 4, width: 22, height: 22, justifyContent: 'center', alignItems: 'center' }}
+                                    onPress={() => this.toggleSecureText()}
+                                >
+                                    {
+                                        this.state.securePwInput ?
+                                            <Ionicons name='md-eye' color={Theme.color.text2} size={20} />
+                                            :
+                                            <Ionicons name='md-eye-off' color={Theme.color.text2} size={20} />
+                                    }
+                                </TouchableOpacity>
+
+                            </View>
+
                             <TextInput
                                 ref='pwInput'
                                 style={{ height: 40, paddingLeft: 18, paddingRight: 56, fontSize: 22, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)' }}
@@ -625,12 +631,6 @@ export default class SignUpWithEmail extends React.Component {
                                 </TouchableOpacity>
                                 */
                             }
-                            <TouchableOpacity
-                                style={{ position: 'absolute', top: 4 + 78, right: 24, alignSelf: 'baseline' }}
-                                onPress={() => this.toggleSecureText()}
-                            >
-                                <Text style={{ fontSize: 13, fontFamily: "Roboto-Medium", color: Theme.color.text2 }}>{this.state.secureText}</Text>
-                            </TouchableOpacity>
                             <View style={{ marginHorizontal: 18, borderBottomColor: 'rgba(255, 255, 255, 0.8)', borderBottomWidth: 1, marginBottom: Theme.spacing.small }}
                                 onLayout={(e) => {
                                     const { y } = e.nativeEvent.layout;

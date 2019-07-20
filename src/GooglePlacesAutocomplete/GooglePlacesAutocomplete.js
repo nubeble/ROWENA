@@ -307,6 +307,17 @@ export default class GooglePlacesAutocomplete extends Component {
                         this.getPlaceId(input, key, (obj) => {
                             if (this.closed) return;
 
+                            if (!obj) { // error
+                                // ToDo: toast or something
+
+                                // hide loader
+                                !this.closed && this.setState({ isLoading: false });
+
+                                this._disableRowLoaders();
+
+                                return;
+                            }
+
                             console.log('this.getPlaceId result', obj);
 
                             // Consider: exception
@@ -820,7 +831,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     rowData.isPredefinedPlace ? this.props.styles.predefinedPlacesDescription : {},
                     rowData.isCurrentLocation ? defaultStyles.currentLocationText : {}
                 ]}
-                numberOfLines={this.props.numberOfLines}
+                // numberOfLines={this.props.numberOfLines}
             >
                 {this._renderDescription(rowData)}
             </Text>
@@ -1196,7 +1207,7 @@ export default class GooglePlacesAutocomplete extends Component {
         );
     }
 
-    async getPlaceId(input, key, callback) {
+    async getPlaceId(input, key, cb) {
         const request = new XMLHttpRequest();
         request.onreadystatechange = () => {
             if (request.readyState !== 4) return;
@@ -1214,7 +1225,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     const result = results[0]; // map object
                     console.log('getPlaceId array 0', result);
 
-                    callback(result);
+                    cb(result);
                     */
 
                     let result = null;
@@ -1239,11 +1250,12 @@ export default class GooglePlacesAutocomplete extends Component {
                         }
                     }
 
-                    callback(result);
+                    cb(result);
                 }
 
                 if (typeof responseJSON.error_message !== 'undefined') {
                     console.warn('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                    cb(null);
                 }
             }
         };
@@ -1271,7 +1283,7 @@ export default class GooglePlacesAutocomplete extends Component {
         */
     }
 
-    async getStreetAddress(input, key, callback) {
+    async getStreetAddress(input, key, cb) {
         const request = new XMLHttpRequest();
         request.onreadystatechange = () => {
             if (request.readyState !== 4) return;
@@ -1289,7 +1301,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     const result = results[0]; // map object
                     console.log('getPlaceId array 0', result);
 
-                    callback(result);
+                    cb(result);
                     */
 
                     let result = null;
@@ -1314,11 +1326,12 @@ export default class GooglePlacesAutocomplete extends Component {
                         }
                     }
 
-                    callback(result);
+                    cb(result);
                 }
 
                 if (typeof responseJSON.error_message !== 'undefined') {
                     console.warn('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                    cb(null);
                 }
             }
         };

@@ -330,6 +330,8 @@ export default class CheckLikes extends React.Component {
         this.customerProfileList.set(uid, null);
 
         const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === null) return; // error
+
             if (user === undefined) {
                 this.customerProfileList.delete(uid);
                 return;

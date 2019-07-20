@@ -284,9 +284,15 @@ export default class SearchScreen extends React.Component {
                                 const key = API_KEY;
 
                                 Util.getPlaceId(input, key, type, (obj) => {
-                                    console.log('Util.getPlaceId result', obj);
+                                    if (this.closed) return;
 
-                                    if (!obj) return;
+                                    if (!obj) { // error
+                                        // ToDo: toast or something
+
+                                        return;
+                                    }
+
+                                    console.log('Util.getPlaceId result', obj);
 
                                     // Consider: exception
                                     // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
@@ -306,8 +312,6 @@ export default class SearchScreen extends React.Component {
                                             lng: obj.geometry.location.lng
                                         }
                                     };
-
-                                    if (this.closed) return;
 
                                     this.props.navigation.state.params.initFromSearch(result, city);
                                     this.props.navigation.goBack();

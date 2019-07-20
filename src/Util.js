@@ -295,7 +295,7 @@ export default class Util extends React.Component {
         return value;
     }
 
-    static async getPlaceId(input, key, type, callback) { // get placeId of city-state or city
+    static async getPlaceId(input, key, type, cb) { // get placeId of city-state or city
         const request = new XMLHttpRequest();
         request.onreadystatechange = () => {
             if (request.readyState !== 4) return;
@@ -333,11 +333,12 @@ export default class Util extends React.Component {
                             result = results[0]; // select the first one
                         }
 
-                        callback(result);
+                        cb(result);
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
                         console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                        cb(null);
                     }
                     // --
 

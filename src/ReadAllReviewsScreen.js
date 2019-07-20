@@ -462,7 +462,11 @@ export default class ReadAllReviewsScreen extends React.Component {
                 {
                     isMyReview && !reply &&
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                        <TouchableOpacity
+                            style={{
+                                // alignSelf: 'baseline'
+                                width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                            }}
                             onPress={() => this.removeReview(index)}
                         >
                             <MaterialIcons name='close' color={'silver'} size={20} />
@@ -505,7 +509,11 @@ export default class ReadAllReviewsScreen extends React.Component {
                         {
                             isMyReply &&
                             <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                <TouchableOpacity
+                                    style={{
+                                        // alignSelf: 'baseline'
+                                        width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                                    }}
                                     onPress={() => this.removeReply(index)}
                                 >
                                     <MaterialIcons name='close' color={'silver'} size={20} />
@@ -518,7 +526,11 @@ export default class ReadAllReviewsScreen extends React.Component {
                 {
                     this.state.isOwner && !reply &&
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                        <TouchableOpacity
+                            style={{
+                                // alignSelf: 'baseline'
+                                width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                            }}
                             onPress={() => this.openKeyboard(ref, index)}
                         >
                             <MaterialIcons name='reply' color={'silver'} size={20} />

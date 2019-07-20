@@ -419,6 +419,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 this.feedList.set(feedId, null);
 
                 const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+                    if (newFeed === null) return; // error
+
                     if (newFeed === undefined) {
                         this.feedList.delete(feedId);
                         return;
@@ -453,6 +455,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 this.feedCountList.set(placeId, -1);
 
                 const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
                     if (newPlace === undefined) {
                         this.feedCountList.delete(placeId);
                         return;
@@ -715,7 +719,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
                                                 <View style={{ flexDirection: 'row' }}>
                                                     <View style={{ marginTop: Cons.redDotWidth / 2, alignSelf: 'flex-start' }}>
-                                                        <Text style={{ paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                                        <Text style={{ fontSize: 24, lineHeight: 28, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
                                                             {avatarName}
                                                         </Text>
                                                     </View>

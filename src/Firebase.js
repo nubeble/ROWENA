@@ -341,20 +341,21 @@ export default class Firebase {
         return places;
     }
 
-    static subscribeToFeed(placeId, feedId, callback) {
+    static subscribeToFeed(placeId, feedId, cb) {
         return Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).onSnapshot(
             snap => {
                 const feed = snap.data();
                 console.log('Firebase.subscribeToFeed, feed changed.');
-                callback(feed);
+                cb(feed);
             },
             error => {
                 console.log('Firebase.subscribeToFeed, error', error);
+                cb(null);
             }
         );
     }
 
-    static subscribeToPlace(placeId, callback) {
+    static subscribeToPlace(placeId, cb) {
         return Firebase.firestore.collection("places").doc(placeId).onSnapshot(
             snap => {
                 /*
@@ -365,28 +366,30 @@ export default class Firebase {
                     if (field) count = field;
                 }
     
-                callback(count);
+                cb(count);
                 */
 
                 const place = snap.data();
                 console.log('Firebase.subscribeToPlace, place changed.');
-                callback(place);
+                cb(place);
             },
             error => {
                 console.log('Firebase.subscribeToPlace, error', error);
+                cb(null);
             }
         );
     }
 
-    static subscribeToProfile(uid, callback) {
+    static subscribeToProfile(uid, cb) {
         return Firebase.firestore.collection("users").doc(uid).onSnapshot(
             snap => {
                 const user = snap.data();
                 console.log('Firebase.subscribeToProfile, user changed.');
-                callback(user);
+                cb(user);
             },
             error => {
                 console.log('Firebase.subscribeToProfile, error', error);
+                cb(null);
             }
         );
     }
@@ -441,7 +444,7 @@ export default class Firebase {
     */
 
     /*
-    static subscribeToPlaceSize(placeId, callback) {
+    static subscribeToPlaceSize(placeId, cb) {
         return Firebase.firestore.collection("places").doc(placeId).onSnapshot(snap => {
             let count = 0;
 
@@ -450,7 +453,7 @@ export default class Firebase {
                 if (field) count = field;
             }
 
-            callback(count);
+            cb(count);
         });
     }
     */
@@ -1620,7 +1623,7 @@ export default class Firebase {
         return data;
     }
 
-    static loadChatRoom(count, uid, callback) {
+    static loadChatRoom(count, uid, cb) {
         Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(count).on('value', snapshot => {
             if (snapshot.exists()) {
                 // invert the results
@@ -1629,9 +1632,9 @@ export default class Firebase {
                     list.push(child.val());
                 });
 
-                callback(list);
+                cb(list);
             } else {
-                callback(null);
+                cb(null);
             }
         });
     }
@@ -1640,7 +1643,7 @@ export default class Firebase {
         Firebase.database.ref('chat').child(uid).off();
     }
 
-    static loadMoreChatRoom(count, uid, timestamp, id, callback) {
+    static loadMoreChatRoom(count, uid, timestamp, id, cb) {
         // console.log('timestamp', timestamp);
 
         Firebase.database.ref('chat').child(uid).orderByChild('timestamp').endAt(timestamp).limitToLast(count + 1).once('value', snapshot => {
@@ -1653,9 +1656,9 @@ export default class Firebase {
                     }
                 });
 
-                callback(list);
+                cb(list);
             } else {
-                callback(null);
+                cb(null);
             }
         });
     }
@@ -1719,10 +1722,12 @@ export default class Firebase {
         return array.reverse();
     };
 
-    static chatOn(count, id, callback) {
+    static chatOn(count, id, cb) {
         Firebase.database.ref('contents').child(id).orderByChild('timestamp').limitToLast(count).on('child_added', snapshot => {
             if (snapshot.exists()) {
-                callback(Firebase.parseChild(snapshot));
+                cb(Firebase.parseChild(snapshot));
+            } else {
+                cb(null);
             }
         });
     }
@@ -1731,14 +1736,14 @@ export default class Firebase {
         Firebase.database.ref('contents').child(id).off();
     }
 
-    static loadMoreMessage(count, id, lastMessageTimestamp, lastMessageId, callback) {
+    static loadMoreMessage(count, id, lastMessageTimestamp, lastMessageId, cb) {
         console.log('loadMoreMessage', id, lastMessageTimestamp, lastMessageId);
 
         Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(count + 1).once('value', snapshot => {
             if (snapshot.exists()) {
-                callback(Firebase.parseValue(snapshot, lastMessageId));
+                cb(Firebase.parseValue(snapshot, lastMessageId));
             } else {
-                callback(null);
+                cb(null);
             }
         });
     }

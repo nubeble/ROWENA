@@ -329,6 +329,8 @@ export default class Intro extends React.Component<InjectedProps> {
                 Intro.feedCountList.set(result.place_id, -1);
 
                 const ci = Firebase.subscribeToPlace(result.place_id, newPlace => {
+                    if (newPlace === null) return; // error
+
                     if (newPlace === undefined) {
                         // update Intro.feedCountList
                         Intro.feedCountList.delete(result.place_id);
@@ -426,6 +428,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                 Intro.feedCountList.set(__placeId, -1);
 
                                 const ci = Firebase.subscribeToPlace(__placeId, newPlace => {
+                                    if (newPlace === null) return; // error
+
                                     if (newPlace === undefined) {
                                         // update Intro.feedCountList
                                         Intro.feedCountList.delete(__placeId);
@@ -531,6 +535,8 @@ export default class Intro extends React.Component<InjectedProps> {
                     Intro.feedList.set(feed.id, null);
 
                     const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                        if (newFeed === null) return; // error
+
                         if (newFeed === undefined) {
                             // update Intro.feedList
                             Intro.feedList.delete(feed.id);
@@ -554,6 +560,8 @@ export default class Intro extends React.Component<InjectedProps> {
                     Intro.feedCountList.set(feed.placeId, -1);
 
                     const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                        if (newPlace === null) return; // error
+
                         if (newPlace === undefined) {
                             // update Intro.feedCountList
                             Intro.feedCountList.delete(feed.placeId);
@@ -618,6 +626,8 @@ export default class Intro extends React.Component<InjectedProps> {
                     Intro.feedList.set(feed.id, null);
 
                     const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                        if (newFeed === null) return; // error
+
                         if (newFeed === undefined) {
                             // update Intro.feedList
                             Intro.feedList.delete(feed.id);
@@ -641,6 +651,8 @@ export default class Intro extends React.Component<InjectedProps> {
                     Intro.feedCountList.set(feed.placeId, -1);
 
                     const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                        if (newPlace === null) return; // error
+
                         if (newPlace === undefined) {
                             // update Intro.feedCountList
                             Intro.feedCountList.delete(feed.placeId);
@@ -744,7 +756,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                     paddingTop: 3,
                                     color: "rgb(160, 160, 160)", textAlign: 'center'
                                 }}
-                                numberOfLines={1}
+                            // numberOfLines={1}
                             >{'Where to?'}</Text>
                         </TouchableOpacity>
                     </View>

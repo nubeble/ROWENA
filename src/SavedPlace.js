@@ -305,6 +305,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
     subscribeToPost(placeId, feedId) {
         const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+            if (newFeed === null) return; // error
+
             if (newFeed === undefined) {
                 // update this.feedList
                 this.feedList.delete(feedId);
@@ -370,6 +372,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             this.feedCountList.set(placeId, -1);
 
             const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+                if (newPlace === null) return; // error
+
                 if (newPlace === undefined) {
                     this.feedCountList.delete(placeId);
                     return;

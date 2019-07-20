@@ -1,61 +1,96 @@
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Text } from "./rnff/src/components";
+import { MaterialCommunityIcons } from "react-native-vector-icons";
+
+const lineHeight = 18; // height per 1 line
+
 
 export default class ReadMore extends React.Component {
     state = {
-        measured: false,
-        shouldShowReadMore: false,
-        showAllText: false
+        showAllText: true,
+        showButton: false
     };
-
-    async componentDidMount() {
-        this._isMounted = true;
-
-        await nextFrameAsync();
-
-        // Get the height of the text with no restriction on number of lines
-        if (!this._isMounted) return;
-        const fullHeight = await measureHeightAsync(this._text);
-        this.setState({ measured: true });
-        await nextFrameAsync();
-
-        // Get the height of the text now that number of lines has been set
-        if (!this._isMounted) return;
-        const limitedHeight = await measureHeightAsync(this._text);
-
-        if (fullHeight > limitedHeight) {
-            this.setState({ shouldShowReadMore: true }, () => {
-                this.props.onReady && this.props.onReady();
-            });
-        } else {
-            this.props.onReady && this.props.onReady();
-        }
-    }
 
     componentWillUnmount() {
         this._isMounted = false;
     }
 
     render() {
-        let { measured, showAllText } = this.state;
-
-        let { numberOfLines } = this.props;
+        const { showAllText } = this.state;
+        const { numberOfLines } = this.props;
 
         return (
             <View>
-                <Text
-                    numberOfLines={measured && !showAllText ? numberOfLines : 0}
-                    ref={text => {
-                        this._text = text;
-                    }}
-                >
-                    {this.props.children}
-                </Text>
+                <TouchableOpacity
+                    onLayout={(e) => {
+                        if (this.measured) return;
+                        this.measured = true;
 
-                {this._maybeRenderReadMore()}
+                        const { height } = e.nativeEvent.layout;
+                        // console.log('height', height);
+
+                        const limit = numberOfLines * lineHeight; // 36
+
+                        console.log('limit', limit, 'height', height);
+
+                        if (height <= limit) {
+                            this.setState({ showAllText: true, showButton: false });
+                        } else {
+                            this.setState({ showAllText: false, showButton: true });
+                        }
+                    }}
+                    onPress={this.props.onPress}
+                >
+                    <Text numberOfLines={showAllText ? 0 : numberOfLines}>
+                        {this.props.children}
+                    </Text>
+                </TouchableOpacity>
+                {
+                    this.renderReadMore()
+                }
             </View>
         );
+    }
+
+    renderReadMore() {
+        let { showButton, showAllText } = this.state;
+
+        if (showButton && !showAllText) {
+            // if (!showAllText) {
+            return (
+                <View style={{ width: '100%', alignItems: 'center' }}>
+                    <TouchableOpacity
+                        style={{
+                            width: 22,
+                            height: 22,
+                            justifyContent: "center", alignItems: "center"
+
+                        }}
+                        onPress={this._handlePressReadMore}
+                    >
+                        <MaterialCommunityIcons name='chevron-down' color="silver" size={18} />
+                    </TouchableOpacity>
+                </View>
+            );
+        } else if (showButton && showAllText) {
+            // } else if (showAllText) {
+            return (
+                <View style={{ width: '100%', alignItems: 'center' }}>
+                    <TouchableOpacity
+                        style={{
+                            width: 22,
+                            height: 22,
+                            justifyContent: "center", alignItems: "center"
+
+                        }}
+                        onPress={this._handlePressReadLess}
+                    >
+                        <MaterialCommunityIcons name='chevron-up' color="silver" size={18} />
+                    </TouchableOpacity>
+                </View>
+            );
+        }
     }
 
     _handlePressReadMore = () => {
@@ -65,49 +100,4 @@ export default class ReadMore extends React.Component {
     _handlePressReadLess = () => {
         this.setState({ showAllText: false });
     };
-
-    _maybeRenderReadMore() {
-        let { shouldShowReadMore, showAllText } = this.state;
-
-        if (shouldShowReadMore && !showAllText) {
-            if (this.props.renderTruncatedFooter) {
-                return this.props.renderTruncatedFooter(this._handlePressReadMore);
-            }
-
-            return (
-                <Text style={styles.button} onPress={this._handlePressReadMore}>Read more</Text>
-            );
-        } else if (shouldShowReadMore && showAllText) {
-            if (this.props.renderRevealedFooter) {
-                return this.props.renderRevealedFooter(this._handlePressReadLess);
-            }
-
-            return (
-                <Text style={styles.button} onPress={this._handlePressReadLess}>Hide</Text>
-            );
-        }
-    }
 }
-
-function measureHeightAsync(component) {
-    return new Promise(resolve => {
-
-        if (!this._isMounted) resolve(0);
-
-        component.measure((x, y, w, h) => {
-            resolve(h);
-        });
-    });
-}
-
-function nextFrameAsync() {
-    return new Promise(resolve => requestAnimationFrame(() => resolve()));
-}
-
-const styles = StyleSheet.create({
-    button: {
-        color: "#888",
-        fontFamily: "Roboto-Light",
-        marginTop: 5
-    }
-});

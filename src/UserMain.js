@@ -117,6 +117,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         // subscribe here
         // --
         const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === null) return; // error
+
             /*
             if (user === undefined) {
                 this.opponentUser = null;
@@ -500,7 +502,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'
                                     }}>
                                         <View style={{ width: '70%', height: '100%', justifyContent: 'center', paddingLeft: 22 }}>
-                                            <Text style={{ marginTop: Cons.redDotWidth / 2, paddingTop: 4, fontSize: 24, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
+                                            <Text style={{ marginTop: Cons.redDotWidth / 2, fontSize: 24, lineHeight: 28, color: Theme.color.text2, fontFamily: "Roboto-Medium" }}>
                                                 {avatarName}
                                             </Text>
                                             <Text style={{ marginTop: Dimensions.get('window').height / 80, fontSize: 16, color: Theme.color.text3, fontFamily: "Roboto-Light" }}>
@@ -913,7 +915,10 @@ export default class UserMain extends React.Component<InjectedProps> {
                 {
                     isMyComment &&
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                        <TouchableOpacity style={{
+                            // alignSelf: 'baseline'
+                            width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                        }}
                             onPress={() => this.removeComment(index)}
                         >
                             <MaterialIcons name='close' color={'silver'} size={20} />

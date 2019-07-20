@@ -153,6 +153,8 @@ export default class ChatMain extends React.Component {
         this.customerProfileList.set(uid, null);
 
         const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === null) return; // error
+
             if (user === undefined) {
                 this.customerProfileList.delete(uid);
                 return;
@@ -228,6 +230,8 @@ export default class ChatMain extends React.Component {
         this.feedList.set(feedId, null);
 
         const fi = Firebase.subscribeToFeed(placeId, feedId, newFeed => {
+            if (newFeed === null) return; // error
+
             if (newFeed === undefined) {
                 this.feedList.delete(feedId);
                 return;
@@ -271,6 +275,8 @@ export default class ChatMain extends React.Component {
         this.feedCountList.set(placeId, -1);
 
         const ci = Firebase.subscribeToPlace(placeId, newPlace => {
+            if (newPlace === null) return; // error
+
             if (newPlace === undefined) {
                 this.feedCountList.delete(placeId);
                 return;
@@ -802,11 +808,26 @@ export default class ChatMain extends React.Component {
             customerProfile = profile;
         }
 
+        const user1 = {
+            uid: users[0].uid,
+            name: users[0].name,
+            picture: users[0].picture
+        };
+
+        const user2 = {
+            uid: users[1].uid,
+            name: users[1].name,
+            picture: users[1].picture
+        };
+        const _users = [
+            user1, user2
+        ];
+
         const params = {
             id: item.id,
             placeId: item.placeId,
             feedId: item.feedId,
-            users,
+            users: _users,
             owner: item.owner, // owner uid of the post
             showAvatar: item.contents === '' ? true : false,
             lastReadMessageId: item.lastReadMessageId,

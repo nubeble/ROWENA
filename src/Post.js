@@ -206,9 +206,10 @@ export default class Post extends React.Component<InjectedProps> {
         this.feed = post;
 
         const fi = Firebase.subscribeToFeed(post.placeId, post.id, newFeed => {
+            if (newFeed === null) return; // error
+
             if (newFeed === undefined) {
                 this.feed = null;
-
                 return;
             }
 
@@ -249,6 +250,8 @@ export default class Post extends React.Component<InjectedProps> {
         // this.user = null;
 
         const instance = Firebase.subscribeToProfile(uid, user => {
+            if (user === null) return; // error
+
             if (user === undefined) {
                 this.user = null;
 
@@ -897,7 +900,7 @@ export default class Post extends React.Component<InjectedProps> {
                 }
                 <View style={styles.infoContainer}>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 4, marginBottom: 16 }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 4, marginBottom: 4 }}>
                         {/* post date */}
                         {/*
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -918,7 +921,6 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {/* dates */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-
                         <Text style={styles.name}>{post.name}</Text>
 
                         {/* activate date */}
@@ -1211,7 +1213,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 <View style={styles.writeReviewContainer}>
                     <Text style={styles.ratingText}>Share your experience to help others</Text>
-                    <View style={{ marginBottom: 10 }}>
+                    <View style={{ marginBottom: 8 }}>
                         <AirbnbRating
                             ref='rating'
                             onFinishRating={this.ratingCompleted}
@@ -1465,7 +1467,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                     <Image
                         style={{
-                            marginTop: 16,
+                            marginTop: 20,
                             width: illustWidth * 0.06,
                             height: illustHeight * 0.06,
                             resizeMode: 'cover'
@@ -1675,7 +1677,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 borderRadius: 14
                             }} />
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[0])}</Text>
+                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[0])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1700,7 +1702,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 borderRadius: 14
                             }} />
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[1])}</Text>
+                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[1])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1725,7 +1727,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 borderRadius: 14
                             }} />
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[2])}</Text>
+                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[2])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1750,7 +1752,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 borderRadius: 14
                             }} />
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[3])}</Text>
+                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[3])}</Text>
                     </View>
 
                     <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
@@ -1775,7 +1777,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 borderRadius: 14
                             }} />
                         </View>
-                        <Text style={styles.ratingText2} numberOfLines={1}>{Util.numberWithCommas(stats[4])}</Text>
+                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[4])}</Text>
                     </View>
                 </View>
             </View>
@@ -2069,25 +2071,23 @@ export default class Post extends React.Component<InjectedProps> {
                         <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                     </View>
 
-                    <TouchableOpacity onPress={() => {
-                        // console.log('onpress', index);
+                    <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                        <ReadMore
+                            numberOfLines={2}
+                            onPress={() => {
+                                // console.log('onPress');
+                                if (!this.originReviewList) this.originReviewList = [];
 
-                        if (!this.originReviewList) this.originReviewList = [];
-
-                        if (this.originReviewList[index]) { // means translated
-                            this.setOriginReview(index);
-                        } else {
-                            this.translateReview(index);
-                        }
-                    }}>
-                        <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                            <ReadMore numberOfLines={2}
-                            // onReady={() => this.readingCompleted()}
-                            >
-                                <Text style={styles.reviewText}>{_review.comment}</Text>
-                            </ReadMore>
-                        </View>
-                    </TouchableOpacity>
+                                if (this.originReviewList[index]) { // means translated
+                                    this.setOriginReview(index);
+                                } else {
+                                    this.translateReview(index);
+                                }
+                            }}
+                        >
+                            <Text style={styles.reviewText}>{_review.comment}</Text>
+                        </ReadMore>
+                    </View>
 
                     <View style={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny, flexDirection: 'row', alignItems: 'center' }}>
                         {
@@ -2122,7 +2122,11 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         isMyReview && !reply &&
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                            <TouchableOpacity
+                                style={{
+                                    // alignSelf: 'baseline'
+                                    width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                                }}
                                 onPress={() => this.removeReview(index)}
                             >
                                 <MaterialIcons name='close' color={'silver'} size={20} />
@@ -2146,28 +2150,31 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                             </View>
 
-                            <TouchableOpacity onPress={() => {
-                                // console.log('onpress', index);
+                            <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
+                                <ReadMore
+                                    numberOfLines={2}
+                                    onPress={() => {
+                                        if (!this.originReplyList) this.originReplyList = [];
 
-                                if (!this.originReplyList) this.originReplyList = [];
-
-                                if (this.originReplyList[index]) { // means translated
-                                    this.setOriginReply(index);
-                                } else {
-                                    this.translateReply(index);
-                                }
-                            }}>
-                                <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
-                                    <ReadMore numberOfLines={2}>
-                                        <Text style={styles.replyComment}>{reply.comment}</Text>
-                                    </ReadMore>
-                                </View>
-                            </TouchableOpacity>
+                                        if (this.originReplyList[index]) { // means translated
+                                            this.setOriginReply(index);
+                                        } else {
+                                            this.translateReply(index);
+                                        }
+                                    }}
+                                >
+                                    <Text style={styles.replyComment}>{reply.comment}</Text>
+                                </ReadMore>
+                            </View>
 
                             {
                                 isMyReply &&
                                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                                    <TouchableOpacity
+                                        style={{
+                                            // alignSelf: 'baseline'
+                                            width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                                        }}
                                         onPress={() => this.removeReply(index)}
                                     >
                                         <MaterialIcons name='close' color={'silver'} size={20} />
@@ -2180,7 +2187,11 @@ export default class Post extends React.Component<InjectedProps> {
                     {
                         this.state.isOwner && !reply &&
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <TouchableOpacity style={{ alignSelf: 'baseline' }}
+                            <TouchableOpacity
+                                style={{
+                                    // alignSelf: 'baseline'
+                                    width: 24, height: 24, justifyContent: "center", alignItems: "center"
+                                }}
                                 onPress={() => this.openKeyboard(ref, index)}
                             >
                                 <MaterialIcons name='reply' color={'silver'} size={20} />
@@ -2239,7 +2250,7 @@ export default class Post extends React.Component<InjectedProps> {
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
                         <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {reviewCount}+ reviews</Text>
-                        <FontAwesome name='chevron-right' color="#f1c40f" size={20} style={{ position: 'absolute', right: 0 }} />
+                        <FontAwesome name='chevron-right' color="#f1c40f" size={18} style={{ position: 'absolute', right: 0 }} />
                     </View>
                 </TouchableOpacity>
 
@@ -2861,7 +2872,7 @@ const styles = StyleSheet.create({
     name: {
         color: Theme.color.title,
         fontSize: 24,
-        paddingTop: 4,
+        lineHeight: 28,
         fontFamily: "Roboto-Medium"
     },
     /*

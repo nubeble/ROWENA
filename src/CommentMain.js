@@ -415,6 +415,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                 // subscribe user profile
                 const instance = Firebase.subscribeToProfile(uid, newUser => {
+                    if (newUser === null) return; // error
+
                     if (newUser === undefined) {
                         // update this.customerList
                         this.customerList.delete(uid);
