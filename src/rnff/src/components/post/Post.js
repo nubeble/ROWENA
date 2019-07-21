@@ -172,7 +172,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                         </View>
                                         <Text style={styles.rating}>{number}</Text>
                                         <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                        <Text style={styles.reviewCount}>{post.reviewCount}</Text>
+                                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
                                     </View>
                                 </View>
                                 :

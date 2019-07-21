@@ -322,7 +322,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
                                         <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                                             <Text style={styles.feedItemText}>{placeName}
-                                                <Text style={[styles.feedItemText, { color: Theme.color.subtitle }]}> {feedsSize}</Text>
+                                                <Text style={[styles.feedItemText, { color: Theme.color.subtitle }]}> {Util.numberWithCommas(feedsSize)}</Text>
                                             </Text>
                                         </View>
                                     </View>

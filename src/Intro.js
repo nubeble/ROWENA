@@ -1006,7 +1006,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 textShadowColor: 'black',
                                                 textShadowOffset: { width: 1, height: 1 },
                                                 textShadowRadius: 1
-                                            }}>{length + '+ girls'}</Text>
+                                            }}>{Util.numberWithCommas(length) + '+ girls'}</Text>
                                         }
                                     </View>
                                     {
@@ -1397,7 +1397,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                     </View>
                                     <Text style={styles.rating}>{number}</Text>
                                     <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                    <Text style={styles.reviewCount}>{feed.reviewCount}</Text>
+                                    <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
                                 </View>
                             </View>
                             :

@@ -48,7 +48,8 @@ const imageHeight = imageWidth / 3 * 2;
 const illustWidth = 2321;
 const illustHeight = 1890;
 
-const bodyInfoItemHeight = Dimensions.get('window').height / 24;
+// const bodyInfoItemHeight = Dimensions.get('window').height / 24;
+const bodyInfoItemHeight = 30;
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -844,7 +845,7 @@ export default class Post extends React.Component<InjectedProps> {
         } else if (visits === 1) {
             views = '1 view';
         } else {
-            views = visits + ' views';
+            views = Util.numberWithCommas(visits) + ' views';
         }
 
         let likes = null;
@@ -854,7 +855,7 @@ export default class Post extends React.Component<InjectedProps> {
         } else if (_likes === 1) {
             likes = '1 like';
         } else {
-            likes = _likes + ' likes';
+            likes = Util.numberWithCommas(_likes) + ' likes';
         }
 
         let showSettingsButton = false;
@@ -1092,7 +1093,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 </View>
                                 <Text style={styles.rating}>{number}</Text>
                                 <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                                <Text style={styles.reviewCount}>{post.reviewCount}</Text>
+                                <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
                             </View>
                             :
                             <View style={{ marginBottom: 9 - 4 }}>
@@ -1417,14 +1418,14 @@ export default class Post extends React.Component<InjectedProps> {
 
         return (
             <Swiper
-                ref={(swiper) => { this.swiper = swiper; }}
-                style={styles.wrapper}
                 // containerStyle={{ marginBottom: 10 }}
+                // navigation={this.props.navigation}
+                ref={(swiper) => { this.swiper = swiper; }}
                 width={imageWidth}
                 height={imageHeight}
                 loop={false}
-                autoplay={false}
-                autoplayTimeout={3}
+                // autoplay={false}
+                // autoplayTimeout={3}
                 paginationStyle={{ bottom: 4 }}
             >
                 {pictures}
@@ -2818,8 +2819,6 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         // paddingBottom: Theme.spacing.small
-    },
-    wrapper: {
     },
     slide: {
         flex: 1,

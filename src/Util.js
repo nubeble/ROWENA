@@ -1558,9 +1558,9 @@ export default class Util extends React.Component {
             }
         } else {
             if (Vars.distanceUnit === 'meter') {
-                distance = d.toFixed(0).toString() + unit;
+                distance = Util.numberWithCommas(d.toFixed(0)) + unit;
             } else {
-                distance = m.toFixed(0).toString() + unit;
+                distance = Util.numberWithCommas(m.toFixed(0)) + unit;
             }
         }
 
@@ -1820,6 +1820,7 @@ export default class Util extends React.Component {
         return array;
     }
 
-
-
+    static numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 }

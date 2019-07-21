@@ -194,7 +194,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         } else if (count === 1) {
             reviewText = '1 customer review';
         } else {
-            reviewText = count.toString() + " customer reviews";
+            reviewText = Util.numberWithCommas(count) + " customer reviews";
         }
 
         /*

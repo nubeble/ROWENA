@@ -22,7 +22,7 @@ const DEFAULT_MESSAGE_COUNT = 20;
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 
-const inputToolbarMarginBottom = 20; // ios only
+const inputToolbarMarginBottom = 4; // ios only
 
 const textInputPaddingLeft = (Dimensions.get('window').width / 20);
 const textInputPaddingRight = (Dimensions.get('window').width / 20);

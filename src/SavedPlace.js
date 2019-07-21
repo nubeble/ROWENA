@@ -477,7 +477,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     color: Theme.color.text4,
                                     fontSize: 20,
                                     fontFamily: "Roboto-Medium",
-                                }}> {this.state.totalFeedsSize}</Text>
+                                }}> {Util.numberWithCommas(this.state.totalFeedsSize)}</Text>
                             </Text>
                         </View>
                         /*
@@ -623,7 +623,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                                         </View>
                                                         <Text style={styles.rating}>{number}</Text>
                                                         <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                                        <Text style={styles.reviewCount}>{item.reviewCount}</Text>
+                                                        <Text style={Util.numberWithCommas(styles.reviewCount)}>{item.reviewCount}</Text>
                                                     </View>
                                                 </View>
                                             }

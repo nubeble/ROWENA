@@ -52,9 +52,9 @@ export default class extends Component {
                     */
                     // automaticallyAdjustContentInsets={false}
 
-                    alwaysBounceHorizontal={false}
-                    alwaysBounceVertical={false}
-                    bounces={false}
+                    // alwaysBounceHorizontal={false}
+                    // alwaysBounceVertical={false}
+                    // bounces={false}
 
                     decelerationRate={0.2} // works fine in android!
 

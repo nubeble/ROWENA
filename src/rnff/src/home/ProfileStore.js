@@ -196,23 +196,31 @@ export default class ProfileStore {
                             this.lastTimeCommentsUpdated = this.lastChangedTime;
                             this.callCommentsUpdatedCallback();
                         }
+
+
+
+                        // check if a review added on my feed
+                        // const resultReview = this.checkReviewAddedOnFeed(data.feeds);
+                        // if (!resultReview) {
+                        const resultReview = this.compareReviewAddedOnFeed(__profile.feeds, data.feeds);
+                        if (resultReview === false) {
+                            if (this.reviewAddedOnFeedCallback) this.reviewAddedOnFeedCallback();
+                        }
+
+                        // check if a reply added on my received review
+                        // const resultReply = this.checkReplyAddedOnReview(data.reviews);
+                        const resultReply = this.compareReplyAddedOnReview(__profile.reviews, data.reviews);
+                        if (!resultReply) {
+                            this.callReplyAddedOnReviewCallback();
+                        }
+
+
+
                     } else {
                         this.lastTimeFeedsUpdated = this.lastChangedTime;
                         this.lastTimeLikesUpdated = this.lastChangedTime;
                         this.lastTimeReviewsUpdated = this.lastChangedTime;
                         this.lastTimeCommentsUpdated = this.lastChangedTime;
-                    }
-
-                    // check if a review added on my feed
-                    const resultReview = this.checkReviewAddedOnFeed(data.feeds);
-                    if (resultReview) {
-                        if (this.reviewAddedOnFeedCallback) this.reviewAddedOnFeedCallback();
-                    }
-
-                    // check if a reply added on my review
-                    const resultReply = this.checkReplyAddedOnReview(data.reviews);
-                    if (resultReply) {
-                        this.callReplyAddedOnReviewCallback();
                     }
                 } else {
                     console.log('ProfileStore, profile removed');
@@ -242,7 +250,6 @@ export default class ProfileStore {
 
         // 2. contents
         for (let i = 0; i < oldFeeds.length; i++) {
-
             const a = oldFeeds[i]; // LikeRef
             const b = newFeeds[i]; // LikeRef
 
@@ -259,7 +266,6 @@ export default class ProfileStore {
 
         // 2. contents
         for (let i = 0; i < oldLikes.length; i++) {
-
             const a = oldLikes[i]; // LikeRef
             const b = newLikes[i]; // LikeRef
 
@@ -276,7 +282,6 @@ export default class ProfileStore {
 
         // 2. contents
         for (let i = 0; i < oldReviews.length; i++) {
-
             const a = oldReviews[i]; // LikeRef
             const b = newReviews[i]; // LikeRef
 
@@ -294,7 +299,6 @@ export default class ProfileStore {
 
         // 2. contents
         for (let i = 0; i < oldComments.length; i++) {
-
             const a = oldComments[i]; // CommentRef
             const b = newComments[i]; // CommentRef
 
@@ -304,6 +308,7 @@ export default class ProfileStore {
         return true;
     }
 
+    /*
     checkReviewAddedOnFeed(feeds) {
         for (let i = 0; i < feeds.length; i++) {
             const feed = feeds[i];
@@ -320,5 +325,37 @@ export default class ProfileStore {
         }
 
         return false;
+    }
+    */
+
+    compareReviewAddedOnFeed(oldFeeds, newFeeds) {
+        if (oldFeeds.length !== newFeeds.length) return null; // can not make a decision
+
+        for (let i = 0; i < oldFeeds.length; i++) {
+            const a = oldFeeds[i];
+            const b = newFeeds[i];
+
+            if (a.placeId !== b.placeId) return null; // can not make a decision
+            if (a.feedId !== b.feedId) return null; // can not make a decision
+
+            if (a.reviewAdded !== b.reviewAdded) return false;
+        }
+
+        return true;
+    }
+
+    compareReplyAddedOnReview(oldReviews, newReviews) {
+        // 1. size
+        if (oldReviews.length !== newReviews.length) return false;
+
+        // 2. review added
+        for (let i = 0; i < oldReviews.length; i++) {
+            const a = oldReviews[i];
+            const b = newReviews[i];
+
+            if (a.replyAdded !== b.replyAdded) return false;
+        }
+
+        return true;
     }
 }

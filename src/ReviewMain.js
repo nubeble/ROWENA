@@ -14,6 +14,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
+import Util from './Util';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -184,7 +185,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                 color: Theme.color.text4,
                                 fontSize: 20,
                                 fontFamily: "Roboto-Medium",
-                            }}> {this.state.totalFeedsSize}</Text>
+                            }}> {Util.numberWithCommas(this.state.totalFeedsSize)}</Text>
                         }
                     </Text>
                 </View>

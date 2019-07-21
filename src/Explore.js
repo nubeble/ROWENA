@@ -443,13 +443,13 @@ export default class Explore extends React.Component<InjectedProps> {
                                     {
                                         this.ads.length === 4 ?
                                             <Swiper
-                                                // style={styles.wrapper}
                                                 // containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                                 width={Dimensions.get('window').width}
                                                 height={Dimensions.get('window').width / 21 * 9}
                                                 loop={false}
                                                 autoplay={true}
-                                                autoplayTimeout={3}
+                                                // autoplayTimeout={3}
+                                                autoplayTimeout={2}
                                                 paginationStyle={{ bottom: 4 }}
                                                 onIndexChanged={(index) => {
                                                     // console.log('onIndexChanged', index);
@@ -541,7 +541,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
                                 <View style={styles.titleContainer}>
                                     <Text style={styles.title}>
-                                        {`${(this.state.feedSize) ? 'Explore ' + this.state.feedSize + '+ girls' : 'Explore girls'} in ` + this.state.titleText}
+                                        {`${(this.state.feedSize) ? 'Explore ' + Util.numberWithCommas(this.state.feedSize) + '+ girls' : 'Explore girls'} in ` + this.state.titleText}
                                     </Text>
                                 </View>
                                 {
@@ -689,8 +689,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
 
         // backgroundColor: 'grey'
-    },
-    wrapper: {
     },
     slide: {
         flex: 1,

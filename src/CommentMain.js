@@ -149,7 +149,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                 color: Theme.color.text4,
                                 fontSize: 20,
                                 fontFamily: "Roboto-Medium",
-                            }}> {this.state.totalFeedsSize}</Text>
+                            }}> {Util.numberWithCommas(this.state.totalFeedsSize)}</Text>
                         }
                     </Text>
                 </View>
