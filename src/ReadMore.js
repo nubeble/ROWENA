@@ -23,6 +23,7 @@ export default class ReadMore extends React.Component {
         return (
             <View>
                 <TouchableOpacity
+                    activeOpacity={0.5}
                     onLayout={(e) => {
                         if (this.measured) return;
                         this.measured = true;

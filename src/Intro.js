@@ -1316,7 +1316,7 @@ export default class Intro extends React.Component<InjectedProps> {
         }
 
         return (
-            <TouchableOpacity activeOpacity={1.0}
+            <TouchableOpacity activeOpacity={1}
                 onPress={async () => {
                     const post = this.getPost(feed.id);
                     if (post === null) {

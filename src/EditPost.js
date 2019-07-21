@@ -2434,7 +2434,7 @@ export default class EditPost extends React.Component {
     };
 
     openDialog(title, message, callback) {
-        !this.closed && this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
 
         this.setDialogCallback(callback);
     }
@@ -2444,7 +2444,7 @@ export default class EditPost extends React.Component {
     }
 
     hideDialog() {
-        if (this.state.dialogVisible) !this.closed && this.setState({ dialogVisible: false });
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
     }
 
     handleCancel() {

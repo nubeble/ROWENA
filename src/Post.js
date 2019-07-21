@@ -1112,13 +1112,15 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {
                         post.note &&
-                        <TouchableOpacity onPress={() => {
-                            if (this.originNote) { // means translated
-                                this.setOriginNote();
-                            } else {
-                                this.translateNote();
-                            }
-                        }}>
+                        <TouchableOpacity activeOpacity={0.5}
+                            onPress={() => {
+                                if (this.originNote) { // means translated
+                                    this.setOriginNote();
+                                } else {
+                                    this.translateNote();
+                                }
+                            }}
+                        >
                             <Text style={styles.note}>{post.note}</Text>
                         </TouchableOpacity>
                     }
@@ -2776,7 +2778,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     openDialog(title, message, callback) {
-        !this.closed && this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
 
         this.setDialogCallback(callback);
     }
@@ -2786,7 +2788,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     hideDialog() {
-        if (this.state.dialogVisible) !this.closed && this.setState({ dialogVisible: false });
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
     }
 
     handleCancel() {

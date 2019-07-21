@@ -868,19 +868,20 @@ export default class UserMain extends React.Component<InjectedProps> {
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
 
-                <TouchableOpacity onPress={() => {
-                    if (!this.originReviewList) this.originReviewList = [];
+                <View style={{ paddingBottom: 6 }}>
+                    <TouchableOpacity activeOpacity={0.5}
+                        onPress={() => {
+                            if (!this.originReviewList) this.originReviewList = [];
 
-                    if (this.originReviewList[index]) { // means translated
-                        this.setOriginReview(index);
-                    } else {
-                        this.translateReview(index);
-                    }
-                }}>
-                    <View style={{ paddingBottom: 6 }}>
+                            if (this.originReviewList[index]) { // means translated
+                                this.setOriginReview(index);
+                            } else {
+                                this.translateReview(index);
+                            }
+                        }}>
                         <Text style={styles.reviewText}>{_review.comment}</Text>
-                    </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
 
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {

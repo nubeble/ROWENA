@@ -413,21 +413,22 @@ export default class ReadAllReviewsScreen extends React.Component {
                     <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                 </View>
 
-                <TouchableOpacity onPress={() => {
-                    // console.log('onpress', index);
+                <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                    <TouchableOpacity activeOpacity={0.5}
+                        onPress={() => {
+                            // console.log('onpress', index);
 
-                    if (!this.originReviewList) this.originReviewList = [];
+                            if (!this.originReviewList) this.originReviewList = [];
 
-                    if (this.originReviewList[index]) { // means translated
-                        this.setOriginReview(index);
-                    } else {
-                        this.translateReview(index);
-                    }
-                }}>
-                    <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                            if (this.originReviewList[index]) { // means translated
+                                this.setOriginReview(index);
+                            } else {
+                                this.translateReview(index);
+                            }
+                        }}>
                         <Text style={styles.reviewText}>{_review.comment}</Text>
-                    </View>
-                </TouchableOpacity>
+                    </TouchableOpacity>
+                </View>
 
                 <View style={{ marginTop: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
                     {
@@ -490,21 +491,22 @@ export default class ReadAllReviewsScreen extends React.Component {
                             <Text style={styles.replyDate}>{moment(reply.timestamp).fromNow()}</Text>
                         </View>
 
-                        <TouchableOpacity onPress={() => {
-                            // console.log('onpress', index);
+                        <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                            <TouchableOpacity activeOpacity={0.5}
+                                onPress={() => {
+                                    // console.log('onpress', index);
 
-                            if (!this.originReplyList) this.originReplyList = [];
+                                    if (!this.originReplyList) this.originReplyList = [];
 
-                            if (this.originReplyList[index]) { // means translated
-                                this.setOriginReply(index);
-                            } else {
-                                this.translateReply(index);
-                            }
-                        }}>
-                            <View style={{ paddingTop: 10, paddingBottom: 6 }}>
+                                    if (this.originReplyList[index]) { // means translated
+                                        this.setOriginReply(index);
+                                    } else {
+                                        this.translateReply(index);
+                                    }
+                                }}>
                                 <Text style={styles.replyComment}>{reply.comment}</Text>
-                            </View>
-                        </TouchableOpacity>
+                            </TouchableOpacity>
+                        </View>
 
                         {
                             isMyReply &&

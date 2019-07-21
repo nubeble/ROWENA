@@ -369,23 +369,15 @@ export default class Loading extends React.Component<InjectedProps> {
     async checkUpdateOnChat() {
         const uid = Firebase.user().uid;
         const room = await Firebase.getLastChatRoom(uid);
-
         if (!room) return false;
 
         const mid = room.mid;
+        if (!mid) return false; // no contents (this will never happen)
+
         const lastReadMessageId = room.lastReadMessageId;
+        if (!lastReadMessageId) return true; // user never read
 
-        if (!mid) { // no contents (will never happen)
-            return false;
-        }
-
-        if (!lastReadMessageId) { // user never read
-            return true;
-        }
-
-        if (mid === lastReadMessageId) {
-            return false;
-        }
+        if (mid === lastReadMessageId) return false;
 
         return true;
     }

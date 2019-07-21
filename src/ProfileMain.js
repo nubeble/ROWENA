@@ -677,7 +677,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                 <View style={styles.searchBar}>
 
-                    <TouchableOpacity activeOpacity={1.0} onPress={() => this.openAdmin()}>
+                    <TouchableOpacity activeOpacity={1} onPress={() => this.openAdmin()}>
                         <Text style={{
                             color: Theme.color.text1,
                             fontSize: 20,

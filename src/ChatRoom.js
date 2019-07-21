@@ -108,10 +108,10 @@ export default class ChatRoom extends React.Component {
 
             // check if the leave message arrived
             if (message.system && message.text.indexOf(" has left the chat room.") !== -1) {
-                this.setState({ opponentLeft: true });
+                !this.closed && this.setState({ opponentLeft: true });
             }
 
-            this.setState(previousState => ({
+            !this.closed && this.setState(previousState => ({
                 messages: GiftedChat.append(previousState.messages, message)
             }));
         });
@@ -183,22 +183,22 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        this.setState({ onKeyboard: true });
+        !this.closed && this.setState({ onKeyboard: true });
     }
 
     @autobind
     _keyboardDidHide(e) {
-        this.setState({ onKeyboard: false });
+        !this.closed && this.setState({ onKeyboard: false });
     }
 
     @autobind
     _keyboardWillShow(e) {
-        this.setState({ onKeyboard: true });
+        !this.closed && this.setState({ onKeyboard: true });
     }
 
     @autobind
     _keyboardWillHide(e) {
-        this.setState({ onKeyboard: false });
+        !this.closed && this.setState({ onKeyboard: false });
     }
 
     get user() {
@@ -258,7 +258,7 @@ export default class ChatRoom extends React.Component {
                 }));
             }
 
-            this.setState({ isLoadingMessages: false });
+            !this.closed && this.setState({ isLoadingMessages: false });
         });
     }
 
@@ -533,10 +533,10 @@ export default class ChatRoom extends React.Component {
                             autoCorrect: false,
 
                             onFocus: () => {
-                                this.setState({ onKeyboard: true });
+                                !this.closed && this.setState({ onKeyboard: true });
                             },
                             onBlur: () => {
-                                this.setState({ onKeyboard: false });
+                                !this.closed && this.setState({ onKeyboard: false });
                             },
                             editable: !this.state.opponentLeft
                         }}
@@ -816,7 +816,7 @@ export default class ChatRoom extends React.Component {
                             }
 
                             messages[index] = message;
-                            this.setState({ messages });
+                            !this.closed && this.setState({ messages });
                         }
                     }
                 }}

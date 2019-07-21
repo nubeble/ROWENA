@@ -607,7 +607,7 @@ export default class MapSearch extends React.Component {
         }
 
         return (
-            <TouchableOpacity activeOpacity={1.0}
+            <TouchableOpacity activeOpacity={1}
                 onPress={async () => {
                     const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
                     if (!result) {
