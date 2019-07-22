@@ -182,7 +182,6 @@ export default class Intro extends React.Component<InjectedProps> {
         Intro.countsUnsubscribes = [];
     }
 
-    // --
     componentWillMount() {
         Util.initTranslator();
 
@@ -247,7 +246,6 @@ export default class Intro extends React.Component<InjectedProps> {
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
         Vars.location = location;
     };
-    // --
 
     async componentDidMount() {
         console.log('Intro.componentDidMount');

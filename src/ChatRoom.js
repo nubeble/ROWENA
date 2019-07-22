@@ -22,7 +22,8 @@ const DEFAULT_MESSAGE_COUNT = 20;
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 
-const inputToolbarMarginBottom = 4; // ios only
+// const inputToolbarMarginBottom = 4; // ios only
+const inputToolbarMarginBottom = Platform.OS === 'ios' ? 4 : 2;
 
 const textInputPaddingLeft = (Dimensions.get('window').width / 20);
 const textInputPaddingRight = (Dimensions.get('window').width / 20);
@@ -480,8 +481,8 @@ export default class ChatRoom extends React.Component {
 
                 <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView}>
                     <GiftedChat
-                        // minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
-                        minInputToolbarHeight={Platform.OS === 'ios' ? inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom : inputToolbarHeight + textInputMarginBottom}
+                        // minInputToolbarHeight={Platform.OS === 'ios' ? inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom : inputToolbarHeight + textInputMarginBottom}
+                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom} // 0722
                         minComposerHeight={0}
                         maxComposerHeight={0}
 
@@ -524,8 +525,8 @@ export default class ChatRoom extends React.Component {
                             },
                             */
 
-                            // style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
-                            style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : styles.androidTextInput,
+                            // style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : styles.androidTextInput,
+                            style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : [styles.androidTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }], // 0722
 
                             selectionColor: Theme.color.selection,
                             // keyboardAppearance: 'dark',
@@ -638,7 +639,8 @@ export default class ChatRoom extends React.Component {
             <Send {...props}
                 containerStyle={{
                     marginTop: -4,
-                    marginBottom: Platform.OS === 'ios' ? textInputMarginBottom + sendButtonMarginBottom + _inputToolbarMarginBottom : textInputMarginBottom + sendButtonMarginBottom
+                    // marginBottom: Platform.OS === 'ios' ? textInputMarginBottom + sendButtonMarginBottom + _inputToolbarMarginBottom : textInputMarginBottom + sendButtonMarginBottom
+                    marginBottom: textInputMarginBottom + sendButtonMarginBottom + _inputToolbarMarginBottom
                 }}
             >
                 <View style={styles.sendButton}>

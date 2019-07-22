@@ -12,10 +12,6 @@ export default class Star extends PureComponent {
         selectedColor: '#f1c40f'
     };
 
-    // --
-    // static STAR_IMAGE = _STAR_IMAGE;
-    // static STAR_SELECTED_IMAGE = _STAR_SELECTED_IMAGE;
-
     static downloadAsync(): Promise<*>[] {
         return [
             Asset.loadAsync([
@@ -24,7 +20,6 @@ export default class Star extends PureComponent {
             ])
         ];
     }
-    // --
 
     componentWillUnmount() {
         this.stopAnimation();

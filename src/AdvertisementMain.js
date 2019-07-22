@@ -36,8 +36,8 @@ const imageViewHeight = imageViewWidth / 4 * 3;
 const imageWidth = imageViewWidth * 0.8;
 const imageHeight = imageViewHeight * 0.8;
 
-// --
 // message box pos
+// --
 const messageBoxW = Dimensions.get('window').width / 12 * 7;
 const messageBoxH = 60;
 

@@ -39,8 +39,8 @@ const doneButtonViewHeight = 44;
 const textInputFontSize = 18;
 const textInputHeight = 34;
 
-// --
 // message box pos
+// --
 const messageBoxW = Dimensions.get('window').width / 12 * 7;
 const messageBoxH = 60;
 
