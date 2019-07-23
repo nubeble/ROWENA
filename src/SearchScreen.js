@@ -96,7 +96,7 @@ export default class SearchScreen extends React.Component {
         else placeholder = 'Where to? (City)';
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{

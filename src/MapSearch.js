@@ -203,7 +203,7 @@ export default class MapSearch extends React.Component {
 
     render() {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 {
                     this.state.renderMap &&
                     this.renderMap()

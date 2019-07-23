@@ -170,7 +170,7 @@ export default class MapOverview extends React.Component {
         const distance = Util.getDistance(post.location, Vars.location);
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity

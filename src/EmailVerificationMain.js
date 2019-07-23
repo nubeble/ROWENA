@@ -26,7 +26,7 @@ type InjectedProps = {
 export default class EmailVerificationMain extends React.Component<InjectedProps> {
     state = {
         bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight,
+        signUpButtonTop: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight,
         showSignUpLoader: false,
 
         notification: '',
@@ -185,7 +185,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const signUpButtonTop = bottomPosition - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight;
+        const signUpButtonTop = bottomPosition - Cons.bottomButtonMarginBottom - Cons.buttonHeight;
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
@@ -268,7 +268,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
+                        toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -326,7 +326,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                 resizeMode='cover'
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', paddingVertical: Cons.viewMarginVertical() }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}

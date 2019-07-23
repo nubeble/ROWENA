@@ -100,7 +100,7 @@ export default class Loading extends React.Component<InjectedProps> {
         }
 
         return (
-            <View style={{ flex: 1, paddingVertical: Cons.viewMarginVertical() }}>
+            <View style={{ flex: 1 }}>
                 <Image
                     // style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined, opacity: this.state.image1Opacity }}
                     style={{
@@ -128,19 +128,8 @@ export default class Loading extends React.Component<InjectedProps> {
                         <RefreshIndicator refreshing total={3} size={5} color='white' />
                     </View>
                 }
-                {/*
-                <Text style={{ position: 'absolute', bottom: 30 + Cons.viewMarginVertical(), right: 10, fontSize: 14, color: 'white' }}>{'Date Published ' + Cons.lastUpdatedDate}</Text>
-                <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginVertical(), right: 10, fontSize: 14, color: 'white' }}>{'Version: ' + Cons.version}</Text>
-                */}
-                {/*
-                <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginVertical(), right: 10, alignItems: 'flex-end' }}>
-                    <Text style={{ fontSize: 18, color: 'white' }}>{'Date Published '}
-                        <Text style={{ fontSize: 18, color: 'black' }}>{Cons.lastUpdatedDate}</Text>
-                    </Text>
-                    <Text style={{ fontSize: 18, color: 'white' }}>{'Version: ' + Cons.version}</Text>
-                </View>
-                */}
-                <View style={{ position: 'absolute', bottom: Cons.viewMarginVertical() + 10, right: 10, alignItems: 'flex-end' }}>
+
+                <View style={{ position: 'absolute', bottom: 20, right: 10, alignItems: 'flex-end' }}>
                     <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate}</Text>
                     <Text style={{ fontSize: 16, color: 'white' }}>{Cons.version}</Text>
                 </View>

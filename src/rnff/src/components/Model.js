@@ -105,11 +105,12 @@ export type Post = {
     likes: Array<string>, // user uid array
     name: string,
     birthday: string, // DDMMYYYY
-    gender: string, // 'male', 'female'
+    gender: string, // 'Male', 'Female', 'Other'
     height: number,
     weight: number,
     bodyType: string, // 'Skinny', Fit', 'Thick'
     bust: string,
+    muscle: string,
     timestamp: number,
     rn: number, // random number
     g: string,

@@ -39,7 +39,7 @@ export default class AdvertisementFinish extends React.Component {
 
     render() {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -57,7 +57,7 @@ export default class AdvertisementFinish extends React.Component {
                             }, Cons.buttonTimeout);
                         }}
                     >
-                        <Ionicons name='md-close' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        <Ionicons name='md-close' color="black" size={24} />
                     </TouchableOpacity>
                 </View>
 
@@ -94,7 +94,7 @@ export default class AdvertisementFinish extends React.Component {
                     }}>{this.contentText}</Text>
                 </View>
 
-                <View style={{ position: 'absolute', top: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ position: 'absolute', top: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             !this.closed && this.props.navigation.dismiss();

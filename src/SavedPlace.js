@@ -441,7 +441,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
     render() {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{

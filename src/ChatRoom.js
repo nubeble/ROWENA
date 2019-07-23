@@ -22,16 +22,12 @@ const DEFAULT_MESSAGE_COUNT = 20;
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 
-// const inputToolbarMarginBottom = Platform.OS === 'ios' ? 4 : 2;
-const inputToolbarMarginBottom = 0;
-
-const textInputPaddingLeft = (Dimensions.get('window').width / 20);
-const textInputPaddingRight = (Dimensions.get('window').width / 20);
-
-const textInputMarginBottom = 4;
-
-const sendButtonMarginBottom = 7;
 const inputToolbarHeight = 48;
+const textInputMarginBottom = 2;
+const sendButtonMarginBottom = 7;
+
+const textInputPaddingLeft = 16;
+const textInputPaddingRight = 10;
 
 const postWidth = Dimensions.get('window').width;
 const postHeight = Dimensions.get('window').height / 3;
@@ -395,8 +391,6 @@ export default class ChatRoom extends React.Component {
     }
 
     render() {
-        const _inputToolbarMarginBottom = this.state.onKeyboard ? 0 : inputToolbarMarginBottom;
-
         const top1 = (Dimensions.get('window').height - postHeight) / 2; // center
         const top2 = Cons.searchBarHeight;
 
@@ -420,7 +414,7 @@ export default class ChatRoom extends React.Component {
         // const text2 = 'Send a message before your battery dies.';
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -480,7 +474,7 @@ export default class ChatRoom extends React.Component {
 
                 <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView}>
                     <GiftedChat
-                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom}
+                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
                         minComposerHeight={0}
                         maxComposerHeight={0}
 
@@ -514,8 +508,11 @@ export default class ChatRoom extends React.Component {
                         onLongPress={() => undefined}
 
                         textInputProps={{
-                            // multiline: true,
-                            // numberOfLines: 2,
+                            /*
+                            multiline: true,
+                            numberOfLines: 2,
+                            */
+
                             /*
                             onLayout: (event) => {
                                 const layout = event.nativeEvent.layout;
@@ -523,7 +520,7 @@ export default class ChatRoom extends React.Component {
                             },
                             */
 
-                            style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : [styles.androidTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }],
+                            style: Platform.OS === 'android' ? styles.androidTextInput : styles.iosTextInput,
 
                             selectionColor: Theme.color.selection,
                             // keyboardAppearance: 'dark',
@@ -629,15 +626,11 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     renderSend(props) {
-        const _inputToolbarMarginBottom = this.state.onKeyboard ? 0 : inputToolbarMarginBottom;
-
         return (
-            // <Send {...props} containerStyle={{ marginTop: -4, marginBottom: textInputMarginBottom + sendButtonMarginBottom }}>
             <Send {...props}
                 containerStyle={{
                     marginTop: -4,
-                    // marginBottom: Platform.OS === 'ios' ? textInputMarginBottom + sendButtonMarginBottom + _inputToolbarMarginBottom : textInputMarginBottom + sendButtonMarginBottom
-                    marginBottom: textInputMarginBottom + sendButtonMarginBottom + _inputToolbarMarginBottom
+                    marginBottom: textInputMarginBottom + sendButtonMarginBottom
                 }}
             >
                 <View style={styles.sendButton}>
@@ -968,10 +961,9 @@ const styles = StyleSheet.create({
         color: "white",
         // backgroundColor: Theme.color.background,
         // backgroundColor: 'green',
-        marginBottom: textInputMarginBottom,
-
         paddingLeft: textInputPaddingLeft,
-        paddingRight: textInputPaddingRight
+        paddingRight: textInputPaddingRight,
+        marginBottom: textInputMarginBottom
     },
     iosTextInput: {
         width: '86%',
@@ -981,12 +973,11 @@ const styles = StyleSheet.create({
         color: "white",
         // backgroundColor: Theme.color.background,
         // backgroundColor: 'green',
-        marginBottom: textInputMarginBottom,
-
         paddingLeft: textInputPaddingLeft,
         paddingRight: textInputPaddingRight,
+        marginBottom: textInputMarginBottom,
 
-        paddingTop: 14
+        paddingTop: textInputMarginBottom + 10
     },
     sendButton: {
         // backgroundColor: Theme.color.background,

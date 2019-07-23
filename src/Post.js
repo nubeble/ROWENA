@@ -594,7 +594,7 @@ export default class Post extends React.Component<InjectedProps> {
         };
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -978,7 +978,18 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
-                                <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
+                                {
+                                    post.gender === 'Female' &&
+                                    <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
+                                }
+                                {
+                                    post.gender === 'Male' &&
+                                    <MaterialCommunityIcons name='gender-male' style={{ marginTop: 1, marginRight: -1 }} color={Theme.color.subtitle} size={19} />
+                                }
+                                {
+                                    post.gender === 'Other' &&
+                                    <MaterialCommunityIcons name='gender-male-female' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={22} />
+                                }
                             </View>
                             <View style={{
                                 width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
@@ -1042,15 +1053,58 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
-                                <Image
-                                    style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
-                                    source={PreloadImage.bra}
-                                />
+                                {
+                                    post.gender === 'Female' &&
+                                    <Image
+                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
+                                        source={PreloadImage.bra}
+                                    />
+                                }
+                                {
+                                    post.gender === 'Male' &&
+                                    <Image
+                                        style={{ marginRight: 2, width: 15, height: 15, tintColor: Theme.color.subtitle }}
+                                        source={PreloadImage.muscle}
+                                    />
+                                }
+                                {
+                                    post.gender === 'Other' && post.bust &&
+                                    <Image
+                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
+                                        source={PreloadImage.bra}
+                                    />
+                                }
+                                {
+                                    /*
+                                    post.gender === 'Other' && post.muscle &&
+                                    <Image
+                                        style={{ marginRight: 2, width: 15, height: 15, tintColor: Theme.color.subtitle }}
+                                        source={PreloadImage.muscle}
+                                    />
+                                    */
+                                }
                             </View>
                             <View style={{
                                 width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
                             }}>
-                                <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
+                                {
+                                    post.gender === 'Female' &&
+                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
+                                }
+                                {
+                                    post.gender === 'Male' &&
+                                    <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
+                                }
+                                {
+                                    post.gender === 'Other' && post.bust &&
+                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
+                                }
+                                {
+                                    /*
+                                    post.gender === 'Other' && post.muscle &&
+                                    <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
+                                    */
+                                }
                             </View>
                         </View>
                     </View>
@@ -2352,7 +2406,7 @@ export default class Post extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
+                        toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

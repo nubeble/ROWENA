@@ -267,7 +267,7 @@ export default class AuthMain extends React.Component {
                 />
                 */}
 
-                <Animated.View style={[styles.view, { paddingVertical: Cons.viewMarginVertical() }, viewStyle]}>
+                <Animated.View style={[styles.view, viewStyle]}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -434,7 +434,7 @@ export default class AuthMain extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
+                        toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

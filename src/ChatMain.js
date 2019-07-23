@@ -445,7 +445,7 @@ export default class ChatMain extends React.Component {
 
     render(): React.Node {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     <Text style={{
                         color: Theme.color.text1,
@@ -811,13 +811,13 @@ export default class ChatMain extends React.Component {
         const user1 = {
             uid: users[0].uid,
             name: users[0].name,
-            picture: users[0].picture
+            picture: users[0].picture ? users[0].picture : null
         };
 
         const user2 = {
             uid: users[1].uid,
             name: users[1].name,
-            picture: users[1].picture
+            picture: users[1].picture ? users[1].picture : null
         };
         const _users = [
             user1, user2

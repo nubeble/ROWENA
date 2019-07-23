@@ -252,7 +252,7 @@ export default class Explore extends React.Component<InjectedProps> {
         }
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,

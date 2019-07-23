@@ -88,7 +88,7 @@ export default class CheckLikes extends React.Component {
 
     render() {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -269,7 +269,7 @@ export default class CheckLikes extends React.Component {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-            </View>
+            </View >
         );
     }
 

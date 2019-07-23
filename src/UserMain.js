@@ -345,6 +345,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         // let labelText = null;
         let imageUri = null;
         let dateText = 'Joined in September 26, 2018';
+
+        // ToDo: use age, gender, note
         let age = '20';
         let gender = 'Female';
         let note = 'hi';
@@ -425,7 +427,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         }
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -1124,7 +1126,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
+                        toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

@@ -41,7 +41,7 @@ export default class Welcome extends React.Component {
         }
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {
                         // from === 'MOBILE' || from === 'EMAIL' &&
@@ -98,7 +98,7 @@ export default class Welcome extends React.Component {
                     }}>{this.contentText}</Text>
                 </View>
 
-                <View style={{ position: 'absolute', top: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ position: 'absolute', top: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             if (this.closed) return;

@@ -34,7 +34,7 @@ export default class Admin extends React.Component {
 
     render() {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -441,6 +441,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -524,6 +525,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -610,6 +612,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -693,6 +696,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -777,6 +781,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -855,6 +860,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1013,6 +1019,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1096,6 +1103,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1179,6 +1187,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1262,6 +1271,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1345,6 +1355,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1421,6 +1432,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 
@@ -1504,6 +1516,7 @@ export default class Admin extends React.Component {
         feed.height = height;
         feed.weight = weight;
         feed.bust = bust;
+        feed.muscle = null;
         feed.gender = 'Female';
         feed.bodyType = 'Skinny';
 

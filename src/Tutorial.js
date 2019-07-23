@@ -85,7 +85,7 @@ export default class Tutorial extends React.Component {
         const slide = item;
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical(), backgroundColor: slide.backgroundColor }]}>
+            <View style={[styles.flex, { backgroundColor: slide.backgroundColor }]}>
                 <Text style={styles.title}>{slide.title}</Text>
                 <Image source={slide.image.uri}
                     style={{

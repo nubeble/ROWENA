@@ -25,7 +25,7 @@ export default class WriteReviewScreen extends React.Component {
 
         invalid: false, // Consider: not used
         bottomPosition: Dimensions.get('window').height,
-        postButtonTop: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight,
+        postButtonTop: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -92,7 +92,7 @@ export default class WriteReviewScreen extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const postButtonTop = bottomPosition - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight;
+        const postButtonTop = bottomPosition - Cons.bottomButtonMarginBottom - Cons.buttonHeight;
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, postButtonTop: postButtonTop });
     }
@@ -181,7 +181,7 @@ export default class WriteReviewScreen extends React.Component {
         };
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -352,7 +352,7 @@ export default class WriteReviewScreen extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
+                        toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

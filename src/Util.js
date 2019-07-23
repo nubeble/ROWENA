@@ -195,7 +195,10 @@ export default class Util extends React.Component {
         return new Date(year, month, day);
     }
 
+    /*
     static getBust(breats) {
+        if (!boobs) return null;
+
         let bust = '';
 
         const words = breats.split(' ');
@@ -203,6 +206,20 @@ export default class Util extends React.Component {
         bust = words[0];
 
         return bust;
+    }
+    */
+
+    static getMuscle(muscle) {
+        if (!muscle) return null;
+
+        switch (muscle) {
+            case 'S': return 'Small';
+            case 'M': return 'Medium';
+            case 'L': return 'Large';
+            case 'XL': return 'Extra Large';
+        }
+
+        return null;
     }
 
     static getHeight(height) {
@@ -380,7 +397,7 @@ export default class Util extends React.Component {
                             result = results[0]; // select the first one
                         }
 
-                        callback(result);
+                        cb(result);
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
@@ -389,7 +406,7 @@ export default class Util extends React.Component {
                     // --
 
                 } else {
-                    callback(null);
+                    cb(null);
                 }
             }
         };

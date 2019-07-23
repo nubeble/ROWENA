@@ -1162,7 +1162,7 @@ export default class Firebase {
                     if (review.placeId === placeId && review.feedId === feedId) {
                         review.picture = picture;
 
-                        reviews[i] = review; // ToDo: not necessary for shallow copy
+                        reviews[i] = review;
                         // break;
                     }
                 }
@@ -1514,7 +1514,7 @@ export default class Firebase {
                         comment.picture = picture;
                     }
 
-                    comments[i] = comment; // ToDo: not necessary for shallow copy
+                    comments[i] = comment;
                 }
 
                 const data = {
@@ -1591,6 +1591,8 @@ export default class Firebase {
     //// Realtime Database ////
 
     static async createChatRoom(uid, users, placeId, feedId, id, placeName, owner, addSystemMessage) {
+        // console.log(uid, users, placeId, feedId, id, placeName, owner, addSystemMessage);
+
         const timestamp = Firebase.timestamp();
 
         const data = {

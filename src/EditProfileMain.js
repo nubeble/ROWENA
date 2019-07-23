@@ -222,7 +222,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         const { reviews } = this.state;
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity

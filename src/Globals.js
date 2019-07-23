@@ -15,9 +15,9 @@ export var Vars = {
 };
 
 export const Cons = {
-    version: '0.9.62',
+    version: '0.9.63',
     buildNumber: '93088300',
-    lastUpdatedDate: 'Jul 23, 2019 12:18',
+    lastUpdatedDate: 'Jul 24, 2019 00:25',
 
     // push notification type
     pushNotification: {
@@ -47,19 +47,20 @@ export const Cons = {
 
     // view margin bottom
     // ToDo: iphone x, iphone xr, iphone xs, ...
-    // viewMarginBottom: (Platform.OS == 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') ? 8 : 0,
+    /*
     viewMarginVertical: () => {
         if (Platform.OS === 'android') return 0;
 
         const model = Constants.platform.ios.model.toLowerCase();
 
-        if (model === 'iphone x') return 10;
-        if (model === 'iphone xs') return 10;
-        if (model === 'iphone xs max') return 10;
-        if (model === 'iphone xr') return 10;
+        if (model === 'iphone x') return 12;
+        if (model === 'iphone xs') return 12;
+        if (model === 'iphone xs max') return 12;
+        if (model === 'iphone xr') return 12;
 
         return 0;
     },
+    */
 
     mapPostBottom: () => {
         if (Platform.OS === 'android') return -12;

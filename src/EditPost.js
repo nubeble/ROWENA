@@ -115,6 +115,10 @@ const genderItems = [
     {
         label: 'Female',
         value: 'Female'
+    },
+    {
+        label: 'Other',
+        value: 'Other'
     }
 ];
 
@@ -136,33 +140,46 @@ const bodyTypeItems = [
 const braSizeItems = [
     {
         label: 'A cup',
-        value: 'A cup',
-        // color: 'yellow'
+        value: 'A'
     },
     {
         label: 'B cup',
-        value: 'B cup',
-        // color: 'yellow'
+        value: 'B'
     },
     {
         label: 'C cup',
-        value: 'C cup',
-        // color: 'yellow'
+        value: 'C'
     },
     {
         label: 'D cup',
-        value: 'D cup',
-        // color: 'green'
+        value: 'D'
     },
     {
         label: 'E cup',
-        value: 'E cup',
-        // color: 'blue'
+        value: 'E'
     },
     {
         label: 'F cup',
-        value: 'F cup',
-        // color: 'purple'
+        value: 'F'
+    }
+];
+
+const bicepsSizeItems = [
+    {
+        label: 'Small (10\" - 11.5\")',
+        value: 'S'
+    },
+    {
+        label: 'Medium (11.5\" - 13\")',
+        value: 'M'
+    },
+    {
+        label: 'Large (13\" - 14.5\")',
+        value: 'L'
+    },
+    {
+        label: 'Extra Large (14.5\" - 16\")',
+        value: 'XL'
     }
 ];
 
@@ -189,7 +206,8 @@ export default class EditPost extends React.Component {
         height: '',
         weight: '',
         bodyType: null,
-        breasts: null,
+        boobs: null,
+        biceps: null,
         cityInfo: null,
         streetInfo: null,
         country: null,
@@ -208,7 +226,7 @@ export default class EditPost extends React.Component {
         showHeightAlertIcon: false,
         showWeightAlertIcon: false,
         showBodyTypeAlertIcon: false,
-        showBreastsAlertIcon: false,
+        showBoobsAlertIcon: false,
         // showCountryAlertIcon: false,
         // showStreetAlertIcon: false,
 
@@ -315,7 +333,9 @@ export default class EditPost extends React.Component {
         const height = post.height + ' cm';
         const weight = post.weight + ' kg';
         const bodyType = post.bodyType;
-        const breasts = post.bust + ' cup';
+        // const boobs = post.bust + ' cup';
+        const boobs = post.bust;
+        const biceps = post.muscle;
 
         const cityInfo = {
             cityId: post.placeId,
@@ -340,7 +360,7 @@ export default class EditPost extends React.Component {
         this.setState({
             post,
             uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri,
-            name, birthday, datePickerDate, gender, height, weight, bodyType, breasts, cityInfo, streetInfo, country, countryCode, street, note, noteLength
+            name, birthday, datePickerDate, gender, height, weight, bodyType, boobs, biceps, cityInfo, streetInfo, country, countryCode, street, note, noteLength
         });
     }
 
@@ -445,7 +465,7 @@ export default class EditPost extends React.Component {
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
         } else if (this.focusedItem === 'note') {
             // this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.breastsY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.boobsY, animated: true });
 
             if (!this.state.onNote) this.setState({ onNote: true });
         }
@@ -633,13 +653,13 @@ export default class EditPost extends React.Component {
         this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
     }
 
-    onFocusBreasts() {
+    onFocusBoobs() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.breastsY, animated: true });
+        // this.refs.flatList.scrollToOffset({ offset: this.boobsY, animated: true });
         this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
     }
 
@@ -664,7 +684,7 @@ export default class EditPost extends React.Component {
         const {
             post,
             uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri,
-            name, birthday, gender, height, weight, bodyType, breasts, note, country, street, streetInfo, cityInfo
+            name, birthday, gender, height, weight, bodyType, boobs, biceps, note, country, street, streetInfo, cityInfo
         } = this.state;
 
         if (uploadImage1Uri === null) {
@@ -737,10 +757,20 @@ export default class EditPost extends React.Component {
             return;
         }
 
-        if (!breasts) {
+        if (gender === 'Female' && !boobs) {
             this.showNotification('Please select your bra size.');
 
-            this.setState({ showBreastsAlertIcon: true });
+            this.setState({ showBoobsAlertIcon: true });
+
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+
+            return;
+        }
+
+        if (gender === 'Male' && !biceps) {
+            this.showNotification('Please select your biceps size.');
+
+            this.setState({ showBoobsAlertIcon: true });
 
             this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
 
@@ -784,7 +814,9 @@ export default class EditPost extends React.Component {
         data.height = Util.getHeight(height);
         data.weight = Util.getWeight(weight);
         data.bodyType = bodyType;
-        data.bust = Util.getBust(breasts);
+        // data.bust = Util.getBust(boobs);
+        data.bust = boobs;
+        data.muscle = biceps;
 
         // placeId, placeName, location
         // --
@@ -854,20 +886,6 @@ export default class EditPost extends React.Component {
         };
         data.pictures = pictures;
 
-
-
-
-
-
-        /*
-        const extra = {
-            lat: cityInfo.location.lat,
-            lng: cityInfo.location.lng
-        };
-
-        // await this.createFeed(data, extra);
-        */
-
         await Firebase.updateFeed(post.uid, post.placeId, post.id, data);
 
         // this.removeItemFromList();
@@ -895,7 +913,7 @@ export default class EditPost extends React.Component {
         };
 
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 {/* notification bar */}
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
@@ -1221,6 +1239,10 @@ export default class EditPost extends React.Component {
     }
 
     renderHeader(post) {
+        let boobsTitle = 'BOOBS';
+        if (!this.state.gender || this.state.gender === 'Female' || this.state.gender === 'Other') boobsTitle = 'BOOBS';
+        else if (this.state.gender === 'Male') boobsTitle = 'MUSCLE';
+
         const viewStyle = {
             opacity: this.state.messageBoxOpacity
         };
@@ -1629,12 +1651,13 @@ export default class EditPost extends React.Component {
                         <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
-                    {/* 7. breasts */}
+                    {/* 7. boobs */}
+                    {/* boobs / biceps */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
-                            {'BREASTS'}
+                            {boobsTitle}
                         </Text>
                         <TouchableOpacity
                             style={{
@@ -1651,74 +1674,111 @@ export default class EditPost extends React.Component {
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
                     </View>
-                    <Select
-                        /*
-                        ref={(el) => {
-                            this.inputRefs.favSport0 = el;
-                        }}
-                        */
-                        onOpen={() => this.onFocusBreasts()} // NOT working in Android
-                        placeholder={{
-                            // label: "C cup",
-                            label: "What's your bra size?",
-                            value: null
-                        }}
-                        // placeholderTextColor={Theme.color.placeholder}
+                    {
+                        boobsTitle === 'BOOBS' ?
 
-                        items={braSizeItems}
-                        onValueChange={(value) => { // only for Android
-                            if (this._showNotification) {
-                                this.hideNotification();
-                                this.hideAlertIcon();
-                            }
+                            <Select
+                                /*
+                                ref={(el) => {
+                                    this.inputRefs.favSport0 = el;
+                                }}
+                                */
+                                onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                placeholder={{
+                                    label: "What's your bra size?",
+                                    value: null
+                                }}
+                                // placeholderTextColor={Theme.color.placeholder}
+                                items={braSizeItems}
+                                onValueChange={(value) => { // only for Android
+                                    if (this._showNotification) {
+                                        this.hideNotification();
+                                        this.hideAlertIcon();
+                                    }
 
-                            this.setState({ breasts: value });
-                        }}
-                        style={{
-                            iconContainer: {
-                                top: 5,
-                                right: 100
-                            },
-                            /*
-                            inputAndroid: {
-                                // marginLeft: 18,
-                                // paddingRight: 30, // to ensure the text is never behind the icon
-                                // height: 38,
-                                // width: '50%',
-                                // fontSize: 22, fontFamily: "Roboto-Light",
-                                // color: 'rgba(255, 255, 255, 0.8)',
-                                // color: 'red',
-                                // backgroundColor: 'red'
-                                // backgroundColor: 'transparent'
-                            },
-                            inputIOS: {
-                            }
-                            */
-                        }}
-                        textInputProps={{
-                            style: {
-                                paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                color: this.state.breasts === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                            }
-                        }}
-                        useNativeAndroidPickerStyle={false}
-                        value={this.state.breasts}
+                                    this.setState({ boobs: value, biceps: null });
+                                }}
+                                style={{
+                                    iconContainer: {
+                                        top: 5,
+                                        right: 100
+                                    },
+                                    /*
+                                    inputAndroid: {
+                                        // marginLeft: 18,
+                                        // paddingRight: 30, // to ensure the text is never behind the icon
+                                        // height: 38,
+                                        // width: '50%',
+                                        // fontSize: 22, fontFamily: "Roboto-Light",
+                                        // color: 'rgba(255, 255, 255, 0.8)',
+                                        // color: 'red',
+                                        // backgroundColor: 'red'
+                                        // backgroundColor: 'transparent'
+                                    },
+                                    inputIOS: {
+                                    }
+                                    */
+                                }}
+                                textInputProps={{
+                                    style: {
+                                        paddingHorizontal: 18,
+                                        height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                        color: this.state.boobs === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                    }
+                                }}
+                                useNativeAndroidPickerStyle={false}
+                                value={this.state.boobs}
+                                Icon={() => {
+                                    // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                                    return null;
+                                }}
+                            />
+                            :
+                            <Select
+                                onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                placeholder={{
+                                    label: "How big are your biceps?",
+                                    value: null
+                                }}
+                                // placeholderTextColor={Theme.color.placeholder}
+                                items={bicepsSizeItems}
+                                onValueChange={(value) => { // only for Android
+                                    if (this._showNotification) {
+                                        this.hideNotification();
+                                        this.hideAlertIcon();
+                                    }
 
-                        Icon={() => {
-                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
-                            return null;
-                        }}
-                    />
+                                    this.setState({ biceps: value, boobs: null });
+                                }}
+                                style={{
+                                    iconContainer: {
+                                        top: 5,
+                                        right: 100
+                                    }
+                                }}
+                                textInputProps={{
+                                    style: {
+                                        paddingHorizontal: 18,
+                                        height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                        color: this.state.biceps === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                    }
+                                }}
+                                useNativeAndroidPickerStyle={false}
+                                value={this.state.biceps}
+                                Icon={() => {
+                                    return null;
+                                }}
+                            />
+                    }
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
                             const { y } = e.nativeEvent.layout;
-                            this.breastsY = y;
+                            this.boobsY = y;
                         }}
                     />
                     {
-                        this.state.showBreastsAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.breastsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        this.state.showBoobsAlertIcon &&
+                        <AntDesign style={{ position: 'absolute', right: 22, top: this.boobsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
                     }
 
                     {/* 8. note */}
@@ -1736,7 +1796,7 @@ export default class EditPost extends React.Component {
                             onPress={() => {
                                 // ToDo: show description with pop-up message box
                                 const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.breastsY);
+                                this.showMessageBox(msg, this.boobsY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -2247,7 +2307,7 @@ export default class EditPost extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
+                        toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -2290,7 +2350,7 @@ export default class EditPost extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.flashOffset, {
-                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight,
+                        toValue: Constants.statusBarHeight,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -2327,7 +2387,7 @@ export default class EditPost extends React.Component {
         if (this.state.showHeightAlertIcon) this.setState({ showHeightAlertIcon: false });
         if (this.state.showWeightAlertIcon) this.setState({ showWeightAlertIcon: false });
         if (this.state.showBodyTypeAlertIcon) this.setState({ showBodyTypeAlertIcon: false });
-        if (this.state.showBreastsAlertIcon) this.setState({ showBreastsAlertIcon: false });
+        if (this.state.showBoobsAlertIcon) this.setState({ showBoobsAlertIcon: false });
         if (this.state.showCountryAlertIcon) this.setState({ showCountryAlertIcon: false });
         if (this.state.showStreetAlertIcon) this.setState({ showStreetAlertIcon: false });
         if (this.state.showPicture1AlertIcon) this.setState({ showPicture1AlertIcon: false });

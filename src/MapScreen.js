@@ -114,7 +114,7 @@ export default class MapScreen extends React.Component {
 
     render() {
         return (
-            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
+            <View style={styles.flex}>
                 {
                     this.state.renderMap &&
                     <MapView
