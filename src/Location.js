@@ -117,7 +117,6 @@ export default class Location extends React.Component {
     };
 
     render() {
-
         return (
             <View>
                 <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>

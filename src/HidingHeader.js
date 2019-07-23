@@ -26,6 +26,7 @@ export default class HidingHeader extends Component {
             outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
             extrapolate: 'clamp',
         });
+
         return (
             <View style={{ flex: 1 }}>
                 <ScrollView

@@ -271,7 +271,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
     render() {
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     <Text style={{
                         color: Theme.color.text1,

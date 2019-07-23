@@ -119,7 +119,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
     render() {
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     <TouchableOpacity
                         style={{
@@ -187,7 +187,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                 nameFontSize = 34;
                                 nameLineHeight = 40;
                             }
-
 
                             return (
                                 <TouchableWithoutFeedback onPress={() => this.postClick(item)}>

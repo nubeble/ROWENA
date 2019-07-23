@@ -693,6 +693,7 @@ export default class extends Component {
                 </ScrollView>
             )
         }
+
         return (
             <ViewPagerAndroid ref={this.refScrollView}
                 {...this.props}

@@ -325,9 +325,6 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     render() {
-        let paddingBottom = 0;
-        if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
-
         // const _replyViewHeight = this.state.bottomPosition - Cons.searchBarHeight + this.borderY;
 
         const notificationStyle = {
@@ -427,9 +424,8 @@ export default class UserMain extends React.Component<InjectedProps> {
             }
         }
 
-
         return (
-            <View style={[styles.flex, { paddingBottom }]}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -1129,7 +1125,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

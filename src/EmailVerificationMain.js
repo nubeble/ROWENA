@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { Text, Theme, Firebase } from './rnff/src/components';
 import Constants from 'expo-constants';
-import { Ionicons, AntDesign } from "react-native-vector-icons";
+import { Ionicons, AntDesign, Entypo } from "react-native-vector-icons";
 import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
@@ -26,7 +26,7 @@ type InjectedProps = {
 export default class EmailVerificationMain extends React.Component<InjectedProps> {
     state = {
         bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
+        signUpButtonTop: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight,
         showSignUpLoader: false,
 
         notification: '',
@@ -101,7 +101,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                             // disable indicator
                             this.setState({ showSignUpLoader: false });
 
-                            console.log('[first join] move to welcome.');
+                            console.log('[first join] move to welcome');
                             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
                         }, 2000); // 2 sec
                     }
@@ -185,7 +185,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const signUpButtonTop = bottomPosition - 60 - Cons.buttonHeight; // 60: gap
+        const signUpButtonTop = bottomPosition - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight;
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
@@ -268,7 +268,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -326,7 +326,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                 resizeMode='cover'
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', paddingVertical: Cons.viewMarginVertical() }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -492,7 +492,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                                             height: 240,
                                             alignItems: "center", justifyContent: "center"
                                         }}>
-                                            <AntDesign name='check' color={Theme.color.text2} size={64} />
+                                            <Entypo name='check' color={Theme.color.text2} size={64} />
                                         </View>
                                     </View>
                                 }

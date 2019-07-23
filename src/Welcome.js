@@ -27,6 +27,7 @@ export default class Welcome extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
+        // ToDo: dialog - you wanna quit?
 
         return true;
     }
@@ -40,7 +41,7 @@ export default class Welcome extends React.Component {
         }
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     {
                         // from === 'MOBILE' || from === 'EMAIL' &&
@@ -97,12 +98,15 @@ export default class Welcome extends React.Component {
                     }}>{this.contentText}</Text>
                 </View>
 
-                <View style={{ position: 'absolute', top: Dimensions.get('window').height - 60 - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
+                <View style={{ position: 'absolute', top: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             if (this.closed) return;
-                            console.log('move to main.');
-                            this.props.navigation.navigate("mainStackNavigator");
+                            // console.log('move to main');
+                            // this.props.navigation.navigate("mainStackNavigator");
+
+                            console.log('move to tutorial');
+                            this.props.navigation.navigate("tutorial");
                         }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Get Started</Text>

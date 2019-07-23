@@ -33,7 +33,6 @@ export default class IconWithBadge extends React.Component {
             this.animationState = 0;
         }
 
-
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 {

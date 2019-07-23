@@ -100,7 +100,7 @@ export default class Loading extends React.Component<InjectedProps> {
         }
 
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, paddingVertical: Cons.viewMarginVertical() }}>
                 <Image
                     // style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined, opacity: this.state.image1Opacity }}
                     style={{
@@ -129,21 +129,22 @@ export default class Loading extends React.Component<InjectedProps> {
                     </View>
                 }
                 {/*
-                <Text style={{ position: 'absolute', bottom: 30 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Date Published ' + Cons.lastUpdatedDate}</Text>
-                <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, fontSize: 14, color: 'white' }}>{'Version: ' + Cons.version}</Text>
+                <Text style={{ position: 'absolute', bottom: 30 + Cons.viewMarginVertical(), right: 10, fontSize: 14, color: 'white' }}>{'Date Published ' + Cons.lastUpdatedDate}</Text>
+                <Text style={{ position: 'absolute', bottom: 10 + Cons.viewMarginVertical(), right: 10, fontSize: 14, color: 'white' }}>{'Version: ' + Cons.version}</Text>
                 */}
                 {/*
-                <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
+                <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginVertical(), right: 10, alignItems: 'flex-end' }}>
                     <Text style={{ fontSize: 18, color: 'white' }}>{'Date Published '}
                         <Text style={{ fontSize: 18, color: 'black' }}>{Cons.lastUpdatedDate}</Text>
                     </Text>
                     <Text style={{ fontSize: 18, color: 'white' }}>{'Version: ' + Cons.version}</Text>
                 </View>
                 */}
-                <View style={{ position: 'absolute', bottom: 10 + Cons.viewMarginBottom(), right: 10, alignItems: 'flex-end' }}>
+                <View style={{ position: 'absolute', bottom: Cons.viewMarginVertical() + 10, right: 10, alignItems: 'flex-end' }}>
                     <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate}</Text>
                     <Text style={{ fontSize: 16, color: 'white' }}>{Cons.version}</Text>
                 </View>
+
                 <Animated.Image
                     style={{
                         position: 'absolute',
@@ -240,7 +241,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     ]).start(() => {
                         !this.closed && this.setState({ showIndicator: false });
 
-                        console.log('[first join] move to auth main.');
+                        console.log('[first join] move to auth main');
                         // StatusBar.setHidden(false);
                         navigation.navigate("authMain");
                     });
@@ -288,7 +289,7 @@ export default class Loading extends React.Component<InjectedProps> {
                                 await this.checkUpdates();
                                 StatusBar.setHidden(false);
                             } else {
-                                console.log('email user is not verified. move to email verification.');
+                                console.log('email user is not verified. move to email verification');
                                 StatusBar.setHidden(false);
                                 navigation.navigate("emailVerification", { email: user.email, user: user, from: 'Loading' });
                                 return;
@@ -298,7 +299,7 @@ export default class Loading extends React.Component<InjectedProps> {
                             StatusBar.setHidden(false);
                         }
 
-                        console.log('[auto sign in] move to main.');
+                        console.log('[auto sign in] move to main');
                         navigation.navigate("mainStackNavigator");
                     } else { // for the resign in after sign out / delete account
                         const type = Vars.signUpType; // copy
@@ -309,7 +310,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                         if (type === 'EMAIL') return;
 
-                        console.log('[resign in after sign out / delete account] move to welcome.');
+                        console.log('[resign in after sign out / delete account] move to welcome');
                         if (type === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
                         else if (type === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
                         else navigation.navigate("welcome");
@@ -323,7 +324,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     if (type === 'EMAIL') return;
 
-                    console.log('[first join] move to welcome.');
+                    console.log('[first join] move to welcome');
                     if (type === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
                     else if (type === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
                     else navigation.navigate("welcome");

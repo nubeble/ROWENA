@@ -306,7 +306,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -640,7 +640,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const replyAdded = this.state.replyAdded;
 
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -809,9 +809,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                                 setTimeout(() => {
                                                     if (this.closed) return;
-
                                                     this.setState({ replyAdded: false });
-
                                                     this.props.navigation.navigate("reviewGirls");
                                                 }, Cons.buttonTimeout);
                                             }}
@@ -1462,7 +1460,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.flashOffset, {
-                        toValue: Constants.statusBarHeight,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight,
                         duration: 200,
                         useNativeDriver: true
                     })

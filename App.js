@@ -526,6 +526,7 @@ import IconWithBadge from './src/IconWithBadge';
 import NavigationService from './src/NavigationService';
 import Loading from './src/Loading';
 import Welcome from './src/Welcome';
+import Tutorial from './src/Tutorial';
 import AuthMain from './src/AuthMain';
 import SignUpWithEmail from './src/SignUpWithEmail';
 import SignUpWithMobileName from './src/SignUpWithMobileName';
@@ -1322,9 +1323,8 @@ function _navigationOptions(navigation, screenProps) {
                     navigation.popToTop();
                     // navigation.dispatch(StackActions.popToTop());
                 } else {
+                    // nothing to do
                     console.log('single click. name', name);
-                    // navigation.popToTop(); // ToDo
-                    // navigation.dispatch(StackActions.popToTop());
                 }
 
                 // double click
@@ -1716,6 +1716,7 @@ const MainSwitchNavigator = createSwitchNavigator(
         authStackNavigator: { screen: AuthStackNavigatorWrapper },
         emailVerification: { screen: EmailVerificationMain },
         welcome: { screen: Welcome },
+        tutorial: { screen: Tutorial },
         mainStackNavigator: { screen: MainStackNavigatorWrapper }
     },
     {

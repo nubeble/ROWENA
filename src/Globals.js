@@ -15,9 +15,9 @@ export var Vars = {
 };
 
 export const Cons = {
-    version: '0.9.61',
+    version: '0.9.62',
     buildNumber: '93088300',
-    lastUpdatedDate: 'Jul 22, 2019 09:55',
+    lastUpdatedDate: 'Jul 23, 2019 11:17',
 
     // push notification type
     pushNotification: {
@@ -48,7 +48,7 @@ export const Cons = {
     // view margin bottom
     // ToDo: iphone x, iphone xr, iphone xs, ...
     // viewMarginBottom: (Platform.OS == 'ios' && Constants.platform.ios.model.toLowerCase() === 'iphone x') ? 8 : 0,
-    viewMarginBottom: () => {
+    viewMarginVertical: () => {
         if (Platform.OS === 'android') return 0;
 
         const model = Constants.platform.ios.model.toLowerCase();
@@ -76,6 +76,8 @@ export const Cons = {
 
     // search bar height
     searchBarHeight: Constants.statusBarHeight + 8 + 34 + 8,
+
+    bottomButtonMarginBottom: 32,
 
     stickerWidth: 185,
     stickerHeight: 160

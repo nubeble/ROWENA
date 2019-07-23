@@ -203,7 +203,7 @@ export default class MapSearch extends React.Component {
 
     render() {
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 {
                     this.state.renderMap &&
                     this.renderMap()
@@ -244,7 +244,7 @@ export default class MapSearch extends React.Component {
                     <View style={{
                         width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(255, 255, 255, 0.6)'
                     }}>
-                        <Ionicons name='md-arrow-back' color='rgba(0, 0, 0, 0.8)' size={26} />
+                        <Ionicons name='md-arrow-round-back' color='rgba(0, 0, 0, 0.8)' size={26} />
                     </View>
                 </TouchableOpacity>
 
@@ -434,7 +434,6 @@ export default class MapSearch extends React.Component {
             />
         );
         */
-
 
         return (
             <MapView

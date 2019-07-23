@@ -588,16 +588,13 @@ export default class Post extends React.Component<InjectedProps> {
     render() {
         const { from } = this.props.navigation.state.params;
 
-        let paddingBottom = 0;
-        if (this.state.isModal) paddingBottom = Cons.viewMarginBottom();
-
-        const notificationStyle = {
+        const notificationStyle = { 
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom }]}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -891,7 +888,6 @@ export default class Post extends React.Component<InjectedProps> {
             case 4: markerImage = PreloadImage.emoji4; break;
             case 5: markerImage = PreloadImage.emoji5; break;
         }
-
 
         return (
             <View>
@@ -1225,7 +1221,7 @@ export default class Post extends React.Component<InjectedProps> {
                 }}>{this.contentText}</Text>
 
                 <TouchableOpacity
-                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: 32 }]}
+                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Cons.bottomButtonMarginBottom }]}
                     onPress={async () => {
                         if (this.state.showPostLoader) return;
 
@@ -1416,7 +1412,6 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
             );
         }
-
 
         return (
             <Swiper
@@ -2357,7 +2352,7 @@ export default class Post extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

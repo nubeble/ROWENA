@@ -176,7 +176,6 @@ export default class Explore extends React.Component<InjectedProps> {
         // this.props.navigation.goBack(); // not working
         // this.props.navigation.dispatch(NavigationActions.back()); // not working
 
-        console.log('move to Intro.');
         // this.props.screenProps.rootNavigation.navigate("intro");
         this.props.navigation.navigate("intro");
 
@@ -252,9 +251,8 @@ export default class Explore extends React.Component<InjectedProps> {
             showOrderTab = true;
         }
 
-
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     <View style={{
                         width: '70%', height: 34,
@@ -265,7 +263,6 @@ export default class Explore extends React.Component<InjectedProps> {
                             style={{ position: 'absolute', left: 0, top: (34 - 30) / 2, width: 30, height: 30, justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 setTimeout(() => {
-                                    console.log('move to Intro.');
                                     !this.closed && this.props.navigation.navigate("intro");
                                 }, Cons.buttonTimeout);
                             }}
@@ -608,7 +605,7 @@ export default class Explore extends React.Component<InjectedProps> {
                         {...{ navigation }}
                     />
                 }
-            </View >
+            </View>
         );
     } // end of render()
 

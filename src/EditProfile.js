@@ -525,7 +525,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -1184,7 +1184,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: 32 }]}
+                    style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: Cons.bottomButtonMarginBottom }]}
                     onPress={async () => {
                         if (this.state.showPostLoader) return;
 
@@ -1469,7 +1469,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -1519,7 +1519,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.flashOffset, {
-                        toValue: Constants.statusBarHeight,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight,
                         duration: 200,
                         useNativeDriver: true
                     })

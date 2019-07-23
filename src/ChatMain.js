@@ -445,7 +445,7 @@ export default class ChatMain extends React.Component {
 
     render(): React.Node {
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     <Text style={{
                         color: Theme.color.text1,

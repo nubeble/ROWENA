@@ -41,7 +41,7 @@ export default class CountrySelection extends React.Component {
 
     render() {
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     {

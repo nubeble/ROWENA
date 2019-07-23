@@ -218,7 +218,7 @@ export default class AuthMain extends React.Component {
         };
 
         return (
-            <View style={styles.container}>
+            <View style={styles.flex}>
                 <Image
                     style={{
                         position: 'absolute',
@@ -267,24 +267,24 @@ export default class AuthMain extends React.Component {
                 />
                 */}
 
-                <Animated.View
-                    style={[styles.notification, notificationStyle]}
-                    ref={notification => this._notification = notification}
-                >
-                    <Text style={styles.notificationText}>{this.state.notification}</Text>
-                    <TouchableOpacity
-                        style={styles.notificationButton}
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
-                        }}
+                <Animated.View style={[styles.view, { paddingVertical: Cons.viewMarginVertical() }, viewStyle]}>
+                    <Animated.View
+                        style={[styles.notification, notificationStyle]}
+                        ref={notification => this._notification = notification}
                     >
-                        <Ionicons name='md-close' color="black" size={20} />
-                    </TouchableOpacity>
-                </Animated.View>
+                        <Text style={styles.notificationText}>{this.state.notification}</Text>
+                        <TouchableOpacity
+                            style={styles.notificationButton}
+                            onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                }
+                            }}
+                        >
+                            <Ionicons name='md-close' color="black" size={20} />
+                        </TouchableOpacity>
+                    </Animated.View>
 
-                <Animated.View style={[styles.view, viewStyle]}>
                     <View style={styles.logo}>
                         <Image
                             style={{
@@ -434,7 +434,7 @@ export default class AuthMain extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -462,7 +462,7 @@ export default class AuthMain extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    flex: {
         flex: 1,
         // backgroundColor: Theme.color.splash
     },

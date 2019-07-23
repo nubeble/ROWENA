@@ -4,18 +4,6 @@ const Splash = require('../assets/splash.png');
 const Title = require('../assets/title.png');
 const Background = require('../assets/background.png');
 
-/*
-const Avatar1 = require('../assets/place/avatar1.jpg');
-const Avatar2 = require('../assets/place/avatar2.jpg');
-const Avatar3 = require('../assets/place/avatar3.jpeg');
-const Avatar4 = require('../assets/place/avatar4.jpeg');
-const Avatar5 = require('../assets/place/avatar5.jpg');
-const Avatar6 = require('../assets/place/avatar6.jpg');
-const Avatar7 = require('../assets/place/avatar7.jpg');
-const Avatar8 = require('../assets/place/avatar8.jpg');
-const Avatar9 = require('../assets/place/avatar9.jpg');
-*/
-
 const user = require('../assets/icon/user.png');
 const birth = require('../assets/icon/birth.png');
 const bra = require('../assets/icon/bra.png');
@@ -63,23 +51,16 @@ const burger2 = require('../assets/ads/burgerking/2.jpg');
 const burger3 = require('../assets/ads/burgerking/3.jpg');
 const burger4 = require('../assets/ads/burgerking/4.jpg');
 
+// sample
+const sample1 = require('../assets/sanrio/chat.png');
+const sample2 = require('../assets/sanrio/customer2.png');
+const sample3 = require('../assets/sanrio/review.png');
+
 
 export default class PreloadImage {
     static Splash = Splash;
     static Title = Title;
     static Background = Background;
-
-    /*
-    static Avatar1 = Avatar1;
-    static Avatar2 = Avatar2;
-    static Avatar3 = Avatar3;
-    static Avatar4 = Avatar4;
-    static Avatar5 = Avatar5;
-    static Avatar6 = Avatar6;
-    static Avatar7 = Avatar7;
-    static Avatar8 = Avatar8;
-    static Avatar9 = Avatar9;
-    */
 
     static user = user;
     static birth = birth;
@@ -126,6 +107,10 @@ export default class PreloadImage {
     static burger3 = burger3;
     static burger4 = burger4;
 
+    static sample1 = sample1;
+    static sample2 = sample2;
+    static sample3 = sample3;
+
 
     static downloadAsync(): Promise<*>[] {
         return [
@@ -134,18 +119,6 @@ export default class PreloadImage {
                 PreloadImage.Splash,
                 PreloadImage.Title,
                 PreloadImage.Background,
-
-                /*
-                PreloadImage.Avatar1,
-                PreloadImage.Avatar2,
-                PreloadImage.Avatar3,
-                PreloadImage.Avatar4,
-                PreloadImage.Avatar5,
-                PreloadImage.Avatar6,
-                PreloadImage.Avatar7,
-                PreloadImage.Avatar8,
-                PreloadImage.Avatar9,
-                */
 
                 PreloadImage.user,
                 PreloadImage.birth,
@@ -190,7 +163,11 @@ export default class PreloadImage {
                 PreloadImage.burger1,
                 PreloadImage.burger2,
                 PreloadImage.burger3,
-                PreloadImage.burger4
+                PreloadImage.burger4,
+
+                PreloadImage.sample1,
+                PreloadImage.sample2,
+                PreloadImage.sample3
             ])
         ];
     }

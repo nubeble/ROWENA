@@ -895,7 +895,7 @@ export default class EditPost extends React.Component {
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 {/* notification bar */}
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
@@ -1907,7 +1907,7 @@ export default class EditPost extends React.Component {
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: 32 }]}
+                    style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: Cons.bottomButtonMarginBottom }]}
                     onPress={async () => {
                         if (this.state.showPostLoader) return;
 
@@ -2247,7 +2247,7 @@ export default class EditPost extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -2290,7 +2290,7 @@ export default class EditPost extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.flashOffset, {
-                        toValue: Constants.statusBarHeight,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight,
                         duration: 200,
                         useNativeDriver: true
                     })

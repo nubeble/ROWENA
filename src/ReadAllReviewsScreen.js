@@ -150,7 +150,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         };
 
         return (
-            <View style={[styles.flex, { paddingBottom: Cons.viewMarginBottom() }]}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <Animated.View
                     style={[styles.notification, notificationStyle]}
                     ref={notification => this._notification = notification}
@@ -313,7 +313,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     positionValue={Dimensions.get('window').height / 2 - 20}
                     opacity={0.6}
                 />
-            </View >
+            </View>
         );
     } // end of render()
 
@@ -391,7 +391,6 @@ export default class ReadAllReviewsScreen extends React.Component {
             nameFontSize = 20;
             nameLineHeight = 24;
         }
-
 
         return (
             <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>
@@ -766,7 +765,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })

@@ -28,7 +28,7 @@ export default class SignUpWithEmail extends React.Component {
         passwordY: -1,
 
         bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - 60 - Cons.buttonHeight, // 60: gap
+        signUpButtonTop: Dimensions.get('window').height - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight,
 
         invalid: true,
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
@@ -101,7 +101,7 @@ export default class SignUpWithEmail extends React.Component {
     @autobind
     _keyboardDidHide() {
         const bottomPosition = Dimensions.get('window').height;
-        const signUpButtonTop = bottomPosition - 60 - Cons.buttonHeight; // 60: gap
+        const signUpButtonTop = bottomPosition - (Cons.viewMarginVertical() + Cons.bottomButtonMarginBottom) - Cons.buttonHeight;
 
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
@@ -125,7 +125,7 @@ export default class SignUpWithEmail extends React.Component {
                         useNativeDriver: true
                     }),
                     Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
+                        toValue: Cons.viewMarginVertical() + Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
                     })
@@ -346,7 +346,7 @@ export default class SignUpWithEmail extends React.Component {
             // hide indicator
             this.setState({ showSignUpLoader: false });
 
-            console.log('[SignUpWithEmail.processSignIn] move to welcome.');
+            console.log('[SignUpWithEmail.processSignIn] move to welcome');
             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
         } catch (error) {
             console.log('error', error.code, error.message);
@@ -448,7 +448,7 @@ export default class SignUpWithEmail extends React.Component {
                 resizeMode='cover'
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', paddingVertical: Cons.viewMarginVertical() }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -572,7 +572,7 @@ export default class SignUpWithEmail extends React.Component {
                             {this.state.emailY !== -1 && emailIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
 
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ marginTop: 4, paddingLeft: 18, paddingRight: 8, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ marginTop: 4, paddingLeft: 18, paddingRight: 12, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                     {'PASSWORD'}
                                 </Text>
 

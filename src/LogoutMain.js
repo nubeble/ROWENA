@@ -31,7 +31,7 @@ export default class LogoutMain extends React.Component {
 
     render() {
         return (
-            <View style={styles.flex}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity

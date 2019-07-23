@@ -22,8 +22,8 @@ const DEFAULT_MESSAGE_COUNT = 20;
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
 
-// const inputToolbarMarginBottom = 4; // ios only
-const inputToolbarMarginBottom = Platform.OS === 'ios' ? 4 : 2;
+// const inputToolbarMarginBottom = Platform.OS === 'ios' ? 4 : 2;
+const inputToolbarMarginBottom = 0;
 
 const textInputPaddingLeft = (Dimensions.get('window').width / 20);
 const textInputPaddingRight = (Dimensions.get('window').width / 20);
@@ -43,7 +43,6 @@ const smallImageWidth = postHeight * 0.7;
 
 export default class ChatRoom extends React.Component {
     state = {
-        // id: null,
         titleImageUri: null,
         titleName: null,
         messages: [],
@@ -421,7 +420,7 @@ export default class ChatRoom extends React.Component {
         // const text2 = 'Send a message before your battery dies.';
 
         return (
-            <View style={styles.container}>
+            <View style={[styles.flex, { paddingVertical: Cons.viewMarginVertical() }]}>
                 <View style={styles.searchBar}>
                     {/* close button */}
                     <TouchableOpacity
@@ -481,8 +480,7 @@ export default class ChatRoom extends React.Component {
 
                 <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView}>
                     <GiftedChat
-                        // minInputToolbarHeight={Platform.OS === 'ios' ? inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom : inputToolbarHeight + textInputMarginBottom}
-                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom} // 0722
+                        minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom + _inputToolbarMarginBottom}
                         minComposerHeight={0}
                         maxComposerHeight={0}
 
@@ -525,8 +523,7 @@ export default class ChatRoom extends React.Component {
                             },
                             */
 
-                            // style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : styles.androidTextInput,
-                            style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : [styles.androidTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }], // 0722
+                            style: Platform.OS === 'ios' ? [styles.iosTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }] : [styles.androidTextInput, { marginBottom: textInputMarginBottom + _inputToolbarMarginBottom }],
 
                             selectionColor: Theme.color.selection,
                             // keyboardAppearance: 'dark',
@@ -946,7 +943,7 @@ export default class ChatRoom extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
+    flex: {
         flex: 1,
         backgroundColor: Theme.color.background
     },
