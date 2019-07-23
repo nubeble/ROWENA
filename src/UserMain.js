@@ -602,7 +602,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                                 {
                                     this.state.showReviewButton &&
-                                    <View style={{ paddingTop: Theme.spacing.tiny, alignItems: 'center' }}
+                                    <View style={{ alignItems: 'center' }}
                                         onLayout={(event) => {
                                             const { x, y, width, height } = event.nativeEvent.layout;
 
@@ -610,8 +610,9 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         }}
                                     >
                                         <Text style={{
-                                            paddingHorizontal: Theme.spacing.base,
                                             width: Dimensions.get('window').width * 0.85,
+                                            paddingHorizontal: Theme.spacing.base,
+                                            marginTop: Theme.spacing.tiny,
                                             marginBottom: Theme.spacing.small,
                                             fontSize: 14, lineHeight: 24,
                                             fontFamily: "Roboto-Light", color: Theme.color.placeholder,
@@ -620,7 +621,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                                         <TouchableOpacity
                                             style={[styles.contactButton, {
-                                                marginBottom: Theme.spacing.small,
+                                                // marginBottom: Theme.spacing.small,
+                                                marginBottom: Theme.spacing.tiny,
                                                 backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
                                             }]}
                                             onPress={() => {
@@ -662,7 +664,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             }}>{'Add a Review'}</Text>
                                         </TouchableOpacity>
 
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width - 20 * 2, marginTop: Cons.bottomButtonMarginBottom }}
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width - 20 * 2, /* marginTop: Cons.bottomButtonMarginBottom */ }}
                                             onLayout={(event) => {
                                                 const { x, y, width, height } = event.nativeEvent.layout;
 

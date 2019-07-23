@@ -588,7 +588,7 @@ export default class Post extends React.Component<InjectedProps> {
     render() {
         const { from } = this.props.navigation.state.params;
 
-        const notificationStyle = { 
+        const notificationStyle = {
             opacity: this.state.opacity,
             transform: [{ translateY: this.state.offset }]
         };
@@ -1194,7 +1194,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                 <View style={styles.writeReviewContainer}>
                     <Text style={styles.ratingText}>Share your experience to help others</Text>
-                    <View style={{ marginBottom: 8 }}>
+                    <View style={{ marginBottom: Theme.spacing.small }}>
                         <AirbnbRating
                             ref='rating'
                             onFinishRating={this.ratingCompleted}
@@ -2957,9 +2957,7 @@ const styles = StyleSheet.create({
         height: (Dimensions.get('window').width - Theme.spacing.small * 2) / 5 * 3
     },
     writeReviewContainer: {
-        paddingBottom: Theme.spacing.tiny,
-        paddingLeft: Theme.spacing.small,
-        paddingRight: Theme.spacing.small
+        paddingHorizontal: Theme.spacing.small
     },
     ratingText: {
         color: Theme.color.placeholder,
