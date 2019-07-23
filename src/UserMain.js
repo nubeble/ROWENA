@@ -621,8 +621,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
                                         <TouchableOpacity
                                             style={[styles.contactButton, {
-                                                // marginBottom: Theme.spacing.small,
-                                                marginBottom: Theme.spacing.tiny,
+                                                marginBottom: Theme.spacing.tiny + Theme.spacing.tiny,
                                                 backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
                                             }]}
                                             onPress={() => {
