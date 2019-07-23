@@ -590,7 +590,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                     </View>
                                 </View>
 
-                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny }}
                                 /*
                                 onLayout={(event) => {
                                     const { x, y, width, height } = event.nativeEvent.layout;
@@ -619,12 +619,10 @@ export default class UserMain extends React.Component<InjectedProps> {
                                         }}>Share your experience to help others</Text>
 
                                         <TouchableOpacity
-                                            style={[styles.contactButton,
-                                            {
+                                            style={[styles.contactButton, {
                                                 marginBottom: Theme.spacing.small,
                                                 backgroundColor: this.state.showKeyboard ? Theme.color.component : Theme.color.buttonBackground
-                                            }
-                                            ]}
+                                            }]}
                                             onPress={() => {
                                                 if (this.state.disableReviewButton) {
                                                     this.refs["toast"].show("Can't add a review here.", 500);
@@ -664,7 +662,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                             }}>{'Add a Review'}</Text>
                                         </TouchableOpacity>
 
-                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width - 20 * 2, marginTop: Theme.spacing.tiny }}
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width - 20 * 2, marginTop: Cons.bottomButtonMarginBottom }}
                                             onLayout={(event) => {
                                                 const { x, y, width, height } = event.nativeEvent.layout;
 

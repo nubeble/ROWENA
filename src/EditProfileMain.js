@@ -360,6 +360,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                                         }
                                     </View>
                                 </View>
+
                                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: Dimensions.get('window').width, marginTop: Theme.spacing.tiny }} />
                             </View>
                         </View>
