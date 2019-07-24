@@ -613,7 +613,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
     onLongPressItem(feeds, city) {
         this.openDialog('Remove likes', "Are you sure you want to remove all your likes from " + city + "?", async () => {
-            // ToDo: toast?
+            // ToDo: loader
 
             const uid = Firebase.user().uid;
             await Firebase.removeLikes(feeds, uid);

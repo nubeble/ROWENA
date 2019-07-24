@@ -75,27 +75,24 @@ export default class ChatMain extends React.Component {
         const uid = Firebase.user().uid;
 
         Firebase.loadChatRoom(DEFAULT_ROOM_COUNT, uid, list => {
-            if (list) {
-                if (list.length === 0) {
-                    this.allChatRoomsLoaded = true;
-                } else {
-                    // this.allChatRoomsLoaded = false;
-
-                    // Consider: On sending a message
-                    // this.setState({ chatRoomList: list });
-
-                    // 여기서 기존 state list를 검색해서 동일한 방이 있으면, 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트! 없으면 밑에 subscribe에서 업데이트 된다.
-                    // 또, user profile을 검색해서 대화방 상대방의 정보가 있으면, lastLogInTime 업데이트! 없으면 밑에 subscribe에서 업데이트 된다.
-                    this.updateList(list);
-
-                    // subscribe profile, post, feed count
-                    this.subscribe(list);
-                }
-            } else {
+            if (!list) {
                 this.allChatRoomsLoaded = true;
+            } else {
+                // this.allChatRoomsLoaded = false;
+
+                if (list.length < DEFAULT_ROOM_COUNT) this.allChatRoomsLoaded = true;
+                else this.allChatRoomsLoaded = false;
+
+                // 여기서 기존 state list를 검색해서 동일한 방이 있으면 (means updated), 그 방의 상대방 정보 (name, picture)는 건너뛰고 업데이트!
+                // 없으면 (means new) 밑에 subscribe에서 업데이트 된다.
+                // 또 user profile을 검색해서 대화방 상대방의 정보가 있으면, lastLogInTime 업데이트! 없으면 밑에 subscribe에서 업데이트 된다.
+                this.updateList(list);
+
+                // subscribe profile, post, feed count
+                this.subscribe(list);
             }
 
-            this.setState({ ready: true, isLoadingChat: false, loadingType: 0 });
+            !this.closed && this.setState({ ready: true, isLoadingChat: false, loadingType: 0 });
         });
     }
 
@@ -880,34 +877,31 @@ export default class ChatMain extends React.Component {
         const id = this.state.chatRoomList[this.state.chatRoomList.length - 1].id;
 
         Firebase.loadMoreChatRoom(DEFAULT_ROOM_COUNT, uid, timestamp, id, list => {
-            if (list) {
-                if (list.length === 0) {
+            if (!list) {
+                this.allChatRoomsLoaded = true;
+            } else {
+                // this.allChatRoomsLoaded = false;
+
+                // ToDo: removed
+                // check duplication
+                /*
+                const result = this.hasRoom(list); 
+                if (result) {
                     this.allChatRoomsLoaded = true;
                 } else {
-                    // this.allChatRoomsLoaded = false;
+                */
+                if (list.length < DEFAULT_ROOM_COUNT) this.allChatRoomsLoaded = true;
 
-                    /*
-                    this.setState(prevState => ({
-                        chatRoomList: [...prevState.chatRoomList, list]
-                    }))
-                    */
+                this.addList(list);
 
-                    // check duplication
-                    const result = this.hasRoom(list);
-                    if (result) {
-                        this.allChatRoomsLoaded = true;
-                    } else {
-                        this.addList(list);
-
-                        // subscribe profile, post, feed count
-                        this.subscribe(list);
-                    }
+                // subscribe profile, post, feed count
+                this.subscribe(list);
+                /*
                 }
-            } else {
-                this.allChatRoomsLoaded = true;
+                */
             }
 
-            this.setState({ isLoadingChat: false, loadingType: 0 });
+            !this.closed && this.setState({ isLoadingChat: false, loadingType: 0 });
         });
     }
 
@@ -938,8 +932,7 @@ export default class ChatMain extends React.Component {
     }
 
     addList(list) {
-        // update room before put it in the state list
-        // let _list = _.clone(list); // ToDo
+        // 1. update room before put it in the state list
         let _list = list;
         for (let i = 0; i < _list.length; i++) {
             const room = _list[i];
@@ -977,7 +970,7 @@ export default class ChatMain extends React.Component {
             }
         }
 
-        // update state
+        // 2. update state
         let newList = [...this.state.chatRoomList];
         for (let i = 0; i < _list.length; i++) {
             newList.push(_list[i]);

@@ -83,7 +83,10 @@ export default class ChatRoom extends React.Component {
         this.setState({ titleImageUri: item.title.picture, titleName: item.title.name });
 
         Firebase.chatOn(DEFAULT_MESSAGE_COUNT, item.id, message => {
-            if (!message) return;
+            if (!message) {
+                this.allMessagesLoaded = true;
+                return;
+            }
             // console.log('on message', message);
 
             // fill user info (name, avatar)
@@ -229,6 +232,8 @@ export default class ChatRoom extends React.Component {
                 this.allMessagesLoaded = true;
             } else {
                 // console.log('message list', message);
+
+                if (messages.length < DEFAULT_MESSAGE_COUNT) this.allMessagesLoaded = true;
 
                 // fill user info (name, avatar)
                 for (let i = 0; i < messages.length; i++) {

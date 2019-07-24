@@ -1658,7 +1658,8 @@ export default class Firebase {
                     }
                 });
 
-                cb(list);
+                if (list.length === 0) cb(null);
+                else cb(list);
             } else {
                 cb(null);
             }
@@ -1739,7 +1740,7 @@ export default class Firebase {
     }
 
     static loadMoreMessage(count, id, lastMessageTimestamp, lastMessageId, cb) {
-        console.log('loadMoreMessage', id, lastMessageTimestamp, lastMessageId);
+        // console.log('loadMoreMessage', id, lastMessageTimestamp, lastMessageId);
 
         Firebase.database.ref('contents').child(id).orderByChild('timestamp').endAt(lastMessageTimestamp).limitToLast(count + 1).once('value', snapshot => {
             if (snapshot.exists()) {

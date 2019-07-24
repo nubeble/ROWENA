@@ -258,7 +258,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                 newFeeds.push(newFeed);
 
-                // ToDo: subscribe post after set state feeds
+                // ToDo: subscribe post after set state feeds!
 
                 // subscribe post
                 this.subscribeToPost(placeId, feedId);
@@ -546,7 +546,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     }}
                                     onLongPress={() => {
                                         this.openDialog('Remove likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
-                                            // ToDo: toast?
+                                            // ToDo: loader
 
                                             // update database
                                             const uid = Firebase.user().uid;

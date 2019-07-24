@@ -1676,7 +1676,6 @@ export default class EditPost extends React.Component {
                     </View>
                     {
                         boobsTitle === 'BOOBS' ?
-
                             <Select
                                 /*
                                 ref={(el) => {
