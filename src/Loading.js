@@ -338,7 +338,7 @@ export default class Loading extends React.Component<InjectedProps> {
         if (result) {
             // show badge
             setTimeout(() => {
-                if (this.closed) return;
+                // if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnChat(true, 0);
             }, 2000); // after 2 sec
@@ -349,7 +349,7 @@ export default class Loading extends React.Component<InjectedProps> {
         if (result) {
             // show badge
             setTimeout(() => {
-                if (this.closed) return;
+                // if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnProfile(true, 0);
             }, 2000); // after 2 sec
@@ -362,14 +362,13 @@ export default class Loading extends React.Component<InjectedProps> {
         if (!room) return false;
 
         const mid = room.mid;
-        if (!mid) return false; // no contents (this will never happen)
-
         const lastReadMessageId = room.lastReadMessageId;
+
         if (!lastReadMessageId) return true; // user never read
 
-        if (mid === lastReadMessageId) return false;
+        if (mid !== lastReadMessageId) return true;
 
-        return true;
+        return false;
     }
 
     checkUpdateOnProfile() {

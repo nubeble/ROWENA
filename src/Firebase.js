@@ -1854,7 +1854,6 @@ export default class Firebase {
 
         const snapshot = await Firebase.database.ref('chat').child(uid).orderByChild('timestamp').limitToLast(1).once('value');
         if (snapshot.exists()) {
-
             snapshot.forEach(item => {
                 // console.log(item.key, item.val());
                 const key = item.key;
