@@ -208,6 +208,41 @@ export default class EditProfile extends React.Component<InjectedProps> {
         this.setState({ uploadImageUri, name, birthday, datePickerDate, gender, place, note: about, noteLength, email, phoneNumber });
     }
 
+    async componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        // remove server files
+        if (this.imageRefs.length > 0) {
+            console.log('clean image files');
+
+            const formData = new FormData();
+            for (let i = 0; i < this.imageRefs.length; i++) {
+                const ref = this.imageRefs[i];
+
+                const number = i + 1;
+                const fieldName = 'file' + number.toString();
+                formData.append(fieldName, ref);
+
+                console.log(fieldName, ref);
+            }
+
+            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+        }
+
+        this.closed = true;
+    }
+
     initFromSearch(result) { // 'Cebu, Philippines'
         /*
         Object {
@@ -227,12 +262,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        console.log('EditProfile._keyboardDidShow');
-
         if (this.focusedItem === 'name') {
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 16 + 1, animated: true });
         } else if (this.focusedItem === 'note') {
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.placeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.placeY + 1, animated: true });
 
             if (!this.state.onNote) this.setState({ onNote: true });
         }
@@ -244,11 +277,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
     _keyboardDidHide() {
         if (!this.focused) return;
 
-        console.log('EditProfile._keyboardDidHide');
-
-        if (this.state.onNote) this.setState({ onNote: false });
-
-        this.setState({ keyboardTop: Dimensions.get('window').height });
+        this.setState({ onNote: false, keyboardTop: Dimensions.get('window').height });
     }
 
     noteDone() {
@@ -297,39 +326,11 @@ export default class EditProfile extends React.Component<InjectedProps> {
         return true;
     }
 
-    async componentWillUnmount() {
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
+    removeItemFromList() {
+        const ref = this.originImageRef;
 
-        // remove server files
-        if (this.imageRefs.length > 0) {
-            console.log('clean image files');
-
-            const formData = new FormData();
-            for (let i = 0; i < this.imageRefs.length; i++) {
-                const ref = this.imageRefs[i];
-
-                const number = i + 1;
-                const fieldName = 'file' + number.toString();
-                formData.append(fieldName, ref);
-
-                console.log(fieldName, ref);
-            }
-
-            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "multipart/form-data"
-                },
-                body: formData
-            });
-        }
-
-        this.closed = true;
+        const index = this.imageRefs.indexOf(ref);
+        if (index !== -1) this.imageRefs.splice(index, 1);
     }
 
     validateName(text) {
@@ -346,23 +347,27 @@ export default class EditProfile extends React.Component<InjectedProps> {
         this.focusedItem = 'name';
     }
 
+    /*
     onFocusBirthday() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
     }
+    */
 
+    /*
     onFocusGender() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
     }
+    */
 
     onFocusNote() {
         if (this._showNotification) {
@@ -370,14 +375,14 @@ export default class EditProfile extends React.Component<InjectedProps> {
             this.hideAlertIcon();
         }
 
-        if (!this.state.onNote) this.setState({ onNote: true });
+        // this.setState({ onNote: true });
 
         // move scroll in keyboard show event
         this.focusedItem = 'note';
     }
 
     onBlurNote() {
-        if (this.state.onNote) this.setState({ onNote: false });
+        // this.setState({ onNote: false });
     }
 
     async save() {
@@ -403,7 +408,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showNameAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 16 + 1, animated: true });
 
             return;
         }
@@ -413,7 +418,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showAgeAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
 
             return;
         }
@@ -423,7 +428,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showGenderAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
 
             return;
         }
@@ -433,7 +438,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.setState({ showPlaceAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
 
             return;
         }
@@ -486,8 +491,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
             console.log('meter unit');
         }
 
-        // this.removeItemFromList();
-
         // 3. go back
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
             if (this.closed) return;
@@ -497,24 +500,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
             this.props.navigation.dispatch(NavigationActions.back());
         });
-    }
-
-    /*
-    removeItemFromList() {
-        if (this.uploadImageRef) {
-            const ref = this.uploadImageRef;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-    }
-    */
-    removeItemFromList() {
-        const ref = this.originImageRef;
-
-        const index = this.imageRefs.indexOf(ref);
-        if (index !== -1) this.imageRefs.splice(index, 1);
     }
 
     render() {
@@ -577,6 +562,12 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={() => {
+                            // add current upload files to remove list
+                            if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);
+
+                            // remove origin image files from remove list
+                            this.removeItemFromList();
+
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
                     >
@@ -861,7 +852,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     {/* picker */}
                     <TouchableOpacity
                         onPress={() => {
-                            this.onFocusBirthday();
+                            // this.onFocusBirthday();
 
                             this.showDateTimePicker('What is your date of birth?');
                         }}
@@ -908,7 +899,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusGender()} // NOT working in Android
+                        // onOpen={() => this.onFocusGender()} // NOT working in Android
                         placeholder={{
                             label: "Select your gender",
                             value: null
@@ -983,7 +974,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 this.hideAlertIcon();
                             }
 
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("editSearch",
@@ -1051,9 +1042,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         maxLength={200}
                         multiline={true}
                         numberOfLines={4}
-                        onFocus={(e) => {
-                            this.onFocusNote();
-                        }}
+                        onFocus={(e) => this.onFocusNote()}
                         onBlur={(e) => this.onBlurNote()}
                     />
                     <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
@@ -1096,7 +1085,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 this.hideAlertIcon();
                             }
  
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
  
                             setTimeout(() => {
                                 // navigate
@@ -1156,7 +1145,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 this.hideAlertIcon();
                             }
  
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.emailY + 1, animated: true });
  
                             setTimeout(() => {
                                 // navigate

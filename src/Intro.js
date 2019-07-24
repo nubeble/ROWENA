@@ -1033,7 +1033,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                 this.renderPopularFeeds()
                             }
                             <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Recently posted girls'}</Text>
+                                <Text style={styles.title}>{'Recently registered girls'}</Text>
                             </View>
                             {
                                 this.renderRecentFeeds()

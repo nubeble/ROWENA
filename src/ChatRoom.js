@@ -359,7 +359,7 @@ export default class ChatRoom extends React.Component {
         if (item.owner === item.users[1].uid) {
             this.openPost();
         } else {
-            const user1 = item.users[0]; // owner (girl)
+            const user1 = item.users[0]; // host
             const user2 = item.users[1]; // customer
 
             const customerProfile = item.customerProfile;
@@ -377,7 +377,7 @@ export default class ChatRoom extends React.Component {
                 birthday, gender, about
             };
 
-            const host = { // owner (girl)
+            const host = { // host
                 uid: user1.uid,
                 name: user1.name,
                 picture: user1.picture,
@@ -729,7 +729,7 @@ export default class ChatRoom extends React.Component {
 
         const item = this.props.navigation.state.params.item;
         if (item.users[0].uid === item.owner) {
-            // I'm the owner. (boss or girl)
+            // I'm a host.
             wrapperStyle = {
                 left: {
                     backgroundColor: Theme.color.selection

@@ -131,12 +131,12 @@ export default class ChatMain extends React.Component {
             // const me = users[0];
             const you = users[1];
 
-            // check if customer or girl
+            // check host / customer
             // if (me.uid === owner) { // I am a girl. Then subscribe customer(you)'s user profile.
             this.subscribeToProfile(you.uid);
             // }
 
-            // if (you.uid === owner) { // I am a customer. Then subscribe girl(post).
+            // if (you.uid === owner) { // I am a customer. Then subscribe a girl (post).
             this.subscribeToPost(room.placeId, room.feedId, room.id);
             this.subscribeToPlace(room.placeId);
             // }

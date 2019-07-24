@@ -239,6 +239,41 @@ export default class AdvertisementMain extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
     }
 
+    async componentWillUnmount() {
+        this.keyboardDidShowListener.remove();
+        this.keyboardDidHideListener.remove();
+        this.hardwareBackPressListener.remove();
+        this.onFocusListener.remove();
+        this.onBlurListener.remove();
+
+        // remove server files
+        if (this.imageRefs.length > 0) {
+            console.log('clean image files');
+
+            const formData = new FormData();
+            for (let i = 0; i < this.imageRefs.length; i++) {
+                const ref = this.imageRefs[i];
+
+                const number = i + 1;
+                const fieldName = 'file' + number.toString();
+                formData.append(fieldName, ref);
+
+                console.log(fieldName, ref);
+            }
+
+            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "multipart/form-data"
+                },
+                body: formData
+            });
+        }
+
+        this.closed = true;
+    }
+
     initFromSelect(result) { // country
         console.log('AdvertisementMain.initFromSelect', result);
 
@@ -286,22 +321,16 @@ export default class AdvertisementMain extends React.Component {
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        // console.log('AdvertisementMain._keyboardDidShow');
-
         if (this.focusedItem === 'name') {
-            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17 + 1, animated: true });
         } else if (this.focusedItem === 'height') {
-            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
         } else if (this.focusedItem === 'weight') {
-            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY + 1, animated: true });
         } else if (this.focusedItem === 'note') {
-            // this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.boobsY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.boobsY + 1, animated: true });
 
-            if (!this.state.onNote) this.setState({ onNote: true });
+            this.setState({ onNote: true });
         }
 
         this.setState({ keyboardTop: Dimensions.get('window').height - e.endCoordinates.height });
@@ -311,11 +340,7 @@ export default class AdvertisementMain extends React.Component {
     _keyboardDidHide() {
         if (!this.focused) return;
 
-        // console.log('AdvertisementMain._keyboardDidHide');
-
-        if (this.state.onNote) this.setState({ onNote: false });
-
-        this.setState({ keyboardTop: Dimensions.get('window').height });
+        this.setState({ onNote: false, keyboardTop: Dimensions.get('window').height });
     }
 
     noteDone() {
@@ -356,51 +381,14 @@ export default class AdvertisementMain extends React.Component {
         }
 
         // add current upload files to remove list
-        // --
         if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
         if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
         if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
         if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
-        // --
 
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
-    }
-
-    async componentWillUnmount() {
-        this.keyboardDidShowListener.remove();
-        this.keyboardDidHideListener.remove();
-        this.hardwareBackPressListener.remove();
-        this.onFocusListener.remove();
-        this.onBlurListener.remove();
-
-        // remove server files
-        if (this.imageRefs.length > 0) {
-            console.log('clean image files');
-
-            const formData = new FormData();
-            for (let i = 0; i < this.imageRefs.length; i++) {
-                const ref = this.imageRefs[i];
-
-                const number = i + 1;
-                const fieldName = 'file' + number.toString();
-                formData.append(fieldName, ref);
-
-                console.log(fieldName, ref);
-            }
-
-            await fetch(SERVER_ENDPOINT + "cleanPostImages", {
-                method: "POST",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "multipart/form-data"
-                },
-                body: formData
-            });
-        }
-
-        this.closed = true;
     }
 
     validateName(text) {
@@ -417,25 +405,27 @@ export default class AdvertisementMain extends React.Component {
         this.focusedItem = 'name';
     }
 
+    /*
     onFocusBirthday() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
     }
+    */
 
+    /*
     onFocusGender() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
     }
+    */
 
     onFocusHeight() {
         if (this._showNotification) {
@@ -509,25 +499,27 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ weight: text });
     }
 
+    /*
     onFocusBodyType() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
     }
+    */
 
+    /*
     onFocusBoobs() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.boobsY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
     }
+    */
 
     onFocusNote() {
         if (this._showNotification) {
@@ -535,27 +527,22 @@ export default class AdvertisementMain extends React.Component {
             this.hideAlertIcon();
         }
 
-        if (!this.state.onNote) this.setState({ onNote: true });
+        // this.setState({ onNote: true });
 
         // move scroll in keyboard show event
         this.focusedItem = 'note';
     }
 
     onBlurNote() {
-        if (this.state.onNote) this.setState({ onNote: false });
+        // this.setState({ onNote: false });
     }
 
     async post() {
-        // test navigation
-        /*
-        this.props.navigation.navigate("advertisementFinish");
-        return;
-        */
-
         if (this.state.onUploadingImage) return;
 
         // 1. check
-        const { name, birthday, gender, height, weight, bodyType, boobs, biceps, note, country, street, streetInfo, cityInfo, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+        const { name, birthday, gender, height, weight, bodyType, boobs, biceps, note, country, street, streetInfo, cityInfo,
+            uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -572,9 +559,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showNameAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17 + 1, animated: true });
 
             return;
         }
@@ -584,9 +569,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showAgeAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
 
             return;
         }
@@ -596,9 +579,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showGenderAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
 
             return;
         }
@@ -608,9 +589,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showHeightAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
 
             return;
         }
@@ -620,9 +599,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showWeightAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + heightY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY + 1, animated: true });
 
             return;
         }
@@ -632,9 +609,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showBodyTypeAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
 
             return;
         }
@@ -644,9 +619,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showBoobsAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.boobsY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
 
             return;
         }
@@ -656,7 +629,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showBoobsAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
 
             return;
         }
@@ -666,9 +639,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showCountryAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
 
             return;
         }
@@ -678,9 +649,7 @@ export default class AdvertisementMain extends React.Component {
 
             this.setState({ showStreetAlertIcon: true });
 
-            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY + 1, animated: true });
 
             return;
         }
@@ -783,8 +752,6 @@ export default class AdvertisementMain extends React.Component {
 
         await this.createFeed(data, extra);
 
-        // this.removeItemFromList();
-
         // 3. move to finish page
         this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
             if (this.closed) return;
@@ -879,42 +846,6 @@ export default class AdvertisementMain extends React.Component {
 
         return image;
     }
-
-    /*
-    removeItemFromList() {
-        if (this.uploadImage1Ref) {
-            const ref = this.uploadImage1Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-
-        if (this.uploadImage2Ref) {
-            const ref = this.uploadImage2Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-
-        if (this.uploadImage3Ref) {
-            const ref = this.uploadImage3Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-
-        if (this.uploadImage4Ref) {
-            const ref = this.uploadImage4Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-    }
-    */
 
     render() {
         const notificationStyle = {
@@ -1155,6 +1086,7 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <TextInput
+                        ref={(ref) => this._name = ref}
                         style={{
                             paddingLeft: 18, paddingRight: 32,
                             width: '80%',
@@ -1207,7 +1139,7 @@ export default class AdvertisementMain extends React.Component {
                     {/* picker */}
                     <TouchableOpacity
                         onPress={() => {
-                            this.onFocusBirthday();
+                            // this.onFocusBirthday();
 
                             this.showDateTimePicker('Select your date of birth');
                         }}
@@ -1254,7 +1186,7 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusGender()} // NOT working in Android
+                        // onOpen={() => this.onFocusGender()} // NOT working in Android
                         placeholder={{
                             label: "Select your gender",
                             value: null
@@ -1283,7 +1215,6 @@ export default class AdvertisementMain extends React.Component {
                         }}
                         useNativeAndroidPickerStyle={false}
                         value={this.state.gender}
-
                         Icon={() => {
                             // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                             return null;
@@ -1321,6 +1252,7 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <TextInput
+                        ref={(ref) => this._height = ref}
                         style={{
                             paddingLeft: 18, paddingRight: 32,
                             width: '80%',
@@ -1372,6 +1304,7 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <TextInput
+                        ref={(ref) => this._weight = ref}
                         style={{
                             paddingLeft: 18, paddingRight: 32,
                             width: '80%',
@@ -1425,7 +1358,7 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusBodyType()} // NOT working in Android
+                        // onOpen={() => this.onFocusBodyType()} // NOT working in Android
                         placeholder={{
                             // label: "Fit",
                             label: "What's your body type?",
@@ -1455,7 +1388,6 @@ export default class AdvertisementMain extends React.Component {
                         }}
                         useNativeAndroidPickerStyle={false}
                         value={this.state.bodyType}
-
                         Icon={() => {
                             // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                             return null;
@@ -1503,7 +1435,7 @@ export default class AdvertisementMain extends React.Component {
                                     this.inputRefs.favSport0 = el;
                                 }}
                                 */
-                                onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
                                 placeholder={{
                                     label: "What's your bra size?",
                                     value: null
@@ -1555,7 +1487,7 @@ export default class AdvertisementMain extends React.Component {
                             />
                             :
                             <Select
-                                onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
                                 placeholder={{
                                     label: "How big are your biceps?",
                                     value: null
@@ -1622,6 +1554,7 @@ export default class AdvertisementMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <TextInput
+                        ref={(ref) => this._note = ref}
                         style={Platform.OS === 'ios' ? styles.textInputStyleIOS : styles.textInputStyleAndroid}
                         // placeholder='More information about you'
                         placeholder="I know I can't be your only match, but at least I'm the hottest."
@@ -1631,7 +1564,6 @@ export default class AdvertisementMain extends React.Component {
                         }}
                         value={this.state.note}
                         selectionColor={Theme.color.selection}
-
                         // keyboardType='default'
                         // returnKeyType='done'
                         // keyboardAppearance='dark'
@@ -1641,9 +1573,7 @@ export default class AdvertisementMain extends React.Component {
                         maxLength={200}
                         multiline={true}
                         numberOfLines={4}
-                        onFocus={(e) => {
-                            this.onFocusNote();
-                        }}
+                        onFocus={(e) => this.onFocusNote()}
                         onBlur={(e) => this.onBlurNote()}
                     />
                     <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
@@ -1685,8 +1615,7 @@ export default class AdvertisementMain extends React.Component {
                                 this.hideAlertIcon();
                             }
 
-                            // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+                            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("advertisementSelect", { initFromSelect: (result) => this.initFromSelect(result) });
@@ -1749,15 +1678,12 @@ export default class AdvertisementMain extends React.Component {
 
                                 this.setState({ showCountryAlertIcon: true });
 
-                                // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-                                // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
 
                                 return;
                             }
 
-                            // this.refs.flatList.scrollToOffset({ offset: this.streetY, animated: true });
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
+                            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY + 1, animated: true });
 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("advertisementSearch", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
@@ -2388,6 +2314,13 @@ export default class AdvertisementMain extends React.Component {
 
             this._hideMessageBox = false;
         });
+    }
+
+    blur() {
+        this._name.blur();
+        this._height.blur();
+        this._weight.blur();
+        this._note.blur();
     }
 }
 

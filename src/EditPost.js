@@ -452,20 +452,14 @@ export default class EditPost extends React.Component {
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        console.log('EditPost._keyboardDidShow');
-
         if (this.focusedItem === 'name') {
-            // this.refs.flatList.scrollToOffset({ offset: this.nameY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17 + 1, animated: true });
         } else if (this.focusedItem === 'height') {
-            // this.refs.flatList.scrollToOffset({ offset: this.heightY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
         } else if (this.focusedItem === 'weight') {
-            // this.refs.flatList.scrollToOffset({ offset: this.weightY, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY + 1, animated: true });
         } else if (this.focusedItem === 'note') {
-            // this.refs.flatList.scrollToOffset({ offset: this.noteY + doneButtonViewHeight, animated: true });
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.boobsY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.boobsY + 1, animated: true });
 
             if (!this.state.onNote) this.setState({ onNote: true });
         }
@@ -477,11 +471,7 @@ export default class EditPost extends React.Component {
     _keyboardDidHide() {
         if (!this.focused) return;
 
-        console.log('EditPost._keyboardDidHide');
-
-        if (this.state.onNote) this.setState({ onNote: false });
-
-        this.setState({ keyboardTop: Dimensions.get('window').height });
+        this.setState({ onNote: false, keyboardTop: Dimensions.get('window').height });
     }
 
     noteDone() {
@@ -506,8 +496,6 @@ export default class EditPost extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('EditPost.handleHardwareBackPress');
-
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
@@ -522,12 +510,10 @@ export default class EditPost extends React.Component {
         }
 
         // add current upload files to remove list
-        // --
         if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
         if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
         if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
         if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
-        // --
 
         // remove origin image files from remove list
         this.removeItemFromList();
@@ -535,6 +521,15 @@ export default class EditPost extends React.Component {
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
+    }
+
+    removeItemFromList() {
+        for (let i = 0; i < this.originImageRefs.length; i++) {
+            const ref = this.originImageRefs[i];
+
+            const index = this.imageRefs.indexOf(ref);
+            if (index !== -1) this.imageRefs.splice(index, 1);
+        }
     }
 
     validateName(text) {
@@ -551,25 +546,27 @@ export default class EditPost extends React.Component {
         this.focusedItem = 'name';
     }
 
+    /*
     onFocusBirthday() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.birthdayY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
     }
+    */
 
+    /*
     onFocusGender() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.genderY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
     }
+    */
 
     onFocusHeight() {
         if (this._showNotification) {
@@ -643,25 +640,27 @@ export default class EditPost extends React.Component {
         this.setState({ weight: text });
     }
 
+    /*
     onFocusBodyType() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.bodyTypeY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
     }
+    */
 
+    /*
     onFocusBoobs() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcon();
         }
 
-        // this.refs.flatList.scrollToOffset({ offset: this.boobsY, animated: true });
-        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+        this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
     }
+    */
 
     onFocusNote() {
         if (this._showNotification) {
@@ -669,23 +668,22 @@ export default class EditPost extends React.Component {
             this.hideAlertIcon();
         }
 
-        if (!this.state.onNote) this.setState({ onNote: true });
+        // this.setState({ onNote: true });
 
         // move scroll in keyboard show event
         this.focusedItem = 'note';
     }
 
     onBlurNote() {
-        if (this.state.onNote) this.setState({ onNote: false });
+        // this.setState({ onNote: false });
     }
 
     async update() {
+        if (this.state.onUploadingImage) return;
+
         // 1. check
-        const {
-            post,
-            uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri,
-            name, birthday, gender, height, weight, bodyType, boobs, biceps, note, country, street, streetInfo, cityInfo
-        } = this.state;
+        const { post, uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri,
+            name, birthday, gender, height, weight, bodyType, boobs, biceps, note, country, street, streetInfo, cityInfo } = this.state;
 
         if (uploadImage1Uri === null) {
             this.showNotification('Please add your 1st profile picture.');
@@ -702,7 +700,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showNameAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17, animated: true }); // Consider
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY - 17 + 1, animated: true });
 
             return;
         }
@@ -712,7 +710,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showAgeAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.nameY + 1, animated: true });
 
             return;
         }
@@ -722,7 +720,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showGenderAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.birthdayY + 1, animated: true });
 
             return;
         }
@@ -732,7 +730,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showHeightAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
 
             return;
         }
@@ -742,7 +740,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showWeightAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.heightY + 1, animated: true });
 
             return;
         }
@@ -752,7 +750,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showBodyTypeAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.weightY + 1, animated: true });
 
             return;
         }
@@ -762,7 +760,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showBoobsAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
 
             return;
         }
@@ -772,7 +770,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showBoobsAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.bodyTypeY + 1, animated: true });
 
             return;
         }
@@ -782,7 +780,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showCountryAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
 
             return;
         }
@@ -792,7 +790,7 @@ export default class EditPost extends React.Component {
 
             this.setState({ showStreetAlertIcon: true });
 
-            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
+            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY + 1, animated: true });
 
             return;
         }
@@ -888,8 +886,6 @@ export default class EditPost extends React.Component {
 
         await Firebase.updateFeed(post.uid, post.placeId, post.id, data);
 
-        // this.removeItemFromList();
-
         // 3. move to finish page
         this.refs["toast"].show('Your post updated successfully.', 500, () => {
             if (this.closed) return;
@@ -899,6 +895,90 @@ export default class EditPost extends React.Component {
 
             this.props.navigation.dismiss();
         });
+    }
+
+    getImage(lastSavedImageNumber) {
+        let uri = null;
+        let ref = null;
+        let number = -1;
+
+        const { uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
+
+        if (lastSavedImageNumber === 0) {
+
+            if (uploadImage1Uri) {
+                uri = uploadImage1Uri;
+                ref = this.uploadImage1Ref;
+                number = 1;
+            } else {
+                if (uploadImage2Uri) {
+                    uri = uploadImage2Uri;
+                    ref = this.uploadImage2Ref;
+                    number = 2;
+                } else {
+                    if (uploadImage3Uri) {
+                        uri = uploadImage3Uri;
+                        ref = this.uploadImage3Ref;
+                        number = 3;
+                    } else {
+                        if (uploadImage4Uri) {
+                            uri = uploadImage4Uri;
+                            ref = this.uploadImage4Ref;
+                            number = 4;
+                        }
+                    }
+                }
+            }
+
+        } else if (lastSavedImageNumber === 1) {
+
+            if (uploadImage2Uri) {
+                uri = uploadImage2Uri;
+                ref = this.uploadImage2Ref;
+                number = 2;
+            } else {
+                if (uploadImage3Uri) {
+                    uri = uploadImage3Uri;
+                    ref = this.uploadImage3Ref;
+                    number = 3;
+                } else {
+                    if (uploadImage4Uri) {
+                        uri = uploadImage4Uri;
+                        ref = this.uploadImage4Ref;
+                        number = 4;
+                    }
+                }
+            }
+
+        } else if (lastSavedImageNumber === 2) {
+
+            if (uploadImage3Uri) {
+                uri = uploadImage3Uri;
+                ref = this.uploadImage3Ref;
+                number = 3;
+            } else {
+                if (uploadImage4Uri) {
+                    uri = uploadImage4Uri;
+                    ref = this.uploadImage4Ref;
+                    number = 4;
+                }
+            }
+
+        } else if (lastSavedImageNumber === 3) {
+
+            if (uploadImage4Uri) {
+                uri = uploadImage4Uri;
+                ref = this.uploadImage4Ref;
+                number = 4;
+            }
+
+        }
+
+        const image = {
+            uri, ref, number
+        };
+
+        return image;
     }
 
     render() {
@@ -973,12 +1053,10 @@ export default class EditPost extends React.Component {
                             }
 
                             // add current upload files to remove list
-                            // --
                             if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
                             if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
                             if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
                             if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
-                            // --
 
                             // remove origin image files from remove list
                             this.removeItemFromList();
@@ -1107,135 +1185,6 @@ export default class EditPost extends React.Component {
                 />
             </View>
         );
-    }
-
-    getImage(lastSavedImageNumber) {
-        let uri = null;
-        let ref = null;
-        let number = -1;
-
-        const { uploadImage1Uri, uploadImage2Uri, uploadImage3Uri, uploadImage4Uri } = this.state;
-
-        if (lastSavedImageNumber === 0) {
-
-            if (uploadImage1Uri) {
-                uri = uploadImage1Uri;
-                ref = this.uploadImage1Ref;
-                number = 1;
-            } else {
-                if (uploadImage2Uri) {
-                    uri = uploadImage2Uri;
-                    ref = this.uploadImage2Ref;
-                    number = 2;
-                } else {
-                    if (uploadImage3Uri) {
-                        uri = uploadImage3Uri;
-                        ref = this.uploadImage3Ref;
-                        number = 3;
-                    } else {
-                        if (uploadImage4Uri) {
-                            uri = uploadImage4Uri;
-                            ref = this.uploadImage4Ref;
-                            number = 4;
-                        }
-                    }
-                }
-            }
-
-        } else if (lastSavedImageNumber === 1) {
-
-            if (uploadImage2Uri) {
-                uri = uploadImage2Uri;
-                ref = this.uploadImage2Ref;
-                number = 2;
-            } else {
-                if (uploadImage3Uri) {
-                    uri = uploadImage3Uri;
-                    ref = this.uploadImage3Ref;
-                    number = 3;
-                } else {
-                    if (uploadImage4Uri) {
-                        uri = uploadImage4Uri;
-                        ref = this.uploadImage4Ref;
-                        number = 4;
-                    }
-                }
-            }
-
-        } else if (lastSavedImageNumber === 2) {
-
-            if (uploadImage3Uri) {
-                uri = uploadImage3Uri;
-                ref = this.uploadImage3Ref;
-                number = 3;
-            } else {
-                if (uploadImage4Uri) {
-                    uri = uploadImage4Uri;
-                    ref = this.uploadImage4Ref;
-                    number = 4;
-                }
-            }
-
-        } else if (lastSavedImageNumber === 3) {
-
-            if (uploadImage4Uri) {
-                uri = uploadImage4Uri;
-                ref = this.uploadImage4Ref;
-                number = 4;
-            }
-
-        }
-
-        const image = {
-            uri, ref, number
-        };
-
-        return image;
-    }
-
-    /*
-    removeItemFromList() {
-        if (this.uploadImage1Ref) {
-            const ref = this.uploadImage1Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-
-        if (this.uploadImage2Ref) {
-            const ref = this.uploadImage2Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-
-        if (this.uploadImage3Ref) {
-            const ref = this.uploadImage3Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-
-        if (this.uploadImage4Ref) {
-            const ref = this.uploadImage4Ref;
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) {
-                this.imageRefs.splice(index, 1);
-            }
-        }
-    }
-    */
-
-    removeItemFromList() {
-        for (let i = 0; i < this.originImageRefs.length; i++) {
-            const ref = this.originImageRefs[i];
-
-            const index = this.imageRefs.indexOf(ref);
-            if (index !== -1) this.imageRefs.splice(index, 1);
-        }
     }
 
     renderHeader(post) {
@@ -1379,7 +1328,7 @@ export default class EditPost extends React.Component {
                     {/* picker */}
                     <TouchableOpacity
                         onPress={() => {
-                            this.onFocusBirthday();
+                            // this.onFocusBirthday();
 
                             this.showDateTimePicker('Select your date of birth');
                         }}
@@ -1427,7 +1376,7 @@ export default class EditPost extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusGender()} // NOT working in Android
+                        // onOpen={() => this.onFocusGender()} // NOT working in Android
                         placeholder={{
                             label: "Select your gender",
                             value: null
@@ -1456,7 +1405,6 @@ export default class EditPost extends React.Component {
                         }}
                         useNativeAndroidPickerStyle={false}
                         value={this.state.gender}
-
                         Icon={() => {
                             // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                             return null;
@@ -1539,14 +1487,11 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                        /*
-                        onPress={() => {
-                            // ToDo: show description with pop-up message box
-                            const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                            this.showMessageBox(msg, this.heightY);
-                        }}
-                        */
-                        >
+                            onPress={() => {
+                                // ToDo: show description with pop-up message box
+                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                this.showMessageBox(msg, this.heightY);
+                            }}>
                             <Ionicons name='md-alert' color={'transparent'} size={16} />
                         </TouchableOpacity>
                     </View>
@@ -1604,9 +1549,8 @@ export default class EditPost extends React.Component {
                         </TouchableOpacity>
                     </View>
                     <Select
-                        onOpen={() => this.onFocusBodyType()} // NOT working in Android
+                        // onOpen={() => this.onFocusBodyType()} // NOT working in Android
                         placeholder={{
-                            // label: "Fit",
                             label: "What's your body type?",
                             value: null
                         }}
@@ -1677,12 +1621,7 @@ export default class EditPost extends React.Component {
                     {
                         boobsTitle === 'BOOBS' ?
                             <Select
-                                /*
-                                ref={(el) => {
-                                    this.inputRefs.favSport0 = el;
-                                }}
-                                */
-                                onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
                                 placeholder={{
                                     label: "What's your bra size?",
                                     value: null
@@ -1734,7 +1673,7 @@ export default class EditPost extends React.Component {
                             />
                             :
                             <Select
-                                onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
                                 placeholder={{
                                     label: "How big are your biceps?",
                                     value: null
@@ -1820,9 +1759,7 @@ export default class EditPost extends React.Component {
                         maxLength={200}
                         multiline={true}
                         numberOfLines={4}
-                        onFocus={(e) => {
-                            this.onFocusNote();
-                        }}
+                        onFocus={(e) => this.onFocusNote()}
                         onBlur={(e) => this.onBlurNote()}
                     />
                     <Text style={{ color: Theme.color.placeholder, fontSize: 14, fontFamily: "Roboto-Regular", textAlign: 'right', paddingRight: 24, paddingBottom: 4 }}>
@@ -1857,13 +1794,15 @@ export default class EditPost extends React.Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
                             /*
                             if (this._showNotification) {
                                 this.hideNotification();
                                 this.hideAlertIcon();
                             }
  
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
  
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("selectCountry", { initFromSelect: (result) => this.initFromSelect(result) });
@@ -1915,6 +1854,8 @@ export default class EditPost extends React.Component {
                     </View>
                     <TouchableOpacity
                         onPress={() => {
+                            if (this.state.onUploadingImage) return;
+
                             /*
                             if (this._showNotification) {
                                 this.hideNotification();
@@ -1927,14 +1868,12 @@ export default class EditPost extends React.Component {
  
                                 this.setState({ showCountryAlertIcon: true });
  
-                                // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
-                                // this.refs.flatList.scrollToOffset({ offset: this.countryY, animated: true });
-                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY, animated: true });
+                                this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.noteY + 1, animated: true });
  
                                 return;
                             }
  
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY, animated: true });
+                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.countryY + 1, animated: true });
  
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("searchStreet", { from: 'AdvertisementMain', countryCode: this.state.countryCode, initFromSearch: (result1, result2) => this.initFromSearch(result1, result2) });
