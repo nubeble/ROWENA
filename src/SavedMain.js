@@ -198,12 +198,11 @@ export default class SavedMain extends React.Component<InjectedProps> {
         let _count = 0;
 
         for (let i = startIndex; i < this.order.length; i++) {
-            // if (count >= DEFAULT_FEED_COUNT) break;
             if (_count >= count) break;
 
             const placeId = this.order[i];
 
-            // no need to subscribe
+            // no need to subscribe for now
             const feeds = this.getValue(placeId);
             const feedsSize = feeds.length;
             const pictures = this.getPictures(feeds);
@@ -213,8 +212,6 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
             const newFeed = {
                 feeds, // array
-
-
                 feedsSize,
                 placeName: _placeName, // city, state, country | city, country
                 pictures,
