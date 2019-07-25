@@ -85,11 +85,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
         this.props.profileStore.setLikesUpdatedCallback(this.onLikesUpdated);
 
-        // reload from the start
-        this.getPlaces();
-
-        this.lastLoadedFeedIndex = -1;
-        this.drawPlaces();
+        this.reload();
     }
 
     componentWillUnmount() {
@@ -117,31 +113,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
     onLikesUpdated() {
         console.log('SavedMain.onLikesUpdated');
 
-        // reload from the start
-        this.getPlaces();
-
-        this.lastLoadedFeedIndex = -1;
-        this.drawPlaces();
+        const count = this.lastLoadedFeedIndex + 1;
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
+        this.reload(count);
     }
 
     @autobind
     onFocus() {
-        // console.log('SavedMain.onFocus');
-
         Vars.focusedScreen = 'SavedMain';
-
-        /*
-        const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            this.lastChangedTime = lastChangedTime;
-
-            // reload from the start
-            this.getPlaces();
-
-            this.lastLoadedFeedIndex = -1;
-            this.drawPlaces();
-        }
-        */
 
         this.focused = true;
     }
@@ -157,6 +136,14 @@ export default class SavedMain extends React.Component<InjectedProps> {
         const threshold = 80;
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
+
+    reload(count = DEFAULT_FEED_COUNT) {
+        // reload from the start
+        this.getPlaces();
+
+        this.lastLoadedFeedIndex = -1;
+        this.drawPlaces(count);
+    }
 
     getPlaces() {
         // console.log('getPlaces()');
@@ -180,11 +167,11 @@ export default class SavedMain extends React.Component<InjectedProps> {
         }
     }
 
-    drawPlaces() { // set state feeds
+    drawPlaces(count) { // set state feeds
         if (this.state.isLoadingFeeds) return;
 
         if (this.order.length === 0) {
-            !this.closed && this.setState({ feeds: [] });
+            this.setState({ feeds: [] });
             return;
         }
 
@@ -208,10 +195,11 @@ export default class SavedMain extends React.Component<InjectedProps> {
             this.setState({ isLoadingFeeds: true, loadingType: 200 });
         }
 
-        let count = 0;
+        let _count = 0;
 
         for (let i = startIndex; i < this.order.length; i++) {
-            if (count >= DEFAULT_FEED_COUNT) break;
+            // if (count >= DEFAULT_FEED_COUNT) break;
+            if (_count >= count) break;
 
             const placeId = this.order[i];
 
@@ -237,19 +225,17 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
             this.lastLoadedFeedIndex = i;
 
-            count++;
+            _count++;
         }
 
-        if (reload)
-            this.setState({ feeds: newFeeds });
-        else
-            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
-
-        console.log('SavedMain', 'loading feeds done!');
+        if (reload) this.setState({ feeds: newFeeds });
+        else this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
+
+        console.log('SavedMain', 'loading feeds done!');
     }
 
     getPictures(feeds) {
@@ -625,11 +611,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ refreshing: true });
 
-        // reload from the start
-        this.getPlaces();
-
-        this.lastLoadedFeedIndex = -1;
-        this.drawPlaces();
+        this.reload();
 
         !this.closed && this.setState({ refreshing: false });
     }

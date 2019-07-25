@@ -64,11 +64,11 @@ export default class ReviewStore {
         }
     }
 
-    loadReviewFromStart() {
-        if (this.query) this.init(this.query);
+    loadReviewFromStart(count) {
+        if (this.query) this.init(this.query, count);
     }
 
-    init(query: any, count = DEFAULT_REVIEW_COUNT) {
+    init(query, count) {
         this.cursor = undefined;
         this.lastKnownEntry = undefined;
         this.query = undefined;
@@ -80,7 +80,7 @@ export default class ReviewStore {
         this.loadReview(count);
     }
 
-    async loadReview(count = DEFAULT_REVIEW_COUNT): Promise<void> {
+    async loadReview(count): Promise<void> {
         let query = this.query;
 
         if (this.cursor) {

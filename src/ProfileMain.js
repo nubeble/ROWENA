@@ -87,9 +87,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.countsUnsubscribes = [];
 
         // this.imageRefs = []; // for cleaning files in server
-
-        // used in checkUpdateOnUserFeed
-        // this.reviewAddedFeedHashTable = new Map();
     }
 
     componentDidMount() {
@@ -198,8 +195,18 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         console.log('ProfileMain.onFeedsUpdated');
 
         // reload from the start
+        /*
         this.lastLoadedFeedIndex = -1;
         this.getUserFeeds();
+        */
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+        const length = profile.feeds.length;
+        const count = length - this.lastLoadedFeedIndex;
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
+
+        this.lastLoadedFeedIndex = -1;
+        this.getUserFeeds(count);
     }
 
     @autobind
@@ -207,46 +214,15 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         console.log('ProfileMain.onReviewAddedOnFeed');
 
         // reload from the start
-        // render feeds from 0 to current index
         const { profileStore } = this.props;
         const { profile } = profileStore;
         const length = profile.feeds.length;
         const count = length - this.lastLoadedFeedIndex;
-        console.log('ProfileMain.onReviewAddedOnFeed', count);
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
 
         this.lastLoadedFeedIndex = -1;
         this.getUserFeeds(count);
     }
-
-    // copied from Loading.js
-    /*
-    checkUpdateOnUserFeed() {
-        // 내 post에 리뷰가 달린 경우만 체크!
-
-        const { profileStore } = this.props;
-        const { profile } = profileStore;
-        if (!profile) return false;
-
-        // check reviews on my post
-        let result = false;
-
-        const feeds = profile.feeds;
-        for (let i = 0; i < feeds.length; i++) {
-            const feed = feeds[i];
-            if (feed.reviewAdded) {
-                const saved = this.reviewAddedFeedHashTable.has(feed.feedId);
-                if (saved) { // saved. means already applied.
-                    // skip
-                } else {
-                    this.reviewAddedFeedHashTable.set(feed.feedId, 1); // check
-                    result = true;
-                }
-            }
-        }
-
-        return result;
-    }
-    */
 
     @autobind
     onReplyAddedOnReview() {
@@ -258,20 +234,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     @autobind
     onFocus() {
         Vars.focusedScreen = 'ProfileMain';
-
-        /*
-        // check user feed updates
-        if (this.checkUpdateOnUserFeed() === true) {
-            this.lastChangedTime = 0;
-            this.getUserFeeds();
-        } else {
-            const lastChangedTime = this.props.profileStore.lastTimeFeedsUpdated;
-            if (this.lastChangedTime !== lastChangedTime) {
-                // reload from the start
-                this.getUserFeeds();
-            }
-        }
-        */
 
         this.focused = true;
     }
@@ -293,8 +255,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     */
 
     showNotification(msg) {
-        // if (this._showNotification) this.hideNotification();
-
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {
@@ -437,7 +397,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         // if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
 
                         feeds[index].picture = newFeed.pictures.one.uri;
-                        this.setState({ feeds });
+                        !this.closed && this.setState({ feeds });
                     }
 
                     // update database
@@ -475,13 +435,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             _count++;
         }
 
-        if (reload) {
-            // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
-            this.setState({ feeds: newFeeds });
-        } else {
-            // this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
-            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
-        }
+        if (reload) this.setState({ feeds: newFeeds });
+        else this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false });
@@ -1186,29 +1141,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     } // end of render()
 
     handleRefresh = () => {
-        /*
-        this.setState(
-            {
-                refreshing: true
-            },
-            () => {
-                if (Vars.userFeedsChanged) Vars.userFeedsChanged = false;
-
-                // reload from the start
-                this.lastChangedTime = 0;
-                this.getUserFeeds();
-            }
-        );
-        */
-
-        // if (this.state.isLoadingFeeds) return;
-
         if (this.state.refreshing) return;
 
         this.setState({ refreshing: true });
 
         // reload from the start
-        // this.lastChangedTime = 0;
         this.lastLoadedFeedIndex = -1;
         this.getUserFeeds();
 

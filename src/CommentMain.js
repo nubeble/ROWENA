@@ -78,21 +78,23 @@ export default class CommentMain extends React.Component<InjectedProps> {
     @autobind
     onCommentsUpdated() {
         // reload from the start
+        /*
         this.lastLoadedFeedIndex = -1;
         this.getCommentedFeeds();
+        */
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+        const length = profile.comments.length;
+        const count = length - this.lastLoadedFeedIndex;
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
+
+        this.lastLoadedFeedIndex = -1;
+        this.getCommentedFeeds(count);
     }
 
     @autobind
     onFocus() {
         Vars.focusedScreen = 'CommentMain';
-
-        /*
-        const lastChangedTime = this.props.profileStore.lastTimeCommentsUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            // reload from the start
-            this.getCommentedFeeds();
-        }
-        */
 
         this.focused = true;
     }
@@ -460,13 +462,8 @@ export default class CommentMain extends React.Component<InjectedProps> {
             count++;
         }
 
-        if (reload) {
-            // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
-            this.setState({ feeds: newFeeds });
-        } else {
-            // this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
-            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
-        }
+        if (reload) this.setState({ feeds: newFeeds });
+        else this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false });
@@ -547,7 +544,6 @@ export default class CommentMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
-        // this.lastChangedTime = 0;
         this.lastLoadedFeedIndex = -1;
         this.getCommentedFeeds();
 

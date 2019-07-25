@@ -1452,8 +1452,6 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     showNotification(msg) {
-        // if (this._showNotification) this.hideNotification();
-
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {

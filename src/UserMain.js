@@ -26,7 +26,7 @@ import { sendPushNotification } from './PushNotifications';
 import Dialog from "react-native-dialog";
 import _ from 'lodash';
 
-const DEFAULT_REVIEW_COUNT = 6;
+const DEFAULT_COMMENT_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
 const profilePictureWidth = 56;
@@ -112,7 +112,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         const uid = guest.uid;
 
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
-        this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+        this.commentStore.init(query, DEFAULT_COMMENT_COUNT);
 
         // subscribe here
         // --
@@ -255,7 +255,9 @@ export default class UserMain extends React.Component<InjectedProps> {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
-                this.loadReviewFromStart();
+                const count = this.state.reviews.length;
+                if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+                this.loadReviewFromStart(count);
 
                 // move scroll top
                 this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -286,7 +288,9 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500);
 
-            this.loadReviewFromStart();
+            const count = this.state.reviews.length;
+            if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+            this.loadReviewFromStart(count);
 
             // move scroll top
             this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -581,7 +585,9 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                         justifyContent: "center", alignItems: "center"
                                                     }}
                                                     onPress={() => {
-                                                        this.loadReviewFromStart();
+                                                        const count = this.state.reviews.length;
+                                                        if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+                                                        this.loadReviewFromStart(count);
 
                                                         // this.setState({ showReloadCommentsButton: false });
                                                     }}>
@@ -783,13 +789,13 @@ export default class UserMain extends React.Component<InjectedProps> {
         );
     } // end of render()
 
-    loadReviewFromStart() {
+    loadReviewFromStart(count) {
         this.setState({ reviews: null });
         // init
         this.originReviewList = undefined;
         this.translatedReviewList = undefined;
 
-        this.commentStore.loadReviewFromStart();
+        this.commentStore.loadReviewFromStart(count);
     }
 
     @autobind
@@ -935,7 +941,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        this.commentStore.loadReview();
+        this.commentStore.loadReview(DEFAULT_COMMENT_COUNT);
     }
 
     @autobind
@@ -1061,7 +1067,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         this.setState({ refreshing: true });
 
         // reload from the start
-        this.commentStore.loadReviewFromStart();
+        this.commentStore.loadReviewFromStart(DEFAULT_COMMENT_COUNT);
     }
 
     translateReview(index) {
@@ -1113,8 +1119,6 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     showNotification(msg) {
-        // if (this._showNotification) this.hideNotification();
-
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {

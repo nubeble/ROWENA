@@ -104,8 +104,18 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         console.log('ReviewMain.onReplyAddedOnReview');
 
         // reload from the start
+        /*
         this.lastLoadedFeedIndex = -1;
         this.getReviewedFeeds();
+        */
+        const { profileStore } = this.props;
+        const { profile } = profileStore;
+        const length = profile.reviews.length;
+        const count = length - this.lastLoadedFeedIndex;
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
+
+        this.lastLoadedFeedIndex = -1;
+        this.getReviewedFeeds(count);
     }
 
     @autobind
@@ -113,12 +123,11 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         console.log('ReviewMain.onReplyAddedOnReview');
 
         // reload from the start
-        // render feeds from 0 to current index
         const { profileStore } = this.props;
         const { profile } = profileStore;
         const length = profile.reviews.length;
         const count = length - this.lastLoadedFeedIndex;
-        console.log('ReviewMain.onReplyAddedOnReview', count);
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
 
         this.lastLoadedFeedIndex = -1;
         this.getReviewedFeeds(count);
@@ -126,17 +135,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onFocus() {
-        // console.log('ReviewMain.onFocus', this.lastChangedTime, this.props.profileStore.lastTimeReviewsUpdated);
-
         Vars.focusedScreen = 'ReviewMain';
-
-        /*
-        const lastChangedTime = this.props.profileStore.lastTimeReviewsUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            // reload from the start
-            this.getReviewedFeeds();
-        }
-        */
 
         this.focused = true;
     }
@@ -455,13 +454,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             _count++;
         }
 
-        if (reload) {
-            // this.setState({ isLoadingFeeds: false, feeds: newFeeds });
-            this.setState({ feeds: newFeeds });
-        } else {
-            // this.setState({ isLoadingFeeds: false, feeds: [...this.state.feeds, ...newFeeds] });
-            this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
-        }
+        if (reload) this.setState({ feeds: newFeeds });
+        else this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false });
@@ -570,7 +564,6 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         !this.closed && this.setState({ refreshing: true });
 
         // reload from the start
-        // this.lastChangedTime = 0;
         this.lastLoadedFeedIndex = -1;
         this.getReviewedFeeds();
 

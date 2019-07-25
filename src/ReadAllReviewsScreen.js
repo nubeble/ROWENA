@@ -24,6 +24,8 @@ import Util from './Util';
 import PreloadImage from './PreloadImage';
 import _ from 'lodash';
 
+const DEFAULT_REVIEW_COUNT = 6;
+
 const profilePictureWidth = 56;
 const replyViewHeight = Dimensions.get('window').height / 9;
 
@@ -70,7 +72,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         reviewStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         // reviewStore.checkForNewEntries(); // do not use here!
-        this.loadReviewFromStart();
+        this.reload();
 
         setTimeout(() => {
             !this.closed && this.setState({ renderReview: true });
@@ -323,10 +325,10 @@ export default class ReadAllReviewsScreen extends React.Component {
         this.setState({ refreshing: true });
 
         // reload from the start
-        this.loadReviewFromStart();
+        this.reload();
     }
 
-    loadReviewFromStart() {
+    reload(count = DEFAULT_REVIEW_COUNT) {
         this.setState({ reviews: null });
         // init
         this.originReviewList = undefined;
@@ -335,7 +337,7 @@ export default class ReadAllReviewsScreen extends React.Component {
         this.translatedReplyList = undefined;
 
         const { reviewStore } = this.props.navigation.state.params;
-        reviewStore.loadReviewFromStart();
+        reviewStore.loadReviewFromStart(count);
 
         // this.disableScroll();
     }
@@ -559,7 +561,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         this.setState({ isLoadingReview: true });
 
-        reviewStore.loadReview();
+        reviewStore.loadReview(DEFAULT_REVIEW_COUNT);
     }
 
     @autobind
@@ -752,8 +754,6 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     showNotification(msg) {
-        // if (this._showNotification) this.hideNotification();
-
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {
@@ -836,7 +836,9 @@ export default class ReadAllReviewsScreen extends React.Component {
 
                 // this.setState({ isLoadingReview: true });
 
-                this.loadReviewFromStart();
+                const count = this.this.state.reviews.length;
+                if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                this.reload(count);
 
                 // move scroll top
                 this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -883,7 +885,9 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     // this.setState({ isLoadingReview: true });
 
-                    this.loadReviewFromStart();
+                    const count = this.this.state.reviews.length;
+                    if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                    this.reload(count);
 
                     // move scroll top
                     this._flatList.scrollToOffset({ offset: 0, animated: false });
@@ -909,7 +913,9 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     // this.setState({ isLoadingReview: true });
 
-                    this.loadReviewFromStart();
+                    const count = this.this.state.reviews.length;
+                    if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
+                    this.reload(count);
 
                     // move scroll top
                     this._flatList.scrollToOffset({ offset: 0, animated: false });

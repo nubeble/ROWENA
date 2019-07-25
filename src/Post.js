@@ -308,7 +308,7 @@ export default class Post extends React.Component<InjectedProps> {
         // const post = this.state.post;
         // const query = Firebase.firestore.collection("places").doc(post.placeId).collection("feed").doc(post.id).collection("reviews").orderBy("timestamp", "desc");
         // this.reviewStore.init(query, DEFAULT_REVIEW_COUNT);
-        this.reviewStore.loadReviewFromStart();
+        this.reviewStore.loadReviewFromStart(DEFAULT_REVIEW_COUNT);
 
         // 2. reload review count & calc chart
         const newPost = this.reloadPost();
@@ -2393,8 +2393,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     showNotification(msg) {
-        // if (this._showNotification) this.hideNotification();
-
         this._showNotification = true;
 
         !this.closed && this.setState({ notification: msg }, () => {

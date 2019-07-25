@@ -250,13 +250,6 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     };
 
     showNotification(msg) {
-        /*
-        if (this._showNotification) {
-            this.hideNotification();
-            this.hideAlertIcon();
-        }
-        */
-
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {

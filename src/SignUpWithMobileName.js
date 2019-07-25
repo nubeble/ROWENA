@@ -85,13 +85,6 @@ export default class SignUpWithMobileName extends React.Component {
     }
 
     showNotification(msg) {
-        /*
-        if (this._showNotification) {
-            this.hideNotification();
-            this.hideAlertIcon();
-        }
-        */
-
         this._showNotification = true;
 
         this.setState({ notification: msg }, () => {

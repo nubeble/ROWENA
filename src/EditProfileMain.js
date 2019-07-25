@@ -22,7 +22,7 @@ import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import _ from 'lodash';
 
-const DEFAULT_REVIEW_COUNT = 6;
+const DEFAULT_COMMENT_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
 const profilePictureWidth = 56;
@@ -60,7 +60,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
-        this.commentStore.init(query, DEFAULT_REVIEW_COUNT);
+        this.commentStore.init(query, DEFAULT_COMMENT_COUNT);
 
         // this.disableScroll();
     }
@@ -352,7 +352,9 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                                                         justifyContent: "center", alignItems: "center"
                                                     }}
                                                     onPress={() => {
-                                                        this.loadReviewFromStart();
+                                                        const count = this.state.reviews.length;
+                                                        if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
+                                                        this.loadReviewFromStart(count);
                                                     }}>
                                                     <Ionicons name='md-refresh-circle' color={Theme.color.selection} size={20} />
                                                 </TouchableOpacity>
@@ -392,13 +394,13 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         );
     }
 
-    loadReviewFromStart() {
+    loadReviewFromStart(count) {
         this.setState({ reviews: null });
         // init
         this.originReviewList = undefined;
         this.translatedReviewList = undefined;
 
-        this.commentStore.loadReviewFromStart();
+        this.commentStore.loadReviewFromStart(count);
 
         const { profile } = this.props.profileStore;
         this.count = profile.receivedCommentsCount;
@@ -548,7 +550,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        this.commentStore.loadReview();
+        this.commentStore.loadReview(DEFAULT_COMMENT_COUNT);
     }
 
     @autobind
@@ -674,7 +676,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         this.setState({ refreshing: true });
 
         // reload from the start
-        this.loadReviewFromStart();
+        this.loadReviewFromStart(DEFAULT_COMMENT_COUNT);
     }
 
     translateReview(index) {

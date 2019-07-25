@@ -98,15 +98,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         }
         */
 
-        // this.__feeds = feeds;
-
-        // this.getFeeds();
-
-        // reload from the start
-        this.getFeedsFromStart();
-
-        this.lastLoadedFeedIndex = -1;
-        this.getFeeds();
+        this.reload();
     }
 
     componentWillUnmount() {
@@ -144,31 +136,14 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     onLikesUpdated() {
         console.log('SavedPlace.onLikesUpdated');
 
-        // reload from the start
-        this.getFeedsFromStart();
-
-        this.lastLoadedFeedIndex = -1;
-        this.getFeeds();
+        const count = this.lastLoadedFeedIndex + 1;
+        if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
+        this.reload(count);
     }
 
     @autobind
     onFocus() {
-        // console.log('SavedPlace.onFocus');
-
         Vars.focusedScreen = 'SavedPlace';
-
-        /*
-        const lastChangedTime = this.props.profileStore.lastTimeLikesUpdated;
-        if (this.lastChangedTime !== lastChangedTime) {
-            this.lastChangedTime = lastChangedTime;
-
-            // reload from the start
-            this.getFeedsFromStart();
-
-            this.lastLoadedFeedIndex = -1;
-            this.getFeeds();
-        }
-        */
 
         this.focused = true;
     }
@@ -185,16 +160,24 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         return layoutMeasurement.height + contentOffset.y >= contentSize.height - threshold;
     };
 
-    getFeeds() {
+    reload(count = DEFAULT_FEED_COUNT) {
+        // reload from the start
+        this.getFeedsFromStart();
+
+        this.lastLoadedFeedIndex = -1;
+        this.getFeeds(count);
+    }
+
+    getFeeds(count) {
         if (this.state.isLoadingFeeds) return;
 
         const feeds = this.__feeds;
         const length = feeds.length;
 
-        !this.closed && this.setState({ totalFeedsSize: length });
+        this.setState({ totalFeedsSize: length });
 
         if (length === 0) {
-            !this.closed && this.setState({ feeds: [] });
+            this.setState({ feeds: [] });
             return;
         }
 
@@ -211,17 +194,18 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             reload = true;
             startIndex = 0;
 
-            !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
+            this.setState({ isLoadingFeeds: true, loadingType: 100 });
         } else {
             startIndex = this.lastLoadedFeedIndex + 1;
 
-            !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 200 });
+            this.setState({ isLoadingFeeds: true, loadingType: 200 });
         }
 
-        let count = 0;
+        let _count = 0;
 
         for (let i = startIndex; i < length; i++) {
-            if (count >= DEFAULT_FEED_COUNT) break;
+            // if (count >= DEFAULT_FEED_COUNT) break;
+            if (_count >= count) break;
 
             const feed = feeds[i];
 
@@ -269,19 +253,17 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
             this.lastLoadedFeedIndex = i;
 
-            count++;
+            _count++;
         }
 
-        if (reload)
-            !this.closed && this.setState({ feeds: newFeeds });
-        else
-            !this.closed && this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
-
-        console.log('SavedPlace', 'loading feeds done!');
+        if (reload) this.setState({ feeds: newFeeds });
+        else this.setState({ feeds: [...this.state.feeds, ...newFeeds] });
 
         setTimeout(() => {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
+
+        console.log('SavedPlace', 'loading feeds done!');
     }
 
     getFeedsFromStart() {
@@ -729,11 +711,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
         !this.closed && this.setState({ refreshing: true });
 
-        // reload from the start
-        this.getFeedsFromStart();
-
-        this.lastLoadedFeedIndex = -1;
-        this.getFeeds();
+        this.reload();
 
         !this.closed && this.setState({ refreshing: false });
     }

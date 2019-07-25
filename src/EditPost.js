@@ -2232,8 +2232,6 @@ export default class EditPost extends React.Component {
     }
 
     showNotification(msg) {
-        // if (this._showNotification) this.hideNotification();
-
         this._showNotification = true;
 
         !this.closed && this.setState({ notification: msg }, () => {
