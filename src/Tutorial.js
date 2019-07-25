@@ -55,6 +55,11 @@ export default class Tutorial extends React.Component {
     handleHardwareBackPress() {
         // ToDo: dialog - you wanna quit?
 
+        // --
+        console.log('move to main');
+        this.props.navigation.navigate("mainStackNavigator");
+        // --
+
         return true;
     }
 

@@ -13,7 +13,7 @@ export default class FirstPost extends React.Component<NavigationProps<>> {
 
     @autobind
     share() {
-        this.props.navigation.navigate("Share"); // ToDo
+        this.props.navigation.navigate("Share");
     }
 
     render(): React.Node {

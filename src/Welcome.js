@@ -29,6 +29,11 @@ export default class Welcome extends React.Component {
     handleHardwareBackPress() {
         // ToDo: dialog - you wanna quit?
 
+        // --
+        console.log('move to tutorial');
+        this.props.navigation.navigate("tutorial");
+        // --
+
         return true;
     }
 
