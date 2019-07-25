@@ -642,7 +642,7 @@ export default class ChatRoom extends React.Component {
                     <Ionicons name='ios-send' color={this.state.opponentLeft ? Theme.color.placeholder : Theme.color.selection} size={28} />
 
                     {/*
-                    <Image source={require('../../assets/send.png')} resizeMode={'center'}/>
+                    <Image source={require('../../assets/send.png')} resizeMode={'center'} />
                     */}
                 </View>
             </Send>

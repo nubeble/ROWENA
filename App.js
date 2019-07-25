@@ -461,7 +461,7 @@ export default class App extends React.Component {
                 <StyleProvider style={getTheme(variables)}>
                     {/*
                     <Provider {...{ feedStore, profileStore, userFeedStore }}>
-                        <MainSwitchNavigator onNavigationStateChange={() => undefined}/>
+                        <MainSwitchNavigator onNavigationStateChange={() => undefined} />
                     </Provider>
                     */}
                     <Provider {...{ feedStore, profileStore }}>
@@ -1466,8 +1466,8 @@ class TabBarComponent extends React.Component {
     }
 
     render() {
-        // return this.state.focused && this.state.visible ? <BottomTabBar {...this.props}/> : null;
-        // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props}/> : null; // not working in S7
+        // return this.state.focused && this.state.visible ? <BottomTabBar {...this.props} /> : null;
+        // return this.state.focused && this.state.visible ? <TabBarBottom {...this.props} /> : null; // not working in S7
 
         if (!this.state.focused) {
             // if (!this.focused) {

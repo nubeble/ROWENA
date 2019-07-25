@@ -389,7 +389,7 @@ export default class SearchScreen extends React.Component {
                         predefinedPlaces={predefinedPlaces}
                         debounce={200} // debounce the requests in ms. Set to 0 to remove debounce. By default 0ms.
 
-                    // renderLeftButton={() => <Image source={require('path/custom/left-icon')}/>}
+                    // renderLeftButton={() => <Image source={require('path/custom/left-icon')} />}
                     /*
                     renderLeftButton={() =>
                         <TouchableOpacity
@@ -398,7 +398,7 @@ export default class SearchScreen extends React.Component {
                                 // this.startEditing();
                             }}
                         >
-                            <FontAwesome name='search' color="grey" size={20}/>
+                            <FontAwesome name='search' color="grey" size={20} />
                         </TouchableOpacity>
                     }
                     */

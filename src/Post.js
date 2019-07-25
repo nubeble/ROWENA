@@ -963,7 +963,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
-                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
+                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                     source={PreloadImage.birth}
                                 />
                             </View>
@@ -1009,7 +1009,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 width: '15%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
-                                    style={{ width: 16, height: 16, tintColor: Theme.color.subtitle }}
+                                    style={{ width: 16, height: 16, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                     source={PreloadImage.ruler}
                                 />
                             </View>
@@ -1022,7 +1022,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 width: '15%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
-                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle }}
+                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                     source={PreloadImage.scale}
                                 />
                             </View>
@@ -1056,21 +1056,21 @@ export default class Post extends React.Component<InjectedProps> {
                                 {
                                     post.gender === 'Female' &&
                                     <Image
-                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
+                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.bra}
                                     />
                                 }
                                 {
                                     post.gender === 'Male' &&
                                     <Image
-                                        style={{ marginRight: 2, width: 15, height: 15, tintColor: Theme.color.subtitle }}
+                                        style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.muscle}
                                     />
                                 }
                                 {
                                     post.gender === 'Other' && post.bust &&
                                     <Image
-                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle }}
+                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.bra}
                                     />
                                 }
@@ -1078,7 +1078,7 @@ export default class Post extends React.Component<InjectedProps> {
                                     /*
                                     post.gender === 'Other' && post.muscle &&
                                     <Image
-                                        style={{ marginRight: 2, width: 15, height: 15, tintColor: Theme.color.subtitle }}
+                                        style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.muscle}
                                     />
                                     */
@@ -1215,8 +1215,8 @@ export default class Post extends React.Component<InjectedProps> {
                             // description={'description'}
                             >
                                 <View style={{ width: 32, height: 50 }}>
-                                    <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, position: 'absolute', top: 0, left: 0 }} />
-                                    <Image source={markerImage} style={{ width: 22, height: 22, position: 'absolute', top: 5, left: 5 }} />
+                                    <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, resizeMode: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                                    <Image source={markerImage} style={{ width: 22, height: 22, resizeMode: 'cover', position: 'absolute', top: 5, left: 5 }} />
                                 </View>
                             </MapView.Marker>
                             {/*
