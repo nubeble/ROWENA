@@ -49,7 +49,7 @@ const illustWidth = 2321;
 const illustHeight = 1890;
 
 // const bodyInfoItemHeight = Dimensions.get('window').height / 24;
-const bodyInfoItemHeight = 30;
+const bodyInfoItemHeight = 32;
 
 const { width, height } = Dimensions.get('window');
 const ASPECT_RATIO = width / height;
@@ -960,7 +960,7 @@ export default class Post extends React.Component<InjectedProps> {
                             alignItems: 'center', justifyContent: 'center'
                         }}>
                             <View style={{
-                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
@@ -968,7 +968,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 {/*
                                 <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
@@ -976,7 +976,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.bodyInfoTitle}>{ageText}</Text>
                             </View>
                             <View style={{
-                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 {
                                     post.gender === 'Female' &&
@@ -992,7 +992,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 }
                             </View>
                             <View style={{
-                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
                             </View>
@@ -1006,7 +1006,7 @@ export default class Post extends React.Component<InjectedProps> {
                             alignItems: 'center', justifyContent: 'center'
                         }}>
                             <View style={{
-                                width: '15%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 16, height: 16, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
@@ -1014,12 +1014,12 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
                             </View>
                             <View style={{
-                                width: '15%', height: '100%', paddingRight: 5, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Image
                                     style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
@@ -1027,7 +1027,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 />
                             </View>
                             <View style={{
-                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                             </View>
@@ -1041,17 +1041,17 @@ export default class Post extends React.Component<InjectedProps> {
                             alignItems: 'center', justifyContent: 'center'
                         }}>
                             <View style={{
-                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
                             </View>
                             <View style={{
-                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
                             </View>
                             <View style={{
-                                width: '15%', height: '100%', paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
                                 {
                                     post.gender === 'Female' &&
@@ -1063,7 +1063,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 {
                                     post.gender === 'Male' &&
                                     <Image
-                                        style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                        style={{ marginRight: 2, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.muscle}
                                     />
                                 }
@@ -1085,7 +1085,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 }
                             </View>
                             <View style={{
-                                width: '35%', height: '100%', alignItems: 'flex-start', justifyContent: 'center'
+                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 {
                                     post.gender === 'Female' &&

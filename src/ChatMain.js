@@ -882,7 +882,6 @@ export default class ChatMain extends React.Component {
             } else {
                 // this.allChatRoomsLoaded = false;
 
-                // ToDo: check removed
                 // check duplication
                 /*
                 const result = this.hasRoom(list); 

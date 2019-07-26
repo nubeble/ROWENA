@@ -341,7 +341,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 // if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnChat(true, 0);
-            }, 2000); // after 2 sec
+            }, 1000); // after 2 sec
         }
 
         // 4. profile
@@ -352,7 +352,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 // if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnProfile(true, 0);
-            }, 2000); // after 2 sec
+            }, 1000); // after 2 sec
         }
     }
 

@@ -23,7 +23,7 @@ export default class WriteReviewScreen extends React.Component {
         picture: null,
         rating: 5,
 
-        invalid: false, // Consider: not used
+        // invalid: false,
         bottomPosition: Dimensions.get('window').height,
         postButtonTop: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight,
 
@@ -308,7 +308,7 @@ export default class WriteReviewScreen extends React.Component {
                 </View>
 
                 <View style={{ position: 'absolute', top: this.state.postButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} disabled={this.state.invalid}>
+                    <TouchableOpacity onPress={async () => await this.post()} style={styles.signUpButton} /* disabled={this.state.invalid} */ >
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Post</Text>
                         {
                             this.state.showPostLoader &&

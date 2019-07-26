@@ -12,8 +12,8 @@ import { Cons } from "./Globals";
 const slides = [
     {
         key: 'slide1',
-        title: 'Title 1',
-        text: 'Description.\nSay something cool',
+        title: 'Title 1', // ToDo
+        text: 'Description.\nSay something cool', // ToDo
         image: {
             uri: PreloadImage.sample1,
             width: 554 * 0.5,

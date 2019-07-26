@@ -1173,7 +1173,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/* // Consider: draw a character avatar */}
+                    {/* // ToDo: draw illustration */}
                 </View>
             );
         }
@@ -1280,7 +1280,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/* // Consider: draw a character avatar */}
+                    {/* // ToDo: draw illustration */}
                 </View>
             );
         }

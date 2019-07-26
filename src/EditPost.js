@@ -1319,7 +1319,7 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                const msg = "You must be at least 18 years old to use Rowena.";
+                                const msg = "Rowena is for adults only. You must be at least 18 years old to use this app.";
                                 this.showMessageBox(msg, this.nameY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1368,7 +1368,7 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                const msg = "Your gender is what you decide. You might be a boy or a girl, or maybe you don't like to decide that.";
+                                const msg = "Your gender is what you decide. You are a man or a woman, or maybe you don't like to decide it.";
                                 this.showMessageBox(msg, this.birthdayY);
                             }}
                         >
@@ -1433,15 +1433,8 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                        /*
-                        onPress={() => {
-                            // ToDo: show description with pop-up message box
-                            const msg = "Woke up to the sound of pouring rain. The wind would whisper and I'd think of you. And all the tears you cried.";
-                            this.showMessageBox(msg, this.genderY);
-                        }}
-                        */
                         >
-                            <Ionicons name='md-alert' color={'transparent'} size={16} />
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TextInput
@@ -1487,12 +1480,8 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.heightY);
-                            }}>
-                            <Ionicons name='md-alert' color={'transparent'} size={16} />
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TextInput
@@ -1540,12 +1529,8 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.weightY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
                         </TouchableOpacity>
                     </View>
                     <Select
@@ -1610,12 +1595,8 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.bodyTypeY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
                         </TouchableOpacity>
                     </View>
                     {
@@ -1732,8 +1713,7 @@ export default class EditPost extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
+                                const msg = "How would you describe yourself? People want to know more about you.";
                                 this.showMessageBox(msg, this.boobsY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
@@ -1784,12 +1764,8 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.noteY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity
@@ -1844,12 +1820,8 @@ export default class EditPost extends React.Component {
                                 marginRight: 18,
                                 justifyContent: "center", alignItems: "center"
                             }}
-                            onPress={() => {
-                                // ToDo: show description with pop-up message box
-                                const msg = "Everyone wants to love and be loved, to appreciate and be appreciated, and everyone wants to live his or her dreams.";
-                                this.showMessageBox(msg, this.countryY);
-                            }}>
-                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        >
+                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity

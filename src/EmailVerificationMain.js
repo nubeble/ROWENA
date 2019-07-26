@@ -553,7 +553,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             const result = await Firebase.deleteProfile(profile.uid);
             // --
 
-            // Consider: if user cancel verification at first join, authentication error will happen.
+            // ToDo: if users cancel verification at first join, authentication error will happen.
             // This operation is sensitive and requires recent authentication. Log in again before retrying this request
             // Loading.onAuthStateChanged not called. manually move to auth main.
             // ToDo: fist email account still remain!

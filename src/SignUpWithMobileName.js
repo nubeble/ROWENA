@@ -266,8 +266,7 @@ export default class SignUpWithMobileName extends React.Component {
                                     this.setState({ nameY: y });
                                 }}
                             />
-                            {/* to block shaking */}
-                            {this.state.nameY !== -1 && nameIcon === 0 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='exclamationcircleo' color="transparent" size={27} />}
+                            {this.state.nameY !== -1 && nameIcon === 0 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='exclamationcircleo' color="transparent" size={27} />} {/* to block shaking */}
                             {this.state.nameY !== -1 && nameIcon === 1 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='exclamationcircleo' color={"rgba(255, 187, 51, 0.8)"} size={27} />}
                             {this.state.nameY !== -1 && nameIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.nameY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
                         </View>
