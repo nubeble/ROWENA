@@ -695,9 +695,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (this.state.birthday) {
             const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
             if (age > 1) {
-                ageText = age.toString() + ' years old';
+                ageText = age.toString() + ' Y/O';
             } else {
-                ageText = age.toString() + ' year old';
+                ageText = age.toString() + ' Y/O';
             }
         }
 
@@ -843,7 +843,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
-                            {ageText ? 'AGE (' + ageText + ')' : 'AGE (? years old)'}
+                            {ageText ? 'AGE (' + ageText + ')' : 'AGE'}
                         </Text>
                         <TouchableOpacity
                             style={{
