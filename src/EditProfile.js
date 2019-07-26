@@ -843,7 +843,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
-                            {ageText ? 'AGE (' + ageText + ')' : 'AGE (?)'}
+                            {ageText ? 'AGE (' + ageText + ')' : 'AGE (? years old)'}
                         </Text>
                         <TouchableOpacity
                             style={{
