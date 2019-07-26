@@ -843,7 +843,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
+                            {/*
                             {ageText ? 'AGE (' + ageText + ')' : 'AGE'}
+                            */}
+                            {'AGE'}
                         </Text>
                         <TouchableOpacity
                             style={{
@@ -874,7 +877,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.birthday ? this.state.birthday : "Select your birthday"}</Text>
+                        >{this.state.birthday ? ageText + '(' + this.state.birthday + ')' : "Select your birthday"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
