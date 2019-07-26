@@ -200,7 +200,7 @@ export default class EditPost extends React.Component {
         name: '',
         showDatePicker: false,
         datePickerTitle: null,
-        datePickerDate: new Date(1990, 0, 1),
+        datePickerDate: new Date(2000, 0, 1),
         birthday: null,
         gender: null,
         height: '',
@@ -324,7 +324,7 @@ export default class EditPost extends React.Component {
 
         const name = post.name;
         let birthday = null;
-        let datePickerDate = new Date(1990, 0, 1);
+        let datePickerDate = new Date(2000, 0, 1);
         if (post.birthday) {
             birthday = Util.getBirthdayText(post.birthday);
             datePickerDate = Util.getDate(post.birthday);
@@ -1190,7 +1190,7 @@ export default class EditPost extends React.Component {
     renderHeader(post) {
         let ageText = null;
         if (this.state.birthday) {
-            const age = Util.getAge(this.state.birthday);
+            const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
             if (age > 1) {
                 ageText = age.toString() + ' years old';
             } else {

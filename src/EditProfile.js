@@ -109,7 +109,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         name: '',
         showDatePicker: false,
         datePickerTitle: null,
-        datePickerDate: new Date(1990, 0, 1), // 1990.01.01
+        datePickerDate: new Date(2000, 0, 1), // 2000.01.01
         birthday: null,
         gender: null,
         place: null,
@@ -164,7 +164,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // const uid = profile.uid;
         const name = profile.name;
         let birthday = null;
-        let datePickerDate = new Date(1990, 0, 1);
+        let datePickerDate = new Date(2000, 0, 1);
         if (profile.birthday) {
             birthday = Util.getBirthdayText(profile.birthday);
             datePickerDate = Util.getDate(profile.birthday);
@@ -693,7 +693,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         let ageText = null;
         if (this.state.birthday) {
-            const age = Util.getAge(this.state.birthday);
+            const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
             if (age > 1) {
                 ageText = age.toString() + ' years old';
             } else {

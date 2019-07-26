@@ -167,7 +167,7 @@ export default class AdvertisementMain extends React.Component {
         name: '',
         showDatePicker: false,
         datePickerTitle: null,
-        datePickerDate: new Date(1990, 0, 1),
+        datePickerDate: new Date(2000, 0, 1),
         birthday: null,
         gender: null,
         height: '',
@@ -1013,7 +1013,7 @@ export default class AdvertisementMain extends React.Component {
     renderContainer() {
         let ageText = null;
         if (this.state.birthday) {
-            const age = Util.getAge(this.state.birthday);
+            const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
             if (age > 1) {
                 ageText = age.toString() + ' years old';
             } else {
