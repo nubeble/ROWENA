@@ -1192,9 +1192,9 @@ export default class EditPost extends React.Component {
         if (this.state.birthday) {
             const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
             if (age > 1) {
-                ageText = age.toString() + ' Y/O';
+                ageText = age.toString() + ' YEARS OLD';
             } else {
-                ageText = age.toString() + ' Y/O';
+                ageText = age.toString() + ' YEAR OLD';
             }
         }
 
