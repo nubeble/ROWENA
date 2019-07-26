@@ -691,6 +691,16 @@ export default class EditProfile extends React.Component<InjectedProps> {
             }
         }
 
+        let ageText = null;
+        if (this.state.birthday) {
+            const age = Util.getAge(this.state.birthday);
+            if (age > 1) {
+                ageText = age.toString() + ' years old';
+            } else {
+                ageText = age.toString() + ' year old';
+            }
+        }
+
         const viewStyle = {
             opacity: this.state.messageBoxOpacity
         };
@@ -794,7 +804,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             }}
                             onPress={() => {
                                 const msg = "Your name. People all over the world find you on Rowena.";
-                                this.showMessageBox(msg, -17); // 0: base of inputview
+                                this.showMessageBox(msg, -17);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -833,7 +843,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
-                            {'AGE (BIRTHDAY)'}
+                            {ageText ? 'AGE (' + ageText + ')' : 'AGE (?)'}
                         </Text>
                         <TouchableOpacity
                             style={{
@@ -970,7 +980,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                                 this.hideAlertIcon();
                             }
 
-                            this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
+                            // this.refs.flatList.scrollToOffset({ offset: this.inputViewY + this.genderY + 1, animated: true });
 
                             setTimeout(() => {
                                 !this.closed && this.props.navigation.navigate("editSearch",

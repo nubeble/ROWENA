@@ -1011,6 +1011,16 @@ export default class AdvertisementMain extends React.Component {
     }
 
     renderContainer() {
+        let ageText = null;
+        if (this.state.birthday) {
+            const age = Util.getAge(this.state.birthday);
+            if (age > 1) {
+                ageText = age.toString() + ' years old';
+            } else {
+                ageText = age.toString() + ' year old';
+            }
+        }
+
         let boobsTitle = 'BOOBS';
         if (!this.state.gender || this.state.gender === 'Female' || this.state.gender === 'Other') boobsTitle = 'BOOBS';
         else if (this.state.gender === 'Male') boobsTitle = 'MUSCLE';
@@ -1080,7 +1090,7 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 const msg = "Your name (or your friend's name). People all over the world find you on Rowena.";
-                                this.showMessageBox(msg, -17); // 0: base of inputview
+                                this.showMessageBox(msg, -17);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
@@ -1120,7 +1130,7 @@ export default class AdvertisementMain extends React.Component {
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
-                            {'AGE (BIRTHDAY)'}
+                            {ageText ? 'AGE (' + ageText + ')' : 'AGE (?)'}
                         </Text>
                         <TouchableOpacity
                             style={{
@@ -1131,7 +1141,7 @@ export default class AdvertisementMain extends React.Component {
                             }}
                             onPress={() => {
                                 const msg = "Rowena is for adults only. You must be at least 18 years old to use this app.";
-                                this.showMessageBox(msg, this.nameY); // 0: base of inputview
+                                this.showMessageBox(msg, this.nameY);
                             }}>
                             <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                         </TouchableOpacity>
