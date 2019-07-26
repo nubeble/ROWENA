@@ -269,6 +269,8 @@ export default class EditPost extends React.Component {
     componentDidMount() {
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
@@ -367,6 +369,8 @@ export default class EditPost extends React.Component {
     async componentWillUnmount() {
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.keyboardWillShowListener.remove();
+        this.keyboardWillHideListener.remove();
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
         this.onBlurListener.remove();
@@ -468,10 +472,20 @@ export default class EditPost extends React.Component {
     }
 
     @autobind
-    _keyboardDidHide() {
+    _keyboardDidHide(e) {
         if (!this.focused) return;
 
         this.setState({ onNote: false, keyboardTop: Dimensions.get('window').height });
+    }
+
+    @autobind
+    _keyboardWillShow(e) {
+        this._keyboardDidShow(e);
+    }
+
+    @autobind
+    _keyboardWillHide(e) {
+        this._keyboardDidHide(e);
     }
 
     noteDone() {
@@ -1157,7 +1171,7 @@ export default class EditPost extends React.Component {
                         width: '100%', height: doneButtonViewHeight, backgroundColor: '#D0D0D0',
                         // borderTopColor: '#3B3B3B', borderTopWidth: 1,
                         position: 'absolute', top: this.state.keyboardTop - doneButtonViewHeight,
-                        justifyContent: "center", alignItems: "flex-end", paddingRight: 15
+                        justifyContent: "center", alignItems: "flex-end", paddingRight: 16
                     }}>
                         <TouchableOpacity
                             style={{
@@ -1165,7 +1179,7 @@ export default class EditPost extends React.Component {
                             }}
                             onPress={() => this.noteDone()}
                         >
-                            <Text style={styles.done}>Done</Text>
+                            <Text style={Platform.OS === 'android' ? styles.androidDoneButton : styles.iosDoneButton}>Done</Text>
                         </TouchableOpacity>
                     </View>
                 }
@@ -1192,9 +1206,9 @@ export default class EditPost extends React.Component {
         if (this.state.birthday) {
             const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
             if (age > 1) {
-                ageText = age.toString() + ' YEARS OLD';
+                ageText = age.toString() + ' years old';
             } else {
-                ageText = age.toString() + ' YEAR OLD';
+                ageText = age.toString() + ' year old';
             }
         }
 
@@ -1319,9 +1333,6 @@ export default class EditPost extends React.Component {
                         <Text style={{
                             paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
                         }}>
-                            {/*
-                            {ageText ? 'AGE (' + ageText + ')' : 'AGE'}
-                            */}
                             {'AGE'}
                         </Text>
                         <TouchableOpacity
@@ -1353,7 +1364,7 @@ export default class EditPost extends React.Component {
                                 height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: !this.state.birthday ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)',
                                 paddingTop: 7
                             }}
-                        >{this.state.birthday ? ageText + '(' + this.state.birthday + ')' : "When is your birthday?"}</Text>
+                        >{this.state.birthday ? ageText + ' (' + this.state.birthday + ')' : "When is your birthday?"}</Text>
                     </TouchableOpacity>
                     <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
                         onLayout={(e) => {
@@ -1826,6 +1837,21 @@ export default class EditPost extends React.Component {
                         <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
                             {'STREET'}
                         </Text>
+                        {/*
+                        <TouchableOpacity
+                            style={{
+                                width: 24,
+                                height: 24,
+                                marginRight: 18,
+                                justifyContent: "center", alignItems: "center"
+                            }}
+                            onPress={() => {
+                                const msg = "Only confirmed customers see your exact address. We show everyone else an approximate location.";
+                                this.showMessageBox(msg, this.countryY);
+                            }}>
+                            <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                        </TouchableOpacity>
+                        */}
                         <TouchableOpacity
                             style={{
                                 width: 24,
@@ -2374,6 +2400,13 @@ export default class EditPost extends React.Component {
 
         const _date = new Date(date);
 
+        // check age
+        const age = Util.getAge(Util.getBirthday(_date));
+        if (age <= 17) {
+            this.showNotification('You must be at least 18 years old to use Rowena.');
+            return;
+        }
+
         const day = _date.getDate();
         const month = _date.getMonth();
         const year = _date.getFullYear();
@@ -2550,15 +2583,23 @@ item: {
         height: 84,
         textAlignVertical: 'top'
     },
-    done: {
-        fontSize: 17,
+    iosDoneButton: {
+        // fontSize: 17,
+        // fontFamily: 'System',
+        // fontWeight: '500',
+        // color: 'rgb(30, 117, 212)',
+        fontFamily: 'Helvetica-Bold',
+        fontSize: 16.5,
+        color: 'rgb(30, 117, 212)',
+        alignSelf: 'center'
+    },
+    androidDoneButton: {
         fontFamily: 'System',
+        fontSize: 17,
         // fontWeight: 'bold',
-        fontWeight: '500',
-
+        fontWeight: '400',
         // color: Theme.color.selection,
         color: 'rgb(30, 117, 212)',
-        // backgroundColor: 'grey',
         alignSelf: 'center'
     }
 });

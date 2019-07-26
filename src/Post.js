@@ -970,9 +970,6 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
-                                {/*
-                                <Text style={styles.bodyInfoTitle}>{Util.getAge(post.birthday)} years old</Text>
-                                */}
                                 <Text style={styles.bodyInfoTitle}>{ageText}</Text>
                             </View>
                             <View style={{
@@ -2364,7 +2361,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     @autobind
-    _keyboardDidHide() {
+    _keyboardDidHide(e) {
         if (!this.focused) return;
 
         console.log('Post._keyboardDidHide');

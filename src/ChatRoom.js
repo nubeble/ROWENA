@@ -69,10 +69,8 @@ export default class ChatRoom extends React.Component {
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
-
-        this.keyboardDidShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
-        this.keyboardDidHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
-
+        this.keyboardWillShowListener = Keyboard.addListener('keyboardWillShow', this._keyboardWillShow);
+        this.keyboardWillHideListener = Keyboard.addListener('keyboardWillHide', this._keyboardWillHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
 
         const item = this.props.navigation.state.params.item;
@@ -124,6 +122,8 @@ export default class ChatRoom extends React.Component {
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
+        this.keyboardWillShowListener.remove();
+        this.keyboardWillHideListener.remove();
         this.hardwareBackPressListener.remove();
 
         const item = this.props.navigation.state.params.item;
@@ -192,12 +192,14 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     _keyboardWillShow(e) {
-        !this.closed && this.setState({ onKeyboard: true });
+        // !this.closed && this.setState({ onKeyboard: true });
+        this._keyboardDidShow(e);
     }
 
     @autobind
     _keyboardWillHide(e) {
-        !this.closed && this.setState({ onKeyboard: false });
+        // !this.closed && this.setState({ onKeyboard: false });
+        this._keyboardDidHide(e);
     }
 
     get user() {

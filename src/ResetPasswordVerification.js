@@ -56,7 +56,7 @@ export default class ResetPasswordVerification extends React.Component {
     }
 
     @autobind
-    _keyboardDidHide() {
+    _keyboardDidHide(e) {
         const bottomPosition = Dimensions.get('window').height;
         const signUpButtonTop = bottomPosition - Cons.bottomButtonMarginBottom - Cons.buttonHeight;
 

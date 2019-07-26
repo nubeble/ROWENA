@@ -90,7 +90,7 @@ export default class WriteReviewScreen extends React.Component {
     }
 
     @autobind
-    _keyboardDidHide() {
+    _keyboardDidHide(e) {
         const bottomPosition = Dimensions.get('window').height;
         const postButtonTop = bottomPosition - Cons.bottomButtonMarginBottom - Cons.buttonHeight;
 

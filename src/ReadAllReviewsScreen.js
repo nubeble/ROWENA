@@ -729,7 +729,7 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     @autobind
-    _keyboardDidHide() {
+    _keyboardDidHide(e) {
         this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
         this.selectedItem = undefined;

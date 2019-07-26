@@ -183,7 +183,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     }
 
     @autobind
-    _keyboardDidHide() {
+    _keyboardDidHide(e) {
         const bottomPosition = Dimensions.get('window').height;
         const signUpButtonTop = bottomPosition - Cons.bottomButtonMarginBottom - Cons.buttonHeight;
 
