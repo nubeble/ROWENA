@@ -113,7 +113,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     onLikesUpdated() {
         console.log('SavedMain.onLikesUpdated');
 
-        const count = this.lastLoadedFeedIndex + 1;
+        let count = this.lastLoadedFeedIndex + 1;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
         this.reload(count);
     }

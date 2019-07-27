@@ -30,7 +30,7 @@ export default class Firebase {
 
             Firebase.auth = firebase.auth();
             Firebase.firestore = firebase.firestore();
-            Firebase.firestore.settings({ timestampsInSnapshots: true }); // Consider: remove
+            // Firebase.firestore.settings({ timestampsInSnapshots: true }); // Consider: remove
             Firebase.storage = firebase.storage();
             Firebase.database = firebase.database();
         }

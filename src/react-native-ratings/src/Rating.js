@@ -3,8 +3,8 @@ import times from 'lodash/times';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { View, Animated, PanResponder, Image, StyleSheet, Platform, ViewPropTypes } from 'react-native';
-import { Text } from "../../rnff/src/components";
+import { View, Animated, PanResponder, Image, StyleSheet, Text, ViewPropTypes } from 'react-native';
+// import { Text } from "../../rnff/src/components";
 
 // RATING IMAGES WITH STATIC BACKGROUND COLOR (white)
 const STAR_IMAGE = require('./images/star.png');

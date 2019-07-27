@@ -952,7 +952,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
                         }}
                         useNativeAndroidPickerStyle={false}
                         value={this.state.gender}
-
                         Icon={() => {
                             // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                             return null;

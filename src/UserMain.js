@@ -255,7 +255,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                 // this._reply.blur();
                 this.setState({ showKeyboard: false });
 
-                const count = this.state.reviews.length;
+                let count = this.state.reviews.length;
                 if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
                 this.loadReviewFromStart(count);
 
@@ -288,7 +288,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500);
 
-            const count = this.state.reviews.length;
+            let count = this.state.reviews.length;
             if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
             this.loadReviewFromStart(count);
 
@@ -585,7 +585,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                                                         justifyContent: "center", alignItems: "center"
                                                     }}
                                                     onPress={() => {
-                                                        const count = this.state.reviews.length;
+                                                        let count = this.state.reviews.length;
                                                         if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
                                                         this.loadReviewFromStart(count);
 

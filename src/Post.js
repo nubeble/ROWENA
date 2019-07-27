@@ -1018,10 +1018,7 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                             }}>
-                                <Image
-                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                    source={PreloadImage.scale}
-                                />
+                                <MaterialCommunityIcons name='scale' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={16} />
                             </View>
                             <View style={{
                                 width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
@@ -1053,21 +1050,21 @@ export default class Post extends React.Component<InjectedProps> {
                                 {
                                     post.gender === 'Female' &&
                                     <Image
-                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                        style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.bra}
                                     />
                                 }
                                 {
                                     post.gender === 'Male' &&
                                     <Image
-                                        style={{ marginRight: 2, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                        style={{ marginRight: 1.5, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.muscle}
                                     />
                                 }
                                 {
                                     post.gender === 'Other' && post.bust &&
                                     <Image
-                                        style={{ width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                        style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
                                         source={PreloadImage.bra}
                                     />
                                 }

@@ -185,6 +185,8 @@ export default class Feed extends React.Component<FeedProps> {
                             <Svg.Rect
                                 x={0}
                                 y={0}
+                                rx={2}
+                                ry={2}
                                 width={itemWidth}
                                 height={itemHeight}
                             />
@@ -196,6 +198,8 @@ export default class Feed extends React.Component<FeedProps> {
                             <Svg.Rect
                                 x={0}
                                 y={0}
+                                rx={2}
+                                ry={2}
                                 width={itemWidth}
                                 height={itemHeight}
                             />
@@ -207,6 +211,8 @@ export default class Feed extends React.Component<FeedProps> {
                             <Svg.Rect
                                 x={0}
                                 y={0}
+                                rx={2}
+                                ry={2}
                                 width={itemWidth}
                                 height={itemHeight}
                             />

@@ -9,7 +9,6 @@ const birth = require('../assets/icon/birth.png');
 const bra = require('../assets/icon/bra.png');
 const muscle = require('../assets/icon/muscle.png');
 const ruler = require('../assets/icon/ruler.png');
-const scale = require('../assets/icon/scale.png');
 const comment = require('../assets/icon/comment.png');
 const home = require('../assets/icon/home.png');
 
@@ -68,7 +67,6 @@ export default class PreloadImage {
     static bra = bra;
     static muscle = muscle;
     static ruler = ruler;
-    static scale = scale;
     static comment = comment;
     static home = home;
 
@@ -127,7 +125,6 @@ export default class PreloadImage {
                 PreloadImage.bra,
                 PreloadImage.muscle,
                 PreloadImage.ruler,
-                PreloadImage.scale,
                 PreloadImage.comment,
                 PreloadImage.home,
 

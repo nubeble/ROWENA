@@ -202,7 +202,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const { profileStore } = this.props;
         const { profile } = profileStore;
         const length = profile.feeds.length;
-        const count = length - this.lastLoadedFeedIndex;
+        let count = length - this.lastLoadedFeedIndex;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
 
         this.lastLoadedFeedIndex = -1;
@@ -217,7 +217,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         const { profileStore } = this.props;
         const { profile } = profileStore;
         const length = profile.feeds.length;
-        const count = length - this.lastLoadedFeedIndex;
+        let count = length - this.lastLoadedFeedIndex;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
 
         this.lastLoadedFeedIndex = -1;

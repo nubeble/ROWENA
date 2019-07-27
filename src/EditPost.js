@@ -1587,7 +1587,6 @@ export default class EditPost extends React.Component {
                         }}
                         useNativeAndroidPickerStyle={false}
                         value={this.state.bodyType}
-
                         Icon={() => {
                             // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                             return null;

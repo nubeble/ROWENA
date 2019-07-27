@@ -836,7 +836,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
                 // this.setState({ isLoadingReview: true });
 
-                const count = this.this.state.reviews.length;
+                let count = this.this.state.reviews.length;
                 if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                 this.reload(count);
 
@@ -885,7 +885,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     // this.setState({ isLoadingReview: true });
 
-                    const count = this.this.state.reviews.length;
+                    let count = this.this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                     this.reload(count);
 
@@ -913,7 +913,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 if (!this.closed) {
                     // this.setState({ isLoadingReview: true });
 
-                    const count = this.this.state.reviews.length;
+                    let count = this.this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                     this.reload(count);
 

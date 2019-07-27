@@ -352,7 +352,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                                                         justifyContent: "center", alignItems: "center"
                                                     }}
                                                     onPress={() => {
-                                                        const count = this.state.reviews.length;
+                                                        let count = this.state.reviews.length;
                                                         if (count < DEFAULT_COMMENT_COUNT) count = DEFAULT_COMMENT_COUNT;
                                                         this.loadReviewFromStart(count);
                                                     }}>

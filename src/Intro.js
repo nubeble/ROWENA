@@ -41,7 +41,7 @@ const DEFAULT_FEED_COUNT = 6;
 
 // 1:1 image
 const imageWidth = (Dimensions.get('window').width - 4 * 2 * 3) / 2;
-const imageHeight = imageWidth;
+// const imageHeight = imageWidth;
 
 // 3:2 image
 const itemWidth = Dimensions.get('window').width - 40;
@@ -886,12 +886,19 @@ export default class Intro extends React.Component<InjectedProps> {
                         if (!place_id) {
                             return (
                                 <View style={styles.pictureContainer}>
-                                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={imageWidth} height={imageHeight}>
+                                    <SvgAnimatedLinearGradient
+                                        primaryColor={Theme.color.skeleton1}
+                                        secondaryColor={Theme.color.skeleton2}
+                                        width={imageWidth}
+                                        height={imageWidth}
+                                    >
                                         <Svg.Rect
                                             x={0}
                                             y={0}
+                                            rx={2}
+                                            ry={2}
                                             width={imageWidth}
-                                            height={imageHeight}
+                                            height={imageWidth}
                                         />
                                     </SvgAnimatedLinearGradient>
                                 </View>
@@ -1103,10 +1110,17 @@ export default class Intro extends React.Component<InjectedProps> {
                     // backgroundColor: 'black',
                     // justifyContent: 'center', alignItems: 'center'
                 }}>
-                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                    <SvgAnimatedLinearGradient
+                        primaryColor={Theme.color.skeleton1}
+                        secondaryColor={Theme.color.skeleton2}
+                        width={itemWidth}
+                        height={itemHeight}
+                    >
                         <Svg.Rect
                             x={0}
                             y={0}
+                            rx={2}
+                            ry={2}
                             width={itemWidth}
                             height={itemHeight}
                         />
@@ -1210,10 +1224,17 @@ export default class Intro extends React.Component<InjectedProps> {
                     // backgroundColor: 'black',
                     // justifyContent: 'center', alignItems: 'center'
                 }}>
-                    <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={itemWidth} height={itemHeight}>
+                    <SvgAnimatedLinearGradient
+                        primaryColor={Theme.color.skeleton1}
+                        secondaryColor={Theme.color.skeleton2}
+                        width={itemWidth}
+                        height={itemHeight}
+                    >
                         <Svg.Rect
                             x={0}
                             y={0}
+                            rx={2}
+                            ry={2}
                             width={itemWidth}
                             height={itemHeight}
                         />
@@ -1518,7 +1539,7 @@ const styles = StyleSheet.create({
     },
     pictureContainer: {
         width: imageWidth,
-        height: imageHeight,
+        height: imageWidth,
         // borderRadius: 2,
         marginVertical: 4,
         marginHorizontal: 4

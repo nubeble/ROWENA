@@ -22,7 +22,7 @@ admin.initializeApp({
     databaseURL: "https://rowena-88cfd.firebaseio.com"
 });
 
-admin.firestore().settings({ timestampsInSnapshots: true }); // Consider: remove
+// admin.firestore().settings({ timestampsInSnapshots: true }); // Consider: remove
 
 const Busboy = require('busboy');
 const path = require('path');

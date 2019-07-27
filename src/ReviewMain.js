@@ -101,7 +101,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onReviewsUpdated() {
-        console.log('ReviewMain.onReplyAddedOnReview');
+        console.log('ReviewMain.onReviewsUpdated');
 
         // reload from the start
         /*
@@ -111,7 +111,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         const { profileStore } = this.props;
         const { profile } = profileStore;
         const length = profile.reviews.length;
-        const count = length - this.lastLoadedFeedIndex;
+        let count = length - this.lastLoadedFeedIndex;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
 
         this.lastLoadedFeedIndex = -1;
@@ -126,7 +126,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         const { profileStore } = this.props;
         const { profile } = profileStore;
         const length = profile.reviews.length;
-        const count = length - this.lastLoadedFeedIndex;
+        let count = length - this.lastLoadedFeedIndex;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
 
         this.lastLoadedFeedIndex = -1;

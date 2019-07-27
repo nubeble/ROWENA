@@ -295,8 +295,7 @@ export const getAlphabet = () => {
             {
                 dial: '+358',
                 code: "AX",
-                // name: "Åland Islands"
-                name: "Aland Islands"
+                name: "Åland Islands"
             },
             {
                 dial: '+355',
@@ -424,12 +423,7 @@ export const getAlphabet = () => {
             {
                 dial: '+591',
                 code: "BO",
-                name: "Bolivia, Plurinational State of"
-            },
-            {
-                dial: '+599',
-                code: "BQ",
-                name: "Bonaire, Sint Eustatius and Saba"
+                name: "Bolivia"
             },
             {
                 dial: '+387',
@@ -497,6 +491,11 @@ export const getAlphabet = () => {
                 dial: '+238',
                 code: "CV",
                 name: "Cape Verde"
+            },
+            {
+                dial: '+599',
+                code: "BQ",
+                name: "Caribbean Netherlands"
             },
             {
                 dial: '+ 345',
@@ -567,7 +566,6 @@ export const getAlphabet = () => {
                 dial: '+225',
                 code: "CI",
                 name: "Côte d'Ivoire"
-                // name: "Cote d\'Ivoire"
             },
             {
                 dial: '+385',
@@ -583,7 +581,6 @@ export const getAlphabet = () => {
                 dial: '+599',
                 code: "CW",
                 name: "Curaçao"
-                // name: "Curacao"
             },
             {
                 dial: '+357',
@@ -904,7 +901,7 @@ export const getAlphabet = () => {
             {
                 dial: '+82',
                 code: "KR",
-                name: "Korea, Republic of"
+                name: "South Korea"
             },
             {
                 dial: '+965',
@@ -921,7 +918,7 @@ export const getAlphabet = () => {
             {
                 dial: '+856',
                 code: "LA",
-                name: "Lao People's Democratic Republic"
+                name: "Laos"
             },
             {
                 dial: '+371',
@@ -1229,7 +1226,6 @@ export const getAlphabet = () => {
                 dial: '+262',
                 code: "RE",
                 name: "Réunion"
-                // name: "Reunion"
             },
             {
                 dial: '+40',
@@ -1239,7 +1235,7 @@ export const getAlphabet = () => {
             {
                 dial: '+7',
                 code: "RU",
-                name: "Russian Federation"
+                name: "Russia"
             },
             {
                 dial: '+250',
@@ -1510,7 +1506,7 @@ export const getAlphabet = () => {
             {
                 dial: '+1',
                 code: "US",
-                name: "United States"
+                name: "USA"
             },
             {
                 dial: '+246',

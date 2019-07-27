@@ -486,7 +486,7 @@ export default class Util extends React.Component {
             },
             {
                 code: "AX",
-                name: "Aland Islands"
+                name: "Åland Islands"
             },
             {
                 code: "AL",
@@ -587,13 +587,7 @@ export default class Util extends React.Component {
             },
             {
                 code: "BO",
-                // name: "Bolivia, Plurinational State of"
                 name: "Bolivia"
-            },
-            {
-                code: "BQ",
-                // name: "Bonaire, Sint Eustatius and Saba"
-                name: "Bonaire"
             },
             {
                 code: "BA",
@@ -647,6 +641,10 @@ export default class Util extends React.Component {
             {
                 code: "CV",
                 name: "Cape Verde"
+            },
+            {
+                code: "BQ",
+                name: "Caribbean Netherlands"
             },
             {
                 code: "KY",
@@ -966,7 +964,7 @@ export default class Util extends React.Component {
             },
             {
                 code: "KR",
-                name: "Korea, Republic of"
+                name: "South Korea"
             },
             {
                 code: "KW",
@@ -979,7 +977,7 @@ export default class Util extends React.Component {
 
             {
                 code: "LA",
-                name: "Lao People's Democratic Republic"
+                name: "Laos"
             },
             {
                 code: "LV",
@@ -1229,7 +1227,6 @@ export default class Util extends React.Component {
             },
             {
                 code: "RU",
-                // name: "Russian Federation"
                 name: "Russia"
             },
             {
@@ -1445,7 +1442,6 @@ export default class Util extends React.Component {
             },
             {
                 code: "US",
-                // name: "United States"
                 name: "USA"
             },
             {

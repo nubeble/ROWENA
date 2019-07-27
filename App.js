@@ -4,10 +4,9 @@ import { StyleSheet, Platform, StatusBar, Keyboard, Dimensions, YellowBox, Alert
 import { StyleProvider } from "native-base";
 import getTheme from "./src/rnff/native-base-theme/components";
 import variables from "./src/rnff/native-base-theme/variables/commonColor";
-// import _ from 'lodash';
 import { configure } from 'mobx';
 import { Provider } from "mobx-react/native";
-import { FeedStore, Theme, Text } from './src/rnff/src/components';
+import { FeedStore, Theme } from './src/rnff/src/components';
 import { ProfileStore } from "./src/rnff/src/home";
 import autobind from "autobind-decorator";
 import { Notifications } from 'expo';
@@ -15,6 +14,7 @@ import Constants from 'expo-constants';
 import Firebase from './src/Firebase';
 import { Cons, Vars } from './src/Globals';
 import Toast from 'react-native-easy-toast';
+// import _ from 'lodash';
 
 // disable mobx strict mode
 // configure({ enforceActions: 'observed' })

@@ -315,6 +315,19 @@ export default class AdvertisementMain extends React.Component {
         };
 
         const street = Util.getStreet(result1.description);
+
+        // --
+        const country = Util.getCountry(result1.description);
+        const countryCode = Util.getCountyCode(country);
+
+        if (countryCode) {
+            this.setState({ country, countryCode });
+        } else {
+            // set null
+            this.setState({ country: null, countryCode: null });
+        }
+        // --
+
         // let state = '';
         // let city = '';
 

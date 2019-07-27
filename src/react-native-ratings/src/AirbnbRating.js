@@ -3,8 +3,8 @@ import _ from 'lodash';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { StyleSheet, View } from 'react-native';
-import { Text } from "../../rnff/src/components";
+import { StyleSheet, View, Text } from 'react-native';
+// import { Text } from "../../rnff/src/components";
 
 import Star from './Star'
 
