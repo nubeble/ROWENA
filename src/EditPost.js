@@ -2583,21 +2583,15 @@ item: {
         textAlignVertical: 'top'
     },
     iosDoneButton: {
-        // fontSize: 17,
-        // fontFamily: 'System',
-        // fontWeight: '500',
-        // color: 'rgb(30, 117, 212)',
-        fontFamily: 'Helvetica-Bold',
-        fontSize: 16.5,
+        fontFamily: 'Helvetica',
+        fontSize: 15,
         color: 'rgb(30, 117, 212)',
         alignSelf: 'center'
     },
     androidDoneButton: {
         fontFamily: 'System',
         fontSize: 17,
-        // fontWeight: 'bold',
         fontWeight: '400',
-        // color: Theme.color.selection,
         color: 'rgb(30, 117, 212)',
         alignSelf: 'center'
     }

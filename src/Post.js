@@ -844,6 +844,7 @@ export default class Post extends React.Component<InjectedProps> {
         } else {
             views = Util.numberWithCommas(visits) + ' views';
         }
+        // views = '263 views'; // Test
 
         let likes = null;
         const _likes = post.likes.length;
@@ -854,10 +855,13 @@ export default class Post extends React.Component<InjectedProps> {
         } else {
             likes = Util.numberWithCommas(_likes) + ' likes';
         }
+        // likes = '32 likes'; // Test
 
         let showSettingsButton = false;
 
         const distance = Util.getDistance(post.location, Vars.location);
+        // const distance = '6 km away'; // Test
+
         if (distance === '? km away' || distance === '? miles away') showSettingsButton = true;
 
         const averageRating = post.averageRating;
@@ -916,7 +920,6 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    {/* dates */}
                     <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Text style={styles.name}>{post.name}</Text>
 
@@ -1134,10 +1137,26 @@ export default class Post extends React.Component<InjectedProps> {
                                         size={16}
                                         margin={1}
                                     />
+                                    {/*
+                                    <AirbnbRating
+                                        count={5}
+                                        readOnly={true}
+                                        showRating={false}
+                                        defaultRating={4}
+                                        size={16}
+                                        margin={1}
+                                    />
+                                    */}
                                 </View>
                                 <Text style={styles.rating}>{number}</Text>
+                                {/*
+                                <Text style={styles.rating}>{'4.3'}</Text>
+                                */}
                                 <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
                                 <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                                {/*
+                                <Text style={styles.reviewCount}>{'27'}</Text>
+                                */}
                             </View>
                             :
                             <View style={{ marginBottom: 9 - 4 }}>
@@ -1515,7 +1534,6 @@ export default class Post extends React.Component<InjectedProps> {
         const statement = this.getStatement(data);
 
         /*
-        // test
         // const cityName = 'Puerto Vallarta'; // string
         // const numberOfGirls = 10; // number
         const averageRating = 4.2; // number

@@ -648,7 +648,7 @@ export default class Explore extends React.Component<InjectedProps> {
             const placeId = this.state.placeId;
             const feedSize = this.state.feedSize;
 
-            !this.closed && this.props.navigation.navigate("mapSearch", { region, placeName, placeId, feedSize });
+            !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, feedSize });
         }, Cons.buttonTimeout);
     }
 }
@@ -698,7 +698,10 @@ const styles = StyleSheet.create({
         resizeMode: 'cover'
     },
     titleContainer: {
-        padding: Theme.spacing.small
+        // padding: Theme.spacing.small,
+        paddingHorizontal: Theme.spacing.small,
+        paddingTop: 12,
+        paddingBottom: 8
     },
     title: {
         color: Theme.color.title,
@@ -710,18 +713,6 @@ const styles = StyleSheet.create({
     activityIndicator: {
         position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
-    },
-    */
-    /*
-    // test: advertising area
-    content: {
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0,
-        padding: Theme.spacing.small,
-        flex: 1
     },
     */
     orderTab: {

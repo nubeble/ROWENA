@@ -193,7 +193,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
         let noteLength = 0;
         if (about) noteLength = about.length;
 
-        // test
         /*
         const name = 'Jay Kim';
         const birthday = Util.getBirthdayText('03111982'); // DDMMYYYY
@@ -506,7 +505,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         }
 
         // 3. go back
-        this.refs["toast"].show('Your advertisement posted successfully.', 500, () => {
+        this.refs["toast"].show('Your profile updated successfully.', 500, () => {
             if (this.closed) return;
 
             // hide loader
@@ -1699,21 +1698,15 @@ const styles = StyleSheet.create({
         textAlignVertical: 'top'
     },
     iosDoneButton: {
-        // fontSize: 17,
-        // fontFamily: 'System',
-        // fontWeight: '500',
-        // color: 'rgb(30, 117, 212)',
-        fontFamily: 'Helvetica-Bold',
-        fontSize: 16.5,
+        fontFamily: 'Helvetica',
+        fontSize: 15,
         color: 'rgb(30, 117, 212)',
         alignSelf: 'center'
     },
     androidDoneButton: {
         fontFamily: 'System',
         fontSize: 17,
-        // fontWeight: 'bold',
         fontWeight: '400',
-        // color: Theme.color.selection,
         color: 'rgb(30, 117, 212)',
         alignSelf: 'center'
     }

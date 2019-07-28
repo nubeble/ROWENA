@@ -456,7 +456,6 @@ export default class SearchScreen extends React.Component {
     async loadHistory() {
         console.log('SearchScreen.loadHistory');
 
-        // test
         /*
         try {
             await AsyncStorage.clear();

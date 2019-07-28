@@ -1533,7 +1533,6 @@ export default class Admin extends React.Component {
 
     addComment() {
         /*
-        // test
         const name = 'Max Power';
         const place = 'Cebu, Philippines';
         const uri = 'https://t1.daumcdn.net/cfile/tistory/27735B3959071E4A04';
@@ -1542,7 +1541,7 @@ export default class Admin extends React.Component {
     }
 
     removeComment() {
-        // const commentId = '81e2967f-4877-70ee-6304-dce6267ea7f5'; // test
+        // const commentId = '81e2967f-4877-70ee-6304-dce6267ea7f5';
         // Firebase.removeComment(Firebase.user().uid, 'LSeANvOEWOVLGQ94N0ArEIJDW2i2', commentId); // m1
 
 

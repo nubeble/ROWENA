@@ -184,14 +184,13 @@ export default class MapScreen extends React.Component {
                 {/* distance */}
                 <View
                     style={{
-                        width: '60%',
+                        width: '50%',
                         height: 30,
                         position: 'absolute',
                         top: 100 + 6,
-                        left: '20%',
+                        left: '25%',
                         borderRadius: 30 / 3,
                         backgroundColor: 'rgba(255, 255, 255, 0.6)',
-
                         justifyContent: "center", alignItems: "center"
                     }}
                 >

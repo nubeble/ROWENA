@@ -559,7 +559,7 @@ import AdvertisementMain from './src/AdvertisementMain';
 import CountrySelection from './src/CountrySelection';
 import AdvertisementFinish from './src/AdvertisementFinish';
 import CommentMain from './src/CommentMain';
-import MapSearch from './src/MapSearch';
+import MapExplore from './src/MapExplore';
 // import MapOverview from './src/MapOverview';
 import Admin from './src/Admin';
 
@@ -1030,7 +1030,7 @@ const ReviewStackNavigator = createStackNavigator(
     {
         reviewMain: { screen: ReviewMain },
         reviewPost: { screen: PostStackNavigatorWrapper }
-        // test: { screen: HidingHeader }
+        // testHeader: { screen: HidingHeader } // Test
     },
     {
         mode: 'card',
@@ -1565,11 +1565,11 @@ class RootStackNavigatorWrapper extends React.Component {
     }
 }
 
-const MapSearchStackNavigator = createStackNavigator(
+const MapExploreStackNavigator = createStackNavigator(
     {
-        home: { screen: MapSearch },
+        home: { screen: MapExplore },
         post: { screen: PostStackNavigatorWrapper },
-        // mapOverview: { screen: MapOverview } // test
+        // mapOverview: { screen: MapOverview } // Test
     },
     {
         mode: 'card',
@@ -1583,12 +1583,12 @@ const MapSearchStackNavigator = createStackNavigator(
     }
 );
 
-class MapSearchStackNavigatorWrapper extends React.Component {
-    static router = MapSearchStackNavigator.router;
+class MapExploreStackNavigatorWrapper extends React.Component {
+    static router = MapExploreStackNavigator.router;
 
     render() {
         return (
-            <MapSearchStackNavigator navigation={this.props.navigation}
+            <MapExploreStackNavigator navigation={this.props.navigation}
                 screenProps={{
                     params: this.props.navigation.state.params,
                     rootNavigation: this.props.navigation,
@@ -1669,7 +1669,7 @@ const MainStackNavigator = createStackNavigator(
     {
         root: { screen: RootStackNavigatorWrapper },
 
-        mapSearch: { screen: MapSearchStackNavigatorWrapper },
+        mapExplore: { screen: MapExploreStackNavigatorWrapper },
 
         map: { screen: MapScreen },
         // readReview: { screen: ReadAllReviewsScreen },

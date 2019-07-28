@@ -112,12 +112,13 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         */
 
         const distance = Util.getDistance(post.location, Vars.location);
+        // const distance = Math.round(Math.random() * 100) % 20 + ' km away'; // Test
 
         // defaultRating, averageRating
         const averageRating = post.averageRating;
+        // const averageRating = 4.3 // Test
 
         const integer = Math.floor(averageRating);
-        // console.log('integer', integer);
 
         let number = '';
         if (Number.isInteger(averageRating)) {
@@ -169,10 +170,26 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                                                 size={12}
                                                 margin={1}
                                             />
+                                            {/*
+                                            <AirbnbRating
+                                                count={5}
+                                                readOnly={true}
+                                                showRating={false}
+                                                defaultRating={4}
+                                                size={12}
+                                                margin={1}
+                                            />
+                                            */}
                                         </View>
                                         <Text style={styles.rating}>{number}</Text>
+                                        {/*
+                                        <Text style={styles.rating}>{'4.3'}</Text>
+                                        */}
                                         <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                                         <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                                        {/*
+                                        <Text style={styles.reviewCount}>{'27'}</Text>
+                                        */}
                                     </View>
                                 </View>
                                 :

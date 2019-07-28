@@ -97,13 +97,9 @@ export default createBottomTabNavigator(
 	}
 	*/
     {
-        // home: Home, // Test
         home: Stacks,
-        // messages: Messages,
         messages: Test,
-        // likes: Likes,
         likes: SignIn,
-        // me: Me
         me: SignUp
     },
     {

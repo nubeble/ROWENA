@@ -46,7 +46,7 @@ const itemHeight = (Dimensions.get('window').width - 40) / 3 * 2;
 
 
 // @observer
-export default class MapSearch extends React.Component {
+export default class MapExplore extends React.Component {
     gf = new GeoFirestore(Firebase.firestore);
 
     state = {
@@ -71,7 +71,7 @@ export default class MapSearch extends React.Component {
     }
 
     async componentDidMount() {
-        console.log('MapSearch.componentDidMount');
+        console.log('MapExplore.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -125,7 +125,7 @@ export default class MapSearch extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('MapSearch.componentWillUnmount');
+        console.log('MapExplore.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -210,21 +210,20 @@ export default class MapSearch extends React.Component {
                 }
 
                 {/* place name */}
-                <View
+                <Text
                     style={{
-                        width: '100%',
-                        alignSelf: 'baseline',
-                        backgroundColor: 'rgba(255, 255, 255, 0.6)',
                         position: 'absolute',
+                        alignSelf: 'center',
                         top: Constants.statusBarHeight,
-                        left: 0,
-                        paddingHorizontal: 12,
-                        paddingVertical: 4,
-                        justifyContent: "center", alignItems: "center"
+                        marginHorizontal: 50,
+                        textAlign: 'center',
+                        fontSize: 16,
+                        fontFamily: "Roboto-Bold",
+                        color: 'rgba(0, 0, 0, 0.8)'
                     }}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.8)', textAlign: 'center' }}>{this.state.place}</Text>
-                </View>
+                    {this.state.place}
+                </Text>
 
                 {/* close button */}
                 <TouchableOpacity
@@ -295,8 +294,7 @@ export default class MapSearch extends React.Component {
                     onPress={() => {
                         this.getCurrentPosition();
 
-                        // test
-                        // this.props.navigation.navigate("mapOverview");
+                        // this.props.navigation.navigate("mapOverview"); // Test
                     }}
                 >
                     <View style={{
@@ -353,7 +351,7 @@ export default class MapSearch extends React.Component {
             const latitude = post.location.latitude;
             const longitude = post.location.longitude;
             const rating = Math.floor(post.averageRating);
-            // const rating = i % 6; // test
+            // const rating = i % 6; // Test
 
             let image = null;
             switch (rating) {
@@ -396,7 +394,7 @@ export default class MapSearch extends React.Component {
                     zIndex={this.state.selectedMarker === i ? array.length : marker.index}
 
                     onPress={() => {
-                        console.log('MapSearch.renderMapView, marker onpress', marker.index);
+                        console.log('MapExplore.renderMapView, marker onpress', marker.index);
 
                         this.setState({ selectedMarker: marker.index });
 
@@ -421,19 +419,6 @@ export default class MapSearch extends React.Component {
                 </MapView.Marker>
             );
         }
-
-        // test
-        /*
-        markers.push(
-            <MapView.Marker
-                key={1111}
-                coordinate={{
-                    latitude: 14.623401,
-                    longitude: 120.971351
-                }}
-            />
-        );
-        */
 
         return (
             <MapView
@@ -481,7 +466,7 @@ export default class MapSearch extends React.Component {
     renderPosts() {
         const { feeds } = this.state;
 
-        if (feeds.length === 0) {
+        if (feeds.length === 0) { // this will never happen
             /*
                 <View style={{
                     width: itemWidth, height: itemHeight, marginHorizontal: 20, borderRadius: 2,
@@ -540,7 +525,7 @@ export default class MapSearch extends React.Component {
                 <Carousel
                     ref={(carousel) => { this.carousel = carousel; }}
                     onPageChanged={(page) => {
-                        console.log('MapSearch.renderPosts, current page', page);
+                        console.log('MapExplore.renderPosts, current page', page);
 
                         this.setState({ selectedMarker: page });
 
@@ -638,6 +623,9 @@ export default class MapSearch extends React.Component {
                 <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
                     <Text style={styles.feedItemText}>{post.name}</Text>
                     <Text style={styles.feedItemText}>{distance}</Text>
+                    {/*
+                    <Text style={styles.feedItemText}>{'12 km away'}</Text>
+                    */}
                     {
                         post.reviewCount > 0 ?
                             <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
@@ -655,10 +643,26 @@ export default class MapSearch extends React.Component {
                                             size={12}
                                             margin={1}
                                         />
+                                        {/*
+                                        <AirbnbRating
+                                            count={5}
+                                            readOnly={true}
+                                            showRating={false}
+                                            defaultRating={4}
+                                            size={12}
+                                            margin={1}
+                                        />
+                                        */}
                                     </View>
                                     <Text style={styles.rating}>{number}</Text>
+                                    {/*
+                                    <Text style={styles.rating}>{'4.3'}</Text>
+                                    */}
                                     <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
                                     <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                                    {/*
+                                    <Text style={styles.reviewCount}>{'27'}</Text>
+                                    */}
                                 </View>
                             </View>
                             :
