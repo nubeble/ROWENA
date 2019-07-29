@@ -1452,6 +1452,7 @@ export default class Post extends React.Component<InjectedProps> {
             );
         }
 
+        /*
         // anonymous image
         if (pictures.length === 0) {
             pictures.push(
@@ -1479,6 +1480,7 @@ export default class Post extends React.Component<InjectedProps> {
                 </View>
             );
         }
+        */
 
         return (
             <Swiper

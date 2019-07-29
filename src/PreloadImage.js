@@ -4,7 +4,7 @@ const Splash = require('../assets/splash.png');
 const Title = require('../assets/title.png');
 const Background = require('../assets/background.png');
 
-const user = require('../assets/icon/user.png');
+// const user = require('../assets/icon/user.png');
 const birth = require('../assets/icon/birth.png');
 const bra = require('../assets/icon/bra.png');
 const muscle = require('../assets/icon/muscle.png');
@@ -62,7 +62,7 @@ export default class PreloadImage {
     static Title = Title;
     static Background = Background;
 
-    static user = user;
+    // static user = user;
     static birth = birth;
     static bra = bra;
     static muscle = muscle;
@@ -120,7 +120,7 @@ export default class PreloadImage {
                 PreloadImage.Title,
                 PreloadImage.Background,
 
-                PreloadImage.user,
+                // PreloadImage.user,
                 PreloadImage.birth,
                 PreloadImage.bra,
                 PreloadImage.muscle,
