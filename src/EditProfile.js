@@ -341,7 +341,6 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
     removeItemFromList() {
         const ref = this.originImageRef;
-
         const index = this.imageRefs.indexOf(ref);
         if (index !== -1) this.imageRefs.splice(index, 1);
     }
@@ -398,7 +397,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         // this.setState({ onNote: false });
     }
 
-    async save() {
+    async update() {
         if (this.state.onUploadingImage) return;
 
         // 1. check
@@ -485,7 +484,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         data.image = {
             uri: uploadImageUri,
-            ref: this.uploadImageRef // could be undefined
+            ref: this.uploadImageRef
         };
 
         data.email = email;
@@ -614,7 +613,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             justifyContent: "center", alignItems: "center"
                         }}
                         onPress={async () => {
-                            await this.save();
+                            await this.update();
                         }}
                     >
                         <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
@@ -1210,7 +1209,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                             this.hideAlertIcon();
                         }
 
-                        await this.save();
+                        await this.update();
                     }}
                 >
                     <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Update Profile'}</Text>
@@ -1317,7 +1316,11 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 const ref = 'images/' + Firebase.user().uid + '/profile/' + path.split('/').pop();
 
                 this.setState({ uploadImageUri: uri });
-                if (this.uploadImageRef) this.imageRefs.push(this.uploadImageRef);
+                if (this.uploadImageRef) {
+                    const oldRef = this.uploadImageRef;
+                    this.imageRefs.push(oldRef);
+                }
+                    
                 this.uploadImageRef = ref;
 
                 // this.imageRefs.push(ref);

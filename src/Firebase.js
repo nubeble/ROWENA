@@ -177,6 +177,7 @@ export default class Firebase {
         await Firebase.firestore.collection("users").doc(uid).update(data);
 
         const uri = data.picture.uri;
+        const user = Firebase.auth.currentUser;
         await user.updateProfile({
             photoURL: uri
         }).then(function () {

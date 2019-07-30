@@ -955,10 +955,13 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     androidView: {
-        flex: 1
+        flex: 1,
+        // backgroundColor: 'green'
+        backgroundColor: Theme.color.background
     },
     iosView: {
-        height: chatViewHeight
+        height: chatViewHeight,
+        backgroundColor: Theme.color.background
     },
     androidTextInput: {
         width: '86%',
