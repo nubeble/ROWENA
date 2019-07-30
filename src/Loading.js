@@ -109,7 +109,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         height: Dimensions.get('window').height,
                         resizeMode: 'cover'
                     }}
-                    source={PreloadImage.Splash}
+                    source={preloadimage.splash}
                     onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
                         SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
 
@@ -142,7 +142,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         resizeMode: 'cover',
                         opacity: this.state.image2Opacity
                     }}
-                    source={PreloadImage.Background}
+                    source={preloadimage.background}
                 // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
             </View>

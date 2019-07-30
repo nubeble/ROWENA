@@ -1,8 +1,9 @@
 import { Asset } from 'expo-asset';
 
-const Splash = require('../assets/splash.png');
-const Title = require('../assets/title.png');
-const Background = require('../assets/background.png');
+const splash = require('../assets/splash.png');
+const title = require('../assets/title.png');
+// const background = require('../assets/background.png');
+const background = require('../assets/bg.png');
 
 // const user = require('../assets/icon/user.png');
 const birth = require('../assets/icon/birth.png');
@@ -58,9 +59,9 @@ const sample3 = require('../assets/sanrio/review.png');
 
 
 export default class PreloadImage {
-    static Splash = Splash;
-    static Title = Title;
-    static Background = Background;
+    static splash = splash;
+    static title = title;
+    static background = background;
 
     // static user = user;
     static birth = birth;
@@ -116,9 +117,9 @@ export default class PreloadImage {
         return [
             // Asset.loadAsync(Images.logo)
             Asset.loadAsync([
-                PreloadImage.Splash,
-                PreloadImage.Title,
-                PreloadImage.Background,
+                preloadimage.splash,
+                preloadimage.title,
+                preloadimage.background,
 
                 // PreloadImage.user,
                 PreloadImage.birth,
