@@ -364,7 +364,18 @@ export default class Loading extends React.Component<InjectedProps> {
         const mid = room.mid;
         const lastReadMessageId = room.lastReadMessageId;
 
-        if (!lastReadMessageId) return true; // user never read
+        // if (!lastReadMessageId) return true; // user never read
+
+        if (!lastReadMessageId) {
+            const owner = room.owner;
+            if (uid === owner) {
+                // 상대방이 말을 걸었고, 내가 읽지 않았다.
+                return true;
+            } else {
+                // 내가 말을 걸었고, 상대방이 읽지 않았다.
+                return false;
+            }
+        }
 
         if (mid !== lastReadMessageId) return true;
 
