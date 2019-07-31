@@ -12,8 +12,8 @@ import { Cons } from "./Globals";
 const slides = [
     {
         key: 'slide1',
-        title: 'Title 1', // ToDo
-        text: 'Description.\nSay something cool', // ToDo
+        title: 'Select your destination',
+        text: 'Description.\nSay something cool',
         image: {
             uri: PreloadImage.sample1,
             width: 554 * 0.5,
@@ -23,7 +23,7 @@ const slides = [
     },
     {
         key: 'slide2',
-        title: 'Title 2',
+        title: 'Take a look at your favorite person',
         text: 'Other cool stuff',
         image: {
             uri: PreloadImage.sample2,
@@ -34,7 +34,7 @@ const slides = [
     },
     {
         key: 'slide3',
-        title: 'Title 3',
+        title: 'Connect with people',
         text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
         image: {
             uri: PreloadImage.sample3,
@@ -42,6 +42,17 @@ const slides = [
             height: 304 * 0.5
         },
         backgroundColor: '#22bcb5'
+    },
+    {
+        key: 'slide4',
+        title: "Let's go for it!",
+        text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
+        image: {
+            uri: PreloadImage.sample3,
+            width: 560 * 0.5,
+            height: 304 * 0.5
+        },
+        backgroundColor: '#f0381b'
     }
 ];
 
