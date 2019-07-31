@@ -109,7 +109,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         height: Dimensions.get('window').height,
                         resizeMode: 'cover'
                     }}
-                    source={preloadimage.splash}
+                    source={PreloadImage.splash}
                     onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
                         SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
 
@@ -142,7 +142,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         resizeMode: 'cover',
                         opacity: this.state.image2Opacity
                     }}
-                    source={preloadimage.background}
+                    source={PreloadImage.background}
                 // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
             </View>
@@ -290,6 +290,8 @@ export default class Loading extends React.Component<InjectedProps> {
 
                         console.log('[auto sign in] move to main');
                         navigation.navigate("mainStackNavigator");
+                        // TEST
+                        // navigation.navigate("tutorial");
                     } else { // for the resign in after sign out / delete account
                         const type = Vars.signUpType; // copy
 

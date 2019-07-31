@@ -142,7 +142,7 @@ export default class SignUpWithMobileName extends React.Component {
                     width: Dimensions.get('window').width,
                     height: Dimensions.get('window').height
                 }}
-                source={preloadimage.background}
+                source={PreloadImage.background}
                 resizeMode='cover'
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >

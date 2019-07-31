@@ -15,44 +15,44 @@ const slides = [
         title: 'Select your destination',
         text: 'Description.\nSay something cool',
         image: {
-            uri: PreloadImage.sample1,
-            width: 554 * 0.5,
-            height: 340 * 0.5
+            uri: PreloadImage.tutorial1,
+            width: 640,
+            height: 640
         },
-        backgroundColor: '#59b2ab'
+        backgroundColor: 'darkgreen'
     },
     {
         key: 'slide2',
         title: 'Take a look at your favorite person',
         text: 'Other cool stuff',
         image: {
-            uri: PreloadImage.sample2,
-            width: 496 * 0.5,
-            height: 403 * 0.5
+            uri: PreloadImage.tutorial2,
+            width: 640,
+            height: 640
         },
-        backgroundColor: '#febe29'
+        backgroundColor: 'darkorange'
     },
     {
         key: 'slide3',
         title: 'Connect with people',
         text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
         image: {
-            uri: PreloadImage.sample3,
-            width: 560 * 0.5,
-            height: 304 * 0.5
+            uri: PreloadImage.tutorial3,
+            width: 640,
+            height: 640
         },
-        backgroundColor: '#22bcb5'
+        backgroundColor: 'brown'
     },
     {
         key: 'slide4',
         title: "Let's go for it!",
         text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
         image: {
-            uri: PreloadImage.sample3,
-            width: 560 * 0.5,
-            height: 304 * 0.5
+            uri: PreloadImage.tutorial4,
+            width: 640,
+            height: 640
         },
-        backgroundColor: '#f0381b'
+        backgroundColor: 'purple'
     }
 ];
 
@@ -96,8 +96,6 @@ export default class Tutorial extends React.Component {
 
     @autobind
     renderItem({ item, index }) {
-        // console.log('item', item);
-
         const slide = item;
 
         return (
@@ -109,9 +107,10 @@ export default class Tutorial extends React.Component {
                         height: slide.image.height,
                         resizeMode: 'cover',
                         // alignSelf: 'center'
+                        marginLeft: 35,
+                        // marginBottom: -84
                     }}
                 />
-                <Text style={styles.text}>{slide.text}</Text>
             </View>
         );
     }
@@ -120,7 +119,7 @@ export default class Tutorial extends React.Component {
     renderNextButton() {
         return (
             <View style={{
-                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .2)',
+                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .4)',
             }}>
                 <Ionicons name='md-arrow-round-forward' color='rgba(255, 255, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
             </View>
@@ -131,9 +130,9 @@ export default class Tutorial extends React.Component {
     renderDoneButton() {
         return (
             <View style={{
-                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .2)',
+                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .4)',
             }}>
-                <Entypo name='check' color='rgba(255, 255, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
+                <Entypo name='check' color='rgba(62, 165, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
             </View>
         );
     };
@@ -152,14 +151,17 @@ const styles = StyleSheet.create({
     flex: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'space-around'
+        // justifyContent: 'space-around'
     },
     title: {
-        fontSize: 24,
-        lineHeight: 28,
-        fontFamily: "Roboto-Medium",
+        textAlign: 'center',
+        fontSize: 34,
+        lineHeight: 40,
+        height: 40 * 2,
+        // backgroundColor: 'black',
+        fontFamily: "Chewy-Regular",
         color: 'white',
-        paddingHorizontal: 20,
+        paddingHorizontal: 10,
         marginTop: 50
     },
     text: {

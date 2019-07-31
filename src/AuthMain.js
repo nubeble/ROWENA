@@ -226,7 +226,7 @@ export default class AuthMain extends React.Component {
                         height: Dimensions.get('window').height,
                         resizeMode: 'cover'
                     }}
-                    source={preloadimage.background}
+                    source={PreloadImage.background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
@@ -236,7 +236,7 @@ export default class AuthMain extends React.Component {
                         width: Dimensions.get('window').width,
                         height: Dimensions.get('window').height
                     }}
-                    source={preloadimage.background}
+                    source={PreloadImage.background}
                     resizeMode='cover'
                     blurRadius={1}
                 />
@@ -249,7 +249,7 @@ export default class AuthMain extends React.Component {
                         height: Dimensions.get('window').height,
                         resizeMode: 'cover'
                     }}
-                    source={preloadimage.background}
+                    source={PreloadImage.background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                     blurRadius={this.state.blurRadius}
                 />
@@ -261,7 +261,7 @@ export default class AuthMain extends React.Component {
                         width: Dimensions.get('window').width,
                         height: Dimensions.get('window').height
                     }}
-                    source={preloadimage.background}
+                    source={PreloadImage.background}
                     resizeMode='cover'
                     blurRadius={1}
                 />
@@ -292,7 +292,7 @@ export default class AuthMain extends React.Component {
                                 width: 46, height: 46,
                                 resizeMode: 'cover'
                             }}
-                            source={preloadimage.title}
+                            source={PreloadImage.title}
                         />
                         <Text style={{
                             // backgroundColor: 'green',

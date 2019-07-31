@@ -908,6 +908,42 @@ export default class Intro extends React.Component<InjectedProps> {
                         const fontSize = this.getLabelFontSize(city, state, country);
                         const lineHeight = this.getLabelLineHeight(fontSize);
 
+                        // TEST
+                        /*
+                        const tmp = index;
+                        if (tmp === 0) {
+                            city = 'Bangkok';
+                            state = null;
+                            country = 'Thailand';
+                            length = 126;
+                        } else if (tmp === 1) {
+                            city = 'Manila';
+                            state = null;
+                            country = 'Philippines';
+                            length = 97;
+                        } else if (tmp === 2) {
+                            city = 'Hanoi';
+                            state = null;
+                            country = 'Vietnam';
+                            length = 69;
+                        } else if (tmp === 3) {
+                            city = 'Vientiane';
+                            state = null;
+                            country = 'Laos';
+                            length = 41;
+                        } else if (tmp === 4) {
+                            city = 'Kota Kinabalu';
+                            state = 'Sabah';
+                            country = 'Malaysia';
+                            length = 36;
+                        } else if (tmp === 5) {
+                            city = 'Jakarta';
+                            state = null;
+                            country = 'Indonesia';
+                            length = 30;
+                        }
+                        */
+
                         return (
                             <TouchableOpacity
                                 onPress={async () => {
@@ -1014,6 +1050,110 @@ export default class Intro extends React.Component<InjectedProps> {
                                             }}>{Util.numberWithCommas(length) + '+ girls'}</Text>
                                         }
                                     </View>
+
+                                    {/* // TEST
+                                    {
+                                        tmp === 0 &&
+                                        <Image
+                                            style={styles.item}
+                                            source={PreloadImage.tmp1}
+                                        />
+                                    }
+                                    {
+                                        tmp === 1 &&
+                                        <Image
+                                            style={styles.item}
+                                            source={PreloadImage.tmp2}
+                                        />
+                                    }
+                                    {
+                                        tmp === 2 &&
+                                        <Image
+                                            style={styles.item}
+                                            source={PreloadImage.tmp3}
+                                        />
+                                    }
+                                    {
+                                        tmp === 3 &&
+                                        <Image
+                                            style={styles.item}
+                                            source={PreloadImage.tmp4}
+                                        />
+                                    }
+                                    {
+                                        tmp === 4 &&
+                                        <Image
+                                            style={styles.item}
+                                            source={PreloadImage.tmp5}
+                                        />
+                                    }
+                                    {
+                                        tmp === 5 &&
+                                        <Image
+                                            style={styles.item}
+                                            source={PreloadImage.tmp6}
+                                        />
+                                    }
+                                    <View style={styles.content}>
+                                        {
+                                            city &&
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: fontSize,
+                                                lineHeight: lineHeight,
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1.2, height: 1.2 },
+                                                textShadowRadius: 1
+                                            }}>{city}</Text>
+                                        }
+                                        {
+                                            state &&
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: fontSize,
+                                                lineHeight: lineHeight,
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1.2, height: 1.2 },
+                                                textShadowRadius: 1
+                                            }}>{state}</Text>
+                                        }
+                                        {
+                                            country &&
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.title,
+                                                fontSize: fontSize,
+                                                lineHeight: lineHeight,
+                                                fontFamily: "Roboto-Bold",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1.2, height: 1.2 },
+                                                textShadowRadius: 1
+                                            }}>{country}</Text>
+                                        }
+                                        {
+                                            length > 0 &&
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                color: Theme.color.subtitle,
+                                                fontSize: 14,
+                                                lineHeight: 20,
+                                                fontFamily: "Roboto-Medium",
+
+                                                textShadowColor: 'black',
+                                                textShadowOffset: { width: 1, height: 1 },
+                                                textShadowRadius: 1
+                                            }}>{Util.numberWithCommas(length) + '+ girls'}</Text>
+                                        }
+                                    </View>
+                                    */}
+
                                     {
                                         item.newPostAdded === true &&
                                         <View style={{

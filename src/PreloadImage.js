@@ -52,6 +52,21 @@ const burger2 = require('../assets/ads/burgerking/2.jpg');
 const burger3 = require('../assets/ads/burgerking/3.jpg');
 const burger4 = require('../assets/ads/burgerking/4.jpg');
 
+// tutorial
+const tutorial1 = require('../assets/tutorial/1.png');
+const tutorial2 = require('../assets/tutorial/2.png');
+const tutorial3 = require('../assets/tutorial/3.png');
+const tutorial4 = require('../assets/tutorial/4.png');
+
+// TEST
+const tmp1 = require('../assets/tmp/Bangkok.jpg');
+const tmp2 = require('../assets/tmp/Manila.jpg');
+const tmp3 = require('../assets/tmp/HCM.jpg');
+const tmp4 = require('../assets/tmp/Vientiane.jpg');
+const tmp5 = require('../assets/tmp/KK.jpg');
+const tmp6 = require('../assets/tmp/Jakarta.jpg');
+
+// ToDo: remove
 // sample
 const sample1 = require('../assets/sanrio/chat.png');
 const sample2 = require('../assets/sanrio/customer2.png');
@@ -108,6 +123,18 @@ export default class PreloadImage {
     static burger3 = burger3;
     static burger4 = burger4;
 
+    static tutorial1 = tutorial1;
+    static tutorial2 = tutorial2;
+    static tutorial3 = tutorial3;
+    static tutorial4 = tutorial4;
+
+    static tmp1 = tmp1;
+    static tmp2 = tmp2;
+    static tmp3 = tmp3;
+    static tmp4 = tmp4;
+    static tmp5 = tmp5;
+    static tmp6 = tmp6;
+
     static sample1 = sample1;
     static sample2 = sample2;
     static sample3 = sample3;
@@ -117,9 +144,9 @@ export default class PreloadImage {
         return [
             // Asset.loadAsync(Images.logo)
             Asset.loadAsync([
-                preloadimage.splash,
-                preloadimage.title,
-                preloadimage.background,
+                PreloadImage.splash,
+                PreloadImage.title,
+                PreloadImage.background,
 
                 // PreloadImage.user,
                 PreloadImage.birth,
@@ -165,6 +192,18 @@ export default class PreloadImage {
                 PreloadImage.burger2,
                 PreloadImage.burger3,
                 PreloadImage.burger4,
+
+                PreloadImage.tutorial1,
+                PreloadImage.tutorial2,
+                PreloadImage.tutorial3,
+                PreloadImage.tutorial4,
+
+                PreloadImage.tmp1,
+                PreloadImage.tmp2,
+                PreloadImage.tmp3,
+                PreloadImage.tmp4,
+                PreloadImage.tmp5,
+                PreloadImage.tmp6,
 
                 PreloadImage.sample1,
                 PreloadImage.sample2,

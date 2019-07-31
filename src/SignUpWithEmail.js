@@ -437,7 +437,7 @@ export default class SignUpWithEmail extends React.Component {
                     width: Dimensions.get('window').width,
                     height: Dimensions.get('window').height
                 }}
-                source={preloadimage.background}
+                source={PreloadImage.background}
                 resizeMode='cover'
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
@@ -564,12 +564,12 @@ export default class SignUpWithEmail extends React.Component {
                             {this.state.emailY !== -1 && emailIcon === 2 && <AntDesign style={{ position: 'absolute', right: 24, top: this.state.emailY - 34 }} name='checkcircleo' color="rgba(255, 255, 255, 0.8)" size={27} />}
 
                             <View style={{ flexDirection: 'row' }}>
-                                <Text style={{ marginTop: 4, paddingLeft: 18, paddingRight: 12, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                <Text style={{ marginTop: 4, paddingLeft: 18, paddingRight: 8, color: Theme.color.text2, fontSize: 14, fontFamily: "Roboto-Medium" }}>
                                     {'PASSWORD'}
                                 </Text>
 
                                 <TouchableOpacity
-                                    style={{ marginTop: 4, width: 22, height: 22, justifyContent: 'center', alignItems: 'center' }}
+                                    style={{ marginTop: 4 - 1, width: 22, height: 22, justifyContent: 'center', alignItems: 'center' }}
                                     onPress={() => this.toggleSecureText()}
                                 >
                                     {
