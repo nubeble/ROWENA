@@ -38,8 +38,12 @@ const fileUploader = require("./fileUploader");
 fileUploader("/images", app); // ToDo: what is the "/images"??
 
 const { Expo } = require('expo-server-sdk');
+/*
 const async = require('asyncawait').async;
 const await = require('asyncawait').await;
+*/
+const async = require('./asyncawait').async;
+const await = require('./asyncawait').await;
 
 // Create a new Expo SDK client
 let expo = new Expo();

@@ -139,7 +139,7 @@ export default class ResetPasswordVerification extends React.Component {
                 source={PreloadImage.background}
                 resizeMode='cover'
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}

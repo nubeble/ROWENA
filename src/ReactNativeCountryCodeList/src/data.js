@@ -896,7 +896,7 @@ export const getAlphabet = () => {
             {
                 dial: '+850',
                 code: "KP",
-                name: "Korea, Democratic People's Republic of"
+                name: "North Korea"
             },
             {
                 dial: '+82',

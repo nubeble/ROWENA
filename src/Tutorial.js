@@ -16,8 +16,8 @@ const slides = [
         text: 'Description.\nSay something cool',
         image: {
             uri: PreloadImage.tutorial1,
-            width: 640,
-            height: 640
+            width: 624,
+            height: 1224
         },
         backgroundColor: 'darkgreen'
     },
@@ -27,8 +27,8 @@ const slides = [
         text: 'Other cool stuff',
         image: {
             uri: PreloadImage.tutorial2,
-            width: 640,
-            height: 640
+            width: 624,
+            height: 1224
         },
         backgroundColor: 'darkorange'
     },
@@ -38,8 +38,8 @@ const slides = [
         text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
         image: {
             uri: PreloadImage.tutorial3,
-            width: 640,
-            height: 640
+            width: 624,
+            height: 1224
         },
         backgroundColor: 'brown'
     },
@@ -49,8 +49,8 @@ const slides = [
         text: 'I\'m already out of descriptions\n\nLorem ipsum bla bla bla',
         image: {
             uri: PreloadImage.tutorial4,
-            width: 640,
-            height: 640
+            width: 624,
+            height: 1224
         },
         backgroundColor: 'purple'
     }
@@ -103,11 +103,14 @@ export default class Tutorial extends React.Component {
                 <Text style={styles.title}>{slide.title}</Text>
                 <Image source={slide.image.uri}
                     style={{
-                        width: slide.image.width,
-                        height: slide.image.height,
+                        // alignSelf: 'center',
+                        // position: 'absolute',
+                        // bottom: slide.image.height * 0.04 * -1,
+                        width: slide.image.width * 0.4,
+                        height: slide.image.height * 0.4,
                         resizeMode: 'cover',
-                        // alignSelf: 'center'
-                        marginLeft: 35,
+                        marginBottom: -54
+                        // marginLeft: 35,
                         // marginBottom: -84
                     }}
                 />
@@ -151,7 +154,7 @@ const styles = StyleSheet.create({
     flex: {
         flex: 1,
         alignItems: 'center',
-        // justifyContent: 'space-around'
+        justifyContent: 'flex-end'
     },
     title: {
         textAlign: 'center',
@@ -163,14 +166,16 @@ const styles = StyleSheet.create({
         // color: 'black',
         color: Theme.color.splash,
         paddingHorizontal: 10,
-        marginTop: 50
+        // marginTop: 50
+        marginBottom: 20
     },
+    /*
     text: {
         fontSize: 16,
         lineHeight: 24,
         fontFamily: "Chewy-Regular",
         color: 'rgba(255, 255, 255, 0.8)',
-        paddingHorizontal: 20,
-        marginBottom: 80
+        paddingHorizontal: 20
     }
+    */
 });

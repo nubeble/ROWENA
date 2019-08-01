@@ -960,7 +960,7 @@ export default class Util extends React.Component {
             },
             {
                 code: "KP",
-                name: "Korea, Democratic People's Republic of"
+                name: "North Korea"
             },
             {
                 code: "KR",

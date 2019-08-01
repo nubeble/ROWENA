@@ -466,7 +466,7 @@ const styles = StyleSheet.create({
     },
     view: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
         justifyContent: 'center'
     },
     /*

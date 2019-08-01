@@ -528,7 +528,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     }}
                                     onLongPress={() => {
                                         this.openDialog('Remove likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
-                                            // ToDo: loader
+                                            !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
                                             // update database
                                             const uid = Firebase.user().uid;
@@ -543,6 +543,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             feeds.push(feed);
 
                                             await Firebase.removeLikes(feeds, uid);
+
+                                            !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
                                         });
                                     }}
                                 >

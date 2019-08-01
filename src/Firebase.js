@@ -891,7 +891,7 @@ export default class Firebase {
                 const feedId = feed.feedId;
 
                 let index = -1;
-                for (let j = 0; i < likes.length; j++) {
+                for (let j = 0; j < likes.length; j++) {
                     const item = likes[j];
                     if (item.placeId === placeId && item.feedId === feedId) {
                         index = j;

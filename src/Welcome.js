@@ -92,7 +92,7 @@ export default class Welcome extends React.Component {
                     />
 
                     <Text style={{
-                        marginTop: 20,
+                        marginTop: 40,
                         paddingHorizontal: Theme.spacing.base,
                         color: 'white',
                         fontSize: 16,

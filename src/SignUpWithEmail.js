@@ -441,7 +441,7 @@ export default class SignUpWithEmail extends React.Component {
                 resizeMode='cover'
             // blurRadius={Platform.OS === 'android' ? 1 : 15}
             >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}

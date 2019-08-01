@@ -1323,6 +1323,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     justifyContent: 'center', alignItems: 'center'
                 }}>
                     {/* // ToDo: draw illustration */}
+                    <Ionicons name='md-person' color={Theme.color.component} size={40} />
                 </View>
             );
         }
@@ -1437,6 +1438,7 @@ export default class Intro extends React.Component<InjectedProps> {
                     justifyContent: 'center', alignItems: 'center'
                 }}>
                     {/* // ToDo: draw illustration */}
+                    <Ionicons name='md-person' color={Theme.color.component} size={40} />
                 </View>
             );
         }
