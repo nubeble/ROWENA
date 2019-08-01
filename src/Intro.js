@@ -27,11 +27,6 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
 import { LinearGradient } from 'expo-linear-gradient';
 
-/*
-type ExploreState = {
-    scrollAnimation: Animated.Value
-};
-*/
 type InjectedProps = {
     profileStore: ProfileStore
 };
