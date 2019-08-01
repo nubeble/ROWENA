@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, Button, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
+import { StyleSheet, View, Image, TouchableOpacity, Dimensions, BackHandler } from 'react-native';
 import Constants from 'expo-constants';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
@@ -70,7 +70,6 @@ export default class Welcome extends React.Component {
                     }
                 </View>
 
-                {/* // render illustration */}
                 <View style={styles.container}>
                     <Text style={{
                         marginTop: 8,
@@ -84,8 +83,8 @@ export default class Welcome extends React.Component {
                     <Image
                         style={{
                             marginTop: 80,
-                            width: 1280 * 0.3,
-                            height: 720 * 0.3,
+                            width: 554 * 0.5,
+                            height: 340 * 0.5,
                             resizeMode: 'cover',
                             alignSelf: 'center'
                         }}
@@ -93,7 +92,7 @@ export default class Welcome extends React.Component {
                     />
 
                     <Text style={{
-                        marginTop: 10,
+                        marginTop: 20,
                         paddingHorizontal: Theme.spacing.base,
                         color: 'white',
                         fontSize: 16,
@@ -107,9 +106,6 @@ export default class Welcome extends React.Component {
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             if (this.closed) return;
-                            // console.log('move to main');
-                            // this.props.navigation.navigate("mainStackNavigator");
-
                             console.log('move to tutorial');
                             this.props.navigation.navigate("tutorial");
                         }, Cons.buttonTimeout);
@@ -125,7 +121,7 @@ export default class Welcome extends React.Component {
 const styles = StyleSheet.create({
     flex: {
         flex: 1,
-        backgroundColor: '#8EC2EA'
+        backgroundColor: Theme.color.background
     },
     searchBar: {
         height: Cons.searchBarHeight,

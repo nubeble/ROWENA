@@ -61,7 +61,6 @@ export default class AdvertisementStart extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                {/* // render illustration */}
                 <View style={styles.container}>
                     <Text style={{
                         marginTop: 8,
@@ -74,7 +73,7 @@ export default class AdvertisementStart extends React.Component {
 
                     <Image
                         style={{
-                            marginTop: 20,
+                            marginTop: 40,
                             width: illustWidth * 0.7,
                             height: illustHeight * 0.7,
                             resizeMode: 'cover',

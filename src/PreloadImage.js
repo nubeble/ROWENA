@@ -15,7 +15,8 @@ const home = require('../assets/icon/home.png');
 
 const keyboard = require('../assets/sample/keyboard.png');
 const advertisement = require('../assets/sample/write.jpg');
-const welcome = require('../assets/sample/welcome.jpg');
+// const welcome = require('../assets/sample/welcome.jpg');
+const welcome = require('../assets/sanrio/welcome.png');
 const hope = require('../assets/sanrio/hope.png');
 
 // sticker
@@ -65,12 +66,6 @@ const tmp3 = require('../assets/tmp/HCM.jpg');
 const tmp4 = require('../assets/tmp/Vientiane.jpg');
 const tmp5 = require('../assets/tmp/KK.jpg');
 const tmp6 = require('../assets/tmp/Jakarta.jpg');
-
-// ToDo: remove
-// sample
-const sample1 = require('../assets/sanrio/chat.png');
-const sample2 = require('../assets/sanrio/customer2.png');
-const sample3 = require('../assets/sanrio/review.png');
 
 
 export default class PreloadImage {
@@ -134,10 +129,6 @@ export default class PreloadImage {
     static tmp4 = tmp4;
     static tmp5 = tmp5;
     static tmp6 = tmp6;
-
-    static sample1 = sample1;
-    static sample2 = sample2;
-    static sample3 = sample3;
 
 
     static downloadAsync(): Promise<*>[] {
@@ -203,11 +194,7 @@ export default class PreloadImage {
                 PreloadImage.tmp3,
                 PreloadImage.tmp4,
                 PreloadImage.tmp5,
-                PreloadImage.tmp6,
-
-                PreloadImage.sample1,
-                PreloadImage.sample2,
-                PreloadImage.sample3
+                PreloadImage.tmp6
             ])
         ];
     }

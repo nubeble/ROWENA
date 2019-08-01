@@ -99,7 +99,7 @@ export default class Tutorial extends React.Component {
         const slide = item;
 
         return (
-            <View style={[styles.flex, { backgroundColor: slide.backgroundColor }]}>
+            <View style={[styles.flex, { /* backgroundColor: slide.backgroundColor */ backgroundColor: 'white' }]}>
                 <Text style={styles.title}>{slide.title}</Text>
                 <Image source={slide.image.uri}
                     style={{
@@ -132,7 +132,7 @@ export default class Tutorial extends React.Component {
             <View style={{
                 width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .4)',
             }}>
-                <Entypo name='check' color='rgba(62, 165, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
+                <Entypo name='check' color='rgba(255, 255, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
             </View>
         );
     };
@@ -160,7 +160,8 @@ const styles = StyleSheet.create({
         height: 40 * 2,
         // backgroundColor: 'black',
         fontFamily: "Chewy-Regular",
-        color: 'white',
+        // color: 'black',
+        color: Theme.color.splash,
         paddingHorizontal: 10,
         marginTop: 50
     },
