@@ -23,7 +23,7 @@
     "expo-haptics": "^5.0.1",
     "expo-image-picker": "^5.0.2",
     "expo-web-browser": "^5.0.3",
-    "firebase": "^5.11.1",
+    "firebase": "^6.3.3",
     "flow": "^0.2.3",
     "geofirestore": "^3.2.3",
     "geokit": "^0.1.3",
