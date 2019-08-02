@@ -11,7 +11,7 @@
             "android"
         ],
         "orientation": "portrait",
-        "primaryColor": "#FFFFFF",
+        "primaryColor": "#CD5E77",
         "icon": "./assets/icon.png",
         "assetBundlePatterns": [
             "**/*"
