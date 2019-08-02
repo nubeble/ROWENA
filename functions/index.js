@@ -704,7 +704,7 @@ const deleteFiles = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    console.log('Done parsing form.', fields);
+    // console.log('Done parsing form.', fields);
 
     const storage = admin.storage();
 
@@ -730,7 +730,7 @@ const deleteFiles = async(function () {
         refs.push(fileRef);
     }
 
-    console.log('Done deleting files in database.');
+    // console.log('Done deleting files in database.');
 
     res.status(200).send(refs);
 });

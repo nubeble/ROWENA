@@ -32,6 +32,9 @@
         "updates": {
             "fallbackToCacheTimeout": 0
         },
+        "facebookScheme": "fb367256380681542",
+        "facebookAppId": "367256380681542",
+        "facebookDisplayName": "Rowena",
         "android": {
             "package": "com.nubeble.rowena",
             "googleServicesFile": "./google-services.json",
