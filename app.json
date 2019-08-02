@@ -13,6 +13,7 @@
         "orientation": "portrait",
         "primaryColor": "#CD5E77",
         "icon": "./assets/icon.png",
+        "scheme": "rowena",
         "assetBundlePatterns": [
             "**/*"
         ],
