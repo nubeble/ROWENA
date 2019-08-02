@@ -4,7 +4,6 @@ import { Text, Theme } from './rnff/src/components';
 import { LinearGradient } from 'expo';
 import { Ionicons, Entypo } from '@expo/vector-icons';
 import AppIntroSlider from 'react-native-app-intro-slider';
-import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
@@ -163,19 +162,9 @@ const styles = StyleSheet.create({
         height: 40 * 2,
         // backgroundColor: 'black',
         fontFamily: "Chewy-Regular",
-        // color: 'black',
-        color: Theme.color.splash,
+        color: 'black',
+        // color: Theme.color.splash,
         paddingHorizontal: 10,
-        // marginTop: 50
-        marginBottom: 20
-    },
-    /*
-    text: {
-        fontSize: 16,
-        lineHeight: 24,
-        fontFamily: "Chewy-Regular",
-        color: 'rgba(255, 255, 255, 0.8)',
-        paddingHorizontal: 20
+        marginBottom: 30
     }
-    */
 });
