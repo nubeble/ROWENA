@@ -292,7 +292,7 @@ export default class AuthMain extends React.Component {
                                 width: 46, height: 46,
                                 resizeMode: 'cover'
                             }}
-                            source={PreloadImage.title}
+                            source={PreloadImage.logo}
                         />
                         <Text style={{
                             // backgroundColor: 'green',

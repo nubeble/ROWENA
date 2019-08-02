@@ -1,7 +1,7 @@
 import { Asset } from 'expo-asset';
 
 const splash = require('../assets/splash.png');
-const title = require('../assets/title.png');
+const logo = require('../assets/logo.png');
 // const background = require('../assets/background.png');
 const background = require('../assets/bg.png');
 
@@ -70,7 +70,7 @@ const tmp6 = require('../assets/tmp/Jakarta.jpg');
 
 export default class PreloadImage {
     static splash = splash;
-    static title = title;
+    static logo = logo;
     static background = background;
 
     // static user = user;
@@ -136,7 +136,7 @@ export default class PreloadImage {
             // Asset.loadAsync(Images.logo)
             Asset.loadAsync([
                 PreloadImage.splash,
-                PreloadImage.title,
+                PreloadImage.logo,
                 PreloadImage.background,
 
                 // PreloadImage.user,
