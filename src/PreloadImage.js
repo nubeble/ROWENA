@@ -2,8 +2,7 @@ import { Asset } from 'expo-asset';
 
 const splash = require('../assets/splash.png');
 const logo = require('../assets/logo.png');
-// const background = require('../assets/background.png');
-const background = require('../assets/bg.png');
+const background = require('../assets/background.png');
 
 // const user = require('../assets/icon/user.png');
 const birth = require('../assets/icon/birth.png');
@@ -12,14 +11,12 @@ const muscle = require('../assets/icon/muscle.png');
 const ruler = require('../assets/icon/ruler.png');
 const comment = require('../assets/icon/comment.png');
 const home = require('../assets/icon/home.png');
-
-const keyboard = require('../assets/sample/keyboard.png');
-const advertisement = require('../assets/sample/write.jpg');
-// const welcome = require('../assets/sample/welcome.jpg');
-const welcome = require('../assets/sanrio/welcome.png');
-const hope = require('../assets/sanrio/hope.png');
+const keyboard = require('../assets/icon/keyboard.png');
 
 // sticker
+const welcome = require('../assets/sticker/welcome.png');
+const advertisement = require('../assets/sticker/advertise.png');
+const hope = require('../assets/sticker/hope.png');
 const explore = require('../assets/sticker/explore.png');
 const chat = require('../assets/sticker/chat.png');
 const likes = require('../assets/sticker/likes.png');
@@ -80,13 +77,12 @@ export default class PreloadImage {
     static ruler = ruler;
     static comment = comment;
     static home = home;
-
     static keyboard = keyboard;
-    static advertisement = advertisement;
-    static welcome = welcome;
-    static hope = hope;
 
     // sticker
+    static welcome = welcome;
+    static advertisement = advertisement;
+    static hope = hope;
     static explore = explore;
     static chat = chat;
     static likes = likes;
@@ -146,13 +142,12 @@ export default class PreloadImage {
                 PreloadImage.ruler,
                 PreloadImage.comment,
                 PreloadImage.home,
-
                 PreloadImage.keyboard,
-                PreloadImage.advertisement,
-                PreloadImage.welcome,
-                PreloadImage.hope,
 
                 // sticker
+                PreloadImage.welcome,
+                PreloadImage.advertisement,
+                PreloadImage.hope,
                 PreloadImage.explore,
                 PreloadImage.chat,
                 PreloadImage.likes,

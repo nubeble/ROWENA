@@ -73,9 +73,9 @@ export default class AdvertisementStart extends React.Component {
 
                     <Image
                         style={{
-                            marginTop: 40,
-                            width: illustWidth * 0.7,
-                            height: illustHeight * 0.7,
+                            marginTop: 100,
+                            width: Cons.stickerWidth,
+                            height: Cons.stickerHeight,
                             resizeMode: 'cover',
                             alignSelf: 'center'
                         }}
@@ -83,7 +83,7 @@ export default class AdvertisementStart extends React.Component {
                     />
 
                     <Text style={{
-                        // marginTop: 10,
+                        marginTop: 20,
                         paddingHorizontal: Theme.spacing.base,
                         color: 'black',
                         fontSize: 16,

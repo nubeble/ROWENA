@@ -82,9 +82,9 @@ export default class Welcome extends React.Component {
 
                     <Image
                         style={{
-                            marginTop: 80,
-                            width: 554 * 0.5,
-                            height: 340 * 0.5,
+                            marginTop: 100,
+                            width: Cons.stickerWidth,
+                            height: Cons.stickerHeight,
                             resizeMode: 'cover',
                             alignSelf: 'center'
                         }}
@@ -92,7 +92,7 @@ export default class Welcome extends React.Component {
                     />
 
                     <Text style={{
-                        marginTop: 40,
+                        marginTop: 20,
                         paddingHorizontal: Theme.spacing.base,
                         color: 'white',
                         fontSize: 16,

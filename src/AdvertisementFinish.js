@@ -61,7 +61,6 @@ export default class AdvertisementFinish extends React.Component {
                     </TouchableOpacity>
                 </View>
 
-                {/* // render illustration */}
                 <View style={styles.container}>
                     <Text style={{
                         marginTop: 8,
@@ -70,13 +69,13 @@ export default class AdvertisementFinish extends React.Component {
                         lineHeight: 32,
                         color: 'black',
                         fontFamily: "Chewy-Regular"
-                    }}>Hope you find it</Text>
+                    }}>Hope you find it!</Text>
 
                     <Image
                         style={{
-                            marginTop: 80,
-                            width: 474 * 0.5,
-                            height: 394 * 0.5,
+                            marginTop: 100,
+                            width: Cons.stickerWidth,
+                            height: Cons.stickerHeight,
                             resizeMode: 'cover',
                             alignSelf: 'center'
                         }}
