@@ -110,7 +110,7 @@ export default class Tutorial extends React.Component {
 
         return (
             <View style={styles.flex}>
-                <View style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, marginBottom: 30 }}>
+                <View style={{ height: 80, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, marginBottom: 30 }}>
                     <Text style={styles.title}>{slide.title}</Text>
                 </View>
 
