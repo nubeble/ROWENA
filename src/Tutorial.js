@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Image, BackHandler } from 'react-native';
+import { StyleSheet, View, Image, BackHandler, Dimensions } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { LinearGradient } from 'expo';
 import { Ionicons, Entypo } from '@expo/vector-icons';
@@ -7,6 +7,9 @@ import AppIntroSlider from 'react-native-app-intro-slider';
 import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons } from "./Globals";
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const slides = [
     {
@@ -84,6 +87,10 @@ export default class Tutorial extends React.Component {
             <AppIntroSlider
                 slides={slides}
                 renderItem={this.renderItem}
+
+                dotStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.2)' }}
+                activeDotStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}
+
                 renderNextButton={this.renderNextButton}
                 renderDoneButton={this.renderDoneButton}
                 onDone={this.onDone}
@@ -97,20 +104,22 @@ export default class Tutorial extends React.Component {
     renderItem({ item, index }) {
         const slide = item;
 
+
+        const imageHeight = windowHeight * 0.6;
+        const imageWidth = imageHeight * slide.image.width / slide.image.height;
+
         return (
-            <View style={[styles.flex, { /* backgroundColor: slide.backgroundColor */ backgroundColor: 'white' }]}>
-                <Text style={styles.title}>{slide.title}</Text>
+            <View style={styles.flex}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10, marginBottom: 30 }}>
+                    <Text style={styles.title}>{slide.title}</Text>
+                </View>
+
                 <Image source={slide.image.uri}
                     style={{
-                        // alignSelf: 'center',
-                        // position: 'absolute',
-                        // bottom: slide.image.height * 0.04 * -1,
-                        width: slide.image.width * 0.4,
-                        height: slide.image.height * 0.4,
-                        resizeMode: 'cover',
-                        marginBottom: -54
-                        // marginLeft: 35,
-                        // marginBottom: -84
+                        width: imageWidth,
+                        height: imageHeight,
+                        resizeMode: 'cover'
+                        // marginBottom: -54
                     }}
                 />
             </View>
@@ -121,9 +130,9 @@ export default class Tutorial extends React.Component {
     renderNextButton() {
         return (
             <View style={{
-                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .4)',
+                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, 0.2)',
             }}>
-                <Ionicons name='md-arrow-round-forward' color='rgba(255, 255, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
+                <Ionicons name='md-arrow-round-forward' color='white' size={26} />
             </View>
         );
     };
@@ -132,9 +141,9 @@ export default class Tutorial extends React.Component {
     renderDoneButton() {
         return (
             <View style={{
-                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, .4)',
+                width: 42, height: 42, borderRadius: 42 / 2, justifyContent: "center", alignItems: "center", backgroundColor: 'rgba(0, 0, 0, 0.05)',
             }}>
-                <Entypo name='check' color='rgba(255, 255, 255, .9)' size={26} style={{ backgroundColor: 'transparent' }} />
+                <Entypo name='check' color={Theme.color.selection} size={26} />
             </View>
         );
     };
@@ -153,18 +162,14 @@ const styles = StyleSheet.create({
     flex: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'center',
+        backgroundColor: 'white'
     },
     title: {
-        textAlign: 'center',
         fontSize: 34,
         lineHeight: 40,
-        height: 40 * 2,
-        // backgroundColor: 'black',
         fontFamily: "Chewy-Regular",
         color: 'black',
-        // color: Theme.color.splash,
-        paddingHorizontal: 10,
-        marginBottom: 30
+        textAlign: 'center'
     }
 });

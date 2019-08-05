@@ -12,17 +12,17 @@
     <button id="continue-btn" style="display:none">Continue to app</button>
 
 
+
     <!-- Firebase App is always required and must be first -->
-    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-app.js"></script>
 
     <!-- Add additional services that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/5.9.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-auth.js"></script>
 
     <script>
-        var config = {
+        const config = {
             apiKey: "AIzaSyCT1LV1HF5REJw_SePsUeUdwFalo5IzrsQ",
             authDomain: "rowena-88cfd.firebaseapp.com",
-            // authDomain: "rowena-88cfd.web.app",
             databaseURL: "https://rowena-88cfd.firebaseio.com",
             projectId: "rowena-88cfd",
             storageBucket: "rowena-88cfd.appspot.com",
@@ -34,10 +34,11 @@
 
 
         function getToken(callback) {
-            var container = document.createElement('div');
+            const container = document.createElement('div');
             container.id = 'captcha';
             document.body.appendChild(container);
-            var captcha = new firebase.auth.RecaptchaVerifier('captcha', {
+            const captcha = new firebase.auth.RecaptchaVerifier('captcha', {
+                'type': 'image',
                 'size': 'normal',
                 'callback': function (response) { // reCAPTCHA solved, allow signInWithPhoneNumber.
                     callback(response); // token
@@ -53,11 +54,12 @@
         }
 
         function sendTokenToApp(token) {
-            var baseUri = decodeURIComponent(location.search.replace(/^\?appurl\=/, ''));
+            const baseUri = decodeURIComponent(location.search.replace(/^\?appurl\=/, ''));
             const finalUrl = location.href = baseUri + '/?token=' + encodeURIComponent(token);
+
             const continueBtn = document.querySelector('#continue-btn');
             continueBtn.onclick = (event) => {
-                window.open(finalUrl, '_blank')
+                window.open(finalUrl, '_blank');
             }
             continueBtn.style.display = "block";
         }

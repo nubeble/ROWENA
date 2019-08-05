@@ -22,16 +22,16 @@ import moment from "moment";
 import SvgAnimatedLinearGradient from 'react-native-svg-animated-linear-gradient';
 import _ from 'lodash';
 
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
+
 const DEFAULT_COMMENT_COUNT = 6;
 
 const avatarWidth = Dimensions.get('window').height / 11;
 const profilePictureWidth = 56;
 // const replyViewHeight = Dimensions.get('window').height / 9;
-
-type InjectedProps = {
-    feedStore: FeedStore,
-    profileStore: ProfileStore
-};
 
 
 @inject("feedStore", "profileStore")

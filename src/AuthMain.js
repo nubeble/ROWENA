@@ -18,14 +18,15 @@ import autobind from "autobind-decorator";
 // const AnimatedImage = Animated.createAnimatedComponent(Image);
 // const AnimatedImageBackground = Animated.createAnimatedComponent(ImageBackground);
 
-const HEIGHT = Dimensions.get('window').height;
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 export default class AuthMain extends React.Component {
     static animation = true;
 
     state = {
-        // showFacebookLoader: false,
+        showFacebookLoader: false,
 
         notification: '',
         opacity: new Animated.Value(0),
@@ -36,7 +37,7 @@ export default class AuthMain extends React.Component {
         // intensity: new Animated.Value(0),
 
         // opacity: new Animated.Value(0),
-        viewOffset: new Animated.Value(HEIGHT),
+        viewOffset: new Animated.Value(windowHeight),
 
         // blurRadius: new Animated.Value(0),
     };
@@ -108,7 +109,7 @@ export default class AuthMain extends React.Component {
         Vars.signUpType = 'FACEBOOK';
 
         // show indicator
-        // this.setState({ showFacebookLoader: true });
+        this.setState({ showFacebookLoader: true });
 
         const {
             type,
@@ -163,7 +164,7 @@ export default class AuthMain extends React.Component {
         }
 
         // hide indicator
-        // !this.closed && this.setState({ showFacebookLoader: false });
+        !this.closed && this.setState({ showFacebookLoader: false });
 
         this.loading = false;
     }
@@ -220,52 +221,11 @@ export default class AuthMain extends React.Component {
         return (
             <View style={styles.flex}>
                 <Image
-                    style={{
-                        position: 'absolute',
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height,
-                        resizeMode: 'cover'
-                    }}
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
                     source={PreloadImage.background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
-                {/*
-                <ImageBackground
-                    style={{
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height
-                    }}
-                    source={PreloadImage.background}
-                    resizeMode='cover'
-                    blurRadius={1}
-                />
-                */}
-                {/*
-                <AnimatedImage
-                    style={{
-                        position: 'absolute',
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height,
-                        resizeMode: 'cover'
-                    }}
-                    source={PreloadImage.background}
-                    fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
-                    blurRadius={this.state.blurRadius}
-                />
-                */}
-
-                {/*
-                <ImageBackground
-                    style={{
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height
-                    }}
-                    source={PreloadImage.background}
-                    resizeMode='cover'
-                    blurRadius={1}
-                />
-                */}
 
                 <Animated.View style={[styles.view, viewStyle]}>
                     <Animated.View
@@ -335,14 +295,12 @@ export default class AuthMain extends React.Component {
 
                             <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
                                 {
-                                    /*
                                     this.state.showFacebookLoader &&
                                     <ActivityIndicator
                                         animating={true}
                                         size="small"
                                         color='rgba(0, 0, 0, 0.6)'
                                     />
-                                    */
                                 }
                             </View>
                         </TouchableOpacity>
@@ -465,7 +423,7 @@ const styles = StyleSheet.create({
         // backgroundColor: Theme.color.splash
     },
     view: {
-        flex: 1,
+        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         justifyContent: 'center'
     },

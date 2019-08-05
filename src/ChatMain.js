@@ -646,7 +646,7 @@ export default class ChatMain extends React.Component {
                     });
                 }}
             >
-                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: Theme.spacing.xSmall, paddingVertical: Theme.spacing.small }}>
+                <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: Theme.spacing.xSmall, paddingVertical: Theme.spacing.tiny }}>
                     <View style={{ width: '24%', height: viewHeight, justifyContent: 'center', alignItems: 'center' }}>
                         {
                             opponent.picture ?
@@ -701,17 +701,21 @@ export default class ChatMain extends React.Component {
                     </View>
 
                     <View style={{
-                        width: '76%', height: viewHeight,
                         // backgroundColor: 'green',
-                        justifyContent: 'space-between', alignItems: 'flex-start', paddingLeft: 10
+                        width: '76%', height: viewHeight,
+                        // justifyContent: 'center', 
+                        alignItems: 'flex-start', paddingLeft: 10
                     }}>
-                        <View style={{ width: '100%', alignItems: 'flex-end', marginTop: -10 }}>
+                        <View style={{ position: 'absolute', top: -6, right: 10 }}>
                             <Text style={styles.time}>{time}</Text>
                         </View>
 
                         <Text style={styles.name}>{opponent.name}</Text>
                         <Text style={styles.contents}>{_contents}</Text>
-                        <Text style={styles.logInState}>{logInState}</Text>
+
+                        <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10 }}>
+                            <Text style={styles.logInState}>{logInState}</Text>
+                        </View>
                     </View>
                 </View>
             </TouchableHighlight>
@@ -1028,15 +1032,6 @@ const styles = StyleSheet.create({
         paddingLeft: Theme.spacing.tiny,
         paddingRight: Theme.spacing.tiny
     },
-    /*
-    time: {
-        position: 'absolute',
-        top: (Theme.spacing.small / 3) * -1, right: Theme.spacing.xSmall,
-        color: Theme.color.text3,
-        fontSize: 14,
-        fontFamily: "Roboto-Regular"
-    },
-    */
     time: {
         color: Theme.color.text3,
         fontSize: 12,
@@ -1045,17 +1040,18 @@ const styles = StyleSheet.create({
     name: {
         color: Theme.color.text2,
         fontSize: 18,
-        fontFamily: "Roboto-Medium"
+        fontFamily: "Roboto-Medium",
+
+        marginTop: 12
     },
     contents: {
-        marginTop: 8,
-        marginBottom: 2,
         color: Theme.color.text3,
         fontSize: 18,
-        fontFamily: "Roboto-Regular"
+        fontFamily: "Roboto-Regular",
+
+        marginTop: 4
     },
     logInState: {
-        // paddingBottom: 2,
         color: Theme.color.text4,
         fontSize: 10,
         fontFamily: "Roboto-Light"

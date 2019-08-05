@@ -78,7 +78,7 @@ export default class Welcome extends React.Component {
                         lineHeight: 32,
                         color: 'white',
                         fontFamily: "Chewy-Regular"
-                    }}>Welcome!</Text>
+                    }}>Welcome to Rowena</Text>
 
                     <Image
                         style={{

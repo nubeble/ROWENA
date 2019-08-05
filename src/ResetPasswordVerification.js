@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
-    ImageBackground, Animated, Keyboard, Platform, TextInput, ActivityIndicator
+    Image, Animated, Keyboard, Platform, TextInput, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, Firebase } from './rnff/src/components';
 import Constants from 'expo-constants';
@@ -12,6 +12,9 @@ import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 import * as Progress from 'react-native-progress';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 export default class ResetPasswordVerification extends React.Component {
@@ -131,15 +134,14 @@ export default class ResetPasswordVerification extends React.Component {
         };
 
         return (
-            <ImageBackground
-                style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.background}
-                resizeMode='cover'
-            >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+            <View style={{ flex: 1 }}>
+                <Image
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    source={PreloadImage.background}
+                    fadeDuration={0}
+                />
+
+                <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -246,7 +248,7 @@ export default class ResetPasswordVerification extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ImageBackground>
+            </View>
         );
     }
 }

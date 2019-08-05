@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, ActivityIndicator
+    StyleSheet, View, Dimensions, TouchableOpacity, Keyboard, BackHandler, Platform, ActivityIndicator, KeyboardAvoidingView
 } from 'react-native';
 import { Text, Theme, FeedStore } from "./rnff/src/components";
 import { GiftedChat, InputToolbar, Send, Bubble, Time, Message, MessageText } from 'react-native-gifted-chat';
@@ -17,6 +17,7 @@ import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
 import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
+// import KeyboardSpacer from 'react-native-keyboard-spacer';
 
 const DEFAULT_MESSAGE_COUNT = 20;
 
@@ -50,6 +51,8 @@ export default class ChatRoom extends React.Component {
         dialogMessage: '',
 
         onKeyboard: false,
+        viewHeight: Dimensions.get('window').height,
+
         renderPost: false,
 
         opponentLeft: false
@@ -182,23 +185,25 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        !this.closed && this.setState({ onKeyboard: true });
+        // !this.closed && this.setState({ onKeyboard: true });
+
+        this.setState({ onKeyboard: true, viewHeight: Dimensions.get('window').height - e.endCoordinates.height });
     }
 
     @autobind
     _keyboardDidHide(e) {
-        !this.closed && this.setState({ onKeyboard: false });
+        // !this.closed && this.setState({ onKeyboard: false });
+
+        this.setState({ onKeyboard: false, viewHeight: Dimensions.get('window').height });
     }
 
     @autobind
     _keyboardWillShow(e) {
-        // !this.closed && this.setState({ onKeyboard: true });
         this._keyboardDidShow(e);
     }
 
     @autobind
     _keyboardWillHide(e) {
-        // !this.closed && this.setState({ onKeyboard: false });
         this._keyboardDidHide(e);
     }
 
@@ -478,8 +483,11 @@ export default class ChatRoom extends React.Component {
                         <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
                 </View>
-
+                {/*
                 <View style={Platform.OS === 'android' ? styles.androidView : styles.iosView}>
+                */}
+                <View style={Platform.OS === 'android' ? [styles.androidView, { height: this.state.viewHeight - Cons.searchBarHeight }] : styles.iosView}>
+
                     <GiftedChat
                         minInputToolbarHeight={inputToolbarHeight + textInputMarginBottom}
                         minComposerHeight={0}
@@ -562,6 +570,12 @@ export default class ChatRoom extends React.Component {
                             }
                         }}
                     />
+                    {/*
+                    <KeyboardAvoidingView behavior={Platform.OS === 'android' ? 'padding' : null} keyboardVerticalOffset={80} />
+                    */}
+                    {/*
+                    <KeyboardSpacer />
+                    */}
                 </View>
 
                 {
@@ -955,8 +969,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end'
     },
     androidView: {
-        flex: 1,
-        // backgroundColor: 'green'
+        // flex: 1,
         backgroundColor: Theme.color.background
     },
     iosView: {

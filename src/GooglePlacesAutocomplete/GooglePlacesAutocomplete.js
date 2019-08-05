@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Constants from 'expo-constants';
 import PropTypes from 'prop-types';
 import {
     TextInput, View, FlatList, ScrollView, Image, StyleSheet, Dimensions,
@@ -12,7 +13,7 @@ import { Ionicons, FontAwesome, MaterialIcons, MaterialCommunityIcons } from '@e
 import { Cons } from '../Globals';
 import Util from '../Util';
 
-const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+const API_KEY = 'AIzaSyDGeKg4ewR0-MfmHnBWkv6Qfeoc5Ia4vP8'; // API key for Places API, Geocoding API, Cloud Translation API
 
 const WINDOW = Dimensions.get('window');
 
@@ -765,7 +766,7 @@ export default class GooglePlacesAutocomplete extends Component {
             request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + Qs.stringify(this.props.query));
             /*
             request.open('GET', 'https://maps.googleapis.com/maps/api/place/autocomplete/json?&input=' + encodeURIComponent(text) + '&' + 
-            'key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A' + '&' + 'language=en' + '&' + 'types=(address)' + '&' + 'components=country:kr'
+            'key=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' + '&' + 'language=en' + '&' + 'types=(address)' + '&' + 'components=country:kr'
             );
             */
             if (this.props.query.origin !== null) {

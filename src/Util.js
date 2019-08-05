@@ -1,4 +1,5 @@
 import React from 'react';
+import Constants from 'expo-constants';
 import { Linking } from "expo";
 import moment from "moment";
 import Qs from 'qs';
@@ -9,7 +10,7 @@ const id = () => Math.floor((1 + Math.random()) * 0x10000).toString(16).substrin
 
 const avatarColorList = new Map();
 
-const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+const API_KEY = 'AIzaSyDGeKg4ewR0-MfmHnBWkv6Qfeoc5Ia4vP8'; // API key for Places API, Geocoding API, Cloud Translation API
 
 
 export default class Util extends React.Component {

@@ -22,9 +22,8 @@
             "backgroundColor": "#282828"
         },
         "splash": {
-            "backgroundColor": "#CD5E77",
-            "resizeMode": "cover",
-            "image": "./assets/splash.png"
+            "image": "./assets/splash.png",
+            "resizeMode": "cover"
         },
         "notification": {
             "androidMode": "collapse",
@@ -38,6 +37,11 @@
         "facebookDisplayName": "Rowena",
         "android": {
             "package": "com.nubeble.rowena",
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyAa5Tw303Q0E2fa3oKrsHKElFRFUwqxaFM"
+                }
+            },
             "googleServicesFile": "./google-services.json",
             "versionCode": 2,
             "icon": "./assets/icon.png",
@@ -46,7 +50,8 @@
                 "READ_EXTERNAL_STORAGE",
                 "WRITE_EXTERNAL_STORAGE",
                 "ACCESS_COARSE_LOCATION",
-                "ACCESS_FINE_LOCATION"
+                "ACCESS_FINE_LOCATION",
+                "VIBRATE"
             ]
         },
         "ios": {

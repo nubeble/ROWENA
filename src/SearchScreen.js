@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, BackHandler, View, TouchableOpacity, AsyncStorage, Dimensions } from 'react-native';
+import Constants from 'expo-constants';
 import { Header } from 'react-navigation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import GooglePlacesAutocomplete from './GooglePlacesAutocomplete/GooglePlacesAutocomplete';
@@ -9,7 +10,7 @@ import autobind from "autobind-decorator";
 import Util from './Util';
 import Toast, { DURATION } from 'react-native-easy-toast';
 
-const API_KEY = 'AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A';
+const API_KEY = 'AIzaSyDGeKg4ewR0-MfmHnBWkv6Qfeoc5Ia4vP8'; // API key for Places API, Geocoding API, Cloud Translation API
 
 // const homePlace = { description: 'Home', geometry: { location: { lat: 48.8152937, lng: 2.4597668 } } };
 // const workPlace = { description: 'Work', geometry: { location: { lat: 48.8496818, lng: 2.2940881 } } };

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, View, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
-    Keyboard, Dimensions, Platform, TextInput
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
+    Keyboard, Dimensions, Platform, TextInput, Image
 } from 'react-native';
 // import { Form, Item, Input, Label } from 'native-base';
 import Constants from 'expo-constants';
@@ -14,6 +14,9 @@ import { Text, Theme } from "./rnff/src/components";
 import { Cons, Vars } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 export default class SignUpWithEmail extends React.Component {
@@ -219,7 +222,7 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         if (/\d/.test(text) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(text)) {
-            console.log("Email is Correct");
+            console.log("Password is correct.");
 
             // show icon
             this.setState({ pwIcon: 2 });
@@ -250,13 +253,14 @@ export default class SignUpWithEmail extends React.Component {
         this.processSignUp();
     }
 
-    getPasswordErrorMessage(text) {
-        if (text.length < 6) {
+    getPasswordErrorMessage(password) {
+        if (password.length < 6) {
             return 'Must be at least 6 characters.';
         }
 
-        if (/\d/.test(text) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(text)) {
-            return ' Email is Correct';
+        if (/\d/.test(password) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
+            // return 'Password is correct.';
+            return 'Please try again.'; // Consider: clear password input
         } else {
             return 'Must have at least one symbol or number.';
         }
@@ -291,7 +295,6 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         if (this.state.pwIcon !== 2) {
-
             // show message box
             const msg = this.getPasswordErrorMessage(this.state.password);
             this.showNotification(msg);
@@ -432,16 +435,14 @@ export default class SignUpWithEmail extends React.Component {
         };
 
         return (
-            <ImageBackground
-                style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.background}
-                resizeMode='cover'
-            // blurRadius={Platform.OS === 'android' ? 1 : 15}
-            >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+            <View style={{ flex: 1 }}>
+                <Image
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    source={PreloadImage.background}
+                    fadeDuration={0}
+                />
+
+                <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -540,12 +541,12 @@ export default class SignUpWithEmail extends React.Component {
                                             this.hideNotification();
                                             this.hideEmailIcon();
                                         }
-
+ 
                                         this.setState({ email: '' });
-
+ 
                                         // disable
                                         this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
-
+ 
                                         this.setState({ emailIcon: 0 });
                                     }}
                                 >
@@ -608,12 +609,12 @@ export default class SignUpWithEmail extends React.Component {
                                             this.hideNotification();
                                             this.hideEmailIcon();
                                         }
-
+ 
                                         this.setState({ password: '' });
-
+ 
                                         // disable
                                         this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
-
+ 
                                         this.setState({ pwIcon: 0 });
                                     }}
                                 >
@@ -672,7 +673,7 @@ export default class SignUpWithEmail extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ImageBackground>
+            </View>
         );
     }
 

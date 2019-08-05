@@ -10,9 +10,6 @@ import ProfileStore from "../ProfileStore";
 import { Text, Theme, Avatar, Feed, FeedStore } from "../../components";
 import type { ScreenProps } from "../../components/Types";
 
-const AnimatedText = Animated.createAnimatedComponent(Text);
-const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
-
 type ExploreState = {
     scrollAnimation: Animated.Value
 };
@@ -21,6 +18,9 @@ type InjectedProps = {
     feedStore: FeedStore,
     profileStore: ProfileStore
 };
+
+const AnimatedText = Animated.createAnimatedComponent(Text);
+const AnimatedSafeAreaView = Animated.createAnimatedComponent(SafeAreaView);
 
 
 @inject("feedStore", "profileStore")

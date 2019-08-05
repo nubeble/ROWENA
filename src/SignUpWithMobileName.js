@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
-    ImageBackground, Animated, Keyboard, Platform, TextInput, Button
+    Animated, Keyboard, Platform, TextInput, Image
 } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import Constants from 'expo-constants';
@@ -11,6 +11,9 @@ import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 export default class SignUpWithMobileName extends React.Component {
@@ -137,16 +140,14 @@ export default class SignUpWithMobileName extends React.Component {
         };
 
         return (
-            <ImageBackground
-                style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.background}
-                resizeMode='cover'
-            // blurRadius={Platform.OS === 'android' ? 1 : 15}
-            >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+            <View style={{ flex: 1 }}>
+                <Image
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    source={PreloadImage.background}
+                    fadeDuration={0}
+                />
+
+                <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -246,12 +247,12 @@ export default class SignUpWithMobileName extends React.Component {
                                             this.hideNotification();
                                             this.hideAlertIcon();
                                         }
-
+ 
                                         this.setState({ name: '' });
-
+ 
                                         // disable
                                         this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
-
+ 
                                         this.setState({ nameIcon: 0 });
                                     }}
                                 >
@@ -328,7 +329,7 @@ export default class SignUpWithMobileName extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ImageBackground>
+            </View>
         );
     }
 

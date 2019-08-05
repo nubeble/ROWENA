@@ -1463,7 +1463,6 @@ export default class Post extends React.Component<InjectedProps> {
                         const x = e.nativeEvent.locationX;
 
                         if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
                             if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Success);
                             else Vibration.vibrate(30);
                         } else { // right
@@ -1486,7 +1485,7 @@ export default class Post extends React.Component<InjectedProps> {
             <Swiper
                 // containerStyle={{ marginBottom: 10 }}
                 // navigation={this.props.navigation}
-                ref={(swiper) => { this.swiper = swiper; }}
+                ref={(swiper) => this.swiper = swiper}
                 width={imageWidth}
                 height={imageHeight}
                 loop={false}

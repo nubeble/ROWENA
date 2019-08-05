@@ -14,23 +14,13 @@ import { Cons, Vars } from './Globals';
 import { Text } from './rnff/src/components';
 import Util from './Util';
 
+type InjectedProps = {
+    feedStore: FeedStore,
+    profileStore: ProfileStore
+};
+
+
 // $FlowFixMe
-/*
-const SFProTextBold = require("../fonts/SF-Pro-Text-Bold.otf");
-const SFProTextSemibold = require("../fonts/SF-Pro-Text-Semibold.otf");
-const SFProTextRegular = require("../fonts/SF-Pro-Text-Regular.otf");
-const SFProTextMedium = require("../fonts/SF-Pro-Text-Medium.otf");
-const SFProTextHeavy = require("../fonts/SF-Pro-Text-Heavy.otf");
-const SFProTextLight = require("../fonts/SF-Pro-Text-Light.otf");
-*/
-/*
-const SFProTextBold = require("../fonts/SuisseIntl/SuisseIntl-Bold.otf");
-const SFProTextSemibold = require("../fonts/SuisseIntl/SuisseIntl-SemiBold.otf");
-const SFProTextRegular = require("../fonts/SuisseIntl/SuisseIntl-Regular.otf");
-const SFProTextMedium = require("../fonts/SuisseIntl/SuisseIntl-Medium.otf");
-const SFProTextLight = require("../fonts/SuisseIntl/SuisseIntl-Light.otf");
-const SFProTextBlack = require("../fonts/SuisseIntl/SuisseIntl-Black.otf");
-*/
 const RobotoBlack = require("../fonts/Roboto/Roboto-Black.ttf");
 const RobotoBlackItalic = require("../fonts/Roboto/Roboto-BlackItalic.ttf");
 const RobotoBold = require("../fonts/Roboto/Roboto-Bold.ttf");
@@ -44,19 +34,14 @@ const RobotoRegular = require("../fonts/Roboto/Roboto-Regular.ttf");
 const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
 const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
 
-// const SuisseIntlUltraLightItalic = require("../fonts/SuisseIntl/SuisseIntl-UltraLightItalic.otf");
-// const SuisseIntlThinItalic = require("../fonts/SuisseIntl/SuisseIntl-ThinItalic.otf");
-
-const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo
-// const SansSerif = require("../fonts/Sans-Serif.ttf");
+const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo font
 
 const ConcertOneRegular = require("../fonts/ConcertOne-Regular.ttf");
 const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
 
-type InjectedProps = {
-    feedStore: FeedStore,
-    profileStore: ProfileStore
-};
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 @inject("feedStore", "profileStore")
@@ -102,13 +87,7 @@ export default class Loading extends React.Component<InjectedProps> {
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    // style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined, opacity: this.state.image1Opacity }}
-                    style={{
-                        position: 'absolute',
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height,
-                        resizeMode: 'cover'
-                    }}
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
                     source={PreloadImage.splash}
                     onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
                         SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
@@ -119,6 +98,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     }}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
+
                 {
                     this.state.showIndicator &&
                     <View style={{
@@ -128,6 +108,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         <RefreshIndicator refreshing total={3} size={5} color='white' />
                     </View>
                 }
+
                 {/*
                 <View style={{ position: 'absolute', bottom: 10, right: 10, alignItems: 'flex-end' }}>
                     <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate}</Text>
@@ -137,10 +118,8 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 <Animated.Image
                     style={{
-                        position: 'absolute',
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height,
-                        resizeMode: 'cover',
+                        position: 'absolute', top: 0, left: 0,
+                        width: windowWidth, height: windowHeight, resizeMode: 'cover',
                         opacity: this.state.image2Opacity
                     }}
                     source={PreloadImage.background}
@@ -167,17 +146,6 @@ export default class Loading extends React.Component<InjectedProps> {
             'Roboto-Regular': RobotoRegular,
             'Roboto-Thin': RobotoThin,
             'Roboto-ThinItalic': RobotoThinItalic,
-            /*
-            "SFProText-Bold": SFProTextBold,
-            "SFProText-Semibold": SFProTextSemibold,
-            "SFProText-Regular": SFProTextRegular,
-            "SFProText-Medium": SFProTextMedium,
-            "SFProText-Black": SFProTextBlack,
-            "SFProText-Light": SFProTextLight,
-            */
-
-            // "SuisseIntl-UltraLightItalic": SuisseIntlUltraLightItalic,
-            // "SuisseIntl-ThinItalic": SuisseIntlThinItalic,
 
             "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,
             // "SansSerif": SansSerif
@@ -291,8 +259,6 @@ export default class Loading extends React.Component<InjectedProps> {
 
                         console.log('[auto sign in] move to main');
                         navigation.navigate("mainStackNavigator");
-                        // TEST
-                        // navigation.navigate("tutorial");
                     } else { // for the resign in after sign out / delete account
                         const type = Vars.signUpType; // copy
 
@@ -371,11 +337,9 @@ export default class Loading extends React.Component<InjectedProps> {
 
         if (!lastReadMessageId) {
             const owner = room.owner;
-            if (uid === owner) {
-                // 상대방이 말을 걸었고, 내가 읽지 않았다.
+            if (uid === owner) { // 상대방이 말을 걸었고, 내가 읽지 않았다.
                 return true;
-            } else {
-                // 내가 말을 걸었고, 상대방이 읽지 않았다.
+            } else { // 내가 말을 걸었고, 상대방이 읽지 않았다.
                 return false;
             }
         }

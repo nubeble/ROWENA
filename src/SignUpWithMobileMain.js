@@ -1,7 +1,7 @@
 import React from 'react';
 import {
-    StyleSheet, View, ImageBackground, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
-    Keyboard, Dimensions, Platform, TextInput, Button
+    StyleSheet, View, TouchableOpacity, ActivityIndicator, Animated, BackHandler,
+    Keyboard, Dimensions, Platform, TextInput, Image
 } from 'react-native';
 import { Linking } from "expo";
 import * as WebBrowser from 'expo-web-browser';
@@ -24,6 +24,9 @@ import CodeInput from 'react-native-confirmation-code-input';
 
 // const captchaUrl = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 const captchaUrl = `https://rowena-88cfd.web.app/recaptcha.html?appurl=${Linking.makeUrl('')}`;
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 export default class SignUpWithMobileMain extends React.Component {
@@ -52,7 +55,7 @@ export default class SignUpWithMobileMain extends React.Component {
         opacity: new Animated.Value(0),
         offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
-        invalid: true,
+        invalid: true, // button
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
         signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
 
@@ -221,16 +224,14 @@ export default class SignUpWithMobileMain extends React.Component {
         };
 
         return (
-            <ImageBackground
-                style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.background}
-                resizeMode='cover'
-            // blurRadius={Platform.OS === 'android' ? 1 : 15}
-            >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+            <View style={{ flex: 1 }}>
+                <Image
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    source={PreloadImage.background}
+                    fadeDuration={0}
+                />
+
+                <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -355,9 +356,9 @@ export default class SignUpWithMobileMain extends React.Component {
                                                     this.hideNotification();
                                                     this.hideAlertIcons();
                                                 }
-
+ 
                                                 this.setState({ phone: '' });
-
+ 
                                                 // disable
                                                 this.setState({ invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)' });
                                             }}
@@ -443,7 +444,7 @@ export default class SignUpWithMobileMain extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ImageBackground>
+            </View>
         );
     }
 
@@ -484,8 +485,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
             const tokenEncoded = Linking.parse(url).queryParams['token'];
             if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
-
-            console.log('token', token);
+            // console.log('token', token);
         }
 
         Linking.addEventListener('url', listener);
@@ -494,13 +494,12 @@ export default class SignUpWithMobileMain extends React.Component {
 
         Linking.removeEventListener('url', listener);
 
-        console.log('SignUpWithMobileMain.token', token);
+        console.log('SignUpWithMobileMain.token', token); // ToDo: null
 
         if (token) {
             const { dialCode, phone } = this.state;
             const number = dialCode + phone;
 
-            //fake firebase.auth.ApplicationVerifier
             const captchaVerifier = {
                 type: 'recaptcha',
                 verify: () => Promise.resolve(token)
@@ -510,7 +509,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 Firebase.auth.languageCode = 'en';
                 const confirmationResult = await Firebase.auth.signInWithPhoneNumber(number, captchaVerifier);
 
-                console.log('confirmationResult', confirmationResult);
+                // console.log('confirmationResult', confirmationResult);
 
                 this.setState({
                     confirmationResult,
@@ -529,7 +528,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 }
             }
         } else {
-            // this.showNotification('An error happened. Please try again.');
+            this.showNotification('An error happened. Please try again.');
         }
     }
 

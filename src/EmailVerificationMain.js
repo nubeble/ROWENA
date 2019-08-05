@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Dimensions,
-    ImageBackground, Animated, Keyboard, Platform, TextInput, ActivityIndicator
+    Image, Animated, Keyboard, Platform, TextInput, ActivityIndicator
 } from 'react-native';
 import { Text, Theme, Firebase } from './rnff/src/components';
 import Constants from 'expo-constants';
@@ -19,6 +19,9 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 type InjectedProps = {
     profileStore: ProfileStore
 };
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 
 @inject("profileStore")
@@ -310,16 +313,14 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         };
 
         return (
-            <ImageBackground
-                style={{
-                    width: Dimensions.get('window').width,
-                    height: Dimensions.get('window').height
-                }}
-                source={PreloadImage.background}
-                resizeMode='cover'
-            // blurRadius={Platform.OS === 'android' ? 1 : 15}
-            >
-                <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
+            <View style={{ flex: 1 }}>
+                <Image
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    source={PreloadImage.background}
+                    fadeDuration={0}
+                />
+
+                <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
                     <Animated.View
                         style={[styles.notification, notificationStyle]}
                         ref={notification => this._notification = notification}
@@ -521,7 +522,11 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
                     </Dialog.Container>
                 </View>
-            </ImageBackground >
+            </View>
+            /*
+                </View>
+            </ImageBackground>
+            */
         );
     }
 

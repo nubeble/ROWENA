@@ -15,7 +15,7 @@ export var Vars = {
 };
 
 export const Cons = {
-    version: '1.0.0',
+    version: '1.0.1',
     buildNumber: '93088300',
     lastUpdatedDate: 'Aug 01, 2019 23:22',
 

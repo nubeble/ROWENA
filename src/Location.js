@@ -6,11 +6,14 @@ import {
     ActivityIndicator,
     AppRegistry
 } from 'react-native';
+import Constants from 'expo-constants';
 import { Text } from "./rnff/src/components";
 import { List, ListItem } from "react-native-elements";
 
 var _ = require('lodash');
 
+// const API_KEY = Constants.manifest.android.config.googleMaps.apiKey;
+const API_KEY = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
 
 
 export default class Location extends React.Component {
@@ -36,8 +39,8 @@ export default class Location extends React.Component {
                 const latitude = Number(position.coords.latitude.toFixed(6));
                 const longitude = Number(position.coords.longitude.toFixed(6));
                 const { pageToken } = this.state;
-                const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A`;
-                const urlNext = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=AIzaSyC6j5HXFtYTYkV58Uv67qyd31KjTXusM2A&pagetoken=${pageToken}`;
+                const urlFirst = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=500&type=restaurant&key=` + API_KEY;
+                const urlNext = urlFirst + '&pagetoken=${pageToken}';
 
                 let url = pageToken === '' ? urlFirst : urlNext
                 console.log(url);
