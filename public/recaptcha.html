@@ -14,25 +14,14 @@
 
 
     <!-- Firebase App is always required and must be first -->
-    <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-app.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/5.10.1/firebase-app.js"></script>
 
     <!-- Add additional services that you want to use -->
-    <script src="https://www.gstatic.com/firebasejs/5.10.1/firebase-auth.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/5.10.1/firebase-auth.js"></script>
+
+    <script defer src="./init-firebase.js"></script>
 
     <script>
-        const config = {
-            apiKey: "AIzaSyCT1LV1HF5REJw_SePsUeUdwFalo5IzrsQ",
-            authDomain: "rowena-88cfd.firebaseapp.com",
-            databaseURL: "https://rowena-88cfd.firebaseio.com",
-            projectId: "rowena-88cfd",
-            storageBucket: "rowena-88cfd.appspot.com",
-            messagingSenderId: "457192015889"
-        };
-
-        firebase.initializeApp(config);
-
-
-
         function getToken(callback) {
             const container = document.createElement('div');
             container.id = 'captcha';

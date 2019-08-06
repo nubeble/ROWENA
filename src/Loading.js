@@ -105,7 +105,7 @@ export default class Loading extends React.Component<InjectedProps> {
                         position: 'absolute', top: Dimensions.get('window').height / 2 - 100,
                         width: '100%', height: 30, justifyContent: 'center', alignItems: 'center'
                     }}>
-                        <RefreshIndicator refreshing total={3} size={5} color='white' />
+                        <RefreshIndicator refreshing total={3} size={6} color='white' />
                     </View>
                 }
 

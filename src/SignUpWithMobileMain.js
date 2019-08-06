@@ -22,8 +22,8 @@ import CodeInput from 'react-native-confirmation-code-input';
 // import firebase from 'firebase/app';
 // import 'firebase/auth';
 
-// const captchaUrl = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
-const captchaUrl = `https://rowena-88cfd.web.app/recaptcha.html?appurl=${Linking.makeUrl('')}`;
+// const CAPTCHA_URL = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
+const CAPTCHA_URL = `https://rowena-88cfd.web.app/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -73,6 +73,9 @@ export default class SignUpWithMobileMain extends React.Component {
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
+
+        this._handleOpenURL = this._handleOpenURL.bind(this);
+        Linking.addEventListener('url', this._handleOpenURL);
     }
 
     initFromSelect(result) { // country
@@ -85,6 +88,8 @@ export default class SignUpWithMobileMain extends React.Component {
         this.keyboardDidHideListener.remove();
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
+
+        Linking.removeEventListener('url', this._handleOpenURL);
 
         // unsubscribe
         // if (this.instance) this.instance();
@@ -261,6 +266,11 @@ export default class SignUpWithMobileMain extends React.Component {
                                 justifyContent: "center", alignItems: "center"
                             }}
                             onPress={() => {
+                                if (this._showNotification) {
+                                    this.hideNotification();
+                                    this.hideActiveAlertIcons();
+                                }
+
                                 if (this.state.mode === 'PHONE') {
                                     this.props.navigation.dispatch(NavigationActions.back());
                                 } else if (this.state.mode === 'VERIFICATION') {
@@ -479,22 +489,38 @@ export default class SignUpWithMobileMain extends React.Component {
             return;
         }
 
-        let token = null;
+        // let token = null;
+
+        /*
         const listener = ({ url }) => {
             WebBrowser.dismissBrowser();
 
             const tokenEncoded = Linking.parse(url).queryParams['token'];
             if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
-            // console.log('token', token);
         }
+        */
 
-        Linking.addEventListener('url', listener);
+        // Linking.addEventListener('url', listener);
+        // Linking.addEventListener('url', this._handleOpenURL);
 
-        await WebBrowser.openBrowserAsync(captchaUrl);
+        await WebBrowser.openBrowserAsync(CAPTCHA_URL);
 
-        Linking.removeEventListener('url', listener);
+        // Linking.removeEventListener('url', listener);
+        // Linking.removeEventListener('url', this._handleOpenURL);
 
-        console.log('SignUpWithMobileMain.token', token); // ToDo: null
+        // console.log('SignUpWithMobileMain.token', token);
+    }
+
+    async _handleOpenURL(event) {
+        if (Platform.OS === 'ios') WebBrowser.dismissBrowser(); // iOS only
+
+        const url = event.url;
+        let token = null;
+        const tokenEncoded = Linking.parse(url).queryParams['token'];
+        if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
+
+        console.log('_handleOpenURL, token', token);
+        // 03AOLTBLRtdul18NggbyqigtFmG5Mv9EUdYYwdE_ezyxbLXLxVLAxYN6mBmaMIkx2SvNNeMyXX81NA6-488D_byqOjQ8yRIB4RcXGi7oZBjkqkzxHSuZGVSoJbyE3fKast9tSytKf38V27QalswFZTibDLcJpVG-epcCimhajwpR0PhFMBqPb4WdjvVTP2UiXCVX8KwLqFIaqCtQLovhevdRhJsWpUgZuRrJS0iWiNguUw1xl958bYYZq9CRd3hj4ujLOo75MPXW7TR9YN-SjflxDVE54bJt3na4ZqatENyeMYhm09tyu4Zbaxqq6yOeR68p0vYPONvmlNB28auzyGVmtfELDyCQ41_Q
 
         if (token) {
             const { dialCode, phone } = this.state;
@@ -509,8 +535,6 @@ export default class SignUpWithMobileMain extends React.Component {
                 Firebase.auth.languageCode = 'en';
                 const confirmationResult = await Firebase.auth.signInWithPhoneNumber(number, captchaVerifier);
 
-                // console.log('confirmationResult', confirmationResult);
-
                 this.setState({
                     confirmationResult,
                     mode: 'VERIFICATION',
@@ -518,6 +542,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 });
             } catch (error) {
                 console.log('onPhoneComplete error', error.code, error.message);
+                // this.showNotification(error.code + error.message);
 
                 // ToDo: error handling
                 if (error.code === 'auth/too-many-requests') {
@@ -527,8 +552,6 @@ export default class SignUpWithMobileMain extends React.Component {
                     this.showNotification('An error happened. Please try again.');
                 }
             }
-        } else {
-            this.showNotification('An error happened. Please try again.');
         }
     }
 
