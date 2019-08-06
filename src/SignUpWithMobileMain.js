@@ -502,7 +502,7 @@ export default class SignUpWithMobileMain extends React.Component {
         await WebBrowser.openBrowserAsync(CAPTCHA_URL);
         Linking.removeEventListener('url', listener);
 
-        console.log('SignUpWithMobileMain.token', token);
+        // console.log('SignUpWithMobileMain.token', token);
 
         if (token) {
             const { dialCode, phone } = this.state;
