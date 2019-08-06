@@ -493,7 +493,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
         let token = null;
         const listener = ({ url }) => {
-            WebBrowser.dismissBrowser();
+            if (Platform.OS === 'ios') WebBrowser.dismissBrowser();
             const tokenEncoded = Linking.parse(url).queryParams['token'];
             if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
         }
