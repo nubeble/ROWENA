@@ -26,6 +26,8 @@
             "resizeMode": "cover"
         },
         "notification": {
+            "icon": "./assets/noti_icon.png",
+            "color": "#CD5E77",
             "androidMode": "collapse",
             "androidCollapsedTitle": "#{unread_notifications} unread message(s)"
         },
@@ -44,7 +46,6 @@
             },
             "googleServicesFile": "./google-services.json",
             "versionCode": 2,
-            "icon": "./assets/icon.png",
             "permissions": [
                 "CAMERA",
                 "READ_EXTERNAL_STORAGE",
@@ -57,7 +58,6 @@
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
             "buildNumber": "1.1.4",
-            "icon": "./assets/icon.png",
             "supportsTablet": true,
             "infoPlist": {
                 "NSAppTransportSecurity": "",

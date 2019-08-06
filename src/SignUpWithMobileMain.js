@@ -74,8 +74,10 @@ export default class SignUpWithMobileMain extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
+        /*
         this._handleOpenURL = this._handleOpenURL.bind(this);
         Linking.addEventListener('url', this._handleOpenURL);
+        */
     }
 
     initFromSelect(result) { // country
@@ -89,7 +91,7 @@ export default class SignUpWithMobileMain extends React.Component {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
-        Linking.removeEventListener('url', this._handleOpenURL);
+        // Linking.removeEventListener('url', this._handleOpenURL);
 
         // unsubscribe
         // if (this.instance) this.instance();
@@ -489,28 +491,53 @@ export default class SignUpWithMobileMain extends React.Component {
             return;
         }
 
-        // let token = null;
-
-        /*
+        let token = null;
         const listener = ({ url }) => {
             WebBrowser.dismissBrowser();
-
             const tokenEncoded = Linking.parse(url).queryParams['token'];
             if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
         }
-        */
 
-        // Linking.addEventListener('url', listener);
-        // Linking.addEventListener('url', this._handleOpenURL);
-
+        Linking.addEventListener('url', listener);
         await WebBrowser.openBrowserAsync(CAPTCHA_URL);
+        Linking.removeEventListener('url', listener);
 
-        // Linking.removeEventListener('url', listener);
-        // Linking.removeEventListener('url', this._handleOpenURL);
+        console.log('SignUpWithMobileMain.token', token);
 
-        // console.log('SignUpWithMobileMain.token', token);
+        if (token) {
+            const { dialCode, phone } = this.state;
+            const number = dialCode + phone;
+            const captchaVerifier = {
+                type: 'recaptcha',
+                verify: () => Promise.resolve(token)
+            };
+
+            try {
+                Firebase.auth.languageCode = 'en';
+                const confirmationResult = await Firebase.auth.signInWithPhoneNumber(number, captchaVerifier);
+
+                this.setState({
+                    confirmationResult,
+                    mode: 'VERIFICATION',
+                    invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)'
+                });
+            } catch (error) {
+                console.log('onPhoneComplete error', error.code, error.message);
+
+                // ToDo: error handling
+                if (error.code === 'auth/too-many-requests') {
+                    // this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
+                    this.showNotification('Unusual activity. Please try again later.');
+                } else {
+                    this.showNotification('An error happened. Please try again.');
+                }
+            }
+        }
+
+        // await WebBrowser.openBrowserAsync(CAPTCHA_URL);
     }
 
+    /*
     async _handleOpenURL(event) {
         if (Platform.OS === 'ios') WebBrowser.dismissBrowser(); // iOS only
 
@@ -542,7 +569,6 @@ export default class SignUpWithMobileMain extends React.Component {
                 });
             } catch (error) {
                 console.log('onPhoneComplete error', error.code, error.message);
-                // this.showNotification(error.code + error.message);
 
                 // ToDo: error handling
                 if (error.code === 'auth/too-many-requests') {
@@ -551,9 +577,13 @@ export default class SignUpWithMobileMain extends React.Component {
                 } else {
                     this.showNotification('An error happened. Please try again.');
                 }
+
+                // ToDo: test
+                // this.showNotification(error.code + error.message);
             }
         }
     }
+    */
 
     onSignIn = async () => {
 
