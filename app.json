@@ -48,8 +48,7 @@
             "versionCode": 2,
             "adaptiveIcon": {
                 "foregroundImage": "./assets/foreground_icon.png",
-                "backgroundColor": "#CD5E77",
-                "backgroundImage": "./assets/background_icon.png"
+                "backgroundColor": "#CD5E77"
             },
             "permissions": [
                 "CAMERA",
