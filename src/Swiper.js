@@ -336,7 +336,7 @@ export default class extends Component {
             ) return this.setState({ autoplayEnd: true })
             */
 
-            // console.log('autoplay() index', this._index, 'direction', this._direction);
+            // console.log('jdub', 'autoplay() index', this._index, 'direction', this._direction);
 
             if (this._direction) { // ->
                 if (this._index >= this.state.total - 1) { // 젤 마지막이면방향 전환
@@ -364,7 +364,7 @@ export default class extends Component {
     }
 
     __onScrollEnd() {
-        // console.log('__onScrollEnd');
+        // console.log('jdub', '__onScrollEnd');
         this.internals.isScrolling = false;
 
         this.autoplay();
@@ -375,7 +375,7 @@ export default class extends Component {
      * @param  {object} e native event
      */
     onScrollEnd = e => {
-        // console.log('onScrollEnd');
+        // console.log('jdub', 'onScrollEnd');
 
         // update scroll state
         this.internals.isScrolling = false
@@ -660,18 +660,18 @@ export default class extends Component {
     onPageScrollStateChanged = state => {
         switch (state) {
             case 'dragging':
-                // console.log('dragging');
+                // console.log('jdub', 'dragging');
                 this.onScrollBegin();
                 break;
 
             case 'idle':
-                // console.log('idle');
+                // console.log('jdub', 'idle');
                 this.__onScrollEnd();
                 if (this.props.onTouchEnd) this.props.onTouchEnd();
                 break;
 
             case 'settling':
-                // console.log('settling');
+                // console.log('jdub', 'settling');
                 if (this.props.onTouchEnd) this.props.onTouchEnd();
                 break;
         }

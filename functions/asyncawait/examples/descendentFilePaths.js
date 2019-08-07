@@ -26,12 +26,12 @@ var program = async (function(dir) {
 });
 
 
-console.log('running...');
+console.log('jdub', 'running...');
 program(path.join(__dirname, '.'))
     .then(function (result) {
-        console.log(result);
+        console.log('jdub', result);
     })
     .catch(function(err) {
-        console.log('----- rejected: -----');
-        console.log(err);
+        console.log('jdub', '----- rejected: -----');
+        console.log('jdub', err);
     });

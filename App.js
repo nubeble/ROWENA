@@ -65,9 +65,9 @@ export default class App extends React.Component {
     };
 
     componentDidMount() {
-        console.log('App.componentDidMount');
-        console.log('width', Dimensions.get('window').width);
-        console.log('height', Dimensions.get('window').height);
+        console.log('jdub', 'App.componentDidMount');
+        console.log('jdub', 'width', Dimensions.get('window').width);
+        console.log('jdub', 'height', Dimensions.get('window').height);
 
         /*
         StatusBar.setBarStyle('light-content');
@@ -90,7 +90,7 @@ export default class App extends React.Component {
 
         // Was the app opened from a push notification?
         if (this.props.exp.notification) {
-            console.log('props.exp.notification', this.props.exp.notification);
+            console.log('jdub', 'props.exp.notification', this.props.exp.notification);
 
             const origin = "selected";
             const data = this.props.exp.notification;
@@ -101,7 +101,7 @@ export default class App extends React.Component {
             Alert.alert(
                 'props.exp.notification',
                 this.props.exp.notification,
-                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                [{ text: 'OK', onPress: () => console.log('jdub', 'OK Pressed') }],
                 { cancelable: false }
             );
             */
@@ -109,7 +109,7 @@ export default class App extends React.Component {
 
         // check the releaseChannel
         const channel = this.getApiUrl(Constants.manifest.releaseChannel);
-        console.log('channel', channel);
+        console.log('jdub', 'channel', channel);
     }
 
     componentWillUnmount() {
@@ -125,7 +125,7 @@ export default class App extends React.Component {
 
         if (!profile) return;
 
-        console.log('AppState', state);
+        console.log('jdub', 'AppState', state);
 
         if (state === 'active') {
             const data = {
@@ -153,7 +153,7 @@ export default class App extends React.Component {
             Alert.alert(
                 'Network connection',
                 'You are currently offline.',
-                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                [{ text: 'OK', onPress: () => console.log('jdub', 'OK Pressed') }],
                 { cancelable: false }
             );
             */
@@ -165,7 +165,7 @@ export default class App extends React.Component {
             Alert.alert(
                 'Network connection',
                 'An unkown network error has occurred.',
-                [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                [{ text: 'OK', onPress: () => console.log('jdub', 'OK Pressed') }],
                 { cancelable: false }
             );
             */
@@ -178,7 +178,7 @@ export default class App extends React.Component {
                 Alert.alert(
                     'Network connection',
                     'You are connected again.',
-                    [{ text: 'OK', onPress: () => console.log('OK Pressed') }],
+                    [{ text: 'OK', onPress: () => console.log('jdub', 'OK Pressed') }],
                     { cancelable: false }
                 );
                 */
@@ -210,7 +210,7 @@ export default class App extends React.Component {
 
     @autobind
     async handleNotification(e) {
-        console.log('App.handleNotification', e);
+        console.log('jdub', 'App.handleNotification', e);
         /*
         handleNotification Object {
         "actionId": null,
@@ -231,15 +231,15 @@ export default class App extends React.Component {
             e.data.type,
             e.data.userData.message,
             [
-                // { text: 'Ask me later', onPress: () => console.log('Ask me later pressed') },
+                // { text: 'Ask me later', onPress: () => console.log('jdub', 'Ask me later pressed') },
                 {
                     text: 'Cancel',
-                    onPress: () => console.log('Cancel Pressed'),
+                    onPress: () => console.log('jdub', 'Cancel Pressed'),
                     style: 'cancel',
                 },
                 {
                     text: 'OK',
-                    onPress: () => console.log('OK Pressed')
+                    onPress: () => console.log('jdub', 'OK Pressed')
                 },
             ],
             { cancelable: false },
@@ -1249,8 +1249,8 @@ let timestamp = 0;
 function _navigationOptions(navigation, screenProps) {
     const data = screenProps.data;
 
-    // console.log('_navigationOptions, screenProps.data', screenProps.data);
-    // console.log('_navigationOptions, navigation.state', navigation.state);
+    // console.log('jdub', '_navigationOptions, screenProps.data', screenProps.data);
+    // console.log('jdub', '_navigationOptions, navigation.state', navigation.state);
 
     let name = null;
     let scrollToTop = null;
@@ -1263,7 +1263,7 @@ function _navigationOptions(navigation, screenProps) {
 
             if (name === 'intro' && routeNavigation.state.index === 0) {
                 const introHome = routeNavigation.state.routes[0];
-                // console.log('introHome', introHome);
+                // console.log('jdub', 'introHome', introHome);
                 if (!!introHome) {
                     if (!!introHome.routeName) name = introHome.routeName;
                     if (!!introHome.params && introHome.params.scrollToTop) scrollToTop = introHome.params.scrollToTop;
@@ -1273,14 +1273,14 @@ function _navigationOptions(navigation, screenProps) {
     } else if (navigation.state.index === 1) {
         const homeNavigation = navigation.getChildNavigation(navigation.state.routes[1].key);
         if (!!homeNavigation && homeNavigation.isFocused()) {
-            // console.log('homeNavigation', homeNavigation);
+            // console.log('jdub', 'homeNavigation', homeNavigation);
 
             if (!!homeNavigation.state.routeName) name = homeNavigation.state.routeName; // homeMain
             // if (!!homeNavigation.state.params && !!homeNavigation.state.params.scrollToTop) scrollToTop = homeNavigation.state.params.scrollToTop;
 
             if (name === 'homeMain' && homeNavigation.state.index === 0) {
                 const home = homeNavigation.state.routes[0];
-                // console.log('home', home);
+                // console.log('jdub', 'home', home);
                 if (!!home) {
                     if (!!home.routeName) name = home.routeName;
                     if (!!home.params && home.params.scrollToTop) scrollToTop = home.params.scrollToTop;
@@ -1313,18 +1313,18 @@ function _navigationOptions(navigation, screenProps) {
         },
         tabBarOnPress: ({ defaultHandler, navigation }) => {
             if (navigation.state.routeName === 'home') {
-                // console.log('home');
+                // console.log('jdub', 'home');
 
                 // single click
                 if (name === 'introHome' || name === 'home') {
                     // nothing to do
                 } else if (name === 'intro' || name === 'homeMain') {
-                    console.log('single click.', name);
+                    console.log('jdub', 'single click.', name);
                     navigation.popToTop();
                     // navigation.dispatch(StackActions.popToTop());
                 } else {
                     // nothing to do
-                    console.log('single click. name', name);
+                    console.log('jdub', 'single click. name', name);
                 }
 
                 // double click
@@ -1332,10 +1332,10 @@ function _navigationOptions(navigation, screenProps) {
 
                 if (routeName === 'home') {
                     const diff = now - timestamp;
-                    // console.log('diff', diff);
+                    // console.log('jdub', 'diff', diff);
 
                     if (diff < 500) { // double click
-                        console.log('double click. name', name);
+                        console.log('jdub', 'double click. name', name);
 
                         if (name === 'introHome' || name === 'home') scrollToTop();
                     }
@@ -1348,13 +1348,13 @@ function _navigationOptions(navigation, screenProps) {
                 // hide badge
                 if (data.showBadgeOnHome) data.changeBadgeOnHome(false, -1);
             } else if (navigation.state.routeName === 'likes') {
-                console.log('likes');
+                console.log('jdub', 'likes');
 
                 const now = Date.now();
 
                 if (routeName === 'likes') {
                     const diff = now - timestamp;
-                    console.log('diff', diff);
+                    console.log('jdub', 'diff', diff);
 
                     if (diff < 500) { // double click
                         if (name === "savedMain") scrollToTop();
@@ -1368,13 +1368,13 @@ function _navigationOptions(navigation, screenProps) {
                 // hide badge
                 if (data.showBadgeOnLikes) data.changeBadgeOnLikes(false, -1);
             } else if (navigation.state.routeName === 'chat') {
-                console.log('chat');
+                console.log('jdub', 'chat');
 
                 const now = Date.now();
 
                 if (routeName === 'chat') {
                     const diff = now - timestamp;
-                    console.log('diff', diff);
+                    console.log('jdub', 'diff', diff);
 
                     if (diff < 500) { // double click
                         if (name === "chatMain") scrollToTop();
@@ -1388,13 +1388,13 @@ function _navigationOptions(navigation, screenProps) {
                 // hide badge
                 if (data.showBadgeOnChat) data.changeBadgeOnChat(false, -1);
             } else if (navigation.state.routeName === 'profile') {
-                console.log('profile');
+                console.log('jdub', 'profile');
 
                 const now = Date.now();
 
                 if (routeName === 'profile') {
                     const diff = now - timestamp;
-                    console.log('diff', diff);
+                    console.log('jdub', 'diff', diff);
 
                     if (diff < 500) { // double click
                         if (name === "profileMain") scrollToTop();
@@ -1437,21 +1437,21 @@ class TabBarComponent extends React.Component {
 
     @autobind
     _keyboardDidShow(e) {
-        // console.log('TabBarComponent.keyboardDidShow');
+        // console.log('jdub', 'TabBarComponent.keyboardDidShow');
 
         this.setState({ visible: false });
     }
 
     @autobind
     _keyboardDidHide(e) {
-        // console.log('TabBarComponent.keyboardDidHide');
+        // console.log('jdub', 'TabBarComponent.keyboardDidHide');
 
         this.setState({ visible: true });
     }
 
     @autobind
     onFocus() {
-        // console.log('TabBarComponent.onFocus');
+        // console.log('jdub', 'TabBarComponent.onFocus');
 
         this.setState({ focused: true });
         // this.focused = true;
@@ -1459,7 +1459,7 @@ class TabBarComponent extends React.Component {
 
     @autobind
     onBlur() {
-        // console.log('TabBarComponent.onBlur');
+        // console.log('jdub', 'TabBarComponent.onBlur');
 
         this.setState({ focused: false });
         // this.focused = false;

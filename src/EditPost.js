@@ -276,7 +276,7 @@ export default class EditPost extends React.Component {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post } = this.props.navigation.state.params;
-        // console.log('EditPost', post.uid, post.id);
+        // console.log('jdub', 'EditPost', post.uid, post.id);
 
         const { pictures } = post;
 
@@ -377,7 +377,7 @@ export default class EditPost extends React.Component {
 
         // remove server files
         if (this.imageRefs.length > 0) {
-            console.log('clean image files');
+            console.log('jdub', 'clean image files');
 
             const formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
@@ -387,7 +387,7 @@ export default class EditPost extends React.Component {
                 const fieldName = 'file' + number.toString();
                 formData.append(fieldName, ref);
 
-                console.log(fieldName, ref);
+                console.log('jdub', fieldName, ref);
             }
 
             await fetch(SERVER_ENDPOINT + "cleanPostImages", {
@@ -404,7 +404,7 @@ export default class EditPost extends React.Component {
     }
 
     initFromSelect(result) { // country
-        console.log('EditPost.initFromSelect', result);
+        console.log('jdub', 'EditPost.initFromSelect', result);
 
         this.setState({
             country: result.name, countryCode: result.code,
@@ -413,7 +413,7 @@ export default class EditPost extends React.Component {
     }
 
     initFromSearch(result1, result2) { // street
-        console.log('EditPost.initFromSearch', result1, result2);
+        console.log('jdub', 'EditPost.initFromSearch', result1, result2);
 
         /*
         "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
@@ -2106,7 +2106,7 @@ export default class EditPost extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
 
-        console.log('result of launchImageLibraryAsync:', result);
+        console.log('jdub', 'result of launchImageLibraryAsync:', result);
 
         if (!result.cancelled) {
             this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
@@ -2209,9 +2209,9 @@ export default class EditPost extends React.Component {
             );
 
             let responseJson = await response.json();
-            console.log('uploadImage, responseJson', responseJson);
+            console.log('jdub', 'uploadImage, responseJson', responseJson);
 
-            // console.log('responseJson', await response.json());
+            // console.log('jdub', 'responseJson', await response.json());
 
             if (responseJson.downloadUrl) cb(responseJson.downloadUrl);
             else cb(null);
@@ -2393,7 +2393,7 @@ export default class EditPost extends React.Component {
     _hideDateTimePicker = () => this.setState({ showDatePicker: false });
 
     _handleDatePicked = (date) => {
-        console.log('A date has been picked: ', date);
+        console.log('jdub', 'A date has been picked: ', date);
 
         this._hideDateTimePicker();
 
@@ -2410,9 +2410,9 @@ export default class EditPost extends React.Component {
         const month = _date.getMonth();
         const year = _date.getFullYear();
         /*
-        console.log('day', day);
-        console.log('month', month);
-        console.log('year', year);
+        console.log('jdub', 'day', day);
+        console.log('jdub', 'month', month);
+        console.log('jdub', 'year', year);
         */
 
         let _day = '';

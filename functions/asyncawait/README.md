@@ -172,8 +172,8 @@ var countFiles = async (function (dir) {
 
 // Give it a spin
 countFiles(__dirname)
-    .then (function (num) { console.log('There are ' + num + ' files in ' + __dirname); })
-    .catch(function (err) { console.log('Something went wrong: ' + err); });
+    .then (function (num) { console.log('jdub', 'There are ' + num + ' files in ' + __dirname); })
+    .catch(function (err) { console.log('jdub', 'Something went wrong: ' + err); });
 ```
 
 The function `countFiles` returns the number of files in a given directory. To find this number, it must perform multiple asynchronous operations (using `fs.readdir` and `fs.stat`). `countFiles` is declared as a suspendable function by wrapping its definition inside `async(...)`. When `countFiles` is called with a `dir` string, it begins executing asynchronously and immediately returns a [promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) of a result. Internally, `countFiles` appears to have synchronous control flow. Each `await` call suspends execution until its argument produces a result, which then becomes the return value of the `await` call.

@@ -43,8 +43,8 @@ export default class Location extends React.Component {
                 const urlNext = urlFirst + '&pagetoken=${pageToken}';
 
                 let url = pageToken === '' ? urlFirst : urlNext
-                console.log(url);
-                console.log("url");
+                console.log('jdub', url);
+                console.log('jdub', "url");
 
                 this.setState({ loading: true });
                 fetch(url)
@@ -64,7 +64,7 @@ export default class Location extends React.Component {
 
                     })
                     .catch(error => {
-                        console.log(error);
+                        console.log('jdub', error);
                         this.setState({ loading: false });
                     });
             })

@@ -36,7 +36,7 @@ export default class CommentsStore {
                 this.comments = await Promise.all(comments);
             },
             error => {
-                console.log('CommentsStore.init, error', error);
+                console.log('jdub', 'CommentsStore.init, error', error);
             }
         );
     }

@@ -60,7 +60,7 @@ export default class CheckLikes extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('CheckLikes.handleHardwareBackPress');
+        console.log('jdub', 'CheckLikes.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -291,7 +291,7 @@ export default class CheckLikes extends React.Component {
 
         this.setState({ isLoadingUsers: true });
 
-        console.log('CheckLikes', 'loading feeds ...');
+        console.log('jdub', 'CheckLikes', 'loading feeds ...');
 
         // let newUsers = [];
 
@@ -319,7 +319,7 @@ export default class CheckLikes extends React.Component {
             !this.closed && this.setState({ isLoadingUsers: false });
         }, 1000); // 250
 
-        console.log('CheckLikes', 'loading feeds done!');
+        console.log('jdub', 'CheckLikes', 'loading feeds done!');
     }
 
     subscribeToProfile(uid) {

@@ -141,16 +141,16 @@ export default class CommentStore {
             }
         }
 
-        // console.log('CommentStore.joinPost, array', array);
+        // console.log('jdub', 'CommentStore.joinPost, array', array);
 
         const promises = _.uniqBy(array, item => item.id).map(item => (async () => {
-            // console.log('CommentStore.joinPost, uniqBy', item.placeId, item.feedId);
+            // console.log('jdub', 'CommentStore.joinPost, uniqBy', item.placeId, item.feedId);
 
             try {
                 const feedDoc = await Firebase.firestore.collection("places").doc(item.placeId).collection("feed").doc(item.feedId).get();
                 if (feedDoc.exists) this.posts[item.id] = feedDoc.data();
             } catch (e) {
-                console.log('CommentStore.joinPost, feed not exists. (old comment');
+                console.log('jdub', 'CommentStore.joinPost, feed not exists. (old comment');
             }
         })());
 
@@ -170,7 +170,7 @@ export default class CommentStore {
     }
 
     async checkForNewEntries(): Promise<void> {
-        // console.log('checkForNewEntries', this.lastKnownEntry);
+        // console.log('jdub', 'checkForNewEntries', this.lastKnownEntry);
 
         if (this.lastKnownEntry) {
             const snap = await this.query.endBefore(this.lastKnownEntry).get();

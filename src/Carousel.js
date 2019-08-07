@@ -81,15 +81,15 @@ export default class extends Component {
 
     _onScrollEnd = (event) => {
         const offset = { ...event.nativeEvent.contentOffset };
-        // console.log('_onScrollEnd offset', offset.x);
+        // console.log('jdub', '_onScrollEnd offset', offset.x);
 
         const prevOffset = this.getPrevOffset();
-        // console.log('_onScrollEnd prevOffset', prevOffset);
+        // console.log('jdub', '_onScrollEnd prevOffset', prevOffset);
 
         let direction = offset.x > prevOffset ? 'right' : 'left';
         let speed = offset.x - prevOffset;
         if (speed < 0) speed = speed * -1;
-        // console.log('speed', speed);
+        // console.log('jdub', 'speed', speed);
 
         let limit = 10; // speed limit
         /*
@@ -108,7 +108,7 @@ export default class extends Component {
                 page = this.currentPage - 1;
             }
 
-            // console.log('page', page);
+            // console.log('jdub', 'page', page);
 
             if (page < 0 || page >= this.childrenLength) return;
         } else {
@@ -122,7 +122,7 @@ export default class extends Component {
         this._placeCritical(page);
         this.currentPage = page;
 
-        // console.log('Carousel._onScrollEnd, current page', page);
+        // console.log('jdub', 'Carousel._onScrollEnd, current page', page);
         if (this.onPageChanged) this.onPageChanged(page);
     }
 
@@ -133,7 +133,7 @@ export default class extends Component {
 
 
         let page = this.getPage(offset);
-        // console.log('page', page);
+        // console.log('jdub', 'page', page);
         if (page === -1) return -1;
 
         return this._normalizePageNumber(page);
@@ -208,7 +208,7 @@ export default class extends Component {
 
     _onScroll = (event) => {
         const currentOffset = event.nativeEvent.contentOffset.x;
-        // console.log('onScroll x:', currentOffset);
+        // console.log('jdub', 'onScroll x:', currentOffset);
 
         if (this.offsetList.length >= 1024) {
             // init
@@ -251,7 +251,7 @@ export default class extends Component {
     }
 
     moveToPage(index) {
-        console.log('Carousel.moveToPage', index);
+        console.log('jdub', 'Carousel.moveToPage', index);
         this._placeCritical(index);
     }
 

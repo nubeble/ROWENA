@@ -1527,7 +1527,7 @@ export default class Admin extends React.Component {
         try {
             await AsyncStorage.clear();
         } catch (error) {
-            console.log('clearStorage clear error', error);
+            console.log('jdub', 'clearStorage clear error', error);
         }
     }
 

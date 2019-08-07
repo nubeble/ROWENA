@@ -304,7 +304,7 @@ export default class ResetPasswordMain extends React.Component {
         // check completion
         const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (reg.test(String(text).toLowerCase())) {
-            console.log('validateEmail', "Email is Correct");
+            console.log('jdub', 'validateEmail', "Email is Correct");
 
             // show icon
             this.setState({ emailIcon: 2 });
@@ -337,7 +337,7 @@ export default class ResetPasswordMain extends React.Component {
             Firebase.auth.languageCode = 'en';
             await Firebase.auth.sendPasswordResetEmail(this.state.email);
 
-            console.log('email sent');
+            console.log('jdub', 'email sent');
 
             // hide loader
             this.setState({ showSignUpButtonLoader: false });
@@ -354,14 +354,14 @@ export default class ResetPasswordMain extends React.Component {
 
             Firebase.auth.confirmPasswordReset(code, newPassword).then(function () {
                 // Success
-                console.log('success');
+                console.log('jdub', 'success');
             }).catch(function () {
                 // Invalid code
-                console.log('invalid code');
+                console.log('jdub', 'invalid code');
             });
             */
         } catch (error) {
-            console.log('sendPasswordResetEmail error', error.code, error.message);
+            console.log('jdub', 'sendPasswordResetEmail error', error.code, error.message);
 
             if (error.code === 'auth/user-not-found') {
                 this.showNotification('There is no user corresponding to the email address.'); // done

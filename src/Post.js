@@ -125,7 +125,7 @@ export default class Post extends React.Component<InjectedProps> {
         this.onBlurListener = this.props.navigation.addListener('willBlur', this.onBlur);
 
         const { post, extra, from } = this.props.navigation.state.params;
-        console.log('Post.componentDidMount, from', from);
+        console.log('jdub', 'Post.componentDidMount, from', from);
 
         this.init(post, extra);
 
@@ -146,7 +146,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('Post.componentWillUnmount');
+        console.log('jdub', 'Post.componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
@@ -169,7 +169,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('Post.handleHardwareBackPress');
+        console.log('jdub', 'Post.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
@@ -384,12 +384,12 @@ export default class Post extends React.Component<InjectedProps> {
             // const daysDifference = Math.floor(difference/1000/60/60/24);
             const hoursDifference = Math.floor(difference / 1000 / 60 / 60);
 
-            console.log('hoursDifference', hoursDifference);
+            console.log('jdub', 'hoursDifference', hoursDifference);
 
             if (hoursDifference <= 24) visitCountPerDay++;
         }
 
-        console.log('total visit count', visits.length, '24 hours visit count', visitCountPerDay);
+        console.log('jdub', 'total visit count', visits.length, '24 hours visit count', visitCountPerDay);
 
         return visitCountPerDay;
     }
@@ -444,7 +444,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     @autobind
     onAddToReviewFinished() {
-        console.log('Post.onAddToReviewFinished');
+        console.log('jdub', 'Post.onAddToReviewFinished');
 
         const { reviews } = this.reviewStore;
 
@@ -547,7 +547,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         // update likes to state post
         /*
-        console.log('update likes to state post');
+        console.log('jdub', 'update likes to state post');
 
         let newPost = this.state.post;
         let { likes } = newPost;
@@ -824,7 +824,7 @@ export default class Post extends React.Component<InjectedProps> {
             const difference = now - this.state.lastLogInTime;
             const daysDifference = Math.floor(difference / 1000 / 60 / 60 / 24);
 
-            console.log('daysDifference', daysDifference);
+            console.log('jdub', 'daysDifference', daysDifference);
 
             if (daysDifference > 7) circleColor = 'grey';
             else if (daysDifference > 1) circleColor = 'yellow';
@@ -1981,7 +1981,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReviews(reviews) {
-        // console.log('Post.renderReviews');
+        // console.log('jdub', 'Post.renderReviews');
 
         // if (reviews === undefined) {
         if (!reviews) {
@@ -2131,7 +2131,7 @@ export default class Post extends React.Component<InjectedProps> {
                         <ReadMore
                             numberOfLines={2}
                             onPress={() => {
-                                // console.log('onPress');
+                                // console.log('jdub', 'onPress');
                                 if (!this.originReviewList) this.originReviewList = [];
 
                                 if (this.originReviewList[index]) { // means translated
@@ -2362,7 +2362,7 @@ export default class Post extends React.Component<InjectedProps> {
     _keyboardDidShow(e) {
         if (!this.focused) return;
 
-        console.log('Post._keyboardDidShow');
+        console.log('jdub', 'Post._keyboardDidShow');
 
         this.setState({ bottomPosition: Dimensions.get('window').height - e.endCoordinates.height });
 
@@ -2389,7 +2389,7 @@ export default class Post extends React.Component<InjectedProps> {
     _keyboardDidHide(e) {
         if (!this.focused) return;
 
-        console.log('Post._keyboardDidHide');
+        console.log('jdub', 'Post._keyboardDidHide');
 
         this.setState({ showKeyboard: false, bottomPosition: Dimensions.get('window').height });
 
@@ -2620,7 +2620,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     sendReply() {
         const message = this._reply._lastNativeText;
-        console.log('sendReply', message);
+        console.log('jdub', 'sendReply', message);
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
@@ -2736,7 +2736,7 @@ export default class Post extends React.Component<InjectedProps> {
             this.setState({ post });
         } else {
             Util.translate(note).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originNote = note;
 
@@ -2759,7 +2759,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     translateReview(index) {
-        // console.log('translateReview', index);
+        // console.log('jdub', 'translateReview', index);
 
         let reviews = this.state.reviews;
         const comment = reviews[index].review.comment;
@@ -2775,7 +2775,7 @@ export default class Post extends React.Component<InjectedProps> {
             this.setState({ reviews });
         } else {
             Util.translate(comment).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originReviewList[index] = comment;
 
@@ -2790,7 +2790,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     setOriginReview(index) {
-        // console.log('setOriginReview', index);
+        // console.log('jdub', 'setOriginReview', index);
 
         const originReview = this.originReviewList[index];
 
@@ -2803,7 +2803,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     translateReply(index) {
-        // console.log('translateReply', index);
+        // console.log('jdub', 'translateReply', index);
 
         let reviews = this.state.reviews;
         const comment = reviews[index].review.reply.comment;
@@ -2819,7 +2819,7 @@ export default class Post extends React.Component<InjectedProps> {
             this.setState({ reviews });
         } else {
             Util.translate(comment).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originReplyList[index] = comment;
 
@@ -2834,7 +2834,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     setOriginReply(index) {
-        // console.log('setOriginReply', index);
+        // console.log('jdub', 'setOriginReply', index);
 
         const originReply = this.originReplyList[index];
 

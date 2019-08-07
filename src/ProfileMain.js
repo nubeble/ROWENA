@@ -90,7 +90,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        console.log('ProfileMain.componentDidMount');
+        console.log('jdub', 'ProfileMain.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
@@ -113,7 +113,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('ProfileMain.componentWillUnmount');
+        console.log('jdub', 'ProfileMain.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -136,7 +136,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         // remove server files
         /*
         if (this.imageRefs.length > 0) {
-            console.log('clean image files');
+            console.log('jdub', 'clean image files');
 
             const formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
@@ -146,7 +146,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 const fieldName = 'file' + number.toString();
                 formData.append(fieldName, ref);
 
-                console.log(fieldName, ref);
+                console.log('jdub', fieldName, ref);
             }
 
             fetch(SERVER_ENDPOINT + "cleanPostImages", {
@@ -177,7 +177,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        // console.log('ProfileMain.handleHardwareBackPress');
+        // console.log('jdub', 'ProfileMain.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
@@ -192,7 +192,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onFeedsUpdated() {
-        console.log('ProfileMain.onFeedsUpdated');
+        console.log('jdub', 'ProfileMain.onFeedsUpdated');
 
         // reload from the start
         /*
@@ -211,7 +211,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onReviewAddedOnFeed() {
-        console.log('ProfileMain.onReviewAddedOnFeed');
+        console.log('jdub', 'ProfileMain.onReviewAddedOnFeed');
 
         // reload from the start
         const { profileStore } = this.props;
@@ -226,7 +226,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onReplyAddedOnReview() {
-        console.log('ProfileMain.onReplyAddedOnReview');
+        console.log('jdub', 'ProfileMain.onReplyAddedOnReview');
 
         !this.closed && this.setState({ replyAdded: true });
     }
@@ -248,7 +248,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     /*
     @autobind
     onScrollHandler() {
-        console.log('ProfileMain.onScrollHandler');
+        console.log('jdub', 'ProfileMain.onScrollHandler');
 
         this.getUserFeeds();
     }
@@ -330,7 +330,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('ProfileMain', 'loading feeds ...');
+        console.log('jdub', 'ProfileMain', 'loading feeds ...');
 
         let newFeeds = [];
 
@@ -442,7 +442,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             !this.closed && this.setState({ isLoadingFeeds: false });
         }, 250);
 
-        console.log('ProfileMain', 'loading feeds done!');
+        console.log('jdub', 'ProfileMain', 'loading feeds done!');
     }
 
     async postClick(item) {
@@ -1284,7 +1284,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
 
-        console.log('result of launchImageLibraryAsync:', result);
+        console.log('jdub', 'result of launchImageLibraryAsync:', result);
 
         if (!result.cancelled) {
             const path = result.uri;
@@ -1339,7 +1339,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         }
 
         let type = Util.getImageType(ext);
-        // console.log('file type:', type);
+        // console.log('jdub', 'file type:', type);
 
         const formData = new FormData();
         // formData.append("type", "post");
@@ -1366,9 +1366,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             );
 
             let responseJson = await response.json();
-            console.log('uploadImage, responseJson', responseJson);
+            console.log('jdub', 'uploadImage, responseJson', responseJson);
 
-            // console.log('responseJson', await response.json());
+            // console.log('jdub', 'responseJson', await response.json());
 
             cb(responseJson.downloadUrl);
         } catch (error) {

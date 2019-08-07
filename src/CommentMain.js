@@ -48,7 +48,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        console.log('CommentMain.componentDidMount');
+        console.log('jdub', 'CommentMain.componentDidMount');
 
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
         // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
@@ -108,7 +108,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('CommentMain.handleHardwareBackPress');
+        console.log('jdub', 'CommentMain.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -338,7 +338,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('CommentMain', 'loading feeds ...');
+        console.log('jdub', 'CommentMain', 'loading feeds ...');
 
         let newFeeds = [];
 
@@ -469,7 +469,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
             !this.closed && this.setState({ isLoadingFeeds: false });
         }, 250);
 
-        console.log('CommentMain', 'loading feeds done!');
+        console.log('jdub', 'CommentMain', 'loading feeds done!');
     }
 
     postClick(item) {

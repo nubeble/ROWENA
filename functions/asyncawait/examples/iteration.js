@@ -24,19 +24,19 @@ var program = async (function() {
     //while (true) {
     //    var item = await (iterator.next());
     //    if (item.done) break;
-    //    console.log(item.value);
+    //    console.log('jdub', item.value);
     //}
 
     return 'Finished!';
 });
 
 
-console.log('running...');
+console.log('jdub', 'running...');
 program()
     .then(function (result) {
-        console.log(result);
+        console.log('jdub', result);
     })
     .catch(function(err) {
-        console.log('----- rejected: -----');
-        console.log(err);
+        console.log('jdub', '----- rejected: -----');
+        console.log('jdub', err);
     });

@@ -355,7 +355,7 @@ export default class SignUpWithMobileName extends React.Component {
         } else {
             const reg = /^[a-zA-Z\s]*$/;
             if (reg.test(String(text).toLowerCase())) {
-                console.log('validateName', "Name is Correct");
+                console.log('jdub', 'validateName', "Name is Correct");
 
                 // show icon
                 this.setState({ nameIcon: 2 });

@@ -71,7 +71,7 @@ exports.addMessage = functions.https.onRequest((req, res) => {
 exports.makeUppercase = functions.database.ref('/messages/{pushId}/original').onCreate((snapshot, context) => {
     // Grab the current value of what was written to the Realtime Database.
     const original = snapshot.val();
-    console.log('Uppercasing', context.params.pushId, original);
+    console.log('jdub', 'Uppercasing', context.params.pushId, original);
 
     const uppercase = original.toUpperCase();
 
@@ -116,13 +116,13 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
     // const fileDir = path.dirname(filePath); // folder path
 
     if (path.basename(filePath).startsWith('resized_')) {
-        // console.log('We already resized it!');
+        // console.log('jdub', 'We already resized it!');
 
         return 'skip the resized file.';
     }
 
     const tmpFilePath = path.join(os.tmpdir(), fileName);
-    // console.log('Temp Path:', tmpFilePath); // /tmp/9968D23359B3622120.jpeg
+    // console.log('jdub', 'Temp Path:', tmpFilePath); // /tmp/9968D23359B3622120.jpeg
 
     // const destBucket = gcs.bucket(bucket);
     const destBucket = admin.storage().bucket(bucket);
@@ -131,11 +131,11 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
     return destBucket.file(filePath).download({
         destination: tmpFilePath
     }).then(() => {
-        // console.log('Image downloaded locally to', tmpFilePath);
+        // console.log('jdub', 'Image downloaded locally to', tmpFilePath);
 
         return spawn('convert', [tmpFilePath, '-resize', '1080x1080', tmpFilePath]);
     }).then(() => {
-        // console.log('Resized image created at', tmpFilePath);
+        // console.log('jdub', 'Resized image created at', tmpFilePath);
 
         // We add a 'resized_' prefix to new file name.
         const resizedFileName = `resized_${fileName}`;
@@ -152,7 +152,7 @@ exports.onFileCreate = functions.storage.object().onFinalize((object, context) =
 });
 
 exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
-    console.log(event);
+    console.log('jdub', event);
 
     return;
 });
@@ -162,7 +162,7 @@ exports.onFileDelete = functions.storage.object().onDelete((snap, context) => {
 
 // app.post("/images", function (req, res, next) {
 app.post("/images", function (req, res) {
-    console.log('Image Upload', req.field);
+    console.log('jdub', 'Image Upload', req.field);
 
     // const fileDir = 'images/' + req.field.userUid + '/profile/' + req.files.file[0].originalname;
 
@@ -176,7 +176,7 @@ app.post("/images", function (req, res) {
 
     return new Promise((resolve, reject) => {
         uploadImageToStorage(req.files.file[0], fileDir).then(metadata => {
-            console.log('metadata', metadata);
+            console.log('jdub', 'metadata', metadata);
 
             // get download URL
             const storage = admin.storage();
@@ -186,7 +186,7 @@ app.post("/images", function (req, res) {
                 expires: '03-09-2200'
             }).then((signedUrl) => {
                 let url = signedUrl[0];
-                // console.log('getSignedUrl', url);
+                // console.log('jdub', 'getSignedUrl', url);
 
                 /*
                 if (req.field.type === 'profile') {
@@ -281,7 +281,7 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
             // var pictureIndex = (dataSnapshot.val() && dataSnapshot.val().pictureIndex);
             var uri = (dataSnapshot.val() && dataSnapshot.val().uri);
 
-            // console.log('Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
+            // console.log('jdub', 'Updating Database', context.params.pushId, command, userUid, pictureIndex, uri);
 
             if (command === 'addPicture') {
                 // let data = makeData(pictureIndex, uri);
@@ -293,16 +293,16 @@ exports.updateDatabase = functions.database.ref('/users/{pushId}/command').onCre
                 };
 
                 admin.firestore().collection('users').doc(userUid).update(data).then(() => {
-                    console.log("User info updated.");
+                    console.log('jdub', "User info updated.");
 
                     // remove
                     admin.database().ref('/users/' + context.params.pushId).remove().then(() => {
-                        console.log("Database removed.");
+                        console.log('jdub', "Database removed.");
                     });
 
                     resolve();
                 }).catch((error) => {
-                    console.log('update user error', err);
+                    console.log('jdub', 'update user error', err);
 
                     reject(error);
                 });
@@ -329,11 +329,11 @@ const saveToken = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    console.log('Done parsing form.', fields);
+    console.log('jdub', 'Done parsing form.', fields);
 
     const result = await(admin.firestore().collection('tokens').doc(fields.uid).set(fields));
 
-    console.log('Done saving to database.');
+    console.log('jdub', 'Done saving to database.');
 
     res.status(200).send(result);
 });
@@ -345,7 +345,7 @@ exports.setToken = functions.https.onRequest((req, res) => {
         const fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('Field [' + fieldname + ']: value: ' + val);
+            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
 
             fields[fieldname] = val;
         });
@@ -373,13 +373,13 @@ const removeToken = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('Done parsing form.', fields);
+    // console.log('jdub', 'Done parsing form.', fields);
 
-    console.log('Done parsing form.', fields);
+    console.log('jdub', 'Done parsing form.', fields);
 
     const result = await(admin.firestore().collection('tokens').doc(fields.uid).delete());
 
-    console.log('Done removing to database.');
+    console.log('jdub', 'Done removing to database.');
 
     res.status(200).send(result);
 });
@@ -391,7 +391,7 @@ exports.unsetToken = functions.https.onRequest((req, res) => {
         const fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('Field [' + fieldname + ']: value: ' + val);
+            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
 
             fields[fieldname] = val;
         });
@@ -430,7 +430,7 @@ const sendPushNotification = async(function (chunks) {
     for (let chunk of chunks) {
         try {
             let ticketChunk = await(expo.sendPushNotificationsAsync(chunk));
-            console.log(ticketChunk);
+            console.log('jdub', ticketChunk);
 
             result.push(...ticketChunk);
         } catch (error) {
@@ -449,12 +449,12 @@ const processPushNotification = async(function () {
     const params = this;
     const fields = params.fields;
     const res = params.res;
-    // console.log('Done parsing form.', fields);
+    // console.log('jdub', 'Done parsing form.', fields);
 
     const targetUid = fields.receiver; // uid
 
     const targetToken = await(getToken(targetUid));
-    console.log('targetToken', targetToken);
+    console.log('jdub', 'targetToken', targetToken);
 
     if (!targetToken) {
         const error = `Push token is null.`;
@@ -605,7 +605,7 @@ const processPushNotification = async(function () {
     // ToDo: save tickets to database & make api to get receipts
     // await(getReceipts(receiptIdChunks));
 
-    console.log('tickets', tickets);
+    console.log('jdub', 'tickets', tickets);
 
     res.status(200).send(tickets);
 });
@@ -619,7 +619,7 @@ exports.sendPushNotification = functions.https.onRequest((req, res) => {
         busboy.on("field", (fieldname, val) => {
             fields[fieldname] = val;
 
-            // console.log(fieldname, val);
+            // console.log('jdub', fieldname, val);
         });
 
         const params = {};
@@ -641,7 +641,7 @@ const getReceipts = async(function (receiptIdChunks) {
     for (let chunk of receiptIdChunks) {
         try {
             let receipts = await(expo.getPushNotificationReceiptsAsync(chunk));
-            console.log(receipts);
+            console.log('jdub', receipts);
 
             // The receipts specify whether Apple or Google successfully received the
             // notification and information about an error, if one occurred.
@@ -671,7 +671,7 @@ exports.cleanPostImages = functions.https.onRequest((req, res) => {
         const fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('Field [' + fieldname + ']: value: ' + val);
+            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
 
             fields[fieldname] = val;
         });
@@ -704,7 +704,7 @@ const deleteFiles = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    // console.log('Done parsing form.', fields);
+    // console.log('jdub', 'Done parsing form.', fields);
 
     const storage = admin.storage();
 
@@ -716,7 +716,7 @@ const deleteFiles = async(function () {
         const key = 'file' + number.toString();
         const value = fields[key];
 
-        // console.log(key, value);
+        // console.log('jdub', key, value);
 
         const fileRef = storage.bucket(BUCKET_NAME).file(value);
         // await(fileRef.delete());
@@ -730,7 +730,7 @@ const deleteFiles = async(function () {
         refs.push(fileRef);
     }
 
-    // console.log('Done deleting files in database.');
+    // console.log('jdub', 'Done deleting files in database.');
 
     res.status(200).send(refs);
 });
@@ -738,7 +738,7 @@ const deleteFiles = async(function () {
 /*
 exports.checkRecaptcha = functions.https.onRequest((req, res) => {
     const response = req.query.response;
-    console.log("recaptcha response", response);
+    console.log('jdub', "recaptcha response", response);
 
     rp({
         uri: 'https://recaptcha.google.com/recaptcha/api/siteverify',
@@ -749,7 +749,7 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
         },
         json: true
     }).then(result => {
-        console.log("recaptcha result", result)
+        console.log('jdub', "recaptcha result", result)
         if (result.success) {
             res.send("You're good to go, human.")
         }
@@ -757,7 +757,7 @@ exports.checkRecaptcha = functions.https.onRequest((req, res) => {
             res.send("Recaptcha verification failed. Are you a robot?")
         }
     }).catch(reason => {
-        console.log("Recaptcha request failure", reason)
+        console.log('jdub', "Recaptcha request failure", reason)
         res.send("Recaptcha request failed.")
     });
 });
@@ -768,20 +768,20 @@ const signOut = async(function () {
     const fields = params.fields;
     const res = params.res;
 
-    // console.log('Done parsing form.', fields);
+    // console.log('jdub', 'Done parsing form.', fields);
 
     const uid = fields.uid;
 
     // Revoke all refresh tokens for a specified user for whatever reason.
     // Retrieve the timestamp of the revocation, in seconds since the epoch.
     let result = await(admin.auth().revokeRefreshTokens(uid).then(() => {
-        console.log('revoke success.', uid);
+        console.log('jdub', 'revoke success.', uid);
         return admin.auth().getUser(uid);
     }).then((userRecord) => {
-        console.log('userRecord.tokensValidAfterTime', userRecord.tokensValidAfterTime);
+        console.log('jdub', 'userRecord.tokensValidAfterTime', userRecord.tokensValidAfterTime);
         return new Date(userRecord.tokensValidAfterTime).getTime() / 1000;
     }).then((timestamp) => {
-        console.log("Tokens revoked at: ", timestamp);
+        console.log('jdub', "Tokens revoked at: ", timestamp);
     }));
 
     res.status(200).send(result);
@@ -794,7 +794,7 @@ exports.signOutUsers = functions.https.onRequest((req, res) => {
         const fields = {};
 
         busboy.on("field", (fieldname, val) => {
-            // console.log('Field [' + fieldname + ']: value: ' + val);
+            // console.log('jdub', 'Field [' + fieldname + ']: value: ' + val);
 
             fields[fieldname] = val;
         });

@@ -150,7 +150,7 @@ export default class Intro extends React.Component<InjectedProps> {
     */
 
     static final() {
-        console.log('Intro.final');
+        console.log('jdub', 'Intro.final');
 
         Intro.places = [];
         Intro.popularFeeds = [];
@@ -182,7 +182,7 @@ export default class Intro extends React.Component<InjectedProps> {
 
         if (!Vars.location) {
             if (Platform.OS === 'android' && !Constants.isDevice) {
-                console.log('Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
+                console.log('jdub', 'Oops, this will not work on Sketch in an Android emulator. Try it on your device!');
             } else {
                 this._getLocationAsync();
             }
@@ -208,28 +208,28 @@ export default class Intro extends React.Component<InjectedProps> {
                     const country = Util.getCountry(place);
                     if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
                         Vars.distanceUnit = 'mile';
-                        console.log('mile unit');
+                        console.log('jdub', 'mile unit');
                     } else {
                         Vars.distanceUnit = 'meter';
-                        console.log('meter unit');
+                        console.log('jdub', 'meter unit');
                     }
                 } else {
                     Vars.distanceUnit = 'meter';
-                    console.log('meter unit');
+                    console.log('jdub', 'meter unit');
                 }
             }
         }, 100); // 0.1 sec
     }
 
     _getLocationAsync = async () => {
-        // console.log('Intro._getLocationAsync');
+        // console.log('jdub', 'Intro._getLocationAsync');
         const { status: existingStatus } = await Permissions.getAsync(Permissions.LOCATION);
-        // console.log('Intro._getLocationAsync, existingStatus', existingStatus);
+        // console.log('jdub', 'Intro._getLocationAsync, existingStatus', existingStatus);
         if (existingStatus !== "granted") {
             const { status } = await Permissions.askAsync(Permissions.LOCATION);
-            // console.log('Intro._getLocationAsync, status', status);
+            // console.log('jdub', 'Intro._getLocationAsync, status', status);
             if (status !== 'granted') {
-                console.log('Permission to access location was denied.');
+                console.log('jdub', 'Permission to access location was denied.');
 
                 await Util.openSettings();
                 return;
@@ -237,13 +237,13 @@ export default class Intro extends React.Component<InjectedProps> {
         }
 
         let location = await Location.getCurrentPositionAsync({});
-        console.log('Intro._getLocationAsync, location', JSON.stringify(location));
+        console.log('jdub', 'Intro._getLocationAsync, location', JSON.stringify(location));
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
         Vars.location = location;
     };
 
     async componentDidMount() {
-        console.log('Intro.componentDidMount');
+        console.log('jdub', 'Intro.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
@@ -251,9 +251,9 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         });
 
-        console.log('uid', Firebase.user().uid);
-        console.log('width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
-        console.log('height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        console.log('jdub', 'uid', Firebase.user().uid);
+        console.log('jdub', 'width', Dimensions.get('window').width); // Galaxy S7: 640, Tango: 731, iphone X: 812
+        console.log('jdub', 'height', Dimensions.get('window').height); // Galaxy S7: 640, Tango: 731, iphone X: 812
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -266,7 +266,7 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('Intro.componentWillUnmount');
+        console.log('jdub', 'Intro.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -282,7 +282,7 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     async initFromSearch(result) {
-        console.log('Intro.initFromSearch', result);
+        console.log('jdub', 'Intro.initFromSearch', result);
 
         let name = result.description;
         // name = Util.getPlaceName(name); // city + country
@@ -386,7 +386,7 @@ export default class Intro extends React.Component<InjectedProps> {
         let index = 0;
 
         snap.forEach(async (doc) => {
-            // console.log(doc.id, '=>', doc.data());
+            // console.log('jdub', doc.id, '=>', doc.data());
 
             const placeId = doc.id;
             const place = doc.data();
@@ -449,7 +449,7 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     updatePlace(placeId, place) {
-        console.log('Intro.updatePlace, place.count', place.count);
+        console.log('jdub', 'Intro.updatePlace, place.count', place.count);
 
         // show badge on bottom tab navigator
         let showBadge = false;
@@ -460,7 +460,7 @@ export default class Intro extends React.Component<InjectedProps> {
         // update UI (number, badge)
         let __places = [...this.state.places];
         let __index = __places.findIndex(el => el.place_id === placeId);
-        console.log('Intro.updatePlace, index', __index);
+        console.log('jdub', 'Intro.updatePlace, index', __index);
         if (__index !== -1) {
             let __place = __places[__index];
             __place.length = place.count;
@@ -515,7 +515,7 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
-        console.log('popularFeeds', popularFeeds.length);
+        console.log('jdub', 'popularFeeds', popularFeeds.length);
 
         !this.closed && this.setState({ popularFeeds }, () => {
             for (let i = 0; i < popularFeeds.length; i++) {
@@ -606,7 +606,7 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
-        console.log('recentFeeds', recentFeeds.length);
+        console.log('jdub', 'recentFeeds', recentFeeds.length);
 
         !this.closed && this.setState({ recentFeeds }, () => {
             for (let i = 0; i < recentFeeds.length; i++) {
@@ -671,7 +671,7 @@ export default class Intro extends React.Component<InjectedProps> {
         let _popularFeeds = [...this.state.popularFeeds];
         const index = _popularFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
         if (index !== -1) {
-            console.log('popularFeeds[', index, '] changed.');
+            console.log('jdub', 'popularFeeds[', index, '] changed.');
             _popularFeeds[index] = newFeed;
             !this.closed && this.setState({ popularFeeds: _popularFeeds });
 
@@ -682,7 +682,7 @@ export default class Intro extends React.Component<InjectedProps> {
         let _recentFeeds = [...this.state.recentFeeds];
         const index2 = _recentFeeds.findIndex(item => item.placeId === newFeed.placeId && item.id === newFeed.id); // snap.id
         if (index2 !== -1) {
-            console.log('recentFeeds[', index2, '] changed.');
+            console.log('jdub', 'recentFeeds[', index2, '] changed.');
             _recentFeeds[index2] = newFeed;
             !this.closed && this.setState({ recentFeeds: _recentFeeds });
 
@@ -1331,7 +1331,7 @@ export default class Intro extends React.Component<InjectedProps> {
         return (
             <Carousel
                 onPageChanged={(page) => {
-                    console.log('Intro.renderPopularFeeds, current page', page);
+                    console.log('jdub', 'Intro.renderPopularFeeds, current page', page);
                 }}
             >
                 {pictures}
@@ -1446,7 +1446,7 @@ export default class Intro extends React.Component<InjectedProps> {
         return (
             <Carousel
                 onPageChanged={(page) => {
-                    console.log('Intro.renderRecentFeeds, current page', page);
+                    console.log('jdub', 'Intro.renderRecentFeeds, current page', page);
                 }}
             >
                 {pictures}

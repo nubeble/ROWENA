@@ -151,7 +151,7 @@ export default class ProfileStore {
         this.instance = Firebase.firestore.collection("users").doc(uid).onSnapshot(
             snap => {
                 if (snap.exists) {
-                    console.log('ProfileStore, profile changed');
+                    console.log('jdub', 'ProfileStore, profile changed');
 
                     const data = snap.data();
 
@@ -223,7 +223,7 @@ export default class ProfileStore {
                         this.lastTimeCommentsUpdated = this.lastChangedTime;
                     }
                 } else {
-                    console.log('ProfileStore, profile removed');
+                    console.log('jdub', 'ProfileStore, profile removed');
 
                     this.profile = undefined;
 
@@ -235,7 +235,7 @@ export default class ProfileStore {
                 }
             },
             error => {
-                console.log('ProfileStore, an error happened', error);
+                console.log('jdub', 'ProfileStore, an error happened', error);
             }
         );
     }

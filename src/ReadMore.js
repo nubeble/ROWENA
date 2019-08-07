@@ -29,11 +29,11 @@ export default class ReadMore extends React.Component {
                         this.measured = true;
 
                         const { height } = e.nativeEvent.layout;
-                        // console.log('height', height);
+                        // console.log('jdub', 'height', height);
 
                         const limit = numberOfLines * lineHeight; // 36
 
-                        console.log('limit', limit, 'height', height);
+                        console.log('jdub', 'limit', limit, 'height', height);
 
                         if (height <= limit) {
                             this.setState({ showAllText: true, showButton: false });

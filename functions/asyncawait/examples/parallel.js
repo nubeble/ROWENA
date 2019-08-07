@@ -13,14 +13,14 @@ function stat(filename) {
 
 // A slow asynchronous function, written in async/await style.
 var longCalculation = async (function (seconds, result) {
-    console.log('Starting ' + result);
+    console.log('jdub', 'Starting ' + result);
     await (Promise.delay(seconds * 1000));
     return result;
 });
 
 // An async/await style function with both sequential and parallel operations.
 var compoundOperation = async (function () {
-    console.log('A: zero');
+    console.log('jdub', 'A: zero');
 
     var result1 = await([
 
@@ -35,7 +35,7 @@ var compoundOperation = async (function () {
             five: 'five'
         }
     ]);
-    console.log(result1);
+    console.log('jdub', result1);
 
     // result2 won't start being computed until result1 above is complete.
     var result2 = await ({
@@ -50,11 +50,11 @@ var compoundOperation = async (function () {
             'six'
         ]
     });
-    console.log(result2);
+    console.log('jdub', result2);
 
     // Execution will reach here after result2 is complete.
     return 'Finished!';
 });
 
 // Start the compound operation.
-compoundOperation().then(function (result) { console.log(result); });
+compoundOperation().then(function (result) { console.log('jdub', result); });

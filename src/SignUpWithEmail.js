@@ -48,7 +48,7 @@ export default class SignUpWithEmail extends React.Component {
     };
 
     componentDidMount() {
-        console.log('SignUpWithEmail.componentDidMount');
+        console.log('jdub', 'SignUpWithEmail.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -165,7 +165,7 @@ export default class SignUpWithEmail extends React.Component {
         // check completion
         const reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (reg.test(String(text).toLowerCase())) {
-            console.log('validateEmail', "Email is Correct");
+            console.log('jdub', 'validateEmail', "Email is Correct");
 
             // show icon
             this.setState({ emailIcon: 2 });
@@ -179,7 +179,7 @@ export default class SignUpWithEmail extends React.Component {
 
     moveToPassword(text) {
         if (this.state.emailIcon !== 2) {
-            // console.log('Please enter a valid email address.');
+            // console.log('jdub', 'Please enter a valid email address.');
 
             // show message box
             this.showNotification('Please enter a valid email address.');
@@ -214,7 +214,7 @@ export default class SignUpWithEmail extends React.Component {
         this.setState({ password: text });
 
         if (text.length < 6) {
-            console.log('Must be at least 6 characters.');
+            console.log('jdub', 'Must be at least 6 characters.');
 
             this.setState({ pwIcon: 0 });
 
@@ -222,13 +222,13 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         if (/\d/.test(text) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(text)) {
-            console.log("Password is correct.");
+            console.log('jdub', "Password is correct.");
 
             // show icon
             this.setState({ pwIcon: 2 });
 
         } else {
-            console.log('Must have at least one symbol or number.');
+            console.log('jdub', 'Must have at least one symbol or number.');
 
             this.setState({ pwIcon: 0 });
 
@@ -281,7 +281,7 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         if (this.state.emailIcon !== 2) {
-            // console.log('Please enter a valid email address.');
+            // console.log('jdub', 'Please enter a valid email address.');
 
             // show message box
             this.showNotification('Please enter a valid email address.');
@@ -332,7 +332,7 @@ export default class SignUpWithEmail extends React.Component {
         try {
             Firebase.auth.languageCode = 'en';
             const user = await Firebase.auth.signInWithEmailAndPassword(this.state.email, this.state.password);
-            console.log('SignUpWithEmail.signInWithEmailAndPassword, user', user);
+            console.log('jdub', 'SignUpWithEmail.signInWithEmailAndPassword, user', user);
 
             // save token
             // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
@@ -342,10 +342,10 @@ export default class SignUpWithEmail extends React.Component {
             // hide indicator
             this.setState({ showSignUpLoader: false });
 
-            console.log('[SignUpWithEmail.processSignIn] move to welcome');
+            console.log('jdub', '[SignUpWithEmail.processSignIn] move to welcome');
             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
         } catch (error) {
-            console.log('error', error.code, error.message);
+            console.log('jdub', 'error', error.code, error.message);
 
             if (error.code === 'auth/invalid-email') {
                 this.showNotification('The email address is not valid.');
@@ -371,7 +371,7 @@ export default class SignUpWithEmail extends React.Component {
         try {
             Firebase.auth.languageCode = 'en';
             const user = await Firebase.auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
-            console.log('SignUpWithEmail.processSignUp, user', user);
+            console.log('jdub', 'SignUpWithEmail.processSignUp, user', user);
 
             // save token
             // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
@@ -383,7 +383,7 @@ export default class SignUpWithEmail extends React.Component {
 
             this.props.navigation.navigate("signUpWithEmailVerification", { user: user, email: this.state.email, from: 'SignUpWithEmail' });
         } catch (error) {
-            console.log('error', error.code, error.message);
+            console.log('jdub', 'error', error.code, error.message);
 
             if (error.code === 'auth/account-exists-with-different-credential') {
                 this.showNotification('There already exists an account with the email address asserted by the credential.');

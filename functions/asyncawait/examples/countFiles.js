@@ -16,5 +16,5 @@ var countFiles = async (function(dir) {
 
 
 countFiles(__dirname)
-    .then (function (num) { console.log('There are ' + num + ' files in ' + __dirname); })
-    .catch(function (err) { console.log('Something went wrong: ' + err); });
+    .then (function (num) { console.log('jdub', 'There are ' + num + ' files in ' + __dirname); })
+    .catch(function (err) { console.log('jdub', 'Something went wrong: ' + err); });

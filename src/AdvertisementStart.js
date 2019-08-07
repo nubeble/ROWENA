@@ -27,7 +27,7 @@ export default class AdvertisementStart extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('AdvertisementStart.handleHardwareBackPress');
+        console.log('jdub', 'AdvertisementStart.handleHardwareBackPress');
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;

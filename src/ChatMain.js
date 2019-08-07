@@ -50,18 +50,18 @@ export default class ChatMain extends React.Component {
     }
 
     static final() {
-        console.log('ChatMain.final');
+        console.log('jdub', 'ChatMain.final');
 
         const uid = Firebase.user().uid;
         Firebase.stopChatRoom(uid);
     }
 
     componentDidMount() {
-        console.log('ChatMain.componentDidMount');
+        console.log('jdub', 'ChatMain.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
-                // console.log('ChatMain.scrollToTop');
+                // console.log('jdub', 'ChatMain.scrollToTop');
                 this._flatList.scrollToOffset({ offset: 0, animated: true });
             }
         });
@@ -97,7 +97,7 @@ export default class ChatMain extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('ChatMain.componentWillUnmount');
+        console.log('jdub', 'ChatMain.componentWillUnmount');
 
         this.onFocusListener.remove();
         this.onBlurListener.remove();
@@ -367,7 +367,7 @@ export default class ChatMain extends React.Component {
         if (params && params.roomId) {
             const roomId = params.roomId; // room id need to get removed
 
-            console.log('ChatMain.componentWillReceiveProps, roomId', params);
+            console.log('jdub', 'ChatMain.componentWillReceiveProps, roomId', params);
 
             const result = this.deleted(roomId);
             if (result) { // found
@@ -384,7 +384,7 @@ export default class ChatMain extends React.Component {
 
     @autobind
     onFocus() {
-        console.log('ChatMain.onFocus');
+        console.log('jdub', 'ChatMain.onFocus');
 
         Vars.focusedScreen = 'ChatMain';
 
@@ -410,7 +410,7 @@ export default class ChatMain extends React.Component {
     findIndex(list, id) {
         for (let i = 0; i < list.length; i++) {
             const item = list[i];
-            console.log('id', item);
+            console.log('jdub', 'id', item);
             if (item.id === id) return i;
         }
 
@@ -424,7 +424,7 @@ export default class ChatMain extends React.Component {
         // update state
         let list = [...this.state.chatRoomList];
         const index = this.findIndex(list, roomId);
-        // console.log('index', index);
+        // console.log('jdub', 'index', index);
         if (index !== -1) { // if the item inside of 10 rooms is removed then automatically updated in database, state array and index = -1
             list.splice(index, 1);
             this.setState({ chatRoomList: list });
@@ -433,7 +433,7 @@ export default class ChatMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('ChatMain.handleHardwareBackPress');
+        console.log('jdub', 'ChatMain.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -560,7 +560,7 @@ export default class ChatMain extends React.Component {
             _contents = contents;
         }
         const update = this.checkUpdate(item.lastReadMessageId, item.mid);
-        // console.log(_contents, 'update', item.id, item.lastReadMessageId, item.mid, update);
+        // console.log('jdub', _contents, 'update', item.id, item.lastReadMessageId, item.mid, update);
         // const viewHeight = Dimensions.get('window').height / 10;
         const viewHeight = (Dimensions.get('window').width - Theme.spacing.tiny * 2 * 2) * 0.24; // (view width - container padding) * 24%
         const avatarHeight = viewHeight;
@@ -593,7 +593,7 @@ export default class ChatMain extends React.Component {
             logInState = 'Active now';
         } else {
             if (opponent.lastLogInTime) {
-                // console.log(_contents, item.id, opponent.lastLogInTime);
+                // console.log('jdub', _contents, item.id, opponent.lastLogInTime);
                 const now = Date.now();
                 const difference = now - opponent.lastLogInTime;
                 const minutesDifference = Math.round(difference / 60000);

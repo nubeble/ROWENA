@@ -71,7 +71,7 @@ export default class MapExplore extends React.Component {
     }
 
     async componentDidMount() {
-        console.log('MapExplore.componentDidMount');
+        console.log('jdub', 'MapExplore.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -125,7 +125,7 @@ export default class MapExplore extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('MapExplore.componentWillUnmount');
+        console.log('jdub', 'MapExplore.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -162,7 +162,7 @@ export default class MapExplore extends React.Component {
         }).limit(DEFAULT_FEED_COUNT);
 
         await query.get().then(async (value: GeoQuerySnapshot) => {
-            // console.log(value.docs); // All docs returned by GeoQuery
+            // console.log('jdub', value.docs); // All docs returned by GeoQuery
 
             const docs = value.docs;
             for (let i = 0; i < docs.length; i++) {
@@ -333,10 +333,10 @@ export default class MapExplore extends React.Component {
 
                 this.moveToRegion(region, 10);
             }, (error) => {
-                console.log('getCurrentPosition() error', error);
+                console.log('jdub', 'getCurrentPosition() error', error);
             });
         } catch (e) {
-            console.log('getCurrentPosition() exception', e.message);
+            console.log('jdub', 'getCurrentPosition() exception', e.message);
         }
     }
 
@@ -394,7 +394,7 @@ export default class MapExplore extends React.Component {
                     zIndex={this.state.selectedMarker === i ? array.length : marker.index}
 
                     onPress={() => {
-                        console.log('MapExplore.renderMapView, marker onpress', marker.index);
+                        console.log('jdub', 'MapExplore.renderMapView, marker onpress', marker.index);
 
                         this.setState({ selectedMarker: marker.index });
 
@@ -434,7 +434,7 @@ export default class MapExplore extends React.Component {
                 }}
                 /*
                 onRegionChangeComplete={(region) => {
-                    // console.log(region);
+                    // console.log('jdub', region);
                     this.setState({ region });
                 }}
                 */
@@ -525,7 +525,7 @@ export default class MapExplore extends React.Component {
                 <Carousel
                     ref={(carousel) => { this.carousel = carousel; }}
                     onPageChanged={(page) => {
-                        console.log('MapExplore.renderPosts, current page', page);
+                        console.log('jdub', 'MapExplore.renderPosts, current page', page);
 
                         this.setState({ selectedMarker: page });
 

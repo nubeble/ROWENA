@@ -322,10 +322,10 @@ export default class MapOverview extends React.Component {
 
                 this.moveRegion(region);
             }, (error) => {
-                console.log('getCurrentPosition() error', error);
+                console.log('jdub', 'getCurrentPosition() error', error);
             });
         } catch (e) {
-            console.log('getCurrentPosition() exception', e.message);
+            console.log('jdub', 'getCurrentPosition() exception', e.message);
         }
     }
 
@@ -344,12 +344,12 @@ export default class MapOverview extends React.Component {
 
     @autobind
     onRegionChange(region) {
-        // console.log('onRegionChange', region);
+        // console.log('jdub', 'onRegionChange', region);
     };
 
     @autobind
     onRegionChangeComplete(region) {
-        // console.log('onRegionChangeComplete', region);
+        // console.log('jdub', 'onRegionChangeComplete', region);
     };
 }
 

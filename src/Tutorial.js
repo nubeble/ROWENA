@@ -69,7 +69,7 @@ export default class Tutorial extends React.Component {
         // ToDo: dialog - you wanna quit?
 
         // --
-        console.log('move to main');
+        console.log('jdub', 'move to main');
         this.props.navigation.navigate("mainStackNavigator");
         // --
 
@@ -95,7 +95,7 @@ export default class Tutorial extends React.Component {
                 renderDoneButton={this.renderDoneButton}
                 onDone={this.onDone}
             // showPrevButton, showSkipButton, bottomButton, hideNextButton, hideDoneButton
-            // onSkip={() => console.log("skipped")}
+            // onSkip={() => console.log('jdub', "skipped")}
             />
         );
     }
@@ -152,7 +152,7 @@ export default class Tutorial extends React.Component {
     onDone() {
         setTimeout(() => {
             if (this.closed) return;
-            console.log('move to main');
+            console.log('jdub', 'move to main');
             this.props.navigation.navigate("mainStackNavigator");
         }, Cons.buttonTimeout);
     }

@@ -79,7 +79,7 @@ export default class FeedStore {
     async loadFeed(): Promise<void> {
         // eslint-disable-next-line prefer-destructuring
         let query = this.query;
-        // console.log('loadFeed() query', query);
+        // console.log('jdub', 'loadFeed() query', query);
 
         if (this.cursor) {
             query = query.startAfter(this.cursor);
@@ -100,12 +100,12 @@ export default class FeedStore {
 
         const posts: Post[] = [];
         snap.forEach(postDoc => {
-            // console.log('loadFeed() id', postDoc.id, 'data', postDoc.data());
+            // console.log('jdub', 'loadFeed() id', postDoc.id, 'data', postDoc.data());
 
             posts.push(postDoc.data());
         });
 
-        // console.log('loadFeed() posts', posts);
+        // console.log('jdub', 'loadFeed() posts', posts);
 
         const feed = await this.joinProfiles(posts);
         if (!this.feed) {
@@ -138,7 +138,7 @@ export default class FeedStore {
     }
 
     async checkForNewEntriesInFeed(): Promise<void> {
-        console.log('checkForNewEntriesInFeed');
+        console.log('jdub', 'checkForNewEntriesInFeed');
 
         if (this.lastKnownEntry) {
             const snap = await this.query.endBefore(this.lastKnownEntry).get();
@@ -153,7 +153,7 @@ export default class FeedStore {
                 posts.push(postDoc.data());
             });
 
-            console.log('checkForNewEntriesInFeed() posts', posts);
+            console.log('jdub', 'checkForNewEntriesInFeed() posts', posts);
 
             const feed = await this.joinProfiles(posts);
             this.addToFeed(feed);
@@ -163,13 +163,13 @@ export default class FeedStore {
     }
 
     subscribeToPost(placeId: string, id: string, callback: Post => void): Subscription {
-        console.log('FeedStore.subscribeToPost', placeId, id);
+        console.log('jdub', 'FeedStore.subscribeToPost', placeId, id);
         /*
         // return Firebase.firestore.collection("places").doc(placeId).collection("feed").where("id", "==", id).onSnapshot(async snap => {
         return Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(id).onSnapshot(snap => {
             // const post = snap.docs[0].data();
             const post = snap.data();
-            console.log('FeedStore, feed changed.');
+            console.log('jdub', 'FeedStore, feed changed.');
             callback(post);
 
             this.feed.forEach((entry, index) => {
@@ -184,9 +184,9 @@ export default class FeedStore {
                 const post = snap.data();
 
                 if (post) {
-                    console.log('FeedStore, feed changed.');
+                    console.log('jdub', 'FeedStore, feed changed.');
                 } else {
-                    console.log('FeedStore, feed removed.');
+                    console.log('jdub', 'FeedStore, feed removed.');
                 }
 
                 callback(post);
@@ -200,18 +200,18 @@ export default class FeedStore {
                 }
             },
             error => {
-                console.log('FeedStore.subscribeToPost, error', error);
+                console.log('jdub', 'FeedStore.subscribeToPost, error', error);
             }
         );
     }
 
     subscribeToProfile(id: string, callback: Profile => void): Subscription {
-        console.log('FeedStore.subscribeToProfile');
+        console.log('jdub', 'FeedStore.subscribeToProfile');
 
         /*
         return Firebase.firestore.collection("users").doc(id).onSnapshot(snap => {
             const profile = snap.exists ? snap.data() : DEFAULT_PROFILE;
-            console.log('FeedStore, profile changed.');
+            console.log('jdub', 'FeedStore, profile changed.');
             callback(profile);
 
             this.feed.forEach((entry, index) => {
@@ -226,9 +226,9 @@ export default class FeedStore {
                 const profile = snap.data();
 
                 if (profile) {
-                    console.log('FeedStore, profile changed.');
+                    console.log('jdub', 'FeedStore, profile changed.');
                 } else {
-                    console.log('FeedStore, profile removed.');
+                    console.log('jdub', 'FeedStore, profile removed.');
                 }
 
                 callback(profile);
@@ -242,13 +242,13 @@ export default class FeedStore {
                 }
             },
             error => {
-                console.log('FeedStore.subscribeToProfile, error', error);
+                console.log('jdub', 'FeedStore.subscribeToProfile, error', error);
             }
         );
     }
 
     async joinProfiles(posts: Post[]): Promise<FeedEntry[]> {
-        // console.log('FeedStore.joinProfiles');
+        // console.log('jdub', 'FeedStore.joinProfiles');
 
         const uids = posts.map(post => post.uid).filter(uid => this.profiles[uid] === undefined);
 

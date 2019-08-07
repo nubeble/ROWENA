@@ -43,7 +43,7 @@ export default class Rating extends Component {
         ratingBackgroundColor: 'white',
         ratingCount: 5,
         imageSize: 60,
-        onFinishRating: () => console.log('Rating finished. Attach a function here.'),
+        onFinishRating: () => console.log('jdub', 'Rating finished. Attach a function here.'),
         minValue: 0
     };
 

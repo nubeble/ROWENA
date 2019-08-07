@@ -130,7 +130,7 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     async _cacheResourcesAsync() {
-        console.log('Loading._cacheResourcesAsync');
+        console.log('jdub', 'Loading._cacheResourcesAsync');
 
         // font
         const fonts = Font.loadAsync({
@@ -164,12 +164,12 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     init() {
-        console.log('Loading.init');
+        console.log('jdub', 'Loading.init');
 
         Firebase.init();
 
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
-            console.log('Loading.onAuthStateChanged, user', user);
+            console.log('jdub', 'Loading.onAuthStateChanged, user', user);
 
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;
@@ -183,7 +183,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     Loading.userAutoAuthenticated = true;
 
                     // move to login page
-                    console.log('[sign out / delete account] move to auth main');
+                    console.log('jdub', '[sign out / delete account] move to auth main');
                     // StatusBar.setHidden(false);
                     navigation.navigate("authMain");
                 } else {
@@ -199,7 +199,7 @@ export default class Loading extends React.Component<InjectedProps> {
                     ]).start(() => {
                         !this.closed && this.setState({ showIndicator: false });
 
-                        console.log('[first join] move to auth main');
+                        console.log('jdub', '[first join] move to auth main');
                         // StatusBar.setHidden(false);
                         navigation.navigate("authMain");
                     });
@@ -243,11 +243,11 @@ export default class Loading extends React.Component<InjectedProps> {
                         // check verification if EMAIL user
                         if (user.email && !user.emailVerified && user) {
                             if (user.providerData && user.providerData.length > 0 && user.providerData[0].providerId === "facebook.com") {
-                                console.log("email user is not verified. but facebook users don't need to email verification.");
+                                console.log('jdub', "email user is not verified. but facebook users don't need to email verification.");
                                 await this.checkUpdates();
                                 StatusBar.setHidden(false);
                             } else {
-                                console.log('email user is not verified. move to email verification');
+                                console.log('jdub', 'email user is not verified. move to email verification');
                                 StatusBar.setHidden(false);
                                 navigation.navigate("emailVerification", { email: user.email, user: user, from: 'Loading' });
                                 return;
@@ -257,7 +257,7 @@ export default class Loading extends React.Component<InjectedProps> {
                             StatusBar.setHidden(false);
                         }
 
-                        console.log('[auto sign in] move to main');
+                        console.log('jdub', '[auto sign in] move to main');
                         navigation.navigate("mainStackNavigator");
                     } else { // for the resign in after sign out / delete account
                         const type = Vars.signUpType; // copy
@@ -268,7 +268,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                         if (type === 'EMAIL') return;
 
-                        console.log('[resign in after sign out / delete account] move to welcome');
+                        console.log('jdub', '[resign in after sign out / delete account] move to welcome');
                         if (type === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
                         else if (type === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
                         else navigation.navigate("welcome");
@@ -282,7 +282,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     if (type === 'EMAIL') return;
 
-                    console.log('[first join] move to welcome');
+                    console.log('jdub', '[first join] move to welcome');
                     if (type === 'FACEBOOK') navigation.navigate("welcome", { from: 'FACEBOOK' });
                     else if (type === 'MOBILE') navigation.navigate("welcome", { from: 'MOBILE' });
                     else navigation.navigate("welcome");

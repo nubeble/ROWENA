@@ -78,7 +78,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        console.log('UserMain.componentDidMount');
+        console.log('jdub', 'UserMain.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this.keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this.keyboardDidHide);
@@ -156,7 +156,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     onAddToReviewFinished() {
-        console.log('UserMain.onAddToReviewFinished');
+        console.log('jdub', 'UserMain.onAddToReviewFinished');
 
         const { reviews } = this.commentStore;
         const count = reviews.length;
@@ -172,7 +172,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('UserMain.handleHardwareBackPress');
+        console.log('jdub', 'UserMain.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
@@ -212,7 +212,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             const bottomPosition = Dimensions.get('window').height - e.endCoordinates.height;
             const borderY = Cons.searchBarHeight + this.infoContainerY + this.reviewButtonContainerY + this.borderY;
             const gap = bottomPosition - replyViewHeight - borderY;
-            console.log('gap', gap);
+            console.log('jdub', 'gap', gap);
 
             this._flatList.scrollToOffset({ offset: Math.abs(gap), animated: true });
         }
@@ -239,7 +239,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
     sendComment() {
         const message = this._reply._lastNativeText;
-        console.log('UserMain.sendComment', message);
+        console.log('jdub', 'UserMain.sendComment', message);
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
@@ -313,7 +313,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('UserMain.componentWillUnmount');
+        console.log('jdub', 'UserMain.componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
@@ -656,7 +656,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
 
                                                     // const gap = this.state.bottomPosition - replyViewHeight - Cons.searchBarHeight + this.borderY;
-                                                    // console.log('gap', gap);
+                                                    // console.log('jdub', 'gap', gap);
                                                     // this._flatList.scrollToOffset({ offset: gap, animated: true });
 
 
@@ -835,7 +835,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                 nameLineHeight = 24;
             }
         } else { // post removed
-            // console.log('UserMain.renderItem', _review);
+            // console.log('jdub', 'UserMain.renderItem', _review);
 
             // use original data
             picture = _review.picture;
@@ -1085,7 +1085,7 @@ export default class UserMain extends React.Component<InjectedProps> {
             this.setState({ reviews });
         } else {
             Util.translate(comment).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originReviewList[index] = comment;
 

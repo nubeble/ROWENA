@@ -58,7 +58,7 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ReadAllReviewsScreen.componentDidMount');
+        console.log('jdub', 'ReadAllReviewsScreen.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -81,7 +81,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     @autobind
     onAddToReviewFinished() {
-        // console.log('onAddToReviewFinished');
+        // console.log('jdub', 'onAddToReviewFinished');
 
         const { reviewStore } = this.props.navigation.state.params;
         const { reviews } = reviewStore;
@@ -96,7 +96,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('ReadAllReviewsScreen.handleHardwareBackPress');
+        console.log('jdub', 'ReadAllReviewsScreen.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
@@ -417,7 +417,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                 <View style={{ paddingTop: 10, paddingBottom: 6 }}>
                     <TouchableOpacity activeOpacity={0.5}
                         onPress={() => {
-                            // console.log('onpress', index);
+                            // console.log('jdub', 'onpress', index);
 
                             if (!this.originReviewList) this.originReviewList = [];
 
@@ -495,7 +495,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                         <View style={{ paddingTop: 10, paddingBottom: 6 }}>
                             <TouchableOpacity activeOpacity={0.5}
                                 onPress={() => {
-                                    // console.log('onpress', index);
+                                    // console.log('jdub', 'onpress', index);
 
                                     if (!this.originReplyList) this.originReplyList = [];
 
@@ -574,8 +574,8 @@ export default class ReadAllReviewsScreen extends React.Component {
     @autobind
     onItemLayout(event, index) {
         const { x, y, width, height } = event.nativeEvent.layout;
-        // console.log(x, y, width, height);
-        console.log(index, height);
+        // console.log('jdub', x, y, width, height);
+        console.log('jdub', index, height);
 
         this.itemHeights[index] = height;
         this.lastItemIndex = index;
@@ -799,7 +799,7 @@ export default class ReadAllReviewsScreen extends React.Component {
 
     sendReply() {
         const message = this._reply._lastNativeText;
-        console.log('sendReply', message);
+        console.log('jdub', 'sendReply', message);
 
         if (message === undefined || message === '') {
             this.showNotification('Please enter a valid reply.');
@@ -939,7 +939,7 @@ export default class ReadAllReviewsScreen extends React.Component {
             this.setState({ reviews });
         } else {
             Util.translate(comment).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originReviewList[index] = comment;
 
@@ -979,7 +979,7 @@ export default class ReadAllReviewsScreen extends React.Component {
             this.setState({ reviews });
         } else {
             Util.translate(comment).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originReplyList[index] = comment;
 

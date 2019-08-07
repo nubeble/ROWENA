@@ -51,7 +51,7 @@ export default class SearchScreen extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('SearchScreen.handleHardwareBackPress');
+        console.log('jdub', 'SearchScreen.handleHardwareBackPress');
 
         this.props.navigation.goBack();
 
@@ -232,8 +232,8 @@ export default class SearchScreen extends React.Component {
                             this.refs["toast"].show(message, 500);
                         }}
                         onPress={async (data, details = null) => { // 'details' is provided when fetchDetails = true
-                            console.log('SearchScreen, data', data);
-                            console.log('SearchScreen, details', details);
+                            console.log('jdub', 'SearchScreen, data', data);
+                            console.log('jdub', 'SearchScreen, details', details);
 
                             if (!details) this.props.navigation.goBack();
 
@@ -273,7 +273,7 @@ export default class SearchScreen extends React.Component {
                                 // ToDo: exception for city-state (Macau, Hong Kong, ...)
                                 let type = 200; // 100: city-state, 200: city
                                 if (countryCode === 'MO' || countryCode === 'HK' || countryCode === 'MC' || countryCode === 'SG') {
-                                    console.log('!!!!!!!! city-state !!!!!!!!');
+                                    console.log('jdub', '!!!!!!!! city-state !!!!!!!!');
                                     type = 100;
                                 }
 
@@ -293,7 +293,7 @@ export default class SearchScreen extends React.Component {
                                         return;
                                     }
 
-                                    console.log('Util.getPlaceId result', obj);
+                                    console.log('jdub', 'Util.getPlaceId result', obj);
 
                                     // Consider: exception
                                     // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
@@ -455,22 +455,22 @@ export default class SearchScreen extends React.Component {
     }
 
     async loadHistory() {
-        console.log('SearchScreen.loadHistory');
+        console.log('jdub', 'SearchScreen.loadHistory');
 
         /*
         try {
             await AsyncStorage.clear();
         } catch (error) {
-            console.log('loadHistory clear error', error);
+            console.log('jdub', 'loadHistory clear error', error);
         }
         */
 
         // check
         try {
             const keys = await AsyncStorage.getAllKeys();
-            console.log('loadHistory keys', keys);
+            console.log('jdub', 'loadHistory keys', keys);
         } catch (error) {
-            console.log('loadHistory error', error);
+            console.log('jdub', 'loadHistory error', error);
         }
 
         // this.storageIndex = -1;
@@ -478,7 +478,7 @@ export default class SearchScreen extends React.Component {
         /*
         let result = await this._retrieveData('LAST_INDEX');
 
-        console.log('loaded index', result);
+        console.log('jdub', 'loaded index', result);
 
         if (result) {
             const index = parseInt(result);
@@ -612,7 +612,7 @@ export default class SearchScreen extends React.Component {
     }
 
     async saveHistory(item) {
-        console.log('saveHistory', item);
+        console.log('jdub', 'saveHistory', item);
 
         let index = this.storageIndex + 1;
         if (index === 4) {
@@ -671,7 +671,7 @@ export default class SearchScreen extends React.Component {
     }
 
     _storeData = async (key, value) => {
-        console.log('_storeData', key, value);
+        console.log('jdub', '_storeData', key, value);
 
         try {
             await AsyncStorage.setItem(key, value);
@@ -681,7 +681,7 @@ export default class SearchScreen extends React.Component {
     }
 
     _storeMultiData = async (data) => {
-        console.log('_storeMultiData', data);
+        console.log('jdub', '_storeMultiData', data);
 
         try {
             await AsyncStorage.multiSet(data);
@@ -694,12 +694,12 @@ export default class SearchScreen extends React.Component {
         try {
             const value = await AsyncStorage.getItem(key);
             if (value !== null) {
-                console.log('_retrieveData', key, value);
+                console.log('jdub', '_retrieveData', key, value);
             }
 
             return value;
         } catch (error) {
-            console.log('_retrieveData error', error);
+            console.log('jdub', '_retrieveData error', error);
             // Error retrieving data
             return null;
         }
@@ -709,12 +709,12 @@ export default class SearchScreen extends React.Component {
         try {
             const values = await AsyncStorage.multiGet(keys);
             if (values !== null) {
-                console.log('_retrieveMultiData', keys, values);
+                console.log('jdub', '_retrieveMultiData', keys, values);
             }
 
             return values;
         } catch (error) {
-            console.log('_retrieveMultiData error', error);
+            console.log('jdub', '_retrieveMultiData error', error);
             // Error retrieving data
             return null;
         }

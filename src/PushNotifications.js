@@ -8,7 +8,7 @@ const SERVER_ENDPOINT = "https://us-central1-rowena-88cfd.cloudfunctions.net/";
 
 
 export async function registerExpoPushToken(uid, name) {
-    console.log('registerExpoPushToken', uid, name);
+    console.log('jdub', 'registerExpoPushToken', uid, name);
 
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
@@ -24,7 +24,7 @@ export async function registerExpoPushToken(uid, name) {
 
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
-        console.log('Permission to access notifications was denied.');
+        console.log('jdub', 'Permission to access notifications was denied.');
 
         // await Util.openSettings();
         return;
@@ -32,7 +32,7 @@ export async function registerExpoPushToken(uid, name) {
 
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
-    console.log("push token", token);
+    console.log('jdub', "push token", token);
 
     // const user = Firebase.user();
 
@@ -66,7 +66,7 @@ export async function registerExpoPushToken(uid, name) {
 
 /*
 export async function unregisterExpoPushToken(uid) {
-    console.log('unregisterExpoPushToken', uid);
+    console.log('jdub', 'unregisterExpoPushToken', uid);
 
     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
@@ -82,7 +82,7 @@ export async function unregisterExpoPushToken(uid) {
 
     // Stop here if the user did not grant permissions
     if (finalStatus !== "granted") {
-        console.log('Permission to access notifications was denied.');
+        console.log('jdub', 'Permission to access notifications was denied.');
 
         // await Util.openSettings();
         return;
@@ -90,7 +90,7 @@ export async function unregisterExpoPushToken(uid) {
 
     // Get the token that uniquely identifies this device
     let token = await Notifications.getExpoPushTokenAsync();
-    console.log("token", token);
+    console.log('jdub', "token", token);
 
     // const user = Firebase.user();
 
@@ -112,7 +112,7 @@ export async function unregisterExpoPushToken(uid) {
 */
 
 export function sendPushNotification(sender, senderName, receiver, type, data) {
-    console.log('sendPushNotification', sender, receiver, data);
+    console.log('jdub', 'sendPushNotification', sender, receiver, data);
 
     const formData = new FormData();
     formData.append("sender", sender);

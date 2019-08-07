@@ -45,14 +45,14 @@ export default class Feed extends React.Component<FeedProps> {
         });
 
         // const { feed } = this.props.store; // FeedStore
-        // console.log('Feed.componentDidMount', feed);
+        // console.log('jdub', 'Feed.componentDidMount', feed);
 
         this.props.store.setAddToFeedFinishedCallback(this.onAddToFeedFinished);
     }
 
     @autobind
     onAddToFeedFinished() {
-        console.log('Feed.onAddToFeedFinished');
+        console.log('jdub', 'Feed.onAddToFeedFinished');
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
@@ -84,7 +84,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('Feed.loadMore');
+        console.log('jdub', 'Feed.loadMore');
 
         this.props.store.loadFeed();
     }

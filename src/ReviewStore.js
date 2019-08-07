@@ -155,7 +155,7 @@ export default class ReviewStore {
     }
 
     async checkForNewEntries(): Promise<void> {
-        console.log('checkForNewEntries', this.lastKnownEntry);
+        console.log('jdub', 'checkForNewEntries', this.lastKnownEntry);
 
         if (this.lastKnownEntry) {
             const snap = await this.query.endBefore(this.lastKnownEntry).get();
@@ -191,7 +191,7 @@ export default class ReviewStore {
 
     /*
     async init(placeId: string, feedId: string): Promise<void> { // get [{review: profile}] in real time
-        // console.log('placeId', placeId, 'feedId', feedId);
+        // console.log('jdub', 'placeId', placeId, 'feedId', feedId);
 
         const query = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).collection("reviews").orderBy("timestamp", "desc");
 
@@ -204,14 +204,14 @@ export default class ReviewStore {
                 const profileDoc = await Firebase.firestore.collection("users").doc(review.uid).get(); // get user uid
                 const profile = profileDoc.data();
 
-                // console.log('review', review, 'profile', profile);
+                // console.log('jdub', 'review', review, 'profile', profile);
 
                 return { review, profile };
             })()));
 
             this.reviews = await Promise.all(reviews);
 
-            // console.log('reviews', this.reviews);
+            // console.log('jdub', 'reviews', this.reviews);
         });
     }
     */
@@ -230,7 +230,7 @@ export default class ReviewStore {
         let userRef = Firebase.firestore.collection("users").doc(userUid);
 
         let size = await Firebase.getReviewsSize(placeId, feedId);
-        // console.log('returned size', size);
+        // console.log('jdub', 'returned size', size);
 
         await Firebase.firestore.runTransaction(async transaction => {
             // averageRating (number)
@@ -240,7 +240,7 @@ export default class ReviewStore {
             totalRating += review.rating;
             averageRating = totalRating / size;
             averageRating = averageRating.toFixed(1);
-            console.log('averageRating', averageRating);
+            console.log('jdub', 'averageRating', averageRating);
             transaction.update(feedRef, { averageRating: Number(averageRating) });
 
             // postedReviews (array)

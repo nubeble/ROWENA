@@ -68,7 +68,7 @@ export default class ChatRoom extends React.Component {
     }
 
     componentDidMount() {
-        console.log('ChatRoom.componentDidMount');
+        console.log('jdub', 'ChatRoom.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -88,7 +88,7 @@ export default class ChatRoom extends React.Component {
                 this.allMessagesLoaded = true;
                 return;
             }
-            // console.log('on message', message);
+            // console.log('jdub', 'on message', message);
 
             // fill user info (name, avatar)
             if (message.user) {
@@ -121,7 +121,7 @@ export default class ChatRoom extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('ChatRoom.componentWillUnmount');
+        console.log('jdub', 'ChatRoom.componentWillUnmount');
 
         this.keyboardDidShowListener.remove();
         this.keyboardDidHideListener.remove();
@@ -137,7 +137,7 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('ChatRoom.handleHardwareBackPress');
+        console.log('jdub', 'ChatRoom.handleHardwareBackPress');
 
         // this.goBack(); // works best when the goBack is async
 
@@ -238,7 +238,7 @@ export default class ChatRoom extends React.Component {
             if (!messages) {
                 this.allMessagesLoaded = true;
             } else {
-                // console.log('message list', message);
+                // console.log('jdub', 'message list', message);
 
                 if (messages.length < DEFAULT_MESSAGE_COUNT) this.allMessagesLoaded = true;
 
@@ -562,9 +562,9 @@ export default class ChatRoom extends React.Component {
                         listViewProps={{
                             // scrollEventThrottle: 400,
                             onScroll: ({ nativeEvent }) => {
-                                // console.log('nativeEvent', nativeEvent);
+                                // console.log('jdub', 'nativeEvent', nativeEvent);
                                 if (this.isCloseToTop(nativeEvent)) {
-                                    // console.log('close to top');
+                                    // console.log('jdub', 'close to top');
                                     this.loadMore();
                                 }
                             }
@@ -683,7 +683,7 @@ export default class ChatRoom extends React.Component {
         const currentMessage = props.currentMessage;
 
         if (!currentMessage.user || !currentMessage.user._id || !currentMessage.user.avatar || !currentMessage.user.name) {
-            console.log('renderAvatar currentMessage', currentMessage);
+            console.log('jdub', 'renderAvatar currentMessage', currentMessage);
             return null; // system message
         }
 
@@ -701,7 +701,7 @@ export default class ChatRoom extends React.Component {
         const avatarName = Util.getAvatarName(user.name);
 
         if (!avatarName) {
-            console.log('avatarName is null!!!!', user)
+            console.log('jdub', 'avatarName is null!!!!', user)
             return;
         }
 
@@ -739,7 +739,7 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     renderBubble(props) {
-        // console.log('renderBubble, props', props);
+        // console.log('jdub', 'renderBubble, props', props);
 
         let wrapperStyle = null;
 
@@ -797,7 +797,7 @@ export default class ChatRoom extends React.Component {
 
 
                         const currentMessage = props.currentMessage;
-                        // console.log('currentMessage', currentMessage);
+                        // console.log('jdub', 'currentMessage', currentMessage);
 
                         let { messages } = this.state;
 
@@ -841,10 +841,10 @@ export default class ChatRoom extends React.Component {
 
     @autobind
     renderMessageText(props) {
-        // console.log('renderMessageText', props);
+        // console.log('jdub', 'renderMessageText', props);
 
         const showTranslation = !!props.currentMessage.showTranslation;
-        // if (showTranslation) console.log('translated', props.currentMessage.translatedText);
+        // if (showTranslation) console.log('jdub', 'translated', props.currentMessage.translatedText);
 
         return (
             <View>

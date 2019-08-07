@@ -70,12 +70,12 @@ if (OUTPUT_GC_STATS && memwatch) {
 if (JUST_CHECK_THE_FUNCTION) {
     var name = SELECTED_FUNCTION + '-' + SELECTED_VARIANT;
     var sample = createSampleFunction();
-    console.log("========== CHECKING '" + name + "': ==========");
+    console.log('jdub', "========== CHECKING '" + name + "': ==========");
     sample(function(err, result) {
-        console.log(err || result);
+        console.log('jdub', err || result);
         if (OUTPUT_GC_STATS) {
-            console.log("========== GCs: " + fullGCs + 'full/' + incrGCs + "incr ==========");
-            console.log("========== Leaked: " + leaked + " ==========");
+            console.log('jdub', "========== GCs: " + fullGCs + 'full/' + incrGCs + "incr ==========");
+            console.log('jdub', "========== Leaked: " + leaked + " ==========");
         }
     });
 } else {
@@ -87,7 +87,7 @@ function benchmark() {
     var name = SELECTED_FUNCTION + '-' + SELECTED_VARIANT;
     var sample = createSampleFunction();
     var allSamplesPerSec = [];
-    console.log('========== PERFORMING ' + RUNS_PER_BENCHMARK + " RUNS ON '" + name + "': ==========\n");
+    console.log('jdub', '========== PERFORMING ' + RUNS_PER_BENCHMARK + " RUNS ON '" + name + "': ==========\n");
     var times = [];
     async.timesSeries(
         RUNS_PER_BENCHMARK,
@@ -116,14 +116,14 @@ function benchmark() {
                             + 'incr, leaked: '
                             + timing.leaked;
                     }
-                    console.log(msg + '\n');
+                    console.log('jdub', msg + '\n');
                     next();
                 }
             });
         },
         function (err) {
             if (err) {
-                console.log(err);
+                console.log('jdub', err);
                 process.exit();
             } else {
                 totalTime = _.reduce(times, function (sum, time) { return sum + time; });
@@ -133,14 +133,14 @@ function benchmark() {
                         + ' seconds ('
                         + (SAMPLES_PER_RUN * 1000.0 / averageTime)
                         + ' samples/sec)';
-                console.log('========== ' + msg + ' ==========');
+                console.log('jdub', '========== ' + msg + ' ==========');
                 if (OUTPUT_GC_STATS) {
-                    console.log("========== GCs: " + fullGCs + 'full/' + incrGCs + "incr ==========");
-                    console.log("========== Leaked: " + leaked + " ==========");
+                    console.log('jdub', "========== GCs: " + fullGCs + 'full/' + incrGCs + "incr ==========");
+                    console.log('jdub', "========== Leaked: " + leaked + " ==========");
                 }
                 if (OUTPUT_SAMPLES_PER_SEC_SUMMARY) {
-                    console.log("========== Summary of samples/sec for all runs: ==========");
-                    console.log(allSamplesPerSec.join(', '));
+                    console.log('jdub', "========== Summary of samples/sec for all runs: ==========");
+                    console.log('jdub', allSamplesPerSec.join(', '));
                 }
             }
         });

@@ -61,7 +61,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         let user = Firebase.auth.currentUser;
         user.sendEmailVerification().then(() => {
             // Email sent.
-            console.log('Email sent.');
+            console.log('jdub', 'Email sent.');
 
             // show waiting hourglass
             this.setState({ emailVerificationState: 1 });
@@ -75,7 +75,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                 user.reload().then(() => {
                     if (user.emailVerified) {
                         //// verification success ////
-                        console.log('reload success.', user);
+                        console.log('jdub', 'reload success.', user);
 
                         // stop reload timer
                         if (this.reloadInterval) {
@@ -104,7 +104,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                             // disable indicator
                             this.setState({ showSignUpLoader: false });
 
-                            console.log('[first join] move to welcome');
+                            console.log('jdub', '[first join] move to welcome');
                             this.props.navigation.navigate("welcome", { from: 'EMAIL' });
                         }, 2000); // 2 sec
                     }
@@ -115,8 +115,8 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                         this.reloadInterval = null;
 
                         //// verification failed ////
-                        // console.log('registerUserAndWaitEmailVerification: reload failed ! ' + error.message + ' (' + error.code + ')');
-                        console.log('reload failed!', error.message + ' (' + error.code + ')');
+                        // console.log('jdub', 'registerUserAndWaitEmailVerification: reload failed ! ' + error.message + ' (' + error.code + ')');
+                        console.log('jdub', 'reload failed!', error.message + ' (' + error.code + ')');
 
                         // stop clock timer
                         if (this.clockCall) {
@@ -137,7 +137,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             }, 1000);
         }).catch((error) => {
             // An error happened.
-            console.log('An error happened.', error);
+            console.log('jdub', 'An error happened.', error);
 
             // show message box
             this.showNotification('Unusual activity. Try again later.');
@@ -236,7 +236,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                 this.reloadInterval = null;
             }
 
-            console.log('Verification time is up.');
+            console.log('jdub', 'Verification time is up.');
 
             !this.closed && this.setState({ emailVerificationState: 0 });
 

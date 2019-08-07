@@ -62,7 +62,7 @@ export default class Explore extends React.Component<InjectedProps> {
     */
 
     componentDidMount() {
-        // console.log('Explore.componentDidMount');
+        // console.log('jdub', 'Explore.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -70,7 +70,7 @@ export default class Explore extends React.Component<InjectedProps> {
 
         // const params = this.props.screenProps.params;
         const params = this.props.navigation.state.params;
-        // console.log('Explore.componentDidMount', params);
+        // console.log('jdub', 'Explore.componentDidMount', params);
 
         const place = params.place;
         this.init(place);
@@ -115,7 +115,7 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('Explore.componentWillUnmount');
+        console.log('jdub', 'Explore.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -141,7 +141,7 @@ export default class Explore extends React.Component<InjectedProps> {
     }
 
     async initFromSearch(result) {
-        console.log('Explore.initFromSearch', result);
+        console.log('jdub', 'Explore.initFromSearch', result);
 
         // load length from database
         const placeDoc = await Firebase.firestore.collection("places").doc(result.place_id).get();
@@ -151,7 +151,7 @@ export default class Explore extends React.Component<InjectedProps> {
             if (field) count = field;
         }
 
-        // console.log('count', count);
+        // console.log('jdub', 'count', count);
 
         const place = {
             name: result.description,
@@ -171,8 +171,8 @@ export default class Explore extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('Explore.handleHardwareBackPress');
-        // console.log('Explore.handleHardwareBackPress');
+        console.log('jdub', 'Explore.handleHardwareBackPress');
+        // console.log('jdub', 'Explore.handleHardwareBackPress');
         // this.props.navigation.goBack(); // not working
         // this.props.navigation.dispatch(NavigationActions.back()); // not working
 
@@ -416,7 +416,7 @@ export default class Explore extends React.Component<InjectedProps> {
                         */
 
                         _onScroll={({ layoutMeasurement, contentOffset, contentSize }) => {
-                            // console.log('_onScroll', event);
+                            // console.log('jdub', '_onScroll', event);
 
                             // const y = event.nativeEvent.contentOffset.y;
                             const y = contentOffset.y;
@@ -435,7 +435,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                     }
 
                                     // ToDo: use index
-                                    console.log('TouchableWithoutFeedback onPress', index);
+                                    console.log('jdub', 'TouchableWithoutFeedback onPress', index);
                                 }}>
                                     {
                                         this.ads.length === 4 ?
@@ -449,7 +449,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 autoplayTimeout={2}
                                                 paginationStyle={{ bottom: 4 }}
                                                 onIndexChanged={(index) => {
-                                                    // console.log('onIndexChanged', index);
+                                                    // console.log('jdub', 'onIndexChanged', index);
                                                     this.currentSwiperIndex = index;
                                                 }}
                                             >

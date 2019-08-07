@@ -92,7 +92,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('ReviewMain.handleHardwareBackPress');
+        console.log('jdub', 'ReviewMain.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -101,7 +101,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onReviewsUpdated() {
-        console.log('ReviewMain.onReviewsUpdated');
+        console.log('jdub', 'ReviewMain.onReviewsUpdated');
 
         // reload from the start
         /*
@@ -120,7 +120,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
     @autobind
     onReplyAddedOnReview() {
-        console.log('ReviewMain.onReplyAddedOnReview');
+        console.log('jdub', 'ReviewMain.onReplyAddedOnReview');
 
         // reload from the start
         const { profileStore } = this.props;
@@ -345,7 +345,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('ReviewMain', 'loading feeds ...');
+        console.log('jdub', 'ReviewMain', 'loading feeds ...');
 
         let newFeeds = [];
 
@@ -461,7 +461,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
             !this.closed && this.setState({ isLoadingFeeds: false });
         }, 250);
 
-        console.log('ReviewMain', 'loading feeds done!');
+        console.log('jdub', 'ReviewMain', 'loading feeds done!');
     }
 
     async postClick(item) {

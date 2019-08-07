@@ -110,7 +110,7 @@ export default createBottomTabNavigator(
 
             tabBarIcon: ({ tintColor, focused }) => {
 
-                // console.log('navigation:', navigation);
+                // console.log('jdub', 'navigation:', navigation);
 
                 // let iconName;
 

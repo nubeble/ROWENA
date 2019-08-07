@@ -69,7 +69,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     */
 
     componentDidMount() {
-        console.log('SavedPlace.componentDidMount');
+        console.log('jdub', 'SavedPlace.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         // this.onFocusListener = this.props.navigation.addListener('willFocus', this.onFocus);
@@ -102,7 +102,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('SavedPlace.componentWillUnmount');
+        console.log('jdub', 'SavedPlace.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -125,7 +125,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('SavedPlace.handleHardwareBackPress');
+        console.log('jdub', 'SavedPlace.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -134,7 +134,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
     @autobind
     onLikesUpdated() {
-        console.log('SavedPlace.onLikesUpdated');
+        console.log('jdub', 'SavedPlace.onLikesUpdated');
 
         let count = this.lastLoadedFeedIndex + 1;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
@@ -184,7 +184,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex >= length - 1) return;
 
-        console.log('SavedPlace', 'loading feeds ...');
+        console.log('jdub', 'SavedPlace', 'loading feeds ...');
 
         let newFeeds = [];
 
@@ -263,7 +263,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
 
-        console.log('SavedPlace', 'loading feeds done!');
+        console.log('jdub', 'SavedPlace', 'loading feeds done!');
     }
 
     getFeedsFromStart() {

@@ -46,7 +46,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
     };
 
     componentDidMount() {
-        console.log('EditProfileMain.componentDidMount');
+        console.log('jdub', 'EditProfileMain.componentDidMount');
 
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
@@ -67,7 +67,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     onAddToReviewFinished() {
-        console.log('EditProfileMain.onAddToReviewFinished');
+        console.log('jdub', 'EditProfileMain.onAddToReviewFinished');
 
         /*
         const { reviews } = this.commentStore;
@@ -87,7 +87,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('EditProfileMain.handleHardwareBackPress');
+        console.log('jdub', 'EditProfileMain.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -443,7 +443,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
                 nameLineHeight = 24;
             }
         } else { // post removed
-            // console.log('EditProfileMain.renderItem', _review);
+            // console.log('jdub', 'EditProfileMain.renderItem', _review);
 
             // use original data
             picture = _review.picture;
@@ -694,7 +694,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
             this.setState({ reviews });
         } else {
             Util.translate(comment).then(translated => {
-                console.log('translated', translated);
+                console.log('jdub', 'translated', translated);
 
                 this.originReviewList[index] = comment;
 

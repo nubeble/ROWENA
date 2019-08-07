@@ -220,7 +220,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
 
         // remove server files
         if (this.imageRefs.length > 0) {
-            console.log('clean image files');
+            console.log('jdub', 'clean image files');
 
             const formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
@@ -230,7 +230,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                 const fieldName = 'file' + number.toString();
                 formData.append(fieldName, ref);
 
-                console.log(fieldName, ref);
+                console.log('jdub', fieldName, ref);
             }
 
             await fetch(SERVER_ENDPOINT + "cleanPostImages", {
@@ -497,10 +497,10 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const country = Util.getCountry(place);
         if (country === 'USA' || country === 'Myanmar (Burma)' || country === 'Liberia') { // ToDo: add more countries
             Vars.distanceUnit = 'mile';
-            console.log('mile unit');
+            console.log('jdub', 'mile unit');
         } else {
             Vars.distanceUnit = 'meter';
-            console.log('meter unit');
+            console.log('jdub', 'meter unit');
         }
 
         // 3. go back
@@ -1295,7 +1295,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
 
-        console.log('result of launchImageLibraryAsync:', result);
+        console.log('jdub', 'result of launchImageLibraryAsync:', result);
 
         if (!result.cancelled) {
             this.setState({ onUploadingImage: true });
@@ -1347,7 +1347,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         }
 
         let type = Util.getImageType(ext);
-        // console.log('file type:', type);
+        // console.log('jdub', 'file type:', type);
 
         const formData = new FormData();
         // formData.append("type", "post");
@@ -1374,9 +1374,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
             );
 
             let responseJson = await response.json();
-            console.log('uploadImage, responseJson', responseJson);
+            console.log('jdub', 'uploadImage, responseJson', responseJson);
 
-            // console.log('responseJson', await response.json());
+            // console.log('jdub', 'responseJson', await response.json());
 
             cb(responseJson.downloadUrl);
         } catch (error) {
@@ -1424,7 +1424,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
     _hideDateTimePicker = () => this.setState({ showDatePicker: false });
 
     _handleDatePicked = (date) => {
-        console.log('A date has been picked: ', date);
+        console.log('jdub', 'A date has been picked: ', date);
 
         this._hideDateTimePicker();
 
@@ -1441,9 +1441,9 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const month = _date.getMonth();
         const year = _date.getFullYear();
         /*
-        console.log('day', day);
-        console.log('month', month);
-        console.log('year', year);
+        console.log('jdub', 'day', day);
+        console.log('jdub', 'month', month);
+        console.log('jdub', 'year', year);
         */
 
         let _day = '';

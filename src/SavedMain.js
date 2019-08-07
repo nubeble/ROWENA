@@ -70,7 +70,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     componentDidMount() {
-        console.log('SavedMain.componentDidMount');
+        console.log('jdub', 'SavedMain.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
@@ -89,7 +89,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('SavedMain.componentWillUnmount');
+        console.log('jdub', 'SavedMain.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -102,7 +102,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('SavedMain.handleHardwareBackPress');
+        console.log('jdub', 'SavedMain.handleHardwareBackPress');
 
         this.props.navigation.dispatch(NavigationActions.back());
 
@@ -111,7 +111,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
     @autobind
     onLikesUpdated() {
-        console.log('SavedMain.onLikesUpdated');
+        console.log('jdub', 'SavedMain.onLikesUpdated');
 
         let count = this.lastLoadedFeedIndex + 1;
         if (count < DEFAULT_FEED_COUNT) count = DEFAULT_FEED_COUNT;
@@ -146,7 +146,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     getPlaces() {
-        // console.log('getPlaces()');
+        // console.log('jdub', 'getPlaces()');
 
         this.initMap();
 
@@ -155,7 +155,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
         const likes = profile.likes;
         const length = likes.length;
 
-        console.log('SavedMain.getPlaces()', length);
+        console.log('jdub', 'SavedMain.getPlaces()', length);
 
         if (length === 0) return;
 
@@ -178,7 +178,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
         // all loaded
         if (this.lastLoadedFeedIndex >= this.order.length - 1) return;
 
-        console.log('SavedMain', 'loading feeds ...');
+        console.log('jdub', 'SavedMain', 'loading feeds ...');
 
         let newFeeds = [];
 
@@ -232,7 +232,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
             !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
         }, 250);
 
-        console.log('SavedMain', 'loading feeds done!');
+        console.log('jdub', 'SavedMain', 'loading feeds done!');
     }
 
     getPictures(feeds) {
@@ -247,7 +247,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
             count++;
         }
 
-        // console.log('pictures length', pictures.length);
+        // console.log('jdub', 'pictures length', pictures.length);
 
         return pictures;
     }

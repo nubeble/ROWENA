@@ -67,7 +67,7 @@ export default class SignUpWithMobileMain extends React.Component {
     };
 
     componentDidMount() {
-        console.log('SignUpWithMobileMain.componentDidMount');
+        console.log('jdub', 'SignUpWithMobileMain.componentDidMount');
 
         this.keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', this._keyboardDidShow);
         this.keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', this._keyboardDidHide);
@@ -477,13 +477,13 @@ export default class SignUpWithMobileMain extends React.Component {
     }
 
     onPhoneChange = (phone) => {
-        console.log('SignUpWithMobileMain.onPhoneChange');
+        console.log('jdub', 'SignUpWithMobileMain.onPhoneChange');
 
         this.setState({ phone });
     }
 
     onPhoneComplete = async () => {
-        console.log('SignUpWithMobileMain.onPhoneComplete');
+        console.log('jdub', 'SignUpWithMobileMain.onPhoneComplete');
 
         if (!this.state.dialCode) {
             this.showNotification('Please select your country calling code.');
@@ -494,6 +494,7 @@ export default class SignUpWithMobileMain extends React.Component {
         let token = null;
         const listener = ({ url }) => {
             if (Platform.OS === 'ios') WebBrowser.dismissBrowser();
+
             const tokenEncoded = Linking.parse(url).queryParams['token'];
             if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
         }
@@ -502,7 +503,7 @@ export default class SignUpWithMobileMain extends React.Component {
         await WebBrowser.openBrowserAsync(CAPTCHA_URL);
         Linking.removeEventListener('url', listener);
 
-        // console.log('SignUpWithMobileMain.token', token);
+        console.log('jdub', 'SignUpWithMobileMain.token', token); // ToDo
 
         if (token) {
             const { dialCode, phone } = this.state;
@@ -522,7 +523,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)'
                 });
             } catch (error) {
-                console.log('onPhoneComplete error', error.code, error.message);
+                console.log('jdub', 'onPhoneComplete error', error.code, error.message);
 
                 // ToDo: error handling
                 if (error.code === 'auth/too-many-requests') {
@@ -532,6 +533,8 @@ export default class SignUpWithMobileMain extends React.Component {
                     this.showNotification('An error happened. Please try again.');
                 }
             }
+        } else {
+            this.showNotification('token is null!!!');
         }
 
         // await WebBrowser.openBrowserAsync(CAPTCHA_URL);
@@ -539,14 +542,14 @@ export default class SignUpWithMobileMain extends React.Component {
 
     /*
     async _handleOpenURL(event) {
-        if (Platform.OS === 'ios') WebBrowser.dismissBrowser(); // iOS only
+        if (Platform.OS === 'ios') WebBrowser.dismissBrowser();
 
         const url = event.url;
         let token = null;
         const tokenEncoded = Linking.parse(url).queryParams['token'];
         if (tokenEncoded) token = decodeURIComponent(tokenEncoded);
 
-        console.log('_handleOpenURL, token', token);
+        console.log('jdub', '_handleOpenURL, token', token);
         // 03AOLTBLRtdul18NggbyqigtFmG5Mv9EUdYYwdE_ezyxbLXLxVLAxYN6mBmaMIkx2SvNNeMyXX81NA6-488D_byqOjQ8yRIB4RcXGi7oZBjkqkzxHSuZGVSoJbyE3fKast9tSytKf38V27QalswFZTibDLcJpVG-epcCimhajwpR0PhFMBqPb4WdjvVTP2UiXCVX8KwLqFIaqCtQLovhevdRhJsWpUgZuRrJS0iWiNguUw1xl958bYYZq9CRd3hj4ujLOo75MPXW7TR9YN-SjflxDVE54bJt3na4ZqatENyeMYhm09tyu4Zbaxqq6yOeR68p0vYPONvmlNB28auzyGVmtfELDyCQ41_Q
 
         if (token) {
@@ -568,7 +571,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     invalid: true, signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)', signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)'
                 });
             } catch (error) {
-                console.log('onPhoneComplete error', error.code, error.message);
+                console.log('jdub', 'onPhoneComplete error', error.code, error.message);
 
                 // ToDo: error handling
                 if (error.code === 'auth/too-many-requests') {
@@ -579,7 +582,7 @@ export default class SignUpWithMobileMain extends React.Component {
                 }
 
                 // ToDo: test
-                // this.showNotification(error.code + error.message);
+                this.showNotification(error.code + error.message);
             }
         }
     }
@@ -589,7 +592,7 @@ export default class SignUpWithMobileMain extends React.Component {
 
         /*
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
-            console.log('SignUpWithMobileMain.onAuthStateChanged', user);
+            console.log('jdub', 'SignUpWithMobileMain.onAuthStateChanged', user);
 
             this.props.navigation.navigate("signUpWithMobilePassword");
         });
@@ -599,14 +602,14 @@ export default class SignUpWithMobileMain extends React.Component {
 
         try {
             const user = await confirmationResult.confirm(code);
-            console.log('user', user);
+            console.log('jdub', 'user', user);
 
             // save token
             // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
             await registerExpoPushToken(user.user.uid, user.user.phoneNumber);
             // }
         } catch (error) {
-            console.log('onSignIn error', error.code, error.message);
+            console.log('jdub', 'onSignIn error', error.code, error.message);
 
             // ToDo: error handling
             if (error.code === 'auth/invalid-verification-code') {
@@ -655,7 +658,7 @@ export default class SignUpWithMobileMain extends React.Component {
     }
 
     checkCode(code) {
-        console.log('checkCode', code);
+        console.log('jdub', 'checkCode', code);
         this.setState({ code }, () => {
             this.buttonClick();
         });

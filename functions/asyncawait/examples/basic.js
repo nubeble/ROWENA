@@ -25,30 +25,30 @@ var longCalculation = async (function (seconds, result) {
 // Another synchronous-looking function written in async/await style.
 var program = async (function () {
     try  {
-        console.log('zero...');
+        console.log('jdub', 'zero...');
 
         var msg = await(longCalculation(1, 'one...'));
-        console.log(msg);
+        console.log('jdub', msg);
 
         msg = await(longCalculation(1, 'two...'));
-        console.log(msg);
+        console.log('jdub', msg);
 
         msg = await(longCalculation(1, 'three...'));
-        console.log(msg);
+        console.log('jdub', msg);
 
         var file = await(readFile('NonExistingFilename'));
 
         msg = await(longCalculation(1, 'four...'));
-        console.log(msg);
+        console.log('jdub', msg);
     } catch (ex) {
-        console.log('Caught an error');
+        console.log('jdub', 'Caught an error');
     }
     return 'Finished!';
 });
 
 // Execute program() and print the result.
 program().then(function (result) {
-    console.log(result);
+    console.log('jdub', result);
 });
 
 // Outputs (with one second delays between the numbers):

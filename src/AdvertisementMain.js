@@ -252,7 +252,7 @@ export default class AdvertisementMain extends React.Component {
 
         // remove server files
         if (this.imageRefs.length > 0) {
-            console.log('clean image files');
+            console.log('jdub', 'clean image files');
 
             const formData = new FormData();
             for (let i = 0; i < this.imageRefs.length; i++) {
@@ -262,7 +262,7 @@ export default class AdvertisementMain extends React.Component {
                 const fieldName = 'file' + number.toString();
                 formData.append(fieldName, ref);
 
-                console.log(fieldName, ref);
+                console.log('jdub', fieldName, ref);
             }
 
             await fetch(SERVER_ENDPOINT + "cleanPostImages", {
@@ -279,7 +279,7 @@ export default class AdvertisementMain extends React.Component {
     }
 
     initFromSelect(result) { // country
-        console.log('AdvertisementMain.initFromSelect', result);
+        console.log('jdub', 'AdvertisementMain.initFromSelect', result);
 
         this.setState({
             country: result.name, countryCode: result.code,
@@ -288,7 +288,7 @@ export default class AdvertisementMain extends React.Component {
     }
 
     initFromSearch(result1, result2) { // street
-        console.log('AdvertisementMain.initFromSearch', result1, result2);
+        console.log('jdub', 'AdvertisementMain.initFromSearch', result1, result2);
 
         /*
         "description": "33 Hyoryeong-ro, Seocho-dong, Seocho-gu, Seoul, South Korea",
@@ -392,7 +392,7 @@ export default class AdvertisementMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('AdvertisementMain.handleHardwareBackPress');
+        console.log('jdub', 'AdvertisementMain.handleHardwareBackPress');
 
         if (this._showNotification) {
             this.hideNotification();
@@ -1956,7 +1956,7 @@ export default class AdvertisementMain extends React.Component {
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });
 
-        console.log('result of launchImageLibraryAsync:', result);
+        console.log('jdub', 'result of launchImageLibraryAsync:', result);
 
         if (!result.cancelled) {
             this.setState({ onUploadingImage: true, uploadingImageNumber: index + 1 });
@@ -2029,7 +2029,7 @@ export default class AdvertisementMain extends React.Component {
         }
 
         let type = Util.getImageType(ext);
-        // console.log('file type:', type);
+        // console.log('jdub', 'file type:', type);
 
         const formData = new FormData();
         // formData.append("type", "profile");
@@ -2062,9 +2062,9 @@ export default class AdvertisementMain extends React.Component {
             );
 
             let responseJson = await response.json();
-            console.log('uploadImage, responseJson', responseJson);
+            console.log('jdub', 'uploadImage, responseJson', responseJson);
 
-            // console.log('responseJson', await response.json());
+            // console.log('jdub', 'responseJson', await response.json());
 
             if (responseJson.downloadUrl) cb(responseJson.downloadUrl);
             else cb(null);
@@ -2093,7 +2093,7 @@ export default class AdvertisementMain extends React.Component {
     }
 
     async createFeed(data, extra) {
-        console.log('AdvertisementMain.createFeed', data, extra);
+        console.log('jdub', 'AdvertisementMain.createFeed', data, extra);
 
         // const feedId = Util.uid(); // create uuid
         // const userUid = Firebase.user().uid;
@@ -2150,7 +2150,7 @@ export default class AdvertisementMain extends React.Component {
     _hideDateTimePicker = () => this.setState({ showDatePicker: false });
 
     _handleDatePicked = (date) => {
-        console.log('A date has been picked: ', date);
+        console.log('jdub', 'A date has been picked: ', date);
 
         this._hideDateTimePicker();
 
@@ -2167,9 +2167,9 @@ export default class AdvertisementMain extends React.Component {
         const month = _date.getMonth();
         const year = _date.getFullYear();
         /*
-        console.log('day', day);
-        console.log('month', month);
-        console.log('year', year);
+        console.log('jdub', 'day', day);
+        console.log('jdub', 'month', month);
+        console.log('jdub', 'year', year);
         */
 
         let _day = '';

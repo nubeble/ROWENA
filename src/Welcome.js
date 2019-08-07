@@ -30,7 +30,7 @@ export default class Welcome extends React.Component {
         // ToDo: dialog - you wanna quit?
 
         // --
-        console.log('move to tutorial');
+        console.log('jdub', 'move to tutorial');
         this.props.navigation.navigate("tutorial");
         // --
 
@@ -106,7 +106,7 @@ export default class Welcome extends React.Component {
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
                             if (this.closed) return;
-                            console.log('move to tutorial');
+                            console.log('jdub', 'move to tutorial');
                             this.props.navigation.navigate("tutorial");
                         }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>

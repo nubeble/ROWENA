@@ -218,7 +218,7 @@ export default class GooglePlacesAutocomplete extends Component {
     }
 
     getCurrentLocation = () => {
-        // console.log('GooglePlacesAutocomplete.getCurrentLocation');
+        // console.log('jdub', 'GooglePlacesAutocomplete.getCurrentLocation');
 
         // show loader
         this.setState({ isLoading: true });
@@ -238,7 +238,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                console.log('navigator.geolocation.getCurrentPosition', position);
+                console.log('jdub', 'navigator.geolocation.getCurrentPosition', position);
 
                 // set text
                 const name = position.coords.latitude + ', ' + position.coords.longitude;
@@ -275,7 +275,7 @@ export default class GooglePlacesAutocomplete extends Component {
                         this.getStreetAddress(input, key, (obj) => {
                             if (this.closed) return;
 
-                            console.log('this.getStreetAddress result', obj);
+                            console.log('jdub', 'this.getStreetAddress result', obj);
 
                             // Consider: exception
                             // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
@@ -319,7 +319,7 @@ export default class GooglePlacesAutocomplete extends Component {
                                 return;
                             }
 
-                            console.log('this.getPlaceId result', obj);
+                            console.log('jdub', 'this.getPlaceId result', obj);
 
                             // Consider: exception
                             // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
@@ -351,7 +351,7 @@ export default class GooglePlacesAutocomplete extends Component {
                 }
             },
             (error) => {
-                console.log('navigator.geolocation.getCurrentPosition error', error.message);
+                console.log('jdub', 'navigator.geolocation.getCurrentPosition error', error.message);
 
                 // hide loader
                 !this.closed && this.setState({ isLoading: false });
@@ -628,7 +628,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
                 if (request.status === 200) {
                     const responseJSON = JSON.parse(request.responseText);
-                    // console.log('responseJSON', responseJSON);
+                    // console.log('jdub', 'responseJSON', responseJSON);
 
                     this._disableRowLoaders();
 
@@ -636,15 +636,15 @@ export default class GooglePlacesAutocomplete extends Component {
                         if (!this.closed) {
                             let results = [];
                             if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-                                console.log('_requestNearby GoogleReverseGeocoding pre results', responseJSON.results);
+                                console.log('jdub', '_requestNearby GoogleReverseGeocoding pre results', responseJSON.results);
                                 results = this._filterResultsByTypes(responseJSON.results, this.props.filterReverseGeocodingByTypes);
-                                console.log('_requestNearby GoogleReverseGeocoding results', results);
+                                console.log('jdub', '_requestNearby GoogleReverseGeocoding results', results);
                             } else { // GooglePlacesSearch
                                 // results = responseJSON.results;
 
-                                console.log('_requestNearby GooglePlacesSearch pre results', results);
+                                console.log('jdub', '_requestNearby GooglePlacesSearch pre results', results);
                                 results = this._filterByALLTypes(responseJSON.results, this.props.filterPlacesSearchByTypes);
-                                console.log('_requestNearby GooglePlacesSearch results', results);
+                                console.log('jdub', '_requestNearby GooglePlacesSearch results', results);
                             }
 
                             // remove duplicates
@@ -709,7 +709,7 @@ export default class GooglePlacesAutocomplete extends Component {
                     if (typeof responseJSON.predictions !== 'undefined') {
                         if (this.closed) return;
 
-                        // console.log('predictions', responseJSON.predictions);
+                        // console.log('jdub', 'predictions', responseJSON.predictions);
 
                         /*
                         const results = this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding'
@@ -719,22 +719,22 @@ export default class GooglePlacesAutocomplete extends Component {
 
                         let results = [];
                         if (this.props.nearbyPlacesAPI === 'GoogleReverseGeocoding') {
-                            console.log('_request GoogleReverseGeocoding pre results', responseJSON.predictions);
+                            console.log('jdub', '_request GoogleReverseGeocoding pre results', responseJSON.predictions);
                             results = this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes);
-                            console.log('_request GoogleReverseGeocoding results', results);
+                            console.log('jdub', '_request GoogleReverseGeocoding results', results);
                         } else { // GooglePlacesSearch
                             if (this.props.filterPlacesSearchByTypes.length === 0) { // searching streets in AdvertisementMain
                                 results = responseJSON.predictions;
                             } else {
-                                console.log('_request GooglePlacesSearch pre results', responseJSON.predictions);
+                                console.log('jdub', '_request GooglePlacesSearch pre results', responseJSON.predictions);
                                 results = this._filterResultsByCity(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
-                                console.log('_request GooglePlacesSearch results', results);
+                                console.log('jdub', '_request GooglePlacesSearch results', results);
 
                                 // ToDo: exception for city-state (Macau, Hong Kong, ...)
                                 if (results.length === 0) {
                                     const filter = ["country", "political", "geocode"];
                                     results = this._filterResultsByCityState(responseJSON.predictions, filter);
-                                    console.log('_request GooglePlacesSearch _filterResultsByCityState', results);
+                                    console.log('jdub', '_request GooglePlacesSearch _filterResultsByCityState', results);
                                     if (results.length === 1) {
                                         const result = results[0];
                                         if (result.description === "Hong Kong" || result.description === "Macau" || result.description === "Singapore" || result.description === "Monaco") {
@@ -860,7 +860,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
         const description = rowData.description;
         /*
-        console.log('description', description);
+        console.log('jdub', 'description', description);
 
         const index = description.indexOf(',');
 
@@ -876,8 +876,8 @@ export default class GooglePlacesAutocomplete extends Component {
             city = description.substring(0, index);
             state = description.substring(index + 2, description.length);
 
-            // console.log('city', city);
-            // console.log('state', state);
+            // console.log('jdub', 'city', city);
+            // console.log('jdub', 'state', state);
         }
         */
         const city = Util.getCity(description);
@@ -1216,25 +1216,25 @@ export default class GooglePlacesAutocomplete extends Component {
             if (request.status === 200) {
                 const responseJSON = JSON.parse(request.responseText);
 
-                // console.log('responseJSON', responseJSON);
+                // console.log('jdub', 'responseJSON', responseJSON);
 
                 // if (typeof responseJSON.predictions !== 'undefined') {
                 if (typeof responseJSON.results !== 'undefined') {
                     /*
                     const results = responseJSON.predictions; // array
-                    console.log('getPlaceId predictions', results);
+                    console.log('jdub', 'getPlaceId predictions', results);
                     const result = results[0]; // map object
-                    console.log('getPlaceId array 0', result);
+                    console.log('jdub', 'getPlaceId array 0', result);
 
                     cb(result);
                     */
 
                     let result = null;
 
-                    // console.log('getPlaceId pre results', responseJSON.results);
+                    // console.log('jdub', 'getPlaceId pre results', responseJSON.results);
                     const filter = ['locality', 'administrative_area_level_3'];
                     const results = this._filterResultsByTypes(responseJSON.results, filter);
-                    // console.log('getPlaceId after results', results);
+                    // console.log('jdub', 'getPlaceId after results', results);
 
                     // add 'street_address' filter
                     if (results.length != 0) {
@@ -1292,25 +1292,25 @@ export default class GooglePlacesAutocomplete extends Component {
             if (request.status === 200) {
                 const responseJSON = JSON.parse(request.responseText);
 
-                // console.log('responseJSON', responseJSON);
+                // console.log('jdub', 'responseJSON', responseJSON);
 
                 // if (typeof responseJSON.predictions !== 'undefined') {
                 if (typeof responseJSON.results !== 'undefined') {
                     /*
                     const results = responseJSON.predictions; // array
-                    console.log('getPlaceId predictions', results);
+                    console.log('jdub', 'getPlaceId predictions', results);
                     const result = results[0]; // map object
-                    console.log('getPlaceId array 0', result);
+                    console.log('jdub', 'getPlaceId array 0', result);
 
                     cb(result);
                     */
 
                     let result = null;
 
-                    // console.log('getPlaceId pre results', responseJSON.results);
+                    // console.log('jdub', 'getPlaceId pre results', responseJSON.results);
                     const filter = ['street_address'];
                     const results = this._filterResultsByTypes(responseJSON.results, filter);
-                    // console.log('getPlaceId after results', results);
+                    // console.log('jdub', 'getPlaceId after results', results);
 
                     // add 'street_address' filter
                     if (results.length != 0) {
@@ -1365,7 +1365,7 @@ export default class GooglePlacesAutocomplete extends Component {
 
         let __results = [];
 
-        // console.log('1111111111111111', results);
+        // console.log('jdub', '1111111111111111', results);
 
         for (let i = 0; i < results.length; i++) {
             let obj = results[i];
@@ -1393,7 +1393,7 @@ export default class GooglePlacesAutocomplete extends Component {
             }
         }
 
-        // console.log('2222222222222', __results);
+        // console.log('jdub', '2222222222222', __results);
 
         // results = __results;
         return __results;

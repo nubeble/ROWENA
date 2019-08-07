@@ -22,15 +22,15 @@ var program = async (function() {
     var iterator = someNums();
 
     var thunk = iterator.forEach(console.log, function (err) {
-        console.log('Finished (callback)');
+        console.log('jdub', 'Finished (callback)');
     });
 
     thunk(function (err) {
-        console.log('Finished (thunk)');
+        console.log('jdub', 'Finished (thunk)');
     });
-    console.log('Finished (synchronous)');
+    console.log('jdub', 'Finished (synchronous)');
 });
 
 
-console.log('running...');
-program().catch(function (err) { console.log('ERROR: ' + err); });
+console.log('jdub', 'running...');
+program().catch(function (err) { console.log('jdub', 'ERROR: ' + err); });

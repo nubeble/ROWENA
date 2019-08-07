@@ -81,7 +81,7 @@ export default class AuthMain extends React.Component {
 
             // Consider: screen blinking issue on blur animation
             /*
-            console.log('animation start');
+            console.log('jdub', 'animation start');
             Animated.timing(this.state.blurRadius, { duration: 3000, toValue: 5, useNativeDriver: true }).start(() => {
                 // add code here
             });
@@ -128,14 +128,14 @@ export default class AuthMain extends React.Component {
 
             try {
                 const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
-                console.log('Firebase.auth.signInAndRetrieveDataWithCredential, user', user);
+                console.log('jdub', 'Firebase.auth.signInAndRetrieveDataWithCredential, user', user);
 
                 // save token
                 // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
                 await registerExpoPushToken(user.user.uid, user.user.displayName);
                 // }
             } catch (error) {
-                console.log('signInAndRetrieveDataWithCredential error', error);
+                console.log('jdub', 'signInAndRetrieveDataWithCredential error', error);
 
                 if (error.code === 'auth/account-exists-with-different-credential') {
                     this.showNotification('There already exists an account with the email address asserted by the credential.');
@@ -158,7 +158,7 @@ export default class AuthMain extends React.Component {
                 }
             }
         } else {
-            console.log('Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
+            console.log('jdub', 'Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
             const str = type + ' ' + permissions + ' ' + declinedPermissions;
             this.showNotification(str);
         }
@@ -171,14 +171,14 @@ export default class AuthMain extends React.Component {
 
     isStandaloneApp = () => {
         if (Constants.appOwnership === 'expo') {
-            console.log('Expo ownership app');
+            console.log('jdub', 'Expo ownership app');
 
             if (Platform.OS === 'android') return true;
 
             return false;
 
         } else { // standalone
-            console.log('standalone app');
+            console.log('jdub', 'standalone app');
 
             return true;
         }

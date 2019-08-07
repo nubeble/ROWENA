@@ -83,7 +83,7 @@ export default class CountrySelection extends React.Component {
                 <View style={styles.container}>
                     <CountryCodeList
                         onClickCell={(cellObject) => {
-                            console.log(cellObject);
+                            console.log('jdub', cellObject);
 
                             if (this.cellClicked) return;
                             this.cellClicked = true;

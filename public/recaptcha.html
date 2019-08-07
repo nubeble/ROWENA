@@ -71,12 +71,12 @@
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="text/javascript">
         function dataCallback(response) {
-            console.log("dataCallback", response);
+            console.log('jdub', "dataCallback", response);
             window.location.href = "/checkRecaptcha?response=" + encodeURIComponent(response);
         }
 
         function dataExpiredCallback() {
-            console.log("dataExpiredCallback")
+            console.log('jdub', "dataExpiredCallback")
         }
     </script>
 </head>

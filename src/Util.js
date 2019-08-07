@@ -321,13 +321,13 @@ export default class Util extends React.Component {
             if (request.status === 200) {
                 const responseJSON = JSON.parse(request.responseText);
 
-                // console.log('responseJSON', responseJSON);
+                // console.log('jdub', 'responseJSON', responseJSON);
 
                 if (type === 100) { // get placeId of city-state
 
                     // --
                     if (typeof responseJSON.results !== 'undefined') {
-                        console.log('getPlaceId pre results', responseJSON.results);
+                        console.log('jdub', 'getPlaceId pre results', responseJSON.results);
 
                         let results = null;
                         const filter1 = ["country", "political"];
@@ -338,12 +338,12 @@ export default class Util extends React.Component {
                             results = Util._filterResultsByTypes(responseJSON.results, filter2);
                         }
 
-                        // console.log('getPlaceId after results', results);
+                        // console.log('jdub', 'getPlaceId after results', results);
 
                         let result = null;
                         if (results.length === 0) {
                             // this should never happen
-                            console.log('Util.getPlaceId', 'this should never happen!!!');
+                            console.log('jdub', 'Util.getPlaceId', 'this should never happen!!!');
 
                             // just use the origin
                             result = responseJSON.results[0];
@@ -355,7 +355,7 @@ export default class Util extends React.Component {
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
-                        console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                        console.log('jdub', 'getPlaceId (google places autocomplete)' + responseJSON.error_message);
                         cb(null);
                     }
                     // --
@@ -364,7 +364,7 @@ export default class Util extends React.Component {
 
                     // --
                     if (typeof responseJSON.results !== 'undefined') {
-                        console.log('getPlaceId pre results', responseJSON.results);
+                        console.log('jdub', 'getPlaceId pre results', responseJSON.results);
 
                         let results = null;
                         const filter1 = ["colloquial_area", "locality", "political"];
@@ -385,12 +385,12 @@ export default class Util extends React.Component {
                             results = Util._filterResultsByTypes(responseJSON.results, filter4);
                         }
 
-                        // console.log('getPlaceId after results', results);
+                        // console.log('jdub', 'getPlaceId after results', results);
 
                         let result = null;
                         if (results.length === 0) {
                             // this should never happen
-                            console.log('Util.getPlaceId', 'this should never happen!!!');
+                            console.log('jdub', 'Util.getPlaceId', 'this should never happen!!!');
 
                             // just use the origin
                             result = responseJSON.results[0];
@@ -402,7 +402,7 @@ export default class Util extends React.Component {
                     }
 
                     if (typeof responseJSON.error_message !== 'undefined') {
-                        console.log('getPlaceId (google places autocomplete)' + responseJSON.error_message);
+                        console.log('jdub', 'getPlaceId (google places autocomplete)' + responseJSON.error_message);
                     }
                     // --
 
