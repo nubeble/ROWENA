@@ -249,14 +249,14 @@ export default class AuthMain extends React.Component {
                         <Image
                             style={{
                                 tintColor: 'rgba(255, 255, 255, 0.8)',
-                                width: 31, height: 31,
+                                width: 48, height: 48,
                                 resizeMode: 'cover'
                             }}
                             source={PreloadImage.logo}
                         />
                         <Text style={{
                             // backgroundColor: 'green',
-                            marginLeft: 4,
+                            marginLeft: -4,
                             fontFamily: "FriendlySchoolmates-Regular",
                             color: 'rgba(255, 255, 255, 0.8)',
                             fontSize: 40,
