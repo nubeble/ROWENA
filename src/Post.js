@@ -896,6 +896,7 @@ export default class Post extends React.Component<InjectedProps> {
                 {
                     this.renderSwiper(post)
                 }
+
                 <View style={styles.infoContainer}>
 
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 4, marginBottom: 4 }}>
@@ -1191,70 +1192,94 @@ export default class Post extends React.Component<InjectedProps> {
                 {/* map */}
                 <View style={styles.mapContainer}>
                     <Text style={styles.location}>{post.location.description}</Text>
-                    <TouchableWithoutFeedback
-                        onPress={() => {
-                            if (this._showNotification) {
-                                this.hideNotification();
-                            }
 
-                            this.props.navigation.navigate("map", { post: post });
-                        }}
-                    >
-                        <View style={styles.mapView}>
-                            <MapView
-                                /*
+                    {
+                        Platform.OS === 'android' ?
+                            <TouchableWithoutFeedback
                                 onPress={() => {
                                     if (this._showNotification) {
                                         this.hideNotification();
                                     }
-    
+
                                     this.props.navigation.navigate("map", { post: post });
                                 }}
-                                */
-                                ref={map => { this.map = map }}
-                                provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
-                                style={styles.map}
-                                // mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
-                                // legalLabelInsets={{ top: 25, bottom: 25 }}
-                                initialRegion={{
-                                    longitude: post.location.longitude,
-                                    latitude: post.location.latitude,
-                                    latitudeDelta: 0.008,
-                                    longitudeDelta: 0.008 * ASPECT_RATIO
-                                }}
-                                scrollEnabled={false}
-                                zoomEnabled={false}
-                                rotateEnabled={false}
-                                pitchEnabled={false}
                             >
-                                <MapView.Marker
-                                    coordinate={{
-                                        longitude: post.location.longitude,
-                                        latitude: post.location.latitude
+                                <View style={styles.mapView}>
+                                    <MapView
+                                        ref={map => { this.map = map }}
+                                        provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                                        style={styles.map}
+                                        // mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                        // legalLabelInsets={{ top: 25, bottom: 25 }}
+                                        initialRegion={{
+                                            longitude: post.location.longitude,
+                                            latitude: post.location.latitude,
+                                            latitudeDelta: 0.008,
+                                            longitudeDelta: 0.008 * ASPECT_RATIO
+                                        }}
+                                        scrollEnabled={false}
+                                        zoomEnabled={false}
+                                        rotateEnabled={false}
+                                        pitchEnabled={false}
+                                    >
+                                        <MapView.Marker
+                                            coordinate={{
+                                                longitude: post.location.longitude,
+                                                latitude: post.location.latitude
+                                            }}
+                                        // title={'title'}
+                                        // description={'description'}
+                                        >
+                                            <View style={{ width: 32, height: 50 }}>
+                                                <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, resizeMode: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                                                <Image source={markerImage} style={{ width: 22, height: 22, resizeMode: 'cover', position: 'absolute', top: 5, left: 5 }} />
+                                            </View>
+                                        </MapView.Marker>
+                                    </MapView>
+                                </View>
+                            </TouchableWithoutFeedback>
+                            :
+                            <View style={styles.mapView}>
+                                <MapView
+                                    onPress={() => {
+                                        if (this._showNotification) {
+                                            this.hideNotification();
+                                        }
+
+                                        this.props.navigation.navigate("map", { post: post });
                                     }}
-                                // title={'title'}
-                                // description={'description'}
+                                    ref={map => { this.map = map }}
+                                    provider={useGoogleMaps ? PROVIDER_GOOGLE : PROVIDER_DEFAULT}
+                                    style={styles.map}
+                                    // mapPadding={{ left: 0, right: 0, top: 25, bottom: 25 }}
+                                    // legalLabelInsets={{ top: 25, bottom: 25 }}
+                                    initialRegion={{
+                                        longitude: post.location.longitude,
+                                        latitude: post.location.latitude,
+                                        latitudeDelta: 0.008,
+                                        longitudeDelta: 0.008 * ASPECT_RATIO
+                                    }}
+                                    scrollEnabled={false}
+                                    zoomEnabled={false}
+                                    rotateEnabled={false}
+                                    pitchEnabled={false}
                                 >
-                                    <View style={{ width: 32, height: 50 }}>
-                                        <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, resizeMode: 'cover', position: 'absolute', top: 0, left: 0 }} />
-                                        <Image source={markerImage} style={{ width: 22, height: 22, resizeMode: 'cover', position: 'absolute', top: 5, left: 5 }} />
-                                    </View>
-                                </MapView.Marker>
-                                {/*
-                            <MapView.Circle
-                                center={{
-                                    latitude: post.location.latitude,
-                                    longitude: post.location.longitude
-                                }}
-                                radius={150} // m
-                                strokeWidth={2}
-                                strokeColor={Theme.color.selection}
-                                fillColor={'rgba(62, 165, 255, 0.5)'}
-                            />
-                            */}
-                            </MapView>
-                        </View>
-                    </TouchableWithoutFeedback>
+                                    <MapView.Marker
+                                        coordinate={{
+                                            longitude: post.location.longitude,
+                                            latitude: post.location.latitude
+                                        }}
+                                    // title={'title'}
+                                    // description={'description'}
+                                    >
+                                        <View style={{ width: 32, height: 50 }}>
+                                            <Image source={PreloadImage.pin} style={{ tintColor: Theme.color.marker, width: 32, height: 50, resizeMode: 'cover', position: 'absolute', top: 0, left: 0 }} />
+                                            <Image source={markerImage} style={{ width: 22, height: 22, resizeMode: 'cover', position: 'absolute', top: 5, left: 5 }} />
+                                        </View>
+                                    </MapView.Marker>
+                                </MapView>
+                            </View>
+                    }
                 </View>
 
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
