@@ -105,9 +105,7 @@ export default class Welcome extends React.Component {
                 <View style={{ position: 'absolute', top: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity onPress={() => {
                         setTimeout(() => {
-                            if (this.closed) return;
-                            console.log('jdub', 'move to tutorial');
-                            this.props.navigation.navigate("tutorial");
+                            !this.closed && this.props.navigation.navigate("tutorial");
                         }, Cons.buttonTimeout);
                     }} style={styles.signUpButton}>
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Get Started</Text>
@@ -130,8 +128,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end'
     },
     container: {
-        flex: 1,
-        paddingHorizontal: Theme.spacing.base
+        flex: 1
     },
     signUpButton: {
         width: '85%',

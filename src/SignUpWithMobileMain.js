@@ -30,6 +30,8 @@ const windowHeight = Dimensions.get('window').height;
 
 
 export default class SignUpWithMobileMain extends React.Component {
+    static onAuth = false;
+
     state = {
         mode: 'PHONE', // 'PHONE', 'VERIFICATION'
 
@@ -74,10 +76,8 @@ export default class SignUpWithMobileMain extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
-        /*
         this._handleOpenURL = this._handleOpenURL.bind(this);
         Linking.addEventListener('url', this._handleOpenURL);
-        */
     }
 
     initFromSelect(result) { // country
@@ -91,7 +91,7 @@ export default class SignUpWithMobileMain extends React.Component {
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
 
-        // Linking.removeEventListener('url', this._handleOpenURL);
+        Linking.removeEventListener('url', this._handleOpenURL);
 
         // unsubscribe
         // if (this.instance) this.instance();
@@ -491,6 +491,7 @@ export default class SignUpWithMobileMain extends React.Component {
             return;
         }
 
+        /*
         let token = null;
         const listener = ({ url }) => {
             if (Platform.OS === 'ios') WebBrowser.dismissBrowser();
@@ -536,12 +537,15 @@ export default class SignUpWithMobileMain extends React.Component {
         } else {
             this.showNotification('token is null!!!');
         }
+        */
 
-        // await WebBrowser.openBrowserAsync(CAPTCHA_URL);
+        await WebBrowser.openBrowserAsync(CAPTCHA_URL);
     }
 
-    /*
     async _handleOpenURL(event) {
+        if (SignUpWithMobileMain.onAuth) return; // ToDo: To block multi call
+        SignUpWithMobileMain.onAuth = true;
+
         if (Platform.OS === 'ios') WebBrowser.dismissBrowser();
 
         const url = event.url;
@@ -574,19 +578,24 @@ export default class SignUpWithMobileMain extends React.Component {
                 console.log('jdub', 'onPhoneComplete error', error.code, error.message);
 
                 // ToDo: error handling
+                /*
                 if (error.code === 'auth/too-many-requests') {
                     // this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
                     this.showNotification('Unusual activity. Please try again later.');
                 } else {
                     this.showNotification('An error happened. Please try again.');
                 }
+                */
 
                 // ToDo: test
                 this.showNotification(error.code + error.message);
             }
+        } else {
+            this.showNotification('token is null!!!');
         }
+
+        SignUpWithMobileMain.onAuth = false;
     }
-    */
 
     onSignIn = async () => {
 

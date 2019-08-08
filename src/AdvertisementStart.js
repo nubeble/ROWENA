@@ -102,36 +102,6 @@ export default class AdvertisementStart extends React.Component {
                         <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>Next</Text>
                     </TouchableOpacity>
                 </View>
-
-
-
-
-
-                {/*
-                <View style={styles.container}>
-
-                    <Image
-                        style={{
-                            position: 'absolute',
-                            top: 0,
-                            width: '100%',
-                            // resizeMode: 'cover'
-                        }}
-                        resizeMode={'contain'}
-                        source={require('../assets/sample4.jpg')}
-                    />
-
-                    <View style={{ position: 'absolute', top: Dimensions.get('window').height - Cons.searchBarHeight - buttonGap - 50, justifyContent: 'center', alignItems: 'center', height: 50, width: '100%' }}>
-                        <TouchableOpacity
-                            onPress={() => this.props.navigation.navigate("advertisementMain")}
-                            style={styles.signUpButton}>
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'white' }}>Let's start!</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                </View>
-                */}
-
             </View>
         );
     }

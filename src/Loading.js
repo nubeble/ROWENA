@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Animated, Dimensions, View, StatusBar, Image, Platform } from 'react-native';
 import { AppLoading, SplashScreen } from 'expo';
+import Constants from 'expo-constants';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
 // import { Images, loadIcons } from "./rne/src/components";
@@ -8,7 +9,7 @@ import Firebase from './Firebase';
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
 import Star from './react-native-ratings/src/Star';
-import { RefreshIndicator } from "./rnff/src/components";
+import { RefreshIndicator, Theme } from "./rnff/src/components";
 import ProfileStore from "./rnff/src/home/ProfileStore";
 import { Cons, Vars } from './Globals';
 import { Text } from './rnff/src/components';
@@ -33,12 +34,9 @@ const RobotoMediumItalic = require("../fonts/Roboto/Roboto-MediumItalic.ttf");
 const RobotoRegular = require("../fonts/Roboto/Roboto-Regular.ttf");
 const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
 const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
-
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo font
-
 const ConcertOneRegular = require("../fonts/ConcertOne-Regular.ttf");
 const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
-
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -53,18 +51,18 @@ export default class Loading extends React.Component<InjectedProps> {
     state = {
         isReady: false,
         showIndicator: false,
-        image2Opacity: new Animated.Value(0)
+        imageOpacity: new Animated.Value(0)
     };
 
     constructor(props) {
         super(props);
 
         SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
-
-        StatusBar.setHidden(true);
     }
 
     componentDidMount() {
+        StatusBar.setHidden(true);
+
         this._cacheResourcesAsync().then(() => {
             !this.closed && this.setState({ isReady: true });
 
@@ -85,29 +83,31 @@ export default class Loading extends React.Component<InjectedProps> {
         }
 
         return (
-            <View style={{ flex: 1 }}>
-                <Image
-                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
-                    source={PreloadImage.splash}
+            <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+                {
+                    this.state.showIndicator &&
+                    <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center' }}>
+                        <RefreshIndicator refreshing total={3} size={6} color={Theme.color.splash} />
+                    </View>
+                }
+
+                <Animated.Image
+                    style={{
+                        width: windowWidth, height: windowHeight, resizeMode: 'cover',
+                        // position: 'absolute', top: 0, left: 0,
+                        opacity: this.state.imageOpacity
+                    }}
+                    source={PreloadImage.background}
                     onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
-                        SplashScreen.hide(); // Image is fully presented, instruct SplashScreen to hide
+                        setTimeout(() => {
+                            SplashScreen.hide();
+                            !this.closed && this.setState({ showIndicator: true });
 
-                        !this.closed && this.setState({ showIndicator: true });
-
-                        this.init();
+                            this.init();
+                        }, 500);
                     }}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
-
-                {
-                    this.state.showIndicator &&
-                    <View style={{
-                        position: 'absolute', top: Dimensions.get('window').height / 2 - 100,
-                        width: '100%', height: 30, justifyContent: 'center', alignItems: 'center'
-                    }}>
-                        <RefreshIndicator refreshing total={3} size={6} color='white' />
-                    </View>
-                }
 
                 {/*
                 <View style={{ position: 'absolute', bottom: 10, right: 10, alignItems: 'flex-end' }}>
@@ -115,16 +115,6 @@ export default class Loading extends React.Component<InjectedProps> {
                     <Text style={{ fontSize: 16, color: 'white' }}>{Cons.version}</Text>
                 </View>
                 */}
-
-                <Animated.Image
-                    style={{
-                        position: 'absolute', top: 0, left: 0,
-                        width: windowWidth, height: windowHeight, resizeMode: 'cover',
-                        opacity: this.state.image2Opacity
-                    }}
-                    source={PreloadImage.background}
-                // blurRadius={Platform.OS === 'android' ? 1 : 15}
-                />
             </View>
         );
     }
@@ -164,8 +154,6 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     init() {
-        console.log('jdub', 'Loading.init');
-
         Firebase.init();
 
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
@@ -191,7 +179,7 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     Animated.sequence([
                         // Animated.delay(1500),
-                        Animated.timing(this.state.image2Opacity, {
+                        Animated.timing(this.state.imageOpacity, {
                             toValue: 1,
                             duration: 500,
                             useNativeDriver: true
@@ -310,7 +298,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 // if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnChat(true, 0);
-            }, 1000); // after 2 sec
+            }, 1500); // after 1.5 sec
         }
 
         // 4. profile
@@ -321,7 +309,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 // if (this.closed) return;
                 const screenProps = this.props.screenProps;
                 screenProps.changeBadgeOnProfile(true, 0);
-            }, 1000); // after 2 sec
+            }, 1500); // after 1.5 sec
         }
     }
 

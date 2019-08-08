@@ -12,18 +12,17 @@
         ],
         "orientation": "portrait",
         "primaryColor": "#CD5E77",
-        "icon": "./assets/icon.png",
         "scheme": "rowena",
         "assetBundlePatterns": [
             "**/*"
         ],
         "androidStatusBar": {
-            "barStyle": "light-content",
-            "backgroundColor": "#282828"
+            "barStyle": "dark-content",
+            "backgroundColor": "#FFFFFF"
         },
         "splash": {
-            "image": "./assets/splash.png",
-            "resizeMode": "cover"
+            "resizeMode": "contain",
+            "image": "./assets/splash.png"
         },
         "notification": {
             "icon": "./assets/noti_icon.png",
@@ -47,7 +46,7 @@
             "googleServicesFile": "./google-services.json",
             "versionCode": 2,
             "adaptiveIcon": {
-                "foregroundImage": "./assets/foreground_icon.png",
+                "foregroundImage": "./assets/android_icon.png",
                 "backgroundColor": "#CD5E77"
             },
             "permissions": [
@@ -62,6 +61,7 @@
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
             "buildNumber": "1.1.4",
+            "icon": "./assets/ios_icon.png",
             "supportsTablet": true,
             "infoPlist": {
                 "NSAppTransportSecurity": "",
