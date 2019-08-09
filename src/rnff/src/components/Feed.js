@@ -56,7 +56,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
-        !this.closed && this.enableScroll();
+        // !this.closed && this.enableScroll();
     }
 
     componentWillUnmount() {
@@ -101,6 +101,7 @@ export default class Feed extends React.Component<FeedProps> {
         );
     }
 
+    /*
     enableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });
     }
@@ -108,6 +109,7 @@ export default class Feed extends React.Component<FeedProps> {
     disableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
     }
+    */
 
     _scrollTo(offset) {
         this._flatList.scrollToOffset({ offset: offset, animated: false });
@@ -266,7 +268,7 @@ export default class Feed extends React.Component<FeedProps> {
         // reload from the start
         this.props.store.loadFeedFromStart();
 
-        this.disableScroll();
+        // this.disableScroll();
     }
 }
 

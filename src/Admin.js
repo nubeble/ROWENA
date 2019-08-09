@@ -66,6 +66,12 @@ export default class Admin extends React.Component {
     renderContainer() {
         return (
             <View style={styles.container}>
+                <TouchableOpacity onPress={() => this.initPost()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Initial Post (6 cities, 12/9/8/6/6/4)</Text>
+                </TouchableOpacity>
+
                 <TouchableOpacity onPress={() => this.makeDummyData()}
                     style={styles.bottomButton}
                 >
@@ -149,6 +155,148 @@ export default class Admin extends React.Component {
             </View>
         );
     }
+
+    async initPost() {
+        for (let i = 0; i < 12; i++) this.initBangkok(i); // ToDo: 12
+
+    }
+
+    async initBangkok(index) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
+        const placeName = 'Bangkok, Thailand';
+        const extra = {
+            lat: 13.7563309,
+            lng: 100.5017651
+        };
+
+
+        /*
+        const location = {
+            description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
+            longitude: 100.5368514,
+            latitude: 13.7236856
+        };
+        */
+
+        let location = null;
+        let note = null;
+        let pictures = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+
+        if (i === 0) {
+            // 1. location
+            location = {
+                description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
+                latitude: 13.7236856,
+                longitude: 100.5368514
+            };
+
+            // 2. note
+            note = 'Put your shirt back on. You look like a tool.';
+
+            // 3. pictures
+            // --
+            const image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F1.jpg?alt=media&token=639a7b61-3f3c-4ba9-bdc3-5ec07f26212c';
+            const image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F2.jpg?alt=media&token=b9da6667-3d2f-471d-816a-9d3cd3be78bf';
+            const image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F3.jpg?alt=media&token=0ba9f24f-25ce-4dff-85d8-e1ec0e4c1f2a';
+            const image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F4.jpg?alt=media&token=5c594fc9-4b75-4edb-b525-55b06731dbc4';
+
+            pictures = {
+                one: {
+                    uri: image1Uri
+                },
+                two: {
+                    uri: image2Uri
+                },
+                three: {
+                    uri: image3Uri
+                },
+                four: {
+                    uri: image4Uri
+                }
+            };
+            // --
+
+            name = 'WANG WEN';
+            birthday = '02121996';
+            height = 177;
+            weight = 49;
+            bust = 'B';
+        } else if (i === 1) {
+            return;
+        } else if (i === 2) {
+            return;
+        } else if (i === 3) {
+            return;
+        } else if (i === 4) {
+            return;
+        } else if (i === 5) {
+            return;
+        } else if (i === 6) {
+            return;
+        } else if (i === 7) {
+            return;
+        } else if (i === 8) {
+            return;
+        } else if (i === 9) {
+            return;
+        } else if (i === 10) {
+            return;
+        } else if (i === 11) {
+            return;
+        }
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = 'Skinny';
+
+        await Firebase.createFeed(feed, extra);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     async makeDummyData() { // 11 cities
         for (var i = 0; i < 10; i++) {
@@ -344,8 +492,6 @@ export default class Admin extends React.Component {
 
         return note;
     }
-
-
 
     async makeInit() {
         this.makeBangkok();

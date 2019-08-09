@@ -411,15 +411,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         return this.feedCountList.get(placeId);
     }
 
-    /*
     enableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: true });
     }
-    
+
     disableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: false });
     }
-    */
 
     render() {
         return (
