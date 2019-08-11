@@ -25,9 +25,6 @@ import CodeInput from 'react-native-confirmation-code-input';
 // const CAPTCHA_URL = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 const CAPTCHA_URL = `https://rowena-88cfd.web.app/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 
 export default class SignUpWithMobileMain extends React.Component {
     static onAuth = false;
@@ -233,7 +230,7 @@ export default class SignUpWithMobileMain extends React.Component {
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
                     source={PreloadImage.background}
                     fadeDuration={0}
                 />

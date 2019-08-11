@@ -38,9 +38,6 @@ const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regula
 const ConcertOneRegular = require("../fonts/ConcertOne-Regular.ttf");
 const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 
 @inject("feedStore", "profileStore")
 @observer
@@ -84,37 +81,30 @@ export default class Loading extends React.Component<InjectedProps> {
 
         return (
             <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+                <Animated.Image
+                    style={{
+                        flex: 1, resizeMode: 'cover', width: undefined, height: undefined,
+                        opacity: this.state.imageOpacity
+                    }}
+                    source={PreloadImage.background}
+                    onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
+                        // setTimeout(() => {
+                            !this.closed && this.setState({ showIndicator: true });
+                            SplashScreen.hide();
+                            
+
+                            this.init();
+                        // }, 500);
+                    }}
+                    fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
+                />
+
                 {
                     this.state.showIndicator &&
                     <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center' }}>
                         <RefreshIndicator refreshing total={3} size={6} color={Theme.color.splash} />
                     </View>
                 }
-
-                <Animated.Image
-                    style={{
-                        width: windowWidth, height: windowHeight, resizeMode: 'cover',
-                        // position: 'absolute', top: 0, left: 0,
-                        opacity: this.state.imageOpacity
-                    }}
-                    source={PreloadImage.background}
-                    onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
-                        setTimeout(() => {
-                            SplashScreen.hide();
-                            !this.closed && this.setState({ showIndicator: true });
-
-                            this.init();
-                        }, 500);
-                    }}
-                    fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
-                />
-
-                {/*
-                <View style={{ position: 'absolute', bottom: 10, right: 10, alignItems: 'flex-end' }}>
-                    <Text style={{ fontSize: 16, color: 'white' }}>{Cons.lastUpdatedDate}</Text>
-                    <Text style={{ fontSize: 16, color: 'white' }}>{Cons.version}</Text>
-                </View>
-                */}
             </View>
         );
     }
@@ -228,21 +218,20 @@ export default class Loading extends React.Component<InjectedProps> {
 
                 if (Loading.userAutoAuthenticated) {
                     if (Vars.signUpType === null) { // for the auto sign in
+                        StatusBar.setHidden(false);
+
                         // check verification if EMAIL user
                         if (user.email && !user.emailVerified && user) {
                             if (user.providerData && user.providerData.length > 0 && user.providerData[0].providerId === "facebook.com") {
                                 console.log('jdub', "email user is not verified. but facebook users don't need to email verification.");
                                 await this.checkUpdates();
-                                StatusBar.setHidden(false);
                             } else {
                                 console.log('jdub', 'email user is not verified. move to email verification');
-                                StatusBar.setHidden(false);
                                 navigation.navigate("emailVerification", { email: user.email, user: user, from: 'Loading' });
                                 return;
                             }
                         } else {
                             await this.checkUpdates();
-                            StatusBar.setHidden(false);
                         }
 
                         console.log('jdub', '[auto sign in] move to main');

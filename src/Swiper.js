@@ -325,32 +325,26 @@ export default class extends Component {
 
         this.autoplayTimer && clearTimeout(this.autoplayTimer)
         this.autoplayTimer = setTimeout(() => {
-            if (this.closed) return;
-            /*
-            if (!this.props.loop && (
-                // this.props.autoplayDirection
-                this._autoplayDirection
-                    ? this.state.index === this.state.total - 1
-                    : this.state.index === 0
-            )
-            ) return this.setState({ autoplayEnd: true })
-            */
-
-            // console.log('jdub', 'autoplay() index', this._index, 'direction', this._direction);
-
-            if (this._direction) { // ->
-                if (this._index >= this.state.total - 1) { // 젤 마지막이면방향 전환
-                    this._direction = !this._direction;
-                }
-            } else { // <-
-                if (this._index <= 0) { // 젤 처음이면 방향전환
-                    this._direction = !this._direction;
-                }
-            }
-
-            // this.scrollBy(this.props.autoplayDirection ? 1 : -1)
-            this.scrollBy(this._direction ? 1 : -1)
+            this.__autoplay();
         }, this.props.autoplayTimeout * 1000)
+    }
+
+    __autoplay() {
+        if (this.closed) return;
+
+        // console.log('jdub', 'autoplay() index', this._index, 'direction', this._direction);
+
+        if (this._direction) { // ->
+            if (this._index >= this.state.total - 1) { // 젤 마지막이면 방향 전환
+                this._direction = !this._direction;
+            }
+        } else { // <-
+            if (this._index <= 0) { // 젤 처음이면 방향 전환
+                this._direction = !this._direction;
+            }
+        }
+
+        this.scrollBy(this._direction ? 1 : -1);
     }
 
     /**
@@ -358,6 +352,9 @@ export default class extends Component {
      * @param  {object} e native event
      */
     onScrollBegin = e => {
+        // stop timer
+        this.autoplayTimer && clearTimeout(this.autoplayTimer);
+
         // update scroll state
         this.internals.isScrolling = true
         this.props.onScrollBeginDrag && this.props.onScrollBeginDrag(e, this.fullState(), this)
@@ -367,7 +364,15 @@ export default class extends Component {
         // console.log('jdub', '__onScrollEnd');
         this.internals.isScrolling = false;
 
-        this.autoplay();
+        // this.autoplay();
+        // resume timer
+        /*
+        if (this.props.autoplay) {
+            this.autoplayTimer = setTimeout(() => {
+                this.__autoplay();
+            }, this.props.autoplayTimeout * 1000)
+        }
+        */
     }
 
     /**

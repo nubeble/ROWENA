@@ -56,7 +56,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         !this.closed && this.setState({ isLoadingFeeds: false, refreshing: false });
 
-        // !this.closed && this.enableScroll();
+        !this.closed && this.enableScroll();
     }
 
     componentWillUnmount() {
@@ -84,7 +84,7 @@ export default class Feed extends React.Component<FeedProps> {
 
         this.setState({ isLoadingFeeds: true });
 
-        console.log('jdub', 'Feed.loadMore');
+        // console.log('jdub', 'Feed.loadMore');
 
         this.props.store.loadFeed();
     }
@@ -101,7 +101,6 @@ export default class Feed extends React.Component<FeedProps> {
         );
     }
 
-    /*
     enableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: true, showsVerticalScrollIndicator: true });
     }
@@ -109,7 +108,6 @@ export default class Feed extends React.Component<FeedProps> {
     disableScroll() {
         this._flatList.setNativeProps({ scrollEnabled: false, showsVerticalScrollIndicator: false });
     }
-    */
 
     _scrollTo(offset) {
         this._flatList.scrollToOffset({ offset: offset, animated: false });
@@ -121,7 +119,7 @@ export default class Feed extends React.Component<FeedProps> {
         // const loading = feed === undefined;
 
         return (
-            <SafeAreaView style={styles.list}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <FlatList
                     ref={(fl) => {
                         this._flatList = fl;
@@ -265,6 +263,8 @@ export default class Feed extends React.Component<FeedProps> {
 
         this.setState({ refreshing: true });
 
+        this.setState({ isLoadingFeeds: true });
+
         // reload from the start
         this.props.store.loadFeedFromStart();
 
@@ -276,9 +276,6 @@ const styles = StyleSheet.create({
     contentContainer: {
         flexGrow: 1,
         paddingBottom: Theme.spacing.tiny // Explore.js styles.orderTab.marginBottom
-    },
-    list: {
-        flex: 1
     },
     post: {
         paddingHorizontal: Theme.spacing.small

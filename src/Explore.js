@@ -127,6 +127,9 @@ export default class Explore extends React.Component<InjectedProps> {
 
         this.setState({ searchText, titleText, placeId: place.place_id, feedSize: place.length, latitude: place.lat, longitude: place.lng });
 
+        // setState isLoadingFeeds true in Feed.js
+        this._feed.setState({ isLoadingFeeds: true });
+
         const query = Firebase.firestore.collection("places").doc(place.place_id).collection("feed").orderBy("timestamp", "desc");
         this.props.feedStore.init(query, 'timestamp');
 

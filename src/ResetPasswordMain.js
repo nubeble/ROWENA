@@ -12,9 +12,6 @@ import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 
 export default class ResetPasswordMain extends React.Component {
     state = {
@@ -139,7 +136,7 @@ export default class ResetPasswordMain extends React.Component {
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
                     source={PreloadImage.background}
                     fadeDuration={0}
                 />

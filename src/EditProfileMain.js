@@ -59,6 +59,8 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         this.commentStore.setAddToReviewFinishedCallback(this.onAddToReviewFinished);
 
+        this.setState({ isLoadingFeeds: true });
+
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_COMMENT_COUNT);
 
@@ -399,6 +401,8 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
         // init
         this.originReviewList = undefined;
         this.translatedReviewList = undefined;
+
+        this.setState({ isLoadingFeeds: true });
 
         this.commentStore.loadReviewFromStart(count);
 

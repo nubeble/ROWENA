@@ -185,7 +185,8 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             return true;
         }
 
-        this.props.navigation.dispatch(NavigationActions.back());
+        // this.props.navigation.dispatch(NavigationActions.back());
+        BackHandler.exitApp();
 
         return true;
     }

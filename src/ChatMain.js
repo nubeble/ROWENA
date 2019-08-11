@@ -433,9 +433,10 @@ export default class ChatMain extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        console.log('jdub', 'ChatMain.handleHardwareBackPress');
+        // console.log('jdub', 'ChatMain.handleHardwareBackPress');
 
-        this.props.navigation.dispatch(NavigationActions.back());
+        // this.props.navigation.dispatch(NavigationActions.back());
+        BackHandler.exitApp();
 
         return true;
     }

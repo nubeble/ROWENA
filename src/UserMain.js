@@ -111,6 +111,8 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         const uid = guest.uid;
 
+        this.setState({ isLoadingFeeds: true });
+
         const query = Firebase.firestore.collection("users").doc(uid).collection("comments").orderBy("timestamp", "desc");
         this.commentStore.init(query, DEFAULT_COMMENT_COUNT);
 
@@ -795,6 +797,8 @@ export default class UserMain extends React.Component<InjectedProps> {
         this.originReviewList = undefined;
         this.translatedReviewList = undefined;
 
+        this.setState({ isLoadingFeeds: true });
+
         this.commentStore.loadReviewFromStart(count);
     }
 
@@ -1067,7 +1071,7 @@ export default class UserMain extends React.Component<InjectedProps> {
         this.setState({ refreshing: true });
 
         // reload from the start
-        this.commentStore.loadReviewFromStart(DEFAULT_COMMENT_COUNT);
+        this.loadReviewFromStart(DEFAULT_COMMENT_COUNT);
     }
 
     translateReview(index) {

@@ -364,6 +364,8 @@ export default class Intro extends React.Component<InjectedProps> {
             return true;
         }
 
+        BackHandler.exitApp();
+
         return true;
     }
 

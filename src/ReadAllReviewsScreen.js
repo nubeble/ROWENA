@@ -336,6 +336,8 @@ export default class ReadAllReviewsScreen extends React.Component {
         this.originReplyList = undefined;
         this.translatedReplyList = undefined;
 
+        this.setState({ isLoadingReview: true });
+
         const { reviewStore } = this.props.navigation.state.params;
         reviewStore.loadReviewFromStart(count);
 
@@ -829,13 +831,6 @@ export default class ReadAllReviewsScreen extends React.Component {
                 this.setState({ showKeyboard: false });
 
                 // reload
-                /*
-                const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
-                this.refreshReviews(placeId, feedId, 6);
-                */
-
-                // this.setState({ isLoadingReview: true });
-
                 let count = this.this.state.reviews.length;
                 if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                 this.reload(count);
@@ -883,8 +878,6 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your review has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // this.setState({ isLoadingReview: true });
-
                     let count = this.this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                     this.reload(count);
@@ -911,8 +904,6 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             this.refs["toast"].show('Your reply has successfully been removed.', 500, () => {
                 if (!this.closed) {
-                    // this.setState({ isLoadingReview: true });
-
                     let count = this.this.state.reviews.length;
                     if (count < DEFAULT_REVIEW_COUNT) count = DEFAULT_REVIEW_COUNT;
                     this.reload(count);

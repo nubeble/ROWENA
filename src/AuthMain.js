@@ -221,7 +221,7 @@ export default class AuthMain extends React.Component {
         return (
             <View style={styles.flex}>
                 <Image
-                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
                     source={PreloadImage.background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 // blurRadius={Platform.OS === 'android' ? 1 : 15}

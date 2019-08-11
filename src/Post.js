@@ -1517,6 +1517,8 @@ export default class Post extends React.Component<InjectedProps> {
 
         return (
             <Swiper
+                scrollViewStyle={{ width: imageWidth, height: imageHeight }}
+
                 // containerStyle={{ marginBottom: 10 }}
                 // navigation={this.props.navigation}
                 ref={(swiper) => this.swiper = swiper}

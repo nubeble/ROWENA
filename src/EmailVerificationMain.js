@@ -20,9 +20,6 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 
 @inject("profileStore")
 @observer
@@ -315,7 +312,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
                     source={PreloadImage.background}
                     fadeDuration={0}
                 />

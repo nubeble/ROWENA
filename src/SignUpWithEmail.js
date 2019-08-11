@@ -15,9 +15,6 @@ import { Cons, Vars } from "./Globals";
 import { registerExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 
 export default class SignUpWithEmail extends React.Component {
     state = {
@@ -437,7 +434,7 @@ export default class SignUpWithEmail extends React.Component {
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
+                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
                     source={PreloadImage.background}
                     fadeDuration={0}
                 />
