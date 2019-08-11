@@ -360,11 +360,11 @@ export default class ChatRoom extends React.Component {
         }
     }
 
-    openAvatar() {
+    async openAvatar() {
         const item = this.props.navigation.state.params.item;
 
         if (item.owner === item.users[1].uid) {
-            this.openPost();
+            await this.openPost();
         } else {
             const user1 = item.users[0]; // host
             const user2 = item.users[1]; // customer
@@ -446,7 +446,7 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
 
                     {/* icon + text */}
-                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={() => this.openPost()}>
+                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={async () => await this.openPost()}>
                         <SmartImage
                             // style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
                             style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
@@ -587,7 +587,7 @@ export default class ChatRoom extends React.Component {
                             <Text style={styles.text1}>{'!'}</Text>
                         </Text>
 
-                        <TouchableOpacity onPress={() => this.openPost()}>
+                        <TouchableOpacity onPress={async () => await this.openPost()}>
                             <SmartImage
                                 style={{
                                     width: imageWidth, height: imageWidth, borderRadius: imageWidth / 2,
@@ -712,7 +712,7 @@ export default class ChatRoom extends React.Component {
 
         return (
             <TouchableOpacity
-                onPress={() => this.openAvatar()}>
+                onPress={async () => await this.openAvatar()}>
                 {
                     picture ?
                         <SmartImage

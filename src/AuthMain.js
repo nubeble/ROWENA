@@ -28,19 +28,17 @@ export default class AuthMain extends React.Component {
     state = {
         showFacebookLoader: false,
 
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
-
-
-        // offset: new Animated.Value(0)
-        // intensity: new Animated.Value(0),
-
-        // opacity: new Animated.Value(0),
-        viewOffset: new Animated.Value(windowHeight),
-
-        // blurRadius: new Animated.Value(0),
+        notification: ''
     };
+
+    constructor(props) {
+        super(props);
+
+        this.opacity = new Animated.Value(0);
+        this.offset = new Animated.Value(((8 + 34 + 8) - 12) * -1);
+
+        this.viewOffset = new Animated.Value(windowHeight);
+    }
 
     componentDidMount() {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
@@ -62,6 +60,8 @@ export default class AuthMain extends React.Component {
             return true;
         }
 
+        BackHandler.exitApp();
+
         return true;
     }
 
@@ -69,36 +69,17 @@ export default class AuthMain extends React.Component {
     onFocus() {
         if (AuthMain.animation) {
             Animated.sequence([
-                Animated.delay(500),
-                Animated.spring(this.state.viewOffset, {
+                Animated.delay(300),
+                Animated.spring(this.viewOffset, {
                     toValue: 0,
                     bounciness: 10,
                     useNativeDriver: true
                 })
             ]).start(() => {
                 StatusBar.setHidden(false);
+
+                AuthMain.animation = false;
             });
-
-            // Consider: screen blinking issue on blur animation
-            /*
-            console.log('jdub', 'animation start');
-            Animated.timing(this.state.blurRadius, { duration: 3000, toValue: 5, useNativeDriver: true }).start(() => {
-                // add code here
-            });
-            */
-
-            /*
-            setTimeout(() => {
-                Animated.sequence([
-                    Animated.timing(this.state.blurRadius, { toValue: 3, duration: 2000 }),
-                    Animated.timing(this.state.viewOffset, { toValue: 0, duration: 300 })
-                ]).start();
-            }, 3000);
-            */
-
-            AuthMain.animation = false;
-        } else {
-            this.setState({ viewOffset: 0 });
         }
     }
 
@@ -160,7 +141,8 @@ export default class AuthMain extends React.Component {
         } else {
             console.log('jdub', 'Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
             const str = type + ' ' + permissions + ' ' + declinedPermissions;
-            this.showNotification(str);
+            // this.showNotification(str);
+            this.showNotification('An error happened. Please try again.');
         }
 
         // hide indicator
@@ -209,145 +191,158 @@ export default class AuthMain extends React.Component {
     }
 
     render() {
-        const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
-        };
-
-        const viewStyle = {
-            transform: [{ translateY: this.state.viewOffset }]
-        };
+        let viewStyle = null;
+        if (AuthMain.animation) {
+            viewStyle = {
+                transform: [{ translateY: this.viewOffset }]
+            };
+        }
 
         return (
             <View style={styles.flex}>
                 <Image
-                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
+                    // style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
                     source={PreloadImage.background}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 // blurRadius={Platform.OS === 'android' ? 1 : 15}
                 />
 
                 <Animated.View style={[styles.view, viewStyle]}>
-                    <Animated.View
-                        style={[styles.notification, notificationStyle]}
-                        ref={notification => this._notification = notification}
+                    {this.renderContents()}
+                </Animated.View>
+            </View>
+        );
+    }
+
+    renderContents() {
+        const notificationStyle = {
+            opacity: this.opacity,
+            transform: [{ translateY: this.offset }]
+        };
+
+        return (
+            <View style={{ flex: 1 }}>
+                <Animated.View
+                    style={[styles.notification, notificationStyle]}
+                    ref={notification => this._notification = notification}
+                >
+                    <Text style={styles.notificationText}>{this.state.notification}</Text>
+                    <TouchableOpacity
+                        style={styles.notificationButton}
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
+                        }}
                     >
-                        <Text style={styles.notificationText}>{this.state.notification}</Text>
-                        <TouchableOpacity
-                            style={styles.notificationButton}
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                }
-                            }}
-                        >
-                            <Ionicons name='md-close' color="black" size={20} />
-                        </TouchableOpacity>
-                    </Animated.View>
+                        <Ionicons name='md-close' color="black" size={20} />
+                    </TouchableOpacity>
+                </Animated.View>
 
-                    <View style={styles.logo}>
-                        <Image
-                            style={{
-                                tintColor: 'rgba(255, 255, 255, 0.8)',
-                                width: 48, height: 48,
-                                resizeMode: 'cover'
-                            }}
-                            source={PreloadImage.logo}
-                        />
-                        <Text style={{
-                            // backgroundColor: 'green',
-                            marginLeft: -4,
-                            fontFamily: "FriendlySchoolmates-Regular",
-                            color: 'rgba(255, 255, 255, 0.8)',
-                            fontSize: 40,
-                            paddingTop: 27,
-                            // paddingBottom: 4,
-                            textAlign: 'center'
-                        }}>ROWENA</Text>
-                    </View>
+                <View style={styles.logo}>
+                    <Image
+                        style={{
+                            tintColor: 'white',
+                            width: 62, height: 62,
+                            resizeMode: 'cover',
+                            marginRight: -4
+                        }}
+                        source={PreloadImage.logo}
+                    />
+                    <Text style={{
+                        // backgroundColor: 'green',
+                        fontSize: 44,
+                        lineHeight: 58,
+                        fontFamily: "FriendlySchoolmates-Regular",
+                        color: 'white',
+                        paddingTop: 2,
+                        // textAlign: 'center'
+                    }}>ROWENA </Text>
+                </View>
 
-                    <View style={styles.empty}>
-                    </View>
+                <View style={styles.empty}>
+                </View>
 
-                    <View style={styles.contents}>
-                        {/*
+                <View style={styles.contents}>
+                    {/*
                         <Text style={{ marginBottom: 5, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(221, 221, 221, 0.8)' }}>
                             Don't worry! We don't post anything to Facebook.
                         </Text>
                         */}
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                }
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
 
-                                setTimeout(() => {
-                                    !this.closed && this.continueWithFacebook();
-                                }, Cons.buttonTimeout);
-                            }}
-                            style={styles.signUpWithFacebookButton}
-                        >
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
-                                <EvilIcons name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
-                            </View>
+                            setTimeout(() => {
+                                !this.closed && this.continueWithFacebook();
+                            }, Cons.buttonTimeout);
+                        }}
+                        style={styles.signUpWithFacebookButton}
+                    >
+                        <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
+                            <EvilIcons name='sc-facebook' color="rgba(0, 0, 0, 0.6)" size={36} />
+                        </View>
 
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(0, 0, 0, 0.6)' }}>Continue with Facebook</Text>
 
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
-                                {
-                                    this.state.showFacebookLoader &&
-                                    <ActivityIndicator
-                                        animating={true}
-                                        size="small"
-                                        color='rgba(0, 0, 0, 0.6)'
-                                    />
-                                }
-                            </View>
-                        </TouchableOpacity>
+                        <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
+                            {
+                                this.state.showFacebookLoader &&
+                                <ActivityIndicator
+                                    animating={true}
+                                    size="small"
+                                    color='rgba(0, 0, 0, 0.6)'
+                                />
+                            }
+                        </View>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                }
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
 
-                                setTimeout(() => {
-                                    !this.closed && this.signUpWithMobile();
-                                }, Cons.buttonTimeout);
-                            }}
-                            style={styles.signUpWithMobileButton}
-                        >
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
-                                <FontAwesome name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
-                            </View>
+                            setTimeout(() => {
+                                !this.closed && this.signUpWithMobile();
+                            }, Cons.buttonTimeout);
+                        }}
+                        style={styles.signUpWithMobileButton}
+                    >
+                        <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
+                            <FontAwesome name='phone' color="rgba(255, 255, 255, 0.8)" size={24} />
+                        </View>
 
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Mobile</Text>
 
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
-                        </TouchableOpacity>
+                        <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity
-                            onPress={() => {
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                }
+                    <TouchableOpacity
+                        onPress={() => {
+                            if (this._showNotification) {
+                                this.hideNotification();
+                            }
 
-                                setTimeout(() => {
-                                    !this.closed && this.signUpWithEmail();
-                                }, Cons.buttonTimeout);
-                            }}
-                            style={styles.signUpWithEmailButton}
-                        >
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
-                                <Ionicons name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
-                            </View>
+                            setTimeout(() => {
+                                !this.closed && this.signUpWithEmail();
+                            }, Cons.buttonTimeout);
+                        }}
+                        style={styles.signUpWithEmailButton}
+                    >
+                        <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginLeft: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}>
+                            <Ionicons name='md-mail' color="rgba(255, 255, 255, 0.8)" size={23} />
+                        </View>
 
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
+                        <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: 'rgba(255, 255, 255, 0.8)' }}>Sign up with Email</Text>
 
-                            <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
-                        </TouchableOpacity>
+                        <View style={{ width: Cons.buttonHeight, height: Cons.buttonHeight, marginRight: Cons.buttonHeight / 3, alignItems: 'center', justifyContent: 'center' }}></View>
+                    </TouchableOpacity>
 
-                        {/*
+                    {/*
                         <TouchableOpacity
                             // style={{ marginBottom: 150, marginTop: 18, justifyContent: 'center', alignItems: 'center' }}
                             style={styles.logInText}
@@ -369,12 +364,12 @@ export default class AuthMain extends React.Component {
                         </TouchableOpacity>
                         */}
 
-                        <Text style={{ position: 'absolute', bottom: 30, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>
-                            Don't worry! We don't post anything to Facebook.
+                    <Text style={{ position: 'absolute', bottom: 20, fontSize: 13, fontFamily: "Roboto-Light", color: 'rgba(255, 255, 255, 0.8)' }}>
+                        Don't worry! We don't post anything to Facebook.
                         </Text>
-                    </View>
-                </Animated.View>
+                </View>
             </View>
+
         );
     }
 
@@ -384,12 +379,12 @@ export default class AuthMain extends React.Component {
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
                 Animated.parallel([
-                    Animated.timing(this.state.opacity, {
+                    Animated.timing(this.opacity, {
                         toValue: 1,
                         duration: 200,
                         useNativeDriver: true
                     }),
-                    Animated.timing(this.state.offset, {
+                    Animated.timing(this.offset, {
                         toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
@@ -402,12 +397,12 @@ export default class AuthMain extends React.Component {
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
             Animated.parallel([
-                Animated.timing(this.state.opacity, {
+                Animated.timing(this.opacity, {
                     toValue: 0,
                     duration: 200,
                     useNativeDriver: true
                 }),
-                Animated.timing(this.state.offset, {
+                Animated.timing(this.offset, {
                     toValue: height * -1,
                     duration: 200,
                     useNativeDriver: true
@@ -423,21 +418,10 @@ const styles = StyleSheet.create({
         // backgroundColor: Theme.color.splash
     },
     view: {
-        position: 'absolute', top: 0, bottom: 0, left: 0, right: 0,
+        flex: 1, width: windowWidth, height: windowHeight, position: 'absolute', top: 0, left: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.6)',
         justifyContent: 'center'
     },
-    /*
-    bgimage: {
-        flex: 1,
-        resizeMode: 'cover',
-        justifyContent: 'center',
-        alignItems: 'center',
-        position: 'absolute',
-        width: '100%',
-        height: '100%'
-    },
-    */
     logo: {
         width: '100%',
         height: '35%',

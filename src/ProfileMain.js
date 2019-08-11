@@ -52,8 +52,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         replyAdded: false,
 
         notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         dialogVisible: false,
         dialogTitle: '',
@@ -66,13 +64,17 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         flashMessageTitle: '',
         flashMessageSubtitle: '',
-        flashImage: null, // uri
-        flashOpacity: new Animated.Value(0),
-        flashOffset: new Animated.Value((8 + 34 + 8) * -1)
+        flashImage: null // uri
     };
 
     constructor(props) {
         super(props);
+
+        this.opacity = new Animated.Value(0);
+        this.offset = new Animated.Value(((8 + 34 + 8) - 12) * -1);
+
+        this.flashOpacity = new Animated.Value(0);
+        this.flashOffset = new Animated.Value((8 + 34 + 8) * -1);
 
         // this.reload = true;
         this.lastLoadedFeedIndex = -1;
@@ -177,8 +179,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     @autobind
     handleHardwareBackPress() {
-        // console.log('jdub', 'ProfileMain.handleHardwareBackPress');
-
         if (this._showNotification) {
             this.hideNotification();
 
@@ -254,44 +254,6 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.getUserFeeds();
     }
     */
-
-    showNotification(msg) {
-        this._showNotification = true;
-
-        this.setState({ notification: msg }, () => {
-            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 1,
-                        duration: 200,
-                        useNativeDriver: true
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
-                        duration: 200,
-                        useNativeDriver: true
-                    })
-                ]).start();
-            });
-        });
-    };
-
-    hideNotification() {
-        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.parallel([
-                Animated.timing(this.state.opacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: true
-                }),
-                Animated.timing(this.state.offset, {
-                    toValue: height * -1,
-                    duration: 200,
-                    useNativeDriver: true
-                })
-            ]).start(() => { this._showNotification = false });
-        });
-    }
 
     isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
         const threshold = 80;
@@ -446,7 +408,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         console.log('jdub', 'ProfileMain', 'loading feeds done!');
     }
 
-    async postClick(item) {
+    postClick(item) {
         // red dot
         if (item.reviewAdded) {
             // update reviewAdded in user profile
@@ -476,10 +438,10 @@ export default class ProfileMain extends React.Component<InjectedProps> {
             this.setState({ feeds });
         }
 
-        await this.openPost(item);
+        this.openPost(item);
     }
 
-    async openPost(item) {
+    openPost(item) {
         // show indicator
         // this.setState({ showPostIndicator: index });
 
@@ -537,13 +499,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
     render() {
         const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
+            opacity: this.opacity,
+            transform: [{ translateY: this.offset }]
         };
 
         const flashStyle = {
-            opacity: this.state.flashOpacity,
-            transform: [{ translateY: this.state.flashOffset }]
+            opacity: this.flashOpacity,
+            transform: [{ translateY: this.flashOffset }]
         };
 
         const { profile } = this.props.profileStore;
@@ -1035,7 +997,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableWithoutFeedback onPress={async () => await this.postClick(item)}>
+                                <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
                                     <View style={styles.pictureContainer}>
                                         <SmartImage
                                             style={styles.picture}
@@ -1095,7 +1057,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     /*
                     ListFooterComponent={
                         this.state.isLoadingFeeds &&
-                        <View style={{ width: '100%', height: 60, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ width: '100%', height: 30, justifyContent: 'center', alignItems: 'center' }}>
                             <RefreshIndicator />
                         </View>
                     }
@@ -1168,6 +1130,44 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
             this.adminCount = undefined;
         }
+    }
+
+    showNotification(msg) {
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.parallel([
+                    Animated.timing(this.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
+                ]).start();
+            });
+        });
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.parallel([
+                Animated.timing(this.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
+        });
     }
 
     openDialog(type, title, message, callback) {
@@ -1392,12 +1392,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
             this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
                 Animated.parallel([
-                    Animated.timing(this.state.flashOpacity, {
+                    Animated.timing(this.flashOpacity, {
                         toValue: 1,
                         duration: 200,
                         useNativeDriver: true
                     }),
-                    Animated.timing(this.state.flashOffset, {
+                    Animated.timing(this.flashOffset, {
                         toValue: Constants.statusBarHeight,
                         duration: 200,
                         useNativeDriver: true
@@ -1410,12 +1410,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
     hideFlash() {
         this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
             Animated.parallel([
-                Animated.timing(this.state.flashOpacity, {
+                Animated.timing(this.flashOpacity, {
                     toValue: 0,
                     duration: 200,
                     useNativeDriver: true
                 }),
-                Animated.timing(this.state.flashOffset, {
+                Animated.timing(this.flashOffset, {
                     toValue: height * -1,
                     duration: 200,
                     useNativeDriver: true

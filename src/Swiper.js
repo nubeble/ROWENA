@@ -24,7 +24,7 @@ const styles = {
     },
 
     wrapperIOS: {
-        backgroundColor: 'transparent',
+        backgroundColor: 'transparent'
     },
 
     wrapperAndroid: {
@@ -299,7 +299,7 @@ export default class extends Component {
         if (Platform.OS === 'ios') {
             if (this.initialRender && this.state.total > 1) {
                 this.scrollView.scrollTo({ ...offset, animated: false })
-                this.initialRender = false;
+                this.initialRender = false
             }
         }
 

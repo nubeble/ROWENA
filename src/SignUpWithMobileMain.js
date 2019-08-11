@@ -22,6 +22,9 @@ import CodeInput from 'react-native-confirmation-code-input';
 // import firebase from 'firebase/app';
 // import 'firebase/auth';
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 // const CAPTCHA_URL = `https://rowena-88cfd.firebaseapp.com/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 const CAPTCHA_URL = `https://rowena-88cfd.web.app/recaptcha.html?appurl=${Linking.makeUrl('')}`;
 
@@ -50,10 +53,6 @@ export default class SignUpWithMobileMain extends React.Component {
 
         showSignUpLoader: false,
 
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
-
         invalid: true, // button
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
         signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
@@ -62,8 +61,17 @@ export default class SignUpWithMobileMain extends React.Component {
         secureText: 'Show',
 
         bottomPosition: Dimensions.get('window').height,
-        signUpButtonTop: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight
+        signUpButtonTop: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight,
+
+        notification: '',
     };
+
+    constructor(props) {
+        super(props);
+
+        this.opacity = new Animated.Value(0);
+        this.offset = new Animated.Value(((8 + 34 + 8) - 12) * -1);
+    }
 
     componentDidMount() {
         console.log('jdub', 'SignUpWithMobileMain.componentDidMount');
@@ -142,44 +150,6 @@ export default class SignUpWithMobileMain extends React.Component {
         !this.closed && this.setState({ bottomPosition: bottomPosition, signUpButtonTop: signUpButtonTop });
     }
 
-    showNotification(msg) {
-        this._showNotification = true;
-
-        this.setState({ notification: msg }, () => {
-            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 1,
-                        duration: 200,
-                        useNativeDriver: true
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
-                        duration: 200,
-                        useNativeDriver: true
-                    })
-                ]).start();
-            });
-        });
-    };
-
-    hideNotification() {
-        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.parallel([
-                Animated.timing(this.state.opacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: true
-                }),
-                Animated.timing(this.state.offset, {
-                    toValue: height * -1,
-                    duration: 200,
-                    useNativeDriver: true
-                })
-            ]).start(() => { this._showNotification = false });
-        });
-    }
-
     validateNumber(text) {
         if (this._showNotification) {
             this.hideNotification();
@@ -223,14 +193,14 @@ export default class SignUpWithMobileMain extends React.Component {
         const pwIcon = this.state.pwIcon;
 
         const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
+            opacity: this.opacity,
+            transform: [{ translateY: this.offset }]
         };
 
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
                     source={PreloadImage.background}
                     fadeDuration={0}
                 />
@@ -575,17 +545,15 @@ export default class SignUpWithMobileMain extends React.Component {
                 console.log('jdub', 'onPhoneComplete error', error.code, error.message);
 
                 // ToDo: error handling
-                /*
                 if (error.code === 'auth/too-many-requests') {
                     // this.showNotification('We have blocked all requests from this device due to unusual activity. Try again later.');
                     this.showNotification('Unusual activity. Please try again later.');
                 } else {
                     this.showNotification('An error happened. Please try again.');
                 }
-                */
 
-                // ToDo: test
-                this.showNotification(error.code + error.message);
+                // test
+                // this.showNotification(error.code + error.message);
             }
         } else {
             this.showNotification('token is null!!!');
@@ -671,6 +639,44 @@ export default class SignUpWithMobileMain extends React.Component {
 
         // enable
         this.setState({ invalid: false, signUpButtonBackgroundColor: "rgba(62, 165, 255, 0.8)", signUpButtonTextColor: "rgba(255, 255, 255, 0.8)" });
+    }
+
+    showNotification(msg) {
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.parallel([
+                    Animated.timing(this.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
+                ]).start();
+            });
+        });
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.parallel([
+                Animated.timing(this.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
+        });
     }
 }
 

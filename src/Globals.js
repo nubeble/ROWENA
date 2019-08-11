@@ -45,23 +45,6 @@ export const Cons = {
 
     // bottomTabBarHeight: Platform.isPad ? 49 : 29, // const DEFAULT_HEIGHT = 49; const COMPACT_HEIGHT = 29;
 
-    // view margin bottom
-    // ToDo: iphone x, iphone xr, iphone xs, ...
-    /*
-    viewMarginVertical: () => {
-        if (Platform.OS === 'android') return 0;
-
-        const model = Constants.platform.ios.model.toLowerCase();
-
-        if (model === 'iphone x') return 12;
-        if (model === 'iphone xs') return 12;
-        if (model === 'iphone xs max') return 12;
-        if (model === 'iphone xr') return 12;
-
-        return 0;
-    },
-    */
-
     mapPostBottom: () => {
         if (Platform.OS === 'android') return -12;
 

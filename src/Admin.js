@@ -161,7 +161,7 @@ export default class Admin extends React.Component {
 
     }
 
-    async initBangkok(index) {
+    async initBangkok(i) {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
 
@@ -183,7 +183,10 @@ export default class Admin extends React.Component {
 
         let location = null;
         let note = null;
-        let pictures = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
         let name = null;
         let birthday = null;
         let height = 0;
@@ -203,25 +206,10 @@ export default class Admin extends React.Component {
 
             // 3. pictures
             // --
-            const image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F1.jpg?alt=media&token=639a7b61-3f3c-4ba9-bdc3-5ec07f26212c';
-            const image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F2.jpg?alt=media&token=b9da6667-3d2f-471d-816a-9d3cd3be78bf';
-            const image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F3.jpg?alt=media&token=0ba9f24f-25ce-4dff-85d8-e1ec0e4c1f2a';
-            const image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F4.jpg?alt=media&token=5c594fc9-4b75-4edb-b525-55b06731dbc4';
-
-            pictures = {
-                one: {
-                    uri: image1Uri
-                },
-                two: {
-                    uri: image2Uri
-                },
-                three: {
-                    uri: image3Uri
-                },
-                four: {
-                    uri: image4Uri
-                }
-            };
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F1.jpg?alt=media&token=639a7b61-3f3c-4ba9-bdc3-5ec07f26212c';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F2.jpg?alt=media&token=b9da6667-3d2f-471d-816a-9d3cd3be78bf';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F3.jpg?alt=media&token=0ba9f24f-25ce-4dff-85d8-e1ec0e4c1f2a';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F4.jpg?alt=media&token=5c594fc9-4b75-4edb-b525-55b06731dbc4';
             // --
 
             name = 'WANG WEN';
@@ -230,7 +218,29 @@ export default class Admin extends React.Component {
             weight = 49;
             bust = 'B';
         } else if (i === 1) {
-            return;
+            // 1. location
+            location = {
+                description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
+                latitude: 13.7236856,
+                longitude: 100.5368514
+            };
+
+            // 2. note
+            note = "Hello! I don't bite 🙃";
+
+            // 3. pictures
+            // --
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F1.jpg?alt=media&token=639a7b61-3f3c-4ba9-bdc3-5ec07f26212c';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F2.jpg?alt=media&token=b9da6667-3d2f-471d-816a-9d3cd3be78bf';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F3.jpg?alt=media&token=0ba9f24f-25ce-4dff-85d8-e1ec0e4c1f2a';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2F1%2F4.jpg?alt=media&token=5c594fc9-4b75-4edb-b525-55b06731dbc4';
+            // --
+
+            name = 'Wichuda';
+            birthday = '07081995';
+            height = 168;
+            weight = 46;
+            bust = 'B';
         } else if (i === 2) {
             return;
         } else if (i === 3) {
@@ -261,6 +271,23 @@ export default class Admin extends React.Component {
         feed.placeName = placeName;
         feed.location = location;
         feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
         feed.pictures = pictures;
         feed.name = name;
         feed.birthday = birthday;

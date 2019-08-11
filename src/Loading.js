@@ -20,6 +20,9 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 
 // $FlowFixMe
 const RobotoBlack = require("../fonts/Roboto/Roboto-Black.ttf");
@@ -47,12 +50,13 @@ export default class Loading extends React.Component<InjectedProps> {
 
     state = {
         isReady: false,
-        showIndicator: false,
-        imageOpacity: new Animated.Value(0)
+        showIndicator: false
     };
 
     constructor(props) {
         super(props);
+
+        this.imageOpacity = new Animated.Value(0);
 
         SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
     }
@@ -62,8 +66,6 @@ export default class Loading extends React.Component<InjectedProps> {
 
         this._cacheResourcesAsync().then(() => {
             !this.closed && this.setState({ isReady: true });
-
-            // this.init();
         }).catch(error => console.error(`Unexpected error thrown when loading: ${error.stack}`));
     }
 
@@ -83,18 +85,17 @@ export default class Loading extends React.Component<InjectedProps> {
             <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
                 <Animated.Image
                     style={{
-                        flex: 1, resizeMode: 'cover', width: undefined, height: undefined,
-                        opacity: this.state.imageOpacity
+                        // flex: 1, resizeMode: 'cover', width: undefined, height: undefined,
+                        width: windowWidth, height: windowHeight, resizeMode: 'cover',
+                        opacity: this.imageOpacity
                     }}
                     source={PreloadImage.background}
-                    onLoadEnd={() => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
-                        // setTimeout(() => {
-                            !this.closed && this.setState({ showIndicator: true });
+                    onLoadEnd={async () => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
+                        !this.closed && this.setState({ showIndicator: true }, () => {
                             SplashScreen.hide();
-                            
 
                             this.init();
-                        // }, 500);
+                        });
                     }}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
@@ -102,7 +103,7 @@ export default class Loading extends React.Component<InjectedProps> {
                 {
                     this.state.showIndicator &&
                     <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center' }}>
-                        <RefreshIndicator refreshing total={3} size={6} color={Theme.color.splash} />
+                        <RefreshIndicator refreshing total={3} size={7} color={Theme.color.splash} />
                     </View>
                 }
             </View>
@@ -167,16 +168,16 @@ export default class Loading extends React.Component<InjectedProps> {
                 } else {
                     Loading.userAutoAuthenticated = false;
 
+                    !this.closed && this.setState({ showIndicator: false });
+
                     Animated.sequence([
-                        // Animated.delay(1500),
-                        Animated.timing(this.state.imageOpacity, {
+                        // Animated.delay(500),
+                        Animated.timing(this.imageOpacity, {
                             toValue: 1,
-                            duration: 500,
+                            duration: 1000,
                             useNativeDriver: true
                         })
                     ]).start(() => {
-                        !this.closed && this.setState({ showIndicator: false });
-
                         console.log('jdub', '[first join] move to auth main');
                         // StatusBar.setHidden(false);
                         navigation.navigate("authMain");

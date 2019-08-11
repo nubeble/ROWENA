@@ -60,7 +60,7 @@
         },
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
-            "buildNumber": "1.1.4",
+            "buildNumber": "1.1.5",
             "icon": "./assets/ios_icon.png",
             "supportsTablet": true,
             "infoPlist": {

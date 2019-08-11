@@ -134,7 +134,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                     navigation.navigate("detail", { post: post, profile: profile, extra: extra });
                 }}
             >
-                {/* // ToDo: use image carousel (one, two, ...) */}
+                {/* // ToDo: impl image carousel */}
                 <View style={styles.container}>
                     <SmartImage
                         style={styles.picture}

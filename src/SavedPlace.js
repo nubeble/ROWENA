@@ -369,7 +369,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
         }
     }
 
-    async openPost(item, index) {
+    openPost(item, index) {
         // const post = this.state.feeds[index];
         const post = this.feedList.get(item.feedId);
 
@@ -521,8 +521,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
                             return (
                                 <TouchableOpacity activeOpacity={0.5}
-                                    onPress={async () => {
-                                        if (averageRating !== -1 && item.reviewCount !== -1) await this.openPost(item, index);
+                                    onPress={() => {
+                                        if (averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
                                     }}
                                     onLongPress={() => {
                                         this.openDialog('Remove likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {

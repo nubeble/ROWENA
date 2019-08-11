@@ -27,8 +27,6 @@ export default class Welcome extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        // ToDo: dialog - you wanna quit?
-
         // --
         console.log('jdub', 'move to tutorial');
         this.props.navigation.navigate("tutorial");

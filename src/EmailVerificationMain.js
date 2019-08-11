@@ -20,6 +20,9 @@ type InjectedProps = {
     profileStore: ProfileStore
 };
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 
 @inject("profileStore")
 @observer
@@ -28,10 +31,6 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         bottomPosition: Dimensions.get('window').height,
         signUpButtonTop: Dimensions.get('window').height - Cons.bottomButtonMarginBottom - Cons.buttonHeight,
         showSignUpLoader: false,
-
-        notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         name: '',
         nameIcon: 0, // 0: disappeared, 1: exclamation, 2: check
@@ -48,11 +47,20 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         signUpButtonBackgroundColor: 'rgba(235, 235, 235, 0.5)',
         signUpButtonTextColor: 'rgba(96, 96, 96, 0.8)',
 
+        notification: '',
+
         dialogVisible: false,
         dialogTitle: '',
         dialogMessage: '',
         dialogType: 'alert'
     };
+
+    constructor(props) {
+        super(props);
+
+        this.opacity = new Animated.Value(0);
+        this.offset = new Animated.Value(((8 + 34 + 8) - 12) * -1);
+    }
 
     sendVerificationEmail() {
         let user = Firebase.auth.currentUser;
@@ -249,48 +257,6 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         !this.closed && this.setState((prevstate) => ({ timer: prevstate.timer - 1 }));
     };
 
-    showNotification(msg) {
-        this._showNotification = true;
-
-        this.setState({ notification: msg }, () => {
-            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-                Animated.parallel([
-                    Animated.timing(this.state.opacity, {
-                        toValue: 1,
-                        duration: 200,
-                        useNativeDriver: true
-                    }),
-                    Animated.timing(this.state.offset, {
-                        toValue: Constants.statusBarHeight + 6,
-                        duration: 200,
-                        useNativeDriver: true
-                    })
-                ]).start();
-            });
-        });
-    };
-
-    hideNotification() {
-        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
-            Animated.parallel([
-                Animated.timing(this.state.opacity, {
-                    toValue: 0,
-                    duration: 200,
-                    useNativeDriver: true
-                }),
-                Animated.timing(this.state.offset, {
-                    toValue: height * -1,
-                    duration: 200,
-                    useNativeDriver: true
-                })
-            ]).start(() => { this._showNotification = false });
-        });
-    }
-
-    hideAlertIcon() {
-        if (this.state.nameIcon !== 0) this.setState({ nameIcon: 0 });
-    }
-
     render() {
         // const from = this.props.navigation.state.params.from;
 
@@ -305,14 +271,14 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
         const nameIcon = this.state.nameIcon;
 
         const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
+            opacity: this.opacity,
+            transform: [{ translateY: this.offset }]
         };
 
         return (
             <View style={{ flex: 1 }}>
                 <Image
-                    style={{ flex: 1, resizeMode: 'cover', width: undefined, height: undefined }}
+                    style={{ width: windowWidth, height: windowHeight, resizeMode: 'cover' }}
                     source={PreloadImage.background}
                     fadeDuration={0}
                 />
@@ -555,10 +521,10 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
             const result = await Firebase.deleteProfile(profile.uid);
             // --
 
-            // ToDo: if users cancel verification at first join, authentication error will happen.
+            // ToDo: fist email account still remain!
+            // if users cancel verification at first join, authentication error will happen.
             // This operation is sensitive and requires recent authentication. Log in again before retrying this request
             // Loading.onAuthStateChanged not called. manually move to auth main.
-            // ToDo: fist email account still remain!
             if (!result) {
                 const from = this.props.navigation.state.params.from;
                 if (from === 'Loading') {
@@ -567,6 +533,48 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
                     this.props.navigation.dispatch(NavigationActions.back());
                 }
             }
+        });
+    }
+
+    hideAlertIcon() {
+        if (this.state.nameIcon !== 0) this.setState({ nameIcon: 0 });
+    }
+
+    showNotification(msg) {
+        this._showNotification = true;
+
+        this.setState({ notification: msg }, () => {
+            this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+                Animated.parallel([
+                    Animated.timing(this.opacity, {
+                        toValue: 1,
+                        duration: 200,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(this.offset, {
+                        toValue: Constants.statusBarHeight + 6,
+                        duration: 200,
+                        useNativeDriver: true
+                    })
+                ]).start();
+            });
+        });
+    };
+
+    hideNotification() {
+        this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
+            Animated.parallel([
+                Animated.timing(this.opacity, {
+                    toValue: 0,
+                    duration: 200,
+                    useNativeDriver: true
+                }),
+                Animated.timing(this.offset, {
+                    toValue: height * -1,
+                    duration: 200,
+                    useNativeDriver: true
+                })
+            ]).start(() => { this._showNotification = false });
         });
     }
 

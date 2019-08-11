@@ -201,28 +201,30 @@ export default class AdvertisementMain extends React.Component {
         showCountryAlertIcon: false,
         showStreetAlertIcon: false,
 
-        showMessageBox: false,
-        messageBoxY: 0,
-        messageBoxText: '',
-        messageBoxOpacity: new Animated.Value(0),
-
         onNote: false,
         keyboardTop: Dimensions.get('window').height,
 
         notification: '',
-        opacity: new Animated.Value(0),
-        offset: new Animated.Value(((8 + 34 + 8) - 12) * -1),
 
         flashMessageTitle: '',
         flashMessageSubtitle: '',
         flashImage: null, // uri
-        flashOpacity: new Animated.Value(0),
-        // flashOffset: new Animated.Value(Cons.searchBarHeight * -1),
-        flashOffset: new Animated.Value((8 + 34 + 8) * -1)
+
+        showMessageBox: false,
+        messageBoxY: 0,
+        messageBoxText: ''
     };
 
     constructor(props) {
         super(props);
+
+        this.opacity = new Animated.Value(0);
+        this.offset = new Animated.Value(((8 + 34 + 8) - 12) * -1);
+
+        this.flashOpacity = new Animated.Value(0);
+        this.flashOffset = new Animated.Value((8 + 34 + 8) * -1);
+
+        this.messageBoxOpacity = new Animated.Value(0);
 
         this.feedId = null;
 
@@ -876,13 +878,13 @@ export default class AdvertisementMain extends React.Component {
 
     render() {
         const notificationStyle = {
-            opacity: this.state.opacity,
-            transform: [{ translateY: this.state.offset }]
+            opacity: this.opacity,
+            transform: [{ translateY: this.offset }]
         };
 
         const flashStyle = {
-            opacity: this.state.flashOpacity,
-            transform: [{ translateY: this.state.flashOffset }]
+            opacity: this.flashOpacity,
+            transform: [{ translateY: this.flashOffset }]
         };
 
         return (
@@ -1053,7 +1055,7 @@ export default class AdvertisementMain extends React.Component {
         else if (this.state.gender === 'Male') boobsTitle = 'MUSCLE';
 
         const viewStyle = {
-            opacity: this.state.messageBoxOpacity
+            opacity: this.messageBoxOpacity
         };
 
         return (
@@ -2209,12 +2211,12 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ notification: msg }, () => {
             this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
                 Animated.parallel([
-                    Animated.timing(this.state.opacity, {
+                    Animated.timing(this.opacity, {
                         toValue: 1,
                         duration: 200,
                         useNativeDriver: true
                     }),
-                    Animated.timing(this.state.offset, {
+                    Animated.timing(this.offset, {
                         toValue: Constants.statusBarHeight + 6,
                         duration: 200,
                         useNativeDriver: true
@@ -2227,12 +2229,12 @@ export default class AdvertisementMain extends React.Component {
     hideNotification() {
         this._notification.getNode().measure((x, y, width, height, pageX, pageY) => {
             Animated.parallel([
-                Animated.timing(this.state.opacity, {
+                Animated.timing(this.opacity, {
                     toValue: 0,
                     duration: 200,
                     useNativeDriver: true
                 }),
-                Animated.timing(this.state.offset, {
+                Animated.timing(this.offset, {
                     toValue: height * -1,
                     duration: 200,
                     useNativeDriver: true
@@ -2252,12 +2254,12 @@ export default class AdvertisementMain extends React.Component {
         this.setState({ flashMessageTitle: title, flashMessageSubtitle: subtitle, flashImage: image }, () => {
             this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
                 Animated.parallel([
-                    Animated.timing(this.state.flashOpacity, {
+                    Animated.timing(this.flashOpacity, {
                         toValue: 1,
                         duration: 200,
                         useNativeDriver: true
                     }),
-                    Animated.timing(this.state.flashOffset, {
+                    Animated.timing(this.flashOffset, {
                         toValue: Constants.statusBarHeight,
                         duration: 200,
                         useNativeDriver: true
@@ -2272,12 +2274,12 @@ export default class AdvertisementMain extends React.Component {
     hideFlash() {
         this._flash.getNode().measure((x, y, width, height, pageX, pageY) => {
             Animated.sequence([
-                Animated.timing(this.state.flashOpacity, {
+                Animated.timing(this.flashOpacity, {
                     toValue: 0,
                     duration: 200,
                     useNativeDriver: true
                 }),
-                Animated.timing(this.state.flashOffset, {
+                Animated.timing(this.flashOffset, {
                     toValue: height * -1,
                     duration: 200,
                     useNativeDriver: true
@@ -2311,7 +2313,7 @@ export default class AdvertisementMain extends React.Component {
         }
 
         this.setState({ messageBoxText: msg, showMessageBox: true, messageBoxY: y }, () => {
-            Animated.timing(this.state.messageBoxOpacity, {
+            Animated.timing(this.messageBoxOpacity, {
                 toValue: 1,
                 duration: 200,
                 easing: Easing.inOut(Easing.ease),
@@ -2331,7 +2333,7 @@ export default class AdvertisementMain extends React.Component {
 
         this._hideMessageBox = true;
 
-        Animated.timing(this.state.messageBoxOpacity, {
+        Animated.timing(this.messageBoxOpacity, {
             toValue: 0,
             duration: 200,
             easing: Easing.inOut(Easing.ease),

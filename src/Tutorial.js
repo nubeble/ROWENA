@@ -66,8 +66,6 @@ export default class Tutorial extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        // ToDo: dialog - you wanna quit?
-
         // --
         console.log('jdub', 'move to main');
         this.props.navigation.navigate("mainStackNavigator");

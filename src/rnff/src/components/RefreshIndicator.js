@@ -46,8 +46,9 @@ class Circle extends React.Component<CircleProps, CircleState> {
             outputRange: [1, 1, 3, 1, 1]
         });
 
-        let margin = Theme.spacing.tiny;
-        if (size === 4) margin = 6;
+        let margin = 8;
+        if (size < 5) margin = 6;
+        else if (5 < size) margin = 10;
 
         return (
             <Animated.View style={[styles.circle, {
@@ -96,8 +97,10 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
 
+        /*
         marginTop: Theme.spacing.large,
         marginBottom: Theme.spacing.large
+        */
     },
     circle: {
         height: 6,
@@ -105,6 +108,6 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         // backgroundColor: Theme.palette.primary,
         // backgroundColor: 'grey',
-        margin: Theme.spacing.tiny
+        margin: 8
     }
 });

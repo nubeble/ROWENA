@@ -98,7 +98,7 @@ export default class Explore extends React.Component<InjectedProps> {
                 this.ads[3] = PreloadImage.burger4;
                 break;
 
-            case 3: // ToDo: ad banner
+            case 3: // ToDo: add your ad
                 this.ads[0] = { uri: 'https://www.iprayprayer.com/wp-content/uploads/2017/04/images.png' };
                 this.ads[1] = { uri: 'https://s3.envato.com/files/71383791/origami_590_preview.jpg' };
                 this.ads[2] = { uri: 'https://image.shutterstock.com/z/stock-vector-sale-banner-template-and-special-offer-off-vector-illustration-346063715.jpg' };
@@ -434,10 +434,10 @@ export default class Explore extends React.Component<InjectedProps> {
                                 {
                                     this.ads.length === 4 ?
                                         <Swiper
-                                            // containerStyle={{ marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }}
                                             width={Dimensions.get('window').width}
                                             height={Dimensions.get('window').width / 21 * 9}
-                                            loop={false}
+                                            // loop={false}
+                                            loop={true} // Consider: this fixes a render issue on ios
                                             autoplay={true}
                                             // autoplayTimeout={3}
                                             autoplayTimeout={2}
@@ -615,7 +615,7 @@ export default class Explore extends React.Component<InjectedProps> {
         this.order('timestamp');
     }
 
-    orderByDistance() { // ToDo: distance
+    orderByDistance() { // Consider: distance
         // this.order('averageRating');
     }
 
