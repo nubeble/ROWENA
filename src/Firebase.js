@@ -2,6 +2,7 @@ import * as firebase from "firebase";
 import "firebase/firestore";
 import Util from './Util';
 import { Geokit, LatLngLiteral } from 'geokit';
+import AuthMain from './AuthMain';
 // import _ from 'lodash';
 
 const config = {
@@ -257,6 +258,7 @@ export default class Firebase {
         }
 
         // sign out
+        AuthMain.animation = true;
         await Firebase.auth.signOut();
     }
 

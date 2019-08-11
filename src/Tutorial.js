@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, View, Image, BackHandler, Dimensions } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import { LinearGradient } from 'expo';
-import { Ionicons, Entypo } from '@expo/vector-icons';
+import { Ionicons, Entypo, FontAwesome, MaterialIcons, Feather } from '@expo/vector-icons';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import autobind from 'autobind-decorator';
 import PreloadImage from './PreloadImage';
@@ -102,13 +102,41 @@ export default class Tutorial extends React.Component {
     renderItem({ item, index }) {
         const slide = item;
 
+        let icon = null;
+        if (index === 0) {
+            icon = (
+                <View style={{ width: '100%', height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                    <MaterialIcons name='place' color="black" size={50} />
+                </View>
+            );
+        } else if (index === 1) {
+            icon = (
+                <View style={{ width: '100%', height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                    <FontAwesome name='search' color="black" size={42} />
+                </View>
+            );
+        } else if (index === 2) {
+            icon = (
+                <View style={{ width: '100%', height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                    <Feather name='globe' color="black" size={44} />
+                </View>
+            );
+        } else if (index === 3) {
+            icon = (
+                <View style={{ width: '100%', height: 50, alignItems: 'center', justifyContent: 'center' }}>
+                    <FontAwesome name='thumbs-up' color="black" size={42} />
+                </View>
+            );
+        }
 
         const imageHeight = windowHeight * 0.6;
         const imageWidth = imageHeight * slide.image.width / slide.image.height;
 
         return (
             <View style={styles.flex}>
-                <View style={{ height: 120, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 10 }}>
+                {icon}
+
+                <View style={{ marginTop: 8, height: 100, alignItems: 'center', paddingHorizontal: 10 }}>
                     <Text style={styles.title}>{slide.title}</Text>
                 </View>
 
@@ -116,8 +144,8 @@ export default class Tutorial extends React.Component {
                     style={{
                         width: imageWidth,
                         height: imageHeight,
-                        resizeMode: 'cover'
-                        // marginBottom: -54
+                        resizeMode: 'cover',
+                        marginBottom: '10%'
                     }}
                 />
             </View>
