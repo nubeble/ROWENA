@@ -377,6 +377,8 @@ export default class Intro extends React.Component<InjectedProps> {
     @autobind
     onFocus() {
         Vars.focusedScreen = 'Intro';
+
+        this.searchText = "Try \"" + Util.getRandomCity() + "\"";
     }
 
     @autobind
@@ -704,6 +706,9 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     render(): React.Node {
+        let searchText = 'Where to?';
+        if (this.searchText) searchText = this.searchText;
+
         const notificationStyle = {
             opacity: this.opacity,
             transform: [{ translateY: this.offset }]
@@ -756,8 +761,8 @@ export default class Intro extends React.Component<InjectedProps> {
                                     paddingTop: 3,
                                     color: "rgb(160, 160, 160)", textAlign: 'center'
                                 }}
-                            // numberOfLines={1}
-                            >{'Where to?'}</Text>
+                                numberOfLines={1}
+                            >{searchText}</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -1329,7 +1334,6 @@ export default class Intro extends React.Component<InjectedProps> {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/* // ToDo: draw illustration */}
                     <Ionicons name='md-person' color={Theme.color.component} size={40} />
                 </View>
             );
@@ -1444,7 +1448,6 @@ export default class Intro extends React.Component<InjectedProps> {
                     backgroundColor: 'black',
                     justifyContent: 'center', alignItems: 'center'
                 }}>
-                    {/* // ToDo: draw illustration */}
                     <Ionicons name='md-person' color={Theme.color.component} size={40} />
                 </View>
             );

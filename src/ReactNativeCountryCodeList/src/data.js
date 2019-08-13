@@ -965,7 +965,7 @@ export const getAlphabet = () => {
             {
                 dial: '+853',
                 code: "MO",
-                name: "Macau"
+                name: "Macao"
             },
             {
                 dial: '+389',

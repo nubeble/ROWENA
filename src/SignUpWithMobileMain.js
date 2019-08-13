@@ -407,7 +407,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     }
 
                     <View style={{ position: 'absolute', top: this.state.signUpButtonTop, width: '100%', height: Cons.buttonHeight, justifyContent: 'center', alignItems: 'center' }}>
-                        <TouchableOpacity onPress={() => this.buttonClick()} style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}>
+                        <TouchableOpacity onPress={async () => await this.buttonClick()} style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}>
                             <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>
                                 {this.state.mode === 'PHONE' ? 'Next' : 'Sign up'}
                             </Text>

@@ -270,15 +270,12 @@ export default class GooglePlacesAutocomplete extends Component {
 
                     const key = API_KEY;
 
-                    if (this.props.predefinedPlaces.length === 0) { // 'AdvertisementMain'
+                    if (this.props.predefinedPlaces.length === 0) { // means searching streets in 'AdvertisementMain'
                         // get current location (street)
                         this.getStreetAddress(input, key, (obj) => {
                             if (this.closed) return;
 
                             console.log('jdub', 'this.getStreetAddress result', obj);
-
-                            // Consider: exception
-                            // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                             // set text
                             !this.closed && this.setState({ text: obj.formatted_address });
@@ -320,9 +317,6 @@ export default class GooglePlacesAutocomplete extends Component {
                             }
 
                             console.log('jdub', 'this.getPlaceId result', obj);
-
-                            // Consider: exception
-                            // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                             // set text
                             !this.closed && this.setState({ text: obj.formatted_address });
@@ -404,9 +398,6 @@ export default class GooglePlacesAutocomplete extends Component {
                             if (this.refs.textInput) this.refs.textInput.setNativeProps({ selection: { start: 0, end: 0 } });
 
                             delete rowData.isLoading;
-
-                            // Consider: exception
-                            // if (rowData.description === 'Macau') rowData.description = 'Macau, China';
 
                             this.props.onPress(rowData, details);
                         }
@@ -569,6 +560,40 @@ export default class GooglePlacesAutocomplete extends Component {
             // --
             for (let i = 0; i < unfilteredResults.length; i++) {
                 const result = unfilteredResults[i];
+
+                // ToDo: exception for Monaco-Ville (ChIJQ1dYAInCzRIRs_8Cnm0YeKc)
+                // filter Monaco-Ville & push Monaco instead
+                if (result.place_id === 'ChIJQ1dYAInCzRIRs_8Cnm0YeKc') {
+                    const obj = {
+                        description: "Monaco",
+                        place_id: "ChIJMYU_e2_CzRIR_JzEOkx493Q"
+                    };
+
+                    results.push(obj);
+
+                    continue;
+                }
+
+                // ToDo: exception for Macao (ChIJ88g14uB6ATQR9qyFtCzje8Y)
+                // push Macao when Mação, Portugal(ChIJwU75U8oPGA0RXE_LcGMUGOw) found
+                if (result.place_id === 'ChIJwU75U8oPGA0RXE_LcGMUGOw') {
+                    const obj1 = {
+                        description: result.description,
+                        place_id: result.place_id
+                    };
+
+                    results.push(obj1);
+
+                    const obj2 = {
+                        description: "Macao",
+                        place_id: "ChIJ88g14uB6ATQR9qyFtCzje8Y"
+                    };
+
+                    results.push(obj2);
+
+                    continue;
+                }
+
                 if (result.types.length !== types.length) continue;
 
                 let found = true;
@@ -723,21 +748,21 @@ export default class GooglePlacesAutocomplete extends Component {
                             results = this._filterResultsByTypes(responseJSON.predictions, this.props.filterReverseGeocodingByTypes);
                             console.log('jdub', '_request GoogleReverseGeocoding results', results);
                         } else { // GooglePlacesSearch
-                            if (this.props.filterPlacesSearchByTypes.length === 0) { // searching streets in AdvertisementMain
+                            if (this.props.filterPlacesSearchByTypes.length === 0) { // means searching streets in 'AdvertisementMain'
                                 results = responseJSON.predictions;
                             } else {
                                 console.log('jdub', '_request GooglePlacesSearch pre results', responseJSON.predictions);
                                 results = this._filterResultsByCity(responseJSON.predictions, this.props.filterPlacesSearchByTypes);
                                 console.log('jdub', '_request GooglePlacesSearch results', results);
 
-                                // ToDo: exception for city-state (Macau, Hong Kong, ...)
+                                // ToDo: exception for city-state (Macao, Hong Kong, ...)
                                 if (results.length === 0) {
                                     const filter = ["country", "political", "geocode"];
                                     results = this._filterResultsByCityState(responseJSON.predictions, filter);
                                     console.log('jdub', '_request GooglePlacesSearch _filterResultsByCityState', results);
                                     if (results.length === 1) {
                                         const result = results[0];
-                                        if (result.description === "Hong Kong" || result.description === "Macau" || result.description === "Singapore" || result.description === "Monaco") {
+                                        if (result.description === "Hong Kong" || result.description === "Macao" || result.description === "Singapore" || result.description === "Monaco") {
                                             // keep going
                                         } else {
                                             results = [];
@@ -843,45 +868,41 @@ export default class GooglePlacesAutocomplete extends Component {
 
         if (rowData.isCurrentLocation) {
             return (
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <FontAwesome style={{ width: 20, paddingBottom: 4 }} name='location-arrow' color={Theme.color.selection} size={16} />
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                    <FontAwesome style={{ width: 20, paddingBottom: 2 }} name='location-arrow' color={Theme.color.selection} size={16} />
 
-                        <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
-                            <Text
-                                style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
-                                { fontSize: 16, lineHeight: 16, fontFamily: "Roboto-Medium" }]}
-                            >{rowData.description}</Text>
-                        </View>
+                    <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
+                        <Text
+                            style={[defaultStyles.description, this.props.styles.description, defaultStyles.currentLocationText,
+                            { fontSize: 16, fontFamily: "Roboto-Medium" }]}
+                        >{rowData.description}</Text>
                     </View>
                 </View>
             );
         }
 
         const description = rowData.description;
-        /*
-        console.log('jdub', 'description', description);
 
-        const index = description.indexOf(',');
+        // const city = Util.getCity(description);
+        // const state = Util.getStateAndCountry(description);
 
-        let city = '';
-        let state = '';
 
-        if (index === -1) {
-            city = description;
+        // filter "Macao, 12號碼頭"
+        let description1 = Util.filterNumber(description);
 
-            // Consider: exception
-            // if (city === 'Macau') state = 'China';
-        } else {
-            city = description.substring(0, index);
-            state = description.substring(index + 2, description.length);
-
-            // console.log('jdub', 'city', city);
-            // console.log('jdub', 'state', state);
+        // ToDo: street search, length 1 then skip
+        if (this.props.filterPlacesSearchByTypes.length === 0) { // searching streets in AdvertisementMain
+            if (description1.split(', ').length <= 1) return;
         }
+
+        const city = Util.getStreet(description1); // street
+        const state = Util.getCountry(description1); // country
+
+        /*
+        console.log('!!! description', description1);
+        console.log('!!! street', city);
+        console.log('!!! country', state);
         */
-        const city = Util.getCity(description);
-        const state = Util.getStateAndCountry(description);
 
         let texts = false;
         if (city && state) texts = true;
@@ -890,64 +911,32 @@ export default class GooglePlacesAutocomplete extends Component {
             const icon = rowData.icon;
 
             return (
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                        {
-                            icon === 'saved' &&
-                            <MaterialIcons style={{ width: 20 }} name='watch-later' color={Theme.color.text2} size={15} />
-                        }
-                        {
-                            icon === 'predefined' &&
-                            <MaterialIcons style={{ width: 20 }} name='whatshot' color={Theme.color.text2} size={15} />
-                        }
-                        {
-                            !icon &&
-                            <Ionicons style={{ width: 20 }} name='ios-heart' color={Theme.color.text2} size={15} />
-                        }
-                        {
-                            texts ?
-                                <View style={{ marginLeft: 14, marginRight: 20 }}>
-                                    <Text
-                                        style={[defaultStyles.description, this.props.styles.description,
-                                        this.props.styles.predefinedPlacesDescription,
-                                        { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 8 }]}
-                                    >{city}</Text>
-                                    <Text
-                                        style={[defaultStyles.description, this.props.styles.description,
-                                        this.props.styles.predefinedPlacesDescription,
-                                        { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
-                                    >{state}</Text>
-                                </View>
-                                :
-                                <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
-                                    <Text
-                                        style={[defaultStyles.description, this.props.styles.description,
-                                        this.props.styles.predefinedPlacesDescription,
-                                        { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }]}
-                                    >{state}</Text>
-                                </View>
-                        }
-                    </View>
-                </View>
-            );
-        }
-
-        return (
-            <View style={{ flex: 1, justifyContent: 'center' }}>
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                    <MaterialIcons style={{ width: 20 }} name='location-on' color={Theme.color.text2} size={15} />
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                    {
+                        icon === 'saved' &&
+                        <MaterialIcons style={{ width: 20 }} name='watch-later' color={Theme.color.text2} size={15} />
+                    }
+                    {
+                        icon === 'predefined' &&
+                        <MaterialIcons style={{ width: 20 }} name='whatshot' color={Theme.color.text2} size={15} />
+                    }
+                    {
+                        !icon &&
+                        <Ionicons style={{ width: 20 }} name='ios-heart' color={Theme.color.text2} size={15} />
+                    }
                     {
                         texts ?
                             <View style={{ marginLeft: 14, marginRight: 20 }}>
                                 <Text
                                     style={[defaultStyles.description, this.props.styles.description,
                                     this.props.styles.predefinedPlacesDescription,
-                                    { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 8 }]}
+                                    { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 8 }]}
+                                    numberOfLines={this.props.numberOfLines}
                                 >{city}</Text>
                                 <Text
                                     style={[defaultStyles.description, this.props.styles.description,
                                     this.props.styles.predefinedPlacesDescription,
-                                    { fontSize: 15, lineHeight: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
+                                    { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
                                     numberOfLines={this.props.numberOfLines}
                                 >{state}</Text>
                             </View>
@@ -956,11 +945,44 @@ export default class GooglePlacesAutocomplete extends Component {
                                 <Text
                                     style={[defaultStyles.description, this.props.styles.description,
                                     this.props.styles.predefinedPlacesDescription,
-                                    { fontSize: 16, lineHeight: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }]}
+                                    { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }]}
+                                    numberOfLines={this.props.numberOfLines}
                                 >{state}</Text>
                             </View>
                     }
                 </View>
+            );
+        }
+
+        return (
+            <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
+                <MaterialIcons style={{ width: 20 }} name='location-on' color={Theme.color.text2} size={15} />
+                {
+                    texts ?
+                        <View style={{ marginLeft: 14, marginRight: 20 }}>
+                            <Text
+                                style={[defaultStyles.description, this.props.styles.description,
+                                this.props.styles.predefinedPlacesDescription,
+                                { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium", marginBottom: 8 }]}
+                                numberOfLines={this.props.numberOfLines}
+                            >{city}</Text>
+                            <Text
+                                style={[defaultStyles.description, this.props.styles.description,
+                                this.props.styles.predefinedPlacesDescription,
+                                { fontSize: 15, color: Theme.color.text3, fontFamily: "Roboto-Regular" }]}
+                                numberOfLines={this.props.numberOfLines}
+                            >{state}</Text>
+                        </View>
+                        :
+                        <View style={{ marginLeft: 14, marginRight: 20, justifyContent: 'center' }}>
+                            <Text
+                                style={[defaultStyles.description, this.props.styles.description,
+                                this.props.styles.predefinedPlacesDescription,
+                                { fontSize: 16, color: Theme.color.text2, fontFamily: "Roboto-Medium" }]}
+                                numberOfLines={this.props.numberOfLines}
+                            >{state}</Text>
+                        </View>
+                }
             </View>
         );
     }
@@ -986,6 +1008,8 @@ export default class GooglePlacesAutocomplete extends Component {
     }
 
     _renderRow = (rowData = {}, sectionID, rowID) => {
+        const component = this._renderRowData(rowData);
+
         return (
             <ScrollView
                 style={{ flex: 1 }}
@@ -993,19 +1017,23 @@ export default class GooglePlacesAutocomplete extends Component {
                 keyboardShouldPersistTaps={this.props.keyboardShouldPersistTaps}
                 horizontal={true}
                 showsHorizontalScrollIndicator={false}
-                showsVerticalScrollIndicator={false}>
-                <TouchableHighlight
-                    // style={{ width: WINDOW.width, height: (WINDOW.height / 80) * 5 }}
-                    onPress={() => this._onPress(rowData)}
-                // underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
-                >
-                    <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
-                        {this._renderRowData(rowData)}
-                        {/*
-                        {this._renderLoader(rowData)}
-                        */}
-                    </View>
-                </TouchableHighlight>
+                showsVerticalScrollIndicator={false}
+            >
+                {
+                    component &&
+                    <TouchableHighlight
+                        // style={{ width: WINDOW.width, height: (WINDOW.height / 80) * 5 }}
+                        onPress={() => this._onPress(rowData)}
+                    // underlayColor={this.props.listUnderlayColor || "#c8c7cc"}
+                    >
+                        <View style={[this.props.suppressDefaultStyles ? {} : defaultStyles.row, this.props.styles.row, rowData.isPredefinedPlace ? this.props.styles.specialItemRow : {}]}>
+                            {this._renderRowData(rowData)}
+                            {/*
+                            {this._renderLoader(rowData)}
+                            */}
+                        </View>
+                    </TouchableHighlight>
+                }
             </ScrollView>
         );
     }

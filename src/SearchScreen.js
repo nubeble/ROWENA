@@ -237,9 +237,12 @@ export default class SearchScreen extends React.Component {
 
                             if (!details) this.props.navigation.goBack();
 
+                            /*
                             // filter "Kyiv, Ukraine, 02000"
                             let description1 = data.description;
                             description1 = Util.filterNumber(description1);
+                            */
+                            let description1 = data.description;
 
                             const location = details.geometry.location;
                             const result = {
@@ -270,7 +273,7 @@ export default class SearchScreen extends React.Component {
                             // --
 
                             if (from === 'AdvertisementMain') {
-                                // ToDo: exception for city-state (Macau, Hong Kong, ...)
+                                // ToDo: exception for city-state (Macao, Hong Kong, ...)
                                 let type = 200; // 100: city-state, 200: city
                                 if (countryCode === 'MO' || countryCode === 'HK' || countryCode === 'MC' || countryCode === 'SG') {
                                     console.log('jdub', '!!!!!!!! city-state !!!!!!!!');
@@ -294,9 +297,6 @@ export default class SearchScreen extends React.Component {
                                     }
 
                                     console.log('jdub', 'Util.getPlaceId result', obj);
-
-                                    // Consider: exception
-                                    // if (obj.formatted_address === 'Macau') obj.formatted_address = 'Macau, China';
 
                                     let address = obj.formatted_address;
 

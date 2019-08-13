@@ -60,6 +60,16 @@ export default class SignUpWithEmail extends React.Component {
         this.hardwareBackPressListener = BackHandler.addEventListener('hardwareBackPress', this.handleHardwareBackPress);
         this.onFocusListener = this.props.navigation.addListener('didFocus', this.onFocus);
 
+        // --
+        let from = null;
+        const params = this.props.navigation.state.params;
+        if (params) {
+            from = params.from;
+        }
+
+        this.from = from;
+        // --
+
         /*
         setTimeout(() => {
             !this.closed && this.refs['emailInput'] && this.refs['emailInput'].focus();
@@ -181,7 +191,7 @@ export default class SignUpWithEmail extends React.Component {
         this.setState({ password: text });
 
         if (text.length < 6) {
-            console.log('jdub', 'Must be at least 6 characters.');
+            // console.log('jdub', 'Must be at least 6 characters.');
 
             this.setState({ pwIcon: 0 });
 
@@ -189,7 +199,7 @@ export default class SignUpWithEmail extends React.Component {
         }
 
         if (/\d/.test(text) || /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(text)) {
-            console.log('jdub', "Password is correct.");
+            // console.log('jdub', "Password is correct.");
 
             // show icon
             this.setState({ pwIcon: 2 });
@@ -203,7 +213,7 @@ export default class SignUpWithEmail extends React.Component {
         }
     }
 
-    moveToSignUp(text) {
+    async moveToSignUp(text) {
         if (this.state.pwIcon !== 2) {
             // show message box
             const msg = this.getPasswordErrorMessage(this.state.password);
@@ -217,7 +227,11 @@ export default class SignUpWithEmail extends React.Component {
             return;
         }
 
-        this.processSignUp();
+        if (this.from === 'logIn') {
+            await this.processSignIn();
+        } else {
+            await this.processSignUp();
+        }
     }
 
     getPasswordErrorMessage(password) {
@@ -241,7 +255,7 @@ export default class SignUpWithEmail extends React.Component {
         }
     }
 
-    signUp() {
+    async signUp() {
         if (this._showNotification) {
             this.hideNotification();
             this.hideAlertIcons();
@@ -278,17 +292,10 @@ export default class SignUpWithEmail extends React.Component {
         this.refs['emailInput'].blur();
         this.refs['pwInput'].blur();
 
-        // this.processSignUp();
-        let from = null;
-        const params = this.props.navigation.state.params;
-        if (params) {
-            from = params.from;
-        }
-
-        if (from === 'logIn') {
-            this.processSignIn();
+        if (this.from === 'logIn') {
+            await this.processSignIn();
         } else {
-            this.processSignUp();
+            await this.processSignUp();
         }
     }
 
@@ -378,20 +385,7 @@ export default class SignUpWithEmail extends React.Component {
     }
 
     render() {
-        let from = null;
-        const params = this.props.navigation.state.params;
-        if (params) {
-            from = params.from;
-        }
-
-        /*
-        if (from === 'logIn') {
-            this.props.navigation.navigate("signUpWithEmailMain");
-        }
-        */
-
-
-
+        const from = this.from;
 
         const emailIcon = this.state.emailIcon;
         const pwIcon = this.state.pwIcon;
@@ -557,7 +551,7 @@ export default class SignUpWithEmail extends React.Component {
                                 secureTextEntry={this.state.securePwInput}
                                 value={this.state.password}
                                 onChangeText={(text) => this.validatePassword(text)}
-                                onSubmitEditing={(event) => this.moveToSignUp(event.nativeEvent.text)}
+                                onSubmitEditing={async (event) => await this.moveToSignUp(event.nativeEvent.text)}
                                 autoCapitalize="none"
                                 selectionColor={Theme.color.selection}
                                 underlineColorAndroid="transparent"

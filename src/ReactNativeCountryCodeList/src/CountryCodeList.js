@@ -74,7 +74,7 @@ export default class CountryCodeList extends React.Component {
                         selectionColor={Theme.color.selection}
                         autoFocus={false}
                         value={this.state.query}
-                        placeholder={'Select your country'}
+                        placeholder={'Type your country'}
                         placeholderTextColor={Theme.color.placeholder}
                         onChangeText={this.onChangeText}
                         // onSubmitEditing={this.props.onSubmitEditing}

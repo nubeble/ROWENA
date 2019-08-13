@@ -1015,7 +1015,7 @@ export default class Util extends React.Component {
 
             {
                 code: "MO",
-                name: "Macau"
+                name: "Macao"
             },
             {
                 code: "MK",
@@ -1647,7 +1647,8 @@ export default class Util extends React.Component {
     // filter "Kyiv, Ukraine, 02000"
     static filterNumber(description) {
         const words = description.split(', ');
-        if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+        // if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
+        if (/\d/.test(words[words.length - 1])) {
             let str = '';
             for (let i = 0; i <= words.length - 2; i++) {
                 if (i === words.length - 2) str = words[i];
@@ -1678,17 +1679,6 @@ export default class Util extends React.Component {
     static getCountry(name) {
         if (!name) return null;
 
-        /*
-        const words = name.split(', ');
-        // filter "Kyiv, Ukraine, 02000"
-        if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
-            // "02000"
-            if (words.length === 1) return null;
-
-            return words[words.length - 2];
-        }
-        */
-
         // if (words.length === 1) return name;
 
         const words = name.split(', ');
@@ -1707,23 +1697,6 @@ export default class Util extends React.Component {
 
     static getStreet(name) {
         if (!name || name.length === 0) return null;
-
-        /*
-        let size = 0;
-        
-        const words = name.split(', ');
-        if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
-            size = words.length - 2;
-        } else {
-            size = words.length - 1;
-        }
-
-        let street = null;
-        for (let i = 0; i <= size; i++) {
-            if (i === size) street = words[i];
-            else street = words[i] + ', ';
-        }
-        */
 
         let street = '';
         const words = name.split(', ');
@@ -1745,47 +1718,40 @@ export default class Util extends React.Component {
         const federation = Util.isFederation(code);
 
         if (federation) {
-            /*
-            const words = name.split(', ');
-            // filter "Kyiv, Ukraine, 02000"
-            if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
-                // "02000"
-                if (words.length === 1) return null;
-
-                // "country, 02000"
-                if (words.length === 2) return null;
-
-                // "state, country, 02000"
-                return words[words.length - 3] + ', ' + words[words.length - 2];
-            } else {
-                // "country"
-                if (words.length === 1) return null;
-
-                return words[words.length - 2] + ', ' + words[words.length - 1];
-            }
-            */
-
             const words = name.split(', ');
             if (words.length === 1) return null;
             return words[words.length - 2] + ', ' + words[words.length - 1];
         } else {
-            /*
-            const words = name.split(', ');
-            // filter "Kyiv, Ukraine, 02000"
-            if (words[words.length - 1].match(/^[0-9]+$/) !== null) {
-                // "02000"
-                if (words.length === 1) return null;
-
-                // "country, 02000"
-                return words[words.length - 2];
-            } else {
-                return words[words.length - 1];
-            }
-            */
-
             const words = name.split(', ');
             return words[words.length - 1];
         }
+    }
+
+    static getRandomCity() {
+        const rn = Math.round(Math.random() * 100) % 13; // 0 ~ 12
+        switch (rn) {
+            case 0: return "Bangkok";
+            case 1: return "Pattaya";
+            case 2: return "Chiang Mai";
+
+            case 3: return "Manila";
+            case 4: return "Angeles";
+            case 5: return "Makati";
+            case 6: return "Cebu";
+
+            case 7: return "Hanoi";
+            case 8: return "Ho Chi Minh City";
+
+            case 9: return "Vientiane";
+
+            case 10: return "Macao";
+
+            case 10: return "Jakarta";
+            case 11: return "Batam";
+            case 12: return "Kuala Lumpur";
+        }
+
+        return null;
     }
 
     static getQuotes() {
