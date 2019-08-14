@@ -38,7 +38,6 @@ const RobotoRegular = require("../fonts/Roboto/Roboto-Regular.ttf");
 const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
 const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
 const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo font
-const ConcertOneRegular = require("../fonts/ConcertOne-Regular.ttf");
 const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
 
 
@@ -127,10 +126,7 @@ export default class Loading extends React.Component<InjectedProps> {
             'Roboto-Regular': RobotoRegular,
             'Roboto-Thin': RobotoThin,
             'Roboto-ThinItalic': RobotoThinItalic,
-
             "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,
-            // "SansSerif": SansSerif
-            "ConcertOne-Regular": ConcertOneRegular,
             "Chewy-Regular": ChewyRegular
         });
 

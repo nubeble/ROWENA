@@ -98,11 +98,17 @@ export default class Explore extends React.Component<InjectedProps> {
                 this.ads[3] = PreloadImage.burger4;
                 break;
 
-            case 3: // ToDo: add your ad
+            case 3: // add your ad
+                /*
                 this.ads[0] = { uri: 'https://www.iprayprayer.com/wp-content/uploads/2017/04/images.png' };
                 this.ads[1] = { uri: 'https://s3.envato.com/files/71383791/origami_590_preview.jpg' };
                 this.ads[2] = { uri: 'https://image.shutterstock.com/z/stock-vector-sale-banner-template-and-special-offer-off-vector-illustration-346063715.jpg' };
                 this.ads[3] = { uri: 'https://dnacademy.in/wp-content/uploads/2018/08/Graphic-Designer.jpg' };
+                */
+                this.ads[0] = PreloadImage.wanted1;
+                this.ads[1] = PreloadImage.wanted2;
+                this.ads[2] = PreloadImage.wanted3;
+                this.ads[3] = PreloadImage.wanted4;
                 break;
         }
     }
