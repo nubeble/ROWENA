@@ -919,7 +919,7 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
                         <Text style={styles.name}>{post.name}</Text>
 
                         {/* activate date */}

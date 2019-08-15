@@ -1468,7 +1468,7 @@ export default class Util extends React.Component {
             },
             {
                 code: "VN",
-                name: "Viet Nam"
+                name: "Vietnam"
             },
             {
                 code: "VG",

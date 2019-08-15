@@ -1538,7 +1538,7 @@ export const getAlphabet = () => {
             {
                 dial: '+84',
                 code: "VN",
-                name: "Viet Nam"
+                name: "Vietnam"
             },
             {
                 dial: '+1284',
