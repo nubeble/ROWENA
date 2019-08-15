@@ -208,7 +208,7 @@ export default class Admin extends React.Component {
             name = 'Chassudapon';
             birthday = '21021996';
             height = 165;
-            weight = 47;
+            weight = 48;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 1) {
@@ -228,7 +228,7 @@ export default class Admin extends React.Component {
             name = 'WANG WEN';
             birthday = '25061996';
             height = 168;
-            weight = 48;
+            weight = 50;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 2) {
@@ -268,7 +268,7 @@ export default class Admin extends React.Component {
             name = 'Areeya Phouad';
             birthday = '03101997';
             height = 167;
-            weight = 52;
+            weight = 51;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 4) {
@@ -307,7 +307,7 @@ export default class Admin extends React.Component {
 
             name = 'Wichuda';
             birthday = '07081996';
-            height = 168;
+            height = 167;
             weight = 52;
             bust = 'C';
             bodyType = 'Fit';
@@ -396,7 +396,7 @@ export default class Admin extends React.Component {
             name = 'Anong Somyok';
             birthday = '14071996';
             height = 166;
-            weight = 48;
+            weight = 49;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 1) {
@@ -407,7 +407,7 @@ export default class Admin extends React.Component {
             };
 
             // 2. note
-            note = ""; // ToDo
+            note = "Looking for people to have a good time with.\nLet's meet for a tea and see what happens from there. 😊";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F1.jpg?alt=media&token=18eb0347-96e2-4a4b-969a-306ceb681eca';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F2.jpg?alt=media&token=f3858f46-f499-4c2b-b4c7-ad9e2e4d2b37';
@@ -428,7 +428,7 @@ export default class Admin extends React.Component {
             };
 
             // 2. note
-            note = ""; // ToDo
+            note = "If you are not serious then please don't wast my time.";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F1.jpg?alt=media&token=164fe3a4-524a-41f2-a7f1-8230e5fb9b35';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F2.jpg?alt=media&token=76eeb498-4835-4199-9bcf-0c67ed665d0b';
@@ -449,7 +449,7 @@ export default class Admin extends React.Component {
             };
 
             // 2. note
-            note = ""; // ToDo
+            note = "I wait for you. Please call me. 💕";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F1.jpg?alt=media&token=c3b4acb1-4f90-40cb-aa7b-f2f4928d1c07';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F2.jpg?alt=media&token=a5ed6305-d508-4ce7-940d-a242ab6a8163';
@@ -470,7 +470,7 @@ export default class Admin extends React.Component {
             };
 
             // 2. note
-            note = ""; // ToDo
+            note = "Willing to meet a guy who can do my little favor. 😸";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133304.jpg?alt=media&token=9f7f3a05-3929-4275-814d-8a8be87241f1';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133322.jpg?alt=media&token=f1bb4f22-90d5-4c3b-9948-d1d0815e8d9b';
@@ -481,7 +481,7 @@ export default class Admin extends React.Component {
             name = 'Apinya Kaweepun';
             birthday = '27061996';
             height = 168;
-            weight = 52;
+            weight = 51;
             bust = 'B';
             bodyType = 'Fit';
         }
@@ -598,7 +598,7 @@ export default class Admin extends React.Component {
             */
 
             // 2. note
-            note = ""; // ToDo
+            note = "Let's be real you just want my tits";
 
             // 3. pictures
             // --
@@ -625,7 +625,7 @@ export default class Admin extends React.Component {
             */
 
             // 2. note
-            note = ""; // ToDo
+            note = "I'll still kiss you after you give me a rim job and I do a lot of yoga";
 
             // 3. pictures
             // --
@@ -637,8 +637,8 @@ export default class Admin extends React.Component {
 
             name = 'Zhang Xiu';
             birthday = '03101994';
-            height = 166;
-            weight = 49;
+            height = 163;
+            weight = 46;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 3) {
@@ -652,7 +652,7 @@ export default class Admin extends React.Component {
             */
 
             // 2. note
-            note = ""; // ToDo
+            note = "I'm looking for Korean guys, for obvious reasons 👸";
 
             // 3. pictures
             // --
@@ -664,8 +664,8 @@ export default class Admin extends React.Component {
 
             name = 'Ming';
             birthday = '19121996';
-            height = 168;
-            weight = 52;
+            height = 167;
+            weight = 51;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 4) {
@@ -679,7 +679,7 @@ export default class Admin extends React.Component {
             */
 
             // 2. note
-            note = ""; // ToDo
+            note = "I’ll treat you good.";
 
             // 3. pictures
             // --
@@ -692,7 +692,7 @@ export default class Admin extends React.Component {
             name = 'Sophia';
             birthday = '30111993';
             height = 162;
-            weight = 49;
+            weight = 47;
             bust = 'C';
             bodyType = 'Fit';
         }
@@ -780,7 +780,7 @@ export default class Admin extends React.Component {
             name = 'Laura';
             birthday = '02121996';
             height = 170;
-            weight = 53;
+            weight = 51;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 1) {
@@ -800,7 +800,7 @@ export default class Admin extends React.Component {
             name = 'Angelina';
             birthday = '02121994';
             height = 166;
-            weight = 53;
+            weight = 51;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 2) {
@@ -829,7 +829,7 @@ export default class Admin extends React.Component {
             name = 'Nicole';
             birthday = '08091994';
             height = 164;
-            weight = 52;
+            weight = 49;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 3) {
@@ -858,7 +858,7 @@ export default class Admin extends React.Component {
             name = 'Jasmine';
             birthday = '08091992';
             height = 167;
-            weight = 54;
+            weight = 51;
             bust = 'C';
             bodyType = 'Fit';
         }
@@ -946,7 +946,7 @@ export default class Admin extends React.Component {
             */
 
             // 2. note
-            note = ""; // ToDo
+            note = "Just looking for a cute guy to grab a drink with.";
 
             // 3. pictures
             // --
@@ -959,7 +959,7 @@ export default class Admin extends React.Component {
             name = 'Ngân Hoà';
             birthday = '28061994';
             height = 164;
-            weight = 50;
+            weight = 48;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 1) {
@@ -986,7 +986,7 @@ export default class Admin extends React.Component {
             name = 'Trương Hoàng Mỹ Yến';
             birthday = '04051995';
             height = 166;
-            weight = 52;
+            weight = 50;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 2) {
@@ -1013,7 +1013,7 @@ export default class Admin extends React.Component {
             name = 'Maia';
             birthday = '04051997';
             height = 162;
-            weight = 49;
+            weight = 47;
             bust = 'C';
             bodyType = 'Fit';
         } else if (i === 3) {
@@ -1040,7 +1040,7 @@ export default class Admin extends React.Component {
             name = 'Phương Nga';
             birthday = '19091996';
             height = 164;
-            weight = 52;
+            weight = 49;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 4) {
@@ -1067,7 +1067,7 @@ export default class Admin extends React.Component {
             name = 'Nana';
             birthday = '24031995';
             height = 163;
-            weight = 54;
+            weight = 47;
             bust = 'C';
             bodyType = 'Fit';
         }
@@ -1168,7 +1168,7 @@ export default class Admin extends React.Component {
             name = 'Nana';
             birthday = '24031995';
             height = 163;
-            weight = 54;
+            weight = 47;
             bust = 'C';
             bodyType = 'Fit';
         } else if (i === 1) {
@@ -1195,7 +1195,7 @@ export default class Admin extends React.Component {
             name = 'May Lynn';
             birthday = '24031995';
             height = 163;
-            weight = 54;
+            weight = 48;
             bust = 'C';
             bodyType = 'Fit';
         } else if (i === 2) {
@@ -1221,8 +1221,8 @@ export default class Admin extends React.Component {
 
             name = 'Chandaly Keolakhone';
             birthday = '24031995';
-            height = 163;
-            weight = 54;
+            height = 165;
+            weight = 50;
             bust = 'C';
             bodyType = 'Fit';
         }
@@ -1607,8 +1607,8 @@ export default class Admin extends React.Component {
 
         const name = 'Angel';
         const birthday = '02121996';
-        const height = 167;
-        const weight = 48;
+        const height = 162;
+        const weight = 47;
         const bust = 'B';
 
         let feed = {};
