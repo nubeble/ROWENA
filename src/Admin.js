@@ -192,153 +192,123 @@ export default class Admin extends React.Component {
         let bodyType = null;
 
         if (i === 0) {
-            // 1. location
             location = {
                 description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
                 latitude: 13.7236856,
                 longitude: 100.5368514
             };
 
-            // 2. note
             note = "ASIANS ONLY!\nI guess my favorate type of men is raMEN🤷";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F1.jpg?alt=media&token=a8d84350-4794-4871-9400-c92aef4ab767';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F3.jpg?alt=media&token=56f641a2-c7ff-44c6-b031-bc1950508d4f';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F2.jpg?alt=media&token=f06a0088-78e4-410a-8d7f-70203118cdff';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F4.jpg?alt=media&token=3b8da359-ac24-400d-bc73-ee7a989ab16d';
-            // --
 
             name = 'Chassudapon';
             birthday = '21021996';
-            height = 167;
-            weight = 46;
+            height = 165;
+            weight = 47;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 1) {
-            // 1. location
             location = {
                 description: 'Raweewan Residence, Khan Na Yao, Bangkok, Thailand',
                 latitude: 13.8334047,
                 longitude: 100.6787331
             };
 
-            // 2. note
-            note = "Hi guys,\nI'm looking for friends. Not a serious relationship!";
+            note = "Hi guys,\nI'm looking for friends. NOT a serious relationship!";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F1.jpg?alt=media&token=73501e9c-e799-4eb7-8959-e7e8208f861e';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F2.jpg?alt=media&token=1bebe75e-7ca5-4a4b-944a-c9b0da5f7a9a';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F4.jpg?alt=media&token=261264da-9c8f-4d1e-a769-88f2620af86b';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F3.jpg?alt=media&token=55198f86-8a67-47c8-97df-4c453e49e15c';
-            // --
 
             name = 'WANG WEN';
-            birthday = '25061995';
+            birthday = '25061996';
             height = 168;
-            weight = 49;
+            weight = 48;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 2) {
-            // 1. location
             location = {
                 description: 'Baan Sukhumvit Condo, Napha Sap Alley, Lane 5, Khlong Tan, Khlong Toei, Bangkok, Thailand',
                 latitude: 13.718516,
                 longitude: 100.573484
             };
 
-            // 2. note
             note = "I like traveling, reading comic books ❤\nDrinking coffee or beer is always welcome 🙋\nI want a partner 🤣👦🔥👀";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F3%2F1.jpg?alt=media&token=5c5f0c2c-6cd1-424a-ab59-dac0267d0636';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F3%2F2.jpg?alt=media&token=d1079452-2dc8-4b5d-8afe-9112864451bd';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F3%2F3.jpg?alt=media&token=d2d7789a-9f61-4774-8a20-0960baac24bc';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F3%2F4.jpg?alt=media&token=b2444135-a632-48fb-abd4-3f8101529d9f';
-            // --
 
-            name = 'Mai';
+            name = 'Maiane Anjos';
             birthday = '14071998';
-            height = 169;
-            weight = 50;
+            height = 166;
+            weight = 51;
             bust = 'C';
             bodyType = 'Fit';
         } else if (i === 3) {
-            // 1. location
             location = {
                 description: 'Condo One X, Soi Ari, Khlong Tan, Khlong Toei, Bangkok, Thailand',
                 latitude: 13.7251042,
                 longitude: 100.568789
             };
 
-            // 2. note
             note = "Open to meet new people.\nIf you are looking for a good relationship, we can grab some coffee!";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F4%2F1.jpg?alt=media&token=c533a840-ab24-4c3d-9871-cc118620d457';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F4%2F2.jpg?alt=media&token=d82ff65d-3218-4d67-a7a2-71a91b306fa5';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F4%2F3.jpg?alt=media&token=108b852e-d502-49dd-a150-e216646b45dc';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F4%2F4.jpg?alt=media&token=920af70c-3319-446b-92b4-62057e2eb7fa';
-            // --
 
-            name = 'Areeya';
-            birthday = '03101995';
-            height = 166;
-            weight = 48;
+            name = 'Areeya Phouad';
+            birthday = '03101997';
+            height = 167;
+            weight = 52;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 4) {
-            // 1. location
             location = {
                 description: 'The Lumpini 24, Sukhumvit 24 Alley, Khlong Tan, Khlong Toei, Bangkok, Thailand',
                 latitude: 13.7227387,
                 longitude: 100.5661387
             };
 
-            // 2. note
             note = "I think I'm hot 🔥\Good girl 😛\nWanna meet me tonight? 💋";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F5%2F1.jpg?alt=media&token=a3220827-7083-4f82-b366-c4dd465d1c92';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F5%2F2.jpg?alt=media&token=ecce89e1-c165-4c10-a1f2-e1030e61ec22';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F5%2F3.jpg?alt=media&token=c11433f1-532b-44b7-9bb7-d69e8d77f41c';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F5%2F4.jpg?alt=media&token=05115a61-88c5-456e-9f9b-8f73a0769ed3';
-            // --
 
-            name = 'Aimee';
-            birthday = '29011992';
+            name = 'Aimee Morakot';
+            birthday = '29011994';
             height = 162;
-            weight = 44;
+            weight = 46;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 5) {
-            // 1. location
             location = {
                 description: 'Quinn Condo, Ratchadaphisek Road, Din Daeng, Bangkok, Thailand',
                 latitude: 13.786335,
                 longitude: 100.5732249
             };
 
-            // 2. note
             note = 'If you want to know me, plz chat me up.';
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F6%2F1.jpg?alt=media&token=83c4c5f6-baf5-4dd0-a3d6-f632378c2493';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F6%2F2.jpg?alt=media&token=a9849bf8-1e48-4dad-8cd4-fa13185396a5';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F6%2F3.jpg?alt=media&token=c7aff358-c9e6-4243-8a16-327bcd25e98b';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F6%2F4.jpg?alt=media&token=7df820f3-e0d3-434f-b847-07a184a67330';
-            // --
 
             name = 'Wichuda';
-            birthday = '07081995';
+            birthday = '07081996';
             height = 168;
-            weight = 46;
+            weight = 52;
             bust = 'C';
             bodyType = 'Fit';
         }
@@ -410,32 +380,26 @@ export default class Admin extends React.Component {
         let bodyType = null;
 
         if (i === 0) {
-            // 1. location
             location = {
                 description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
                 latitude: 12.8779918,
                 longitude: 100.8917015
             };
 
-            // 2. note
             note = "Hope to make lots of friends here.\nEnglish well 😊\nLet's have some fun together 💕";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F1.JPG?alt=media&token=b14902d1-8caf-4a92-b016-deebbc5f7a1b';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F2.JPG?alt=media&token=93af15e7-d467-47fb-b3bb-8207bacaaf1f';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F3.JPG?alt=media&token=74da4dd8-d930-467e-a902-ba45e1d6511b';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F4.JPG?alt=media&token=9be7c154-05c4-4afa-8550-95fd7e918a91';
-            // --
 
-            name = '';
-            birthday = '14071992';
+            name = 'Anong Somyok';
+            birthday = '14071996';
             height = 166;
             weight = 48;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 1) {
-            // 1. location
             location = {
                 description: 'South Pattaya Road, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
                 latitude: 12.921861,
@@ -445,22 +409,18 @@ export default class Admin extends React.Component {
             // 2. note
             note = ""; // ToDo
 
-            // 3. pictures - done
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F1.jpg?alt=media&token=18eb0347-96e2-4a4b-969a-306ceb681eca';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F2.jpg?alt=media&token=f3858f46-f499-4c2b-b4c7-ad9e2e4d2b37';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F3.jpg?alt=media&token=081acc44-8be5-4451-8f4d-73cd69e87dd5';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F4.jpg?alt=media&token=0629e1c2-62eb-46dc-97e0-aa5e0f6457b7';
-            // --
 
-            name = ''; // ToDo
-            birthday = '28031995';
-            height = 168;
+            name = 'Lawana Siilva';
+            birthday = '28031998';
+            height = 164;
             weight = 47;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 2) {
-            // 1. location
             location = {
                 description: 'Yensabai Condotel, ถนน พัทยาสาย 2 ซอย 17 ตำบล หนองปรือ Bang Lamung District, Chon Buri, Thailand',
                 latitude: 12.922629,
@@ -470,22 +430,18 @@ export default class Admin extends React.Component {
             // 2. note
             note = ""; // ToDo
 
-            // 3. pictures - done
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F1.jpg?alt=media&token=164fe3a4-524a-41f2-a7f1-8230e5fb9b35';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F2.jpg?alt=media&token=76eeb498-4835-4199-9bcf-0c67ed665d0b';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F3.jpg?alt=media&token=a1cad18f-ad58-4e3a-b2c3-35afe39ec6b1';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F4.jpg?alt=media&token=ff455e2c-625d-4246-bb32-773b24f27f2f';
-            // --
 
-            name = ''; // ToDo
+            name = 'Kulap';
             birthday = '05091995';
-            height = 164;
-            weight = 45;
+            height = 167;
+            weight = 50;
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 3) {
-            // 1. location
             location = {
                 description: 'City Garden Pattaya Condominium, ถนน พัทยาสายสอง ซอย 15 ตำบล หนองปรือ Bang Lamung District, Chon Buri, Thailand',
                 latitude: 12.9266139,
@@ -495,22 +451,18 @@ export default class Admin extends React.Component {
             // 2. note
             note = ""; // ToDo
 
-            // 3. pictures - done
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F1.jpg?alt=media&token=c3b4acb1-4f90-40cb-aa7b-f2f4928d1c07';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F2.jpg?alt=media&token=a5ed6305-d508-4ce7-940d-a242ab6a8163';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F3.jpg?alt=media&token=693f0346-e1fa-489d-ab67-97a326a0d7c9';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F4.jpg?alt=media&token=a089df18-086f-422c-a8bc-7722e1fcb378';
-            // --
 
-            name = ''; // ToDo
-            birthday = '20041993';
+            name = 'Phaelyn Tasanee';
+            birthday = '20041996';
             height = 166;
-            weight = 45;
+            weight = 48;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 4) {
-            // 1. location
             location = {
                 description: 'Underwater World Pattaya, Sukhumvit Road, ตำบล หนองปรือ Bang Lamung District, Chon Buri, Thailand',
                 latitude: 12.896693,
@@ -520,18 +472,16 @@ export default class Admin extends React.Component {
             // 2. note
             note = ""; // ToDo
 
-            // 3. pictures - done
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133304.jpg?alt=media&token=9f7f3a05-3929-4275-814d-8a8be87241f1';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133322.jpg?alt=media&token=f1bb4f22-90d5-4c3b-9948-d1d0815e8d9b';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133343.jpg?alt=media&token=16309f2a-aa91-42b2-8468-0f00c61fdf4d';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133359.jpg?alt=media&token=17a23dd5-144f-4efa-9ca2-5bc4151b51dd';
             // --
 
-            name = 'Chonly';
+            name = 'Apinya Kaweepun';
             birthday = '27061996';
             height = 168;
-            weight = 48;
+            weight = 52;
             bust = 'B';
             bodyType = 'Fit';
         }
@@ -603,7 +553,15 @@ export default class Admin extends React.Component {
         let bodyType = null;
 
         if (i === 0) {
-            // 1. location
+            /*
+            Edf. Hung Fat Garden (Bloco 2)
+            3 R. de Tome Pires
+            Park 'n Shop Taipa
+            Ka Meng Villa
+            45 R. dos Curtidores
+            */
+
+            // 1. location // ToDo
             /*
             location = {
                 description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
@@ -613,7 +571,7 @@ export default class Admin extends React.Component {
             */
 
             // 2. note
-            note = "";
+            note = "Chinese, English 👌\nFriends 👫\nmovies 🎬\nMaybe more? 😳";
 
             // 3. pictures
             // --
@@ -623,13 +581,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F4.jpg?alt=media&token=11831b26-e5ca-483b-9c4e-d6f17b9a0f2f';
             // --
 
-            name = '';
-            birthday = '12101992';
+            name = 'Li Na';
+            birthday = '12101994';
             height = 167;
             weight = 49;
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 1) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -639,7 +608,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F2%2F4.jpg?alt=media&token=900d9d95-ecb7-482b-a710-8fc05b82415e';
             // --
 
+            name = 'Mei Xiang';
+            birthday = '26091995';
+            height = 163;
+            weight = 46;
+            bust = 'B';
+            bodyType = 'Skinny';
         } else if (i === 2) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -649,7 +635,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F3%2F4.jpg?alt=media&token=a8d7e77e-089d-456f-be7e-77ecbc9b0e04';
             // --
 
+            name = 'Zhang Xiu';
+            birthday = '03101994';
+            height = 166;
+            weight = 49;
+            bust = 'B';
+            bodyType = 'Fit';
         } else if (i === 3) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -659,7 +662,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F4%2F4.jpg?alt=media&token=1f836cba-cc27-47b7-881d-dd3201796e12';
             // --
 
+            name = 'Ming';
+            birthday = '19121996';
+            height = 168;
+            weight = 52;
+            bust = 'B';
+            bodyType = 'Fit';
         } else if (i === 4) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -669,6 +689,12 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F5%2F4.jpg?alt=media&token=6abcf5df-a074-4f47-93c9-c4c7cf35df0a';
             // --
 
+            name = 'Sophia';
+            birthday = '30111993';
+            height = 162;
+            weight = 49;
+            bust = 'C';
+            bodyType = 'Fit';
         }
 
 
@@ -738,23 +764,18 @@ export default class Admin extends React.Component {
         let bodyType = null;
 
         if (i === 0) {
-            // 1. location
             location = {
                 description: 'Greenbelt Mansion, Perea, Legaspi Village, Makati, Metro Manila, Philippines',
                 latitude: 14.554688,
                 longitude: 121.02061
             };
 
-            // 2. note
             note = 'Your favorite German Filipino 🇩🇪🇵🇭\nWanna meet new guys 😃';
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F1%2F1.jpg?alt=media&token=9db33673-8d0e-4fde-8bbb-205e270fc43f';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F1%2F2.jpg?alt=media&token=bac9e054-c962-4db6-b376-95532638a5fe';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F1%2F3.jpg?alt=media&token=e939094a-3457-4f56-bb88-6055f84e9b79';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F1%2F4.jpg?alt=media&token=8930dd5c-3609-473e-b418-5a7fd078257c';
-            // --
 
             name = 'Laura';
             birthday = '02121996';
@@ -763,25 +784,39 @@ export default class Admin extends React.Component {
             bust = 'B';
             bodyType = 'Fit';
         } else if (i === 1) {
-            // 1. location - done
             location = {
                 description: 'The Peninsula Manila, Makati, Metro Manila, Philippines',
                 latitude: 14.5556401,
                 longitude: 121.0251313
             };
 
-            // 2. note
-            note = "";
+            note = "Just got out of a long relationship\nBig sad 😭\nHere for a good time not a long one 💏";
 
-            // 3. pictures
-            // --
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F2%2F1.jpg?alt=media&token=e4c8ad17-f2c5-4a01-a837-27c379611b97';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F2%2F2.jpg?alt=media&token=d4789a54-6a4e-4c08-a2eb-52840a26c8e4';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F2%2F3.jpg?alt=media&token=03871b00-59a9-40ce-9376-cf557ff0c324';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F2%2F4.jpg?alt=media&token=ef1cd3bf-124e-4a38-b25d-9699cba7a61c';
-            // --
 
+            name = 'Angelina';
+            birthday = '02121994';
+            height = 166;
+            weight = 53;
+            bust = 'B';
+            bodyType = 'Fit';
         } else if (i === 2) {
+            // 4125 Gen. Mascardo
+
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = "Love to travel ✈️\nLooking for fun and coffee dates ☕\n";
 
             // 3. pictures
             // --
@@ -791,7 +826,26 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F3%2F4.jpg?alt=media&token=12e1610b-3442-4560-91f1-019a5d2a72fe';
             // --
 
+            name = 'Nicole';
+            birthday = '08091994';
+            height = 164;
+            weight = 52;
+            bust = 'B';
+            bodyType = 'Fit';
         } else if (i === 3) {
+            // 1580 Cypress
+
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = "Searching for good guys.\nBe polite and good manners";
 
             // 3. pictures
             // --
@@ -801,6 +855,12 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F4.jpg?alt=media&token=71d20f6c-f72f-4e63-86ec-929be7aa6ec1';
             // --
 
+            name = 'Jasmine';
+            birthday = '08091992';
+            height = 167;
+            weight = 54;
+            bust = 'C';
+            bodyType = 'Fit';
         }
 
 
@@ -870,6 +930,23 @@ export default class Admin extends React.Component {
         let bodyType = null;
 
         if (i === 0) {
+            // Springlight City
+            // AEON Mall Bình Tân
+            // 30/13 Trịnh Đình Thảo
+            // Somerset Ho Chi Minh City
+            // 220/9D Xô Viết Nghệ Tĩnh
+
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -879,7 +956,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F1%2F4.jpg?alt=media&token=ba85eccc-74bf-4b55-a775-ecf6b037d405';
             // --
 
+            name = 'Ngân Hoà';
+            birthday = '28061994';
+            height = 164;
+            weight = 50;
+            bust = 'B';
+            bodyType = 'Fit';
         } else if (i === 1) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -889,7 +983,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F2%2F4.jpg?alt=media&token=6e24fd15-4237-4568-b5ef-a6f0cf140dc8';
             // --
 
+            name = 'Trương Hoàng Mỹ Yến';
+            birthday = '04051995';
+            height = 166;
+            weight = 52;
+            bust = 'B';
+            bodyType = 'Skinny';
         } else if (i === 2) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -899,7 +1010,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F3%2F4.jpg?alt=media&token=622f010f-543f-4290-beb8-d1591d5b02fb';
             // --
 
+            name = 'Maia';
+            birthday = '04051997';
+            height = 162;
+            weight = 49;
+            bust = 'C';
+            bodyType = 'Fit';
         } else if (i === 3) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -909,7 +1037,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F4%2F4.jpg?alt=media&token=79e7578e-8099-4c56-b746-da38b2119625';
             // --
 
+            name = 'Phương Nga';
+            birthday = '19091996';
+            height = 164;
+            weight = 52;
+            bust = 'B';
+            bodyType = 'Fit';
         } else if (i === 4) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -919,6 +1064,12 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F5%2F4.jpg?alt=media&token=7f4fdf1e-4f35-4db3-a93e-731d602e892d';
             // --
 
+            name = 'Nana';
+            birthday = '24031995';
+            height = 163;
+            weight = 54;
+            bust = 'C';
+            bodyType = 'Fit';
         }
 
 
@@ -988,6 +1139,23 @@ export default class Admin extends React.Component {
         let bodyType = null;
 
         if (i === 0) {
+            // Rue Phai Nam
+            // Khualuang Rd
+            // Kamu Tea Laos
+
+
+
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -997,7 +1165,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F1%2F4.jpg?alt=media&token=5ad8a432-76ee-4083-9d41-04244bd3af90';
             // --
 
+            name = 'Nana';
+            birthday = '24031995';
+            height = 163;
+            weight = 54;
+            bust = 'C';
+            bodyType = 'Fit';
         } else if (i === 1) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -1007,7 +1192,24 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F2%2F4.jpg?alt=media&token=cc5abbca-02d6-4e37-961d-330007b38711';
             // --
 
+            name = 'May Lynn';
+            birthday = '24031995';
+            height = 163;
+            weight = 54;
+            bust = 'C';
+            bodyType = 'Fit';
         } else if (i === 2) {
+            // 1. location // ToDo
+            /*
+            location = {
+                description: 'Seven Seas Condo Resort Jomtien Thanon Chaiyaphruek, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8779918,
+                longitude: 100.8917015
+            };
+            */
+
+            // 2. note
+            note = ""; // ToDo
 
             // 3. pictures
             // --
@@ -1017,6 +1219,12 @@ export default class Admin extends React.Component {
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F3%2F4.jpg?alt=media&token=5ea6b056-eb2d-4ae0-bcd9-e94f80d321fb';
             // --
 
+            name = 'Chandaly Keolakhone';
+            birthday = '24031995';
+            height = 163;
+            weight = 54;
+            bust = 'C';
+            bodyType = 'Fit';
         }
 
 

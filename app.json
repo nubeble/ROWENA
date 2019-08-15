@@ -20,10 +20,6 @@
             "barStyle": "dark-content",
             "backgroundColor": "#FFFFFF"
         },
-        "splash": {
-            "resizeMode": "contain",
-            "image": "./assets/splash.png"
-        },
         "notification": {
             "icon": "./assets/noti_icon.png",
             "color": "#CD5E77",
@@ -38,12 +34,6 @@
         "facebookDisplayName": "Rowena",
         "android": {
             "package": "com.nubeble.rowena",
-            "config": {
-                "googleMaps": {
-                    "apiKey": "AIzaSyAa5Tw303Q0E2fa3oKrsHKElFRFUwqxaFM"
-                }
-            },
-            "googleServicesFile": "./google-services.json",
             "versionCode": 2,
             "adaptiveIcon": {
                 "foregroundImage": "./assets/android_icon.png",
@@ -56,7 +46,21 @@
                 "ACCESS_COARSE_LOCATION",
                 "ACCESS_FINE_LOCATION",
                 "VIBRATE"
-            ]
+            ],
+            "googleServicesFile": "./google-services.json",
+            "config": {
+                "googleMaps": {
+                    "apiKey": "AIzaSyAa5Tw303Q0E2fa3oKrsHKElFRFUwqxaFM"
+                }
+            },
+            "splash": {
+                "resizeMode": "contain",
+                "mdpi": "./assets/splash.png",
+                "hdpi": "./assets/splash.png",
+                "xhdpi": "./assets/splash.png",
+                "xxhdpi": "./assets/splash.png",
+                "xxxhdpi": "./assets/splash.png"
+            }
         },
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
@@ -69,6 +73,11 @@
                 "NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
                 "NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
                 "NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
+            },
+            "splash": {
+                "resizeMode": "contain",
+                "image": "./assets/splash.png",
+                "tabletImage": "./assets/splash.png"
             }
         }
     }
