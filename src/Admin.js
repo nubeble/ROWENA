@@ -156,9 +156,9 @@ export default class Admin extends React.Component {
         );
     }
 
-    async initPost() { // 6 5 5 5 4 3
+    async initPost() { // 6 6 5 5 4 3
         for (let i = 0; i < 6; i++) this.initBangkok(i);
-        for (let i = 0; i < 5; i++) this.initPattaya(i);
+        for (let i = 0; i < 6; i++) this.initPattaya(i);
         for (let i = 0; i < 5; i++) this.initMacao(i);
         for (let i = 0; i < 5; i++) this.initHCM(i);
         for (let i = 0; i < 4; i++) this.initManila(i);
@@ -476,12 +476,32 @@ export default class Admin extends React.Component {
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133322.jpg?alt=media&token=f1bb4f22-90d5-4c3b-9948-d1d0815e8d9b';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133343.jpg?alt=media&token=16309f2a-aa91-42b2-8468-0f00c61fdf4d';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133359.jpg?alt=media&token=17a23dd5-144f-4efa-9ca2-5bc4151b51dd';
-            // --
 
             name = 'Apinya Kaweepun';
             birthday = '27061996';
             height = 168;
             weight = 51;
+            bust = 'C';
+            bodyType = 'Fit';
+        } else if (i === 5) {
+            location = {
+                description: 'Pattaya Soi 6th, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.9427311,
+                longitude: 100.8851298
+            };
+
+            // 2. note
+            note = "I'm from Chiang Mai.\nStaying here for a while.\nHang out with me ^^";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F1.jpg?alt=media&token=6bf6b0b3-a56c-402e-b2ff-c33d915b0400';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F2.jpg?alt=media&token=38eb39e8-9ab3-470e-ab60-94e11e3f27cd';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F3.jpg?alt=media&token=a0f2bf8c-7a09-4552-a06e-618123191a7a';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F4.jpg?alt=media&token=765743d4-31a3-4bae-89ed-3351f251b0c9';
+
+            name = 'Gina';
+            birthday = '21011995';
+            height = 164;
+            weight = 49;
             bust = 'C';
             bodyType = 'Fit';
         }
