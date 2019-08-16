@@ -156,9 +156,9 @@ export default class Admin extends React.Component {
         );
     }
 
-    async initPost() { // 6 5 5 5 4 3
-        for (let i = 0; i < 6; i++) this.initBangkok(i);
-        for (let i = 0; i < 5; i++) this.initPattaya(i);
+    async initPost() { // 7 5 5 5 4 3
+        for (let i = 0; i < 7; i++) this.initBangkok(i);
+        for (let i = 0; i < 6; i++) this.initPattaya(i);
         for (let i = 0; i < 5; i++) this.initMacao(i);
         for (let i = 0; i < 5; i++) this.initHCM(i);
         for (let i = 0; i < 4; i++) this.initManila(i);
@@ -218,7 +218,7 @@ export default class Admin extends React.Component {
                 longitude: 100.6787331
             };
 
-            note = "Hi guys,\nI'm looking for friends. Not a serious relationship.";
+            note = "Hi guys,\nI'm looking for friends.\nNot a serious relationship";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F1.jpg?alt=media&token=73501e9c-e799-4eb7-8959-e7e8208f861e';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F2.jpg?alt=media&token=1bebe75e-7ca5-4a4b-944a-c9b0da5f7a9a';
@@ -278,7 +278,7 @@ export default class Admin extends React.Component {
                 longitude: 100.5661387
             };
 
-            note = "ASIANS ONLY!\nI think I'm hot 🔥\nGood service 😛\nWanna meet me tonight? 💋";
+            note = "ASIANS ONLY!\nI think I'm hot 🔥\nGood service 😘\nWanna meet me tonight? 💋";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F5%2F1.jpg?alt=media&token=a3220827-7083-4f82-b366-c4dd465d1c92';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F5%2F2.jpg?alt=media&token=ecce89e1-c165-4c10-a1f2-e1030e61ec22';
@@ -311,6 +311,26 @@ export default class Admin extends React.Component {
             weight = 52;
             bust = 'B';
             bodyType = 'Skinny';
+        } else if (i === 6) {
+            location = {
+                description: 'DEMO, Sukhumvit Rd, Khlong Tan Nuea, Watthana, Bangkok, Thailand',
+                latitude: 13.7325629,
+                longitude: 100.5855291
+            };
+
+            note = 'Looking for new friends\n\nFitness 💪\n\nHangout 🍺\n\nTravel ✈️';
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F7%2F1.jpg?alt=media&token=4c440a46-0a55-46bc-b9a6-c26c0bbeed3a';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F7%2F2.jpg?alt=media&token=7dd2ac81-2779-4309-a4b1-fd1f48cdfd39';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F7%2F3.jpg?alt=media&token=c2db0b33-3a34-4868-9b98-e9dfa8cf2316';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F7%2F4.jpg?alt=media&token=8f582d5b-184e-4610-bd93-9327bcb4f72c';
+
+            name = 'Nunchayaphat';
+            birthday = '07081994';
+            height = 166;
+            weight = 50;
+            bust = 'B';
+            bodyType = 'Fit';
         }
 
 
@@ -386,10 +406,10 @@ export default class Admin extends React.Component {
                 longitude: 100.8917015
             };
 
-            note = "Hope to make lots of friends here.\nEnglish well 😊\nLet's have some fun together 💕";
+            note = "English well 😊\nService better 😝\nLet's have some fun together 💕";
 
-            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F1.JPG?alt=media&token=b14902d1-8caf-4a92-b016-deebbc5f7a1b';
-            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F2.JPG?alt=media&token=93af15e7-d467-47fb-b3bb-8207bacaaf1f';
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F2.JPG?alt=media&token=93af15e7-d467-47fb-b3bb-8207bacaaf1f';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F1.JPG?alt=media&token=b14902d1-8caf-4a92-b016-deebbc5f7a1b';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F3.JPG?alt=media&token=74da4dd8-d930-467e-a902-ba45e1d6511b';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F1%2F4.JPG?alt=media&token=9be7c154-05c4-4afa-8550-95fd7e918a91';
 
@@ -407,7 +427,7 @@ export default class Admin extends React.Component {
             };
 
             // 2. note
-            note = "Looking for people to have a good time with.\nLet's meet for a tea and see what happens from there. 😊";
+            note = "Looking for people to have a good time with\nLet's meet for a tea and see what happens from there. 😊";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F1.jpg?alt=media&token=18eb0347-96e2-4a4b-969a-306ceb681eca';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F2.jpg?alt=media&token=f3858f46-f499-4c2b-b4c7-ad9e2e4d2b37';
@@ -483,6 +503,26 @@ export default class Admin extends React.Component {
             height = 168;
             weight = 51;
             bust = 'C';
+            bodyType = 'Fit';
+        } else if (i === 5) {
+            location = {
+                description: "Atthasit Village, Pattaya City, Bang Lamung District, Chon Buri, Thailand",
+                latitude: 12.909882,
+                longitude: 100.880767
+            };
+
+            note = "Hope to make lots of friends here.\n";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F1.jpg?alt=media&token=6bf6b0b3-a56c-402e-b2ff-c33d915b0400';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F2.jpg?alt=media&token=38eb39e8-9ab3-470e-ab60-94e11e3f27cd';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F3.jpg?alt=media&token=a0f2bf8c-7a09-4552-a06e-618123191a7a';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F4.jpg?alt=media&token=765743d4-31a3-4bae-89ed-3351f251b0c9';
+
+            name = '';
+            birthday = '23041994';
+            height = 164;
+            weight = 49;
+            bust = 'B';
             bodyType = 'Fit';
         }
 
@@ -561,10 +601,10 @@ export default class Admin extends React.Component {
 
             note = "Chinese, English 👌\nFriends 👫\nmovies 🎬\nMaybe more? 😳";
 
-            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F1.jpg?alt=media&token=4abb5807-64f1-426e-a143-18079140ee1b';
-            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F2.jpg?alt=media&token=a9306a4a-f25b-4dd4-8f55-37ee2c24bf91';
-            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F3.jpg?alt=media&token=e62ec124-07dd-49d9-914f-026389e299e6';
-            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F4.jpg?alt=media&token=11831b26-e5ca-483b-9c4e-d6f17b9a0f2f';
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F1.jpg?alt=media&token=08243466-8b36-4903-b0f0-b9b73563372d';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F2.jpg?alt=media&token=be8d93ff-ea25-4b6c-9e52-dacf52e03bc6';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F3.jpg?alt=media&token=b336aa3b-b429-4bfa-9b86-fc216ff355f0';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F1%2F4.jpg?alt=media&token=c434938f-f5b3-42ce-887b-7837138f15eb';
 
             name = 'Li Na';
             birthday = '12101994';
@@ -646,7 +686,7 @@ export default class Admin extends React.Component {
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F5%2F3.jpg?alt=media&token=bb8eba18-5b81-4956-bac7-dc071eb76a67';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F5%2F4.jpg?alt=media&token=6abcf5df-a074-4f47-93c9-c4c7cf35df0a';
 
-            name = 'Sophia';
+            name = 'Linda';
             birthday = '30111993';
             height = 162;
             weight = 47;
@@ -787,12 +827,12 @@ export default class Admin extends React.Component {
                 longitude: 121.02803
             };
 
-            note = "Searching for hot guys.\nPlease be polite and have good manners";
+            note = "Searching for hot guys\nPlease be polite and show good manners to me";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F1.jpg?alt=media&token=d7ec6416-32b9-47f4-92f1-d9ac26fc8981';
-            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F2.jpg?alt=media&token=d029fe5e-3e85-43e3-b33c-43fc17e067cc';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F4.jpg?alt=media&token=71d20f6c-f72f-4e63-86ec-929be7aa6ec1';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F3.jpg?alt=media&token=41dfe5c2-1d1d-4683-897f-456950790574';
-            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F4.jpg?alt=media&token=71d20f6c-f72f-4e63-86ec-929be7aa6ec1';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FManila%2F4%2F2.jpg?alt=media&token=d029fe5e-3e85-43e3-b33c-43fc17e067cc';
 
             name = 'Jasmine';
             birthday = '08091992';
