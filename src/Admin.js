@@ -218,7 +218,7 @@ export default class Admin extends React.Component {
                 longitude: 100.6787331
             };
 
-            note = "Hi guys,\nI'm looking for friends.\nNot a serious relationship";
+            note = "Hi guys, I'm a girl from China.\nI hope to know more friends with common interests or positive energy.\n";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F1.jpg?alt=media&token=73501e9c-e799-4eb7-8959-e7e8208f861e';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F2.jpg?alt=media&token=1bebe75e-7ca5-4a4b-944a-c9b0da5f7a9a';
@@ -318,7 +318,7 @@ export default class Admin extends React.Component {
                 longitude: 100.5855291
             };
 
-            note = 'Looking for new friends\n\nFitness 💪\n\nHangout 🍺\n\nTravel ✈️';
+            note = 'Want to make new friends\n\nFitness 💪\n\nHangout 🍺\n\nTravel ✈️';
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F7%2F1.jpg?alt=media&token=4c440a46-0a55-46bc-b9a6-c26c0bbeed3a';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F7%2F2.jpg?alt=media&token=7dd2ac81-2779-4309-a4b1-fd1f48cdfd39';
@@ -915,7 +915,7 @@ export default class Admin extends React.Component {
                 longitude: 106.7021585
             };
 
-            note = "Just looking for a cute guy to grab a drink with.";
+            note = "Just want a cute guy to grab a drink with.";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F1%2F1.jpg?alt=media&token=fb60fa1f-0853-43e6-8a84-58231433441d';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F1%2F2.jpg?alt=media&token=ec9ed72e-ee21-45c5-97fd-fac401a576c8';
@@ -956,7 +956,7 @@ export default class Admin extends React.Component {
             };
 
             // 2. note
-            note = "Looking for fun!\nNothing serious 😜\nHookups\nFWB";
+            note = "Life for fun!\nNothing serious 😜\nHookups\nFWB";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F3%2F1.jpg?alt=media&token=90c82fd7-5a3f-469e-ad64-499495039630';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F3%2F2.jpg?alt=media&token=a6e5e118-35a0-4eab-a142-cb542562a251';

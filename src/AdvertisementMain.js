@@ -3,7 +3,6 @@ import {
     StyleSheet, TouchableOpacity, View, BackHandler, Dimensions, Image, TextInput, Easing,
     Platform, FlatList, Animated, TouchableWithoutFeedback, Keyboard, ActivityIndicator
 } from 'react-native';
-// import { ImagePicker } from 'expo';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';
