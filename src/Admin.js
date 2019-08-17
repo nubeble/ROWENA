@@ -1101,13 +1101,13 @@ export default class Admin extends React.Component {
             bodyType = 'Fit';
         } else if (i === 1) {
             location = {
-                description: "Kamu Tea Laos, Vientiane, Laos",
-                latitude: 17.9618905,
-                longitude: 17.9618905
+                description: "Ban Haysoke, Vientiane, Laos",
+                latitude: 17.9664656,
+                longitude: 102.6049377
             };
 
             // 2. note
-            note = "How to say ‘Handsome’ in Korean?\n Somebody teach me Korean :)";
+            note = "How to say ‘Handsome’ in Korean?\nSomebody teach me Korean then I give you some sugar :)";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F2%2F1.jpg?alt=media&token=42a5aaa2-79f3-4a2e-9920-5371cbbb5a2d';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F2%2F2.jpg?alt=media&token=b3075585-3ab6-4e09-9b72-1d3e6a8975bb';
