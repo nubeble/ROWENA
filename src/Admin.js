@@ -450,10 +450,10 @@ export default class Admin extends React.Component {
             // 2. note
             note = "If you are not serious then please don't waste my time.";
 
-            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F1.jpg?alt=media&token=164fe3a4-524a-41f2-a7f1-8230e5fb9b35';
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F4.jpg?alt=media&token=ff455e2c-625d-4246-bb32-773b24f27f2f';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F2.jpg?alt=media&token=76eeb498-4835-4199-9bcf-0c67ed665d0b';
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F3.jpg?alt=media&token=a1cad18f-ad58-4e3a-b2c3-35afe39ec6b1';
-            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F4.jpg?alt=media&token=ff455e2c-625d-4246-bb32-773b24f27f2f';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F1.jpg?alt=media&token=164fe3a4-524a-41f2-a7f1-8230e5fb9b35';
 
             name = 'Kulap';
             birthday = '05091995';
@@ -518,7 +518,7 @@ export default class Admin extends React.Component {
             image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F3.jpg?alt=media&token=a0f2bf8c-7a09-4552-a06e-618123191a7a';
             image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F6%2F4.jpg?alt=media&token=765743d4-31a3-4bae-89ed-3351f251b0c9';
 
-            name = '';
+            name = 'Ploy Sornarin';
             birthday = '23041994';
             height = 164;
             weight = 49;
@@ -1006,9 +1006,9 @@ export default class Admin extends React.Component {
 
             name = 'Nana';
             birthday = '24031995';
-            height = 163;
-            weight = 47;
-            bust = 'C';
+            height = 165;
+            weight = 52;
+            bust = 'D';
             bodyType = 'Fit';
         }
 

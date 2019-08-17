@@ -315,7 +315,7 @@ export default class Explore extends React.Component<InjectedProps> {
                     showOrderTab &&
                     < View style={styles._orderTab}>
                         <TouchableOpacity
-                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                            style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 this.orderByRatings();
 
@@ -327,12 +327,12 @@ export default class Explore extends React.Component<InjectedProps> {
                             <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
                             {
                                 this.state.selectedOrderIndex === 0 &&
-                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                             }
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                            style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 this.orderByReviews();
 
@@ -344,12 +344,12 @@ export default class Explore extends React.Component<InjectedProps> {
                             <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
                             {
                                 this.state.selectedOrderIndex === 1 &&
-                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                             }
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                            style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                             onPress={() => {
                                 this.orderByTime();
 
@@ -361,7 +361,7 @@ export default class Explore extends React.Component<InjectedProps> {
                             <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
                             {
                                 this.state.selectedOrderIndex === 2 &&
-                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                             }
                         </TouchableOpacity>
                     </View>
@@ -445,8 +445,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                             // loop={false}
                                             loop={true} // Consider: this fixes a render issue on ios
                                             autoplay={true}
-                                            // autoplayTimeout={3}
-                                            autoplayTimeout={2}
+                                            autoplayTimeout={3}
                                             paginationStyle={{ bottom: 4 }}
                                             onIndexChanged={(index) => {
                                                 // console.log('jdub', 'onIndexChanged', index);
@@ -549,7 +548,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                     if (!this.orderTabY) this.orderTabY = y;
                                 }}>
                                     <TouchableOpacity
-                                        style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                                        style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                                         onPress={() => {
                                             this.orderByRatings();
 
@@ -561,12 +560,12 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
                                         {
                                             this.state.selectedOrderIndex === 0 &&
-                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                                         }
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
-                                        style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                                        style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                                         onPress={() => {
                                             this.orderByReviews();
 
@@ -578,12 +577,12 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
                                         {
                                             this.state.selectedOrderIndex === 1 &&
-                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                                         }
                                     </TouchableOpacity>
 
                                     <TouchableOpacity
-                                        style={{ width: 80, height: '100%', justifyContent: "center", alignItems: "center", marginHorizontal: 20 }}
+                                        style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
                                         onPress={() => {
                                             this.orderByTime();
 
@@ -595,7 +594,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                         <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
                                         {
                                             this.state.selectedOrderIndex === 2 &&
-                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '80%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
                                         }
                                     </TouchableOpacity>
                                 </View>
@@ -607,7 +606,6 @@ export default class Explore extends React.Component<InjectedProps> {
             </View>
         );
     } // end of render()
-
 
     orderByRatings() { // review score
         this.order('averageRating');

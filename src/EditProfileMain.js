@@ -646,7 +646,6 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
             // render illustration
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
-                    // color: 'rgb(250, 203, 205)',
                     color: Theme.color.text2,
                     fontSize: 26,
                     lineHeight: 30,
@@ -663,7 +662,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
                 <Image
                     style={{
-                        marginTop: 30,
+                        marginTop: 20,
                         width: Cons.stickerWidth,
                         height: Cons.stickerHeight,
                         resizeMode: 'cover'

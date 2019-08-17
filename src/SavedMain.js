@@ -533,9 +533,8 @@ export default class SavedMain extends React.Component<InjectedProps> {
 
                     ListEmptyComponent={
                         // render illustration
-                        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{
-                                marginTop: 100,
                                 color: Theme.color.text2,
                                 fontSize: 28,
                                 lineHeight: 32,

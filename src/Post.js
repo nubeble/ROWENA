@@ -1537,7 +1537,7 @@ export default class Post extends React.Component<InjectedProps> {
         if (data.reviewCount === 0) {
             return (
                 // render illustration
-                <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', /* paddingVertical: Theme.spacing.tiny */ }}>
                     <Text style={{
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,
