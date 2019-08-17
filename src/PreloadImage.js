@@ -61,7 +61,7 @@ const tutorial2 = require('../assets/tutorial/2.png');
 const tutorial3 = require('../assets/tutorial/3.png');
 const tutorial4 = require('../assets/tutorial/4.png');
 
-// TEST
+// Test
 /*
 const tmp1 = require('../assets/tmp/Bangkok.jpg');
 const tmp2 = require('../assets/tmp/Manila.jpg');

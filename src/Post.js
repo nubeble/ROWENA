@@ -67,7 +67,6 @@ export default class Post extends React.Component<InjectedProps> {
         // from: null,
         post: null,
 
-        // renderList: false,
         isOwner: false,
 
         writeRating: 0,
@@ -139,10 +138,24 @@ export default class Post extends React.Component<InjectedProps> {
         // show contact button
         if (from === 'ChatRoom') this.setState({ disableContactButton: true });
 
+        // Test
         /*
-        setTimeout(() => {
-            !this.closed && this.setState({ renderList: true });
-        }, 0);
+        if (Platform.OS === 'ios') {
+            this.swiperInterval = setInterval(() => {
+                console.log('1111');
+                if (this.swiper) {
+                    console.log('2222');
+                    // clear
+                    if (this.swiperInterval) {
+                        clearInterval(this.swiperInterval);
+                        this.swiperInterval = null;
+                    }
+
+                    // this.swiper.scrollBy(0, false);
+                    this.swiper.forceUpdate();
+                }
+            }, 100);
+        }
         */
     }
 
@@ -1537,7 +1550,7 @@ export default class Post extends React.Component<InjectedProps> {
         if (data.reviewCount === 0) {
             return (
                 // render illustration
-                <View style={{ justifyContent: 'center', alignItems: 'center', paddingVertical: Theme.spacing.tiny }}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', /* paddingVertical: Theme.spacing.tiny */ }}>
                     <Text style={{
                         color: 'rgb(221, 184, 128)',
                         fontSize: 24,

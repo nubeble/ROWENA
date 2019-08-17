@@ -552,7 +552,7 @@ export default class SignUpWithMobileMain extends React.Component {
                     this.showNotification('An error happened. Please try again.');
                 }
 
-                // test
+                // Test
                 // this.showNotification(error.code + error.message);
             }
         } else {

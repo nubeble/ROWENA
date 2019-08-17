@@ -230,7 +230,6 @@ export default class Feed extends React.Component<FeedProps> {
             // render illustration
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <Text style={{
-                    // color: 'rgb(250, 203, 205)',
                     color: Theme.color.text2,
                     fontSize: 26,
                     lineHeight: 30,

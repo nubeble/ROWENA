@@ -222,9 +222,8 @@ export default class CheckLikes extends React.Component {
                         // render illustration
                         // !this.state.isLoadingFeeds &&
                         this.state.totalUserCount === 0 &&
-                        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                             <Text style={{
-                                marginTop: 100,
                                 color: Theme.color.text2,
                                 fontSize: 28,
                                 lineHeight: 32,

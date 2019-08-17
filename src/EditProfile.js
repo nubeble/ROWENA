@@ -7,7 +7,6 @@ import { Text, Theme, RefreshIndicator } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import { Ionicons, AntDesign } from 'react-native-vector-icons';
 import SmartImage from './rnff/src/components/SmartImage';
-// import { ImagePicker } from 'expo';
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
 import Constants from 'expo-constants';

@@ -34,7 +34,7 @@
         "facebookDisplayName": "Rowena",
         "android": {
             "package": "com.nubeble.rowena",
-            "versionCode": 2,
+            "versionCode": 3,
             "adaptiveIcon": {
                 "foregroundImage": "./assets/android_icon.png",
                 "backgroundColor": "#CD5E77"

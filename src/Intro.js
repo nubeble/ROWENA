@@ -915,7 +915,7 @@ export default class Intro extends React.Component<InjectedProps> {
                         const fontSize = this.getLabelFontSize(city, state, country);
                         const lineHeight = this.getLabelLineHeight(fontSize);
 
-                        // TEST
+                        // Test
                         /*
                         const tmp = index;
                         if (tmp === 0) {
@@ -1058,7 +1058,7 @@ export default class Intro extends React.Component<InjectedProps> {
                                         }
                                     </View>
 
-                                    {/* // TEST
+                                    {/* // Test
                                     {
                                         tmp === 0 &&
                                         <Image
@@ -1221,19 +1221,32 @@ export default class Intro extends React.Component<InjectedProps> {
         // get max
         const max = Math.max(cityLength, stateLength, countryLength);
 
+        // console.log('max', max);
+
+        /*
         if (max >= 14) return 16;
         if (max >= 13) return 18;
         if (max >= 12) return 20;
+        */
+        if (max >= 20) return 14;
+        if (max >= 18) return 16;
+        if (max >= 16) return 18;
 
         return 20;
     }
 
     getLabelLineHeight(fontSize) {
+        /*
         if (fontSize === 16) return 22;
         if (fontSize === 18) return 26;
         if (fontSize === 20) return 28;
+        */
+        if (fontSize === 14) return 22;
+        if (fontSize === 16) return 24;
+        if (fontSize === 18) return 26;
+        if (fontSize === 20) return 28;
 
-        return 20;
+        return 28;
     }
 
     renderPopularFeeds() {

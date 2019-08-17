@@ -1755,7 +1755,8 @@ export default class Util extends React.Component {
     }
 
     static getQuotes() {
-        const rn = Math.round(Math.random() * 100) % 11; // 0 ~ 10
+        // const rn = Math.round(Math.random() * 100) % 11; // 0 ~ 10
+        const rn = Math.round(Math.random() * 100) % 10;
 
         switch (rn) {
             case 0: return "Earth is full of heartache and strife, being able to share the journey with somebody you love helps to make it a little easier.";
@@ -1768,7 +1769,7 @@ export default class Util extends React.Component {
             case 7: return "First impressions matter. Experts say we size up new people in somewhere between 30 seconds and two minutes.";
             case 8: return "One thing I look forward to is seeing new places and new people.";
             case 9: return "Sometimes, it's just great to bring new people into the mix.";
-            case 10: return "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
+            // case 10: return "Woke up to the sound of pouring rain\nThe wind would whisper and I'd think of you";
         }
 
         return null;
