@@ -32,6 +32,24 @@
         "facebookScheme": "fb367256380681542",
         "facebookAppId": "367256380681542",
         "facebookDisplayName": "Rowena",
+        "ios": {
+            "bundleIdentifier": "com.nubeble.rowena",
+            "buildNumber": "1.1.6",
+            "icon": "./assets/ios_icon.png",
+            "supportsTablet": true,
+            "infoPlist": {
+                "NSAppTransportSecurity": "",
+                "NSCameraUsageDescription": "Privacy - Camera Usage Description",
+                "NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
+                "NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
+                "NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
+            },
+            "splash": {
+                "resizeMode": "contain",
+                "image": "./assets/splash.png",
+                "tabletImage": "./assets/splash.png"
+            }
+        },
         "android": {
             "package": "com.nubeble.rowena",
             "versionCode": 3,
@@ -60,24 +78,6 @@
                 "xhdpi": "./assets/splash.png",
                 "xxhdpi": "./assets/splash.png",
                 "xxxhdpi": "./assets/splash.png"
-            }
-        },
-        "ios": {
-            "bundleIdentifier": "com.nubeble.rowena",
-            "buildNumber": "1.1.6",
-            "icon": "./assets/ios_icon.png",
-            "supportsTablet": true,
-            "infoPlist": {
-                "NSAppTransportSecurity": "",
-                "NSCameraUsageDescription": "Privacy - Camera Usage Description",
-                "NSLocationWhenInUseUsageDescription": "Privacy - Location When In Use Usage Description",
-                "NSPhotoLibraryUsageDescription": "Privacy - Photo Library Usage Description",
-                "NSPhotoLibraryAddUsageDescription": "Privacy - Photo Library Additions Usage Description"
-            },
-            "splash": {
-                "resizeMode": "contain",
-                "image": "./assets/splash.png",
-                "tabletImage": "./assets/splash.png"
             }
         }
     }

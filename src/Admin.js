@@ -66,10 +66,16 @@ export default class Admin extends React.Component {
     renderContainer() {
         return (
             <View style={styles.container}>
-                <TouchableOpacity onPress={() => this.initPost()}
+                <TouchableOpacity onPress={() => this.initPost1()}
                     style={styles.bottomButton}
                 >
-                    <Text style={{ fontSize: 16, color: 'white' }}>Initial Post (6 cities)</Text>
+                    <Text style={{ fontSize: 16, color: 'white' }}>Initial Post 1</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => this.initPost2()}
+                    style={styles.bottomButton}
+                >
+                    <Text style={{ fontSize: 16, color: 'white' }}>Initial Post 2</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity onPress={() => this.makeDummyData()}
@@ -156,7 +162,7 @@ export default class Admin extends React.Component {
         );
     }
 
-    async initPost() {
+    async initPost1() {
         for (let i = 0; i < 7; i++) this.initBangkok(i);
         for (let i = 0; i < 6; i++) this.initPattaya(i);
         for (let i = 0; i < 5; i++) this.initMacao(i);
@@ -1180,6 +1186,141 @@ export default class Admin extends React.Component {
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
+    }
+
+
+
+    async initPost2() {
+        for (let i = 0; i < 2; i++) this.initBangkok2(i);
+        for (let i = 0; i < 2; i++) this.initPattaya2(i);
+        for (let i = 0; i < 2; i++) this.initMacao2(i);
+        for (let i = 0; i < 2; i++) this.initHCM2(i);
+        for (let i = 0; i < 2; i++) this.initManila2(i);
+        for (let i = 0; i < 2; i++) this.initVientiane2(i);
+    }
+
+    async initBangkok2(i) {
+        // ToDo
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJ82ENKDJgHTERIEjiXbIAAQE';
+        const placeName = 'Bangkok, Thailand';
+        const extra = {
+            lat: 13.7563309,
+            lng: 100.5017651
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
+                latitude: 13.7236856,
+                longitude: 100.5368514
+            };
+
+            note = "I guess my favorate type of men is raMEN🤷";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F1.jpg?alt=media&token=a8d84350-4794-4871-9400-c92aef4ab767';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F3.jpg?alt=media&token=56f641a2-c7ff-44c6-b031-bc1950508d4f';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F2.jpg?alt=media&token=f06a0088-78e4-410a-8d7f-70203118cdff';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F4.jpg?alt=media&token=3b8da359-ac24-400d-bc73-ee7a989ab16d';
+
+            name = 'Chassudapon';
+            birthday = '21021996';
+            height = 165;
+            weight = 48;
+            bust = 'B';
+            bodyType = 'Skinny';
+        } else if (i === 1) {
+            location = {
+                description: 'Raweewan Residence, Khan Na Yao, Bangkok, Thailand',
+                latitude: 13.8334047,
+                longitude: 100.6787331
+            };
+
+            note = "Hi guys, I'm a girl from China.\nI hope to know more friends with common interests or positive energy.\n";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F1.jpg?alt=media&token=73501e9c-e799-4eb7-8959-e7e8208f861e';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F2.jpg?alt=media&token=1bebe75e-7ca5-4a4b-944a-c9b0da5f7a9a';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F4.jpg?alt=media&token=261264da-9c8f-4d1e-a769-88f2620af86b';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F3.jpg?alt=media&token=55198f86-8a67-47c8-97df-4c453e49e15c';
+
+            name = 'WANG WEN';
+            birthday = '25061996';
+            height = 168;
+            weight = 50;
+            bust = 'B';
+            bodyType = 'Skinny';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
+    }
+
+    async initPattaya2(i) {
+    }
+
+    async initMacao2(i) {
+    }
+
+    async initHCM2(i) {
+    }
+
+    async initManila2(i) {
+    }
+
+    async initVientiane2(i) {
     }
 
 
