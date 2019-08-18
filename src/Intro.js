@@ -248,7 +248,7 @@ export default class Intro extends React.Component<InjectedProps> {
     };
 
     async componentDidMount() {
-        console.log('jdub', 'Intro.componentDidMount');
+        // console.log('jdub', 'Intro.componentDidMount');
 
         this.props.navigation.setParams({
             scrollToTop: () => {
@@ -271,7 +271,7 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     componentWillUnmount() {
-        console.log('jdub', 'Intro.componentWillUnmount');
+        // console.log('jdub', 'Intro.componentWillUnmount');
 
         this.hardwareBackPressListener.remove();
         this.onFocusListener.remove();
@@ -418,38 +418,38 @@ export default class Intro extends React.Component<InjectedProps> {
 
             if (index === snap.docs.length - 1) {
                 Intro.places = places;
-                !this.closed && this.setState({ places }, () => {
-                    // subscribe all places
-                    for (let i = 0; i < places.length; i++) {
-                        const __placeId = places[i].place_id;
-                        if (__placeId) {
-                            // subscribe feed count
-                            // --
-                            if (!Intro.feedCountList.has(__placeId)) {
-                                // this will be updated in subscribe
-                                Intro.feedCountList.set(__placeId, -1);
+                !this.closed && this.setState({ places });
 
-                                const ci = Firebase.subscribeToPlace(__placeId, newPlace => {
-                                    if (newPlace === null) return; // error
+                // subscribe all places
+                for (let i = 0; i < places.length; i++) {
+                    const __placeId = places[i].place_id;
+                    if (__placeId) {
+                        // subscribe feed count
+                        // --
+                        if (!Intro.feedCountList.has(__placeId)) {
+                            // this will be updated in subscribe
+                            Intro.feedCountList.set(__placeId, -1);
 
-                                    if (newPlace === undefined) {
-                                        // update Intro.feedCountList
-                                        Intro.feedCountList.delete(__placeId);
-                                        return;
-                                    }
+                            const ci = Firebase.subscribeToPlace(__placeId, newPlace => {
+                                if (newPlace === null) return; // error
 
+                                if (newPlace === undefined) {
                                     // update Intro.feedCountList
-                                    Intro.feedCountList.set(__placeId, newPlace.count);
+                                    Intro.feedCountList.delete(__placeId);
+                                    return;
+                                }
 
-                                    this.updatePlace(__placeId, newPlace);
-                                });
+                                // update Intro.feedCountList
+                                Intro.feedCountList.set(__placeId, newPlace.count);
 
-                                Intro.countsUnsubscribes.push(ci);
-                            }
-                            // --
+                                this.updatePlace(__placeId, newPlace);
+                            });
+
+                            Intro.countsUnsubscribes.push(ci);
                         }
+                        // --
                     }
-                });
+                }
             }
 
             index++;
@@ -524,63 +524,64 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
-        console.log('jdub', 'popularFeeds', popularFeeds.length);
+        // console.log('jdub', 'popularFeeds', popularFeeds.length);
 
-        !this.closed && this.setState({ popularFeeds }, () => {
-            for (let i = 0; i < popularFeeds.length; i++) {
-                const feed = popularFeeds[i];
+        !this.closed && this.setState({ popularFeeds });
 
-                // subscribe post
-                // --
-                if (!Intro.feedList.has(feed.id)) {
-                    // this will be updated in subscribe
-                    Intro.feedList.set(feed.id, null);
+        for (let i = 0; i < popularFeeds.length; i++) {
+            const feed = popularFeeds[i];
 
-                    const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                        if (newFeed === null) return; // error
+            // subscribe post
+            // --
+            if (!Intro.feedList.has(feed.id)) {
+                // this will be updated in subscribe
+                Intro.feedList.set(feed.id, null);
 
-                        if (newFeed === undefined) {
-                            // update Intro.feedList
-                            Intro.feedList.delete(feed.id);
-                            return;
-                        }
+                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                    if (newFeed === null) return; // error
 
+                    if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.set(feed.id, newFeed);
+                        Intro.feedList.delete(feed.id);
+                        return;
+                    }
 
-                        this.updateFeed(newFeed);
-                    });
+                    // update Intro.feedList
+                    Intro.feedList.set(feed.id, newFeed);
 
-                    Intro.popularFeedsUnsubscribes.push(fi);
-                }
-                // --
+                    this.updateFeed(newFeed);
+                });
 
-                // subscribe feed count
-                // --
-                if (!Intro.feedCountList.has(feed.placeId)) {
-                    // this will be updated in subscribe
-                    Intro.feedCountList.set(feed.placeId, -1);
-
-                    const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                        if (newPlace === null) return; // error
-
-                        if (newPlace === undefined) {
-                            // update Intro.feedCountList
-                            Intro.feedCountList.delete(feed.placeId);
-                            return;
-                        }
-
-                        // update Intro.feedCountList
-                        Intro.feedCountList.set(feed.placeId, newPlace.count);
-
-                        this.updatePlace(feed.placeId, newPlace);
-                    });
-
-                    Intro.countsUnsubscribes.push(ci);
-                }
-                // --
+                Intro.popularFeedsUnsubscribes.push(fi);
             }
-        });
+            // --
+
+            // subscribe feed count
+            // --
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                // this will be updated in subscribe
+                Intro.feedCountList.set(feed.placeId, -1);
+
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
+                    if (newPlace === undefined) {
+                        // update Intro.feedCountList
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+
+                    this.updatePlace(feed.placeId, newPlace);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        }
+
         Intro.popularFeeds = popularFeeds;
     }
 
@@ -615,63 +616,64 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
-        console.log('jdub', 'recentFeeds', recentFeeds.length);
+        // console.log('jdub', 'recentFeeds', recentFeeds.length);
 
-        !this.closed && this.setState({ recentFeeds }, () => {
-            for (let i = 0; i < recentFeeds.length; i++) {
-                const feed = recentFeeds[i];
+        !this.closed && this.setState({ recentFeeds });
 
-                // subscribe post
-                // --
-                if (!Intro.feedList.has(feed.id)) {
-                    // this will be updated in subscribe
-                    Intro.feedList.set(feed.id, null);
+        for (let i = 0; i < recentFeeds.length; i++) {
+            const feed = recentFeeds[i];
 
-                    const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
-                        if (newFeed === null) return; // error
+            // subscribe post
+            // --
+            if (!Intro.feedList.has(feed.id)) {
+                // this will be updated in subscribe
+                Intro.feedList.set(feed.id, null);
 
-                        if (newFeed === undefined) {
-                            // update Intro.feedList
-                            Intro.feedList.delete(feed.id);
-                            return;
-                        }
+                const fi = Firebase.subscribeToFeed(feed.placeId, feed.id, newFeed => {
+                    if (newFeed === null) return; // error
 
+                    if (newFeed === undefined) {
                         // update Intro.feedList
-                        Intro.feedList.set(feed.id, newFeed);
+                        Intro.feedList.delete(feed.id);
+                        return;
+                    }
 
-                        this.updateFeed(newFeed);
-                    });
+                    // update Intro.feedList
+                    Intro.feedList.set(feed.id, newFeed);
 
-                    Intro.recentFeedsUnsubscribes.push(fi);
-                }
-                // --
+                    this.updateFeed(newFeed);
+                });
 
-                // subscribe feed count
-                // --
-                if (!Intro.feedCountList.has(feed.placeId)) {
-                    // this will be updated in subscribe
-                    Intro.feedCountList.set(feed.placeId, -1);
-
-                    const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
-                        if (newPlace === null) return; // error
-
-                        if (newPlace === undefined) {
-                            // update Intro.feedCountList
-                            Intro.feedCountList.delete(feed.placeId);
-                            return;
-                        }
-
-                        // update Intro.feedCountList
-                        Intro.feedCountList.set(feed.placeId, newPlace.count);
-
-                        this.updatePlace(feed.placeId, newPlace);
-                    });
-
-                    Intro.countsUnsubscribes.push(ci);
-                }
-                // --
+                Intro.recentFeedsUnsubscribes.push(fi);
             }
-        });
+            // --
+
+            // subscribe feed count
+            // --
+            if (!Intro.feedCountList.has(feed.placeId)) {
+                // this will be updated in subscribe
+                Intro.feedCountList.set(feed.placeId, -1);
+
+                const ci = Firebase.subscribeToPlace(feed.placeId, newPlace => {
+                    if (newPlace === null) return; // error
+
+                    if (newPlace === undefined) {
+                        // update Intro.feedCountList
+                        Intro.feedCountList.delete(feed.placeId);
+                        return;
+                    }
+
+                    // update Intro.feedCountList
+                    Intro.feedCountList.set(feed.placeId, newPlace.count);
+
+                    this.updatePlace(feed.placeId, newPlace);
+                });
+
+                Intro.countsUnsubscribes.push(ci);
+            }
+            // --
+        }
+
         Intro.recentFeeds = recentFeeds;
     }
 

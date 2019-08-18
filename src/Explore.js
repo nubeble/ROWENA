@@ -13,7 +13,8 @@ import SmartImage from "./rnff/src/components/SmartImage";
 import { FontAwesome, MaterialIcons } from 'react-native-vector-icons';
 import Firebase from './Firebase';
 import { RefreshIndicator } from "./rnff/src/components";
-import Swiper from './Swiper';
+// import Swiper from './Swiper';
+import SwiperFlatList from './react-native-swiper-flatlist/src/components/SwiperFlatList/SwiperFlatList';
 import { Cons, Vars } from "./Globals";
 import Util from "./Util";
 import PreloadImage from "./PreloadImage";
@@ -439,16 +440,11 @@ export default class Explore extends React.Component<InjectedProps> {
                             }}>
                                 {
                                     this.ads.length === 4 ?
-                                        <Swiper
-                                            width={Dimensions.get('window').width}
-                                            height={Dimensions.get('window').width / 21 * 9}
-                                            // loop={false}
-                                            loop={true} // Consider: this fixes a render issue on ios
-                                            autoplay={true}
-                                            autoplayTimeout={3}
-                                            paginationStyle={{ bottom: 4 }}
-                                            onIndexChanged={(index) => {
-                                                // console.log('jdub', 'onIndexChanged', index);
+                                        <SwiperFlatList
+                                            autoplay
+                                            autoplayDelay={3}
+                                            onChangeIndex={({ index, prevIndex }) => {
+                                                // console.log(prevIndex, index);
                                                 this.currentSwiperIndex = index;
                                             }}
                                         >
@@ -524,7 +520,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                                 </View>
                                                 */}
                                             </View>
-                                        </Swiper>
+                                        </SwiperFlatList>
                                         :
                                         <View style={{
                                             width: Dimensions.get('window').width,
@@ -659,7 +655,7 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: "white",
         shadowColor: "black",
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2 },
         shadowRadius: 5,
         elevation: 8,
         zIndex: 10000
@@ -708,7 +704,7 @@ const styles = StyleSheet.create({
     },
     /*
     activityIndicator: {
-        position: 'absolute',
+            position: 'absolute',
         top: 0, bottom: 0, left: 0, right: 0
     },
     */

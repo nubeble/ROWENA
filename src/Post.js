@@ -13,7 +13,8 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import moment from 'moment';
 import SmartImage from "./rnff/src/components/SmartImage";
 import Util from "./Util";
-import Swiper from './Swiper';
+// import Swiper from './Swiper';
+import SwiperFlatList from './react-native-swiper-flatlist/src/components/SwiperFlatList/SwiperFlatList';
 import { AirbnbRating } from './react-native-ratings/src';
 import Firebase from "./Firebase";
 import autobind from "autobind-decorator";
@@ -137,26 +138,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         // show contact button
         if (from === 'ChatRoom') this.setState({ disableContactButton: true });
-
-        // Test
-        /*
-        if (Platform.OS === 'ios') {
-            this.swiperInterval = setInterval(() => {
-                console.log('1111');
-                if (this.swiper) {
-                    console.log('2222');
-                    // clear
-                    if (this.swiperInterval) {
-                        clearInterval(this.swiperInterval);
-                        this.swiperInterval = null;
-                    }
-
-                    // this.swiper.scrollBy(0, false);
-                    this.swiper.forceUpdate();
-                }
-            }, 100);
-        }
-        */
     }
 
     componentWillUnmount() {
@@ -1378,7 +1359,7 @@ export default class Post extends React.Component<InjectedProps> {
                             else Vibration.vibrate(30);
                         } else { // right
                             if (post.pictures.two.uri) {
-                                this.swiper.scrollBy(1, false);
+                                this.swiper.scrollToIndex({ index: 1, animated: false });
                                 if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
                             } else {
@@ -1409,12 +1390,12 @@ export default class Post extends React.Component<InjectedProps> {
                         const x = e.nativeEvent.locationX;
 
                         if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
+                            this.swiper.scrollToIndex({ index: 0, animated: false });
                             if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
                             if (post.pictures.three.uri) {
-                                this.swiper.scrollBy(1, false);
+                                this.swiper.scrollToIndex({ index: 2, animated: false });
                                 if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
                             } else {
@@ -1445,12 +1426,12 @@ export default class Post extends React.Component<InjectedProps> {
                         const x = e.nativeEvent.locationX;
 
                         if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
+                            this.swiper.scrollToIndex({ index: 1, animated: false });
                             if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
                             if (post.pictures.four.uri) {
-                                this.swiper.scrollBy(1, false);
+                                this.swiper.scrollToIndex({ index: 3, animated: false });
                                 if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                                 else Vibration.vibrate(10);
                             } else {
@@ -1481,7 +1462,7 @@ export default class Post extends React.Component<InjectedProps> {
                         const x = e.nativeEvent.locationX;
 
                         if (x <= boundary) { // left
-                            this.swiper.scrollBy(-1, false);
+                            this.swiper.scrollToIndex({ index: 2, animated: false });
                             if (Platform.OS === 'ios') Haptic.impactAsync(Haptic.ImpactFeedbackStyle.Light);
                             else Vibration.vibrate(10);
                         } else { // right
@@ -1530,16 +1511,12 @@ export default class Post extends React.Component<InjectedProps> {
         */
 
         return (
-            <Swiper
+            <SwiperFlatList
                 ref={(swiper) => this.swiper = swiper}
-                width={imageWidth}
-                height={imageHeight}
-                // loop={false}
-                loop={true} // Consider: this fixes a render issue on ios
-                paginationStyle={{ bottom: 4 }}
+                pageIndexFontSize={12}
             >
                 {pictures}
-            </Swiper>
+            </SwiperFlatList>
         );
     }
 
@@ -2928,7 +2905,9 @@ const styles = StyleSheet.create({
         // paddingBottom: Theme.spacing.small
     },
     slide: {
-        flex: 1,
+        // flex: 1,
+        width: imageWidth,
+        height: imageHeight,
         justifyContent: 'center',
         alignItems: 'center'
     },
