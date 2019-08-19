@@ -167,7 +167,7 @@ export default class Admin extends React.Component {
         for (let i = 0; i < 6; i++) this.initPattaya(i);
         for (let i = 0; i < 5; i++) this.initMacao(i);
         for (let i = 0; i < 5; i++) this.initHCM(i);
-        for (let i = 0; i < 4; i++) this.initMakati(i);
+        for (let i = 0; i < 4; i++) this.initManila(i); // Makati
         for (let i = 0; i < 3; i++) this.initVientiane(i);
     }
 
@@ -735,7 +735,7 @@ export default class Admin extends React.Component {
         await Firebase.createFeed(feed, extra);
     }
 
-    async initMakati(i) {
+    async initManila(i) {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
 
@@ -1186,8 +1186,8 @@ export default class Admin extends React.Component {
         for (let i = 0; i < 1; i++) this.initPattaya2(i);
         for (let i = 0; i < 2; i++) this.initMacao2(i);
         for (let i = 0; i < 1; i++) this.initHCM2(i);
-        for (let i = 0; i < 1; i++) this.initMakati2(i);
-        for (let i = 0; i < 1; i++) this.initVientiane2(i);
+        // for (let i = 0; i < 1; i++) this.initManila2(i);
+        // for (let i = 0; i < 1; i++) this.initVientiane2(i);
     }
 
     async initBangkok2(i) {
@@ -1286,13 +1286,12 @@ export default class Admin extends React.Component {
 
             note = ""; // ToDo
 
-            // ToDo
-            image1Uri = '';
-            image2Uri = '';
-            image3Uri = '';
-            image4Uri = '';
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F11%2F1.jpg?alt=media&token=c137766e-b8ca-4e56-a5c9-6abc2f3e2ca3';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F11%2F2.jpg?alt=media&token=b08631cb-193d-4a72-aea0-4cae08694dcd';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F11%2F3.jpg?alt=media&token=78226e2e-0bd3-4874-a82d-fb116108ee7f';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F11%2F4.jpg?alt=media&token=8b3f97d0-e52c-46f4-9c98-b1abc1f3ae8b';
 
-            name = 'Duangkamol Horasit';
+            name = 'Araya';
             birthday = '22061992';
             height = 164;
             weight = 48;
@@ -1623,185 +1622,6 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
     }
-
-    async initMakati2(i) {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-
-        const placeId = 'ChIJAe2gZALJlzMRzsoweNVuBis';
-        const placeName = 'Makati, Philippines';
-        const extra = {
-            lat: 14.554729,
-            lng: 121.0244452
-        };
-
-
-
-        let location = null;
-        let note = null;
-        let image1Uri = null;
-        let image2Uri = null;
-        let image3Uri = null;
-        let image4Uri = null;
-        let name = null;
-        let birthday = null;
-        let height = 0;
-        let weight = 0;
-        let bust = null;
-        let bodyType = null;
-
-        if (i === 0) {
-            location = {
-                description: 'New World Makati Hotel, Makati, Metro Manila, Philippines',
-                latitude: 14.5513427,
-                longitude: 121.0215101
-            };
-
-            note = ''; // ToDo
-
-            // ToDo
-            image1Uri = '';
-            image2Uri = '';
-            image3Uri = '';
-            image4Uri = '';
-
-            name = ''; // ToDo
-            birthday = '04111994';
-            height = 165;
-            weight = 48;
-            bust = 'B';
-            bodyType = 'Fit';
-        }
-
-
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        let pictures = null;
-        pictures = {
-            one: {
-                uri: image1Uri
-            },
-            two: {
-                uri: image2Uri
-            },
-            three: {
-                uri: image3Uri
-            },
-            four: {
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.birthday = birthday;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-        feed.muscle = null;
-        feed.gender = 'Female';
-        feed.bodyType = bodyType;
-
-        await Firebase.createFeed(feed, extra);
-    }
-
-    async initVientiane2(i) {
-        const userUid = Firebase.user().uid;
-        const feedId = Util.uid();
-
-        const placeId = 'ChIJIXvtBoZoJDER3-7BGIaxkx8';
-        const placeName = 'Vientiane, Laos';
-        const extra = {
-            lat: 17.9757058,
-            lng: 102.6331035
-        };
-
-
-
-        let location = null;
-        let note = null;
-        let image1Uri = null;
-        let image2Uri = null;
-        let image3Uri = null;
-        let image4Uri = null;
-        let name = null;
-        let birthday = null;
-        let height = 0;
-        let weight = 0;
-        let bust = null;
-        let bodyType = null;
-
-        if (i === 0) {
-            location = {
-                description: "",
-                latitude: 0,
-                longitude: 0
-            };
-
-            note = "";
-
-            image1Uri = '';
-            image2Uri = '';
-            image3Uri = '';
-            image4Uri = '';
-
-            name = '';
-            birthday = '05071995';
-            height = 164;
-            weight = 49;
-            bust = 'B';
-            bodyType = 'Fit';
-        }
-
-
-
-        // set
-        let feed = {};
-        feed.uid = userUid;
-        feed.id = feedId;
-        feed.placeId = placeId;
-        feed.placeName = placeName;
-        feed.location = location;
-        feed.note = note;
-
-        let pictures = null;
-        pictures = {
-            one: {
-                uri: image1Uri
-            },
-            two: {
-                uri: image2Uri
-            },
-            three: {
-                uri: image3Uri
-            },
-            four: {
-                uri: image4Uri
-            }
-        };
-
-        feed.pictures = pictures;
-        feed.name = name;
-        feed.birthday = birthday;
-        feed.height = height;
-        feed.weight = weight;
-        feed.bust = bust;
-        feed.muscle = null;
-        feed.gender = 'Female';
-        feed.bodyType = bodyType;
-
-        await Firebase.createFeed(feed, extra);
-    }
-
-
 
 
 
