@@ -167,7 +167,7 @@ export default class Admin extends React.Component {
         for (let i = 0; i < 6; i++) this.initPattaya(i);
         for (let i = 0; i < 5; i++) this.initMacao(i);
         for (let i = 0; i < 5; i++) this.initHCM(i);
-        for (let i = 0; i < 4; i++) this.initManila(i);
+        for (let i = 0; i < 4; i++) this.initMakati(i);
         for (let i = 0; i < 3; i++) this.initVientiane(i);
     }
 
@@ -432,7 +432,6 @@ export default class Admin extends React.Component {
                 longitude: 100.8861047
             };
 
-            // 2. note
             note = "Looking for people to have a good time with\nLet's meet for a tea and see what happens from there. 😊";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F2%2F1.jpg?alt=media&token=18eb0347-96e2-4a4b-969a-306ceb681eca';
@@ -453,7 +452,6 @@ export default class Admin extends React.Component {
                 longitude: 100.87611
             };
 
-            // 2. note
             note = "If you are not serious then please don't waste my time.";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F3%2F4.jpg?alt=media&token=ff455e2c-625d-4246-bb32-773b24f27f2f';
@@ -474,7 +472,6 @@ export default class Admin extends React.Component {
                 longitude: 100.878973
             };
 
-            // 2. note
             note = "Where are you? I'm waiting for you here. 💕";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F4%2F1.jpg?alt=media&token=c3b4acb1-4f90-40cb-aa7b-f2f4928d1c07';
@@ -495,7 +492,6 @@ export default class Admin extends React.Component {
                 longitude: 100.896062
             };
 
-            // 2. note
             note = "Willing to meet a guy who can do my little favor. 😸";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F5%2F20190814_133304.jpg?alt=media&token=9f7f3a05-3929-4275-814d-8a8be87241f1';
@@ -739,7 +735,7 @@ export default class Admin extends React.Component {
         await Firebase.createFeed(feed, extra);
     }
 
-    async initManila(i) {
+    async initMakati(i) {
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
 
@@ -960,7 +956,6 @@ export default class Admin extends React.Component {
                 longitude: 106.6349334
             };
 
-            // 2. note
             note = "Life for fun!\nNothing serious 😜\nHookups\nFWB";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F3%2F1.jpg?alt=media&token=90c82fd7-5a3f-469e-ad64-499495039630';
@@ -981,7 +976,6 @@ export default class Admin extends React.Component {
                 longitude: 106.7031687
             };
 
-            // 2. note
             note = "Mixed blood\nJapanese X Vietnamese\nHalf devil 😈 X half goodness 😁";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F4%2F1.jpg?alt=media&token=8c850e06-9fa3-4d25-ba17-3fe09beb3399';
@@ -1090,7 +1084,6 @@ export default class Admin extends React.Component {
                 longitude: 102.6111809
             };
 
-            // 2. note
             note = "FROM THAI🇹🇭🇹🇭🇹🇭\n🍺🍺CLUB & HANGOUT🍷🍷\nNOW IN VIENTIANE";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F1%2F1.jpg?alt=media&token=969fd8d4-59d4-4f69-91d8-f2d545d639c7';
@@ -1111,7 +1104,6 @@ export default class Admin extends React.Component {
                 longitude: 102.6049377
             };
 
-            // 2. note
             note = "How to say ‘Handsome’ in Korean?\nSomebody teach me Korean then I give you some sugar :)";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F2%2F1.jpg?alt=media&token=42a5aaa2-79f3-4a2e-9920-5371cbbb5a2d';
@@ -1132,7 +1124,6 @@ export default class Admin extends React.Component {
                 longitude: 102.6047841
             };
 
-            // 2. note
             note = "☺😊\nhalf chinese half vietnamese 🇨🇳🇻🇳";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FVientiane%2F3%2F1.jpg?alt=media&token=f75a9d5a-8da6-4431-af66-55f936337ee9';
@@ -1191,16 +1182,15 @@ export default class Admin extends React.Component {
 
 
     async initPost2() {
-        for (let i = 0; i < 2; i++) this.initBangkok2(i);
-        for (let i = 0; i < 2; i++) this.initPattaya2(i);
+        for (let i = 0; i < 4; i++) this.initBangkok2(i);
+        for (let i = 0; i < 1; i++) this.initPattaya2(i);
         for (let i = 0; i < 2; i++) this.initMacao2(i);
-        for (let i = 0; i < 2; i++) this.initHCM2(i);
-        for (let i = 0; i < 2; i++) this.initManila2(i);
-        for (let i = 0; i < 2; i++) this.initVientiane2(i);
+        for (let i = 0; i < 1; i++) this.initHCM2(i);
+        for (let i = 0; i < 1; i++) this.initMakati2(i);
+        for (let i = 0; i < 1; i++) this.initVientiane2(i);
     }
 
     async initBangkok2(i) {
-        // ToDo
         const userUid = Firebase.user().uid;
         const feedId = Util.uid();
 
@@ -1228,42 +1218,84 @@ export default class Admin extends React.Component {
 
         if (i === 0) {
             location = {
-                description: 'S Sathorn Rd, Thung Maha Mek, Sathon, Bangkok, Thailand',
-                latitude: 13.7236856,
-                longitude: 100.5368514
+                description: 'Le Mai Anh Samsen Road, Wat Sam Phraya, Phra Nakhon, Bangkok, Thailand',
+                latitude: 13.7663894,
+                longitude: 100.5006779
             };
 
-            note = "I guess my favorate type of men is raMEN🤷";
+            note = ""; // ToDo
 
-            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F1.jpg?alt=media&token=a8d84350-4794-4871-9400-c92aef4ab767';
-            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F3.jpg?alt=media&token=56f641a2-c7ff-44c6-b031-bc1950508d4f';
-            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F2.jpg?alt=media&token=f06a0088-78e4-410a-8d7f-70203118cdff';
-            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F1%2F4.jpg?alt=media&token=3b8da359-ac24-400d-bc73-ee7a989ab16d';
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F8%2F1.JPG?alt=media&token=53faef70-8294-4e33-9be1-f8a1ae79d927';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F8%2F2.JPG?alt=media&token=d19eb720-47a8-4f80-8f41-ba1da9f633b5';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F8%2F3.JPG?alt=media&token=d5225073-3bf6-4f19-b35d-3bd1f89ee941';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F8%2F4.JPG?alt=media&token=992621e5-8517-46ca-a412-d4dd3683affb';
 
-            name = 'Chassudapon';
-            birthday = '21021996';
-            height = 165;
-            weight = 48;
+            name = 'Anna';
+            birthday = '20061994';
+            height = 166;
+            weight = 52;
             bust = 'B';
-            bodyType = 'Skinny';
+            bodyType = 'Fit';
         } else if (i === 1) {
             location = {
-                description: 'Raweewan Residence, Khan Na Yao, Bangkok, Thailand',
-                latitude: 13.8334047,
-                longitude: 100.6787331
+                description: 'Soi Mu Ban Saen Siri Sukhumvit, Phra Khanong Nuea, Watthana, Bangkok, Thailand',
+                latitude: 13.7196638,
+                longitude: 100.5916899
             };
 
-            note = "Hi guys, I'm a girl from China.\nI hope to know more friends with common interests or positive energy.\n";
+            note = ""; // ToDo
 
-            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F1.jpg?alt=media&token=73501e9c-e799-4eb7-8959-e7e8208f861e';
-            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F2.jpg?alt=media&token=1bebe75e-7ca5-4a4b-944a-c9b0da5f7a9a';
-            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F4.jpg?alt=media&token=261264da-9c8f-4d1e-a769-88f2620af86b';
-            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F2%2F3.jpg?alt=media&token=55198f86-8a67-47c8-97df-4c453e49e15c';
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F9%2F1.JPG?alt=media&token=a3d4b2fd-020c-4f2e-9bd8-6c7bc37ee271';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F9%2F2.JPG?alt=media&token=229000d2-a0ad-4d14-96d7-92cb6d845917';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F9%2F3.JPG?alt=media&token=9b59f57b-d231-42f1-9efe-be55c590e381';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F9%2F4.JPG?alt=media&token=35bbc619-9e1b-49f6-9d5c-a95258f5b18c';
 
-            name = 'WANG WEN';
-            birthday = '25061996';
+            name = 'Julie Lin';
+            birthday = '28011996';
             height = 168;
-            weight = 50;
+            weight = 52;
+            bust = 'B';
+            bodyType = 'Skinny';
+        } else if (i === 2) {
+            location = { // ToDo
+                description: '',
+                latitude: 0,
+                longitude: 0
+            };
+
+            note = "หนูไม่ได้อ้วนนะ😅😂\nอย่ามองนานนะ💕";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F10%2F1.jpg?alt=media&token=c53b010b-2899-4aa4-bce5-f14265755bbe';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F10%2F2.jpg?alt=media&token=0666fe9c-be2b-4450-a665-6bf5e88ce57b';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F10%2F3.jpg?alt=media&token=3a3e4961-389c-49df-864b-68c9a592be1f';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F10%2F4.jpg?alt=media&token=5ae69a01-5f7d-4530-9462-6b809fe4f8d9';
+
+            name = 'Siriporn T';
+            birthday = '28011993';
+            height = 164;
+            weight = 53;
+            bust = 'B';
+            bodyType = 'Fit';
+
+        } else if (i === 3) {
+            location = { // ToDo
+                description: '',
+                latitude: 0,
+                longitude: 0
+            };
+
+            note = ""; // ToDo
+
+            // ToDo
+            image1Uri = '';
+            image2Uri = '';
+            image3Uri = '';
+            image4Uri = '';
+
+            name = 'Duangkamol Horasit';
+            birthday = '22061992';
+            height = 164;
+            weight = 48;
             bust = 'B';
             bodyType = 'Skinny';
         }
@@ -1309,18 +1341,464 @@ export default class Admin extends React.Component {
     }
 
     async initPattaya2(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJ49cxTZKVAjER_xC9qQHzf6k';
+        const placeName = 'Pattaya City, Thailand';
+        const extra = {
+            lat: 12.9235557,
+            lng: 100.8824551
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: 'Khaomakok 12, Pattaya City, Bang Lamung District, Chon Buri, Thailand',
+                latitude: 12.8697882,
+                longitude: 100.919399
+            };
+
+            note = ""; // ToDo
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F7%2F1.JPG?alt=media&token=cbad5e7f-41b6-491c-88a2-df8e884ae606';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F7%2F2.JPG?alt=media&token=506aa891-53ed-4aea-8d8b-1c462b9c60c4';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F7%2F3.JPG?alt=media&token=f188c518-8ab4-4217-a59b-72f1f435371d';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F7%2F4.JPG?alt=media&token=c37cb8dc-909f-421b-8991-ee5154a88a93';
+
+            name = 'TeeKitthanat';
+            birthday = '19071996';
+            height = 162;
+            weight = 47;
+            bust = 'B';
+            bodyType = 'Skinny';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
     }
 
     async initMacao2(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJ88g14uB6ATQR9qyFtCzje8Y';
+        const placeName = 'Macao';
+        const extra = {
+            lat: 22.198745,
+            lng: 113.543873
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: 'Rua Seis do Bairro Iao Hon, Macao',
+                latitude: 22.2118627,
+                longitude: 113.549301
+            };
+
+            note = ""; // ToDo
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F6%2F1.jpg?alt=media&token=e8399141-8bd3-4fd3-883b-96abcf817485';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F6%2F2.jpg?alt=media&token=bce4bef5-9af8-4750-aec8-1ccb5a23f4dd';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F6%2F3.jpg?alt=media&token=6991f752-b9d1-412c-a37e-a8abea6cd116';
+            // image4Uri = null;
+
+            name = 'Fei Hong';
+            birthday = '1105995';
+            height = 164;
+            weight = 48;
+            bust = 'A';
+            bodyType = 'Fit';
+        } else if (i === 1) {
+            location = {
+                description: 'The Venetian Macao, Estrada da Baia de Nossa Senhora da Esperanca, Macao',
+                latitude: 22.1470331,
+                longitude: 113.559839
+            };
+
+            note = "Looking for someone I can have fun and travel with";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F7%2F1.JPG?alt=media&token=18fdd4d1-7cd9-4ea2-9128-e6c95215f53c';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F7%2F2.JPG?alt=media&token=a3982fb9-c6b8-4fb6-a884-8cdbe7ce5ee3';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F7%2F3.JPG?alt=media&token=eec1187e-6f78-4f40-9a17-04e57940efb0';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F7%2F4.JPG?alt=media&token=5344b2e0-b373-48dc-a6fd-5563f383e579';
+
+            name = 'Madi';
+            birthday = '27031998';
+            height = 167;
+            weight = 52;
+            bust = 'C';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
     }
 
     async initHCM2(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJ0T2NLikpdTERKxE8d61aX_E';
+        const placeName = 'Ho Chi Minh City, Vietnam';
+        const extra = {
+            lat: 10.8230989,
+            lng: 106.6296638
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: "17 Trần Bình Trọng, Phường 5, Bình Thạnh, Ho Chi Minh City, Vietnam",
+                latitude: 10.8113638,
+                longitude: 106.6892792
+            };
+
+            note = ""; // ToDo
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F6%2F1.JPG?alt=media&token=7b09786b-9677-42fc-9dec-a754c6a0b2ee';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F6%2F2.JPG?alt=media&token=a604d41a-e721-403c-9875-06e900a2ccd4';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F6%2F3.JPG?alt=media&token=a242e938-1bc4-455d-850d-2ff2a83973ff';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F6%2F4.JPG?alt=media&token=fb8ec0ef-2914-4f09-b3ed-1c0e51dbb5e4';
+
+            name = 'Ru Shi';
+            birthday = '28061994';
+            height = 164;
+            weight = 48;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
     }
 
-    async initManila2(i) {
+    async initMakati2(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJAe2gZALJlzMRzsoweNVuBis';
+        const placeName = 'Makati, Philippines';
+        const extra = {
+            lat: 14.554729,
+            lng: 121.0244452
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: 'New World Makati Hotel, Makati, Metro Manila, Philippines',
+                latitude: 14.5513427,
+                longitude: 121.0215101
+            };
+
+            note = ''; // ToDo
+
+            // ToDo
+            image1Uri = '';
+            image2Uri = '';
+            image3Uri = '';
+            image4Uri = '';
+
+            name = ''; // ToDo
+            birthday = '04111994';
+            height = 165;
+            weight = 48;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
     }
 
     async initVientiane2(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJIXvtBoZoJDER3-7BGIaxkx8';
+        const placeName = 'Vientiane, Laos';
+        const extra = {
+            lat: 17.9757058,
+            lng: 102.6331035
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: "",
+                latitude: 0,
+                longitude: 0
+            };
+
+            note = "";
+
+            image1Uri = '';
+            image2Uri = '';
+            image3Uri = '';
+            image4Uri = '';
+
+            name = '';
+            birthday = '05071995';
+            height = 164;
+            weight = 49;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
     }
 
 
