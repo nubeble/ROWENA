@@ -332,6 +332,7 @@ export default class Firebase {
     }
     */
     static async getRandomPlaces(size) {
+        /*
         let places = [];
 
         const postsRef = Firebase.firestore.collection("places");
@@ -340,6 +341,34 @@ export default class Firebase {
             // const data = doc.data();
             places.push(doc.id);
         });
+
+        return places;
+        */
+
+
+        let places = [];
+        const postsRef = Firebase.firestore.collection("places");
+
+        const rn = Math.round(Math.random() * 100) % 3; // 0 ~ 2
+        if (rn === 0) { // by timestamp
+            const snap = await postsRef.orderBy("timestamp", "desc").limit(size).get();
+            snap.forEach(doc => {
+                // const data = doc.data();
+                places.push(doc.id);
+            });
+        } else if (rn === 1) { // by rn (Descending)
+            const snap = await postsRef.orderBy("rn", "desc").limit(size).get();
+            snap.forEach(doc => {
+                // const data = doc.data();
+                places.push(doc.id);
+            });
+        } else if (rn === 2) { // by rn (Ascending)
+            const snap = await postsRef.orderBy("rn", "asc").limit(size).get();
+            snap.forEach(doc => {
+                // const data = doc.data();
+                places.push(doc.id);
+            });
+        }
 
         return places;
     }

@@ -1186,6 +1186,7 @@ export default class Admin extends React.Component {
         for (let i = 0; i < 1; i++) this.initPattaya2(i);
         for (let i = 0; i < 2; i++) this.initMacao2(i);
         for (let i = 0; i < 1; i++) this.initHCM2(i);
+
         // for (let i = 0; i < 1; i++) this.initManila2(i);
         // for (let i = 0; i < 1; i++) this.initVientiane2(i);
     }
@@ -1223,7 +1224,7 @@ export default class Admin extends React.Component {
                 longitude: 100.5006779
             };
 
-            note = ""; // ToDo
+            note = "I speak 4 languages. Wanna make a guess?";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F8%2F1.JPG?alt=media&token=53faef70-8294-4e33-9be1-f8a1ae79d927';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F8%2F2.JPG?alt=media&token=d19eb720-47a8-4f80-8f41-ba1da9f633b5';
@@ -1243,7 +1244,7 @@ export default class Admin extends React.Component {
                 longitude: 100.5916899
             };
 
-            note = ""; // ToDo
+            note = "No short guys please";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F9%2F1.JPG?alt=media&token=a3d4b2fd-020c-4f2e-9bd8-6c7bc37ee271';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F9%2F2.JPG?alt=media&token=229000d2-a0ad-4d14-96d7-92cb6d845917';
@@ -1257,10 +1258,10 @@ export default class Admin extends React.Component {
             bust = 'B';
             bodyType = 'Skinny';
         } else if (i === 2) {
-            location = { // ToDo
-                description: '',
-                latitude: 0,
-                longitude: 0
+            location = {
+                description: 'Old Town Cafe Bangkok, Wang Burapha Phirom, Phra Nakhon, Bangkok, Thailand',
+                latitude: 13.7475587,
+                longitude: 100.4975799
             };
 
             note = "หนูไม่ได้อ้วนนะ😅😂\nอย่ามองนานนะ💕";
@@ -1278,13 +1279,13 @@ export default class Admin extends React.Component {
             bodyType = 'Fit';
 
         } else if (i === 3) {
-            location = { // ToDo
-                description: '',
-                latitude: 0,
-                longitude: 0
+            location = {
+                description: 'CentralPlaza Grand Rama IX, Ratchadaphisek Road, Huai Khwang, Bangkok, Thailand',
+                latitude: 13.758501,
+                longitude: 100.566112
             };
 
-            note = ""; // ToDo
+            note = "Love nature, activities";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F11%2F1.jpg?alt=media&token=c137766e-b8ca-4e56-a5c9-6abc2f3e2ca3';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FBangkok%2F11%2F2.jpg?alt=media&token=b08631cb-193d-4a72-aea0-4cae08694dcd';
@@ -1372,7 +1373,7 @@ export default class Admin extends React.Component {
                 longitude: 100.919399
             };
 
-            note = ""; // ToDo
+            note = "dog / music / movie 😍";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F7%2F1.JPG?alt=media&token=cbad5e7f-41b6-491c-88a2-df8e884ae606';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPattaya%2F7%2F2.JPG?alt=media&token=506aa891-53ed-4aea-8d8b-1c462b9c60c4';
@@ -1460,7 +1461,7 @@ export default class Admin extends React.Component {
                 longitude: 113.549301
             };
 
-            note = ""; // ToDo
+            note = "Wanna go out with me? Count me in.";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F6%2F1.jpg?alt=media&token=e8399141-8bd3-4fd3-883b-96abcf817485';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FMacao%2F6%2F2.jpg?alt=media&token=bce4bef5-9af8-4750-aec8-1ccb5a23f4dd';
@@ -1568,7 +1569,7 @@ export default class Admin extends React.Component {
                 longitude: 106.6892792
             };
 
-            note = ""; // ToDo
+            note = "I am rather curious about your body than your soul 😆";
 
             image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F6%2F1.JPG?alt=media&token=7b09786b-9677-42fc-9dec-a754c6a0b2ee';
             image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHCM%2F6%2F2.JPG?alt=media&token=a604d41a-e721-403c-9875-06e900a2ccd4';
