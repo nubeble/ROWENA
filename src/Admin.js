@@ -1182,6 +1182,7 @@ export default class Admin extends React.Component {
 
 
     async initPost2() {
+        /*
         for (let i = 0; i < 4; i++) this.initBangkok2(i);
         for (let i = 0; i < 1; i++) this.initPattaya2(i);
         for (let i = 0; i < 2; i++) this.initMacao2(i);
@@ -1189,6 +1190,12 @@ export default class Admin extends React.Component {
 
         // for (let i = 0; i < 1; i++) this.initManila2(i);
         // for (let i = 0; i < 1; i++) this.initVientiane2(i);
+
+        this.initAngeles(0);
+        this.initCebu(0);
+        this.initHanoi(0);
+        */
+        this.initPhuket(0);
     }
 
     async initBangkok2(i) {
@@ -1623,6 +1630,385 @@ export default class Admin extends React.Component {
 
         await Firebase.createFeed(feed, extra);
     }
+
+    async initAngeles(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJH-bS7obyljMRNrTZiiSC7T0';
+        const placeName = 'Angeles, Philippines';
+        const extra = {
+            lat: 15.1449853,
+            lng: 120.5887029
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: "AMJ Apartments, Angeles, Pampanga, Philippines",
+                latitude: 15.1646704,
+                longitude: 120.5697315
+            };
+
+            note = "☺🖐\nOpen minded, easygoing, sexy, ...";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FAngeles%2F1%2F1.jpg?alt=media&token=8c6ed1bb-0db6-4876-abb8-40a50db43cb3';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FAngeles%2F1%2F2.jpg?alt=media&token=bcfa9710-d2e5-41fc-b847-8a3b4ed48fba';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FAngeles%2F1%2F3.jpg?alt=media&token=f8391478-dcfd-4fbc-aa6d-656c1c6e4b21';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FAngeles%2F1%2F4.jpg?alt=media&token=5e9d35d2-c1e1-45f8-94f4-ddca17bc55b9';
+
+            name = 'Lovely Michelle';
+            birthday = '27081995';
+            height = 165;
+            weight = 48;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
+    }
+
+    async initCebu(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJ_S3NjSWZqTMRBzXT2wwDNEw';
+        const placeName = 'Cebu City, Philippines';
+        const extra = {
+            lat: 10.3156992,
+            lng: 123.8854366
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: "Horizon's 101 Cebu, General Maxilom Avenue, Cebu City, Cebu, Philippines",
+                latitude: 10.3105103,
+                longitude: 123.8974399
+            };
+
+            note = "No smoking\nNo spitting\nNo under 178";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FCebu%2F1%2F1.jpg?alt=media&token=d48df0ef-5e2c-46cc-9995-743b492341e9';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FCebu%2F1%2F2.jpg?alt=media&token=861813c6-31bc-4296-99ba-ba1cb99cdca3';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FCebu%2F1%2F3.jpg?alt=media&token=af050e5a-8e1f-4417-808d-a711713dd8cd';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FCebu%2F1%2F4.jpg?alt=media&token=076c3153-f753-400a-b316-913af0bb835f';
+
+            name = 'Summer';
+            birthday = '10121996';
+            height = 163;
+            weight = 47;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
+    }
+
+    async initHanoi(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJoRyG2ZurNTERqRfKcnt_iOc';
+        const placeName = 'Hanoi, Vietnam';
+        const extra = {
+            lat: 21.0277644,
+            lng: 105.8341598
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: "Pullman Hotel Hanoi, Cat Linh, Đống Đa, Hanoi, Vietnam",
+                latitude: 21.0299014,
+                longitude: 105.828866
+            };
+
+            note = "New to Hanoi. Looking for someone to explore the city with 😎";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHanoi%2F1%2F1.jpg?alt=media&token=44232996-ddcc-4148-918c-db8f5be64d47';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHanoi%2F1%2F2.jpg?alt=media&token=ebf5bc27-0046-427a-a13c-7e40df592f03';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHanoi%2F1%2F3.jpg?alt=media&token=ef84d019-d087-4979-bb42-457e38101973';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FHanoi%2F1%2F4.jpg?alt=media&token=ca121878-fbde-4aa0-8676-e25c0a8f407b';
+
+            name = 'Lily';
+            birthday = '17091997';
+            height = 162;
+            weight = 48;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
+    }
+
+    async initPhuket(i) {
+        const userUid = Firebase.user().uid;
+        const feedId = Util.uid();
+
+        const placeId = 'ChIJMxgOqJY6UDARgCQ4LLwjAgQ';
+        const placeName = 'Pa Tong, Thailand';
+        const extra = {
+            lat: 7.8965763,
+            lng: 98.30210439999999
+        };
+
+
+
+        let location = null;
+        let note = null;
+        let image1Uri = null;
+        let image2Uri = null;
+        let image3Uri = null;
+        let image4Uri = null;
+        let name = null;
+        let birthday = null;
+        let height = 0;
+        let weight = 0;
+        let bust = null;
+        let bodyType = null;
+
+        if (i === 0) {
+            location = {
+                description: "Ramada by Wyndham Phuket Deevana Patong, Thanon Ratuthit Songroipi Road, Pa Tong, Kathu District, Phuket, Thailand",
+                latitude: 7.9008454,
+                longitude: 98.3018505
+            };
+
+            note = "If you're not serious or just to play around, back off ⚽\nOf course I'm a Woman, Not ladyboy!\nI'm looking for someone to laugh with.\nBut who knows? If we get along well, our relationship may develope int something special 😃\n";
+
+            image1Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPhuket%2F1%2F1.jpg?alt=media&token=4f6dd57f-d250-4e01-aaf9-7e79d91c9de5';
+            image2Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPhuket%2F1%2F2.jpg?alt=media&token=b589fc81-dde9-444c-a407-6007ea02c488';
+            image3Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPhuket%2F1%2F3.jpg?alt=media&token=2f8af125-3f06-4b8b-884d-602fe884fc14';
+            image4Uri = 'https://firebasestorage.googleapis.com/v0/b/rowena-88cfd.appspot.com/o/samples%2FPhuket%2F1%2F4.jpg?alt=media&token=ce24f3b4-ea96-40e9-bfe3-4399341a2fd8';
+
+            name = 'Irene';
+            birthday = '17091991';
+            height = 165;
+            weight = 54;
+            bust = 'B';
+            bodyType = 'Fit';
+        }
+
+
+
+        // set
+        let feed = {};
+        feed.uid = userUid;
+        feed.id = feedId;
+        feed.placeId = placeId;
+        feed.placeName = placeName;
+        feed.location = location;
+        feed.note = note;
+
+        let pictures = null;
+        pictures = {
+            one: {
+                uri: image1Uri
+            },
+            two: {
+                uri: image2Uri
+            },
+            three: {
+                uri: image3Uri
+            },
+            four: {
+                uri: image4Uri
+            }
+        };
+
+        feed.pictures = pictures;
+        feed.name = name;
+        feed.birthday = birthday;
+        feed.height = height;
+        feed.weight = weight;
+        feed.bust = bust;
+        feed.muscle = null;
+        feed.gender = 'Female';
+        feed.bodyType = bodyType;
+
+        await Firebase.createFeed(feed, extra);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

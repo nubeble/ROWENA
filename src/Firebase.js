@@ -82,7 +82,7 @@ export default class Firebase {
 
     static async setToken(uid, data) {
         await Firebase.firestore.collection("tokens").doc(uid).set(data).then(function () {
-            console.log('jdub', 'Firebase.setToken', 'set successful.');
+            // console.log('jdub', 'Firebase.setToken', 'set successful.');
         }).catch(function (error) {
             console.log('jdub', 'Firebase.setToken', error);
         });
@@ -137,7 +137,7 @@ export default class Firebase {
             displayName: name,
             photoURL
         }).then(function () {
-            console.log('jdub', 'Firebase.createProfile', 'update successful.');
+            // console.log('jdub', 'Firebase.createProfile', 'update successful.');
         }).catch(function (error) {
             console.log('jdub', 'Firebase.createProfile', error);
         });
@@ -150,7 +150,7 @@ export default class Firebase {
     static async updateProfile(uid, profile, updateAuth) {
         // 2. update user doc
         await Firebase.firestore.collection("users").doc(uid).update(profile).then(function () {
-            console.log('jdub', 'Firebase.updateProfile', 'update successful.');
+            // console.log('jdub', 'Firebase.updateProfile', 'update successful.');
         }).catch(function (error) {
             console.log('jdub', 'Firebase.updateProfile', error);
         });
@@ -167,7 +167,7 @@ export default class Firebase {
                 displayName: name,
                 photoURL: uri
             }).then(function () {
-                console.log('jdub', 'Firebase.updateProfile, update firebase auth', 'update successful.');
+                // console.log('jdub', 'Firebase.updateProfile, update firebase auth', 'update successful.');
             }).catch(function (error) {
                 console.log('jdub', 'Firebase.updateProfile, update firebase auth', error);
             });
@@ -182,7 +182,7 @@ export default class Firebase {
         await user.updateProfile({
             photoURL: uri
         }).then(function () {
-            console.log('jdub', 'Firebase.updateProfilePicture', 'update successful.');
+            // console.log('jdub', 'Firebase.updateProfilePicture', 'update successful.');
         }).catch(function (error) {
             console.log('jdub', 'Firebase.updateProfilePicture', error);
         });
@@ -209,8 +209,7 @@ export default class Firebase {
             // remove user document
             transaction.delete(db);
         }).then(() => {
-            // console.log('jdub', "Transaction successfully committed!");
-            console.log('jdub', "User document successfully deleted.");
+            // console.log('jdub', "User document successfully deleted.");
             result = true;
         }).catch((error) => {
             console.log('jdub', 'Firebase.deleteProfile', error);
@@ -223,7 +222,7 @@ export default class Firebase {
         let user = Firebase.auth.currentUser;
         await user.delete().then(function () {
             // User deleted.
-            console.log('jdub', 'Firebase auth deleted.');
+            // console.log('jdub', 'Firebase auth deleted.');
         }).catch(function (error) {
             // An error happened.
             console.log('jdub', 'Firebase.deleteProfile', error);
@@ -252,7 +251,7 @@ export default class Firebase {
                 body: formData
             });
 
-            console.log('jdub', 'Firebase.signOut result', response);
+            // console.log('jdub', 'Firebase.signOut result', response);
         } catch (error) {
             console.error(error);
         }
@@ -274,9 +273,7 @@ export default class Firebase {
             const snap2 = await postsRef.where("rn", "<", random).orderBy("rn", "desc").limit(1).get();
             if (snap2.docs.length === 0) {
                 // this should never happen!
-                console.log('jdub', '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-                console.log('jdub', 'Firebase.getPlaceRandomFeedImage', 'THIS SHOULD NOT HAPPEN!!!');
-                console.log('jdub', '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+                console.log('jdub', 'Firebase.getPlaceRandomFeedImage', '!!! THIS SHOULD NEVER HAPPEN !!!');
             } else {
                 snap2.forEach((doc) => {
                     // console.log('jdub', doc.id, '=>', doc.data());
@@ -377,7 +374,7 @@ export default class Firebase {
         return Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId).onSnapshot(
             snap => {
                 const feed = snap.data();
-                console.log('jdub', 'Firebase.subscribeToFeed, feed changed.');
+                // console.log('jdub', 'Firebase.subscribeToFeed, feed changed.');
                 cb(feed);
             },
             error => {
@@ -402,7 +399,7 @@ export default class Firebase {
                 */
 
                 const place = snap.data();
-                console.log('jdub', 'Firebase.subscribeToPlace, place changed.');
+                // console.log('jdub', 'Firebase.subscribeToPlace, place changed.');
                 cb(place);
             },
             error => {
@@ -416,7 +413,7 @@ export default class Firebase {
         return Firebase.firestore.collection("users").doc(uid).onSnapshot(
             snap => {
                 const user = snap.data();
-                console.log('jdub', 'Firebase.subscribeToProfile, user changed.');
+                // console.log('jdub', 'Firebase.subscribeToProfile, user changed.');
                 cb(user);
             },
             error => {
@@ -574,7 +571,7 @@ export default class Firebase {
 
             transaction.update(userRef, { feeds });
         }).then(() => {
-            console.log('jdub', "Firebase.updateFeed, success.");
+            // console.log('jdub', "Firebase.updateFeed, success.");
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateFeed', error);
         });
@@ -638,7 +635,7 @@ export default class Firebase {
 
             // 2. update the count first!
             let count = placeDoc.data().count;
-            console.log('jdub', 'Firebase.removeFeed', 'current count', count);
+            // console.log('jdub', 'Firebase.removeFeed', 'current count', count);
             transaction.update(placeRef, { count: Number(count - 1) });
 
             // 3. remove feed
@@ -710,7 +707,6 @@ export default class Firebase {
         return result;
     }
 
-    /*
     static async updateUserFeed(uid, placeId, feedId, picture) {
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
@@ -733,12 +729,11 @@ export default class Firebase {
 
             transaction.update(userRef, { feeds });
         }).then(() => {
-            console.log('jdub', "Firebase.updateUserFeed, success.");
+            // console.log('jdub', "Firebase.updateUserFeed, success.");
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateUserFeed', error);
         });
     }
-    */
 
     /*
     static async getUserFeeds(profile) { // user posted feeds
@@ -810,7 +805,7 @@ export default class Firebase {
 
             transaction.update(feedRef, { visits });
         }).then(() => {
-            console.log('jdub', "Firebase.addVisits, success.");
+            // console.log('jdub', "Firebase.addVisits, success.");
         }).catch((error) => {
             console.log('jdub', 'Firebase.addVisits', error);
             result = null;
@@ -870,7 +865,7 @@ export default class Firebase {
 
             transaction.update(userRef, { likes: userLikes });
         }).then(() => {
-            console.log('jdub', "Firebase.toggleLikes, success.");
+            // console.log('jdub', "Firebase.toggleLikes, success.");
             result = true;
         }).catch((error) => {
             console.log('jdub', 'Firebase.toggleLikes', error);
@@ -965,7 +960,7 @@ export default class Firebase {
 
             transaction.update(userRef, { likes });
         }).then(() => {
-            console.log('jdub', "Firebase.updateLikes, success.");
+            // console.log('jdub', "Firebase.updateLikes, success.");
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateLikes', error);
         });
@@ -1065,7 +1060,7 @@ export default class Firebase {
 
             // reviewCount
             let reviewCount = feedDoc.data().reviewCount;
-            console.log('jdub', 'reviewCount will be', reviewCount + 1);
+            // console.log('jdub', 'reviewCount will be', reviewCount + 1);
 
             // averageRating (number)
             const size = reviewCount;
@@ -1074,7 +1069,7 @@ export default class Firebase {
             totalRating += review.rating;
             averageRating = totalRating / (size + 1);
             averageRating = averageRating.toFixed(1);
-            console.log('jdub', 'averageRating', averageRating);
+            // console.log('jdub', 'averageRating', averageRating);
 
             // stats
             let reviewStats = feedDoc.data().reviewStats;
@@ -1206,7 +1201,7 @@ export default class Firebase {
                 transaction.update(userRef, data);
             }
         }).then(() => {
-            console.log('jdub', 'Firebase.updateReview, success.');
+            // console.log('jdub', 'Firebase.updateReview, success.');
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateReview', error);
         });
@@ -1235,7 +1230,7 @@ export default class Firebase {
 
             // 1. reviewCount
             const reviewCount = feedDoc.data().reviewCount;
-            console.log('jdub', 'reviewCount will be', reviewCount - 1);
+            // console.log('jdub', 'reviewCount will be', reviewCount - 1);
 
             // 2. averageRating
             const size = reviewCount;
@@ -1249,7 +1244,7 @@ export default class Firebase {
                 averageRating = totalRating / (size - 1);
                 averageRating = averageRating.toFixed(1);
             }
-            console.log('jdub', 'averageRating', averageRating);
+            // console.log('jdub', 'averageRating', averageRating);
 
             // 3. stats
             let reviewStats = feedDoc.data().reviewStats;
@@ -1442,7 +1437,7 @@ export default class Firebase {
     // --
     // static async addComment(uid, targetUid, comment, placeId, feedId) { // uid: writer (boss, not girl), targetUid: receiver (guest)
     static async addComment(uid, targetUid, placeId, feedId, comment, name, address, picture) { // uid: writer (boss, not girl), targetUid: receiver (guest)
-        console.log('jdub', uid, targetUid, placeId, feedId, comment, name, address, picture);
+        // console.log('jdub', uid, targetUid, placeId, feedId, comment, name, address, picture);
 
         let result;
 
@@ -1472,7 +1467,7 @@ export default class Firebase {
             // 1. update receivedCommentsCount in receiver (guest) user profile
             let receivedCommentsCount = userDoc.data().receivedCommentsCount;
             if (!receivedCommentsCount) receivedCommentsCount = 0;
-            console.log('jdub', 'receivedCommentsCount will be', receivedCommentsCount + 1);
+            // console.log('jdub', 'receivedCommentsCount will be', receivedCommentsCount + 1);
 
             transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount + 1), commentAdded: true });
 
@@ -1507,7 +1502,7 @@ export default class Firebase {
     };
 
     static async updateComments(uid, targetUid, name, place, picture) {
-        console.log('jdub', 'Firebase.updateComments', uid, targetUid, name, place, picture);
+        // console.log('jdub', 'Firebase.updateComments', uid, targetUid, name, place, picture);
 
         const userRef = Firebase.firestore.collection("users").doc(uid);
 
@@ -1556,7 +1551,7 @@ export default class Firebase {
                 transaction.update(userRef, data);
             }
         }).then(() => {
-            console.log('jdub', 'Firebase.updateComments, success.');
+            // console.log('jdub', 'Firebase.updateComments, success.');
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateComments', error);
         });
@@ -1586,7 +1581,7 @@ export default class Firebase {
 
             // 1. update receivedCommentsCount in receiver (guest) user profile
             let receivedCommentsCount = receiverDoc.data().receivedCommentsCount;
-            console.log('jdub', 'receivedCommentsCount will be', receivedCommentsCount - 1);
+            // console.log('jdub', 'receivedCommentsCount will be', receivedCommentsCount - 1);
 
             transaction.update(receiverRef, { receivedCommentsCount: Number(receivedCommentsCount - 1) });
 
@@ -1872,7 +1867,7 @@ export default class Firebase {
     };
 
     static async saveLastReadMessageId(uid, id, mid) {
-        console.log('jdub', 'Firebase.saveLastReadMessageId', uid, id, mid);
+        // console.log('jdub', 'Firebase.saveLastReadMessageId', uid, id, mid);
 
         const updateData = {
             lastReadMessageId: mid
@@ -1992,7 +1987,7 @@ export default class Firebase {
 
         await Firebase.database.ref('chat').child(myUid).child(chatRoomId).once('value').then(snapshot => {
             const data = snapshot.val();
-            console.log('jdub', 'room data', data);
+            // console.log('jdub', 'room data', data);
 
             room = data;
 
@@ -2085,7 +2080,7 @@ export default class Firebase {
 
             Firebase.database.ref('chat').child(myUid).child(roomId).update(updateData);
         }).then(() => {
-            console.log('jdub', 'Firebase.updateChatRoom, success.');
+            // console.log('jdub', 'Firebase.updateChatRoom, success.');
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateChatRoom, error', error);
         });
@@ -2105,7 +2100,7 @@ export default class Firebase {
 
             Firebase.database.ref('chat').child(opponentUid).child(roomId).update(updateData);
         }).then(() => {
-            console.log('jdub', 'Firebase.updateChatRoom, success.');
+            // console.log('jdub', 'Firebase.updateChatRoom, success.');
         }).catch((error) => {
             console.log('jdub', 'Firebase.updateChatRoom, error', error);
         });

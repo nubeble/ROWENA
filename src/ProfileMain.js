@@ -352,18 +352,18 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                     this.feedList.set(feedId, newFeed);
 
                     // update picture
-                    // let changed = false;
+                    let changed = false;
                     let feeds = [...this.state.feeds];
                     const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
                     if (index !== -1) {
-                        // if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
+                        if (feeds[index].picture !== newFeed.pictures.one.uri) changed = true;
 
                         feeds[index].picture = newFeed.pictures.one.uri;
                         !this.closed && this.setState({ feeds });
                     }
 
                     // update database
-                    // if (changed) Firebase.updateUserFeed(Firebase.user().uid, placeId, feedId, newFeed.pictures.one.uri);
+                    if (changed) Firebase.updateUserFeed(Firebase.user().uid, placeId, feedId, newFeed.pictures.one.uri);
                 });
 
                 this.feedsUnsubscribes.push(fi);
@@ -823,7 +823,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             onPress={() => {
                                                 if (!profile) return;
 
-                                                this.openDialog('alert', 'Log out', 'Are you sure you want to log out?', async () => {
+                                                this.openDialog('alert', 'Log Out', 'Are you sure you want to log out?', async () => {
                                                     // show indicator
                                                     !this.closed && this.setState({ isLoadingFeeds: true });
 
@@ -1125,7 +1125,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
         if (this.adminCount > 9) {
             // open pw menu
-            this.openDialog('pad', 'Admin Login', 'Type an administrator password', null);
+            this.openDialog('pad', 'Log in Admin', 'Type an administrator password', null);
 
             this.adminCount = undefined;
         }
@@ -1264,7 +1264,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                // ToDo: show notification
+                Util.openSettings("CAMERA_ROLL");
                 return;
             }
         }
@@ -1272,7 +1272,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                // ToDo: show notification
+                Util.openSettings("CAMERA_ROLL");
                 return;
             }
         }
@@ -1289,7 +1289,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
         if (!result.cancelled) {
             const path = result.uri;
 
-            this.openDialog('alert', 'Edit profile', 'Are you sure you want to change your profile picture?', async () => {
+            this.openDialog('alert', 'Edit Profile', 'Are you sure you want to change your profile picture?', async () => {
 
                 this.setState({ onUploadingImage: true });
 

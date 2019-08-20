@@ -1117,7 +1117,7 @@ export default class EditPost extends React.Component {
                                 this.hideAlertIcon();
                             }
 
-                            this.openDialog('Delete', 'Are you sure you want to delete this post?', async () => {
+                            this.openDialog('Delete Post', 'Are you sure you want to delete this post?', async () => {
                                 this.setState({ showPostLoader: true });
 
                                 const { post } = this.props.navigation.state.params;
@@ -2088,7 +2088,7 @@ export default class EditPost extends React.Component {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                await Util.openSettings();
+                await Util.openSettings("CAMERA");
                 return;
             }
         }
@@ -2096,14 +2096,14 @@ export default class EditPost extends React.Component {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                await Util.openSettings();
+                await Util.openSettings("CAMERA_ROLL");
                 return;
             }
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: [4, 3], // ToDo: android only! (only square image in IOS)
+            aspect: Platform.OS === 'android' ? [4, 3] : [1, 1], // ToDo: android only! (square image in IOS)
             quality: 1.0,
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });

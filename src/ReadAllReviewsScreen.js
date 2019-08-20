@@ -861,7 +861,7 @@ export default class ReadAllReviewsScreen extends React.Component {
     };
 
     async removeReview(index) {
-        this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
+        this.openDialog('Delete Review', 'Are you sure you want to delete this review?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             // const reviewId = reviewStore.reviews[index].review.id;
@@ -890,7 +890,7 @@ export default class ReadAllReviewsScreen extends React.Component {
     }
 
     async removeReply(index) {
-        this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
+        this.openDialog('Delete Reply', 'Are you sure you want to delete this reply?', async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             // const reviewId = reviewStore.reviews[index].review.id;

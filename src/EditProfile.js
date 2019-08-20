@@ -1277,7 +1277,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                await Util.openSettings();
+                await Util.openSettings("CAMERA");
                 return;
             }
         }
@@ -1285,7 +1285,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                await Util.openSettings();
+                await Util.openSettings("CAMERA_ROLL");
                 return;
             }
         }

@@ -525,7 +525,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                         if (averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
                                     }}
                                     onLongPress={() => {
-                                        this.openDialog('Remove likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
+                                        this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
                                             !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
                                             // update database

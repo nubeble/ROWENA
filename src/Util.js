@@ -1,4 +1,5 @@
 import React from 'react';
+import { Alert } from 'react-native';
 import Constants from 'expo-constants';
 import { Linking } from "expo";
 import moment from "moment";
@@ -1775,11 +1776,35 @@ export default class Util extends React.Component {
         return null;
     }
 
-    static async openSettings() {
+    static async openSettings(type) {
         const url = 'app-settings:';
         const supported = await Linking.canOpenURL(url);
         if (supported) {
             Linking.openURL(url);
+        } else {
+            // show alert
+            let title = '';
+            let subtitle = '';
+            if (type === "CAMERA") {
+                title = "Use Camera";
+                subtitle = "Permissions -> Alow Camera";
+            } else if (type === "CAMERA_ROLL") {
+                title = "Use Storage";
+                subtitle = "Permissions -> Alow Storage";
+            } else if (type === "LOCATION") {
+                title = "Use Location";
+                subtitle = "Permissions -> Alow Location";
+            } else if (type === "NOTIFICATIONS") {
+                title = "Use Notifications";
+                subtitle = "Notifications -> Allow Show notifications";
+            }
+
+            Alert.alert(
+                title,
+                "Can't open Settings. Please do it manually. Go to Settings -> Apps -> Rowena -> " + subtitle,
+                [{ text: 'OK', onPress: () => console.log('jdub', 'OK Pressed') }],
+                { cancelable: false }
+            );
         }
     }
 

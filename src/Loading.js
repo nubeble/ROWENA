@@ -144,7 +144,7 @@ export default class Loading extends React.Component<InjectedProps> {
         Firebase.init();
 
         this.instance = Firebase.auth.onAuthStateChanged(async (user) => {
-            console.log('jdub', 'Loading.onAuthStateChanged, user', user);
+            // console.log('jdub', 'Loading.onAuthStateChanged, user', user);
 
             // const { navigation, feedStore, profileStore, userFeedStore } = this.props;
             const { navigation, feedStore, profileStore } = this.props;

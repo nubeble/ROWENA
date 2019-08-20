@@ -26,7 +26,7 @@ export async function registerExpoPushToken(uid, name) {
     if (finalStatus !== "granted") {
         console.log('jdub', 'Permission to access notifications was denied.');
 
-        // await Util.openSettings();
+        // await Util.openSettings("NOTIFICATIONS");
         return;
     }
 
@@ -84,7 +84,7 @@ export async function unregisterExpoPushToken(uid) {
     if (finalStatus !== "granted") {
         console.log('jdub', 'Permission to access notifications was denied.');
 
-        // await Util.openSettings();
+        // await Util.openSettings("NOTIFICATIONS");
         return;
     }
 

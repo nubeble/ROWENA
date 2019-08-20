@@ -1110,7 +1110,7 @@ export default class Post extends React.Component<InjectedProps> {
                                         width: 20, height: 20, justifyContent: 'center', alignItems: 'center'
                                     }}
                                     onPress={async () => {
-                                        await Util.openSettings();
+                                        await Util.openSettings("LOCATION");
                                     }}>
                                     <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
                                 </TouchableOpacity>
@@ -2684,7 +2684,7 @@ export default class Post extends React.Component<InjectedProps> {
     };
 
     async removeReview(index) {
-        this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
+        this.openDialog('Delete Review', 'Are you sure you want to delete this review?', async () => {
             const post = this.state.post;
 
             // check if removed by the owner
@@ -2717,7 +2717,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     async removeReply(index) {
-        this.openDialog('Delete', 'Are you sure you want to delete this reply?', async () => {
+        this.openDialog('Delete Reply', 'Are you sure you want to delete this reply?', async () => {
             const post = this.state.post;
 
             const placeId = post.placeId;

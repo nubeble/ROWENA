@@ -236,7 +236,7 @@ export default class Intro extends React.Component<InjectedProps> {
             if (status !== 'granted') {
                 console.log('jdub', 'Permission to access location was denied.');
 
-                await Util.openSettings();
+                await Util.openSettings("LOCATION");
                 return;
             }
         }

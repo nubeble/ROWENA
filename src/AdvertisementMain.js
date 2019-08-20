@@ -1937,7 +1937,7 @@ export default class AdvertisementMain extends React.Component {
         if (existingCameraStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA);
             if (status !== 'granted') {
-                await Util.openSettings();
+                await Util.openSettings("CAMERA");
                 return;
             }
         }
@@ -1945,14 +1945,14 @@ export default class AdvertisementMain extends React.Component {
         if (existingCameraRollStatus !== 'granted') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
             if (status !== 'granted') {
-                await Util.openSettings();
+                await Util.openSettings("CAMERA_ROLL");
                 return;
             }
         }
 
         const result = await ImagePicker.launchImageLibraryAsync({
             allowsEditing: true,
-            aspect: [4, 3], // ToDo: android only! (only square image in IOS)
+            aspect: Platform.OS === 'android' ? [4, 3] : [1, 1], // ToDo: android only! (square image in IOS)
             quality: 1.0,
             mediaTypes: ImagePicker.MediaTypeOptions.Images
         });

@@ -919,7 +919,7 @@ export default class ChatRoom extends React.Component {
         const opponentUid = item.users[1].uid;
         const labelName = item.users[1].name;
 
-        this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
+        this.openDialog('Leave Conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
             await Firebase.deleteChatRoom(myUid, myName, opponentUid, roomId);
             // this.props.navigation.navigate("chat", { roomId });
             this.props.navigation.navigate("chatMain", { roomId });

@@ -890,7 +890,7 @@ export default class GooglePlacesAutocomplete extends Component {
         // filter "Macao, 12號碼頭"
         let description1 = Util.filterNumber(description);
 
-        // ToDo: street search, length 1 then skip
+        // Consider: street search, length 1 then skip
         if (this.props.filterPlacesSearchByTypes.length === 0) { // searching streets in AdvertisementMain
             if (description1.split(', ').length <= 1) return;
         }

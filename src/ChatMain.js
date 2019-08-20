@@ -628,7 +628,7 @@ export default class ChatMain extends React.Component {
                     }
                 }}
                 onLongPress={() => {
-                    this.openDialog('Leave conversation', "Are you sure you don't want to receive new messages from " + opponent.name + "?", async () => {
+                    this.openDialog('Leave Conversation', "Are you sure you don't want to receive new messages from " + opponent.name + "?", async () => {
                         // 1. database
                         const myUid = users[0].uid;
                         const myName = users[0].name;

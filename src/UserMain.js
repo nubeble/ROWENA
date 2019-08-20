@@ -277,7 +277,7 @@ export default class UserMain extends React.Component<InjectedProps> {
     };
 
     async removeComment(index) {
-        this.openDialog('Delete', 'Are you sure you want to delete this review?', async () => {
+        this.openDialog('Delete Review', 'Are you sure you want to delete this review?', async () => {
             // const { reviews } = this.commentStore;
             const { reviews } = this.state;
             const { host, guest } = this.state;

@@ -595,7 +595,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
     }
 
     onLongPressItem(feeds, city) {
-        this.openDialog('Remove likes', "Are you sure you want to remove all your likes from " + city + "?", async () => {
+        this.openDialog('Remove Likes', "Are you sure you want to remove all your likes from " + city + "?", async () => {
             !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
             const uid = Firebase.user().uid;

@@ -494,7 +494,7 @@ export default class EmailVerificationMain extends React.Component<InjectedProps
     }
 
     goBack() {
-        this.openDialog('alert', 'New account', 'Are you sure you want to stop email verification and create new account?', async () => {
+        this.openDialog('alert', 'New Account', 'Are you sure you want to stop email verification and create new account?', async () => {
             // stop clock timer
             if (this.clockCall) {
                 clearInterval(this.clockCall);
