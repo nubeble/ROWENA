@@ -1182,7 +1182,6 @@ export default class Admin extends React.Component {
 
 
     async initPost2() {
-        /*
         for (let i = 0; i < 4; i++) this.initBangkok2(i);
         for (let i = 0; i < 1; i++) this.initPattaya2(i);
         for (let i = 0; i < 2; i++) this.initMacao2(i);
@@ -1194,7 +1193,6 @@ export default class Admin extends React.Component {
         this.initAngeles(0);
         this.initCebu(0);
         this.initHanoi(0);
-        */
         this.initPhuket(0);
     }
 

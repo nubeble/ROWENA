@@ -274,7 +274,12 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
-        this.props.navigation.navigate("editPostMain", { post: this.state.post });
+        let { post } = this.state;
+        if (this.originNote) {
+            post.note = this.originNote;
+        }
+
+        this.props.navigation.navigate("editPostMain", { post });
     }
 
     initFromWriteReview(result) { // back from rating
