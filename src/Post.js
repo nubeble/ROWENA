@@ -1099,7 +1099,7 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 4 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 8 }}>
                         <MaterialIcons name='location-on' color={'rgb(255, 68, 68)'} size={19} />
                         <Text style={styles.distance}>{distance}</Text>
                         {
