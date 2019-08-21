@@ -1744,6 +1744,7 @@ export default class AdvertisementMain extends React.Component {
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small }} />
                 */}
 
+                {/*
                 <Text style={{
                     paddingHorizontal: Theme.spacing.base,
                     marginTop: Theme.spacing.small,
@@ -1752,9 +1753,11 @@ export default class AdvertisementMain extends React.Component {
                     textAlign: 'center',
                     lineHeight: 20
                 }}>{this.contentText}</Text>
+                */}
 
                 <TouchableOpacity
-                    style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Cons.bottomButtonMarginBottom }]}
+                    // style={[styles.contactButton, { marginTop: Theme.spacing.tiny, marginBottom: Cons.bottomButtonMarginBottom }]}
+                    style={[styles.contactButton, { marginTop: Theme.spacing.base, marginBottom: Cons.bottomButtonMarginBottom }]}
                     onPress={async () => {
                         if (this._showNotification) {
                             this.hideNotification();
