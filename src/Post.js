@@ -918,38 +918,32 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 }}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
                         <Text style={styles.name}>{post.name}</Text>
 
-                        {/* activate date */}
-                        {/*
-                        <TouchableOpacity style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 10, paddingVertical: 2 }}
-                            onPress={async () => {
-                                if (this.state.showPostLoader) return;
+                        {
+                            Platform.OS === 'ios' &&
+                            <TouchableOpacity
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                    marginLeft: 6,
+                                    justifyContent: "center", alignItems: "center"
+                                }}
+                                onPress={() => {
+                                    this.openDialog('Report Post', 'Is it spam or inappropriate?', () => {
+                                        // ToDo: report post
 
-                                if (this._showNotification) {
-                                    this.hideNotification();
-                                }
+                                        setTimeout(() => {
+                                            if (this.closed) return;
+                                            this.refs["toast"].show('Report taken', 500);
+                                        }, 500);
+                                    });
+                                }}>
+                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                            </TouchableOpacity>
+                        }
 
-                                await this.contact();
-                            }}
-                        >
-                            {
-                                this.state.showPostLoader ?
-                                    <View style={{ width: 10, height: 10 }}>
-                                        <ActivityIndicator
-                                            style={{ position: 'absolute', top: 0, bottom: 0, left: -10, zIndex: 10002 }}
-                                            animating={true}
-                                            size="small"
-                                            color={Theme.color.buttonText}
-                                        />
-                                    </View>
-                                    :
-                                    <View style={[styles.circle, { backgroundColor: circleColor }]}></View>
-                            }
-                            <Text style={styles.date}>{lastLogInTime}</Text>
-                        </TouchableOpacity>
-                        */}
                     </View>
 
                     <View style={{ marginVertical: 4, paddingVertical: 4 }}>
