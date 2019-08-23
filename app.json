@@ -34,14 +34,15 @@
         "facebookDisplayName": "Rowena",
         "ios": {
             "bundleIdentifier": "com.nubeble.rowena",
-            "buildNumber": "1.1.9",
+            "buildNumber": "1.1.10",
             "icon": "./assets/ios_icon.png",
             "supportsTablet": true,
             "infoPlist": {
                 "NSAppTransportSecurity": "",
                 "NSLocationWhenInUseUsageDescription": "Your location is used to calculate distance and displayed on the map.",
                 "NSCameraUsageDescription": "This lets you take your selfie.",
-                "NSPhotoLibraryUsageDescription": "This lets you choose which photos you want to upload."
+                "NSPhotoLibraryUsageDescription": "This lets you choose which photos you want to upload.",
+                "NSPhotoLibraryAddUsageDescription": "This lets you save your snapshots to Camera Roll."
             },
             "splash": {
                 "resizeMode": "contain",
