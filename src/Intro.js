@@ -858,12 +858,14 @@ export default class Intro extends React.Component<InjectedProps> {
                             // get city, country
                             city = Util.getCity(placeName);
                             const stateAndcountry = Util.getStateAndCountry(placeName);
-                            const words = stateAndcountry.split(', ');
-                            if (words.length === 1) { // country
-                                country = words[0];
-                            } else if (words.length === 2) { // state, country
-                                state = words[0];
-                                country = words[1];
+                            if (stateAndcountry) {
+                                const words = stateAndcountry.split(', ');
+                                if (words.length === 1) { // country
+                                    country = words[0];
+                                } else if (words.length === 2) { // state, country
+                                    state = words[0];
+                                    country = words[1];
+                                }
                             }
 
                             imageUri = place.uri;
@@ -878,12 +880,14 @@ export default class Intro extends React.Component<InjectedProps> {
                                 // get city, country
                                 city = Util.getCity(placeName);
                                 const stateAndcountry = Util.getStateAndCountry(placeName);
-                                const words = stateAndcountry.split(', ');
-                                if (words.length === 1) { // country
-                                    country = words[0];
-                                } else if (words.length === 2) { // state, country
-                                    state = words[0];
-                                    country = words[1];
+                                if (stateAndcountry) {
+                                    const words = stateAndcountry.split(', ');
+                                    if (words.length === 1) { // country
+                                        country = words[0];
+                                    } else if (words.length === 2) { // state, country
+                                        state = words[0];
+                                        country = words[1];
+                                    }
                                 }
 
                                 imageUri = place.uri;

@@ -685,7 +685,6 @@ export default class Post extends React.Component<InjectedProps> {
                             </TouchableWithoutFeedback>
                     }
                 </View>
-
                 <TouchableWithoutFeedback
                     onPress={() => {
                         this.setState({ showKeyboard: false });
@@ -701,7 +700,6 @@ export default class Post extends React.Component<InjectedProps> {
                         ListHeaderComponent={this.renderHeader()}
                     />
                 </TouchableWithoutFeedback>
-
                 {
                     this.state.showKeyboard &&
                     <View style={{
@@ -898,7 +896,6 @@ export default class Post extends React.Component<InjectedProps> {
                 }
 
                 <View style={styles.infoContainer}>
-
                     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginTop: 4, marginBottom: 4 }}>
                         {/* post date */}
                         {/*
@@ -920,30 +917,9 @@ export default class Post extends React.Component<InjectedProps> {
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
                         <Text style={styles.name}>{post.name}</Text>
-
                         {
-                            Platform.OS === 'ios' &&
-                            <TouchableOpacity
-                                style={{
-                                    width: 20,
-                                    height: 20,
-                                    marginLeft: 6,
-                                    justifyContent: "center", alignItems: "center"
-                                }}
-                                onPress={() => {
-                                    this.openDialog('Report Post', 'Is it spam or inappropriate?', () => {
-                                        // ToDo: report post
-
-                                        setTimeout(() => {
-                                            if (this.closed) return;
-                                            this.refs["toast"].show('Report taken', 500);
-                                        }, 500);
-                                    });
-                                }}>
-                                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
-                            </TouchableOpacity>
+                            this.renderReportButton()
                         }
-
                     </View>
 
                     <View style={{ marginVertical: 4, paddingVertical: 4 }}>
@@ -1165,20 +1141,17 @@ export default class Post extends React.Component<InjectedProps> {
                             </View>
                     }
 
-                    {
-                        post.note &&
-                        <TouchableOpacity activeOpacity={0.5}
-                            onPress={() => {
-                                if (this.originNote) { // means translated
-                                    this.setOriginNote();
-                                } else {
-                                    this.translateNote();
-                                }
-                            }}
-                        >
-                            <Text style={styles.note}>{post.note}</Text>
-                        </TouchableOpacity>
-                    }
+                    <TouchableOpacity activeOpacity={0.5}
+                        onPress={() => {
+                            if (this.originNote) { // means translated
+                                this.setOriginNote();
+                            } else {
+                                this.translateNote();
+                            }
+                        }}
+                    >
+                        <Text style={styles.note}>{post.note}</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
@@ -1516,6 +1489,32 @@ export default class Post extends React.Component<InjectedProps> {
             >
                 {pictures}
             </SwiperFlatList>
+        );
+    }
+
+    renderReportButton() {
+        if (Platform.OS === 'android') return;
+
+        return (
+            <TouchableOpacity
+                style={{
+                    width: 20,
+                    height: 20,
+                    marginLeft: 6,
+                    justifyContent: "center", alignItems: "center"
+                }}
+                onPress={() => {
+                    this.openDialog('Report Post', 'Is it spam or inappropriate?', () => {
+                        // ToDo: report post
+
+                        setTimeout(() => {
+                            if (this.closed) return;
+                            this.refs["toast"].show('Report taken', 500);
+                        }, 500);
+                    });
+                }}>
+                <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+            </TouchableOpacity>
         );
     }
 
