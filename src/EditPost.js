@@ -377,7 +377,12 @@ export default class EditPost extends React.Component {
         this.onFocusListener.remove();
         this.onBlurListener.remove();
 
-        // remove server files
+        // this.removeImagesFromServer();
+
+        this.closed = true;
+    }
+
+    async removeImagesFromServer() {
         if (this.imageRefs.length > 0) {
             console.log('jdub', 'clean image files');
 
@@ -401,8 +406,6 @@ export default class EditPost extends React.Component {
                 body: formData
             });
         }
-
-        this.closed = true;
     }
 
     initFromSelect(result) { // country
@@ -525,6 +528,14 @@ export default class EditPost extends React.Component {
             return true;
         }
 
+        this.removeUploadedImages();
+
+        this.props.navigation.dispatch(NavigationActions.back());
+
+        return true;
+    }
+
+    async removeUploadedImages() {
         // add current upload files to remove list
         if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
         if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
@@ -534,9 +545,8 @@ export default class EditPost extends React.Component {
         // remove origin image files from remove list
         this.removeItemFromList();
 
-        this.props.navigation.dispatch(NavigationActions.back());
-
-        return true;
+        // remove image files from server
+        await this.removeImagesFromServer();
     }
 
     removeItemFromList() {
@@ -856,28 +866,28 @@ export default class EditPost extends React.Component {
         data.note = _note;
 
         let images = {};
-        let image = this.getImage(0);
+        const image1 = this.getImage(0);
         images.image1 = {
-            uri: image.uri,
-            ref: image.ref
+            uri: image1.uri,
+            ref: image1.ref
         };
 
-        image = this.getImage(image.number);
+        const image2 = this.getImage(image1.number);
         images.image2 = {
-            uri: image.uri,
-            ref: image.ref
+            uri: image2.uri,
+            ref: image2.ref
         };
 
-        image = this.getImage(image.number);
+        const image3 = this.getImage(image2.number);
         images.image3 = {
-            uri: image.uri,
-            ref: image.ref
+            uri: image3.uri,
+            ref: image3.ref
         };
 
-        image = this.getImage(image.number);
+        const image4 = this.getImage(image3.number);
         images.image4 = {
-            uri: image.uri,
-            ref: image.ref
+            uri: image4.uri,
+            ref: image4.ref
         };
 
         const pictures = {
@@ -901,6 +911,8 @@ export default class EditPost extends React.Component {
         data.pictures = pictures;
 
         await Firebase.updateFeed(post.uid, post.placeId, post.id, data);
+
+        await this.removeImagesFromServer();
 
         // 3. move to finish page
         this.refs["toast"].show('Your post updated successfully.', 500, () => {
@@ -1068,14 +1080,7 @@ export default class EditPost extends React.Component {
                                 this.hideFlash();
                             }
 
-                            // add current upload files to remove list
-                            if (this.uploadImage1Ref) this.imageRefs.push(this.uploadImage1Ref);
-                            if (this.uploadImage2Ref) this.imageRefs.push(this.uploadImage2Ref);
-                            if (this.uploadImage3Ref) this.imageRefs.push(this.uploadImage3Ref);
-                            if (this.uploadImage4Ref) this.imageRefs.push(this.uploadImage4Ref);
-
-                            // remove origin image files from remove list
-                            this.removeItemFromList();
+                            this.removeUploadedImages();
 
                             this.props.navigation.dispatch(NavigationActions.back());
                         }}
@@ -1119,6 +1124,8 @@ export default class EditPost extends React.Component {
 
                             this.openDialog('Delete Post', 'Are you sure you want to delete this post?', async () => {
                                 this.setState({ showPostLoader: true });
+
+                                await this.removeUploadedImages();
 
                                 const { post } = this.props.navigation.state.params;
                                 await Firebase.removeFeed(post.uid, post.placeId, post.id);
