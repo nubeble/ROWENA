@@ -999,66 +999,70 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
 
                         {/* 3 row */}
-                        <View style={{
-                            width: '100%',
-                            height: bodyInfoItemHeight,
-                            flexDirection: 'row',
-                            alignItems: 'center', justifyContent: 'center'
-                        }}>
+                        {
+                            // ToDo: ios review
+                            Platform.OS === 'android' &&
                             <View style={{
-                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                width: '100%',
+                                height: bodyInfoItemHeight,
+                                flexDirection: 'row',
+                                alignItems: 'center', justifyContent: 'center'
                             }}>
-                                <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
+                                <View style={{
+                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                }}>
+                                    <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
+                                </View>
+                                <View style={{
+                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
+                                }}>
+                                    {
+                                        this.renderBodyType(post)
+                                    }
+                                </View>
+                                <View style={{
+                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                }}>
+                                    {
+                                        post.gender === 'Female' &&
+                                        <Image
+                                            style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.bra}
+                                        />
+                                    }
+                                    {
+                                        post.gender === 'Male' &&
+                                        <Image
+                                            style={{ marginRight: 1.5, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.muscle}
+                                        />
+                                    }
+                                    {
+                                        post.gender === 'Other' && post.bust &&
+                                        <Image
+                                            style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.bra}
+                                        />
+                                    }
+                                    {
+                                        /*
+                                        post.gender === 'Other' && post.muscle &&
+                                        <Image
+                                            style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                            source={PreloadImage.muscle}
+                                        />
+                                        */
+                                    }
+                                </View>
+                                <View style={{
+                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
+                                }}>
+                                    {
+                                        this.renderBoobs(post)
+                                    }
+                                </View>
                             </View>
-                            <View style={{
-                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                            }}>
-                                {
-                                    this.renderBodyType(post)
-                                }
-                            </View>
-                            <View style={{
-                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                            }}>
-                                {
-                                    post.gender === 'Female' &&
-                                    <Image
-                                        style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                        source={PreloadImage.bra}
-                                    />
-                                }
-                                {
-                                    post.gender === 'Male' &&
-                                    <Image
-                                        style={{ marginRight: 1.5, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                        source={PreloadImage.muscle}
-                                    />
-                                }
-                                {
-                                    post.gender === 'Other' && post.bust &&
-                                    <Image
-                                        style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                        source={PreloadImage.bra}
-                                    />
-                                }
-                                {
-                                    /*
-                                    post.gender === 'Other' && post.muscle &&
-                                    <Image
-                                        style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                        source={PreloadImage.muscle}
-                                    />
-                                    */
-                                }
-                            </View>
-                            <View style={{
-                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                            }}>
-                                {
-                                    this.renderBoobs(post)
-                                }
-                            </View>
-                        </View>
+                        }
                     </View>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 8 }}>
