@@ -133,6 +133,10 @@ const bodyTypeItems = [
     {
         label: 'Thick',
         value: 'Thick'
+    },
+    {
+        label: 'Prefer Not to Say',
+        value: 'Prefer Not to Say'
     }
 ];
 
@@ -154,12 +158,8 @@ const braSizeItems = [
         value: 'D'
     },
     {
-        label: 'E cup',
-        value: 'E'
-    },
-    {
-        label: 'F cup',
-        value: 'F'
+        label: 'Prefer Not to Say',
+        value: 'Prefer Not to Say'
     }
 ];
 
@@ -179,6 +179,10 @@ const bicepsSizeItems = [
     {
         label: 'Extra Large (14.5\" - 16\")',
         value: 'XL'
+    },
+    {
+        label: 'Prefer Not to Say',
+        value: 'Prefer Not to Say'
     }
 ];
 

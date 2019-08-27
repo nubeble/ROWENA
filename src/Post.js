@@ -1013,7 +1013,9 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
-                                <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>
+                                {
+                                    this.renderBodyType(post)
+                                }
                             </View>
                             <View style={{
                                 width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
@@ -1053,22 +1055,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
                                 {
-                                    post.gender === 'Female' &&
-                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
-                                }
-                                {
-                                    post.gender === 'Male' &&
-                                    <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
-                                }
-                                {
-                                    post.gender === 'Other' && post.bust &&
-                                    <Text style={styles.bodyInfoTitle}>{post.bust} cup</Text>
-                                }
-                                {
-                                    /*
-                                    post.gender === 'Other' && post.muscle &&
-                                    <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
-                                    */
+                                    this.renderBoobs(post)
                                 }
                             </View>
                         </View>
@@ -1312,6 +1299,48 @@ export default class Post extends React.Component<InjectedProps> {
                 </TouchableOpacity>
             </View>
         );
+    }
+
+    renderBoobs(post) {
+        if (post.gender === 'Female') {
+            if (post.bust === 'Prefer Not to Say') {
+                return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+            } else {
+                return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
+            }
+        }
+
+        if (post.gender === 'Male') {
+            if (post.muscle === 'Prefer Not to Say') {
+                return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
+            } else {
+                return <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>;
+            }
+        }
+
+        if (post.gender === 'Other' && post.bust) {
+            if (post.bust === 'Prefer Not to Say') {
+                return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+            } else {
+                return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
+            }
+        }
+
+        return null;
+
+        /*
+        post.gender === 'Other' && post.muscle &&
+        <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
+        */
+    }
+
+    renderBodyType(post) {
+        if (post.bodyType === 'Prefer Not to Say') {
+            return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
+        } else {
+            return <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>;
+        }
+
     }
 
     renderSwiper(post) {
@@ -2953,6 +2982,13 @@ const styles = StyleSheet.create({
         color: Theme.color.title,
         fontSize: 16,
         // fontFamily: "Roboto-Medium",
+        fontFamily: "Roboto-Regular",
+        paddingTop: 3,
+        paddingLeft: Theme.spacing.xSmall,
+    },
+    preferNotToSay: {
+        color: Theme.color.title,
+        fontSize: 14,
         fontFamily: "Roboto-Regular",
         paddingTop: 3,
         paddingLeft: Theme.spacing.xSmall,

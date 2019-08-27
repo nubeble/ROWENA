@@ -102,6 +102,10 @@ const bodyTypeItems = [
     {
         label: 'Thick',
         value: 'Thick'
+    },
+    {
+        label: 'Prefer Not to Say',
+        value: 'Prefer Not to Say'
     }
 ];
 
@@ -123,12 +127,8 @@ const braSizeItems = [
         value: 'D'
     },
     {
-        label: 'E cup',
-        value: 'E'
-    },
-    {
-        label: 'F cup',
-        value: 'F'
+        label: 'Prefer Not to Say',
+        value: 'Prefer Not to Say'
     }
 ];
 
@@ -148,6 +148,10 @@ const bicepsSizeItems = [
     {
         label: 'Extra Large (14.5\" - 16\")',
         value: 'XL'
+    },
+    {
+        label: 'Prefer Not to Say',
+        value: 'Prefer Not to Say'
     }
 ];
 
@@ -1385,11 +1389,12 @@ export default class AdvertisementMain extends React.Component {
                     </View>
                     <Select
                         // onOpen={() => this.onFocusBodyType()} // NOT working in Android
-                        placeholder={{
-                            // label: "Fit",
-                            label: "What's your body type?",
-                            value: null
-                        }}
+                        placeholder={
+                            {
+                                label: "What's your body type?",
+                                value: null
+                            }
+                        }
                         items={bodyTypeItems}
                         onValueChange={(value) => { // only for Android
                             if (this._showNotification) {
