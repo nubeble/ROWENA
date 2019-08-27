@@ -227,8 +227,7 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     _getLocationAsync = async () => {
-        // set the previous location to the global value
-        Vars.location = await this._retrieveData("LOCATION");
+        await this.loadLocation();
 
         // console.log('jdub', 'Intro._getLocationAsync');
         const { status: existingStatus } = await Permissions.getAsync(Permissions.LOCATION);
@@ -244,13 +243,57 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
-        let location = await Location.getCurrentPositionAsync({});
-        console.log('jdub', 'Intro._getLocationAsync, location', JSON.stringify(location));
+        const location = await Location.getCurrentPositionAsync({});
+        // console.log('jdub', 'Intro._getLocationAsync, location', JSON.stringify(location));
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
-        Vars.location = location;
 
-        this._storeData("LOCATION", location);
+        if (location) {
+            Vars.location = location;
+
+            this.saveLocation(location);
+        }
     };
+
+    async loadLocation() {
+        // set the previous location to the global value
+        let latitude = null;
+        let longitude = null;
+
+        const keys = ['LOCATION_LAT', 'LOCATION_LNG'];
+        const stores = await this._retrieveMultiData(keys);
+        stores.map((result, i, store) => {
+            const key = store[i][0];
+            const value = store[i][1];
+
+            if (key === 'LOCATION_LAT') {
+                if (value) latitude = JSON.parse(value);
+            } else if (key === 'LOCATION_LNG') {
+                if (value) longitude = JSON.parse(value);
+            }
+        });
+
+        if (latitude && longitude) {
+            const location = {
+                coords: {
+                    latitude, longitude
+                }
+            };
+
+            Vars.location = location;
+        }
+    }
+
+    async saveLocation(location) {
+        if (location) {
+            const latitude = location.coords.latitude;
+            const longitude = location.coords.longitude;
+
+            let data = [];
+            data.push(['LOCATION_LAT', latitude.toString()]);
+            data.push(['LOCATION_LNG', longitude.toString()]);
+            await this._storeMultiData(data);
+        }
+    }
 
     async componentDidMount() {
         // console.log('jdub', 'Intro.componentDidMount');
@@ -1681,27 +1724,27 @@ export default class Intro extends React.Component<InjectedProps> {
         });
     }
 
-    _storeData = async (key, value) => {
-        console.log('jdub', '_storeData', key, value);
+    _storeMultiData = async (data) => {
+        console.log('jdub', '_storeMultiData', data);
 
         try {
-            await AsyncStorage.setItem(key, value);
+            await AsyncStorage.multiSet(data);
         } catch (error) {
             // Error saving data
         }
     }
 
-    _retrieveData = async (key) => {
+    _retrieveMultiData = async (keys) => {
         try {
-            const value = await AsyncStorage.getItem(key);
-            if (value !== null) {
-                console.log('jdub', '_retrieveData', key, value);
+            const values = await AsyncStorage.multiGet(keys);
+            if (values !== null) {
+                console.log('jdub', '_retrieveMultiData', keys, values);
             }
 
-            return value;
+            return values;
         } catch (error) {
-            console.log('jdub', '_retrieveData error', error);
-            // Error loading data
+            console.log('jdub', '_retrieveMultiData error', error);
+            // Error retrieving data
             return null;
         }
     }
