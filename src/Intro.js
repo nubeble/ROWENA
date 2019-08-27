@@ -1,7 +1,7 @@
 // @flow
 import * as React from "react";
 import {
-    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, Animated
+    StyleSheet, View, Dimensions, TouchableOpacity, FlatList, Image, StatusBar, Platform, BackHandler, Animated, AsyncStorage
 } from "react-native";
 import { Header } from 'react-navigation';
 import * as Location from 'expo-location';
@@ -241,10 +241,15 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
+
+        // set the previous location to the global value
+        Vars.location = this._retrieveData("LOCATION");
+
         let location = await Location.getCurrentPositionAsync({});
         console.log('jdub', 'Intro._getLocationAsync, location', JSON.stringify(location));
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
         Vars.location = location;
+        this._storeData("LOCATION", location);
     };
 
     async componentDidMount() {
@@ -1674,6 +1679,31 @@ export default class Intro extends React.Component<InjectedProps> {
                 })
             ]).start(() => { this._showNotification = false });
         });
+    }
+
+    _storeData = async (key, value) => {
+        console.log('jdub', '_storeData', key, value);
+
+        try {
+            await AsyncStorage.setItem(key, value);
+        } catch (error) {
+            // Error saving data
+        }
+    }
+
+    _retrieveData = async (key) => {
+        try {
+            const value = await AsyncStorage.getItem(key);
+            if (value !== null) {
+                console.log('jdub', '_retrieveData', key, value);
+            }
+
+            return value;
+        } catch (error) {
+            console.log('jdub', '_retrieveData error', error);
+            // Error loading data
+            return null;
+        }
     }
 }
 

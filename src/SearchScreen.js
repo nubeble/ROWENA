@@ -466,12 +466,14 @@ export default class SearchScreen extends React.Component {
         */
 
         // check
+        /*
         try {
             const keys = await AsyncStorage.getAllKeys();
             console.log('jdub', 'loadHistory keys', keys);
         } catch (error) {
             console.log('jdub', 'loadHistory error', error);
         }
+        */
 
         // this.storageIndex = -1;
 
@@ -670,6 +672,7 @@ export default class SearchScreen extends React.Component {
         this.storageIndex = index;
     }
 
+    /*
     _storeData = async (key, value) => {
         console.log('jdub', '_storeData', key, value);
 
@@ -679,6 +682,7 @@ export default class SearchScreen extends React.Component {
             // Error saving data
         }
     }
+    */
 
     _storeMultiData = async (data) => {
         console.log('jdub', '_storeMultiData', data);
@@ -690,6 +694,7 @@ export default class SearchScreen extends React.Component {
         }
     }
 
+    /*
     _retrieveData = async (key) => {
         try {
             const value = await AsyncStorage.getItem(key);
@@ -704,6 +709,7 @@ export default class SearchScreen extends React.Component {
             return null;
         }
     }
+    */
 
     _retrieveMultiData = async (keys) => {
         try {

@@ -710,8 +710,8 @@ export default class ChatMain extends React.Component {
                             <Text style={styles.time}>{time}</Text>
                         </View>
 
-                        <Text style={styles.name}>{opponent.name}</Text>
-                        <Text style={styles.contents}>{_contents}</Text>
+                        <Text style={styles.name} numberOfLines={1}>{opponent.name}</Text>
+                        <Text style={styles.contents} numberOfLines={1}>{_contents}</Text>
 
                         <View style={{ height: Cons.logInDotWidth, position: 'absolute', bottom: 0, left: 0, justifyContent: 'center', paddingLeft: 10 }}>
                             <Text style={styles.logInState}>{logInState}</Text>
