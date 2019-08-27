@@ -227,6 +227,9 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     _getLocationAsync = async () => {
+        // set the previous location to the global value
+        Vars.location = await this._retrieveData("LOCATION");
+
         // console.log('jdub', 'Intro._getLocationAsync');
         const { status: existingStatus } = await Permissions.getAsync(Permissions.LOCATION);
         // console.log('jdub', 'Intro._getLocationAsync, existingStatus', existingStatus);
@@ -241,14 +244,11 @@ export default class Intro extends React.Component<InjectedProps> {
             }
         }
 
-
-        // set the previous location to the global value
-        Vars.location = this._retrieveData("LOCATION");
-
         let location = await Location.getCurrentPositionAsync({});
         console.log('jdub', 'Intro._getLocationAsync, location', JSON.stringify(location));
         // {"timestamp":1557984891181,"mocked":false,"coords":{"heading":0,"longitude":127.024578,"speed":0,"altitude":101.0999984741211,"latitude":37.4652717,"accuracy":17.857999801635742}}
         Vars.location = location;
+
         this._storeData("LOCATION", location);
     };
 
