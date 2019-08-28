@@ -984,7 +984,12 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
-                                <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                {
+                                    post.height === 0 ?
+                                        <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
+                                        :
+                                        <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                }
                             </View>
                             <View style={{
                                 width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
@@ -994,7 +999,12 @@ export default class Post extends React.Component<InjectedProps> {
                             <View style={{
                                 width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                             }}>
-                                <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
+                                {
+                                    post.weight === 0 ?
+                                        <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
+                                        :
+                                        <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
+                                }
                             </View>
                         </View>
 
@@ -1305,6 +1315,15 @@ export default class Post extends React.Component<InjectedProps> {
         );
     }
 
+    renderBodyType(post) {
+        if (post.bodyType === 'Prefer Not to Say') {
+            return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
+        } else {
+            return <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>;
+        }
+
+    }
+
     renderBoobs(post) {
         if (post.gender === 'Female') {
             if (post.bust === 'Prefer Not to Say') {
@@ -1336,15 +1355,6 @@ export default class Post extends React.Component<InjectedProps> {
         post.gender === 'Other' && post.muscle &&
         <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>
         */
-    }
-
-    renderBodyType(post) {
-        if (post.bodyType === 'Prefer Not to Say') {
-            return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
-        } else {
-            return <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>;
-        }
-
     }
 
     renderSwiper(post) {
