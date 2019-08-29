@@ -1552,7 +1552,12 @@ export default class Post extends React.Component<InjectedProps> {
 
                         setTimeout(() => {
                             if (this.closed) return;
-                            this.refs["toast"].show('Report taken', 500);
+
+                            if (this.state.isOwner) {
+                                this.refs["toast"].show('Sorry, this is your post.', 500);
+                            } else {
+                                this.refs["toast"].show('Report taken', 500);
+                            }
                         }, 500);
                     });
                 }}>
