@@ -563,6 +563,8 @@ export default class Intro extends React.Component<InjectedProps> {
         placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
         placeList = Util.shuffle(placeList);
 
+        console.log('getPopularFeeds size', placeList.length);
+
         let popularFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
             const placeId = placeList[i];
@@ -654,6 +656,8 @@ export default class Intro extends React.Component<InjectedProps> {
         */
         placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
         placeList = Util.shuffle(placeList);
+
+        console.log('getPopularFeeds size', placeList.length);
 
         let recentFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
