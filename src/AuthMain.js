@@ -246,25 +246,17 @@ export default class AuthMain extends React.Component {
                             // backgroundColor: 'green',
                             tintColor: 'white',
                             width: 62, height: 62,
-                            resizeMode: 'cover',
-                            // marginRight: -2
-                            paddingLeft: -50
+                            resizeMode: 'cover'
                         }}
                         source={PreloadImage.logo}
                     />
                     <Text style={{
-                        /*
-                        // backgroundColor: 'green',
-                        fontSize: 44,
-                        lineHeight: 58,
-                        // fontFamily: "FriendlySchoolmates-Regular",
-                        // paddingTop: 2
-                        */
                         marginLeft: -4,
-                        fontSize: 40,
-                        lineHeight: 52,
+                        fontSize: 44,
+                        lineHeight: 60,
                         paddingTop: 1,
-                        fontFamily: "FredokaOne-Regular",
+                        paddingRight: 10,
+                        fontFamily: "MPLUSRounded1c-Bold",
                         color: 'white',
                         // backgroundColor: 'green'
                     }}>ROWENA</Text>

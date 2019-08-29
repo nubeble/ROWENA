@@ -39,7 +39,7 @@ const RobotoRegular = require("../fonts/Roboto/Roboto-Regular.ttf");
 const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
 
 // const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo font
-const FredokaOneRegular = require("../fonts/FredokaOne-Regular.ttf"); // logo font
+const MPLUSRounded1cBold = require("../fonts/MPLUSRounded1c-Bold.ttf");
 
 
 @inject("feedStore", "profileStore")
@@ -118,7 +118,7 @@ export default class Loading extends React.Component<InjectedProps> {
             // 'Roboto-ThinItalic': RobotoThinItalic,
             "Chewy-Regular": ChewyRegular,
             // "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular
-            "FredokaOne-Regular": FredokaOneRegular
+            "MPLUSRounded1c-Bold": MPLUSRounded1cBold
         });
 
         // const images = Images.downloadAsync(); // logo
