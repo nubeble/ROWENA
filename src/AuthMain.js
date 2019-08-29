@@ -243,22 +243,31 @@ export default class AuthMain extends React.Component {
                 <View style={styles.logo}>
                     <Image
                         style={{
+                            // backgroundColor: 'green',
                             tintColor: 'white',
                             width: 62, height: 62,
                             resizeMode: 'cover',
-                            marginRight: -4
+                            // marginRight: -2
+                            paddingLeft: -50
                         }}
                         source={PreloadImage.logo}
                     />
                     <Text style={{
+                        /*
                         // backgroundColor: 'green',
                         fontSize: 44,
                         lineHeight: 58,
-                        fontFamily: "FriendlySchoolmates-Regular",
+                        // fontFamily: "FriendlySchoolmates-Regular",
+                        // paddingTop: 2
+                        */
+                        marginLeft: -4,
+                        fontSize: 40,
+                        lineHeight: 52,
+                        paddingTop: 1,
+                        fontFamily: "FredokaOne-Regular",
                         color: 'white',
-                        paddingTop: 2,
-                        // textAlign: 'center'
-                    }}>ROWENA </Text>
+                        // backgroundColor: 'green'
+                    }}>ROWENA</Text>
                 </View>
 
                 <View style={styles.empty}>

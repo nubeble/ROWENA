@@ -4,7 +4,6 @@ import { AppLoading, SplashScreen } from 'expo';
 import Constants from 'expo-constants';
 import * as Font from 'expo-font';
 import { Asset } from 'expo-asset';
-// import { Images, loadIcons } from "./rne/src/components";
 import Firebase from './Firebase';
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
@@ -25,20 +24,22 @@ const windowHeight = Dimensions.get('window').height;
 
 
 // $FlowFixMe
-const RobotoBlack = require("../fonts/Roboto/Roboto-Black.ttf");
-const RobotoBlackItalic = require("../fonts/Roboto/Roboto-BlackItalic.ttf");
+// const RobotoBlack = require("../fonts/Roboto/Roboto-Black.ttf");
+// const RobotoBlackItalic = require("../fonts/Roboto/Roboto-BlackItalic.ttf");
 const RobotoBold = require("../fonts/Roboto/Roboto-Bold.ttf");
-const RobotoBoldItalic = require("../fonts/Roboto/Roboto-BoldItalic.ttf");
+// const RobotoBoldItalic = require("../fonts/Roboto/Roboto-BoldItalic.ttf");
 const RobotoItalic = require("../fonts/Roboto/Roboto-Italic.ttf");
 const RobotoLight = require("../fonts/Roboto/Roboto-Light.ttf");
 const RobotoLightItalic = require("../fonts/Roboto/Roboto-LightItalic.ttf");
 const RobotoMedium = require("../fonts/Roboto/Roboto-Medium.ttf");
-const RobotoMediumItalic = require("../fonts/Roboto/Roboto-MediumItalic.ttf");
+// const RobotoMediumItalic = require("../fonts/Roboto/Roboto-MediumItalic.ttf");
 const RobotoRegular = require("../fonts/Roboto/Roboto-Regular.ttf");
-const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
-const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
-const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo font
+// const RobotoThin = require("../fonts/Roboto/Roboto-Thin.ttf");
+// const RobotoThinItalic = require("../fonts/Roboto/Roboto-ThinItalic.ttf");
 const ChewyRegular = require("../fonts/Chewy-Regular.ttf");
+
+// const FriendlySchoolmatesRegular = require("../fonts/Friendly-Schoolmates-Regular.otf"); // logo font
+const FredokaOneRegular = require("../fonts/FredokaOne-Regular.ttf"); // logo font
 
 
 @inject("feedStore", "profileStore")
@@ -48,7 +49,6 @@ export default class Loading extends React.Component<InjectedProps> {
     static userSignedIn = false;
 
     state = {
-        isReady: false,
         showIndicator: false
     };
 
@@ -57,15 +57,13 @@ export default class Loading extends React.Component<InjectedProps> {
 
         this.imageOpacity = new Animated.Value(0);
 
-        SplashScreen.preventAutoHide(); // Instruct SplashScreen not to hide yet
+        SplashScreen.hide();
     }
 
     componentDidMount() {
         StatusBar.setHidden(true);
 
-        this._cacheResourcesAsync().then(() => {
-            !this.closed && this.setState({ isReady: true });
-        }).catch(error => console.error(`Unexpected error thrown when loading: ${error.stack}`));
+        !this.closed && this.setState({ showIndicator: true });
     }
 
     componentWillUnmount() {
@@ -76,32 +74,24 @@ export default class Loading extends React.Component<InjectedProps> {
     }
 
     render() {
-        if (!this.state.isReady) {
-            return null;
-        }
-
         return (
             <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
                 <Animated.Image
                     style={{
-                        // flex: 1, resizeMode: 'cover', width: undefined, height: undefined,
                         width: windowWidth, height: windowHeight, resizeMode: 'cover',
                         opacity: this.imageOpacity
                     }}
                     source={PreloadImage.background}
                     onLoadEnd={async () => { // wait for image's content to fully load [`Image#onLoadEnd`] (https://facebook.github.io/react-native/docs/image#onloadend)
-                        !this.closed && this.setState({ showIndicator: true }, () => {
-                            SplashScreen.hide();
-
-                            this.init();
-                        });
+                        await this._cacheResourcesAsync();
+                        this.init();
                     }}
                     fadeDuration={0} // we need to adjust Android devices (https://facebook.github.io/react-native/docs/image#fadeduration) fadeDuration prop to `0` as it's default value is `300` 
                 />
 
                 {
                     this.state.showIndicator &&
-                    <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center' }}>
+                    <View style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 1000, justifyContent: 'center', alignItems: 'center' }}>
                         <RefreshIndicator refreshing total={3} size={7} color={Theme.color.splash} />
                     </View>
                 }
@@ -114,20 +104,21 @@ export default class Loading extends React.Component<InjectedProps> {
 
         // font
         const fonts = Font.loadAsync({
-            'Roboto-Black': RobotoBlack,
-            'Roboto-BlackItalic': RobotoBlackItalic,
+            // 'Roboto-Black': RobotoBlack,
+            // 'Roboto-BlackItalic': RobotoBlackItalic,
             'Roboto-Bold': RobotoBold,
-            'Roboto-BoldItalic': RobotoBoldItalic,
+            // 'Roboto-BoldItalic': RobotoBoldItalic,
             'Roboto-Italic': RobotoItalic,
             'Roboto-Light': RobotoLight,
             'Roboto-LightItalic': RobotoLightItalic,
             'Roboto-Medium': RobotoMedium,
-            'Roboto-MediumItalic': RobotoMediumItalic,
+            // 'Roboto-MediumItalic': RobotoMediumItalic,
             'Roboto-Regular': RobotoRegular,
-            'Roboto-Thin': RobotoThin,
-            'Roboto-ThinItalic': RobotoThinItalic,
-            "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular,
-            "Chewy-Regular": ChewyRegular
+            // 'Roboto-Thin': RobotoThin,
+            // 'Roboto-ThinItalic': RobotoThinItalic,
+            "Chewy-Regular": ChewyRegular,
+            // "FriendlySchoolmates-Regular": FriendlySchoolmatesRegular
+            "FredokaOne-Regular": FredokaOneRegular
         });
 
         // const images = Images.downloadAsync(); // logo
@@ -166,8 +157,8 @@ export default class Loading extends React.Component<InjectedProps> {
 
                     !this.closed && this.setState({ showIndicator: false });
 
+                    // show background image
                     Animated.sequence([
-                        // Animated.delay(500),
                         Animated.timing(this.imageOpacity, {
                             toValue: 1,
                             duration: 1000,

@@ -117,26 +117,32 @@ const theme: Theme = {
         semibold: "Roboto-Medium",
         normal: "Roboto-Regular",
         light: "Roboto-Light",
+
         header1: {
             fontSize: 48,
             lineHeight: 58,
-            fontFamily: "Roboto-Black"
+            // fontFamily: "Roboto-Black"
+            fontFamily: "Roboto-Regular"
         },
         header2: {
             fontSize: 36,
             lineHeight: 43,
-            fontFamily: "Roboto-Black"
+            // fontFamily: "Roboto-Black"
+            fontFamily: "Roboto-Regular"
         },
         header3: {
             fontSize: 24,
             lineHeight: 28,
-            fontFamily: "Roboto-Black"
+            // fontFamily: "Roboto-Black"
+            fontFamily: "Roboto-Regular"
         },
         large: {
             fontSize: 14,
             lineHeight: 21,
-            fontFamily: "Roboto-Black"
+            // fontFamily: "Roboto-Black"
+            fontFamily: "Roboto-Regular"
         },
+
         regular: {
             fontSize: 14,
             lineHeight: 21,
