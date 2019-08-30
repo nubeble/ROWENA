@@ -571,6 +571,8 @@ export default class Intro extends React.Component<InjectedProps> {
             const feed = await Firebase.getFeedByAverageRating(placeId);
             if (feed) {
                 popularFeeds.push(feed);
+            } else {
+                console.log('feed not exists', placeId);
             }
         }
 
@@ -657,7 +659,7 @@ export default class Intro extends React.Component<InjectedProps> {
         placeList = await Firebase.getRandomPlaces(DEFAULT_FEED_COUNT);
         placeList = Util.shuffle(placeList);
 
-        console.log('getPopularFeeds size', placeList.length);
+        console.log('getRecentFeeds size', placeList.length);
 
         let recentFeeds = [];
         for (let i = 0; i < placeList.length; i++) {
@@ -665,6 +667,8 @@ export default class Intro extends React.Component<InjectedProps> {
             const feed = await Firebase.getFeedByTimestamp(placeId);
             if (feed) {
                 recentFeeds.push(feed);
+            } else {
+                console.log('feed not exists', placeId);
             }
         }
 
