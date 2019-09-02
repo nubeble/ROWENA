@@ -80,12 +80,12 @@ const points = x1.toString() + ' ' + y1.toString() + ' ' +
 
 const genderItems = [
     {
-        label: 'Male',
-        value: 'Male'
+        label: 'Man',
+        value: 'Man'
     },
     {
-        label: 'Female',
-        value: 'Female'
+        label: 'Woman',
+        value: 'Woman'
     },
     {
         label: 'Other',
@@ -199,7 +199,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         const name = 'Jay Kim';
         const birthday = Util.getBirthdayText('03111982'); // DDMMYYYY
         const datePickerDate = new Date(1982, 10, 3);
-        const gender = 'Male';
+        const gender = 'Man';
         const place = 'Manila, Philippines';
         const email = 'jdub.kim@gmail.com';
         const phoneNumber = '821093088300';

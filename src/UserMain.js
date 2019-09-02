@@ -355,7 +355,7 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         // ToDo: use age, gender, note
         let age = '20';
-        let gender = 'Female';
+        let gender = 'Woman';
         let note = 'hi';
 
         let _avatarName = '';

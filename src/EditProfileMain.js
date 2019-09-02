@@ -139,7 +139,7 @@ export default class EditProfileMain extends React.Component<InjectedProps> {
 
         // ToDo: use age, gender, note
         let age = '20';
-        let gender = 'Female';
+        let gender = 'Woman';
         let note = 'hi';
 
         const name = profile.name;

@@ -77,12 +77,12 @@ const points = x1.toString() + ' ' + y1.toString() + ' ' +
 
 const genderItems = [
     {
-        label: 'Male',
-        value: 'Male'
+        label: 'Man',
+        value: 'Man'
     },
     {
-        label: 'Female',
-        value: 'Female'
+        label: 'Woman',
+        value: 'Woman'
     },
     {
         label: 'Other',
@@ -646,7 +646,7 @@ export default class AdvertisementMain extends React.Component {
             return;
         }
 
-        if (gender === 'Female' && !boobs) {
+        if (gender === 'Woman' && !boobs) {
             this.showNotification('Please select your bra size.');
 
             this.setState({ showBoobsAlertIcon: true });
@@ -656,7 +656,7 @@ export default class AdvertisementMain extends React.Component {
             return;
         }
 
-        if (gender === 'Male' && !biceps) {
+        if (gender === 'Man' && !biceps) {
             this.showNotification('Please select your biceps size.');
 
             this.setState({ showBoobsAlertIcon: true });
@@ -1054,8 +1054,8 @@ export default class AdvertisementMain extends React.Component {
         }
 
         let boobsTitle = 'BOOBS';
-        if (!this.state.gender || this.state.gender === 'Female' || this.state.gender === 'Other') boobsTitle = 'BOOBS';
-        else if (this.state.gender === 'Male') boobsTitle = 'MUSCLE';
+        if (!this.state.gender || this.state.gender === 'Woman' || this.state.gender === 'Other') boobsTitle = 'BOOBS';
+        else if (this.state.gender === 'Man') boobsTitle = 'MUSCLE';
 
         const viewStyle = {
             opacity: this.messageBoxOpacity
@@ -1274,290 +1274,310 @@ export default class AdvertisementMain extends React.Component {
                     }
 
                     {/* 4. height */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                            {'HEIGHT'}
-                        </Text>
-                        <TouchableOpacity
-                            style={{
-                                width: 24,
-                                height: 24,
-                                marginRight: 18,
-                                justifyContent: "center", alignItems: "center"
-                            }}
-                        >
-                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                        </TouchableOpacity>
-                    </View>
-                    <TextInput
-                        ref={(ref) => this._height = ref}
-                        style={{
-                            paddingLeft: 18, paddingRight: 32,
-                            width: '80%',
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                        }}
-                        keyboardType='phone-pad'
-                        returnKeyType='done'
-                        // keyboardAppearance='dark'
-                        onFocus={(e) => this.onFocusHeight()}
-                        onBlur={(e) => this.onBlurHeight()}
-                        onChangeText={(text) => this.validateHeight(text)}
-                        value={this.state.height}
-                        selectionColor={Theme.color.selection}
-                        underlineColorAndroid="transparent"
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        placeholder='164 cm'
-                        placeholderTextColor={Theme.color.placeholder}
-                    />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                        onLayout={(e) => {
-                            const { y } = e.nativeEvent.layout;
-                            this.heightY = y;
-                        }}
-                    />
                     {
-                        this.state.showHeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        Platform.OS === 'android' &&
+                        <View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                    {'HEIGHT'}
+                                </Text>
+                                <TouchableOpacity
+                                    style={{
+                                        width: 24,
+                                        height: 24,
+                                        marginRight: 18,
+                                        justifyContent: "center", alignItems: "center"
+                                    }}
+                                >
+                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                                </TouchableOpacity>
+                            </View>
+                            <TextInput
+                                ref={(ref) => this._height = ref}
+                                style={{
+                                    paddingLeft: 18, paddingRight: 32,
+                                    width: '80%',
+                                    height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                                }}
+                                keyboardType='phone-pad'
+                                returnKeyType='done'
+                                // keyboardAppearance='dark'
+                                onFocus={(e) => this.onFocusHeight()}
+                                onBlur={(e) => this.onBlurHeight()}
+                                onChangeText={(text) => this.validateHeight(text)}
+                                value={this.state.height}
+                                selectionColor={Theme.color.selection}
+                                underlineColorAndroid="transparent"
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                                placeholder='164 cm'
+                                placeholderTextColor={Theme.color.placeholder}
+                            />
+                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.heightY = y;
+                                }}
+                            />
+                            {
+                                this.state.showHeightAlertIcon &&
+                                <AntDesign style={{ position: 'absolute', right: 22, top: this.heightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                            }
+                        </View>
                     }
 
                     {/* 5. weight */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
-                            {'WEIGHT'}
-                        </Text>
-                        <TouchableOpacity
-                            style={{
-                                width: 24,
-                                height: 24,
-                                marginRight: 18,
-                                justifyContent: "center", alignItems: "center"
-                            }}
-                        >
-                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                        </TouchableOpacity>
-                    </View>
-                    <TextInput
-                        ref={(ref) => this._weight = ref}
-                        style={{
-                            paddingLeft: 18, paddingRight: 32,
-                            width: '80%',
-                            height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
-                        }}
-                        keyboardType='phone-pad'
-                        returnKeyType='done'
-                        // keyboardAppearance='dark'
-                        onFocus={(e) => this.onFocusWeight()}
-                        onBlur={(e) => this.onBlurWeight()}
-                        onChangeText={(text) => this.validateWeight(text)}
-                        value={this.state.weight}
-                        selectionColor={Theme.color.selection}
-                        underlineColorAndroid="transparent"
-                        autoCorrect={false}
-                        autoCapitalize="none"
-                        placeholder='45 kg'
-                        placeholderTextColor={Theme.color.placeholder}
-                    />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                        onLayout={(e) => {
-                            const { y } = e.nativeEvent.layout;
-                            this.weightY = y;
-                        }}
-                    />
                     {
-                        this.state.showWeightAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        Platform.OS === 'android' &&
+                        <View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{ paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium" }}>
+                                    {'WEIGHT'}
+                                </Text>
+                                <TouchableOpacity
+                                    style={{
+                                        width: 24,
+                                        height: 24,
+                                        marginRight: 18,
+                                        justifyContent: "center", alignItems: "center"
+                                    }}
+                                >
+                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                                </TouchableOpacity>
+                            </View>
+                            <TextInput
+                                ref={(ref) => this._weight = ref}
+                                style={{
+                                    paddingLeft: 18, paddingRight: 32,
+                                    width: '80%',
+                                    height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular", color: 'rgba(255, 255, 255, 0.8)'
+                                }}
+                                keyboardType='phone-pad'
+                                returnKeyType='done'
+                                // keyboardAppearance='dark'
+                                onFocus={(e) => this.onFocusWeight()}
+                                onBlur={(e) => this.onBlurWeight()}
+                                onChangeText={(text) => this.validateWeight(text)}
+                                value={this.state.weight}
+                                selectionColor={Theme.color.selection}
+                                underlineColorAndroid="transparent"
+                                autoCorrect={false}
+                                autoCapitalize="none"
+                                placeholder='45 kg'
+                                placeholderTextColor={Theme.color.placeholder}
+                            />
+                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.weightY = y;
+                                }}
+                            />
+                            {
+                                this.state.showWeightAlertIcon &&
+                                <AntDesign style={{ position: 'absolute', right: 22, top: this.weightY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                            }
+                        </View>
                     }
 
                     {/* 6. body type */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{
-                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
-                        }}>
-                            {'BODY TYPE'}
-                        </Text>
-                        <TouchableOpacity
-                            style={{
-                                width: 24,
-                                height: 24,
-                                marginRight: 18,
-                                justifyContent: "center", alignItems: "center"
-                            }}
-                        >
-                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                        </TouchableOpacity>
-                    </View>
-                    <Select
-                        // onOpen={() => this.onFocusBodyType()} // NOT working in Android
-                        placeholder={
-                            {
-                                label: "What's your body type?",
-                                value: null
-                            }
-                        }
-                        items={bodyTypeItems}
-                        onValueChange={(value) => { // only for Android
-                            if (this._showNotification) {
-                                this.hideNotification();
-                                this.hideAlertIcon();
-                            }
-
-                            this.setState({ bodyType: value });
-                        }}
-                        style={{
-                            iconContainer: {
-                                top: 5,
-                                right: 100
-                            }
-                        }}
-                        textInputProps={{
-                            style: {
-                                paddingHorizontal: 18,
-                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                color: this.state.bodyType === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                            }
-                        }}
-                        useNativeAndroidPickerStyle={false}
-                        value={this.state.bodyType}
-                        Icon={() => {
-                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
-                            return null;
-                        }}
-                    />
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                        onLayout={(e) => {
-                            const { y } = e.nativeEvent.layout;
-                            this.bodyTypeY = y;
-                        }}
-                    />
                     {
-                        this.state.showBodyTypeAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
-                    }
-
-                    {/* 7. boobs */}
-                    {/* boobs / biceps */}
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <Text style={{
-                            paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
-                        }}>
-                            {boobsTitle}
-                        </Text>
-                        <TouchableOpacity
-                            style={{
-                                width: 24,
-                                height: 24,
-                                marginRight: 18,
-                                justifyContent: "center", alignItems: "center"
-                            }}
-                        >
-                            <Ionicons name='md-alert' color={Theme.color.background} size={16} />
-                        </TouchableOpacity>
-                    </View>
-                    {
-                        boobsTitle === 'BOOBS' ?
+                        Platform.OS === 'android' &&
+                        <View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{
+                                    paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                                }}>
+                                    {'BODY TYPE'}
+                                </Text>
+                                <TouchableOpacity
+                                    style={{
+                                        width: 24,
+                                        height: 24,
+                                        marginRight: 18,
+                                        justifyContent: "center", alignItems: "center"
+                                    }}
+                                >
+                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                                </TouchableOpacity>
+                            </View>
                             <Select
-                                /*
-                                ref={(el) => {
-                                    this.inputRefs.favSport0 = el;
-                                }}
-                                */
-                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
-                                placeholder={{
-                                    label: "What's your bra size?",
-                                    value: null
-                                }}
-                                // placeholderTextColor={Theme.color.placeholder}
-                                items={braSizeItems}
+                                // onOpen={() => this.onFocusBodyType()} // NOT working in Android
+                                placeholder={
+                                    {
+                                        label: "What's your body type?",
+                                        value: null
+                                    }
+                                }
+                                items={bodyTypeItems}
                                 onValueChange={(value) => { // only for Android
                                     if (this._showNotification) {
                                         this.hideNotification();
                                         this.hideAlertIcon();
                                     }
 
-                                    this.setState({ boobs: value, biceps: null });
+                                    this.setState({ bodyType: value });
                                 }}
                                 style={{
                                     iconContainer: {
                                         top: 5,
                                         right: 100
-                                    },
-                                    /*
-                                    inputAndroid: {
-                                        // marginLeft: 18,
-                                        // paddingRight: 30, // to ensure the text is never behind the icon
-                                        // height: 38,
-                                        // width: '50%',
-                                        // fontSize: 22, fontFamily: "Roboto-Light",
-                                        // color: 'rgba(255, 255, 255, 0.8)',
-                                        // color: 'red',
-                                        // backgroundColor: 'red'
-                                        // backgroundColor: 'transparent'
-                                    },
-                                    inputIOS: {
                                     }
-                                    */
                                 }}
                                 textInputProps={{
                                     style: {
                                         paddingHorizontal: 18,
                                         height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                        color: this.state.boobs === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                        color: this.state.bodyType === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
                                     }
                                 }}
                                 useNativeAndroidPickerStyle={false}
-                                value={this.state.boobs}
+                                value={this.state.bodyType}
                                 Icon={() => {
                                     // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
                                     return null;
                                 }}
                             />
-                            :
-                            <Select
-                                // onOpen={() => this.onFocusBoobs()} // NOT working in Android
-                                placeholder={{
-                                    label: "How big are your biceps?",
-                                    value: null
-                                }}
-                                // placeholderTextColor={Theme.color.placeholder}
-                                items={bicepsSizeItems}
-                                onValueChange={(value) => { // only for Android
-                                    if (this._showNotification) {
-                                        this.hideNotification();
-                                        this.hideAlertIcon();
-                                    }
-
-                                    this.setState({ biceps: value, boobs: null });
-                                }}
-                                style={{
-                                    iconContainer: {
-                                        top: 5,
-                                        right: 100
-                                    }
-                                }}
-                                textInputProps={{
-                                    style: {
-                                        paddingHorizontal: 18,
-                                        height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
-                                        color: this.state.biceps === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
-                                    }
-                                }}
-                                useNativeAndroidPickerStyle={false}
-                                value={this.state.biceps}
-                                Icon={() => {
-                                    return null;
+                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.bodyTypeY = y;
                                 }}
                             />
+                            {
+                                this.state.showBodyTypeAlertIcon &&
+                                <AntDesign style={{ position: 'absolute', right: 22, top: this.bodyTypeY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                            }
+                        </View>
                     }
-                    <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
-                        onLayout={(e) => {
-                            const { y } = e.nativeEvent.layout;
-                            this.boobsY = y;
-                        }}
-                    />
+
+                    {/* 7. boobs */}
+                    {/* boobs / biceps */}
                     {
-                        this.state.showBoobsAlertIcon &&
-                        <AntDesign style={{ position: 'absolute', right: 22, top: this.boobsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                        Platform.OS === 'android' &&
+                        <View>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                                <Text style={{
+                                    paddingHorizontal: 18, color: 'rgba(255, 255, 255, 0.8)', fontSize: 14, fontFamily: "Roboto-Medium"
+                                }}>
+                                    {boobsTitle}
+                                </Text>
+                                <TouchableOpacity
+                                    style={{
+                                        width: 24,
+                                        height: 24,
+                                        marginRight: 18,
+                                        justifyContent: "center", alignItems: "center"
+                                    }}
+                                >
+                                    <Ionicons name='md-alert' color={Theme.color.background} size={16} />
+                                </TouchableOpacity>
+                            </View>
+                            {
+                                boobsTitle === 'BOOBS' ?
+                                    <Select
+                                        /*
+                                        ref={(el) => {
+                                            this.inputRefs.favSport0 = el;
+                                        }}
+                                        */
+                                        // onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                        placeholder={{
+                                            label: "What's your bra size?",
+                                            value: null
+                                        }}
+                                        // placeholderTextColor={Theme.color.placeholder}
+                                        items={braSizeItems}
+                                        onValueChange={(value) => { // only for Android
+                                            if (this._showNotification) {
+                                                this.hideNotification();
+                                                this.hideAlertIcon();
+                                            }
+
+                                            this.setState({ boobs: value, biceps: null });
+                                        }}
+                                        style={{
+                                            iconContainer: {
+                                                top: 5,
+                                                right: 100
+                                            },
+                                            /*
+                                            inputAndroid: {
+                                                // marginLeft: 18,
+                                                // paddingRight: 30, // to ensure the text is never behind the icon
+                                                // height: 38,
+                                                // width: '50%',
+                                                // fontSize: 22, fontFamily: "Roboto-Light",
+                                                // color: 'rgba(255, 255, 255, 0.8)',
+                                                // color: 'red',
+                                                // backgroundColor: 'red'
+                                                // backgroundColor: 'transparent'
+                                            },
+                                            inputIOS: {
+                                            }
+                                            */
+                                        }}
+                                        textInputProps={{
+                                            style: {
+                                                paddingHorizontal: 18,
+                                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                                color: this.state.boobs === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                            }
+                                        }}
+                                        useNativeAndroidPickerStyle={false}
+                                        value={this.state.boobs}
+                                        Icon={() => {
+                                            // return <Ionicons name='md-arrow-dropdown' color="rgba(255, 255, 255, 0.8)" size={20} />
+                                            return null;
+                                        }}
+                                    />
+                                    :
+                                    <Select
+                                        // onOpen={() => this.onFocusBoobs()} // NOT working in Android
+                                        placeholder={{
+                                            label: "How big are your biceps?",
+                                            value: null
+                                        }}
+                                        // placeholderTextColor={Theme.color.placeholder}
+                                        items={bicepsSizeItems}
+                                        onValueChange={(value) => { // only for Android
+                                            if (this._showNotification) {
+                                                this.hideNotification();
+                                                this.hideAlertIcon();
+                                            }
+
+                                            this.setState({ biceps: value, boobs: null });
+                                        }}
+                                        style={{
+                                            iconContainer: {
+                                                top: 5,
+                                                right: 100
+                                            }
+                                        }}
+                                        textInputProps={{
+                                            style: {
+                                                paddingHorizontal: 18,
+                                                height: textInputHeight, fontSize: textInputFontSize, fontFamily: "Roboto-Regular",
+                                                color: this.state.biceps === null ? Theme.color.placeholder : 'rgba(255, 255, 255, 0.8)'
+                                            }
+                                        }}
+                                        useNativeAndroidPickerStyle={false}
+                                        value={this.state.biceps}
+                                        Icon={() => {
+                                            return null;
+                                        }}
+                                    />
+                            }
+                            <View style={{ alignSelf: 'center', borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '90%', marginTop: 6, marginBottom: Theme.spacing.small }}
+                                onLayout={(e) => {
+                                    const { y } = e.nativeEvent.layout;
+                                    this.boobsY = y;
+                                }}
+                            />
+                            {
+                                this.state.showBoobsAlertIcon &&
+                                <AntDesign style={{ position: 'absolute', right: 22, top: this.boobsY - 30 - 6 }} name='exclamationcircleo' color={Theme.color.notification} size={24} />
+                            }
+                        </View>
                     }
 
                     {/* 8. note */}

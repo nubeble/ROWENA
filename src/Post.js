@@ -915,103 +915,47 @@ export default class Post extends React.Component<InjectedProps> {
                         </View>
                     </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-                        <Text style={styles.name}>{post.name}</Text>
-                        {
-                            this.renderReportButton()
-                        }
-                    </View>
+                    {/* name */}
+                    {
+                        // Platform.OS !== 'android' ? // Test
+                        Platform.OS === 'android' ?
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                                <Text style={styles.name}>{post.name}</Text>
+                            </View>
+                            :
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                                <Text style={styles.name}>{post.name}</Text>
+                                <Text style={styles.age}>{age}</Text>
 
-                    <View style={{ marginVertical: 4, paddingVertical: 4 }}>
-                        {/* 1 row */}
-                        <View style={{
-                            width: '100%',
-                            height: bodyInfoItemHeight,
-                            flexDirection: 'row',
-                            alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            <View style={{
-                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                            }}>
-                                <Image
-                                    style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                    source={PreloadImage.birth}
-                                />
-                            </View>
-                            <View style={{
-                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                            }}>
-                                <Text style={styles.bodyInfoTitle}>{ageText}</Text>
-                            </View>
-                            <View style={{
-                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                            }}>
-                                {
-                                    post.gender === 'Female' &&
-                                    <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
-                                }
-                                {
-                                    post.gender === 'Male' &&
-                                    <MaterialCommunityIcons name='gender-male' style={{ marginTop: 1, marginRight: -1 }} color={Theme.color.subtitle} size={19} />
-                                }
-                                {
-                                    post.gender === 'Other' &&
-                                    <MaterialCommunityIcons name='gender-male-female' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={22} />
-                                }
-                            </View>
-                            <View style={{
-                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                            }}>
-                                <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
-                            </View>
-                        </View>
+                                <View style={{ width: 20, height: 20, alignItems: "center", justifyContent: "flex-end" }}>
+                                    {
+                                        post.gender === 'Woman' &&
+                                        <MaterialCommunityIcons name='gender-female' color="rgb(240, 98, 146)" size={19} />
+                                    }
+                                    {
+                                        post.gender === 'Man' &&
+                                        <MaterialCommunityIcons name='gender-male' color="rgb(100, 181, 246)" size={17} />
+                                    }
+                                    {
+                                        post.gender === 'Other' &&
+                                        <MaterialCommunityIcons name='gender-male-female' color={Theme.color.subtitle} size={18} />
+                                    }
+                                </View>
 
-                        {/* 2 row */}
-                        <View style={{
-                            width: '100%',
-                            height: bodyInfoItemHeight,
-                            flexDirection: 'row',
-                            alignItems: 'center', justifyContent: 'center'
-                        }}>
-                            <View style={{
-                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                            }}>
-                                <Image
-                                    style={{ width: 16, height: 16, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                    source={PreloadImage.ruler}
-                                />
-                            </View>
-                            <View style={{
-                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                            }}>
                                 {
-                                    post.height === 0 ?
-                                        <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
-                                        :
-                                        <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                    // ToDo: ios review
+                                    this.renderReportButton()
                                 }
                             </View>
-                            <View style={{
-                                width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
-                            }}>
-                                <MaterialCommunityIcons name='scale' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={16} />
-                            </View>
-                            <View style={{
-                                width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
-                            }}>
-                                {
-                                    post.weight === 0 ?
-                                        <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
-                                        :
-                                        <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
-                                }
-                            </View>
-                        </View>
+                    }
 
-                        {/* 3 row */}
-                        {
-                            // ToDo: ios review
-                            Platform.OS === 'android' &&
+                    {/* profile */}
+                    {
+                        // ToDo: ios review
+                        // Platform.OS !== 'android' && // Test
+                        Platform.OS === 'android' &&
+                        <View style={{ marginVertical: 4, paddingVertical: 4 }}>
+                            {/* 1 row */}
                             <View style={{
                                 width: '100%',
                                 height: bodyInfoItemHeight,
@@ -1021,59 +965,146 @@ export default class Post extends React.Component<InjectedProps> {
                                 <View style={{
                                     width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                                 }}>
-                                    <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
+                                    <Image
+                                        style={{ width: 17, height: 17, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                        source={PreloadImage.birth}
+                                    />
                                 </View>
                                 <View style={{
                                     width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                                 }}>
-                                    {
-                                        this.renderBodyType(post)
-                                    }
+                                    <Text style={styles.bodyInfoTitle}>{ageText}</Text>
                                 </View>
                                 <View style={{
                                     width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
                                 }}>
                                     {
-                                        post.gender === 'Female' &&
-                                        <Image
-                                            style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                            source={PreloadImage.bra}
-                                        />
+                                        post.gender === 'Woman' &&
+                                        <MaterialCommunityIcons name='gender-female' style={{ marginTop: -2, marginRight: -3 }} color={Theme.color.subtitle} size={22} />
                                     }
                                     {
-                                        post.gender === 'Male' &&
-                                        <Image
-                                            style={{ marginRight: 1.5, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                            source={PreloadImage.muscle}
-                                        />
+                                        post.gender === 'Man' &&
+                                        <MaterialCommunityIcons name='gender-male' style={{ marginTop: 1, marginRight: -1 }} color={Theme.color.subtitle} size={19} />
                                     }
                                     {
-                                        post.gender === 'Other' && post.bust &&
-                                        <Image
-                                            style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                            source={PreloadImage.bra}
-                                        />
-                                    }
-                                    {
-                                        /*
-                                        post.gender === 'Other' && post.muscle &&
-                                        <Image
-                                            style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
-                                            source={PreloadImage.muscle}
-                                        />
-                                        */
+                                        post.gender === 'Other' &&
+                                        <MaterialCommunityIcons name='gender-male-female' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={21} />
                                     }
                                 </View>
                                 <View style={{
                                     width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
                                 }}>
+                                    <Text style={styles.bodyInfoTitle}>{post.gender}</Text>
+                                </View>
+                            </View>
+
+                            {/* 2 row */}
+                            <View style={{
+                                width: '100%',
+                                height: bodyInfoItemHeight,
+                                flexDirection: 'row',
+                                alignItems: 'center', justifyContent: 'center'
+                            }}>
+                                <View style={{
+                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                }}>
+                                    <Image
+                                        style={{ width: 16, height: 16, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                        source={PreloadImage.ruler}
+                                    />
+                                </View>
+                                <View style={{
+                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
+                                }}>
                                     {
-                                        this.renderBoobs(post)
+                                        post.height === 0 ?
+                                            <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
+                                            :
+                                            <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
+                                    }
+                                </View>
+                                <View style={{
+                                    width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                }}>
+                                    <MaterialCommunityIcons name='scale' style={{ marginTop: 0, marginRight: 0 }} color={Theme.color.subtitle} size={16} />
+                                </View>
+                                <View style={{
+                                    width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
+                                }}>
+                                    {
+                                        post.weight === 0 ?
+                                            <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
+                                            :
+                                            <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                                     }
                                 </View>
                             </View>
-                        }
-                    </View>
+
+                            {/* 3 row */}
+                            {
+                                <View style={{
+                                    width: '100%',
+                                    height: bodyInfoItemHeight,
+                                    flexDirection: 'row',
+                                    alignItems: 'center', justifyContent: 'center'
+                                }}>
+                                    <View style={{
+                                        width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                    }}>
+                                        <Ionicons name='ios-body' color={Theme.color.subtitle} size={20} />
+                                    </View>
+                                    <View style={{
+                                        width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
+                                    }}>
+                                        {
+                                            this.renderBodyType(post)
+                                        }
+                                    </View>
+                                    <View style={{
+                                        width: '15%', height: bodyInfoItemHeight, paddingRight: 5, alignItems: 'flex-end', justifyContent: 'center'
+                                    }}>
+                                        {
+                                            post.gender === 'Woman' &&
+                                            <Image
+                                                style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                                source={PreloadImage.bra}
+                                            />
+                                        }
+                                        {
+                                            post.gender === 'Man' &&
+                                            <Image
+                                                style={{ marginRight: 1.5, width: 15, height: 15, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                                source={PreloadImage.muscle}
+                                            />
+                                        }
+                                        {
+                                            post.gender === 'Other' && post.bust &&
+                                            <Image
+                                                style={{ marginRight: -0.5, width: 18, height: 18, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                                source={PreloadImage.bra}
+                                            />
+                                        }
+                                        {
+                                            /*
+                                            post.gender === 'Other' && post.muscle &&
+                                            <Image
+                                                style={{ marginRight: 2, width: 14, height: 14, tintColor: Theme.color.subtitle, resizeMode: 'cover' }}
+                                                source={PreloadImage.muscle}
+                                            />
+                                            */
+                                        }
+                                    </View>
+                                    <View style={{
+                                        width: '35%', height: bodyInfoItemHeight, alignItems: 'flex-start', justifyContent: 'center'
+                                    }}>
+                                        {
+                                            this.renderBoobs(post)
+                                        }
+                                    </View>
+                                </View>
+                            }
+                        </View>
+                    }
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', marginVertical: 8 }}>
                         <MaterialIcons name='location-on' color={'rgb(255, 68, 68)'} size={19} />
@@ -1325,7 +1356,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderBoobs(post) {
-        if (post.gender === 'Female') {
+        if (post.gender === 'Woman') {
             if (post.bust === 'Prefer Not to Say') {
                 return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
             } else {
@@ -1333,7 +1364,7 @@ export default class Post extends React.Component<InjectedProps> {
             }
         }
 
-        if (post.gender === 'Male') {
+        if (post.gender === 'Man') {
             if (post.muscle === 'Prefer Not to Say') {
                 return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
             } else {
@@ -2987,6 +3018,14 @@ const styles = StyleSheet.create({
         fontSize: 24,
         lineHeight: 28,
         fontFamily: "Roboto-Medium"
+    },
+    age: {
+        color: Theme.color.subtitle,
+        fontSize: 18,
+        lineHeight: 28,
+        fontFamily: "Roboto-Medium",
+        marginLeft: 8,
+        marginRight: 2
     },
     /*
     size: {

@@ -391,7 +391,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -579,7 +579,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -747,7 +747,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -895,7 +895,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1063,7 +1063,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1191,7 +1191,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1340,7 +1340,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1428,7 +1428,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1536,7 +1536,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1624,7 +1624,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1712,7 +1712,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1800,7 +1800,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1888,7 +1888,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -1976,7 +1976,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2085,7 +2085,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2193,7 +2193,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2301,7 +2301,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2409,7 +2409,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2517,7 +2517,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2625,7 +2625,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = bodyType;
 
         await Firebase.createFeed(feed, extra);
@@ -2935,7 +2935,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3019,7 +3019,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3104,7 +3104,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3188,7 +3188,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3273,7 +3273,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3352,7 +3352,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3511,7 +3511,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3595,7 +3595,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3679,7 +3679,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3763,7 +3763,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3840,7 +3840,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -3917,7 +3917,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
@@ -4001,7 +4001,7 @@ export default class Admin extends React.Component {
         feed.weight = weight;
         feed.bust = bust;
         feed.muscle = null;
-        feed.gender = 'Female';
+        feed.gender = 'Woman';
         feed.bodyType = 'Skinny';
 
         await Firebase.createFeed(feed, extra);
