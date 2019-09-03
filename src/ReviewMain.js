@@ -286,7 +286,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         // ToDo: ios review
-                                        Platform.OS === 'android' ? "Let's find some hot chicks" : "Let's find new people"
+                                        Platform.OS === 'android' ? "Let's go check chicks out" : "Let's go meet new people"
                                     }
                                 </Text>
 

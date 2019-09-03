@@ -259,7 +259,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                     fontSize: 28,
                                     lineHeight: 32,
                                     fontFamily: "Chewy-Regular"
-                                }}>No reviewed customers</Text>
+                                }}>
+                                    {
+                                        // ToDo: ios review
+                                        Platform.OS === 'android' ? 'No reviewed customers' : 'No reviewed users'
+                                    }
+                                </Text>
 
                                 <Text style={{
                                     marginTop: 10,
@@ -267,7 +272,12 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                     fontSize: 20,
                                     lineHeight: 24,
                                     fontFamily: "Chewy-Regular"
-                                }}>Let's find some hot guys</Text>
+                                }}>
+                                    {
+                                        // ToDo: ios review
+                                        Platform.OS === 'android' ? "Let's find some hot cocks" : "Let's find new people"
+                                    }
+                                </Text>
 
                                 <Image
                                     style={{

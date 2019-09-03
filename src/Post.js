@@ -926,18 +926,18 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.name}>{post.name}</Text>
                                 <Text style={styles.age}>{age}</Text>
 
-                                <View style={{ width: 20, height: 20, alignItems: "center", justifyContent: "flex-end" }}>
+                                <View style={{ width: 28, height: 28, alignItems: "center", justifyContent: "center" }}>
                                     {
                                         post.gender === 'Woman' &&
-                                        <MaterialCommunityIcons name='gender-female' color="rgb(240, 98, 146)" size={19} />
+                                        <MaterialCommunityIcons name='gender-female' color="rgb(240, 98, 146)" size={23} />
                                     }
                                     {
                                         post.gender === 'Man' &&
-                                        <MaterialCommunityIcons name='gender-male' color="rgb(100, 181, 246)" size={17} />
+                                        <MaterialCommunityIcons name='gender-male' color="rgb(100, 181, 246)" size={20} style={{ marginTop: 4 }} />
                                     }
                                     {
                                         post.gender === 'Other' &&
-                                        <MaterialCommunityIcons name='gender-male-female' color={Theme.color.subtitle} size={18} />
+                                        <MaterialCommunityIcons name='gender-male-female' color={Theme.color.subtitle} size={22} />
                                     }
                                 </View>
 
@@ -3037,7 +3037,7 @@ const styles = StyleSheet.create({
     },
     age: {
         color: Theme.color.subtitle,
-        fontSize: 18,
+        fontSize: 24,
         lineHeight: 28,
         fontFamily: "Roboto-Medium",
         marginLeft: 8,

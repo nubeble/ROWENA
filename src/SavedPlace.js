@@ -667,7 +667,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         // ToDo: ios review
-                                        Platform.OS === 'android' ? 'Start exploring girls for your next trip' : 'Start finding new people'
+                                        Platform.OS === 'android' ? "Let's find some chicks for your next trip" : "Let's find new people"
                                     }
                                 </Text>
 
