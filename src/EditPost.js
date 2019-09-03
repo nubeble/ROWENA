@@ -1167,7 +1167,7 @@ export default class EditPost extends React.Component {
                     ref="flatList"
                     contentContainerStyle={styles.container}
                     showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={this.renderHeader(this.state.post)}
+                    ListHeaderComponent={this.renderListHeaderComponent()}
                 />
 
                 <DateTimePicker
@@ -1214,7 +1214,9 @@ export default class EditPost extends React.Component {
         );
     }
 
-    renderHeader(post) {
+    renderListHeaderComponent() {
+        // const post = this.state.post;
+
         let ageText = null;
         if (this.state.birthday) {
             const age = Util.getAge(Util.getBirthday(this.state.datePickerDate));
@@ -1460,6 +1462,7 @@ export default class EditPost extends React.Component {
 
                     {/* 4. height */}
                     {
+                        // ToDo: ios review
                         Platform.OS === 'android' &&
                         <View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -1512,6 +1515,7 @@ export default class EditPost extends React.Component {
 
                     {/* 5. weight */}
                     {
+                        // ToDo: ios review
                         Platform.OS === 'android' &&
                         <View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -1564,6 +1568,7 @@ export default class EditPost extends React.Component {
 
                     {/* 6. body type */}
                     {
+                        // ToDo: ios review
                         Platform.OS === 'android' &&
                         <View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
@@ -1634,6 +1639,7 @@ export default class EditPost extends React.Component {
                     {/* 7. boobs */}
                     {/* boobs / biceps */}
                     {
+                        // ToDo: ios review
                         Platform.OS === 'android' &&
                         <View>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>

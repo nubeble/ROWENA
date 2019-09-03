@@ -424,184 +424,202 @@ export default class Explore extends React.Component<InjectedProps> {
                         this.setState({ scrollY: y });
                     }}
 
-                    ListHeaderComponent={(
-                        <View>
-                            {/* advertising banner */}
-                            <TouchableWithoutFeedback onPress={() => {
-                                let index;
-                                if (this.currentSwiperIndex === undefined) {
-                                    index = 0;
-                                } else {
-                                    index = this.currentSwiperIndex;
-                                }
-
-                                // ToDo: use index
-                                console.log('jdub', 'TouchableWithoutFeedback onPress', index);
-                            }}>
-                                {
-                                    this.ads.length === 4 ?
-                                        <SwiperFlatList
-                                            autoplay
-                                            autoplayDelay={3}
-                                            onChangeIndex={({ index, prevIndex }) => {
-                                                // console.log(prevIndex, index);
-                                                this.currentSwiperIndex = index;
-                                            }}
-                                        >
-                                            <View style={styles.slide}>
-                                                <Image
-                                                    style={styles.item}
-                                                    source={this.ads[0]}
-                                                />
-                                                {/*
-                                                    <View style={styles.content}>
-                                                        <Text style={{
-                                                            textAlign: 'center',
-                                                            fontWeight: '500',
-                                                            color: "black",
-                                                            fontSize: 21,
-                                                            fontFamily: "Roboto-Medium"
-                                                        }}>{"advertising area 1"}
-                                                        </Text>
-                                                    </View>
-                                                    */}
-                                            </View>
-                                            <View style={styles.slide}>
-                                                <Image
-                                                    style={styles.item}
-                                                    source={this.ads[1]}
-                                                />
-                                                {/*
-                                                    <View style={styles.content}>
-                                                        <Text style={{
-                                                            textAlign: 'center',
-                                                            fontWeight: '500',
-                                                            color: "black",
-                                                            fontSize: 21,
-                                                            fontFamily: "Roboto-Medium"
-                                                        }}>{"advertising area 2"}
-                                                        </Text>
-                                                    </View>
-                                                    */}
-                                            </View>
-                                            <View style={styles.slide}>
-                                                <Image
-                                                    style={styles.item}
-                                                    source={this.ads[2]}
-                                                />
-                                                {/*
-                                                    <View style={styles.content}>
-                                                        <Text style={{
-                                                            textAlign: 'center',
-                                                            fontWeight: '500',
-                                                            color: "black",
-                                                            fontSize: 21,
-                                                            fontFamily: "Roboto-Medium"
-                                                        }}>{"advertising area 3"}
-                                                        </Text>
-                                                    </View>
-                                                    */}
-                                            </View>
-                                            <View style={styles.slide}>
-                                                <Image
-                                                    style={styles.item}
-                                                    source={this.ads[3]}
-                                                />
-                                                {/*
-                                                <View style={styles.content}>
-                                                    <Text style={{
-                                                        textAlign: 'center',
-                                                        fontWeight: '500',
-                                                        color: "black",
-                                                        fontSize: 21,
-                                                        fontFamily: "Roboto-Medium"
-                                                    }}>{"advertising area 4"}
-                                                    </Text>
-                                                </View>
-                                                */}
-                                            </View>
-                                        </SwiperFlatList>
-                                        :
-                                        <View style={{
-                                            width: Dimensions.get('window').width,
-                                            height: Dimensions.get('window').width / 21 * 9,
-                                            backgroundColor: 'green'
-                                        }} />
-                                }
-
-                            </TouchableWithoutFeedback>
-
-                            <View style={styles.titleContainer}>
-                                <Text style={styles.title}>
-                                    {`${(this.state.feedSize) ? 'Explore ' + Util.numberWithCommas(this.state.feedSize) + '+ girls' : 'Explore girls'} in ` + this.state.titleText}
-                                </Text>
-                            </View>
-                            {
-                                // !loading && hasFeed &&
-                                <View style={styles.orderTab} onLayout={(event) => {
-                                    const { y } = event.nativeEvent.layout;
-                                    // this.orderTabY = y;
-                                    if (!this.orderTabY) this.orderTabY = y;
-                                }}>
-                                    <TouchableOpacity
-                                        style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => {
-                                            this.orderByRatings();
-
-                                            this.setState({ selectedOrderIndex: 0 });
-
-                                            this._feed._scrollTo(this.state.scrollY);
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
-                                        {
-                                            this.state.selectedOrderIndex === 0 &&
-                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
-                                        }
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => {
-                                            this.orderByReviews();
-
-                                            this.setState({ selectedOrderIndex: 1 });
-
-                                            this._feed._scrollTo(this.state.scrollY);
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
-                                        {
-                                            this.state.selectedOrderIndex === 1 &&
-                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
-                                        }
-                                    </TouchableOpacity>
-
-                                    <TouchableOpacity
-                                        style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
-                                        onPress={() => {
-                                            this.orderByTime();
-
-                                            this.setState({ selectedOrderIndex: 2 });
-
-                                            this._feed._scrollTo(this.state.scrollY);
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
-                                        {
-                                            this.state.selectedOrderIndex === 2 &&
-                                            <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
-                                        }
-                                    </TouchableOpacity>
-                                </View>
-                            }
-                        </View>
-                    )}
+                    ListHeaderComponent={this.renderListHeaderComponent()}
                     {...{ navigation }}
                 />
             </View>
         );
     } // end of render()
+
+    renderListHeaderComponent() {
+        let titleText = null;
+
+        if (Platform.OS === "android") {
+            if (this.state.feedSize > 0) {
+                titleText = 'Explore ' + Util.numberWithCommas(this.state.feedSize) + '+ girls in ' + this.state.titleText;
+            } else {
+                titleText = 'Explore girls in ' + this.state.titleText;
+            }
+        } else {
+            // ToDo: ios review
+            if (this.state.feedSize > 0) {
+                titleText = 'Look around ' + Util.numberWithCommas(this.state.feedSize) + '+ ladies in ' + this.state.titleText;
+            } else {
+                titleText = 'Look around ladies in ' + this.state.titleText;
+            }
+        }
+
+        return (
+            <View>
+                {/* advertising banner */}
+                <TouchableWithoutFeedback onPress={() => {
+                    let index;
+                    if (this.currentSwiperIndex === undefined) {
+                        index = 0;
+                    } else {
+                        index = this.currentSwiperIndex;
+                    }
+
+                    // ToDo: use index
+                    console.log('jdub', 'TouchableWithoutFeedback onPress', index);
+                }}>
+                    {
+                        this.ads.length === 4 ?
+                            <SwiperFlatList
+                                autoplay
+                                autoplayDelay={3}
+                                onChangeIndex={({ index, prevIndex }) => {
+                                    // console.log(prevIndex, index);
+                                    this.currentSwiperIndex = index;
+                                }}
+                            >
+                                <View style={styles.slide}>
+                                    <Image
+                                        style={styles.item}
+                                        source={this.ads[0]}
+                                    />
+                                    {/*
+                                        <View style={styles.content}>
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                fontWeight: '500',
+                                                color: "black",
+                                                fontSize: 21,
+                                                fontFamily: "Roboto-Medium"
+                                            }}>{"advertising area 1"}
+                                            </Text>
+                                        </View>
+                                        */}
+                                </View>
+                                <View style={styles.slide}>
+                                    <Image
+                                        style={styles.item}
+                                        source={this.ads[1]}
+                                    />
+                                    {/*
+                                        <View style={styles.content}>
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                fontWeight: '500',
+                                                color: "black",
+                                                fontSize: 21,
+                                                fontFamily: "Roboto-Medium"
+                                            }}>{"advertising area 2"}
+                                            </Text>
+                                        </View>
+                                        */}
+                                </View>
+                                <View style={styles.slide}>
+                                    <Image
+                                        style={styles.item}
+                                        source={this.ads[2]}
+                                    />
+                                    {/*
+                                        <View style={styles.content}>
+                                            <Text style={{
+                                                textAlign: 'center',
+                                                fontWeight: '500',
+                                                color: "black",
+                                                fontSize: 21,
+                                                fontFamily: "Roboto-Medium"
+                                            }}>{"advertising area 3"}
+                                            </Text>
+                                        </View>
+                                        */}
+                                </View>
+                                <View style={styles.slide}>
+                                    <Image
+                                        style={styles.item}
+                                        source={this.ads[3]}
+                                    />
+                                    {/*
+                                    <View style={styles.content}>
+                                        <Text style={{
+                                            textAlign: 'center',
+                                            fontWeight: '500',
+                                            color: "black",
+                                            fontSize: 21,
+                                            fontFamily: "Roboto-Medium"
+                                        }}>{"advertising area 4"}
+                                        </Text>
+                                    </View>
+                                    */}
+                                </View>
+                            </SwiperFlatList>
+                            :
+                            <View style={{
+                                width: Dimensions.get('window').width,
+                                height: Dimensions.get('window').width / 21 * 9,
+                                backgroundColor: 'green'
+                            }} />
+                    }
+                </TouchableWithoutFeedback>
+
+                <View style={styles.titleContainer}>
+                    <Text style={styles.title}>{titleText}</Text>
+                </View>
+                {
+                    // !loading && hasFeed &&
+                    <View style={styles.orderTab} onLayout={(event) => {
+                        const { y } = event.nativeEvent.layout;
+                        // this.orderTabY = y;
+                        if (!this.orderTabY) this.orderTabY = y;
+                    }}>
+                        <TouchableOpacity
+                            style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
+                            onPress={() => {
+                                this.orderByRatings();
+
+                                this.setState({ selectedOrderIndex: 0 });
+
+                                this._feed._scrollTo(this.state.scrollY);
+                            }}
+                        >
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                            {
+                                this.state.selectedOrderIndex === 0 &&
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                            }
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
+                            onPress={() => {
+                                this.orderByReviews();
+
+                                this.setState({ selectedOrderIndex: 1 });
+
+                                this._feed._scrollTo(this.state.scrollY);
+                            }}
+                        >
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                            {
+                                this.state.selectedOrderIndex === 1 &&
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                            }
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{ width: '33%', height: '100%', justifyContent: "center", alignItems: "center" }}
+                            onPress={() => {
+                                this.orderByTime();
+
+                                this.setState({ selectedOrderIndex: 2 });
+
+                                this._feed._scrollTo(this.state.scrollY);
+                            }}
+                        >
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
+                            {
+                                this.state.selectedOrderIndex === 2 &&
+                                <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
+                            }
+                        </TouchableOpacity>
+                    </View>
+                }
+            </View>
+        );
+    }
 
     orderByRatings() { // review score
         this.order('averageRating');

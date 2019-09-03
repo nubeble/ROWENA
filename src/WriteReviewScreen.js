@@ -265,7 +265,12 @@ export default class WriteReviewScreen extends React.Component {
                         }}
                     >
                         <View style={{ marginBottom: 10 }}>
-                            <Text style={styles.label}>How would your rate this girl, {this.state.name}?</Text>
+                            <Text style={styles.label}>
+                                {
+                                    // ToDo: ios review
+                                    Platform.OS === 'android' ? 'How would your rate this girl,' + this.state.name + '?' : 'How would your rate this post,' + this.state.name + '?'
+                                }
+                            </Text>
                             <AirbnbRating
                                 ref='rating'
                                 onFinishRating={this.ratingCompleted}

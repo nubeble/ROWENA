@@ -57,13 +57,13 @@ export default class Admin extends React.Component {
                 <FlatList
                     contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={this.renderContainer()}
+                    ListHeaderComponent={this.renderListHeaderComponent()}
                 />
             </View>
         );
     }
 
-    renderContainer() {
+    renderListHeaderComponent() {
         return (
             <View style={styles.container}>
                 <TouchableOpacity onPress={() => this.initPost()}

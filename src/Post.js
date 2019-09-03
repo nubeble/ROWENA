@@ -697,7 +697,7 @@ export default class Post extends React.Component<InjectedProps> {
                         }}
                         contentContainerStyle={styles.container}
                         showsVerticalScrollIndicator={true}
-                        ListHeaderComponent={this.renderHeader()}
+                        ListHeaderComponent={this.renderListHeaderComponent()}
                     />
                 </TouchableWithoutFeedback>
                 {
@@ -795,7 +795,7 @@ export default class Post extends React.Component<InjectedProps> {
         );
     }
 
-    renderHeader() {
+    renderListHeaderComponent() {
         const post = this.state.post;
         if (!post) return null;
 
@@ -917,7 +917,6 @@ export default class Post extends React.Component<InjectedProps> {
 
                     {/* name */}
                     {
-                        // Platform.OS !== 'android' ? // Test
                         Platform.OS === 'android' ?
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
                                 <Text style={styles.name}>{post.name}</Text>
@@ -952,7 +951,6 @@ export default class Post extends React.Component<InjectedProps> {
                     {/* profile */}
                     {
                         // ToDo: ios review
-                        // Platform.OS !== 'android' && // Test
                         Platform.OS === 'android' &&
                         <View style={{ marginVertical: 4, paddingVertical: 4 }}>
                             {/* 1 row */}
@@ -1949,7 +1947,15 @@ export default class Post extends React.Component<InjectedProps> {
         const ranking = this.getRanking(chart); // total post >= 10 & average rating >= 4.0 & 1 <= ranking <= 10
         if (ranking !== 0) {
             const type = 100;
-            const text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
+            // const text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
+            // ToDo: ios review
+            const text = null;
+            if (Platform.OS === "android") {
+                text = "#" + ranking + " of " + numberOfGirls + " girl in " + cityName;
+            } else {
+                text = "#" + ranking + " of " + numberOfGirls + " post in " + cityName;
+            }
+
             const result = {
                 type, text
             };
@@ -1963,7 +1969,9 @@ export default class Post extends React.Component<InjectedProps> {
             if (rn === 0) {
                 // pick like
                 const type = 200;
-                const text = likeCount + " people called dibs on this girl";
+                // const text = likeCount + " people called dibs on this girl";
+                // ToDo: ios review
+                const text = Platform.OS === 'android' ? likeCount + " people called dibs on this girl" : likeCount + " people called dibs on this post";
                 const result = {
                     type, text
                 };
@@ -1972,7 +1980,9 @@ export default class Post extends React.Component<InjectedProps> {
             } else {
                 // pick visit
                 const type = 300;
-                const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
+                // const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
+                // ToDo: ios review
+                const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this girl within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
                 const result = {
                     type, text
                 };
@@ -1983,7 +1993,9 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (likeCount >= 10) {
             const type = 200;
-            const text = likeCount + " people called dibs on this girl";
+            // const text = likeCount + " people called dibs on this girl";
+            // ToDo: ios review
+            const text = Platform.OS === 'android' ? likeCount + " people called dibs on this girl" : likeCount + " people called dibs on this post";
             const result = {
                 type, text
             };
@@ -1993,7 +2005,9 @@ export default class Post extends React.Component<InjectedProps> {
 
         if (visitCountPerDay >= 10) {
             const type = 300;
-            const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
+            // const text = visitCountPerDay + " people are viewing this girl within the past 24 hours";
+            // ToDo: ios review
+            const text = Platform.OS === 'android' ? visitCountPerDay + " people are viewing this girl within the past 24 hours" : visitCountPerDay + " people are viewing this post within the past 24 hours";
             const result = {
                 type, text
             };
@@ -2002,7 +2016,9 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         const type = 400;
-        const text = visitCount + " people viewed this girl " + totalVisitCount + " times";
+        // const text = visitCount + " people viewed this girl " + totalVisitCount + " times";
+        // ToDo: ios review
+        const text = Platform.OS === 'android' ? visitCount + " people viewed this girl " + totalVisitCount + " times" : visitCount + " people viewed this post " + totalVisitCount + " times";
         const result = {
             type, text
         };

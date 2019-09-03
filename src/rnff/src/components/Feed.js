@@ -234,7 +234,12 @@ export default class Feed extends React.Component<FeedProps> {
                     fontSize: 26,
                     lineHeight: 30,
                     fontFamily: "Chewy-Regular"
-                }}>No registered girls yet</Text>
+                }}>
+                    {
+                        // ToDo: ios review
+                        Platform.OS === 'android' ? "No registered girls yet" : "No registered posts yet"
+                    }
+                </Text>
 
                 <Text style={{
                     marginTop: 8,

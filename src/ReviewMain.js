@@ -177,7 +177,11 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
                         marginLeft: 40 + 16
-                    }}>Reviewed Girls
+                    }}>
+                        {
+                            // ToDo: ios review
+                            Platform.OS === 'android' ? 'Reviewed Girls' : 'Reviewed Posts'
+                        }
                         {
                             this.state.totalFeedsSize > 0 &&
                             <Text style={{
@@ -266,7 +270,12 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     fontSize: 28,
                                     lineHeight: 32,
                                     fontFamily: "Chewy-Regular"
-                                }}>No reviewed girls</Text>
+                                }}>
+                                    {
+                                        // ToDo: ios review
+                                        Platform.OS === 'android' ? 'No reviewed girls' : 'No reviewed posts'
+                                    }
+                                </Text>
 
                                 <Text style={{
                                     marginTop: 10,
@@ -274,7 +283,12 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                     fontSize: 20,
                                     lineHeight: 24,
                                     fontFamily: "Chewy-Regular"
-                                }}>Let's find some hot chicks</Text>
+                                }}>
+                                    {
+                                        // ToDo: ios review
+                                        Platform.OS === 'android' ? "Let's find some hot chicks" : "Let's find new people"
+                                    }
+                                </Text>
 
                                 <Image
                                     style={{

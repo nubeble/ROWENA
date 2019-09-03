@@ -736,7 +736,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 // justifyContent: 'center', paddingLeft: 2
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Girls You've Reviewed"}</Text>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
+                                                    {
+                                                        // ToDo: ios review
+                                                        Platform.OS === 'android' ? "Girls You've Reviewed" : "Posts You've Reviewed"
+                                                    }
+                                                </Text>
                                                 {
                                                     replyAdded &&
                                                     <View style={{
@@ -770,7 +775,12 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 justifyContent: 'center',
                                                 paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, /* color: Theme.color.text2, */ color: '#f1c40f', fontFamily: "Roboto-Regular" }}>{'Advertise Yourself or Your Girls'}</Text>
+                                                <Text style={{ fontSize: 18, /* color: Theme.color.text2, */ color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
+                                                    {
+                                                        // ToDo: ios review
+                                                        Platform.OS === 'android' ? 'Advertise Yourself or Your Girls' : 'Advertise Yourself'
+                                                    }
+                                                </Text>
                                                 <Feather name='edit-3' /* color={Theme.color.text2} */ color={'#f1c40f'} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>

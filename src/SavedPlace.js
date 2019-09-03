@@ -651,7 +651,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     fontSize: 28,
                                     lineHeight: 32,
                                     fontFamily: "Chewy-Regular"
-                                }}>No selected girls</Text>
+                                }}>
+                                    {
+                                        // ToDo: ios review
+                                        Platform.OS === 'android' ? "No selected girls" : "No selected posts"
+                                    }
+                                </Text>
 
                                 <Text style={{
                                     marginTop: 10,
@@ -659,7 +664,12 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                     fontSize: 20,
                                     lineHeight: 24,
                                     fontFamily: "Chewy-Regular"
-                                }}>Start exploring girls for your next trip</Text>
+                                }}>
+                                    {
+                                        // ToDo: ios review
+                                        Platform.OS === 'android' ? 'Start exploring girls for your next trip' : 'Start finding new people'
+                                    }
+                                </Text>
 
                                 <Image
                                     style={{

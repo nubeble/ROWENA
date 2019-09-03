@@ -628,7 +628,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
                     ref="flatList"
                     contentContainerStyle={{ flexGrow: 1 }}
                     showsVerticalScrollIndicator={true}
-                    ListHeaderComponent={this.renderContainer()}
+                    ListHeaderComponent={this.renderListHeaderComponent()}
                 />
 
                 <DateTimePicker
@@ -681,7 +681,7 @@ export default class EditProfile extends React.Component<InjectedProps> {
         );
     }
 
-    renderContainer() {
+    renderListHeaderComponent() {
         const { uploadImageUri } = this.state;
 
         let avatarName = '';

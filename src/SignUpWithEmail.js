@@ -621,7 +621,11 @@ export default class SignUpWithEmail extends React.Component {
                         <TouchableOpacity style={[styles.signUpButton, { backgroundColor: this.state.signUpButtonBackgroundColor }]} disabled={this.state.invalid}
                             onPress={() => this.signUp()}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>Sign up</Text>
+                            <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: this.state.signUpButtonTextColor }}>
+                                {
+                                    from === 'logIn' ? 'Sign in' : 'Sign up'
+                                }
+                            </Text>
                             {
                                 this.state.showSignUpLoader &&
                                 <ActivityIndicator

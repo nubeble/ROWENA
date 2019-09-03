@@ -1116,7 +1116,12 @@ export default class Intro extends React.Component<InjectedProps> {
                                                 textShadowColor: 'black',
                                                 textShadowOffset: { width: 1, height: 1 },
                                                 textShadowRadius: 1
-                                            }}>{Util.numberWithCommas(length) + '+ girls'}</Text>
+                                            }}>
+                                                {
+                                                    // ToDo: ios review
+                                                    Platform.OS === 'android' ? Util.numberWithCommas(length) + '+ girls' : Util.numberWithCommas(length) + '+ posts'
+                                                }
+                                            </Text>
                                         }
                                     </View>
 
@@ -1243,13 +1248,19 @@ export default class Intro extends React.Component<InjectedProps> {
                     ListFooterComponent={
                         <View style={{ marginTop: 20, marginBottom: 8 }}>
                             <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Top-rated girls'}</Text>
+                                {
+                                    // ToDo: ios review
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated girls' : 'Top-rated posts'}</Text>
+                                }
                             </View>
                             {
                                 this.renderPopularFeeds()
                             }
                             <View style={styles.titleContainer}>
-                                <Text style={styles.title}>{'Recently registered girls'}</Text>
+                                {
+                                    // ToDo: ios review
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Recently registered girls' : 'Recently registered posts'}</Text>
+                                }
                             </View>
                             {
                                 this.renderRecentFeeds()

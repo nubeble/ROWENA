@@ -497,7 +497,12 @@ export default class ChatMain extends React.Component {
                                 fontSize: 20,
                                 lineHeight: 24,
                                 fontFamily: "Chewy-Regular"
-                            }}>Let's find some hot chicks</Text>
+                            }}>
+                                {
+                                    // ToDo: ios review
+                                    Platform.OS === 'android' ? "Let's find some hot chicks" : "Let's find new people"
+                                }
+                            </Text>
 
                             <Image
                                 style={{
