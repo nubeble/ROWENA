@@ -923,9 +923,9 @@ export default class Post extends React.Component<InjectedProps> {
                             </View>
                             :
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                                {/*
                                 <Text style={styles.name}>{post.name}</Text>
                                 <Text style={styles.age}>{age}</Text>
-
                                 <View style={{ width: 28, height: 28, alignItems: "center", justifyContent: "center" }}>
                                     {
                                         post.gender === 'Woman' &&
@@ -940,7 +940,9 @@ export default class Post extends React.Component<InjectedProps> {
                                         <MaterialCommunityIcons name='gender-male-female' color={Theme.color.subtitle} size={22} />
                                     }
                                 </View>
-
+                                */}
+                                <Text style={styles.name}>{post.name}</Text>
+                                <Text style={styles.age}>{age}</Text>
                                 {
                                     // ToDo: ios review
                                     this.renderReportButton()
