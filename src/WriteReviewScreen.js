@@ -268,7 +268,7 @@ export default class WriteReviewScreen extends React.Component {
                             <Text style={styles.label}>
                                 {
                                     // ToDo: ios review
-                                    Platform.OS === 'android' ? 'How would your rate this girl,' + this.state.name + '?' : 'How would your rate this post,' + this.state.name + '?'
+                                    Platform.OS === 'android' ? 'How would your rate this girl, ' + this.state.name + '?' : 'How would your rate, ' + this.state.name + '?'
                                 }
                             </Text>
                             <AirbnbRating
