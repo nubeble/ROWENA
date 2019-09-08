@@ -101,22 +101,25 @@ export default class AuthMain extends React.Component {
         } = await Facebook.logInWithReadPermissionsAsync('367256380681542',
             {
                 // permissions: ['public_profile', 'email', 'user_gender', 'user_location'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
-                permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
+
+                // permissions: ['public_profile', 'email'], behavior: this.isStandaloneApp() ? 'native' : 'browser'
+                permissions: ['public_profile', 'email'], behavior: this.getBehavior()
             });
 
         if (type === 'success') {
             const credential = firebase.auth.FacebookAuthProvider.credential(token);
 
             try {
-                const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
-                console.log('jdub', 'Firebase.auth.signInAndRetrieveDataWithCredential, user', user);
+                // const user = await Firebase.auth.signInAndRetrieveDataWithCredential(credential);
+                const user = await Firebase.auth.signInWithCredential(credential);
+                console.log('jdub', 'Firebase.auth.signInWithCredential, user', user);
 
                 // save token
                 // if (user.additionalUserInfo && user.additionalUserInfo.isNewUser) {
                 await registerExpoPushToken(user.user.uid, user.user.displayName);
                 // }
             } catch (error) {
-                console.log('jdub', 'signInAndRetrieveDataWithCredential error', error);
+                console.log('jdub', 'signInWithCredential error', error);
 
                 if (error.code === 'auth/account-exists-with-different-credential') {
                     this.showNotification('There already exists an account with the email address asserted by the credential.');
@@ -138,9 +141,11 @@ export default class AuthMain extends React.Component {
                     this.showNotification('An error happened. Please try again.');
                 }
             }
+        } else if (type === 'cancel') {
+            // nothing to do
         } else {
             console.log('jdub', 'Facebook.logInWithReadPermissionsAsync result', type, permissions, declinedPermissions);
-            const str = type + ' ' + permissions + ' ' + declinedPermissions;
+            // const str = type + ' ' + permissions + ' ' + declinedPermissions;
             // this.showNotification(str);
             this.showNotification('An error happened. Please try again.');
         }
@@ -152,6 +157,7 @@ export default class AuthMain extends React.Component {
     }
 
     isStandaloneApp = () => {
+        /*
         if (Constants.appOwnership === 'expo') {
             console.log('jdub', 'Expo ownership app');
 
@@ -166,6 +172,23 @@ export default class AuthMain extends React.Component {
         }
 
         // return !(Platform.OS === 'ios' && Constants.appOwnership === 'expo');
+        */
+        if (Constants.appOwnership === 'expo') {
+            return false;
+        } else { // standalone app
+            return true;
+        }
+    }
+
+    getBehavior() {
+        const isStandaloneApp = this.isStandaloneApp();
+        if (!isStandaloneApp) {
+            return 'browser';
+        }
+
+        if (Platform.OS === 'android') return 'browser';
+
+        return 'native';
     }
 
     signUpWithEmail() {

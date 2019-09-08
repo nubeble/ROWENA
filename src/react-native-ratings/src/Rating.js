@@ -3,7 +3,7 @@ import times from 'lodash/times';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import { View, Animated, PanResponder, Image, StyleSheet, Text, ViewPropTypes } from 'react-native';
+import { View, Animated, PanResponder, Image, StyleSheet, Text, ViewPropTypes, Platform } from 'react-native';
 // import { Text } from "../../rnff/src/components";
 
 // RATING IMAGES WITH STATIC BACKGROUND COLOR (white)

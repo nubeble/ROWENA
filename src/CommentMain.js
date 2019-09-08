@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Image,
-    Dimensions, FlatList, ActivityIndicator, TouchableWithoutFeedback
+    Dimensions, FlatList, ActivityIndicator, TouchableWithoutFeedback, Platform
 } from "react-native";
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
