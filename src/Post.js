@@ -1018,7 +1018,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         post.height === 0 ?
-                                            <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
+                                            <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>
                                             :
                                             <Text style={styles.bodyInfoTitle}>{post.height} cm</Text>
                                     }
@@ -1033,7 +1033,7 @@ export default class Post extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         post.weight === 0 ?
-                                            <Text style={styles.preferNotToSay}>{'Prefer Not to Say'}</Text>
+                                            <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>
                                             :
                                             <Text style={styles.bodyInfoTitle}>{post.weight} kg</Text>
                                     }
@@ -1347,34 +1347,37 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderBodyType(post) {
-        if (post.bodyType === 'Prefer Not to Say') {
-            return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
+        if (post.bodyType === 'Prefer Not to Say' || post.bodyType === 'Rather not say') { // backward compatibility
+            // return <Text style={styles.preferNotToSay}>{post.bodyType}</Text>;
+            return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
         } else {
             return <Text style={styles.bodyInfoTitle}>{post.bodyType}</Text>;
         }
-
     }
 
     renderBoobs(post) {
         if (post.gender === 'Woman') {
-            if (post.bust === 'Prefer Not to Say') {
-                return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+            if (post.bust === 'Prefer Not to Say' || post.bodyType === 'Rather not say') {
+                // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+                return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
                 return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
             }
         }
 
         if (post.gender === 'Man') {
-            if (post.muscle === 'Prefer Not to Say') {
-                return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
+            if (post.muscle === 'Prefer Not to Say' || post.bodyType === 'Rather not say') {
+                // return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
+                return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
                 return <Text style={styles.bodyInfoTitle}>{Util.getMuscle(post.muscle)}</Text>;
             }
         }
 
         if (post.gender === 'Other' && post.bust) {
-            if (post.bust === 'Prefer Not to Say') {
-                return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+            if (post.bust === 'Prefer Not to Say' || post.bodyType === 'Rather not say') {
+                // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
+                return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
                 return <Text style={styles.bodyInfoTitle}>{post.bust + ' cup'}</Text>;
             }
@@ -3062,9 +3065,18 @@ const styles = StyleSheet.create({
         paddingTop: 3,
         paddingLeft: Theme.spacing.xSmall,
     },
+    /*
     preferNotToSay: {
         color: Theme.color.title,
         fontSize: 14,
+        fontFamily: "Roboto-Regular",
+        paddingTop: 3,
+        paddingLeft: Theme.spacing.xSmall,
+    },
+    */
+    ratherNotSay: {
+        color: Theme.color.title,
+        fontSize: 16,
         fontFamily: "Roboto-Regular",
         paddingTop: 3,
         paddingLeft: Theme.spacing.xSmall,
