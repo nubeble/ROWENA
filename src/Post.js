@@ -1976,7 +1976,7 @@ export default class Post extends React.Component<InjectedProps> {
                 const type = 200;
                 // const text = likeCount + " people called dibs on this girl";
                 // ToDo: ios review
-                const text = Platform.OS === 'android' ? likeCount + " people called dibs on this girl" : likeCount + " people called dibs on this post";
+                const text = Platform.OS === 'android' ? likeCount + " people likes this girl" : likeCount + " people likes this post";
                 const result = {
                     type, text
                 };
@@ -2000,7 +2000,7 @@ export default class Post extends React.Component<InjectedProps> {
             const type = 200;
             // const text = likeCount + " people called dibs on this girl";
             // ToDo: ios review
-            const text = Platform.OS === 'android' ? likeCount + " people called dibs on this girl" : likeCount + " people called dibs on this post";
+            const text = Platform.OS === 'android' ? likeCount + " people likes this girl" : likeCount + " people likes this post";
             const result = {
                 type, text
             };

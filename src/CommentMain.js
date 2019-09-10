@@ -275,7 +275,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         // ToDo: ios review
-                                        Platform.OS === 'android' ? "Let's find some hot cocks" : "Let's find new people"
+                                        Platform.OS === 'android' ? "Let's find some hot guys" : "Let's find new people"
                                     }
                                 </Text>
 

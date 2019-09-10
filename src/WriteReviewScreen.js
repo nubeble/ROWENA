@@ -20,6 +20,7 @@ export default class WriteReviewScreen extends React.Component {
         showPostLoader: false,
 
         name: null,
+        gender: null,
         picture: null,
         rating: 5,
 
@@ -44,7 +45,7 @@ export default class WriteReviewScreen extends React.Component {
 
         const { post, rating } = this.props.navigation.state.params;
 
-        this.setState({ name: post.name, picture: post.pictures.one.uri, rating });
+        this.setState({ name: post.name, gender: post.gender, picture: post.pictures.one.uri, rating });
 
         this.refs.rating.setPosition(rating); // bug in AirbnbRating
 
@@ -268,7 +269,7 @@ export default class WriteReviewScreen extends React.Component {
                             <Text style={styles.label}>
                                 {
                                     // ToDo: ios review
-                                    Platform.OS === 'android' ? 'How would your rate this girl, ' + this.state.name + '?' : 'How would your rate, ' + this.state.name + '?'
+                                    this.getTitle()
                                 }
                             </Text>
                             <AirbnbRating
@@ -346,6 +347,21 @@ export default class WriteReviewScreen extends React.Component {
                 />
             </View>
         );
+    }
+
+    getTitle() {
+        const gender = this.state.gender;
+
+        if (gender === 'Man')
+            return Platform.OS == 'ios' ? 'How would your rate this post, ' + this.state.name + '?' : 'How would your rate this guy, ' + this.state.name + '?';
+
+        if (gender === 'Woman')
+            return Platform.OS == 'ios' ? 'How would your rate this post, ' + this.state.name + '?' : 'How would your rate this chick, ' + this.state.name + '?';
+
+        if (gender === 'Other')
+            return Platform.OS == 'ios' ? 'How would your rate this post, ' + this.state.name + '?' : 'How would your rate this person, ' + this.state.name + '?';
+
+        return null;
     }
 
     showNotification(msg) {
