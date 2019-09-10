@@ -979,7 +979,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                         <TouchableOpacity onPress={() => {
                                             // nothing to do
                                         }}>
-                                            <Text style={{ fontSize: 16, color: Theme.color.text4, fontFamily: "Roboto-Light" }}>VERSION {Cons.version} ({Cons.buildNumber})</Text>
+                                            <Text style={{ fontSize: 16, color: Theme.color.text4, fontFamily: "Roboto-Light" }}>VERSION {Constants.platform.ios.buildNumber} ({Cons.buildNumber})</Text>
                                         </TouchableOpacity>
                                     </View>
                                 }

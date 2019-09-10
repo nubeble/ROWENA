@@ -533,7 +533,22 @@ const processPushNotification = async(function () {
 
     let messages = [];
     messages.push({
+        /**
+         * An Expo push token specifying the recipient of this message.
+         */
         to: targetToken,
+
+        /**
+         * A JSON object delivered to your app. It may be up to about 4KiB; the total
+         * notification payload sent to Apple and Google must be at most 4KiB or else
+         * you will get a "Message Too Big" error.
+         */
+        data: {
+            sender: fields.sender,
+            receiver: fields.receiver,
+            type: fields.type,
+            userData: userData
+        },
 
         /**
          * The title to display in the notification. Devices often display this in
@@ -547,19 +562,8 @@ const processPushNotification = async(function () {
          * The message to display in the notification
          */
         body: msg,
-        /**
-         * A JSON object delivered to your app. It may be up to about 4KiB; the total
-         * notification payload sent to Apple and Google must be at most 4KiB or else
-         * you will get a "Message Too Big" error.
-         */
-        data: {
-            sender: fields.sender,
-            receiver: fields.receiver,
-            type: fields.type,
-            userData: userData
-        },
 
-        //// iOS-specific fields ////
+        // iOS-specific fields
 
         /**
          * A sound to play when the recipient receives this notification. Specify
@@ -579,8 +583,9 @@ const processPushNotification = async(function () {
          */
         // badge?: number,
 
+        _displayInForeground: true,
 
-        //// Android-specific fields ////
+        // Android-specific fields
 
         /**
          * ID of the Notification Channel through which to display this notification
