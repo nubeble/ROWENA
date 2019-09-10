@@ -759,7 +759,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                                         <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
-                                        {/* Advertise Yourself or Your Friends */}
+                                        {/* Advertise Yourself or Your Girls */}
                                         <TouchableOpacity
                                             onPress={() => {
                                                 if (!profile) return;
