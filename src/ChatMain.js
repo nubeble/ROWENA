@@ -500,7 +500,7 @@ export default class ChatMain extends React.Component {
                             }}>
                                 {
                                     // ToDo: ios review
-                                    Platform.OS === 'android' ? "Why don't you message girls first?" : "Why don't you message them first?"
+                                    Platform.OS === 'android' ? "Why don't you message chicks first?" : "Why don't you message them first?"
                                 }
                             </Text>
 
