@@ -542,7 +542,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             }}>
                                 {
                                     // ToDo: ios review
-                                    Platform.OS === 'android' ? "No selected girls" : "No selected posts"
+                                    Platform.OS === 'android' ? "No selected chicks" : "No selected posts"
                                 }
                             </Text>
 
@@ -555,7 +555,7 @@ export default class SavedMain extends React.Component<InjectedProps> {
                             }}>
                                 {
                                     // ToDo: ios review
-                                    Platform.OS === 'android' ? "Let's find some chicks for your next trip" : "Let's find new people"
+                                    Platform.OS === 'android' ? "Let's find some chicks for your next trip" : "Let's find some new people"
                                 }
                             </Text>
 

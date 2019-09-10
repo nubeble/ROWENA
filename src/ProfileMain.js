@@ -739,7 +739,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
                                                     {
                                                         // ToDo: ios review
-                                                        Platform.OS === 'android' ? "Girls You've Reviewed" : "Posts You've Reviewed"
+                                                        Platform.OS === 'android' ? "Chicks You've Reviewed" : "Posts You've Reviewed"
                                                     }
                                                 </Text>
                                                 {
