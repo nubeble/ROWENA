@@ -436,16 +436,16 @@ export default class Explore extends React.Component<InjectedProps> {
 
         if (Platform.OS === "android") {
             if (this.state.feedSize > 0) {
-                titleText = 'Explore ' + Util.numberWithCommas(this.state.feedSize) + '+ girls in ' + this.state.titleText;
+                titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ girls in ' + this.state.titleText;
             } else {
-                titleText = 'Explore girls in ' + this.state.titleText;
+                titleText = 'Meet girls in ' + this.state.titleText;
             }
         } else {
             // ToDo: ios review
             if (this.state.feedSize > 0) {
-                titleText = 'Look around ' + Util.numberWithCommas(this.state.feedSize) + '+ ladies in ' + this.state.titleText;
+                titleText = 'Meet ' + Util.numberWithCommas(this.state.feedSize) + '+ people in ' + this.state.titleText;
             } else {
-                titleText = 'Look around ladies in ' + this.state.titleText;
+                titleText = 'Meet people in ' + this.state.titleText;
             }
         }
 

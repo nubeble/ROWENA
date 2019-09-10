@@ -1952,13 +1952,12 @@ export default class Post extends React.Component<InjectedProps> {
         const ranking = this.getRanking(chart); // total post >= 10 & average rating >= 4.0 & 1 <= ranking <= 10
         if (ranking !== 0) {
             const type = 100;
-            // const text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
             // ToDo: ios review
             const text = null;
             if (Platform.OS === "android") {
-                text = "#" + ranking + " of " + numberOfGirls + " girl in " + cityName;
+                text = "#" + ranking + " of " + numberOfGirls + " girls in " + cityName;
             } else {
-                text = "#" + ranking + " of " + numberOfGirls + " post in " + cityName;
+                text = "#" + ranking + " of " + numberOfGirls + " posts in " + cityName;
             }
 
             const result = {
