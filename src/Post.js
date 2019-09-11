@@ -1357,7 +1357,7 @@ export default class Post extends React.Component<InjectedProps> {
 
     renderBoobs(post) {
         if (post.gender === 'Woman') {
-            if (post.bust === 'Prefer Not to Say' || post.bodyType === 'Rather not say') {
+            if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') {
                 // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
                 return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
@@ -1366,7 +1366,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         if (post.gender === 'Man') {
-            if (post.muscle === 'Prefer Not to Say' || post.bodyType === 'Rather not say') {
+            if (post.muscle === 'Prefer Not to Say' || post.muscle === 'Rather not say') {
                 // return <Text style={styles.preferNotToSay}>{post.muscle}</Text>;
                 return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
@@ -1375,7 +1375,7 @@ export default class Post extends React.Component<InjectedProps> {
         }
 
         if (post.gender === 'Other' && post.bust) {
-            if (post.bust === 'Prefer Not to Say' || post.bodyType === 'Rather not say') {
+            if (post.bust === 'Prefer Not to Say' || post.bust === 'Rather not say') {
                 // return <Text style={styles.preferNotToSay}>{post.bust}</Text>;
                 return <Text style={styles.ratherNotSay}>{'Rather not say'}</Text>;
             } else {
