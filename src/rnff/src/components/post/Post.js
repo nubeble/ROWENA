@@ -5,6 +5,7 @@ import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from
 import Toast, { DURATION } from 'react-native-easy-toast';
 import { AirbnbRating } from '../../../../react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 
 import FeedStore from "../FeedStore";
@@ -114,19 +115,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         const distance = Util.getDistance(post.location, Vars.location);
         // const distance = Math.round(Math.random() * 100) % 20 + ' km away'; // Test
 
-        // defaultRating, averageRating
-        const averageRating = post.averageRating;
-        // const averageRating = 4.3 // Test
-
-        const integer = Math.floor(averageRating);
-
-        let number = '';
-        if (Number.isInteger(averageRating)) {
-            number = averageRating + '.0';
-        } else {
-            number = averageRating.toString();
-        }
-
         return (
             <TouchableWithoutFeedback
                 onPress={() => {
@@ -154,59 +142,103 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                         <Text style={styles.feedItemText}>{post.name}</Text>
                         <Text style={styles.feedItemText}>{distance}</Text>
                         {
-                            post.reviewCount > 0 ?
-                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                    <View style={{
-                                        flexDirection: 'row', alignItems: 'center',
-                                        marginLeft: 2,
-                                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
-                                    }}>
-                                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                            <AirbnbRating
-                                                count={5}
-                                                readOnly={true}
-                                                showRating={false}
-                                                defaultRating={integer}
-                                                size={12}
-                                                margin={1}
-                                            />
-                                            {/*
-                                            <AirbnbRating
-                                                count={5}
-                                                readOnly={true}
-                                                showRating={false}
-                                                defaultRating={4}
-                                                size={12}
-                                                margin={1}
-                                            />
-                                            */}
-                                        </View>
-                                        <Text style={styles.rating}>{number}</Text>
-                                        {/*
-                                        <Text style={styles.rating}>{'4.3'}</Text>
-                                        */}
-                                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
-                                        {/*
-                                        <Text style={styles.reviewCount}>{'27'}</Text>
-                                        */}
-                                    </View>
-                                </View>
-                                :
-                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                    <View style={{
-                                        marginLeft: 2,
-                                        width: 36, height: 21, borderRadius: 3,
-                                        backgroundColor: Theme.color.new,
-                                        justifyContent: 'center', alignItems: 'center'
-                                    }}>
-                                        <Text style={styles.new}>new</Text>
-                                    </View>
-                                </View>
+                            this.renderReview(post)
                         }
                     </View>
                 </View>
             </TouchableWithoutFeedback>
+        );
+    }
+
+    renderReview(post) {
+        // defaultRating, averageRating
+        const averageRating = post.averageRating;
+
+        const integer = Math.floor(averageRating);
+
+        let number = '';
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
+
+        let likesCount = 0;
+        if (post.likes) {
+            likesCount = post.likes.length;
+        }
+
+
+        if (post.reviewCount > 0) {
+            if (Platform.OS === 'android') {
+                // ratings & reviews
+                return (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            marginLeft: 2,
+                            width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
+                        }}>
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={integer}
+                                    size={12}
+                                    margin={1}
+                                />
+                            </View>
+                            <Text style={styles.rating}>{number}</Text>
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                        </View>
+                    </View>
+                );
+            } else { // ios
+                // likes & reviews
+                return (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            marginLeft: 2,
+                            width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
+                        }}>
+                            {/*
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={integer}
+                                    size={12}
+                                    margin={1}
+                                />
+                            </View>
+                            <Text style={styles.rating}>{number}</Text>
+                            */}
+                            <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={Theme.color.title} size={15} />
+                            <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                        </View>
+                    </View>
+                );
+            }
+        }
+
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                <View style={{
+                    marginLeft: 2,
+                    width: 36, height: 21, borderRadius: 3,
+                    backgroundColor: Theme.color.new,
+                    justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <Text style={styles.new}>new</Text>
+                </View>
+            </View>
         );
     }
 }

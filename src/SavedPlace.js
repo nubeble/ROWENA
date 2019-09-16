@@ -504,21 +504,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                             if (post) distance = Util.getDistance(post.location, Vars.location);
                             else distance = placeName;
 
-                            // defaultRating, averageRating
-                            let integer = 0;
-                            let number = '';
-
-                            const averageRating = item.averageRating;
-                            if (averageRating !== -1) {
-                                integer = Math.floor(averageRating);
-
-                                if (Number.isInteger(averageRating)) {
-                                    number = averageRating + '.0';
-                                } else {
-                                    number = averageRating.toString();
-                                }
-                            }
-
                             return (
                                 <TouchableOpacity activeOpacity={0.5}
                                     onPress={() => {
@@ -565,49 +550,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             <Text style={styles.feedItemText}>{item.name}</Text>
                                             <Text style={styles.feedItemText}>{distance}</Text>
                                             {
-                                                item.reviewCount === -1 &&
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                    <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
-                                                        <ActivityIndicator animating={true} size={'small'} color={Theme.color.selection} />
-                                                    </View>
-                                                </View>
-                                            }
-                                            {
-                                                item.reviewCount === 0 &&
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                    <View style={{
-                                                        marginLeft: 2,
-                                                        width: 36, height: 21, borderRadius: 3,
-                                                        backgroundColor: Theme.color.new,
-                                                        justifyContent: 'center', alignItems: 'center'
-                                                    }}>
-                                                        <Text style={styles.new}>new</Text>
-                                                    </View>
-                                                </View>
-                                            }
-                                            {
-                                                item.reviewCount > 0 &&
-                                                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                                    <View style={{
-                                                        flexDirection: 'row', alignItems: 'center',
-                                                        marginLeft: 2,
-                                                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
-                                                    }}>
-                                                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                                            <AirbnbRating
-                                                                count={5}
-                                                                readOnly={true}
-                                                                showRating={false}
-                                                                defaultRating={integer}
-                                                                size={12}
-                                                                margin={1}
-                                                            />
-                                                        </View>
-                                                        <Text style={styles.rating}>{number}</Text>
-                                                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                                        <Text style={styles.reviewCount}>{Util.numberWithCommas(item.reviewCount)}</Text>
-                                                    </View>
-                                                </View>
+                                                this.renderReview(item)
                                             }
                                         </View>
                                     </View>
@@ -713,6 +656,112 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                 />
             </View>
         );
+    }
+
+    renderReview(item) {
+        // defaultRating, averageRating
+        let integer = 0;
+        let number = '';
+
+        const averageRating = item.averageRating;
+        if (averageRating !== -1) {
+            integer = Math.floor(averageRating);
+
+            if (Number.isInteger(averageRating)) {
+                number = averageRating + '.0';
+            } else {
+                number = averageRating.toString();
+            }
+        }
+
+        let likesCount = 0;
+        if (item.likes) {
+            likesCount = item.likes.length;
+        }
+
+
+        if (item.reviewCount === -1) {
+            return (
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                    <View style={{ marginLeft: 2, width: 80, height: 21, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 8 }}>
+                        <ActivityIndicator animating={true} size={'small'} color={Theme.color.selection} />
+                    </View>
+                </View>
+            );
+        }
+
+        if (item.reviewCount === 0) {
+            return (
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                    <View style={{
+                        marginLeft: 2,
+                        width: 36, height: 21, borderRadius: 3,
+                        backgroundColor: Theme.color.new,
+                        justifyContent: 'center', alignItems: 'center'
+                    }}>
+                        <Text style={styles.new}>new</Text>
+                    </View>
+                </View>
+            );
+        }
+
+
+        if (Platform.OS === 'android') {
+            // ratings & reviews
+            return (
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                    <View style={{
+                        flexDirection: 'row', alignItems: 'center',
+                        marginLeft: 2,
+                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
+                    }}>
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={integer}
+                                size={12}
+                                margin={1}
+                            />
+                        </View>
+                        <Text style={styles.rating}>{number}</Text>
+                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                        <Text style={styles.reviewCount}>{Util.numberWithCommas(item.reviewCount)}</Text>
+                    </View>
+                </View>
+            );
+        } else { // ios
+            // likes & reviews
+            return (
+                <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                    <View style={{
+                        flexDirection: 'row', alignItems: 'center',
+                        marginLeft: 2,
+                        width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
+                    }}>
+                        {/*
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={integer}
+                                size={12}
+                                margin={1}
+                            />
+                        </View>
+                        <Text style={styles.rating}>{number}</Text>
+                        */}
+                        <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={Theme.color.title} size={15} />
+                        <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+
+                        <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                        <Text style={styles.reviewCount}>{Util.numberWithCommas(item.reviewCount)}</Text>
+                    </View>
+                </View>
+            );
+        }
     }
 
     handleRefresh = () => {

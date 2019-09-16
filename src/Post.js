@@ -863,13 +863,6 @@ export default class Post extends React.Component<InjectedProps> {
 
         const integer = Math.floor(averageRating);
 
-        let number = '';
-        if (Number.isInteger(averageRating)) {
-            number = averageRating + '.0';
-        } else {
-            number = averageRating.toString();
-        }
-
         let ageText = '';
         const age = Util.getAge(post.birthday);
         if (age > 1) {
@@ -1126,51 +1119,7 @@ export default class Post extends React.Component<InjectedProps> {
                     </View>
 
                     {
-                        post.reviewCount > 0 ?
-                            <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 2, paddingBottom: 8 - 4 }}>
-                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                    <AirbnbRating
-                                        count={5}
-                                        readOnly={true}
-                                        showRating={false}
-                                        defaultRating={integer}
-                                        size={16}
-                                        margin={1}
-                                    />
-                                    {/*
-                                    <AirbnbRating
-                                        count={5}
-                                        readOnly={true}
-                                        showRating={false}
-                                        defaultRating={4}
-                                        size={16}
-                                        margin={1}
-                                    />
-                                    */}
-                                </View>
-                                <Text style={styles.rating}>{number}</Text>
-                                {/*
-                                <Text style={styles.rating}>{'4.3'}</Text>
-                                */}
-                                <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                                <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
-                                {/*
-                                <Text style={styles.reviewCount}>{'27'}</Text>
-                                */}
-                            </View>
-                            :
-                            <View style={{ marginBottom: 9 - 4 }}>
-                                <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
-                                    <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
-                                    <Text style={{
-                                        color: '#f1c40f',
-                                        fontSize: 18,
-                                        fontFamily: "Roboto-Italic",
-                                        paddingLeft: 5,
-                                        paddingTop: 2
-                                    }}>Newly posted</Text>
-                                </View>
-                            </View>
+                        this.renderReview(post)
                     }
 
                     <TouchableOpacity activeOpacity={0.5}
@@ -1292,20 +1241,9 @@ export default class Post extends React.Component<InjectedProps> {
                     }
                 </View>
 
-                <View style={styles.writeReviewContainer}>
-                    <Text style={styles.ratingText}>Share your experience to help others</Text>
-                    <View style={{ marginBottom: Theme.spacing.small }}>
-                        <AirbnbRating
-                            ref='rating'
-                            onFinishRating={this.ratingCompleted}
-                            showRating={false}
-                            count={5}
-                            defaultRating={this.state.writeRating}
-                            size={32}
-                            margin={3}
-                        />
-                    </View>
-                </View>
+                {
+                    this.renderWriteReview()
+                }
 
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.small, marginBottom: Theme.spacing.small }} />
 
@@ -1600,6 +1538,98 @@ export default class Post extends React.Component<InjectedProps> {
         );
     }
 
+    renderReview(post) {
+        const averageRating = post.averageRating;
+
+        const integer = Math.floor(averageRating);
+
+        let number = '';
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
+
+        let likesCount = 0;
+        if (post.likes) {
+            likesCount = post.likes.length;
+        }
+
+
+        if (post.reviewCount > 0) {
+            if (Platform.OS === 'android') {
+                // ratings & reviews
+                return (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 2, paddingBottom: 8 - 4 }}>
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={integer}
+                                size={16}
+                                margin={1}
+                            />
+                        </View>
+                        <Text style={styles.rating}>{number}</Text>
+                        <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
+                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                    </View>
+                );
+            } else { // ios
+                let reviewCount = "";
+                if (post.reviewCount > 1) {
+                    reviewCount = Util.numberWithCommas(post.reviewCount) + " reviews";
+                } else {
+                    reviewCount = Util.numberWithCommas(post.reviewCount) + " review";
+                }
+
+                // likes & reviews
+                return (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 2, paddingBottom: 8 - 4 }}>
+                        {/*
+                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={integer}
+                                size={16}
+                                margin={1}
+                            />
+                        </View>
+                        <Text style={styles.rating}>{number}</Text>
+                        */}
+                        {/*
+                        <Ionicons style={{ marginLeft: 1.5, marginTop: 3 }} name="md-heart-empty" color={Theme.color.title} size={20} />
+                        <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+
+                        <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
+                        <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
+                        */}
+                        <AntDesign style={{ marginLeft: 1.5, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
+                        <Text style={[styles.reviewCount, { marginLeft: 6.5 }]}>{reviewCount}</Text>
+                    </View>
+                );
+            }
+        }
+
+        return (
+            <View style={{ marginBottom: 9 - 4 }}>
+                <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
+                    <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
+                    <Text style={{
+                        color: '#f1c40f',
+                        fontSize: 18,
+                        fontFamily: "Roboto-Italic",
+                        paddingLeft: 5,
+                        paddingTop: 2
+                    }}>Newly posted</Text>
+                </View>
+            </View>
+        );
+    }
+
     renderChart(data) {
         // this should never happen
         if (!data) return null;
@@ -1628,137 +1658,114 @@ export default class Post extends React.Component<InjectedProps> {
             );
         }
 
-        const cityName = data.cityName;
-        const numberOfGirls = data.numberOfGirls;
-        const averageRating = data.averageRating;
-        const reviewCount = data.reviewCount;
-        const stats = data.reviewStats; // 5
-        // const ranking = data.ranking;
-        const statement = this.getStatement(data);
+        if (Platform.OS === 'ios') {
+            let reviewCountText = '';
+            const reviewCount = data.reviewCount;
+            if (reviewCount > 1) {
+                reviewCountText = reviewCount.toString() + " Reviews";
+            } else {
+                reviewCountText = reviewCount.toString() + " Review";
+            }
 
-        /*
-        // const cityName = 'Puerto Vallarta'; // string
-        // const numberOfGirls = 10; // number
-        const averageRating = 4.2; // number
-        const reviewCount = 60; // number, 15+27+14+3+1
-        const stats = [
-            15, 27, 14, 3, 1
-        ];
-        // const ranking = 2; // number
-        */
-
-        // calc bar size
-        let rate = [];
-        for (let i = 0; i < stats.length; i++) {
-            let value = Math.round(stats[i] / reviewCount * 100);
-            let percentage = value.toString() + '%';
-            rate[i] = percentage;
-        }
-
-        // calc star number (0, 1, 2, 3, 4, 5)
-        /*
-        const _number = Math.floor(averageRating);
-        const _decimal = averageRating - _number; // if 1.0 - 1 = 0 or 0.0 ?
-        if (_decimal <= 0.2) {
-
-        } else if (0.8 <= _decimal) {
-
-        } else {
-
-        }
-        */
-
-        const integer = Math.floor(averageRating);
-
-        let number = '';
-        if (Number.isInteger(averageRating)) {
-            number = averageRating + '.0';
-        } else {
-            number = averageRating.toString();
-        }
-
-        let reviewCountText = '';
-        if (reviewCount > 1) {
-            reviewCountText = "(" + reviewCount.toString() + " reviews)";
-        } else {
-            reviewCountText = "(" + reviewCount.toString() + " review)";
-        }
-
-        return (
-            <View>
-                {/*
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
-                    <Text style={{
-                        color: Theme.color.text2,
-                        fontSize: 34,
-                        paddingTop: 16,
-                        fontFamily: "Roboto-Medium",
-                        // backgroundColor: 'green',
-                    }}>{averageRating}</Text>
-
-                    <View style={{ marginLeft: 6, alignItems: 'flex-start', justifyContent: 'space-between' }}>
-                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                            <AirbnbRating
-                                count={5}
-                                readOnly={true}
-                                showRating={false}
-                                defaultRating={4}
-                                size={14}
-                                margin={1}
-                            />
-                        </View>
-                        <View style={{ marginLeft: 2, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                            <Ionicons name='md-person' color={Theme.color.text4} size={14} />
-                            <Text style={{
-                                paddingLeft: 5,
-                                color: Theme.color.text4,
-                                fontSize: 12,
-                                fontFamily: "Roboto-Light",
-                                // backgroundColor: 'green'
-                            }}>{reviewCount.toString() + " total"}</Text>
-                        </View>
-                    </View>
-
-                    <View style={{ flex: 1, justifyContent: 'flex-end', alignItems: 'center' }}>
-                        <Text style={{
-                            marginLeft: 12,
-                            color: Theme.color.text3,
-                            fontSize: 16,
-                            fontFamily: "Roboto-Regular",
-                            // backgroundColor: 'green',
-                            // paddingTop: 12
-                        }}>{"#" + ranking.toString() + " of " + numberOfGirls.toString() + " girls in " + cityName}</Text>
-                    </View>
-                </View>
-                */}
+            return (
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 8 }}>
                     <Text style={{
                         color: Theme.color.text2,
                         fontSize: 28,
                         lineHeight: 34,
                         fontFamily: "Roboto-Medium",
-                        // backgroundColor: 'green',
                         marginRight: 8
-                    }}>{number}</Text>
-                    <View style={{ width: 'auto', alignItems: 'flex-start', marginRight: 12 }}>
-                        <AirbnbRating
-                            count={5}
-                            readOnly={true}
-                            showRating={false}
-                            defaultRating={integer}
-                            size={24}
-                            margin={2}
-                        />
-                    </View>
-                    <Text style={{
-                        // paddingLeft: 5,
-                        color: Theme.color.text2,
-                        fontSize: 18,
-                        lineHeight: 34,
-                        fontFamily: "Roboto-Light",
-                        // backgroundColor: 'green'
                     }}>{reviewCountText}</Text>
-                    {/*
+                </View>
+            );
+        } else {
+
+            const cityName = data.cityName;
+            const numberOfGirls = data.numberOfGirls;
+            const averageRating = data.averageRating;
+            const reviewCount = data.reviewCount;
+            const stats = data.reviewStats; // 5
+            // const ranking = data.ranking;
+            const statement = this.getStatement(data);
+
+            /*
+            // const cityName = 'Puerto Vallarta'; // string
+            // const numberOfGirls = 10; // number
+            const averageRating = 4.2; // number
+            const reviewCount = 60; // number, 15+27+14+3+1
+            const stats = [
+                15, 27, 14, 3, 1
+            ];
+            // const ranking = 2; // number
+            */
+
+            // calc bar size
+            let rate = [];
+            for (let i = 0; i < stats.length; i++) {
+                let value = Math.round(stats[i] / reviewCount * 100);
+                let percentage = value.toString() + '%';
+                rate[i] = percentage;
+            }
+
+            // calc star number (0, 1, 2, 3, 4, 5)
+            /*
+            const _number = Math.floor(averageRating);
+            const _decimal = averageRating - _number; // if 1.0 - 1 = 0 or 0.0 ?
+            if (_decimal <= 0.2) {
+    
+            } else if (0.8 <= _decimal) {
+    
+            } else {
+    
+            }
+            */
+
+            const integer = Math.floor(averageRating);
+
+            let number = '';
+            if (Number.isInteger(averageRating)) {
+                number = averageRating + '.0';
+            } else {
+                number = averageRating.toString();
+            }
+
+            let reviewCountText = '';
+            if (reviewCount > 1) {
+                reviewCountText = "(" + reviewCount.toString() + " Reviews)";
+            } else {
+                reviewCountText = "(" + reviewCount.toString() + " Review)";
+            }
+
+            return (
+                <View>
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 8 }}>
+                        <Text style={{
+                            color: Theme.color.text2,
+                            fontSize: 28,
+                            lineHeight: 34,
+                            fontFamily: "Roboto-Medium",
+                            // backgroundColor: 'green',
+                            marginRight: 8
+                        }}>{number}</Text>
+                        <View style={{ width: 'auto', alignItems: 'flex-start', marginRight: 12 }}>
+                            <AirbnbRating
+                                count={5}
+                                readOnly={true}
+                                showRating={false}
+                                defaultRating={integer}
+                                size={24}
+                                margin={2}
+                            />
+                        </View>
+                        <Text style={{
+                            // paddingLeft: 5,
+                            color: Theme.color.text2,
+                            fontSize: 18,
+                            lineHeight: 34,
+                            fontFamily: "Roboto-Light",
+                            // backgroundColor: 'green'
+                        }}>{reviewCountText}</Text>
+                        {/*
                     <Text style={{
                         color: Theme.color.text2,
                         paddingTop: 6,
@@ -1767,170 +1774,171 @@ export default class Post extends React.Component<InjectedProps> {
                         // backgroundColor: 'green'
                     }}>{reviewCountText}</Text>
                     */}
+                    </View>
+
+                    <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
+                        {
+                            statement.type === 100 &&
+                            <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                                <Ionicons name='ios-trophy' color={Theme.color.text3} size={16} />
+                            </View>
+                        }
+                        {
+                            statement.type === 200 &&
+                            <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                                <Ionicons name="md-heart" color={Theme.color.text3} size={16} />
+                            </View>
+                        }
+                        {
+                            statement.type === 300 &&
+                            <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                                <Ionicons name='md-people' color={Theme.color.text3} size={16} />
+                            </View>
+                        }
+                        {
+                            statement.type === 400 &&
+                            <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
+                                <Ionicons name='md-people' color={Theme.color.text3} size={16} />
+                            </View>
+                        }
+                        <Text style={{
+                            marginLeft: 4,
+                            color: Theme.color.text3,
+                            fontSize: 16,
+                            fontFamily: "Roboto-Regular",
+                            // paddingTop: 12
+                        }}>{statement.text}</Text>
+                    </View>
+
+                    <View style={{ marginBottom: 18 }}>
+                        <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                            <Text style={styles.ratingText1}>{"5.0"}</Text>
+                            <View style={{
+                                marginLeft: 10,
+                                marginRight: 10,
+                                // width: barWidth,
+                                flex: 1,
+                                height: 14,
+                                backgroundColor: Theme.color.chartBarBackground,
+                                borderRadius: 14
+                            }}>
+
+                                {/* draw bar */}
+                                <View style={{
+                                    flex: 1,
+                                    width: rate[0],
+
+                                    backgroundColor: Theme.color.chartBar,
+                                    borderRadius: 14
+                                }} />
+                            </View>
+                            <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[0])}</Text>
+                        </View>
+
+                        <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                            <Text style={styles.ratingText1}>{"4.0"}</Text>
+                            <View style={{
+                                marginLeft: 10,
+                                marginRight: 10,
+                                // width: barWidth,
+                                flex: 1,
+                                height: 14,
+                                backgroundColor: Theme.color.chartBarBackground,
+                                borderRadius: 14
+                            }}>
+
+                                {/* draw bar */}
+                                <View style={{
+                                    flex: 1,
+                                    width: rate[1],
+
+                                    backgroundColor: Theme.color.chartBar,
+                                    borderRadius: 14
+                                }} />
+                            </View>
+                            <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[1])}</Text>
+                        </View>
+
+                        <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                            <Text style={styles.ratingText1}>{"3.0"}</Text>
+                            <View style={{
+                                marginLeft: 10,
+                                marginRight: 10,
+                                // width: barWidth,
+                                flex: 1,
+                                height: 14,
+                                backgroundColor: Theme.color.chartBarBackground,
+                                borderRadius: 14
+                            }}>
+
+                                {/* draw bar */}
+                                <View style={{
+                                    flex: 1,
+                                    width: rate[2],
+
+                                    backgroundColor: Theme.color.chartBar,
+                                    borderRadius: 14
+                                }} />
+                            </View>
+                            <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[2])}</Text>
+                        </View>
+
+                        <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                            <Text style={styles.ratingText1}>{"2.0"}</Text>
+                            <View style={{
+                                marginLeft: 10,
+                                marginRight: 10,
+                                // width: barWidth,
+                                flex: 1,
+                                height: 14,
+                                backgroundColor: Theme.color.chartBarBackground,
+                                borderRadius: 14
+                            }}>
+
+                                {/* draw bar */}
+                                <View style={{
+                                    flex: 1,
+                                    width: rate[3],
+
+                                    backgroundColor: Theme.color.chartBar,
+                                    borderRadius: 14
+                                }} />
+                            </View>
+                            <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[3])}</Text>
+                        </View>
+
+                        <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
+                            <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
+                            <Text style={styles.ratingText1}>{"1.0"}</Text>
+                            <View style={{
+                                marginLeft: 10,
+                                marginRight: 10,
+                                // width: barWidth,
+                                flex: 1,
+                                height: 14,
+                                backgroundColor: Theme.color.chartBarBackground,
+                                borderRadius: 14
+                            }}>
+
+                                {/* draw bar */}
+                                <View style={{
+                                    flex: 1,
+                                    width: rate[4],
+
+                                    backgroundColor: Theme.color.chartBar,
+                                    borderRadius: 14
+                                }} />
+                            </View>
+                            <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[4])}</Text>
+                        </View>
+                    </View>
                 </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 20 }}>
-                    {
-                        statement.type === 100 &&
-                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name='ios-trophy' color={Theme.color.text3} size={16} />
-                        </View>
-                    }
-                    {
-                        statement.type === 200 &&
-                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name="md-heart" color={Theme.color.text3} size={16} />
-                        </View>
-                    }
-                    {
-                        statement.type === 300 &&
-                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name='md-people' color={Theme.color.text3} size={16} />
-                        </View>
-                    }
-                    {
-                        statement.type === 400 &&
-                        <View style={{ width: 20, height: 20, justifyContent: "center", alignItems: "center" }}>
-                            <Ionicons name='md-people' color={Theme.color.text3} size={16} />
-                        </View>
-                    }
-                    <Text style={{
-                        marginLeft: 4,
-                        color: Theme.color.text3,
-                        fontSize: 16,
-                        fontFamily: "Roboto-Regular",
-                        // paddingTop: 12
-                    }}>{statement.text}</Text>
-                </View>
-
-                <View style={{ marginBottom: 18 }}>
-                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
-                        <Text style={styles.ratingText1}>{"5.0"}</Text>
-                        <View style={{
-                            marginLeft: 10,
-                            marginRight: 10,
-                            // width: barWidth,
-                            flex: 1,
-                            height: 14,
-                            backgroundColor: Theme.color.chartBarBackground,
-                            borderRadius: 14
-                        }}>
-
-                            {/* draw bar */}
-                            <View style={{
-                                flex: 1,
-                                width: rate[0],
-
-                                backgroundColor: Theme.color.chartBar,
-                                borderRadius: 14
-                            }} />
-                        </View>
-                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[0])}</Text>
-                    </View>
-
-                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
-                        <Text style={styles.ratingText1}>{"4.0"}</Text>
-                        <View style={{
-                            marginLeft: 10,
-                            marginRight: 10,
-                            // width: barWidth,
-                            flex: 1,
-                            height: 14,
-                            backgroundColor: Theme.color.chartBarBackground,
-                            borderRadius: 14
-                        }}>
-
-                            {/* draw bar */}
-                            <View style={{
-                                flex: 1,
-                                width: rate[1],
-
-                                backgroundColor: Theme.color.chartBar,
-                                borderRadius: 14
-                            }} />
-                        </View>
-                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[1])}</Text>
-                    </View>
-
-                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
-                        <Text style={styles.ratingText1}>{"3.0"}</Text>
-                        <View style={{
-                            marginLeft: 10,
-                            marginRight: 10,
-                            // width: barWidth,
-                            flex: 1,
-                            height: 14,
-                            backgroundColor: Theme.color.chartBarBackground,
-                            borderRadius: 14
-                        }}>
-
-                            {/* draw bar */}
-                            <View style={{
-                                flex: 1,
-                                width: rate[2],
-
-                                backgroundColor: Theme.color.chartBar,
-                                borderRadius: 14
-                            }} />
-                        </View>
-                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[2])}</Text>
-                    </View>
-
-                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
-                        <Text style={styles.ratingText1}>{"2.0"}</Text>
-                        <View style={{
-                            marginLeft: 10,
-                            marginRight: 10,
-                            // width: barWidth,
-                            flex: 1,
-                            height: 14,
-                            backgroundColor: Theme.color.chartBarBackground,
-                            borderRadius: 14
-                        }}>
-
-                            {/* draw bar */}
-                            <View style={{
-                                flex: 1,
-                                width: rate[3],
-
-                                backgroundColor: Theme.color.chartBar,
-                                borderRadius: 14
-                            }} />
-                        </View>
-                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[3])}</Text>
-                    </View>
-
-                    <View style={{ width: '100%', paddingHorizontal: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 2 }}>
-                        <Ionicons name='md-star' color={Theme.color.text4} size={14} style={{ marginRight: 4 }} />
-                        <Text style={styles.ratingText1}>{"1.0"}</Text>
-                        <View style={{
-                            marginLeft: 10,
-                            marginRight: 10,
-                            // width: barWidth,
-                            flex: 1,
-                            height: 14,
-                            backgroundColor: Theme.color.chartBarBackground,
-                            borderRadius: 14
-                        }}>
-
-                            {/* draw bar */}
-                            <View style={{
-                                flex: 1,
-                                width: rate[4],
-
-                                backgroundColor: Theme.color.chartBar,
-                                borderRadius: 14
-                            }} />
-                        </View>
-                        <Text style={styles.ratingText2}>{Util.numberWithCommas(stats[4])}</Text>
-                    </View>
-                </View>
-            </View>
-        );
+            );
+        }
     }
 
     getStatement(chart) {
@@ -2091,8 +2099,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReviews(reviews) {
-        // console.log('jdub', 'Post.renderReviews');
-
         // if (reviews === undefined) {
         if (!reviews) {
             // render skeleton
@@ -2101,56 +2107,104 @@ export default class Post extends React.Component<InjectedProps> {
 
             let reviewArray = [];
 
-            for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
-                reviewArray.push(
-                    <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140 + 10}>
-                            <Svg.Rect
-                                x={0}
-                                y={10}
-                                width={100}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={width - 100}
-                                y={11}
-                                width={100}
-                                height={6}
-                            />
-                            <Svg.Rect
-                                x={0}
-                                y={36}
-                                width={'100%'}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={0}
-                                y={36 + 8 + 12}
-                                width={'60%'}
-                                height={8}
-                            />
-                            <Svg.Circle
-                                cx={24}
-                                cy={106}
-                                r={24}
-                            />
-                            <Svg.Rect
-                                x={24 * 2 + 16}
-                                y={106 - 8 - 6}
-                                width={80}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={24 * 2 + 16}
-                                y={106 + 6}
-                                width={80}
-                                height={8}
-                            />
-                        </SvgAnimatedLinearGradient>
+            if (Platform.OS === 'android') {
+                for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
+                    reviewArray.push(
+                        <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
+                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140 + 10}>
+                                <Svg.Rect
+                                    x={0}
+                                    y={10}
+                                    width={100}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={width - 100}
+                                    y={11}
+                                    width={100}
+                                    height={6}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36}
+                                    width={'100%'}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36 + 8 + 12}
+                                    width={'60%'}
+                                    height={8}
+                                />
+                                <Svg.Circle
+                                    cx={24}
+                                    cy={106}
+                                    r={24}
+                                />
+                                <Svg.Rect
+                                    x={24 * 2 + 16}
+                                    y={106 - 8 - 6}
+                                    width={80}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={24 * 2 + 16}
+                                    y={106 + 6}
+                                    width={80}
+                                    height={8}
+                                />
+                            </SvgAnimatedLinearGradient>
 
-                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
-                    </View>
-                );
+                            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                        </View>
+                    );
+                }
+            } else {
+                for (let i = 0; i < DEFAULT_REVIEW_COUNT; i++) {
+                    reviewArray.push(
+                        <View style={{ alignItems: 'center', paddingTop: 10 }} key={i}>
+                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={140 + 10}>
+                                <Svg.Rect
+                                    x={width - 100}
+                                    y={11}
+                                    width={100}
+                                    height={6}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36}
+                                    width={'100%'}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36 + 8 + 12}
+                                    width={'60%'}
+                                    height={8}
+                                />
+                                <Svg.Circle
+                                    cx={24}
+                                    cy={106}
+                                    r={24}
+                                />
+                                <Svg.Rect
+                                    x={24 * 2 + 16}
+                                    y={106 - 8 - 6}
+                                    width={80}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={24 * 2 + 16}
+                                    y={106 + 6}
+                                    width={80}
+                                    height={8}
+                                />
+                            </SvgAnimatedLinearGradient>
+
+                            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                        </View>
+                    );
+                }
             }
 
             return (
@@ -2218,24 +2272,30 @@ export default class Post extends React.Component<InjectedProps> {
 
             reviewArray.push(
                 <View key={_review.id} onLayout={(event) => this.onItemLayout(event, index)}>
+                    {
+                        Platform.OS === 'android' ?
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: Theme.spacing.xSmall }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                        <AirbnbRating
+                                            count={5}
+                                            readOnly={true}
+                                            showRating={false}
+                                            defaultRating={_review.rating}
+                                            size={12}
+                                            margin={1}
+                                        />
+                                    </View>
+                                    <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+                                </View>
 
-                    <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: Theme.spacing.xSmall }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                <AirbnbRating
-                                    count={5}
-                                    readOnly={true}
-                                    showRating={false}
-                                    defaultRating={_review.rating}
-                                    size={12}
-                                    margin={1}
-                                />
+                                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
                             </View>
-                            <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
-                        </View>
-
-                        <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                    </View>
+                            :
+                            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginTop: Theme.spacing.xSmall }}>
+                                <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                            </View>
+                    }
 
                     <View style={{ paddingTop: Theme.spacing.tiny, paddingBottom: Theme.spacing.xSmall }}>
                         <ReadMore
@@ -2423,6 +2483,92 @@ export default class Post extends React.Component<InjectedProps> {
                 <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
             </View>
         );
+    }
+
+    renderWriteReview() {
+        if (Platform.OS === 'android') {
+            return (
+                <View style={styles.writeReviewContainer}>
+                    <Text style={styles.ratingText}>Share your experience to help others</Text>
+                    <View style={{ marginBottom: Theme.spacing.small }}>
+                        <AirbnbRating
+                            ref='rating'
+                            onFinishRating={this.ratingCompleted}
+                            showRating={false}
+                            count={5}
+                            defaultRating={this.state.writeRating}
+                            size={32}
+                            margin={3}
+                        />
+                    </View>
+                </View>
+            );
+        } else { // ios
+            const { profile } = this.props.profileStore;
+
+            const picture = profile.picture.uri;
+
+            const avatarName = Util.getAvatarName(profile.name);
+            const avatarColor = Util.getAvatarColor(profile.uid);
+            let nameFontSize = 22;
+            let nameLineHeight = 26;
+
+            if (avatarName.length === 1) {
+                nameFontSize = 24;
+                nameLineHeight = 28;
+            } else if (avatarName.length === 2) {
+                nameFontSize = 22;
+                nameLineHeight = 26;
+            } else if (avatarName.length === 3) {
+                nameFontSize = 20;
+                nameLineHeight = 24;
+            }
+
+            let margintop = -8;
+            if (this.state.chartInfo.reviewCount === 0) {
+                margintop = 12;
+            }
+
+            return (
+                <View style={{ paddingHorizontal: Theme.spacing.small + 10, marginTop: margintop, marginBottom: 10, flexDirection: 'row', alignItems: 'center' }}>
+                    {
+                        picture ?
+                            <SmartImage
+                                style={{ width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2 }}
+                                showSpinner={false}
+                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={picture}
+                            />
+                            :
+                            <View
+                                style={{
+                                    width: profilePictureWidth, height: profilePictureWidth, borderRadius: profilePictureWidth / 2,
+                                    backgroundColor: avatarColor, alignItems: 'center', justifyContent: 'center'
+                                }}
+                            >
+                                <Text style={{ color: 'white', fontSize: nameFontSize, lineHeight: nameLineHeight, fontFamily: "Roboto-Medium" }}>
+                                    {avatarName}
+                                </Text>
+                            </View>
+                    }
+                    <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
+                        <View style={{ width: '100%', height: 38, backgroundColor: Theme.color.component, borderRadius: 5 }}>
+                            <TouchableOpacity
+                                style={{ flex: 1, justifyContent: 'center', paddingLeft: 8 }}
+                                onPress={() => {
+                                    // ToDo
+                                    // this.openSearch();
+                                }}
+                            >
+                                <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "rgb(160, 160, 160)" }}
+                                    numberOfLines={1}
+                                >{'Add a comment...'}</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            );
+        }
     }
 
     onLayoutReviewsContainer = (event) => {

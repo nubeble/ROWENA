@@ -399,23 +399,30 @@ export default class ReadAllReviewsScreen extends React.Component {
 
         return (
             <View style={{ paddingTop: 20, paddingBottom: 16 }} onLayout={(event) => this.onItemLayout(event, index)}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                            <AirbnbRating
-                                count={5}
-                                readOnly={true}
-                                showRating={false}
-                                defaultRating={_review.rating}
-                                size={14}
-                                margin={1}
-                            />
-                        </View>
-                        <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
-                    </View>
+                {
+                    Platform.OS === 'android' ?
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                    <AirbnbRating
+                                        count={5}
+                                        readOnly={true}
+                                        showRating={false}
+                                        defaultRating={_review.rating}
+                                        size={14}
+                                        margin={1}
+                                    />
+                                </View>
+                                <Text style={styles.reviewRating}>{_review.rating + '.0'}</Text>
+                            </View>
 
-                    <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
-                </View>
+                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                        </View>
+                        :
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end' }}>
+                            <Text style={styles.reviewDate}>{moment(_review.timestamp).fromNow()}</Text>
+                        </View>
+                }
 
                 <View style={{ paddingTop: 10, paddingBottom: 6 }}>
                     <TouchableOpacity activeOpacity={0.5}
@@ -602,64 +609,120 @@ export default class ReadAllReviewsScreen extends React.Component {
 
             let reviewArray = [];
 
-            for (let i = 0; i < 5; i++) {
-                reviewArray.push(
-                    <View style={{ alignItems: 'center', paddingTop: 16 }} key={i}>
-                        <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={162 + 16}>
-                            <Svg.Rect
-                                x={0}
-                                y={10}
-                                width={100}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={width - 100}
-                                y={11}
-                                width={100}
-                                height={6}
-                            />
-                            <Svg.Rect
-                                x={0}
-                                y={36}
-                                width={'100%'}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={0}
-                                y={36 + 8 + 12}
-                                width={'100%'}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={0}
-                                y={36 + 8 + 12 + 8 + 12}
-                                width={'60%'}
-                                height={8}
-                            />
-                            <Svg.Circle
-                                cx={26}
-                                cy={126}
-                                r={26}
-                            />
-                            <Svg.Rect
-                                x={26 * 2 + 16}
-                                y={126 - 8 - 6}
-                                width={80}
-                                height={8}
-                            />
-                            <Svg.Rect
-                                x={26 * 2 + 16}
-                                y={126 + 6}
-                                width={80}
-                                height={8}
-                            />
-                        </SvgAnimatedLinearGradient>
-                        {
-                            i !== 4 &&
-                            <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
-                        }
-                    </View>
-                );
+            if (Platform.OS === 'android') {
+                for (let i = 0; i < 5; i++) {
+                    reviewArray.push(
+                        <View style={{ alignItems: 'center', paddingTop: 16 }} key={i}>
+                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={162 + 16}>
+                                <Svg.Rect
+                                    x={0}
+                                    y={10}
+                                    width={100}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={width - 100}
+                                    y={11}
+                                    width={100}
+                                    height={6}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36}
+                                    width={'100%'}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36 + 8 + 12}
+                                    width={'100%'}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36 + 8 + 12 + 8 + 12}
+                                    width={'60%'}
+                                    height={8}
+                                />
+                                <Svg.Circle
+                                    cx={26}
+                                    cy={126}
+                                    r={26}
+                                />
+                                <Svg.Rect
+                                    x={26 * 2 + 16}
+                                    y={126 - 8 - 6}
+                                    width={80}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={26 * 2 + 16}
+                                    y={126 + 6}
+                                    width={80}
+                                    height={8}
+                                />
+                            </SvgAnimatedLinearGradient>
+                            {
+                                i !== 4 &&
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                            }
+                        </View>
+                    );
+                }
+            } else {
+                for (let i = 0; i < 5; i++) {
+                    reviewArray.push(
+                        <View style={{ alignItems: 'center', paddingTop: 16 }} key={i}>
+                            <SvgAnimatedLinearGradient primaryColor={Theme.color.skeleton1} secondaryColor={Theme.color.skeleton2} width={width} height={162 + 16}>
+                                <Svg.Rect
+                                    x={width - 100}
+                                    y={11}
+                                    width={100}
+                                    height={6}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36}
+                                    width={'100%'}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36 + 8 + 12}
+                                    width={'100%'}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={0}
+                                    y={36 + 8 + 12 + 8 + 12}
+                                    width={'60%'}
+                                    height={8}
+                                />
+                                <Svg.Circle
+                                    cx={26}
+                                    cy={126}
+                                    r={26}
+                                />
+                                <Svg.Rect
+                                    x={26 * 2 + 16}
+                                    y={126 - 8 - 6}
+                                    width={80}
+                                    height={8}
+                                />
+                                <Svg.Rect
+                                    x={26 * 2 + 16}
+                                    y={126 + 6}
+                                    width={80}
+                                    height={8}
+                                />
+                            </SvgAnimatedLinearGradient>
+                            {
+                                i !== 4 &&
+                                <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: width }} />
+                            }
+                        </View>
+                    );
+                }
             }
 
             return (

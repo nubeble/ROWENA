@@ -1555,18 +1555,6 @@ export default class Intro extends React.Component<InjectedProps> {
         let placeName = feed.placeName;
         // placeName = Util.getPlaceName(placeName);
 
-        // defaultRating, averageRating
-        const averageRating = feed.averageRating;
-
-        const integer = Math.floor(averageRating);
-
-        let number = '';
-        if (Number.isInteger(averageRating)) {
-            number = averageRating + '.0';
-        } else {
-            number = averageRating.toString();
-        }
-
         return (
             <TouchableOpacity activeOpacity={1}
                 onPress={async () => {
@@ -1630,42 +1618,103 @@ export default class Intro extends React.Component<InjectedProps> {
                     <Text style={styles.feedItemText}>{feed.name}</Text>
                     <Text style={styles.feedItemText}>{placeName}</Text>
                     {
-                        feed.reviewCount > 0 ?
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                <View style={{
-                                    flexDirection: 'row', alignItems: 'center',
-                                    marginLeft: 2,
-                                    width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
-                                }}>
-                                    <View style={{ width: 'auto', alignItems: 'flex-start' }}>
-                                        <AirbnbRating
-                                            count={5}
-                                            readOnly={true}
-                                            showRating={false}
-                                            defaultRating={integer}
-                                            size={12}
-                                            margin={1}
-                                        />
-                                    </View>
-                                    <Text style={styles.rating}>{number}</Text>
-                                    <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
-                                    <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
-                                </View>
-                            </View>
-                            :
-                            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
-                                <View style={{
-                                    marginLeft: 2,
-                                    width: 36, height: 21, borderRadius: 3,
-                                    backgroundColor: Theme.color.new,
-                                    justifyContent: 'center', alignItems: 'center'
-                                }}>
-                                    <Text style={styles.new}>new</Text>
-                                </View>
-                            </View>
+                        this.renderReview(feed)
                     }
                 </View>
             </TouchableOpacity>
+        );
+    }
+
+    renderReview(feed) {
+        // defaultRating, averageRating
+        const averageRating = feed.averageRating;
+
+        const integer = Math.floor(averageRating);
+
+        let number = '';
+        if (Number.isInteger(averageRating)) {
+            number = averageRating + '.0';
+        } else {
+            number = averageRating.toString();
+        }
+
+        let likesCount = 0;
+        if (feed.likes) {
+            likesCount = feed.likes.length;
+        }
+
+
+        if (feed.reviewCount > 0) {
+            if (Platform.OS === 'android') {
+                // ratings & reviews
+                return (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            marginLeft: 2,
+                            width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
+                        }}>
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={integer}
+                                    size={12}
+                                    margin={1}
+                                />
+                            </View>
+                            <Text style={styles.rating}>{number}</Text>
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
+                        </View>
+                    </View>
+                );
+            } else { // ios
+                // likes & reviews
+                return (
+                    <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                        <View style={{
+                            flexDirection: 'row', alignItems: 'center',
+                            marginLeft: 2,
+                            width: 'auto', height: 'auto', borderRadius: 3, // paddingHorizontal: 4, backgroundColor: 'rgba(40, 40, 40, 0.6)'
+                        }}>
+                            {/*
+                            <View style={{ width: 'auto', alignItems: 'flex-start' }}>
+                                <AirbnbRating
+                                    count={5}
+                                    readOnly={true}
+                                    showRating={false}
+                                    defaultRating={integer}
+                                    size={12}
+                                    margin={1}
+                                />
+                            </View>
+                            <Text style={styles.rating}>{number}</Text>
+                            */}
+                            <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={Theme.color.title} size={15} />
+                            <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
+
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                            <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
+                        </View>
+                    </View>
+                );
+            }
+        }
+
+        // new icon
+        return (
+            <View style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 2, paddingBottom: 2 }}>
+                <View style={{
+                    marginLeft: 2,
+                    width: 36, height: 21, borderRadius: 3,
+                    backgroundColor: Theme.color.new,
+                    justifyContent: 'center', alignItems: 'center'
+                }}>
+                    <Text style={styles.new}>new</Text>
+                </View>
+            </View>
         );
     }
 

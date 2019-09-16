@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    StyleSheet, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler, ActivityIndicator
+    StyleSheet, View, Dimensions, FlatList, TouchableHighlight, Image, TouchableOpacity, BackHandler, ActivityIndicator, Platform
 } from 'react-native';
 import { RefreshIndicator, FirstPost } from "./rnff/src/components";
 import PreloadImage from './PreloadImage';
