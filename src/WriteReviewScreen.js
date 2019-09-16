@@ -45,9 +45,13 @@ export default class WriteReviewScreen extends React.Component {
 
         const { post, rating } = this.props.navigation.state.params;
 
-        this.setState({ name: post.name, gender: post.gender, picture: post.pictures.one.uri, rating });
+        if (Platform.OS === 'android') {
+            this.setState({ name: post.name, gender: post.gender, picture: post.pictures.one.uri, rating });
 
-        this.refs.rating.setPosition(rating); // bug in AirbnbRating
+            this.refs.rating.setPosition(rating); // bug in AirbnbRating
+        } else {
+            this.setState({ name: post.name, gender: post.gender, picture: post.pictures.one.uri });
+        }
 
         // Consider: move to onFocus
         setTimeout(() => {
@@ -132,7 +136,6 @@ export default class WriteReviewScreen extends React.Component {
 
         this.setState({ showPostLoader: true });
 
-        // const result = await Firebase.addReview(post.uid, post.placeId, post.id, Firebase.user().uid, comment, this.state.rating, post.pictures.one.uri);
         const result = await Firebase.addReview(post.uid, post.placeId, post.id, post.pictures.one.uri,
             user.uid, user.name, user.place, user.picture,
             comment, this.state.rating);
@@ -272,15 +275,18 @@ export default class WriteReviewScreen extends React.Component {
                                     this.getTitle()
                                 }
                             </Text>
-                            <AirbnbRating
-                                ref='rating'
-                                onFinishRating={this.ratingCompleted}
-                                showRating={false}
-                                count={5}
-                                defaultRating={this.state.rating}
-                                size={32}
-                                margin={3}
-                            />
+                            {
+                                Platform.OS === 'android' &&
+                                <AirbnbRating
+                                    ref='rating'
+                                    onFinishRating={this.ratingCompleted}
+                                    showRating={false}
+                                    count={5}
+                                    defaultRating={this.state.rating}
+                                    size={32}
+                                    margin={3}
+                                />
+                            }
                         </View>
                     </TouchableWithoutFeedback>
 
@@ -308,7 +314,7 @@ export default class WriteReviewScreen extends React.Component {
                             backgroundColor: '#212121'
                         }}
                         // placeholder='Share details of your own experience'
-                        placeholder='Share details of your experience'
+                        placeholder={Platform.OS === 'android' ? 'Share details of your experience' : 'Add a comment...'}
                         placeholderTextColor={Theme.color.placeholder}
                         onChangeText={(text) => this.onChangeText(text)}
                         selectionColor={Theme.color.selection}
@@ -352,16 +358,14 @@ export default class WriteReviewScreen extends React.Component {
     getTitle() {
         const gender = this.state.gender;
 
-        if (gender === 'Man')
-            return Platform.OS == 'ios' ? 'How would your rate this post, ' + this.state.name + '?' : 'How would your rate this guy, ' + this.state.name + '?';
-
-        if (gender === 'Woman')
-            return Platform.OS == 'ios' ? 'How would your rate this post, ' + this.state.name + '?' : 'How would your rate this chick, ' + this.state.name + '?';
-
-        if (gender === 'Other')
-            return Platform.OS == 'ios' ? 'How would your rate this post, ' + this.state.name + '?' : 'How would your rate this person, ' + this.state.name + '?';
-
-        return null;
+        if (Platform.OS === 'ios') {
+            return 'How would you comment this post, ' + this.state.name + '?';
+        } else {
+            if (gender === 'Man') return 'How would you rate this guy, ' + this.state.name + '?';
+            if (gender === 'Woman') return 'How would you rate this chick, ' + this.state.name + '?';
+            if (gender === 'Other') return 'How would you rate this person, ' + this.state.name + '?';
+            return null;
+        }
     }
 
     showNotification(msg) {

@@ -283,6 +283,8 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     initFromWriteReview(result) { // back from rating
+        if (Platform.OS === 'ios') return;
+
         !this.closed && this.setState({ writeRating: 0 });
 
         this.refs.rating.setPosition(0); // bug in AirbnbRating
@@ -1607,8 +1609,8 @@ export default class Post extends React.Component<InjectedProps> {
                         <AntDesign style={{ marginLeft: 12, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
                         <Text style={styles.reviewCount}>{Util.numberWithCommas(post.reviewCount)}</Text>
                         */}
-                        <AntDesign style={{ marginLeft: 1.5, marginTop: 2 }} name='message1' color={Theme.color.title} size={16} />
-                        <Text style={[styles.reviewCount, { marginLeft: 6.5 }]}>{reviewCount}</Text>
+                        <AntDesign style={{ marginLeft: 1.5, marginRight: 1.5, marginTop: 2 }} name='message1' color={'#f1c40f'} size={16} />
+                        <Text style={styles.reviewCount}>{reviewCount}</Text>
                     </View>
                 );
             }
@@ -1617,9 +1619,17 @@ export default class Post extends React.Component<InjectedProps> {
         return (
             <View style={{ marginBottom: 9 - 4 }}>
                 <View style={{ width: 160, height: 22, flexDirection: 'row', alignItems: 'center' }}>
-                    <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
+                    {
+                        Platform.OS === 'android' ?
+                            <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
+                            :
+                            <AntDesign style={{ marginTop: 2, marginLeft: 1.5, marginRight: 1.5 }} name='message1' color={'#f1c40f'} size={16} />
+                        // <AntDesign style={{ marginTop: 1, marginLeft: 1 }} name='staro' color={'#f1c40f'} size={18} />
+                    }
+
                     <Text style={{
-                        color: '#f1c40f',
+                        // color: '#f1c40f',
+                        color: Theme.color.text2,
                         fontSize: 18,
                         fontFamily: "Roboto-Italic",
                         paddingLeft: 5,
@@ -1671,8 +1681,10 @@ export default class Post extends React.Component<InjectedProps> {
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: 8 }}>
                     <Text style={{
                         color: Theme.color.text2,
-                        fontSize: 28,
-                        lineHeight: 34,
+                        // fontSize: 28,
+                        // lineHeight: 34,
+                        fontSize: 24,
+                        lineHeight: 28,
                         fontFamily: "Roboto-Medium",
                         marginRight: 8
                     }}>{reviewCountText}</Text>
@@ -2552,12 +2564,13 @@ export default class Post extends React.Component<InjectedProps> {
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <View style={{ width: '100%', height: 38, backgroundColor: Theme.color.component, borderRadius: 5 }}>
+                        <View style={{ width: '100%', height: 34, backgroundColor: Theme.color.component, borderRadius: 5 }}>
                             <TouchableOpacity
                                 style={{ flex: 1, justifyContent: 'center', paddingLeft: 8 }}
                                 onPress={() => {
                                     // ToDo
                                     // this.openSearch();
+                                    this.ratingCompleted(-1);
                                 }}
                             >
                                 <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "rgb(160, 160, 160)" }}
