@@ -1,7 +1,7 @@
 import React from 'react';
 import {
     StyleSheet, View, TouchableOpacity, BackHandler, Image,
-    Dimensions, FlatList, ActivityIndicator, TouchableWithoutFeedback
+    Dimensions, FlatList, ActivityIndicator, Platform
 } from "react-native";
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
@@ -228,7 +228,7 @@ export default class CheckLikes extends React.Component {
                                 fontSize: 28,
                                 lineHeight: 32,
                                 fontFamily: "Chewy-Regular"
-                            }}>No likes from customers</Text>
+                            }}>{Platform.OS === 'android' ? 'No likes from customers' : 'No likes received yet'}</Text>
 
                             <Text style={{
                                 marginTop: 10,

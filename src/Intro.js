@@ -1692,10 +1692,10 @@ export default class Intro extends React.Component<InjectedProps> {
                             </View>
                             <Text style={styles.rating}>{number}</Text>
                             */}
-                            <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={Theme.color.title} size={15} />
+                            <Ionicons style={{ marginTop: 2 }} name="md-heart-empty" color={'red'} size={15} />
                             <Text style={[styles.rating, { color: Theme.color.title }]}>{likesCount}</Text>
 
-                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={Theme.color.title} size={12} />
+                            <AntDesign style={{ marginLeft: 10, marginTop: 1 }} name='message1' color={'#f1c40f'} size={12} />
                             <Text style={styles.reviewCount}>{Util.numberWithCommas(feed.reviewCount)}</Text>
                         </View>
                     </View>
