@@ -737,10 +737,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
-                                                    {
-                                                        // ToDo: ios review
-                                                        Platform.OS === 'android' ? "Girls You've Reviewed" : "Posts You've Reviewed"
-                                                    }
+                                                    {Platform.OS === 'android' ? "Girls You've Reviewed" : "Posts You've Commented"}
                                                 </Text>
                                                 {
                                                     replyAdded &&
@@ -776,10 +773,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 paddingLeft: 2
                                             }}>
                                                 <Text style={{ fontSize: 18, /* color: Theme.color.text2, */ color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
-                                                    {
-                                                        // ToDo: ios review
-                                                        Platform.OS === 'android' ? 'Advertise Yourself or Your Girls' : 'Advertise Yourself'
-                                                    }
+                                                    {Platform.OS === 'android' ? 'Advertise Yourself or Your Girls' : 'Add New Post'}
                                                 </Text>
                                                 <Feather name='edit-3' /* color={Theme.color.text2} */ color={'#f1c40f'} size={24} style={{ position: 'absolute', right: 0 }} />
                                             </View>
@@ -805,7 +799,9 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     // justifyContent: 'center', paddingLeft: 2
                                                     flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
-                                                    <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{"Customers You've Reviewed"}</Text>
+                                                    <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>
+                                                        {Platform.OS === 'android' ? "Customers You've Reviewed" : "Users You've Commented"}
+                                                    </Text>
                                                     {
                                                         /*
                                                         // commentAdded &&
@@ -986,8 +982,11 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 {
                                     this.state.totalFeedsSize > 0 &&
                                     <View style={[styles.titleContainer, { paddingTop: Theme.spacing.tiny, paddingBottom: 12 }]}>
-                                        <Text style={styles.title}>Your post
-                                        {
+                                        <Text style={styles.title}>
+                                            {
+                                                'Your post'
+                                            }
+                                            {
                                                 this.state.totalFeedsSize > 0 &&
                                                 <Text style={{
                                                     color: Theme.color.text4,

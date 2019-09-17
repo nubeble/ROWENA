@@ -179,8 +179,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         marginLeft: 40 + 16
                     }}>
                         {
-                            // ToDo: ios review
-                            Platform.OS === 'android' ? 'Reviewed Girls' : 'Reviewed Posts'
+                            Platform.OS === 'android' ? 'Reviewed Girls' : 'Commented Posts'
                         }
                         {
                             this.state.totalFeedsSize > 0 &&
@@ -273,7 +272,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         // ToDo: ios review
-                                        Platform.OS === 'android' ? 'No reviewed girls' : 'No reviewed posts'
+                                        Platform.OS === 'android' ? 'No reviewed girls' : 'No commented posts'
                                     }
                                 </Text>
 

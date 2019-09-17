@@ -1,4 +1,5 @@
 import { Asset } from 'expo-asset';
+import { Platform } from 'react-native';
 
 // const splash = require('../assets/splash.png');
 const logo = require('../assets/logo.png');
@@ -57,7 +58,7 @@ const wanted4 = require('../assets/ads/wanted/4.png');
 
 // tutorial
 const tutorial1 = require('../assets/tutorial/1.png');
-const tutorial2 = require('../assets/tutorial/2.png');
+const tutorial2 = Platform.OS === 'android' ? require('../assets/tutorial/2.png') : require('../assets/tutorial/5.png');
 const tutorial3 = require('../assets/tutorial/3.png');
 const tutorial4 = require('../assets/tutorial/4.png');
 

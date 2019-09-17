@@ -325,7 +325,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this._feed._scrollTo(this.orderTabY);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>{Platform.OS === 'android' ? 'Ratings' : 'Likes'}</Text>
                             {
                                 this.state.selectedOrderIndex === 0 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -342,7 +342,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this._feed._scrollTo(this.orderTabY);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>{Platform.OS === 'android' ? 'Reviews' : 'Comments'}</Text>
                             {
                                 this.state.selectedOrderIndex === 1 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -359,7 +359,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this._feed._scrollTo(this.orderTabY);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>{'Time'}</Text>
                             {
                                 this.state.selectedOrderIndex === 2 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -575,7 +575,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this._feed._scrollTo(this.state.scrollY);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Ratings</Text>
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 0 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>{Platform.OS === 'android' ? 'Ratings' : 'Likes'}</Text>
                             {
                                 this.state.selectedOrderIndex === 0 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -592,7 +592,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this._feed._scrollTo(this.state.scrollY);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Reviews</Text>
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 1 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>{Platform.OS === 'android' ? 'Reviews' : 'Comments'}</Text>
                             {
                                 this.state.selectedOrderIndex === 1 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />
@@ -609,7 +609,7 @@ export default class Explore extends React.Component<InjectedProps> {
                                 this._feed._scrollTo(this.state.scrollY);
                             }}
                         >
-                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>Time</Text>
+                            <Text style={{ fontSize: 16, fontFamily: this.state.selectedOrderIndex === 2 ? "Roboto-Bold" : "Roboto-Regular", color: Theme.color.text2 }}>{'Time'}</Text>
                             {
                                 this.state.selectedOrderIndex === 2 &&
                                 <View style={{ borderBottomColor: Theme.color.text2, borderBottomWidth: 2, width: '70%', position: 'absolute', bottom: 0, alignSelf: 'center' }} />

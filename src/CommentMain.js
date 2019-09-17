@@ -262,7 +262,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
                                 }}>
                                     {
                                         // ToDo: ios review
-                                        Platform.OS === 'android' ? 'No reviewed customers' : 'No reviewed users'
+                                        Platform.OS === 'android' ? 'No reviewed customers' : 'No commented users'
                                     }
                                 </Text>
 

@@ -277,7 +277,10 @@ export default class UserMain extends React.Component<InjectedProps> {
     };
 
     async removeComment(index) {
-        this.openDialog('Delete Review', 'Are you sure you want to delete this review?', async () => {
+        const title = Platform.OS === 'android' ? 'Delete Review' : 'Delete Comment';
+        const subtitle = Platform.OS === 'android' ? 'Are you sure you want to delete this review?' : 'Are you sure you want to delete this comment?';
+
+        this.openDialog(title, subtitle, async () => {
             // const { reviews } = this.commentStore;
             const { reviews } = this.state;
             const { host, guest } = this.state;
@@ -380,11 +383,11 @@ export default class UserMain extends React.Component<InjectedProps> {
 
         // reviewText
         if (count === 0) {
-            reviewText = 'No customer reviews yet';
+            reviewText = Platform.OS === 'android' ? 'No customer reviews yet' : 'No user comments yet';
         } else if (count === 1) {
-            reviewText = '1 customer review';
+            reviewText = Platform.OS === 'android' ? '1 customer review' : '1 user comment';
         } else {
-            reviewText = Util.numberWithCommas(count) + " customer reviews";
+            reviewText = Platform.OS === 'android' ? Util.numberWithCommas(count) + " customer reviews" : Util.numberWithCommas(count) + " user comments";
         }
 
         // labelText
@@ -1042,7 +1045,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                     fontSize: 26,
                     lineHeight: 30,
                     fontFamily: "Chewy-Regular"
-                }}>No customer reviews yet</Text>
+                }}>{Platform.OS === 'android' ? 'No customer reviews yet' : 'No user comments yet'}</Text>
 
                 <Text style={{
                     marginTop: 8,
@@ -1050,7 +1053,7 @@ export default class UserMain extends React.Component<InjectedProps> {
                     fontSize: 18,
                     lineHeight: 22,
                     fontFamily: "Chewy-Regular"
-                }}>Stop expecting, start exploring</Text>
+                }}>{Platform.OS === 'android' ? 'Stop expecting, start exploring' : 'Stop expecting, start accepting'}</Text>
 
                 <Image
                     style={{

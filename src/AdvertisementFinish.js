@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, BackHandler, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, BackHandler, Dimensions, Platform } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
@@ -69,7 +69,7 @@ export default class AdvertisementFinish extends React.Component {
                         lineHeight: 32,
                         color: 'black',
                         fontFamily: "Chewy-Regular"
-                    }}>Hope you find it!</Text>
+                    }}>{Platform.OS === 'android' ? 'Hope you find it!' : 'Good luck!'}</Text>
 
                     <Image
                         style={{

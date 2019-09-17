@@ -745,7 +745,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     fontSize: 28,
                     lineHeight: 32,
                     fontFamily: "Chewy-Regular"
-                }}>No customer reviews yet</Text>
+                }}>{Platform.OS === 'android' ? 'No customer reviews yet' : 'No user comments yet'}</Text>
 
                 <Text style={{
                     marginTop: 10,
@@ -753,7 +753,7 @@ export default class ReadAllReviewsScreen extends React.Component {
                     fontSize: 20,
                     lineHeight: 24,
                     fontFamily: "Chewy-Regular"
-                }}>Stop expecting, start exploring</Text>
+                }}>{Platform.OS === 'android' ? 'Stop expecting, start exploring' : 'Stop expecting, start accepting'}</Text>
 
                 <Image
                     style={{
@@ -924,7 +924,10 @@ export default class ReadAllReviewsScreen extends React.Component {
     };
 
     async removeReview(index) {
-        this.openDialog('Delete Review', 'Are you sure you want to delete this review?', async () => {
+        const title = Platform.OS === 'android' ? 'Delete Review' : 'Delete Comment';
+        const subtitle = Platform.OS === 'android' ? 'Are you sure you want to delete this review?' : 'Are you sure you want to delete this comment?';
+
+        this.openDialog(title, subtitle, async () => {
             const { reviewStore, placeId, feedId } = this.props.navigation.state.params;
 
             // const reviewId = reviewStore.reviews[index].review.id;

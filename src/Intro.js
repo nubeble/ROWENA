@@ -1250,7 +1250,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             <View style={styles.titleContainer}>
                                 {
                                     // ToDo: ios review
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated girls' : 'Top-rated posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Top-rated girls' : 'Popular posts'}</Text>
                                 }
                             </View>
                             {
@@ -1259,7 +1259,7 @@ export default class Intro extends React.Component<InjectedProps> {
                             <View style={styles.titleContainer}>
                                 {
                                     // ToDo: ios review
-                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Recently registered girls' : 'Recently registered posts'}</Text>
+                                    <Text style={styles.title}>{Platform.OS === 'android' ? 'Most recent girls' : 'Most recent posts'}</Text>
                                 }
                             </View>
                             {

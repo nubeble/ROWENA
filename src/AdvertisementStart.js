@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, TouchableOpacity, Image, BackHandler, Dimensions } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image, BackHandler, Dimensions, Platform } from 'react-native';
 import { Text, Theme } from './rnff/src/components';
 import PreloadImage from './PreloadImage';
 import { Cons, Vars } from './Globals';
@@ -69,7 +69,7 @@ export default class AdvertisementStart extends React.Component {
                         lineHeight: 32,
                         color: 'black',
                         fontFamily: "Chewy-Regular"
-                    }}>Let's set up your advertisement</Text>
+                    }}>{Platform.OS === 'android' ? "Let's set up your advertisement" : "Let's set up your post"}</Text>
 
                     <Image
                         style={{

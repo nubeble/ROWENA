@@ -750,7 +750,7 @@ export default class Post extends React.Component<InjectedProps> {
 
                                 backgroundColor: '#212121'
                             }}
-                            placeholder='Reply to a review'
+                            placeholder={Platform.OS === 'android' ? 'Reply to a review' : 'Reply to a comment'}
                             placeholderTextColor={Theme.color.placeholder}
                             onChangeText={(text) => this.onChangeText(text)}
                             selectionColor={Theme.color.selection}
@@ -1581,9 +1581,9 @@ export default class Post extends React.Component<InjectedProps> {
             } else { // ios
                 let reviewCount = "";
                 if (post.reviewCount > 1) {
-                    reviewCount = Util.numberWithCommas(post.reviewCount) + " reviews";
+                    reviewCount = Util.numberWithCommas(post.reviewCount) + " comments";
                 } else {
-                    reviewCount = Util.numberWithCommas(post.reviewCount) + " review";
+                    reviewCount = Util.numberWithCommas(post.reviewCount) + " comment";
                 }
 
                 // likes & reviews
@@ -1653,7 +1653,7 @@ export default class Post extends React.Component<InjectedProps> {
                         fontSize: 24,
                         lineHeight: 28,
                         fontFamily: "Chewy-Regular"
-                    }}>Please write the first review.</Text>
+                    }}>{Platform.OS === 'android' ? 'Please write the first review.' : 'Please write the first comment.'}</Text>
 
                     <Image
                         style={{
@@ -1672,9 +1672,9 @@ export default class Post extends React.Component<InjectedProps> {
             let reviewCountText = '';
             const reviewCount = data.reviewCount;
             if (reviewCount > 1) {
-                reviewCountText = reviewCount.toString() + " Reviews";
+                reviewCountText = reviewCount.toString() + " Comments";
             } else {
-                reviewCountText = reviewCount.toString() + " Review";
+                reviewCountText = reviewCount.toString() + " Comment";
             }
 
             return (
@@ -2487,7 +2487,11 @@ export default class Post extends React.Component<InjectedProps> {
                         // borderBottomWidth: 1,
                         // borderColor: 'rgb(34, 34, 34)'
                     }}>
-                        <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>Read all {reviewCount}+ reviews</Text>
+                        <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
+                            {
+                                Platform.OS === 'android' ? 'Read all ' + reviewCount.toString() + '+ reviews' : 'Read all ' + reviewCount.toString() + '+ comments'
+                            }
+                        </Text>
                         <FontAwesome name='chevron-right' color="#f1c40f" size={18} style={{ position: 'absolute', right: 0 }} />
                     </View>
                 </TouchableOpacity>
@@ -2564,16 +2568,16 @@ export default class Post extends React.Component<InjectedProps> {
                             </View>
                     }
                     <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}>
-                        <View style={{ width: '100%', height: 34, backgroundColor: Theme.color.component, borderRadius: 5 }}>
+                        <View style={{ width: '100%', height: 34, backgroundColor: '#212121', borderRadius: 5 }}>
                             <TouchableOpacity
-                                style={{ flex: 1, justifyContent: 'center', paddingLeft: 8 }}
+                                style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}
                                 onPress={() => {
                                     // ToDo
                                     // this.openSearch();
                                     this.ratingCompleted(-1);
                                 }}
                             >
-                                <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: "rgb(160, 160, 160)" }}
+                                <Text style={{ fontSize: 16, fontFamily: "Roboto-Regular", color: Theme.color.placeholder }}
                                     numberOfLines={1}
                                 >{'Add a comment...'}</Text>
                             </TouchableOpacity>
@@ -2940,7 +2944,10 @@ export default class Post extends React.Component<InjectedProps> {
     };
 
     async removeReview(index) {
-        this.openDialog('Delete Review', 'Are you sure you want to delete this review?', async () => {
+        const title = Platform.OS === 'android' ? 'Delete Review' : 'Delete Comment';
+        const subtitle = Platform.OS === 'android' ? 'Are you sure you want to delete this review?' : 'Are you sure you want to delete this comment?';
+
+        this.openDialog(title, subtitle, async () => {
             const post = this.state.post;
 
             // check if removed by the owner
