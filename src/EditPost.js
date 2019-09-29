@@ -1092,23 +1092,15 @@ export default class EditPost extends React.Component {
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
 
-                    {/*
                     <Text style={{
                         color: Theme.color.text1,
                         fontSize: 20,
                         fontFamily: "Roboto-Medium",
-                        // marginLeft: 40 + 16
-                        alignSelf: 'center'
-                    }}>Edit Post</Text>
-                    */}
-                    <Text style={{
-                        color: Theme.color.text1,
-                        fontSize: 20,
-                        fontFamily: "Roboto-Medium",
+                        // alignSelf: 'center'
                         marginLeft: 40 + 16
                     }}>Edit Post</Text>
 
-                    {/* delete button */}
+                    {/* save(check) button */}
                     <TouchableOpacity
                         style={{
                             width: 48,
@@ -1126,40 +1118,11 @@ export default class EditPost extends React.Component {
                                 this.hideAlertIcon();
                             }
 
-                            this.openDialog('Delete Post', 'Are you sure you want to delete this post?', async () => {
-                                this.setState({ showPostLoader: true });
-
-                                await this.removeUploadedImages();
-
-                                const { post } = this.props.navigation.state.params;
-                                await Firebase.removeFeed(post.uid, post.placeId, post.id);
-
-                                this.setState({ showPostLoader: false });
-                                this.props.navigation.dismiss();
-                            });
-                        }}
-                    >
-                        <Ionicons name='md-trash' color="rgba(255, 255, 255, 0.8)" size={24} />
-                    </TouchableOpacity>
-
-                    {/* check button */}
-                    {/*
-                    <TouchableOpacity
-                        style={{
-                            width: 48,
-                            height: 48,
-                            position: 'absolute',
-                            bottom: 2,
-                            right: 2,
-                            justifyContent: "center", alignItems: "center"
-                        }}
-                        onPress={async () => {
-                            // await this.save();
+                            await this.update();
                         }}
                     >
                         <Ionicons name='md-checkmark' color={'rgba(62, 165, 255, 0.8)'} size={24} />
                     </TouchableOpacity>
-                    */}
                 </View>
 
                 <FlatList
@@ -1963,10 +1926,20 @@ export default class EditPost extends React.Component {
                             this.hideAlertIcon();
                         }
 
-                        await this.update();
+                        this.openDialog('Delete Post', 'Are you sure you want to delete this post?', async () => {
+                            this.setState({ showPostLoader: true });
+
+                            await this.removeUploadedImages();
+
+                            const { post } = this.props.navigation.state.params;
+                            await Firebase.removeFeed(post.uid, post.placeId, post.id);
+
+                            this.setState({ showPostLoader: false });
+                            this.props.navigation.dismiss();
+                        });
                     }}
                 >
-                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Update Post'}</Text>
+                    <Text style={{ fontSize: 16, fontFamily: "Roboto-Medium", color: Theme.color.buttonText }}>{'Delete Post'}</Text>
                     {
                         this.state.showPostLoader &&
                         <ActivityIndicator
