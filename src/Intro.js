@@ -550,7 +550,7 @@ export default class Intro extends React.Component<InjectedProps> {
         while (true) {
             const placeId = await Firebase.getRandomPlace();
             if (placeId) {
-                // check existance
+                // check existence
                 if (placeList.indexOf(placeId) === -1) {
                     placeList.push(placeId);
                     count++;
@@ -646,7 +646,7 @@ export default class Intro extends React.Component<InjectedProps> {
         while (true) {
             const placeId = await Firebase.getRandomPlace();
             if (placeId) {
-                // check existance
+                // check existence
                 if (placeList.indexOf(placeId) === -1) {
                     placeList.push(placeId);
                     count++;

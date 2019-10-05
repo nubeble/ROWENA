@@ -507,7 +507,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                             return (
                                 <TouchableOpacity activeOpacity={0.5}
                                     onPress={() => {
-                                        if (averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
+                                        // ToDo
+                                        if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
                                     }}
                                     onLongPress={() => {
                                         this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {

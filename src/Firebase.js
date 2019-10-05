@@ -501,6 +501,7 @@ export default class Firebase {
         feed.l = new firebase.firestore.GeoPoint(feed.location.latitude, feed.location.longitude);
 
         feed.visits = [];
+        feed.reporters = [];
 
 
         // 1. add feed

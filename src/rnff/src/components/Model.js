@@ -52,6 +52,16 @@ type CommentRef = {
     picture: string
 };
 
+type PostRef = {
+    placeId: string,
+    feedId: string,
+    /*
+    picture: string,
+    name: string,
+    placeName: string
+    */
+};
+
 export type Profile = {
     uid: string,
     name: string,
@@ -116,7 +126,8 @@ export type Post = {
     g: string,
     l: firebase.firestore.GeoPoint,
     visits: VisitRef[], // visit count array
-    // ranking: number
+    // ranking: number,
+    reporters: Array<string> // user uid array
 };
 
 export type FeedEntry = { post: Post, profile: Profile };

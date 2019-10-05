@@ -479,6 +479,7 @@ export default class Post extends React.Component<InjectedProps> {
             return;
         }
 
+        // check existence
         if (!this.feed) {
             this.refs["toast"].show('The post has been removed by its owner.', 500);
             this.toggling = false;
@@ -1521,9 +1522,18 @@ export default class Post extends React.Component<InjectedProps> {
                     justifyContent: "center", alignItems: "center"
                 }}
                 onPress={() => {
-                    this.openDialog('Report Post', 'Is it spam or inappropriate?', () => {
+                    const post = this.state.post;
+                    if (!post) return null;
+
+                    const title = 'Report ' + post.name;
+                    this.openDialog(title, 'Is it spam or inappropriate?', () => {
                         // ToDo: report post
 
+                        // 1. update database (reporters)
+
+                        // 2. update feedStore
+
+                        // 3.
                         setTimeout(() => {
                             if (this.closed) return;
 
