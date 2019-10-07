@@ -2627,8 +2627,6 @@ export default class Post extends React.Component<InjectedProps> {
                             <TouchableOpacity
                                 style={{ flex: 1, justifyContent: 'center', paddingLeft: 12 }}
                                 onPress={() => {
-                                    // ToDo
-                                    // this.openSearch();
                                     this.ratingCompleted(-1);
                                 }}
                             >

@@ -281,4 +281,20 @@ export default class FeedStore {
             });
         }
     }
+
+    updateFeeds(posts) {
+        if (this.feed) {
+            this.feed.forEach((entry, index) => {
+
+                for (let i = 0; i < posts.length; i++) {
+                    const post = posts[i];
+                    if (entry.post.id === post.id) {
+                        this.feed[index].post = post;
+                        break;
+                    }
+                }
+
+            });
+        }
+    }
 }

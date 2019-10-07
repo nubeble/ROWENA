@@ -22,6 +22,7 @@ import PreloadImage from './PreloadImage';
 import Util from "./Util";
 import { LinearGradient } from 'expo-linear-gradient';
 import Toast from 'react-native-easy-toast';
+import Dialog from "react-native-dialog";
 
 // initial region
 const { width, height } = Dimensions.get('window');
@@ -61,7 +62,11 @@ export default class MapExplore extends React.Component {
         },
         feeds: [],
         selectedMarker: 0, // index
-        place: null
+        place: null,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
@@ -137,6 +142,7 @@ export default class MapExplore extends React.Component {
     }
 
     initFromPost(post) {
+        // update state post
         let feeds = [...this.state.feeds];
         let index = feeds.findIndex(el => el.placeId === post.placeId && el.id === post.id);
         if (index !== -1) {
@@ -177,7 +183,9 @@ export default class MapExplore extends React.Component {
 
     @autobind
     handleHardwareBackPress() {
-        // this.props.navigation.goBack();
+        const feeds = [...this.state.feeds];
+        this.props.navigation.state.params.initFromMap(feeds);
+
         this.props.navigation.dispatch(NavigationActions.back());
 
         return true;
@@ -236,7 +244,9 @@ export default class MapExplore extends React.Component {
                         justifyContent: "center", alignItems: "center"
                     }}
                     onPress={() => {
-                        // this.props.navigation.goBack();
+                        const feeds = [...this.state.feeds];
+                        this.props.navigation.state.params.initFromMap(feeds);
+
                         this.props.navigation.dispatch(NavigationActions.back());
                     }}
                 >
@@ -310,6 +320,13 @@ export default class MapExplore extends React.Component {
                         this.renderPosts()
                     }
                 </View>
+
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
 
                 <Toast
                     ref="toast"
@@ -623,18 +640,29 @@ export default class MapExplore extends React.Component {
 
             return (
                 <TouchableOpacity activeOpacity={1}
-                    onPress={async () => {
-                        const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-                        if (!result) {
-                            this.refs["toast"].show('The post no longer exists.', 500);
-                        } else {
-                            const { feedSize } = this.props.navigation.state.params;
-                            const extra = {
-                                feedSize
-                            };
+                    onPress={() => {
+                        const title = 'Unblock Post';
+                        this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                            // unblock
 
-                            this.props.navigation.navigate("post", { post: result, extra: extra, initFromPost: (result) => this.initFromPost(result) });
-                        }
+                            // 1. update database (reporters)
+                            const uid = Firebase.user().uid;
+                            const placeId = post.placeId;
+                            const feedId = post.id;
+
+                            const result = await Firebase.unblockPost(uid, placeId, feedId);
+                            if (!result) {
+                                // the post is removed
+                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                return;
+                            }
+
+                            // 2. update state post
+                            let _post = post;
+                            const index = _post.reporters.indexOf(uid);
+                            _post.reporters.splice(index, 1);
+                            this.initFromPost(_post);
+                        });
                     }}
                 >
                     <SmartImage
@@ -659,8 +687,27 @@ export default class MapExplore extends React.Component {
                         }
                     </View>
 
-                    <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
-                        {/* // ToDo: add text */}
+                    <View style={[StyleSheet.absoluteFill, {
+                        borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                    }]}>
+                        {/* // add text */}
+                        <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                        <Text style={{
+                            color: Theme.color.text1,
+                            fontSize: 14,
+                            fontFamily: "Roboto-Light",
+                            paddingHorizontal: 10,
+                            textAlign: 'center',
+                            marginBottom: 8
+                        }}>{'Thanks for letting us know.'}</Text>
+                        <Text style={{
+                            color: Theme.color.text3,
+                            fontSize: 14,
+                            fontFamily: "Roboto-Light",
+                            paddingHorizontal: 10,
+                            textAlign: 'center'
+                        }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -793,6 +840,35 @@ export default class MapExplore extends React.Component {
         }
 
         return boundaries;
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

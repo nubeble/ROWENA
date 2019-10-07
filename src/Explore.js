@@ -172,6 +172,11 @@ export default class Explore extends React.Component<InjectedProps> {
         this._feed._scrollTo(0);
     }
 
+    async initFromMap(posts) {
+        // update feedStore
+        this.props.feedStore.updateFeeds(posts);
+    }
+
     @autobind
     handleHardwareBackPress() {
         console.log('jdub', 'Explore.handleHardwareBackPress');
@@ -659,7 +664,8 @@ export default class Explore extends React.Component<InjectedProps> {
             const placeId = this.state.placeId;
             const feedSize = this.state.feedSize;
 
-            !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, feedSize });
+            // !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, feedSize });
+            !this.closed && this.props.navigation.navigate("mapExplore", { region, placeName, placeId, feedSize, initFromMap: (posts) => this.initFromMap(posts) });
         }, Cons.buttonTimeout);
     }
 }

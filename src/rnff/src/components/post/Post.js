@@ -3,6 +3,7 @@ import * as React from "react";
 import moment from "moment";
 import { StyleSheet, View, Dimensions, Platform, TouchableWithoutFeedback } from "react-native";
 import Toast, { DURATION } from 'react-native-easy-toast';
+import Dialog from "react-native-dialog";
 import { AirbnbRating } from '../../../../react-native-ratings/src';
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -30,7 +31,11 @@ type PostProps = NavigationProps<> & {
 
 type PostState = {
     post: Post,
-    profile: Profile
+    profile: Profile,
+
+    dialogVisible: false,
+    dialogTitle: '',
+    dialogMessage: ''
 };
 
 // 3:2 image
@@ -73,14 +78,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
 
         this.closed = true;
     }
-
-    /*
-    initFromPost(post) {
-        // console.log('jdub', '!! Post.initFromPost');
-
-        this.setState({ post });
-    }
-    */
 
     render(): React.Node {
         const { navigation, extra } = this.props;
@@ -129,7 +126,6 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                     onPress={() => {
                         Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
                         navigation.navigate("detail", { post: post, profile: profile, extra: extra });
-                        // navigation.navigate("detail", { post: post, profile: profile, extra: extra, initFromPost: (result) => this.initFromPost(result) });
                     }}
                 >
                     {/* // ToDo: impl image carousel */}
@@ -162,41 +158,93 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             const distance = Util.getDistance(post.location, Vars.location);
 
             return (
-                <TouchableWithoutFeedback
-                    onPress={() => {
-                        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-                        navigation.navigate("detail", { post: post, profile: profile, extra: extra });
-                    }}
-                >
-                    {/* // ToDo: impl image carousel */}
-                    <View style={styles.container}>
-                        <SmartImage
-                            style={styles.picture}
-                            showSpinner={false}
-                            preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                            uri={post.pictures.one.uri}
-                        />
+                <View>
+                    <TouchableWithoutFeedback
+                        onPress={() => {
+                            const title = 'Unblock Post';
+                            this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                                // unblock
 
-                        <LinearGradient
-                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
-                            start={[0, 0]}
-                            end={[0, 1]}
-                            style={StyleSheet.absoluteFill}
-                        />
+                                // 1. update database (reporters)
+                                const uid = Firebase.user().uid;
+                                const placeId = post.placeId;
+                                const feedId = post.id;
 
-                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                            <Text style={styles.feedItemText}>{post.name}</Text>
-                            <Text style={styles.feedItemText}>{distance}</Text>
-                            {
-                                this.renderReview(post)
-                            }
+                                const result = await Firebase.unblockPost(uid, placeId, feedId);
+                                if (!result) {
+                                    // the post is removed
+                                    this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                    return;
+                                }
+
+                                // 2. update state post
+                                let _post = post;
+                                const index = _post.reporters.indexOf(uid);
+                                _post.reporters.splice(index, 1);
+                                this.setState({ post: _post });
+
+                                // 3. update feedStore
+                                const { store } = this.props;
+                                store.updateFeed(_post);
+                            });
+                        }}
+                    >
+                        {/* // ToDo: impl image carousel */}
+                        <View style={styles.container}>
+                            <SmartImage
+                                style={styles.picture}
+                                showSpinner={false}
+                                preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                uri={post.pictures.one.uri}
+                            />
+
+                            <LinearGradient
+                                colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                start={[0, 0]}
+                                end={[0, 1]}
+                                style={StyleSheet.absoluteFill}
+                            />
+
+                            <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                <Text style={styles.feedItemText}>{post.name}</Text>
+                                <Text style={styles.feedItemText}>{distance}</Text>
+                                {
+                                    this.renderReview(post)
+                                }
+                            </View>
+
+                            <View style={[StyleSheet.absoluteFill, {
+                                borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                            }]}>
+                                {/* // add text */}
+                                <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                                <Text style={{
+                                    color: Theme.color.text1,
+                                    fontSize: 14,
+                                    fontFamily: "Roboto-Light",
+                                    paddingHorizontal: 10,
+                                    textAlign: 'center',
+                                    marginBottom: 8
+                                }}>{'Thanks for letting us know.'}</Text>
+                                <Text style={{
+                                    color: Theme.color.text3,
+                                    fontSize: 14,
+                                    fontFamily: "Roboto-Light",
+                                    paddingHorizontal: 10,
+                                    textAlign: 'center'
+                                }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
+                            </View>
                         </View>
+                    </TouchableWithoutFeedback>
 
-                        <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
-                            {/* // ToDo: add text */}
-                        </View>
-                    </View>
-                </TouchableWithoutFeedback>
+                    <Dialog.Container visible={this.state.dialogVisible}>
+                        <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                        <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                        <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                        <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                    </Dialog.Container>
+                </View>
             );
         }
     }
@@ -291,6 +339,35 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                 </View>
             </View>
         );
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

@@ -1019,10 +1019,58 @@ export default class Firebase {
             }
 
             transaction.update(feedRef, { reporters });
-        }).then(() => {
+        }).then(async () => {
             result = true;
+
+            // ToDo: add REPORTS (post)
+            const id = feedId;
+            const type = 'POST'; // 'POST', 'USER'
+
+            const report = {
+                uid, // user uid
+                type,
+                placeId,
+                feedId
+            };
+
+            await Firebase.firestore.collection("REPORTS").doc(id).set(report);
         }).catch((error) => {
             console.log('jdub', 'Firebase.reportPost', error);
+            result = false;
+        });
+
+        return result;
+    }
+
+    static async unblockPost(uid, placeId, feedId) {
+        let result;
+
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const postDoc = await transaction.get(feedRef);
+            if (!postDoc.exists) throw 'Post document not exist!';
+
+            let { reporters } = postDoc.data();
+
+            // backward compatibility
+            // if (!reporters) reporters = [];
+
+            const idx = reporters.indexOf(uid);
+            if (idx !== -1) {
+                reporters.splice(idx, 1);
+            }
+
+            transaction.update(feedRef, { reporters });
+        }).then(async () => {
+            result = true;
+
+            // ToDo: remove REPORTS (post)
+            const id = feedId;
+            const reportRef = Firebase.firestore.collection("REPORTS").doc(id);
+            await reportRef.delete();
+        }).catch((error) => {
+            console.log('jdub', 'Firebase.unblockPost', error);
             result = false;
         });
 

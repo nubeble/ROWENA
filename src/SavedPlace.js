@@ -515,13 +515,13 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                             if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
                                         }}
                                         onLongPress={() => {
-                                            this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
+                                            this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + item.name + "?", async () => {
                                                 !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
                                                 // update database
                                                 const uid = Firebase.user().uid;
-                                                const placeId = post.placeId;
-                                                const feedId = post.id;
+                                                const placeId = item.placeId;
+                                                const feedId = item.feedId;
 
                                                 const feed = {
                                                     placeId, feedId
@@ -573,17 +573,31 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 return (
                                     <TouchableOpacity activeOpacity={0.5}
                                         onPress={() => {
-                                            // ToDo: show toast
-                                            if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
+                                            const title = 'Unblock Post';
+                                            this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                                                // unblock
+
+                                                // 1. update database (reporters)
+                                                const uid = Firebase.user().uid;
+                                                const placeId = item.placeId;
+                                                const feedId = item.feedId;
+
+                                                const result = await Firebase.unblockPost(uid, placeId, feedId);
+                                                if (!result) {
+                                                    // the post is removed
+                                                    this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                                    return;
+                                                }
+                                            });
                                         }}
                                         onLongPress={() => {
-                                            this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
+                                            this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + item.name + "?", async () => {
                                                 !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
                                                 // update database
                                                 const uid = Firebase.user().uid;
-                                                const placeId = post.placeId;
-                                                const feedId = post.id;
+                                                const placeId = item.placeId;
+                                                const feedId = item.feedId;
 
                                                 const feed = {
                                                     placeId, feedId
@@ -621,8 +635,27 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                                 }
                                             </View>
 
-                                            <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
-                                                {/* // ToDo: add text */}
+                                            <View style={[StyleSheet.absoluteFill, {
+                                                borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                                paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                                            }]}>
+                                                {/* // add text */}
+                                                <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                                                <Text style={{
+                                                    color: Theme.color.text1,
+                                                    fontSize: 14,
+                                                    fontFamily: "Roboto-Light",
+                                                    paddingHorizontal: 10,
+                                                    textAlign: 'center',
+                                                    marginBottom: 8
+                                                }}>{'Thanks for letting us know.'}</Text>
+                                                <Text style={{
+                                                    color: Theme.color.text3,
+                                                    fontSize: 14,
+                                                    fontFamily: "Roboto-Light",
+                                                    paddingHorizontal: 10,
+                                                    textAlign: 'center'
+                                                }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
                                             </View>
                                         </View>
                                     </TouchableOpacity>

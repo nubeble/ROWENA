@@ -6,6 +6,7 @@ import {
 import { Text, Theme } from './rnff/src/components';
 import { Cons, Vars } from './Globals';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from "react-native-vector-icons/AntDesign";
 import SmartImage from './rnff/src/components/SmartImage';
 import { NavigationActions } from 'react-navigation';
 import autobind from 'autobind-decorator';
@@ -15,6 +16,7 @@ import ProfileStore from "./rnff/src/home/ProfileStore";
 import { inject, observer } from "mobx-react/native";
 import PreloadImage from './PreloadImage';
 import Util from './Util';
+import Dialog from "react-native-dialog";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -35,6 +37,10 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         refreshing: false,
         totalFeedsSize: 0,
         // showPostIndicator: -1,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     constructor(props) {
@@ -242,7 +248,24 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                 );
                             } else {
                                 return (
-                                    <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
+                                    <TouchableWithoutFeedback onPress={() => {
+                                        const title = 'Unblock Post';
+                                        this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                                            // unblock
+
+                                            // 1. update database (reporters)
+                                            const uid = Firebase.user().uid;
+                                            const placeId = item.placeId;
+                                            const feedId = item.feedId;
+
+                                            const result = await Firebase.unblockPost(uid, placeId, feedId);
+                                            if (!result) {
+                                                // the post is removed
+                                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                                return;
+                                            }
+                                        });
+                                    }}>
                                         <View style={styles.pictureContainer}>
                                             <SmartImage
                                                 style={styles.picture}
@@ -262,8 +285,29 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                                                     height: Cons.redDotWidth
                                                 }} />
                                             }
-                                            <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
-                                                {/* // ToDo: add text */}
+                                            <View style={[StyleSheet.absoluteFill, {
+                                                borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                                paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                                            }]}>
+                                                {/* // add text */}
+                                                {/*
+                                                <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
+                                                <Text style={{
+                                                    color: Theme.color.text1,
+                                                    fontSize: 14,
+                                                    fontFamily: "Roboto-Light",
+                                                    paddingHorizontal: 10,
+                                                    textAlign: 'center',
+                                                    marginBottom: 8
+                                                }}>{'Thanks for letting us know.'}</Text>
+                                                <Text style={{
+                                                    color: Theme.color.text3,
+                                                    fontSize: 14,
+                                                    fontFamily: "Roboto-Light",
+                                                    paddingHorizontal: 10,
+                                                    textAlign: 'center'
+                                                }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
+                                                */}
                                             </View>
                                         </View>
                                     </TouchableWithoutFeedback>
@@ -342,6 +386,13 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         />
                     </View>
                 }
+
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
 
                 <Toast
                     ref="toast"
@@ -613,6 +664,35 @@ export default class ReviewMain extends React.Component<InjectedProps> {
         this.getReviewedFeeds();
 
         !this.closed && this.setState({ refreshing: false });
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 

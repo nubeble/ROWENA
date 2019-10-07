@@ -26,6 +26,7 @@ import { AirbnbRating } from './react-native-ratings/src';
 import Toast, { DURATION } from 'react-native-easy-toast';
 import Util from './Util';
 import { LinearGradient } from 'expo-linear-gradient';
+import Dialog from "react-native-dialog";
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -138,7 +139,11 @@ export default class Intro extends React.Component<InjectedProps> {
         recentFeeds: [],
 
         searchText: '',
-        refreshing: false
+        refreshing: false,
+
+        dialogVisible: false,
+        dialogTitle: '',
+        dialogMessage: ''
     };
 
     /*
@@ -1272,6 +1277,13 @@ export default class Intro extends React.Component<InjectedProps> {
                     refreshing={this.state.refreshing}
                 />
 
+                <Dialog.Container visible={this.state.dialogVisible}>
+                    <Dialog.Title>{this.state.dialogTitle}</Dialog.Title>
+                    <Dialog.Description>{this.state.dialogMessage}</Dialog.Description>
+                    <Dialog.Button label="Cancel" onPress={() => this.handleCancel()} />
+                    <Dialog.Button label="OK" onPress={() => this.handleConfirm()} />
+                </Dialog.Container>
+
                 <Toast
                     ref="toast"
                     position='top'
@@ -1628,37 +1640,23 @@ export default class Intro extends React.Component<InjectedProps> {
 
             return (
                 <TouchableOpacity activeOpacity={1}
-                    onPress={async () => {
-                        const post = this.getPost(feed.id);
-                        if (post === null) {
-                            // the post is not subscribed yet
-                            this.refs["toast"].show('Please try again.', 500);
-                            return;
-                        }
+                    onPress={() => {
+                        const title = 'Unblock Post';
+                        this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                            // unblock
 
-                        if (post === undefined) {
-                            this.refs["toast"].show('The post no longer exists.', 500);
-                            return;
-                        }
+                            // 1. update database (reporters)
+                            const uid = Firebase.user().uid;
+                            const placeId = feed.placeId;
+                            const feedId = feed.id;
 
-                        const feedSize = this.getFeedSize(feed.placeId);
-                        if (feedSize === -1) {
-                            this.refs["toast"].show('Please try again.', 500);
-                            return;
-                        }
-
-                        if (feedSize === undefined) {
-                            // the place is removed
-                            // this should never happen
-                            return;
-                        }
-
-                        const extra = {
-                            feedSize: feedSize
-                        };
-
-                        Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
-                        this.props.navigation.navigate("introPost", { post, extra });
+                            const result = await Firebase.unblockPost(uid, placeId, feedId);
+                            if (!result) {
+                                // the post is removed
+                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                return;
+                            }
+                        });
                     }}
                 >
                     <Image
@@ -1685,16 +1683,23 @@ export default class Intro extends React.Component<InjectedProps> {
                         borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
                     }]}>
-                        {/* // ToDo: add text */}
-
-
+                        {/* // add text */}
+                        <AntDesign style={{ marginTop: -8, marginBottom: 12 }} name='checkcircleo' color="#228B22" size={36} />
                         <Text style={{
                             color: Theme.color.text1,
                             fontSize: 14,
-                            fontFamily: "Roboto-Medium",
-                            paddingHorizontal: 2,
+                            fontFamily: "Roboto-Light",
+                            paddingHorizontal: 10,
+                            textAlign: 'center',
+                            marginBottom: 8
+                        }}>{'Thanks for letting us know.'}</Text>
+                        <Text style={{
+                            color: Theme.color.text3,
+                            fontSize: 14,
+                            fontFamily: "Roboto-Light",
+                            paddingHorizontal: 10,
                             textAlign: 'center'
-                        }}>{'Thanks for letting us know.\nYour feedback improves the quality of contents on Rowena.'}</Text>
+                        }}>{'Your feedback improves the quality of contents on Rowena.'}</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -1891,6 +1896,35 @@ export default class Intro extends React.Component<InjectedProps> {
             // Error retrieving data
             return null;
         }
+    }
+
+    openDialog(title, message, callback) {
+        this.setState({ dialogTitle: title, dialogMessage: message, dialogVisible: true });
+
+        this.setDialogCallback(callback);
+    }
+
+    setDialogCallback(callback) {
+        this.dialogCallback = callback;
+    }
+
+    hideDialog() {
+        if (this.state.dialogVisible) this.setState({ dialogVisible: false });
+    }
+
+    handleCancel() {
+        if (this.dialogCallback) this.dialogCallback = undefined;
+
+        this.hideDialog();
+    }
+
+    handleConfirm() {
+        if (this.dialogCallback) {
+            this.dialogCallback();
+            this.dialogCallback = undefined;
+        }
+
+        this.hideDialog();
     }
 }
 
