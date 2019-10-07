@@ -1551,78 +1551,154 @@ export default class Intro extends React.Component<InjectedProps> {
     }
 
     renderFeedItem(feed) {
-        // placeName
-        let placeName = feed.placeName;
-        // placeName = Util.getPlaceName(placeName);
+        if (!feed.reporters || feed.reporters.length === 0 || feed.reporters.indexOf(Firebase.user().uid) === -1) {
+            let placeName = feed.placeName;
+            // placeName = Util.getPlaceName(placeName);
 
-        return (
-            <TouchableOpacity activeOpacity={1}
-                onPress={async () => {
-                    const post = this.getPost(feed.id);
-                    if (post === null) {
-                        // the post is not subscribed yet
-                        this.refs["toast"].show('Please try again.', 500);
-                        return;
-                    }
+            return (
+                <TouchableOpacity activeOpacity={1}
+                    onPress={async () => {
+                        const post = this.getPost(feed.id);
+                        if (post === null) {
+                            // the post is not subscribed yet
+                            this.refs["toast"].show('Please try again.', 500);
+                            return;
+                        }
 
-                    if (post === undefined) {
-                        this.refs["toast"].show('The post no longer exists.', 500);
-                        return;
-                    }
+                        if (post === undefined) {
+                            this.refs["toast"].show('The post no longer exists.', 500);
+                            return;
+                        }
 
-                    const feedSize = this.getFeedSize(feed.placeId);
-                    if (feedSize === -1) {
-                        this.refs["toast"].show('Please try again.', 500);
-                        return;
-                    }
+                        const feedSize = this.getFeedSize(feed.placeId);
+                        if (feedSize === -1) {
+                            this.refs["toast"].show('Please try again.', 500);
+                            return;
+                        }
 
-                    if (feedSize === undefined) {
-                        // the place is removed
-                        // this should never happen
-                        return;
-                    }
+                        if (feedSize === undefined) {
+                            // the place is removed
+                            // this should never happen
+                            return;
+                        }
 
-                    const extra = {
-                        feedSize: feedSize
-                    };
+                        const extra = {
+                            feedSize: feedSize
+                        };
 
-                    /*
-                    const result = await Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
-                    this.props.navigation.navigate("introPost", { post: result, extra });
-                    */
-                    Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
-                    this.props.navigation.navigate("introPost", { post, extra });
-                }}
-            >
-                {/*
-                <SmartImage
-                    style={styles.item}
-                    showSpinner={false}
-                    // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                    uri={feed.pictures.one.uri}
-                />
-                */}
-                <Image
-                    style={styles.item}
-                    source={{ uri: feed.pictures.one.uri }}
-                />
+                        /*
+                        const result = await Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
+                        this.props.navigation.navigate("introPost", { post: result, extra });
+                        */
+                        Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
+                        this.props.navigation.navigate("introPost", { post, extra });
+                    }}
+                >
+                    {/*
+                    <SmartImage
+                        style={styles.item}
+                        showSpinner={false}
+                        // preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={feed.pictures.one.uri}
+                    />
+                    */}
+                    <Image
+                        style={styles.item}
+                        source={{ uri: feed.pictures.one.uri }}
+                    />
 
-                <LinearGradient
-                    colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
-                    start={[0, 0]}
-                    end={[0, 1]}
-                    style={StyleSheet.absoluteFill}
-                />
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                        start={[0, 0]}
+                        end={[0, 1]}
+                        style={StyleSheet.absoluteFill}
+                    />
 
-                <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                    <Text style={styles.feedItemText}>{feed.name}</Text>
-                    <Text style={styles.feedItemText}>{placeName}</Text>
-                    {
-                        this.renderReview(feed)
-                    }
-                </View>
-            </TouchableOpacity>
-        );
+                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                        <Text style={styles.feedItemText}>{feed.name}</Text>
+                        <Text style={styles.feedItemText}>{placeName}</Text>
+                        {
+                            this.renderReview(feed)
+                        }
+                    </View>
+                </TouchableOpacity>
+            );
+        } else {
+            let placeName = feed.placeName;
+
+            return (
+                <TouchableOpacity activeOpacity={1}
+                    onPress={async () => {
+                        const post = this.getPost(feed.id);
+                        if (post === null) {
+                            // the post is not subscribed yet
+                            this.refs["toast"].show('Please try again.', 500);
+                            return;
+                        }
+
+                        if (post === undefined) {
+                            this.refs["toast"].show('The post no longer exists.', 500);
+                            return;
+                        }
+
+                        const feedSize = this.getFeedSize(feed.placeId);
+                        if (feedSize === -1) {
+                            this.refs["toast"].show('Please try again.', 500);
+                            return;
+                        }
+
+                        if (feedSize === undefined) {
+                            // the place is removed
+                            // this should never happen
+                            return;
+                        }
+
+                        const extra = {
+                            feedSize: feedSize
+                        };
+
+                        Firebase.addVisits(Firebase.user().uid, feed.placeId, feed.id);
+                        this.props.navigation.navigate("introPost", { post, extra });
+                    }}
+                >
+                    <Image
+                        style={styles.item}
+                        source={{ uri: feed.pictures.one.uri }}
+                    />
+
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                        start={[0, 0]}
+                        end={[0, 1]}
+                        style={StyleSheet.absoluteFill}
+                    />
+
+                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                        <Text style={styles.feedItemText}>{feed.name}</Text>
+                        <Text style={styles.feedItemText}>{placeName}</Text>
+                        {
+                            this.renderReview(feed)
+                        }
+                    </View>
+
+                    <View style={[StyleSheet.absoluteFill, {
+                        borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        paddingHorizontal: Theme.spacing.tiny, alignItems: 'center', justifyContent: 'center'
+                    }]}>
+                        {/* // ToDo: add text */}
+
+
+                        <Text style={{
+                            color: Theme.color.text1,
+                            fontSize: 14,
+                            fontFamily: "Roboto-Medium",
+                            paddingHorizontal: 2,
+                            textAlign: 'center'
+                        }}>{'Thanks for letting us know.\nYour feedback improves the quality of contents on Rowena.'}</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        }
     }
 
     renderReview(feed) {

@@ -353,6 +353,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
 
                     // update picture
                     let changed = false;
+
                     let feeds = [...this.state.feeds];
                     const index = feeds.findIndex(el => el.placeId === newFeed.placeId && el.feedId === newFeed.id);
                     if (index !== -1) {

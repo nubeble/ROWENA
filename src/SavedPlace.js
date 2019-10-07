@@ -225,7 +225,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     feedId: __feed.id,
                     picture: __feed.pictures.one.uri,
                     reviewCount: __feed.reviewCount,
-                    averageRating: __feed.averageRating
+                    averageRating: __feed.averageRating,
+                    reporters: __feed.reporters
                 };
 
                 newFeeds.push(newFeed);
@@ -237,7 +238,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     feedId,
                     picture,
                     reviewCount: -1,
-                    averageRating: -1
+                    averageRating: -1,
+                    // reporters: []
                 };
 
                 newFeeds.push(newFeed);
@@ -312,6 +314,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
 
             // update state feed & UI
             let changed = false;
+
             let feeds = [...this.state.feeds];
             const index = feeds.findIndex(el => el.placeId === placeId && el.feedId === feedId);
             if (index !== -1) {
@@ -329,7 +332,8 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     feedId: newFeed.id,
                     picture: newFeed.pictures.one.uri,
                     reviewCount: newFeed.reviewCount,
-                    averageRating: newFeed.averageRating
+                    averageRating: newFeed.averageRating,
+                    reporters: newFeed.reporters
                 };
 
                 feeds[index] = __newFeed;
@@ -438,7 +442,6 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                     >
                         <Ionicons name='md-arrow-back' color="rgba(255, 255, 255, 0.8)" size={24} />
                     </TouchableOpacity>
-
                     {
                         // this.state.totalFeedsSize > 0 ?
                         <View style={{ justifyContent: 'center', marginLeft: 40 + 16, marginBottom: -8 }}>
@@ -496,67 +499,135 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                         // keyExtractor={item => item.id}
                         keyExtractor={item => item.feedId}
                         renderItem={({ item, index }) => {
-                            let placeName = item.placeName;
+                            if (!item.reporters || item.reporters.length === 0 || item.reporters.indexOf(Firebase.user().uid) === -1) {
+                                let placeName = item.placeName;
 
-                            let distance = null;
+                                let distance = null;
 
-                            const post = this.feedList.get(item.feedId);
-                            if (post) distance = Util.getDistance(post.location, Vars.location);
-                            else distance = placeName;
+                                const post = this.feedList.get(item.feedId);
+                                if (post) distance = Util.getDistance(post.location, Vars.location);
+                                else distance = placeName;
 
-                            return (
-                                <TouchableOpacity activeOpacity={0.5}
-                                    onPress={() => {
-                                        // ToDo
-                                        if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
-                                    }}
-                                    onLongPress={() => {
-                                        this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
-                                            !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
+                                return (
+                                    <TouchableOpacity activeOpacity={0.5}
+                                        onPress={() => {
+                                            // ToDo: show toast
+                                            if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
+                                        }}
+                                        onLongPress={() => {
+                                            this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
+                                                !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
 
-                                            // update database
-                                            const uid = Firebase.user().uid;
-                                            const placeId = post.placeId;
-                                            const feedId = post.id;
+                                                // update database
+                                                const uid = Firebase.user().uid;
+                                                const placeId = post.placeId;
+                                                const feedId = post.id;
 
-                                            const feed = {
-                                                placeId, feedId
-                                            };
+                                                const feed = {
+                                                    placeId, feedId
+                                                };
 
-                                            let feeds = [];
-                                            feeds.push(feed);
+                                                let feeds = [];
+                                                feeds.push(feed);
 
-                                            await Firebase.removeLikes(feeds, uid);
+                                                await Firebase.removeLikes(feeds, uid);
 
-                                            !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
-                                        });
-                                    }}
-                                >
-                                    <View style={styles.pictureContainer}>
-                                        <SmartImage
-                                            style={styles.picture}
-                                            showSpinner={false}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={item.picture}
-                                        />
+                                                !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
+                                            });
+                                        }}
+                                    >
+                                        <View style={styles.pictureContainer}>
+                                            <SmartImage
+                                                style={styles.picture}
+                                                showSpinner={false}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={item.picture}
+                                            />
 
-                                        <LinearGradient
-                                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
-                                            start={[0, 0]}
-                                            end={[0, 1]}
-                                            style={StyleSheet.absoluteFill}
-                                        />
+                                            <LinearGradient
+                                                colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                                start={[0, 0]}
+                                                end={[0, 1]}
+                                                style={StyleSheet.absoluteFill}
+                                            />
 
-                                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                                            <Text style={styles.feedItemText}>{item.name}</Text>
-                                            <Text style={styles.feedItemText}>{distance}</Text>
-                                            {
-                                                this.renderReview(item)
-                                            }
+                                            <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                                <Text style={styles.feedItemText}>{item.name}</Text>
+                                                <Text style={styles.feedItemText}>{distance}</Text>
+                                                {
+                                                    this.renderReview(item)
+                                                }
+                                            </View>
                                         </View>
-                                    </View>
-                                </TouchableOpacity>
-                            );
+                                    </TouchableOpacity>
+                                );
+                            } else {
+                                let placeName = item.placeName;
+
+                                let distance = null;
+
+                                const post = this.feedList.get(item.feedId);
+                                if (post) distance = Util.getDistance(post.location, Vars.location);
+                                else distance = placeName;
+
+                                return (
+                                    <TouchableOpacity activeOpacity={0.5}
+                                        onPress={() => {
+                                            // ToDo: show toast
+                                            if (item.averageRating !== -1 && item.reviewCount !== -1) this.openPost(item, index);
+                                        }}
+                                        onLongPress={() => {
+                                            this.openDialog('Remove Likes', "Are you sure you want to remove likes from " + post.name + "?", async () => {
+                                                !this.closed && this.setState({ isLoadingFeeds: true, loadingType: 100 });
+
+                                                // update database
+                                                const uid = Firebase.user().uid;
+                                                const placeId = post.placeId;
+                                                const feedId = post.id;
+
+                                                const feed = {
+                                                    placeId, feedId
+                                                };
+
+                                                let feeds = [];
+                                                feeds.push(feed);
+
+                                                await Firebase.removeLikes(feeds, uid);
+
+                                                !this.closed && this.setState({ isLoadingFeeds: false, loadingType: 0 });
+                                            });
+                                        }}
+                                    >
+                                        <View style={styles.pictureContainer}>
+                                            <SmartImage
+                                                style={styles.picture}
+                                                showSpinner={false}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={item.picture}
+                                            />
+
+                                            <LinearGradient
+                                                colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                                                start={[0, 0]}
+                                                end={[0, 1]}
+                                                style={StyleSheet.absoluteFill}
+                                            />
+
+                                            <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                                                <Text style={styles.feedItemText}>{item.name}</Text>
+                                                <Text style={styles.feedItemText}>{distance}</Text>
+                                                {
+                                                    this.renderReview(item)
+                                                }
+                                            </View>
+
+                                            <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
+                                                {/* // ToDo: add text */}
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                );
+                            }
                         }}
                         // onEndReachedThreshold={0.5}
                         // onEndReached={this.handleScrollEnd}

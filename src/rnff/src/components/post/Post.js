@@ -74,6 +74,14 @@ export default class PostComp extends React.Component<PostProps, PostState> {
         this.closed = true;
     }
 
+    /*
+    initFromPost(post) {
+        // console.log('jdub', '!! Post.initFromPost');
+
+        this.setState({ post });
+    }
+    */
+
     render(): React.Node {
         const { navigation, extra } = this.props;
         const { post, profile } = this.state;
@@ -102,52 +110,95 @@ export default class PostComp extends React.Component<PostProps, PostState> {
             );
         }
 
-        /*
-        let placeName = post.placeName;
-        const words = placeName.split(', ');
-        if (words.length > 2) {
-            const city = words[0];
-            const country = words[words.length - 1];
-            placeName = city + ', ' + country;
-        }
-        */
+        if (!post.reporters || post.reporters.length === 0 || post.reporters.indexOf(Firebase.user().uid) === -1) {
+            /*
+            let placeName = post.placeName;
+            const words = placeName.split(', ');
+            if (words.length > 2) {
+                const city = words[0];
+                const country = words[words.length - 1];
+                placeName = city + ', ' + country;
+            }
+            */
 
-        const distance = Util.getDistance(post.location, Vars.location);
-        // const distance = Math.round(Math.random() * 100) % 20 + ' km away'; // Test
+            const distance = Util.getDistance(post.location, Vars.location);
+            // const distance = Math.round(Math.random() * 100) % 20 + ' km away'; // Test
 
-        return (
-            <TouchableWithoutFeedback
-                onPress={() => {
-                    Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-                    navigation.navigate("detail", { post: post, profile: profile, extra: extra });
-                }}
-            >
-                {/* // ToDo: impl image carousel */}
-                <View style={styles.container}>
-                    <SmartImage
-                        style={styles.picture}
-                        showSpinner={false}
-                        preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                        uri={post.pictures.one.uri}
-                    />
+            return (
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                        navigation.navigate("detail", { post: post, profile: profile, extra: extra });
+                        // navigation.navigate("detail", { post: post, profile: profile, extra: extra, initFromPost: (result) => this.initFromPost(result) });
+                    }}
+                >
+                    {/* // ToDo: impl image carousel */}
+                    <View style={styles.container}>
+                        <SmartImage
+                            style={styles.picture}
+                            showSpinner={false}
+                            preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={post.pictures.one.uri}
+                        />
 
-                    <LinearGradient
-                        colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
-                        start={[0, 0]}
-                        end={[0, 1]}
-                        style={StyleSheet.absoluteFill}
-                    />
+                        <LinearGradient
+                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                            start={[0, 0]}
+                            end={[0, 1]}
+                            style={StyleSheet.absoluteFill}
+                        />
 
-                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                        <Text style={styles.feedItemText}>{post.name}</Text>
-                        <Text style={styles.feedItemText}>{distance}</Text>
-                        {
-                            this.renderReview(post)
-                        }
+                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                            <Text style={styles.feedItemText}>{post.name}</Text>
+                            <Text style={styles.feedItemText}>{distance}</Text>
+                            {
+                                this.renderReview(post)
+                            }
+                        </View>
                     </View>
-                </View>
-            </TouchableWithoutFeedback>
-        );
+                </TouchableWithoutFeedback>
+            );
+        } else {
+            const distance = Util.getDistance(post.location, Vars.location);
+
+            return (
+                <TouchableWithoutFeedback
+                    onPress={() => {
+                        Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                        navigation.navigate("detail", { post: post, profile: profile, extra: extra });
+                    }}
+                >
+                    {/* // ToDo: impl image carousel */}
+                    <View style={styles.container}>
+                        <SmartImage
+                            style={styles.picture}
+                            showSpinner={false}
+                            preview={post.pictures.one.preview ? post.pictures.one.preview : "data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                            uri={post.pictures.one.uri}
+                        />
+
+                        <LinearGradient
+                            colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                            start={[0, 0]}
+                            end={[0, 1]}
+                            style={StyleSheet.absoluteFill}
+                        />
+
+                        <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                            <Text style={styles.feedItemText}>{post.name}</Text>
+                            <Text style={styles.feedItemText}>{distance}</Text>
+                            {
+                                this.renderReview(post)
+                            }
+                        </View>
+
+                        <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
+                            {/* // ToDo: add text */}
+                        </View>
+                    </View>
+                </TouchableWithoutFeedback>
+            );
+        }
     }
 
     renderReview(post) {

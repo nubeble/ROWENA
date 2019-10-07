@@ -566,57 +566,105 @@ export default class MapExplore extends React.Component {
     }
 
     renderPost(post) {
-        // placeName
-        /*
-        let placeName = post.placeName;
-        const words = placeName.split(', ');
-        if (words.length > 2) {
-            const city = words[0];
-            const country = words[words.length - 1];
-            placeName = city + ', ' + country;
+        if (!post.reporters || post.reporters.length === 0 || post.reporters.indexOf(Firebase.user().uid) === -1) {
+            // placeName
+            /*
+            let placeName = post.placeName;
+            const words = placeName.split(', ');
+            if (words.length > 2) {
+                const city = words[0];
+                const country = words[words.length - 1];
+                placeName = city + ', ' + country;
+            }
+            */
+            const distance = Util.getDistance(post.location, Vars.location);
+
+            return (
+                <TouchableOpacity activeOpacity={1}
+                    onPress={async () => {
+                        const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                        if (!result) {
+                            this.refs["toast"].show('The post no longer exists.', 500);
+                        } else {
+                            const { feedSize } = this.props.navigation.state.params;
+                            const extra = {
+                                feedSize
+                            };
+
+                            this.props.navigation.navigate("post", { post: result, extra: extra, initFromPost: (result) => this.initFromPost(result) });
+                        }
+                    }}
+                >
+                    <SmartImage
+                        style={styles.item}
+                        showSpinner={false}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={post.pictures.one.uri}
+                    />
+
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                        start={[0, 0]}
+                        end={[0, 1]}
+                        style={StyleSheet.absoluteFill}
+                    />
+
+                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                        <Text style={styles.feedItemText}>{post.name}</Text>
+                        <Text style={styles.feedItemText}>{distance}</Text>
+                        {
+                            this.renderReview(post)
+                        }
+                    </View>
+                </TouchableOpacity>
+            );
+        } else {
+            const distance = Util.getDistance(post.location, Vars.location);
+
+            return (
+                <TouchableOpacity activeOpacity={1}
+                    onPress={async () => {
+                        const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
+                        if (!result) {
+                            this.refs["toast"].show('The post no longer exists.', 500);
+                        } else {
+                            const { feedSize } = this.props.navigation.state.params;
+                            const extra = {
+                                feedSize
+                            };
+
+                            this.props.navigation.navigate("post", { post: result, extra: extra, initFromPost: (result) => this.initFromPost(result) });
+                        }
+                    }}
+                >
+                    <SmartImage
+                        style={styles.item}
+                        showSpinner={false}
+                        preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                        uri={post.pictures.one.uri}
+                    />
+
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
+                        start={[0, 0]}
+                        end={[0, 1]}
+                        style={StyleSheet.absoluteFill}
+                    />
+
+                    <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
+                        <Text style={styles.feedItemText}>{post.name}</Text>
+                        <Text style={styles.feedItemText}>{distance}</Text>
+                        {
+                            this.renderReview(post)
+                        }
+                    </View>
+
+                    <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
+                        {/* // ToDo: add text */}
+                    </View>
+                </TouchableOpacity>
+            );
         }
-        */
-        const distance = Util.getDistance(post.location, Vars.location);
-
-        return (
-            <TouchableOpacity activeOpacity={1}
-                onPress={async () => {
-                    const result = await Firebase.addVisits(Firebase.user().uid, post.placeId, post.id);
-                    if (!result) {
-                        this.refs["toast"].show('The post no longer exists.', 500);
-                    } else {
-                        const { feedSize } = this.props.navigation.state.params;
-                        const extra = {
-                            feedSize
-                        };
-
-                        this.props.navigation.navigate("post", { post: result, extra: extra, initFromPost: (result) => this.initFromPost(result) });
-                    }
-                }}
-            >
-                <SmartImage
-                    style={styles.item}
-                    showSpinner={false}
-                    preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                    uri={post.pictures.one.uri}
-                />
-
-                <LinearGradient
-                    colors={['transparent', 'rgba(0, 0, 0, 0.3)']}
-                    start={[0, 0]}
-                    end={[0, 1]}
-                    style={StyleSheet.absoluteFill}
-                />
-
-                <View style={[{ paddingHorizontal: Theme.spacing.tiny, paddingBottom: Theme.spacing.tiny, justifyContent: 'flex-end' }, StyleSheet.absoluteFill]}>
-                    <Text style={styles.feedItemText}>{post.name}</Text>
-                    <Text style={styles.feedItemText}>{distance}</Text>
-                    {
-                        this.renderReview(post)
-                    }
-                </View>
-            </TouchableOpacity>
-        );
     }
 
     renderReview(post) {

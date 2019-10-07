@@ -207,39 +207,68 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                         data={this.state.feeds}
                         keyExtractor={item => item.reviewId}
                         renderItem={({ item, index }) => {
-                            return (
-                                <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
-                                    <View style={styles.pictureContainer}>
-                                        <SmartImage
-                                            style={styles.picture}
-                                            showSpinner={false}
-                                            preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
-                                            uri={item.picture}
-                                        />
-                                        {
-                                            item.replyAdded &&
-                                            <View style={{
-                                                position: 'absolute',
-                                                top: 3,
-                                                right: 3,
-                                                backgroundColor: 'red',
-                                                borderRadius: Cons.redDotWidth / 2,
-                                                width: Cons.redDotWidth,
-                                                height: Cons.redDotWidth
-                                            }} />
-                                        }
-                                        {
-                                            /*
-                                            this.state.showPostIndicator === index &&
-                                            <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: 'center', alignItems: 'center' }}>
-                                                <ActivityIndicator animating size={'small'} color={'white'} />
+                            if (!item.reporters || item.reporters.length === 0 || item.reporters.indexOf(Firebase.user().uid) === -1) {
+                                return (
+                                    <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
+                                        <View style={styles.pictureContainer}>
+                                            <SmartImage
+                                                style={styles.picture}
+                                                showSpinner={false}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={item.picture}
+                                            />
+                                            {
+                                                item.replyAdded &&
+                                                <View style={{
+                                                    position: 'absolute',
+                                                    top: 3,
+                                                    right: 3,
+                                                    backgroundColor: 'red',
+                                                    borderRadius: Cons.redDotWidth / 2,
+                                                    width: Cons.redDotWidth,
+                                                    height: Cons.redDotWidth
+                                                }} />
+                                            }
+                                            {
+                                                /*
+                                                this.state.showPostIndicator === index &&
+                                                <View style={{ position: 'absolute', width: '100%', height: '100%', backgroundColor: "rgba(0, 0, 0, 0.4)", justifyContent: 'center', alignItems: 'center' }}>
+                                                    <ActivityIndicator animating size={'small'} color={'white'} />
+                                                </View>
+                                                */
+                                            }
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                );
+                            } else {
+                                return (
+                                    <TouchableWithoutFeedback onPress={() => this.postClick(item)}>
+                                        <View style={styles.pictureContainer}>
+                                            <SmartImage
+                                                style={styles.picture}
+                                                showSpinner={false}
+                                                preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
+                                                uri={item.picture}
+                                            />
+                                            {
+                                                item.replyAdded &&
+                                                <View style={{
+                                                    position: 'absolute',
+                                                    top: 3,
+                                                    right: 3,
+                                                    backgroundColor: 'red',
+                                                    borderRadius: Cons.redDotWidth / 2,
+                                                    width: Cons.redDotWidth,
+                                                    height: Cons.redDotWidth
+                                                }} />
+                                            }
+                                            <View style={[StyleSheet.absoluteFill, { borderRadius: 2, backgroundColor: 'rgba(0, 0, 0, 0.8)' }]}>
+                                                {/* // ToDo: add text */}
                                             </View>
-                                            */
-                                        }
-                                    </View>
-                                </TouchableWithoutFeedback>
-                            );
-
+                                        </View>
+                                    </TouchableWithoutFeedback>
+                                );
+                            }
                         }}
                         onScroll={({ nativeEvent }) => {
                             if (!this.focused) return;
@@ -397,6 +426,7 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                 if (feed) { // could be null or undefined
                     // update picture
                     review.picture = feed.pictures.one.uri;
+                    review.reporters = feed.reporters;
                 }
 
                 newFeeds.push(review);
@@ -417,8 +447,9 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                     // update this.feedList
                     this.feedList.set(feedId, newFeed);
 
-                    // update picture
+                    // update picture, reporters
                     let changed = false;
+
                     let feeds = [...this.state.feeds];
                     for (let i = 0; i < feeds.length; i++) {
                         let feed = feeds[i];
@@ -426,6 +457,8 @@ export default class ReviewMain extends React.Component<InjectedProps> {
                             if (feed.picture !== newFeed.pictures.one.uri) changed = true;
 
                             feed.picture = newFeed.pictures.one.uri;
+                            feed.reporters = newFeed.reporters;
+
                             feeds[i] = feed;
                         }
                     }

@@ -438,6 +438,7 @@ export default class CommentMain extends React.Component<InjectedProps> {
 
                     // update state feed & UI
                     let changed = false;
+
                     let feeds = [...this.state.feeds];
                     for (let i = 0; i < feeds.length; i++) {
                         let feed = feeds[i];

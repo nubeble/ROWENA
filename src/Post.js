@@ -231,8 +231,7 @@ export default class Post extends React.Component<InjectedProps> {
             }
             !this.closed && this.setState({ liked });
 
-
-            // update feedStore - NO need to update views & likes
+            // ToDo: update feedStore: No need to update for views & likes
             // const { feedStore } = this.props;
             // feedStore.updateFeed(newPost);
         });
@@ -283,11 +282,11 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     initFromWriteReview(result) { // back from rating
-        if (Platform.OS === 'ios') return;
+        if (Platform.OS === 'android') {
+            !this.closed && this.setState({ writeRating: 0 });
 
-        !this.closed && this.setState({ writeRating: 0 });
-
-        this.refs.rating.setPosition(0); // bug in AirbnbRating
+            this.refs.rating.setPosition(0); // bug in AirbnbRating
+        }
 
         if (result) {
             this.reloadReviews();
@@ -474,7 +473,7 @@ export default class Post extends React.Component<InjectedProps> {
 
         // check the owner of the post
         if (Firebase.user().uid === post.uid) {
-            this.refs["toast"].show('Sorry, You can not call dibs on your post.', 500);
+            this.refs["toast"].show('Sorry, this is your post.', 500);
             this.toggling = false;
             return;
         }
@@ -548,7 +547,7 @@ export default class Post extends React.Component<InjectedProps> {
             sendPushNotification(uid, profile.name, post.uid, Cons.pushNotification.like, data);
         }
 
-        // update likes to state post
+        // update state post for likes
         /*
         console.log('jdub', 'update likes to state post');
 
@@ -565,7 +564,7 @@ export default class Post extends React.Component<InjectedProps> {
         !this.closed && this.setState({ post: newPost });
         */
 
-        // update feedStore - NOT needed to update likes
+        // update feedStore: No need to update for likes
         // const { feedStore } = this.props;
         // feedStore.updateFeed(newPost);
 
@@ -1511,7 +1510,7 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReportButton() {
-        if (Platform.OS === 'android') return;
+        // if (Platform.OS === 'android') return;
 
         return (
             <TouchableOpacity
@@ -1526,23 +1525,69 @@ export default class Post extends React.Component<InjectedProps> {
                     if (!post) return null;
 
                     const title = 'Report ' + post.name;
-                    this.openDialog(title, 'Is it spam or inappropriate?', () => {
-                        // ToDo: report post
+                    this.openDialog(title, 'Is it spam or inappropriate?', async () => {
+                        // report post
+
+                        // check the owner of the post
+                        // if (Firebase.user().uid === post.uid) {
+                        if (this.state.isOwner) {
+                            this.refs["toast"].show('Sorry, this is your post.', 500);
+                            return;
+                        }
+
+                        // check existence
+                        if (!this.feed) {
+                            this.refs["toast"].show('The post has been removed by its owner.', 500);
+                            return;
+                        }
 
                         // 1. update database (reporters)
+                        const uid = Firebase.user().uid;
+                        const placeId = post.placeId;
+                        const feedId = post.id;
+                        // const name = post.name;
+                        // const placeName = post.placeName;
+                        // const uri = post.pictures.one.uri;
 
-                        // 2. update feedStore
+                        const result = await Firebase.reportPost(uid, placeId, feedId);
+                        if (!result) {
+                            // the post is removed
+                            this.refs["toast"].show('The post has been removed by its owner.', 500);
+                            return;
+                        }
 
-                        // 3.
-                        setTimeout(() => {
+                        // 2. update state post
+                        let _post = post;
+                        if (!_post.reporters) {
+                            let reporters = [];
+                            reporters.push(uid);
+                            _post.reporters = reporters;
+                        } else {
+                            _post.reporters.push(uid);
+                        }
+
+                        this.setState({ post: _post });
+
+                        // 3. update feedStore
+                        const { feedStore } = this.props;
+                        feedStore.updateFeed(_post);
+
+                        // 4. go back
+                        this.refs["toast"].show('Thanks for your feedback.', 500, () => {
                             if (this.closed) return;
 
-                            if (this.state.isOwner) {
-                                this.refs["toast"].show('Sorry, this is your post.', 500);
-                            } else {
-                                this.refs["toast"].show('Report taken', 500);
+                            if (this._showNotification) {
+                                this.hideNotification();
                             }
-                        }, 500);
+
+                            const params = this.props.navigation.state.params;
+                            if (params) {
+                                const initFromPost = params.initFromPost;
+                                if (initFromPost) initFromPost(_post);
+                            }
+
+                            this.props.navigation.dispatch(NavigationActions.back());
+                        });
                     });
                 }}>
                 <Ionicons name='md-alert' color={Theme.color.text5} size={16} />

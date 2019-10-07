@@ -999,6 +999,36 @@ export default class Firebase {
         return result;
     }
 
+    static async reportPost(uid, placeId, feedId) {
+        let result;
+
+        const feedRef = Firebase.firestore.collection("places").doc(placeId).collection("feed").doc(feedId);
+
+        await Firebase.firestore.runTransaction(async transaction => {
+            const postDoc = await transaction.get(feedRef);
+            if (!postDoc.exists) throw 'Post document not exist!';
+
+            let { reporters } = postDoc.data();
+
+            // backward compatibility
+            if (!reporters) reporters = [];
+
+            const idx = reporters.indexOf(uid);
+            if (idx === -1) {
+                reporters.push(uid);
+            }
+
+            transaction.update(feedRef, { reporters });
+        }).then(() => {
+            result = true;
+        }).catch((error) => {
+            console.log('jdub', 'Firebase.reportPost', error);
+            result = false;
+        });
+
+        return result;
+    }
+
     static async updateReviewChecked(uid, placeId, feedId, checked) {
         let result;
 

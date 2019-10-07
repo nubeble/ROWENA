@@ -116,7 +116,6 @@ export default class WriteReviewScreen extends React.Component {
         let comment = this.refs['comment']._lastNativeText;
         if (comment === undefined || comment === '') {
             this.showNotification('Please enter a valid comment.');
-
             return;
         }
 
@@ -125,12 +124,10 @@ export default class WriteReviewScreen extends React.Component {
             this.refs["toast"].show('Sorry, You can not write a self-recommendation.', 500, () => {
                 if (!this.closed) {
                     // this.refs.rating.stopAnimation();
-
                     this.props.navigation.state.params.initFromWriteReview(false);
                     this.props.navigation.goBack();
                 }
             });
-
             return;
         }
 
