@@ -1022,7 +1022,7 @@ export default class Firebase {
         }).then(async () => {
             result = true;
 
-            // ToDo: add REPORTS (post)
+            // add REPORTS (post)
             const id = feedId;
             const type = 'POST'; // 'POST', 'USER'
 
@@ -1065,7 +1065,7 @@ export default class Firebase {
         }).then(async () => {
             result = true;
 
-            // ToDo: remove REPORTS (post)
+            // remove REPORTS (post)
             const id = feedId;
             const reportRef = Firebase.firestore.collection("REPORTS").doc(id);
             await reportRef.delete();
