@@ -1641,8 +1641,7 @@ export default class Intro extends React.Component<InjectedProps> {
             return (
                 <TouchableOpacity activeOpacity={1}
                     onPress={() => {
-                        const title = 'Unblock Post';
-                        this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                        this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + feed.name + '?', async () => {
                             // unblock
 
                             // 1. update database (reporters)

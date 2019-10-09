@@ -23,6 +23,7 @@ import Intro from './Intro';
 import ChatMain from './ChatMain';
 // import { unregisterExpoPushToken } from './PushNotifications';
 import { NavigationActions } from 'react-navigation';
+import * as WebBrowser from 'expo-web-browser';
 
 type InjectedProps = {
     profileStore: ProfileStore
@@ -733,7 +734,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: Dimensions.get('window').height / 16,
+                                                width: '100%', height: 36,
                                                 // justifyContent: 'center', paddingLeft: 2
                                                 flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                             }}>
@@ -751,7 +752,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         height: Cons.redDotWidth
                                                     }} />
                                                 }
-                                                <AntDesign name='staro' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                <AntDesign name='staro' color={Theme.color.text2} size={22} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -769,14 +770,13 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: Dimensions.get('window').height / 16,
-                                                justifyContent: 'center',
-                                                paddingLeft: 2
+                                                width: '100%', height: 36,
+                                                justifyContent: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, /* color: Theme.color.text2, */ color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
-                                                    {Platform.OS === 'android' ? 'Advertise Yourself or Your Girls' : 'Add New Post'}
+                                                <Text style={{ fontSize: 18, color: '#f1c40f', fontFamily: "Roboto-Regular" }}>
+                                                    {Platform.OS === 'android' ? 'Advertise Yourself or Your Girls' : 'Create a New Post'}
                                                 </Text>
-                                                <Feather name='edit-3' /* color={Theme.color.text2} */ color={'#f1c40f'} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                <Feather name='edit-3' color={'#f1c40f'} size={22} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -796,7 +796,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                 }}
                                             >
                                                 <View style={{
-                                                    width: '100%', height: Dimensions.get('window').height / 16,
+                                                    width: '100%', height: 36,
                                                     // justifyContent: 'center', paddingLeft: 2
                                                     flexDirection: 'row', alignItems: 'center', paddingLeft: 2
                                                 }}>
@@ -816,7 +816,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                         }} />
                                                         */
                                                     }
-                                                    <MaterialCommunityIcons name='comment-text-outline' color={Theme.color.text2} size={24} style={{ position: 'absolute', right: 0 }} />
+                                                    <MaterialCommunityIcons name='comment-text-outline' color={Theme.color.text2} size={21} style={{ position: 'absolute', right: 0 }} />
                                                 </View>
                                             </TouchableOpacity>
                                         }
@@ -824,6 +824,24 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             comments && comments.length > 0 &&
                                             <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                         }
+
+                                        {/* Terms of Service */}
+                                        <TouchableOpacity
+                                            onPress={async () => {
+                                                const URL = `https://rowena-88cfd.web.app/terms.html`;
+                                                let result = await WebBrowser.openBrowserAsync(URL);
+                                            }}
+                                        >
+                                            <View style={{
+                                                width: '100%', height: 36,
+                                                justifyContent: 'center', paddingLeft: 2
+                                            }}>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Terms of Service'}</Text>
+                                                <Feather name='book' color={Theme.color.text3} size={20} style={{ position: 'absolute', right: 1 }} />
+                                            </View>
+                                        </TouchableOpacity>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
 
                                         {/* Log out */}
                                         <TouchableOpacity
@@ -888,16 +906,14 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                                     await Firebase.deleteProfile(uid);
                                                 });
                                                 */
-
                                             }}
                                         >
                                             <View style={{
-                                                width: '100%', height: Dimensions.get('window').height / 16,
-                                                justifyContent: 'center',
-                                                paddingLeft: 2
+                                                width: '100%', height: 36,
+                                                justifyContent: 'center', paddingLeft: 2
                                             }}>
-                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
-                                                <AntDesign name='logout' color={Theme.color.text2} size={22} style={{ position: 'absolute', right: 0 }} />
+                                                <Text style={{ fontSize: 18, color: Theme.color.text3, fontFamily: "Roboto-Regular" }}>{'Log Out'}</Text>
+                                                <AntDesign name='logout' color={Theme.color.text3} size={20} style={{ position: 'absolute', right: 0 }} />
                                             </View>
                                         </TouchableOpacity>
 
@@ -970,7 +986,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                 {
                                     this.state.totalFeedsSize === 0 &&
                                     <View style={{
-                                        width: '100%', height: Dimensions.get('window').height / 16,
+                                        width: '100%', height: 36,
                                         justifyContent: 'center', alignItems: 'center'
                                     }}>
                                         <TouchableOpacity onPress={() => {

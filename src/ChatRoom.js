@@ -19,6 +19,10 @@ import { NavigationActions } from 'react-navigation';
 import PreloadImage from './PreloadImage';
 // import KeyboardSpacer from 'react-native-keyboard-spacer';
 
+type InjectedProps = {
+    feedStore: FeedStore
+};
+
 const DEFAULT_MESSAGE_COUNT = 20;
 
 const chatViewHeight = Dimensions.get('window').height - Cons.searchBarHeight;
@@ -38,7 +42,10 @@ const bigImageWidth = postHeight * 0.7;
 const smallImageWidth = postHeight * 0.7;
 
 
-export default class ChatRoom extends React.Component {
+// export default class ChatRoom extends React.Component {
+@inject("feedStore")
+@observer
+export default class Post extends React.Component<InjectedProps> {
     state = {
         titleImageUri: null,
         titleName: null,
@@ -139,9 +146,7 @@ export default class ChatRoom extends React.Component {
     handleHardwareBackPress() {
         console.log('jdub', 'ChatRoom.handleHardwareBackPress');
 
-        // this.goBack(); // works best when the goBack is async
-
-        this.goBack();
+        this.goBack(); // works best when the goBack is async
 
         return true;
     }
@@ -446,9 +451,11 @@ export default class ChatRoom extends React.Component {
                     </TouchableOpacity>
 
                     {/* icon + text */}
-                    <TouchableOpacity style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }} onPress={async () => await this.openPost()}>
+                    <TouchableOpacity
+                        style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}
+                        onPress={async () => await this.openPost()}
+                    >
                         <SmartImage
-                            // style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2, marginBottom: 4 }}
                             style={{ width: avatarHeight, height: avatarHeight, borderRadius: avatarHeight / 2 }}
                             showSpinner={false}
                             preview={"data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs="}
@@ -458,13 +465,17 @@ export default class ChatRoom extends React.Component {
                             style={{
                                 color: 'rgba(255, 255, 255, 0.8)',
                                 fontSize: 18,
-                                // paddingTop: 10,
                                 fontFamily: "Roboto-Medium",
-                                marginLeft: 10,
-                                // paddingBottom: 4
+                                marginLeft: 10
                             }}
                         >{this.state.titleName}</Text>
                     </TouchableOpacity>
+
+                    {/* report button */}
+                    {
+                        item.users[1].uid === item.owner &&
+                        this.renderReportButton()
+                    }
 
                     {/* leave button */}
                     <TouchableOpacity
@@ -921,9 +932,78 @@ export default class ChatRoom extends React.Component {
 
         this.openDialog('Leave Conversation', "Are you sure you don't want to receive new messages from " + labelName + "?", async () => {
             await Firebase.deleteChatRoom(myUid, myName, opponentUid, roomId);
+
             // this.props.navigation.navigate("chat", { roomId });
             this.props.navigation.navigate("chatMain", { roomId });
         });
+    }
+
+    renderReportButton() {
+        return (
+            <View style={{ height: avatarHeight, justifyContent: 'center', alignItems: 'center' }}>
+
+                <TouchableOpacity
+                    style={{
+                        width: 20,
+                        height: 20,
+                        marginLeft: 6,
+                        justifyContent: "center", alignItems: "center"
+                    }}
+                    onPress={() => {
+                        const item = this.props.navigation.state.params.item;
+                        const post = item.post;
+
+                        this.openDialog('Report User', 'Are you sure you want to report and block ' + post.name + '?', async () => {
+                            // report user
+
+                            // 1. update database (reporters)
+                            const uid = Firebase.user().uid;
+                            const placeId = post.placeId;
+                            const feedId = post.id;
+
+                            const result = await Firebase.reportPost(uid, placeId, feedId);
+                            if (!result) {
+                                // the post is removed
+                                this.refs["toast"].show('The post has been removed by its owner.', 500);
+                                return;
+                            }
+
+                            // 2. update feedStore
+                            let _post = post;
+                            if (!_post.reporters) {
+                                let reporters = [];
+                                reporters.push(uid);
+                                _post.reporters = reporters;
+                            } else {
+                                _post.reporters.push(uid);
+                            }
+
+                            const { feedStore } = this.props;
+                            feedStore.updateFeed(_post);
+
+                            // 3. go back (leave room)
+                            this.refs["toast"].show('Thanks for your feedback.', 500, async () => {
+                                if (this.closed) return;
+
+                                // this.goBack();
+
+                                // leave room
+                                const roomId = item.id;
+                                const myUid = item.users[0].uid;
+                                const myName = item.users[0].name;
+                                const opponentUid = item.users[1].uid;
+
+                                await Firebase.deleteChatRoom(myUid, myName, opponentUid, roomId);
+
+                                this.props.navigation.navigate("chatMain", { roomId });
+                            });
+                        });
+                    }}>
+                    <Ionicons name='md-alert' color={Theme.color.text5} size={16} />
+                </TouchableOpacity>
+
+            </View>
+        );
     }
 
     openDialog(title, message, callback) {
@@ -982,8 +1062,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Roboto-Regular",
         color: "white",
-        // backgroundColor: Theme.color.background,
-        // backgroundColor: 'green',
         paddingLeft: textInputPaddingLeft,
         paddingRight: textInputPaddingRight,
         marginBottom: textInputMarginBottom
@@ -994,17 +1072,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: "Roboto-Regular",
         color: "white",
-        // backgroundColor: Theme.color.background,
-        // backgroundColor: 'green',
         paddingLeft: textInputPaddingLeft,
         paddingRight: textInputPaddingRight,
         marginBottom: textInputMarginBottom,
-
         paddingTop: textInputMarginBottom + 10
     },
     sendButton: {
-        // backgroundColor: Theme.color.background,
-        // backgroundColor: 'red',
         width: 36,
         height: 36,
         alignItems: 'center',
@@ -1015,10 +1088,7 @@ const styles = StyleSheet.create({
         height: postHeight,
         position: 'absolute',
         alignItems: 'center',
-        // justifyContent: 'flex-start',
-        justifyContent: 'center',
-
-        // backgroundColor: 'green'
+        justifyContent: 'center'
     },
     text1: {
         color: Theme.color.text2,

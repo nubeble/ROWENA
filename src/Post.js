@@ -835,9 +835,10 @@ export default class Post extends React.Component<InjectedProps> {
         let views = null;
         const visits = this.getVisitCount(post.visits);
         if (visits === 0) {
-            views = 'No views yet';
+            views = Platform.OS === 'android' ? 'No views yet' : '0 views';
         } else if (visits === 1) {
-            views = '1 view';
+            // views = '1 view';
+            views = '1 views';
         } else {
             views = Util.numberWithCommas(visits) + ' views';
         }
@@ -846,9 +847,10 @@ export default class Post extends React.Component<InjectedProps> {
         let likes = null;
         const _likes = post.likes.length;
         if (_likes === 0) {
-            likes = 'No likes yet';
+            likes = Platform.OS === 'android' ? 'No likes yet' : '0 likes';
         } else if (_likes === 1) {
-            likes = '1 like';
+            // likes = '1 like';
+            likes = '1 likes';
         } else {
             likes = Util.numberWithCommas(_likes) + ' likes';
         }
@@ -915,6 +917,9 @@ export default class Post extends React.Component<InjectedProps> {
                         Platform.OS === 'android' ?
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
                                 <Text style={styles.name}>{post.name}</Text>
+                                {
+                                    this.renderReportButton()
+                                }
                             </View>
                             :
                             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
@@ -939,7 +944,6 @@ export default class Post extends React.Component<InjectedProps> {
                                 <Text style={styles.name}>{post.name}</Text>
                                 <Text style={styles.age}>{age}</Text>
                                 {
-                                    // ToDo: ios review
                                     this.renderReportButton()
                                 }
                             </View>
@@ -1510,8 +1514,6 @@ export default class Post extends React.Component<InjectedProps> {
     }
 
     renderReportButton() {
-        // if (Platform.OS === 'android') return;
-
         return (
             <TouchableOpacity
                 style={{
@@ -1524,8 +1526,7 @@ export default class Post extends React.Component<InjectedProps> {
                     const post = this.state.post;
                     if (!post) return null;
 
-                    const title = 'Report ' + post.name;
-                    this.openDialog(title, 'Is it spam or inappropriate?', async () => {
+                    this.openDialog('Report Post', 'Are you sure you want to report and block ' + post.name + '?', async () => {
                         // report post
 
                         // check the owner of the post
@@ -1565,7 +1566,6 @@ export default class Post extends React.Component<InjectedProps> {
                         } else {
                             _post.reporters.push(uid);
                         }
-
                         this.setState({ post: _post });
 
                         // 3. update feedStore

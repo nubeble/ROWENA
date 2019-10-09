@@ -573,8 +573,7 @@ export default class SavedPlace extends React.Component<InjectedProps> {
                                 return (
                                     <TouchableOpacity activeOpacity={0.5}
                                         onPress={() => {
-                                            const title = 'Unblock Post';
-                                            this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                                            this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + item.name + '?', async () => {
                                                 // unblock
 
                                                 // 1. update database (reporters)

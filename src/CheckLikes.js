@@ -228,7 +228,7 @@ export default class CheckLikes extends React.Component {
                                 fontSize: 28,
                                 lineHeight: 32,
                                 fontFamily: "Chewy-Regular"
-                            }}>{Platform.OS === 'android' ? 'No likes from customers' : 'No likes received yet'}</Text>
+                            }}>{Platform.OS === 'android' ? 'No likes yet' : 'No one has checked on your post yet'}</Text>
 
                             <Text style={{
                                 marginTop: 10,

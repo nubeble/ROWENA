@@ -161,8 +161,7 @@ export default class PostComp extends React.Component<PostProps, PostState> {
                 <View>
                     <TouchableWithoutFeedback
                         onPress={() => {
-                            const title = 'Unblock Post';
-                            this.openDialog(title, 'Are you sure you want to unblock this post?', async () => {
+                            this.openDialog('Unblock Post', 'Are you sure you want to unblock ' + post.name + '?', async () => {
                                 // unblock
 
                                 // 1. update database (reporters)
