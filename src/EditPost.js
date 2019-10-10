@@ -2495,7 +2495,6 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         height: Cons.searchBarHeight,
-        // paddingBottom: 8,
         paddingBottom: 14,
         justifyContent: 'flex-end'
     },
@@ -2504,15 +2503,15 @@ const styles = StyleSheet.create({
         // paddingBottom: Theme.spacing.small
     },
     /*
-wrapper: {
-        },
-slide: {
-            flex: 1,
+    wrapper: {
+    },
+    slide: {
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center'
     },
-item: {
-            width: imageWidth,
+    item: {
+        width: imageWidth,
         height: imageHeight
     },
     */

@@ -595,7 +595,7 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                 </Animated.View>
 
                 <View style={styles.searchBar}>
-
+                    {/* admin button */}
                     <TouchableOpacity activeOpacity={1} onPress={() => this.openAdmin()}>
                         <Text style={{
                             color: Theme.color.text1,
@@ -606,6 +606,27 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                         }}>Profile</Text>
                     </TouchableOpacity>
 
+                    {/* settings button */}
+                    <TouchableOpacity
+                        style={{
+                            width: 48,
+                            height: 48,
+                            position: 'absolute',
+                            bottom: 2,
+                            right: 2,
+                            justifyContent: "center", alignItems: "center"
+                        }}
+                        onPress={() => {
+                            if (!profile) return;
+
+                            setTimeout(() => {
+                                if (this.closed) return;
+                                this.props.navigation.navigate("settings");
+                            }, Cons.buttonTimeout);
+                        }}
+                    >
+                        <Feather name='settings' color='rgba(255, 255, 255, 0.8)' size={20} />
+                    </TouchableOpacity>
                 </View>
 
                 {
@@ -824,6 +845,30 @@ export default class ProfileMain extends React.Component<InjectedProps> {
                                             comments && comments.length > 0 &&
                                             <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
                                         }
+
+                                        {/* Settings */}
+                                        {/*
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                if (!profile) return;
+
+                                                setTimeout(() => {
+                                                    if (this.closed) return;
+                                                    this.props.navigation.navigate("settings");
+                                                }, Cons.buttonTimeout);
+                                            }}
+                                        >
+                                            <View style={{
+                                                width: '100%', height: 36,
+                                                justifyContent: 'center', paddingLeft: 2
+                                            }}>
+                                                <Text style={{ fontSize: 18, color: Theme.color.text2, fontFamily: "Roboto-Regular" }}>{'Settings'}</Text>
+                                                <Feather name='settings' color={Theme.color.text2} size={21} style={{ position: 'absolute', right: 1 }} />
+                                            </View>
+                                        </TouchableOpacity>
+
+                                        <View style={{ borderBottomColor: Theme.color.line, borderBottomWidth: 1, width: '100%', marginTop: Theme.spacing.tiny, marginBottom: Theme.spacing.tiny }} />
+                                        */}
 
                                         {/* Terms of Service */}
                                         <TouchableOpacity

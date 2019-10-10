@@ -561,6 +561,7 @@ import AdvertisementFinish from './src/AdvertisementFinish';
 import CommentMain from './src/CommentMain';
 import MapExplore from './src/MapExplore';
 // import MapOverview from './src/MapOverview';
+import Settings from './src/Settings';
 import Admin from './src/Admin';
 
 
@@ -1198,7 +1199,8 @@ const ProfileStackNavigator = createStackNavigator(
         profileMain: { screen: ProfileMain },
         editProfile: { screen: EditProfileStackNavigatorWrapper },
         reviewGirls: { screen: ReviewStackNavigatorWrapper },
-        reviewCustomers: { screen: CommentStackNavigatorWrapper }
+        reviewCustomers: { screen: CommentStackNavigatorWrapper },
+        settings: { screen: Settings }
     },
     {
         mode: 'card',
